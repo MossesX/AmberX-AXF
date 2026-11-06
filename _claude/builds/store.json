@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1130,
- "updatedAt": "2026-11-06T19:59:32.454Z",
+ "rev": 1131,
+ "updatedAt": "2026-11-06T20:02:27.688Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -88610,10 +88610,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "fable-review-shipped-features-build-hook-contrac",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/shipped-features-fable",
+   "pr": "#364",
    "createdAt": "2026-11-04T23:01:17.835Z",
-   "updatedAt": "2026-11-04T23:01:17.835Z",
+   "updatedAt": "2026-11-06T20:02:26.075Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -88639,7 +88639,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
