@@ -1,0 +1,73 @@
+{
+  "schema": "deploy-log@1",
+  "record": "deploy@1",
+  "version": 1,
+  "kinds": [
+    "deploy",
+    "rollback",
+    "publish"
+  ],
+  "states": [
+    "done",
+    "failed"
+  ],
+  "targets": {
+    "console": {
+      "label": "Dev Console",
+      "url": "https://console.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "site": {
+      "label": "Demo site",
+      "url": "https://axf.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "axhub": {
+      "label": "axHub",
+      "url": "https://axhub.amberxai.com",
+      "repo": "axhub"
+    },
+    "axhub-web": {
+      "label": "axHub web",
+      "url": "https://axhub.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "amberx": {
+      "label": "AmberX",
+      "url": "https://amberx.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "molly": {
+      "label": "Molly",
+      "url": "https://molly.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "walkthrough": {
+      "label": "Walkthrough Studio",
+      "url": "https://walkthrough.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "expenses": {
+      "label": "Expense Tracker",
+      "url": "https://expenses.amberxai.com",
+      "repo": "amberx-axf"
+    },
+    "apk:amberx": {
+      "label": "AmberX APK",
+      "url": "",
+      "repo": "amberx-axf"
+    },
+    "apk:console": {
+      "label": "Console APK",
+      "url": "",
+      "repo": "amberx-axf"
+    },
+    "maven": {
+      "label": "Maven packages",
+      "url": "",
+      "repo": "amberx-axf"
+    }
+  },
+  "targetPattern": "^[a-z0-9][a-z0-9-]{0,39}(:[a-z0-9][a-z0-9-]{0,39})?$",
+  "shaPattern": "^[0-9a-f]{7,40}$"
+}

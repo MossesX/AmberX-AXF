@@ -1,5 +1,15 @@
 # Shipped features: progress
 
+## Fable review done (Nov 6 2026, `shipped-features-fable`, Fable; Brett: "The ship features. Yeah, do that now. Do the fable part now.")
+- [x] r4's 10 commits merged onto `claude/shipped-features-fable` (one conflict, `framework/deploy/test.sh`, both blocks kept)
+- [x] build-hook@1 reviewed + fixed: repo from PR URL / repo field only (branch names lied), step model through model-policy@1, prNumber shapes, delete without `after` cancels, delivery lock + same-delivery catch-up, `deliver({ to })`
+- [x] feature-ledger@1 + deploy-log@1 reviewed + fixed: `statusFromBuild` reads a build like the hook (pending = planned, archived = cancelled), ISO offsets fold to Z in both, `mergeLedgers` edits keep filled fields, `migrate` odd versions, addenda keep session / link
+- [x] plugin `apply.mjs` `statusForBuild` delegates to the contract; SQLite migrations 001 + 002 reviewed, no change needed
+- [x] tests: check-build-hook 25, check-feature-ledger 66, deploy test 51, builds store 37, plugin test 7 (Node 22 / Docker); fixtures + schema snapshots regenerated; console `src/axf` re-baked
+- [x] report section "Fable review" in `_claude/builds/reports/shipped-features.md`; UI Review: r4 shots submitted from the VPS (r-20261106-f8fd11bb, group "shipped-features-fable - Nov 6 8:02 PM", waiting for Brett)
+- [x] one PR to the merge queue: [#364](https://github.com/MossesX/AmberX-AXF/pull/364) (`claude/shipped-features-fable`, supersedes r2 / r3 / r4; draft #350 closed as superseded; queued with `merge-queue.mjs add 364`)
+- Follow-ups (not in this build): outbox `compact`; axHub installer `axf_deploy_log`; `AXF_AXHUB_REPO` on the VPS; `data/features-seed.json` model pass; Kotlin twins when Android resumes
+
 ## HANDOFF (Nov 5 2026, Opus thread)
 All steps s1–s15 are ticked. Draft PR #350, auto-land off: leave it for the merge queue. Next session: (1) Fable review
 of s3–s5 and s12 (see REDO WITH FABLE); (2) on the VPS submit the UI Review shots (command in the report) and set
