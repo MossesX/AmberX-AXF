@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1141,
- "updatedAt": "2026-11-06T20:27:07.498Z",
+ "rev": 1142,
+ "updatedAt": "2026-11-06T20:27:25.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -92384,9 +92384,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:10:37.510Z",
-   "updatedAt": "2026-11-06T18:07:15.102Z",
+   "updatedAt": "2026-11-06T20:27:09.664Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "s18 (VPS login watcher on the banner) is covered by build claude-badge-vps.",
+     "at": "2026-11-06T20:27:09.664Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -93081,7 +93086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -93104,7 +93109,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T20:16:43.524Z",
+   "updatedAt": "2026-11-06T20:27:08.761Z",
    "builtAt": "",
    "notes": [
     {
@@ -93122,6 +93127,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T20:16:43.524Z"
+    },
+    {
+     "text": "s34 + s35 (s18 of the parent plan: banner clock badge watches the VPS login, green / yellow / red) are covered by build claude-badge-vps: the VPS connection badge in the Claude badge plugin. Skip them here, don't build it twice.",
+     "at": "2026-11-06T20:27:08.761Z"
     }
    ],
    "approvals": [],
@@ -94346,7 +94355,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97371,9 +97380,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T20:18:34.992Z",
-   "updatedAt": "2026-11-06T20:27:06.402Z",
+   "updatedAt": "2026-11-06T20:27:10.558Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Covers s18 of token-usage-log-accounts-plan-studio-control (s34/s35 of its small-steps build).",
+     "at": "2026-11-06T20:27:10.558Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -97426,12 +97440,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T20:27:07.100Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T20:18:34.993Z",
-     "updatedAt": "2026-11-06T20:18:34.993Z"
+     "updatedAt": "2026-11-06T20:27:07.167Z"
     },
     {
      "id": "s3",
@@ -97448,12 +97462,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T20:27:07.891Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T20:18:34.993Z",
-     "updatedAt": "2026-11-06T20:18:34.993Z"
+     "updatedAt": "2026-11-06T20:27:07.998Z"
     },
     {
      "id": "s4",
@@ -97486,7 +97500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

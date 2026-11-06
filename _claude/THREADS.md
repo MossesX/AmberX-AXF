@@ -705,11 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s7 done (angel) · orchestrator
-- 2026-11-04 22:04 UTC · `build-docs-walkthroughs` branch claude/build-docs-walkthroughs, PR #346 (angel) · builds-live
-- 2026-11-04 21:53 UTC · `changes-chat-log` added (5 steps) (current) · orchestrator
-- 2026-11-04 22:04 UTC · `notes-views` added (10 steps) (current) · foreign-write
-- 2026-11-04 22:04 UTC · `changes-chat-log` s1 done, → running (current) · orchestrator
 - 2026-11-04 22:04 UTC · `changes-chat-log` s2 done (current) · orchestrator
 - 2026-11-04 22:04 UTC · `changes-chat-log` s3 done (current) · orchestrator
 - 2026-11-04 22:04 UTC · `changes-chat-log` s4 done (current) · orchestrator
@@ -1105,6 +1100,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 20:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
 - 2026-11-06 20:18 UTC · `claude-badge-vps` added (4 steps) (current) · orchestrator
 - 2026-11-06 20:27 UTC · `claude-badge-vps` s1 done, → running (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` s2 done (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` s3 done (current) · orchestrator
+- 2026-11-06 20:27 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
+- 2026-11-06 20:27 UTC · `token-usage-log-accounts-plan-studio-control` note (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` note (current) · orchestrator
 
 ## Token passes (log)
 
