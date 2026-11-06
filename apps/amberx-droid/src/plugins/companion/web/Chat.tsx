@@ -8,8 +8,8 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { Button, Icon, IconButton, Markdown, WindowGrip, useAxfState, useRuntime, useWindowFrame } from '../../../axf/react';
 import {
-  emptyLiveReply, normalizeChatContext, watchReply,
-  type AgentRef, type AssistantStatus, type ChatImage, type Conversation, type ConversationSettings, type ConversationSummary, type LiveReply, type Message,
+  TOOL_MODES, emptyLiveReply, normalizeChatContext, turnModeLabel, watchReply,
+  type AgentRef, type AssistantStatus, type ChatImage, type Conversation, type ConversationSettings, type ConversationSummary, type LiveReply, type Message, type ToolMode,
 } from '../../../axf/core';
 import { COMPANION, budgetState, chatModelId, chatModels, groupConversations, modelName, money, toolCard, tokenCost, type ToolCardView } from '../../../axf/libs/claude-session';
 import pricing from '../../../axf/schemas/model-pricing.json';
@@ -22,6 +22,13 @@ const LAST = 'companion.last';
 const remember = (id: string) => { try { if (id) localStorage.setItem(LAST, id); else localStorage.removeItem(LAST); } catch { /* private mode */ } };
 const recall = () => { try { return localStorage.getItem(LAST) ?? ''; } catch { return ''; } };
 const snapshot = (r: LiveReply): LiveReply => ({ ...r, tools: r.tools.map((t) => ({ ...t })) });
+const MODE_NAME: Record<ToolMode, string> = { auto: 'Auto', chat: 'Chat only', tools: 'Tools on' };
+/** A reply's footer: how it ran, what it used, how fast the first word came. */
+function replyLine(m: Message): string {
+  const n = m.meta?.tools?.length ?? 0;
+  const first = m.meta?.firstWordMs;
+  return [turnModeLabel(m.meta?.mode), n ? `${n} tool${n > 1 ? 's' : ''}` : '', first ? `${(first / 1000).toFixed(1)}s` : ''].filter(Boolean).join(' · ');
+}
 interface TextFile { name: string; text: string }
 
 /** Starters on an empty chat: each one is a question for Gizmo. */
@@ -80,6 +87,7 @@ export function CompanionView() {
   const [openTools, setOpenTools] = useState<Set<string>>(new Set());
   const [err, setErr] = useState('');
   const [spentUsd, setSpent] = useState(0);
+  const [newMode, setNewMode] = useState<ToolMode | ''>('');
   const abort = useRef<AbortController | null>(null);
   const convId = useRef('');
   const viaVoice = useRef(false);
@@ -94,6 +102,8 @@ export function CompanionView() {
   const budget = budgetState(spentUsd, capUsd);
   const showTools = rt.settings.get(K.showTools) !== false;
   const models = chatModels();
+  const savedMode = String(rt.settings.get(K.toolMode) ?? 'auto');
+  const toolMode: ToolMode = conv?.settings.toolMode ?? (newMode || (TOOL_MODES.includes(savedMode as ToolMode) ? savedMode as ToolMode : 'auto'));
 
   const loadList = () => client.listConversations('').then((items) => setList(items.filter((c) => !c.agentId || c.agentId === COMPANION.agentId)), (e: Error) => setErr(e.message));
   const loadSpend = () => usage().then((u) => setSpent(tokenCost(u.today, chatModelId(pickedModel) || 'opus', pricing as { models: Record<string, { input: number; output: number }> })), () => undefined);
@@ -109,7 +119,7 @@ export function CompanionView() {
       if (follow) void attach(c);
     } catch { setConv(null); remember(''); }
   };
-  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); remember(''); setEditing(''); setText(''); setDrawer(false); setTimeout(() => inputRef.current?.focus(), 30); };
+  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); remember(''); setEditing(''); setText(''); setDrawer(false); setNewMode(''); setTimeout(() => inputRef.current?.focus(), 30); };
 
   const settingsForNew = (): ConversationSettings => {
     const persona = String(rt.settings.get(K.persona) ?? '').trim();
@@ -118,6 +128,7 @@ export function CompanionView() {
       ...(chatModelId(pickedModel) ? { model: chatModelId(pickedModel) } : {}),
       ...(persona ? { systemPrompt: persona } : {}),
       tools: rt.settings.get(K.tools) !== false,
+      toolMode,
     };
   };
   const ensureConv = async (): Promise<Conversation> => {
@@ -133,6 +144,7 @@ export function CompanionView() {
       if (viaVoice.current || talk.on || rt.settings.get(K.speakAlways) === true) speakStreaming(rt, reply.text, true);
       if (rt.settings.get(K.notify) !== false && document.visibilityState !== 'visible') rt.toast(`Gizmo answered: ${reply.text.slice(0, 80)}`, 'info', 'Gizmo');
     }
+    if (reply.error && (viaVoice.current || talk.on)) { resetSpeech(); speakStreaming(rt, reply.error, true); } // hands-free: he isn't looking at the screen
     viaVoice.current = false;
     replyDone(rt);
     if (convId.current === cid) {
@@ -220,6 +232,11 @@ export function CompanionView() {
     rt.settings.set(K.model, key);
     if (conv) setConv(await client.patchConversation(conv.id, { settings: { model: chatModelId(key) } }));
   };
+  const cycleMode = async () => {
+    const next = TOOL_MODES[(TOOL_MODES.indexOf(toolMode) + 1) % TOOL_MODES.length] ?? 'auto';
+    setNewMode(next);
+    if (conv) setConv(await client.patchConversation(conv.id, { settings: { toolMode: next } }));
+  };
   const pin = async (c: ConversationSummary) => { await client.patchConversation(c.id, { pinned: !c.pinned }); void loadList(); };
   const rename = async () => {
     if (!renaming?.title.trim()) { setRenaming(null); return; }
@@ -253,6 +270,7 @@ export function CompanionView() {
   const lastAssistant = [...visible].reverse().find((m) => m.role === 'assistant');
   const convModel = conv?.settings.model ?? chatModelId(pickedModel);
   const modelKey = models.find((m) => m.id === convModel)?.key ?? models[0]?.key ?? 'opus';
+  const turnMode = turnModeLabel(live?.mode ?? lastAssistant?.meta?.mode);
   const toolsOf = (m: Message) => (m.meta?.tools ?? []).map((t) => toolCard({ ...t, done: true }));
 
   if (status?.needsSetup) {
@@ -348,6 +366,7 @@ export function CompanionView() {
               {m.role === 'assistant' && <IconButton icon="mic" label="Read aloud" onClick={() => { resetSpeech(); speakStreaming(rt, m.content, true); }} />}
               {m.id === lastAssistant?.id && !live && <IconButton icon="refresh" label="Regenerate" onClick={() => void run({ regenerate: true })} />}
               {m.meta?.model && <span className="fx-muted">{modelName(m.meta.model)}</span>}
+              {m.role === 'assistant' && replyLine(m) && <span className="fx-muted axp-companion__clip">{replyLine(m)}</span>}
             </div>
           </article>
         ))}
@@ -385,6 +404,9 @@ export function CompanionView() {
           <IconButton icon="smartphone" label="Take a photo" onClick={() => photoRef.current?.click()} />
           <input ref={fileRef} type="file" multiple hidden accept="image/*,text/*,.md,.json,.ts,.tsx,.js,.mjs,.py,.kt,.css,.html,.yml,.yaml,.log,.csv" onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
           <input ref={photoRef} type="file" hidden accept="image/*" capture="environment" onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
+          <Button size="sm" icon={(live?.mode ?? lastAssistant?.meta?.mode)?.mode === 'tools' ? 'zap' : 'sparkles'} className="axp-companion__mode" title={`Tools: ${MODE_NAME[toolMode]}${turnMode ? `. This turn: ${turnMode}` : ''}. Tap to change.`} onClick={() => void cycleMode()}>
+            <span className="axp-companion__clip">{toolMode === 'auto' && turnMode ? `Auto · ${turnMode}` : MODE_NAME[toolMode]}</span>
+          </Button>
           <span className="axp-companion__grow" />
           <IconButton icon="mic" label="Push to talk" onClick={ptt} disabled={!!live} />
           <IconButton icon={talk.on ? 'pause' : 'play'} label={talk.on ? 'Leave talk mode' : 'Talk mode (hands-free)'} onClick={toggleTalk} />

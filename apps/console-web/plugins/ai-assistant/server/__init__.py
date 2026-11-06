@@ -43,7 +43,7 @@ if str(_PY) not in sys.path:
 from axf.assistant_host import providers, sessions  # noqa: E402
 from axf.contracts import assistant as contract  # noqa: E402
 
-from . import store, tools  # noqa: E402
+from . import chatmode, store, tools  # noqa: E402
 
 # Host hooks of the shared runtime: what makes this host the console (never a copy of the runtime).
 providers.extra_kinds = store.extra_provider_kinds
@@ -321,20 +321,61 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
         parts.append(f"Instructions for this conversation:\n{st['systemPrompt'].strip()}")
     if memory:
         parts.append(f"Relevant memory (from the agent's persistent memory; use it when it helps, never invent beyond it):\n{memory}")
-    if context and any(context.get(k) for k in ("view", "title", "selection", "note", "extra")):
-        bits = [f"view: {context['view']}" if context.get("view") else "", f"title: {context['title']}" if context.get("title") else ""]
-        # Well-known `extra` keys (assistant@1 ChatContext.extra) are named for the model; other keys are the host's own.
-        bits += [f"{k}: {v}" for k in contract.CHAT_CONTEXT_KEYS for v in [contract.context_extra(context, k)] if v]
-        text = "Console context: " + " · ".join(b for b in bits if b)
-        if context.get("selection"):
-            text += f"\nSelected text:\n\"\"\"\n{str(context['selection'])[:4000]}\n\"\"\""
-        if context.get("note"):
-            text += f"\n{str(context['note'])[:2000]}"
+    text = _context_text(context)
+    if text:
         parts.append(text)
     if agent and agent.get("writeMode"):
         parts.append(_batch_history(conv.get("id", "")))
     parts.append(f"Today is {time.strftime('%A %B %d, %Y')}.")
     return "\n\n".join(p for p in parts if p)
+
+
+def _context_text(context: dict[str, Any] | None) -> str:
+    """What the host says about where the chat is open, for the system prompt."""
+    if not (context and any(context.get(k) for k in ("view", "title", "selection", "note", "extra"))):
+        return ""
+    bits = [f"view: {context['view']}" if context.get("view") else "", f"title: {context['title']}" if context.get("title") else ""]
+    # Well-known `extra` keys (assistant@1 ChatContext.extra) are named for the model; other keys are the host's own.
+    bits += [f"{k}: {v}" for k in contract.CHAT_CONTEXT_KEYS for v in [contract.context_extra(context, k)] if v]
+    text = "Console context: " + " · ".join(b for b in bits if b)
+    if context.get("selection"):
+        text += f"\nSelected text:\n\"\"\"\n{str(context['selection'])[:4000]}\n\"\"\""
+    if context.get("note"):
+        text += f"\n{str(context['note'])[:2000]}"
+    return text
+
+
+def _chat_identity(cfg: dict[str, Any], agent: dict[str, Any] | None) -> str:
+    """Who is talking, in a line or two: the whole of the persona a chat turn gets."""
+    if agent:
+        return agent.get("chatPrompt") or f"You are {agent.get('name')}."
+    persona = store.PERSONAS.get(cfg.get("persona", "professional"), "")
+    return f"You are {cfg.get('assistantName') or 'Amber'}, the AI assistant of the AmberX AXF Dev Console. {persona}".strip()
+
+
+_POLICY_FILE = _PY.parent / "schemas" / "model-policy.json"
+
+
+def _chat_model(prof: dict[str, Any], model: str | None, conf: dict[str, Any]) -> str | None:
+    """A chat turn's model: the policy's default (its fastest allowed) on Claude providers, the chat's own otherwise."""
+    if conf["model"] != "policy" or providers.protocol_of(prof) not in CLAUDE_PROTOCOLS:
+        return model
+    try:
+        p = json.loads(_POLICY_FILE.read_text())
+        return p["ids"][p["default"]]
+    except (OSError, ValueError, KeyError):
+        return model
+
+
+# conversation id -> (read at, agent, memory): a chat turn doesn't read these again within chatMode.cacheSec.
+_chat_cache: dict[str, tuple[float, dict[str, Any] | None, str]] = {}
+
+
+def _cached_chat(cid: str, agent_id: str, ttl: int) -> tuple[dict[str, Any] | None, str] | None:
+    c = _chat_cache.get(f"{cid}:{agent_id}")
+    if c and time.monotonic() - c[0] < ttl:
+        return c[1], c[2]
+    return None
 
 
 def _containers():
@@ -451,9 +492,11 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
         if agent_id and not me.can("assistant.agents"):
             yield _sse("status", {"text": "Your account can't chat as an agent; answering as the assistant."})
             agent_id = ""
+        conf = chatmode.normalize(cfg.get("chatMode"))
+        cached = _cached_chat(cid, agent_id, conf["cacheSec"]) if agent_id and svc and me.admin else None
         if agent_id and svc:
             try:
-                agent = svc.get_agent(agent_id)
+                agent = cached[0] if cached else svc.get_agent(agent_id)
             except Exception:  # noqa: BLE001
                 agent = None
             if not agent:
@@ -470,19 +513,62 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
         groups = dict(cfg.get("tools", {}))
         if not me.admin:
             groups = {g: bool(v) and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
+        context = contract.normalize_chat_context(body.get("context"))
         tool_on = st.get("tools", True) is not False
-        tool_specs = tools.specs(groups) if tool_on else []
-        agent_tools = {t["name"]: t for t in (agent or {}).get("tools", [])} if tool_on else {}
-        tool_specs = [t for t in tool_specs if t["name"] not in agent_tools] + list(agent_tools.values())
-        memory = ""
-        if agent and svc and me.admin:
+        base_specs = tools.specs(groups) if tool_on else []
+
+        def offered(ag: dict[str, Any] | None) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
+            """Every tool this caller may use in this chat, and the agent's own among them."""
+            own = {t["name"]: t for t in (ag or {}).get("tools", [])} if tool_on else {}
+            return [t for t in base_specs if t["name"] not in own] + list(own.values()), own
+
+        all_specs = offered(agent)[0]
+        tool_groups = (agent or {}).get("toolGroups") or (tools.groups_for(all_specs) if not agent else [])
+        route = chatmode.decide(user_text, "chat" if st.get("tools") is False else st.get("toolMode"), conf, images=bool(msgs[-1].get("images")),
+                                groups=tool_groups, names=[t["name"] for t in all_specs])
+
+        def recall() -> str:
+            if not (agent and svc and me.admin):
+                return ""
             try:
-                memory = svc.memory_context(agent_id, user_text) or ""
-                if memory:
-                    yield _sse("status", {"text": "Recalled from agent memory"})
+                return svc.memory_context(agent_id, user_text) or ""
             except Exception:  # noqa: BLE001
-                memory = ""
-        system = _system_prompt(cfg, conv, agent, contract.normalize_chat_context(body.get("context")), tool_specs, memory)
+                return ""
+
+        recalled = False
+
+        def load(r: "chatmode.Route") -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]], str, list[dict[str, Any]]]:
+            """What a route loads: tool specs, the agent's tools among them, the system prompt and the history."""
+            nonlocal agent, cached, recalled
+            if r.mode == "chat":
+                mem = ""
+                if agent and agent_id and me.admin:
+                    mem = cached[1] if cached else recall()
+                    if not cached:
+                        if len(_chat_cache) > 500:
+                            _chat_cache.clear()
+                        _chat_cache[f"{cid}:{agent_id}"] = (time.monotonic(), agent, mem)
+                prompt = chatmode.chat_system(_chat_identity(cfg, agent), "Brett" if me.admin else "the person you're talking to", r,
+                                              voice=contract.context_extra(context, "surface") == "voice", instructions=str(st.get("systemPrompt") or ""),
+                                              memory=mem, context=_context_text(context))
+                return [], {}, prompt, _wire_history(msgs, min(conf["historyMessages"], int(cfg.get("contextMessages") or 40)))
+            if cached:  # tools run on what the agent is now
+                cached = None
+                try:
+                    agent = svc.get_agent(agent_id) or agent
+                except Exception:  # noqa: BLE001
+                    pass
+            specs, own = offered(agent)
+            if r.names is not None:
+                specs = [t for t in specs if t["name"] in r.names]
+                own = {k: v for k, v in own.items() if k in r.names}
+            mem = recall()
+            recalled = bool(mem)
+            return specs, own, _system_prompt(cfg, conv, agent, context, specs, mem), _wire_history(msgs, int(cfg.get("contextMessages") or 40))
+
+        tool_specs, agent_tools, system, wire = load(route)
+        if recalled:
+            yield _sse("status", {"text": "Recalled from agent memory"})
         amodel = (agent or {}).get("model") or {}
         if not me.can("assistant.models"):
             st = {k: v for k, v in st.items() if k not in ("profileId", "model")}  # the default model for this account
@@ -497,7 +583,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             params["thinking"] = bool(st["thinking"])
         params = contract.clamp_user_params(params, me.admin, me.can("assistant.models"))
 
-        yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None})
+        yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None, "mode": route.public()})
 
         staged: list[dict[str, Any]] = []
 
@@ -520,13 +606,14 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 return False, f"Error: {e}"[:50_000]
 
         # 3. model rounds with tools, falling back to the next profile if one fails before producing anything
-        wire = _wire_history(msgs, int(cfg.get("contextMessages") or 40))
         new_msgs: list[dict[str, Any]] = []
         total = {"input": 0, "output": 0}
         tool_log: list[dict[str, Any]] = []
         used_pid, used_model = "", ""
         final_text, thinking, last_round = "", "", ""
         last_error: Exception | None = None
+        first_word: float | None = None
+        guard = chatmode.Guard(route.escalate)
         for pid_try in chain:
             try:
                 pid, prof = store.get_profile(pid_try or None)
@@ -536,17 +623,20 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             if prof.get("enabled") is False:
                 continue
             first = pid_try == chain[0]
-            if st.get("model") and (st.get("profileId") == pid or (not st.get("profileId") and first)):
-                model = st["model"]
-            elif amodel.get("model") and amodel.get("profile") in (None, "", pid):
-                model = amodel["model"]
-            else:
-                model = prof.get("defaultModel")
-            if agent and me.admin and agent.get("buildMode") and providers.protocol_of(prof) != "claude-cli":
+
+            def turn_model() -> str | None:
+                if st.get("model") and (st.get("profileId") == pid or (not st.get("profileId") and first)):
+                    return st["model"]
+                if amodel.get("model") and amodel.get("profile") in (None, "", pid):
+                    return amodel["model"]
+                return prof.get("defaultModel")
+
+            model = _chat_model(prof, turn_model(), conf) if route.mode == "chat" else turn_model()
+            if route.mode == "tools" and agent and me.admin and agent.get("buildMode") and providers.protocol_of(prof) != "claude-cli":
                 yield _sse("status", {"text": f"{agent.get('name', 'This agent')} builds with Edit/Write/Bash only on the Claude Code (subscription) provider; on {prof.get('label') or pid} he has his console tools only."})
             produced = False
             try:
-                rounds = int(cfg.get("maxToolRounds") or 12)
+                rounds = int(cfg.get("maxToolRounds") or 12) + (1 if route.escalate else 0)
                 for rnd in range(rounds):
                     if cancel.is_set():
                         break
@@ -555,9 +645,11 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                     round_text = ""
                     round_thinking: list[dict[str, Any]] = []
                     calls: list[dict[str, Any]] = []
-                    for ev in providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root()),
-                                                    tool_runner=exec_tool, read_files=me.can("assistant.tools"),
-                                                    build=(agent.get("buildMode") if agent and me.admin else None)):
+                    wants_tools = False
+                    stream = providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root()),
+                                                   tool_runner=exec_tool, read_files=me.can("assistant.tools"),
+                                                   build=(agent.get("buildMode") if agent and me.admin and route.mode == "tools" else None), lean=route.lean)
+                    for ev in stream:
                         t = ev["type"]
                         if t == "tool_done":  # a tool the CLI ran through the console's bridge
                             produced = True
@@ -566,9 +658,14 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                             yield _sse("tool", {"phase": "result", "id": ev["id"], "name": ev["name"], "ok": ev["ok"], "preview": ev["result"][:300]})
                             continue
                         if t == "text":
-                            produced = True
-                            round_text += ev["text"]
-                            yield _sse("text", {"text": ev["text"]})
+                            shown, wants_tools = guard.feed(ev["text"])
+                            if shown:
+                                produced = True
+                                first_word = first_word or time.monotonic() - started
+                                round_text += shown
+                                yield _sse("text", {"text": shown})
+                            if wants_tools:
+                                break
                         elif t == "thinking":
                             thinking += ev["text"]
                             if cfg.get("showThinking"):
@@ -583,8 +680,25 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                         elif t == "usage":
                             total["input"] += ev.get("input", 0)
                             total["output"] += ev.get("output", 0)
+                    if wants_tools:
+                        stream.close()  # stops the chat call
+                    else:
+                        tail = guard.flush()
+                        if tail:
+                            produced = True
+                            first_word = first_word or time.monotonic() - started
+                            round_text += tail
+                            yield _sse("text", {"text": tail})
                     final_text += round_text
                     last_round = round_text
+                    if wants_tools:
+                        # The words missed it and the model said so: the same message again, with tools this time.
+                        route = chatmode.tools_route(user_text, tool_groups, [t["name"] for t in all_specs], "the model asked for tools", escalated=True)
+                        tool_specs, agent_tools, system, wire = load(route)
+                        guard = chatmode.Guard(False)
+                        model = turn_model()
+                        yield _sse("status", {"text": f"Loading tools{': ' + ', '.join(route.groups) if route.groups else ''}…", "mode": route.public()})
+                        continue
                     if not calls or cancel.is_set():
                         break
                     tc_list = [{"id": c["id"], "name": c["name"], "arguments": c.get("arguments") or {}} for c in calls]
@@ -642,7 +756,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             else:
                 msgs.append({"id": store.new_id("m"), "role": "tool", "content": nm["content"], "toolCallId": nm["tool_call_id"], "isError": nm["is_error"], "createdAt": store.now_ms()})
         amsg = {"id": store.new_id("m"), "role": "assistant", "content": final_text.strip() or ("(stopped)" if cancel.is_set() else ""), "createdAt": store.now_ms(),
-                "meta": {"profile": used_pid, "model": used_model, "latencyMs": int((time.monotonic() - started) * 1000), "usage": total, "tools": tool_log,
+                "meta": {"profile": used_pid, "model": used_model, "latencyMs": int((time.monotonic() - started) * 1000), "usage": total, "tools": tool_log, "mode": route.public(),
+                         **({"firstWordMs": int(first_word * 1000)} if first_word else {}),
                          "agentId": agent["id"] if agent else "", "agentName": agent.get("name") if agent else "", "stopped": cancel.is_set(),
                          "thinking": thinking[:20_000] if thinking else "", "lastRound": last_round.strip(), **({"batch": batch_id} if batch_id else {})}}
         # A trailing assistant "step" with tool calls and no final text would leave the next turn without a reply: keep the final one always.
@@ -676,7 +791,7 @@ def _auto_title(cid: str, pid: str, user_text: str, reply: str) -> None:
     try:
         _p, prof = store.get_profile(pid)
         out = providers.collect(providers.stream_chat(prof, [{"role": "user", "content": f"Write a 3-6 word title for this conversation. Reply with the title only, no quotes.\n\nUser: {user_text[:800]}\n\nAssistant: {reply[:800]}"}],
-                                                      model=prof.get("defaultModel"), params={"max_tokens": 24, "temperature": 0.2}))
+                                                      system="You write short titles.", model=prof.get("defaultModel"), params={"max_tokens": 24, "temperature": 0.2}, lean=True))
         title = re.sub(r"[\"'`*#]", "", out["text"]).strip().split("\n")[0][:60]
         if title:
             c = store.get_conversation(cid)
@@ -776,7 +891,7 @@ def get_config() -> dict[str, Any]:
 _CONFIG_KEYS = {"userDailyTokens": int, "setupComplete": bool, "assistantName": str, "persona": str, "instructions": str, "defaultProfile": str, "fallback": list,
                 "params": dict, "contextMessages": int, "tools": dict, "maxToolRounds": int, "autoTitle": bool, "showUsage": bool, "keepInterrupted": bool,
                 "showThinking": bool, "redactSecrets": bool, "dailyTokenBudget": int, "agentIntegration": bool, "defaultAgent": str,
-                "suggestions": list, "prompts": list, "sessionHost": str}
+                "suggestions": list, "prompts": list, "sessionHost": str, "chatMode": dict}
 
 
 @router.put("/config")
@@ -804,6 +919,8 @@ def put_config(body: dict[str, Any]) -> dict[str, Any]:
             v = [{"id": str(p.get("id") or store.new_id("p"))[:40], "title": str(p.get("title", ""))[:80], "shortcut": str(p.get("shortcut", ""))[:24], "text": str(p.get("text", ""))[:8000]} for p in v if isinstance(p, dict)][:100]
         if k == "suggestions":
             v = [str(s)[:200] for s in v][:12]
+        if k == "chatMode":
+            v = chatmode.normalize({**cfg.get("chatMode", {}), **v})
         if k == "sessionHost" and _hosts().get(v) is None:
             raise HTTPException(400, "unknown session host")
         if k == "fallback":

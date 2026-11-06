@@ -116,6 +116,7 @@ export const library: AxfWebLibrary = {
       { key: K.rate, label: 'Speech speed', kind: 'slider', default: 1, min: 0.5, max: 2, step: 0.05 },
     ] },
     { id: 'companion.tools', label: 'Tools, connectors and notifications', icon: 'zap', tab: 'companion', order: 20, settings: [
+      { key: K.toolMode, label: 'When Gizmo loads tools', kind: 'choice', default: 'auto', options: [{ value: 'auto', label: 'Auto: only when a message needs them' }, { value: 'chat', label: 'Chat: never, just talk' }, { value: 'tools', label: 'Tools: every turn (slow)' }], description: 'Auto answers plain talk in about a second and loads only the tools a message needs, then drops back. The chip above the message box changes it for one chat.' },
       { key: K.tools, label: 'Tools and connectors in new chats', kind: 'toggle', default: true, description: 'axHub services (GitHub, VPS, Hostinger, the console, AmberX…), the repo and the crew, with the same approvals and veto countdowns as everywhere else.' },
       { key: K.showTools, label: 'Show tool calls as cards', kind: 'toggle', default: true },
       { key: K.notify, label: 'Tell me when a reply finishes while I am elsewhere', kind: 'toggle', default: true },
