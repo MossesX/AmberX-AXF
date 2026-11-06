@@ -457,6 +457,18 @@
    "from": "detail",
    "addenda": []
   },
+  "auto-switch-claude-account-when-the-active-one-r": {
+   "said": "And yeah, I make it automatically do it through the through the um, app hub though and through the console. You do not use AI to fucking use this remote to change accounts. That, it, that the console has to recognize there's no active connection and then connect to the next one without AI.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "axhub-agent-host": {
    "said": "agents (Build Pilot's pilot-assembler, Mosses and every agent-definition@1 agent) and AI assistant live sessions should run on axHub, not inside each app. Build Pilot, the Dev Console and the phone apps become clients.",
    "at": "2026-10-20",
@@ -1676,6 +1688,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "partial-land-ship-completed-steps-of-a-build": {
+   "said": "I want to be able to select stuff that's completed, like completed steps from within a build. Just take the completed things, transfer them to their own push request, merge them on their own, and deploy immediately so I can take partially finished builds, what's completed out of them, and deploy them without the whole thing being built, unless it needs it for dependencies.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "pass-all": {

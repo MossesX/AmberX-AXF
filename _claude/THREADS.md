@@ -705,111 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 17:07 UTC · `live-sessions-plugin` s5 done (current) · orchestrator
-- 2026-11-04 17:16 UTC · `live-sessions-plugin` s5 done (current) · foreign-write
-- 2026-11-04 17:16 UTC · `app-voice-commands` s6 done, → built (current) · orchestrator
-- 2026-11-04 17:16 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 16:42 UTC · `settings-placement-everywhere` s1 done, → running (current) · orchestrator
-- 2026-11-04 16:42 UTC · `settings-placement-everywhere` s1 done, s2 done (current) · orchestrator
-- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done (current) · orchestrator
-- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done (current) · orchestrator
-- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · orchestrator
-- 2026-11-04 16:47 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
-- 2026-11-04 16:47 UTC · `tab-group-assets` note (current) · orchestrator
-- 2026-11-04 16:47 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · orchestrator
-- 2026-11-04 16:55 UTC · `live-sessions-plugin` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 16:55 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, PR #329 (current) · builds-live
-- 2026-11-04 16:55 UTC · `plugin-settings-placement` branch claude/settings-placement-everywhere, PR #329 (current) · builds-live
-- 2026-11-04 16:55 UTC · `plugin-settings-placement` note (current) · orchestrator
-- 2026-11-04 17:17 UTC · `app-voice-commands` s6 done, → complete, note (current) · foreign-write
-- 2026-11-04 17:17 UTC · `settings-placement-everywhere` note (current) · foreign-write
-- 2026-11-04 17:17 UTC · `live-sessions-plugin` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done (current) · orchestrator
-- 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done, note (current) · orchestrator
-- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → built (current) · orchestrator
-- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s19-18 done, s20-19 done, s21-20 done, s22-21 done, s23-22 done, s24-23 done, → complete, note (current) · foreign-write
-- 2026-11-04 17:19 UTC · `live-sessions-plugin` s6 done, → complete (current) · orchestrator
-- 2026-11-04 17:19 UTC · `live-sessions-plugin` → built, branch claude/live-sessions-plugin, PR #331 (current) · builds-live
-- 2026-11-04 17:19 UTC · `live-sessions-plugin` note (current) · orchestrator
-- 2026-11-04 17:26 UTC · `urgent-console-perf` → pending, note (urgent) · reconciler
-- 2026-11-04 17:31 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 17:31 UTC · `land-round-2` merged, note (current) · reconciler
-- 2026-11-04 17:34 UTC · `land-merge-queue-first` added (6 steps) (urgent) · orchestrator
-- 2026-11-04 17:39 UTC · `live-sessions-plugin` → complete, note (current) · builds-live
-- 2026-11-04 17:42 UTC · `live-sessions-plugin` note (current) · orchestrator
-- 2026-11-04 17:52 UTC · `live-sessions-plugin` note (current) · foreign-write
-- 2026-11-04 17:53 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
-- 2026-11-04 17:52 UTC · `land-merge-queue-first` → running (urgent) · orchestrator
-- 2026-11-04 17:52 UTC · `land-merge-queue-first` branch claude/merge-queue, PR #320 (urgent) · builds-live
-- 2026-11-04 17:53 UTC · `model-thinking-audit` added (8 steps) (current) · orchestrator
-- 2026-11-04 17:53 UTC · `model-thinking-audit` → running (current) · orchestrator
-- 2026-11-04 17:53 UTC · `model-thinking-audit` branch claude/model-thinking-audit (current) · builds-live
-- 2026-11-04 17:55 UTC · `live-sessions-plugin` note (current) · foreign-write
-- 2026-11-04 17:55 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
-- 2026-11-04 18:09 UTC · `model-thinking-audit` s1 done (current) · orchestrator
-- 2026-11-04 18:09 UTC · `model-thinking-audit` s2 done (current) · orchestrator
-- 2026-11-04 18:09 UTC · `model-thinking-audit` s3 done (current) · orchestrator
-- 2026-11-04 18:20 UTC · `model-thinking-audit` s4 done (current) · foreign-write
-- 2026-11-04 18:20 UTC · `model-thinking-audit` s4 done (current) · orchestrator
-- 2026-11-04 18:24 UTC · `model-thinking-audit` s1 done, s2 done, s3 done, s4 done (current) · foreign-write
-- 2026-11-04 18:24 UTC · `build-todo-sync` added (7 steps) (current) · build-todo-sync (Snap Sully)
-- 2026-11-04 18:24 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
-- 2026-11-04 18:30 UTC · `build-todo-sync` branch claude/build-todo-sync, note (current) · reconciler
-- 2026-11-04 18:33 UTC · `build-todo-sync` branch claude/brett-todo-sync, PR #333 (current) · builds-live
-- 2026-11-04 18:37 UTC · `build-todo-sync` s6 done (current) · build-todo-sync (Snap Sully)
-- 2026-11-04 18:37 UTC · `build-todo-sync` note (current) · build-todo-sync (Snap Sully)
-- 2026-11-04 18:37 UTC · `build-todo-sync` s6 done, note (current) · foreign-write
-- 2026-11-04 18:41 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
-- 2026-11-04 18:41 UTC · `model-thinking-audit` s5 done (current) · orchestrator
-- 2026-11-04 18:41 UTC · `model-thinking-audit` s6 done (current) · orchestrator
-- 2026-11-04 18:41 UTC · `model-thinking-audit` s7 done (current) · orchestrator
-- 2026-11-04 18:42 UTC · `fable-review-nov3` note (current) · orchestrator
-- 2026-11-04 18:45 UTC · `fable-review-nov3` note (current) · foreign-write
-- 2026-11-04 18:45 UTC · `model-thinking-audit` s5 done, s6 done, s7 done (current) · foreign-write
-- 2026-11-04 18:45 UTC · `handoff-2` added (11 steps) (current) · orchestrator
-- 2026-11-04 18:45 UTC · `handoff-2` → running (current) · orchestrator
-- 2026-11-04 18:55 UTC · `handoff-2` added (11 steps) (current) · foreign-write
-- 2026-11-04 19:00 UTC · `build-todo-sync` → pending, note (current) · reconciler
-- 2026-11-04 19:00 UTC · `build-todo-sync` note (current) · foreign-write
-- 2026-11-04 19:01 UTC · `handoff-2` s1 done (current) · orchestrator
-- 2026-11-04 19:01 UTC · `handoff-2` s2 done (current) · orchestrator
-- 2026-11-04 19:02 UTC · `build-todo-sync` note (current) · foreign-write
-- 2026-11-04 19:02 UTC · `handoff-2` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 19:03 UTC · `model-thinking-audit` PR #334 (current) · builds-live
-- 2026-11-04 19:03 UTC · `model-thinking-audit` s8 done, → built (current) · orchestrator
-- 2026-11-04 19:03 UTC · `model-thinking-audit` note (current) · orchestrator
-- 2026-11-04 19:08 UTC · `amberx-live-audio` added (6 steps) (angel) · orchestrator
-- 2026-11-04 19:14 UTC · `amberx-live-audio` s1 done, → running (angel) · orchestrator
-- 2026-11-04 19:14 UTC · `amberx-live-audio` s2 done (angel) · orchestrator
-- 2026-11-04 19:24 UTC · `amberx-live-audio` s3 done (angel) · orchestrator
-- 2026-11-04 19:24 UTC · `amberx-live-audio` s4 done (angel) · orchestrator
-- 2026-11-04 19:26 UTC · `handoff-2` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 19:26 UTC · `amberx-live-audio` s5 done (angel) · orchestrator
-- 2026-11-04 19:27 UTC · `amberx-live-audio` s6 done, → complete (angel) · orchestrator
-- 2026-11-04 19:27 UTC · `amberx-live-audio` → built (angel) · orchestrator
-- 2026-11-04 19:28 UTC · `amberx-live-audio` branch claude/amberx-live-audio, PR #335 (angel) · builds-live
-- 2026-11-04 19:28 UTC · `amberx-live-audio` note (angel) · orchestrator
-- 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · foreign-write
-- 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · orchestrator
-- 2026-11-04 19:35 UTC · `fable-packager` s1 done, → running (current) · orchestrator
-- 2026-11-04 19:36 UTC · `fable-packager` s2 done (current) · orchestrator
-- 2026-11-04 19:36 UTC · `fable-packager` branch claude/fable-packager (current) · builds-live
-- 2026-11-04 19:36 UTC · `fable-packager` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 19:45 UTC · `handoff-2` s6 done, s7 done, s8 done, s9 done (current) · foreign-write
-- 2026-11-04 19:45 UTC · `fable-packager` s3 done (current) · orchestrator
-- 2026-11-04 19:45 UTC · `fable-packager` s4 done (current) · orchestrator
-- 2026-11-04 19:49 UTC · `handoff-2` note (current) · orchestrator
-- 2026-11-04 19:51 UTC · `fable-packager` PR #336 (current) · builds-live
-- 2026-11-04 19:51 UTC · `fable-packager` s5 done, → built (current) · orchestrator
-- 2026-11-04 19:52 UTC · `fable-packager` s5 done, → complete (current) · foreign-write
-- 2026-11-04 19:52 UTC · `merge-queue` → complete, merged, note (current) · reconciler
-- 2026-11-04 19:52 UTC · `land-merge-queue-first` merged, note (urgent) · reconciler
-- 2026-11-04 19:55 UTC · `handoff-2` s10 done (current) · foreign-write
-- 2026-11-04 19:55 UTC · `readme-rule-every-build` added (3 steps) (main-framework) · orchestrator
-- 2026-11-04 19:56 UTC · `readme-rule-every-build` s1 done, → running (main-framework) · orchestrator
-- 2026-11-04 19:56 UTC · `readme-rule-every-build` s2 done (main-framework) · orchestrator
-- 2026-11-04 19:56 UTC · `readme-rule-every-build` s3 done, → complete (main-framework) · orchestrator
 - 2026-11-04 19:56 UTC · `readme-rule-every-build` → built, PR #337 (main-framework) · builds-live
 - 2026-11-04 19:57 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
 - 2026-11-04 19:59 UTC · `handoff-2` s11 done, → complete, note (current) · foreign-write
@@ -1105,6 +1000,111 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 12:30 UTC · `console-approvals-in-place` s2 done (current) · orchestrator
 - 2026-11-06 12:30 UTC · `console-approvals-in-place` s3 done (current) · orchestrator
 - 2026-11-06 12:30 UTC · `console-approvals-in-place` s4 done (current) · orchestrator
+- 2026-11-06 02:27 UTC · `amberx-slim-down-voice-queue` added (0 steps) (current) · pending
+- 2026-11-06 02:28 UTC · `amberx-slim-down-voice-queue` note (current) · pending
+- 2026-11-06 02:29 UTC · `amberx-slim-down-voice-queue` note (current) · pending
+- 2026-11-06 02:30 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · pending
+- 2026-11-06 02:30 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:31 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:31 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:33 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:34 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:38 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:38 UTC · `planner-select-items-and-build-them` note (current) · pending
+- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
+- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
+- 2026-11-06 02:40 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
+- 2026-11-06 02:41 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
+- 2026-11-06 03:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 03:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 03:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 03:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 03:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 03:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 04:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 04:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 04:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 04:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 04:33 UTC · `orch-step-click` s3 done, → complete (refactor) · builds-page
+- 2026-11-06 04:33 UTC · `orch-step-click` s3 undone, → running (refactor) · builds-page
+- 2026-11-06 04:39 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 04:47 UTC · `auto-switch-claude-account-when-the-active-one-r` added (0 steps) (current) · pending
+- 2026-11-06 04:48 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 05:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 05:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 05:17 UTC · `amberx-slim-down-voice-queue` note (current) · foreign-write
+- 2026-11-06 05:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 05:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 05:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 06:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 06:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 06:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 06:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 06:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 06:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 07:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 07:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 07:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 07:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 07:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 07:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 08:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 08:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 08:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 08:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 08:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 08:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 09:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 09:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 09:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 09:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 09:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 09:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 10:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 10:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 10:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 10:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 10:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 10:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 11:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 11:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 11:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 11:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 11:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 11:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 12:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 12:07 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 12:15 UTC · `amberx-slim-down-voice-queue` note (current) · foreign-write
+- 2026-11-06 12:17 UTC · `console-approvals-in-place` added (5 steps) (current) · foreign-write
+- 2026-11-06 12:27 UTC · `amberx-slim-down-voice-queue` → running (current) · claude-voice
+- 2026-11-06 13:00 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 13:05 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` added (5 steps) (current) · Amber (claude.ai voice)
+- 2026-11-06 13:08 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` added (3 steps) (current) · Amber (claude.ai voice)
+- 2026-11-06 13:10 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 13:10 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` added (2 steps) (current) · Amber (claude.ai voice)
+- 2026-11-06 13:17 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 13:30 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 13:40 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 13:50 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 14:00 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 14:10 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 14:10 UTC · `token-usage-log-accounts-plan-studio-control` added (31 steps) (current) · Amber
+- 2026-11-06 14:10 UTC · `token-usage-log-accounts-plan-studio-control` → running (current) · Amber
+- 2026-11-06 14:13 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` added (55 steps) (current) · Amber
+- 2026-11-06 14:13 UTC · `token-usage-log-accounts-plan-studio-control` → archived (current) · Amber
+- 2026-11-06 14:16 UTC · `headless-progress-file-lean-claude-md-chain` added (8 steps) (current) · mcp
+- 2026-11-06 14:19 UTC · `headless-session-efficiency-shared-chain-control` added (16 steps) (current) · mcp
+- 2026-11-06 14:20 UTC · `console-approvals-in-place` → pending, note (current) · reconciler
+- 2026-11-06 14:24 UTC · `headless-progress-file-lean-claude-md-chain` added (8 steps) (current) · orchestrator
+- 2026-11-06 14:24 UTC · `headless-session-efficiency-shared-chain-control` added (16 steps) (current) · orchestrator
+- 2026-11-06 14:24 UTC · `headless-progress-file-lean-claude-md-chain` → running (current) · orchestrator
+- 2026-11-06 14:25 UTC · `headless-progress-file-lean-claude-md-chain` branch claude/headless-progress-lean-chain (current) · builds-live
 
 ## Token passes (log)
 
