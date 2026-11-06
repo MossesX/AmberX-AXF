@@ -175,7 +175,7 @@ function QuickOpen({ close }: { close: () => void }) {
         {hits.map((h) => (
           // a menu-style row (the framework's fx-menu__item: hover and focus from the engines), laid out as label + id
           <button key={h.id} type="button" className="fx-menu__item axp-ui-shortcuts__hit" onClick={() => open(h)} data-help="ui-hit" role="listitem" title={h.id}>
-            <span className="axp-ui-shortcuts__hit-text"><span>{h.label}</span><span className="fx-muted">{UI_KIND_LABELS[h.kind] ?? h.kind}{h.owner && h.owner !== 'app' ? ` · ${h.owner.replace(/^(plugin|library):/, '')}` : ''}{h.app && h.app !== APP ? ` · ${h.app}` : ''}</span></span>
+            <span className="axp-ui-shortcuts__hit-text"><strong>{h.label}</strong><span className="fx-muted"> · {UI_KIND_LABELS[h.kind] ?? h.kind}{h.owner && h.owner !== 'app' ? ` · ${h.owner.replace(/^(plugin|library):/, '').replace(/^ai\.amberx\.axf\.console\./, '')}` : ''}{h.app && h.app !== APP ? ` · ${h.app}` : ''}</span></span>
             <Chip>{h.id}</Chip>
           </button>
         ))}

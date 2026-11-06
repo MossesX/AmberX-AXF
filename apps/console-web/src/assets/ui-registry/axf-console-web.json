@@ -2298,7 +2298,7 @@
       {
         "id": "button:ui-shortcuts/ui-hit",
         "kind": "button",
-        "label": "` : ''} ` : ''}",
+        "label": "· ` : ''} ` : ''}",
         "open": {
           "via": "element",
           "selector": "[data-axf-ui=\"button:ui-shortcuts/ui-hit\"], [data-help=\"ui-hit\"]",

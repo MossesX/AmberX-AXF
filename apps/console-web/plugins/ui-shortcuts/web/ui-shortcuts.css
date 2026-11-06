@@ -5,8 +5,7 @@
 .axp-ui-shortcuts__kinds { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); }
 .axp-ui-shortcuts__hits { display: grid; gap: calc(var(--fx-space) / 2); max-height: 50vh; overflow: auto; }
 .axp-ui-shortcuts__hit { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--fx-dens-gap-xl); text-align: left; width: 100%; }
-.axp-ui-shortcuts__hit-text { display: grid; gap: calc(var(--fx-space) / 4); min-width: 0; }
-.axp-ui-shortcuts__hit-text > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-ui-shortcuts__hit-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-ui-shortcuts__rows { display: grid; gap: calc(var(--fx-space) / 2); }
 .axp-ui-shortcuts__row { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: var(--fx-dens-gap-xl); }
 .axp-ui-shortcuts__row-text { display: grid; gap: calc(var(--fx-space) / 4); min-width: 0; }
