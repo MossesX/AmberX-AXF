@@ -51,7 +51,7 @@ r3 had the chip and settings written but not tested. These were wrong:
 
 - `apps/console-web/plugins/ai-assistant/test.py`: 203 passed, six new.
 - `framework/python/axf/contracts/test.py`: 9 passed. `assistant_host/test.py`: 58 passed. `check-web-client.mts`: 616 passed.
-- `tsc --noEmit` on console and AmberX; axHub web and Molly were not type-checked here (no node_modules in this worktree).
+- `tsc --noEmit` on console, AmberX and axHub web; Molly was not type-checked here (no node_modules in this worktree).
 - Theme, controls, toolbars, chrome, help coverage, plugin lifecycle, plugins, tracker, project validation, model policy, shared assets: pass with CI data settings.
 - The full CI workflow runs on the PR. `theme-swap` and the Android build were not run locally.
 
