@@ -898,6 +898,19 @@ try:
 except prov.ProviderError as e:
     _e = str(e)
 check(mod._NO_CREDIT.search(_e) is not None, "limit: the credit check recognises it, so the systems check can switch provider")
+# A host with its own default (Gizmo's setting) sends it per turn; a chat with no mode of its own follows it.
+_c3 = c.post(f"{P}/conversations", json={"settings": {"agentId": "giz", "profileId": _cli2}}).json()["conversation"]
+ev = turn(_c3["id"], content="check the queue", toolMode="chat")
+_k = _calls()
+check(next(d for e, d in ev if e == "start")["mode"]["mode"] == "chat" and "--mcp-config" not in _k[0]["argv"], "turn toolMode: the host's default wins for that turn")
+check("toolMode" not in c.get(f"{P}/conversations/{_c3['id']}").json()["conversation"]["settings"], "turn toolMode: never written to the chat")
+ev = turn(_c3["id"], content="check the queue", toolMode="nonsense")
+_calls()
+check(next(d for e, d in ev if e == "start")["mode"]["mode"] == "tools", "turn toolMode: a bad value falls back to the default")
+c.patch(f"{P}/conversations/{_c3['id']}", json={"settings": {"toolMode": "chat"}})
+check("toolMode" not in c.patch(f"{P}/conversations/{_c3['id']}", json={"settings": {"toolMode": ""}}).json()["conversation"]["settings"], "per-chat mode: empty goes back to the default")
+check(cm.normalize({"historyMessages": "lots", "cacheSec": None}) == {**cm.DEFAULTS}, "chat mode: a broken saved number falls back, a chat never breaks on it")
+check(c.get(f"{P}/status").json()["defaultToolMode"] == "auto", "status: says what a chat with no mode does")
 check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessages": 8}}).json()["chatMode"]["default"] == "chat" and c.get(f"{P}/config").json()["chatMode"]["historyMessages"] == 8, "chat mode settings save")
 c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
 plugin_services.withdraw("fake-agent-manager")

@@ -508,7 +508,7 @@
     "src/axf/assets/uac-policy/strict-enterprise.json": "307b10d413f7ccb3",
     "src/axf/core/agent-directory.ts": "40b52b963a42c9bb",
     "src/axf/core/agents.ts": "8c0f9d3bed06ed90",
-    "src/axf/core/assistant.ts": "b5b8a3c3e7be5331",
+    "src/axf/core/assistant.ts": "8f9a504189fa1db5",
     "src/axf/core/build-origin.d.mts": "06f24a33582e3ff6",
     "src/axf/core/build-origin.mjs": "f2923181df39063a",
     "src/axf/core/build-priority.d.mts": "f4864780baaea162",

@@ -465,7 +465,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           {(() => {
             const shown = live?.mode ?? [...(conv?.messages ?? [])].reverse().find((m) => m.role === 'assistant' && !m.meta?.step)?.meta?.mode;
             const turn = turnModeLabel(shown);
-            const mode = settings.toolMode ?? 'auto';
+            const mode = settings.toolMode || status?.defaultToolMode || 'auto';
             return (
             <div className="axp-ai-assistant__chips">
               <button type="button" className="fx-chip" title={`Tools: ${MODE_NAME[mode]}${turn ? `. This turn: ${turn}` : ''}. Click to change.`}

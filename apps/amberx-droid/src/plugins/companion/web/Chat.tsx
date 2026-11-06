@@ -103,7 +103,7 @@ export function CompanionView() {
   const showTools = rt.settings.get(K.showTools) !== false;
   const models = chatModels();
   const savedMode = String(rt.settings.get(K.toolMode) ?? 'auto');
-  const toolMode: ToolMode = conv?.settings.toolMode ?? (newMode || (TOOL_MODES.includes(savedMode as ToolMode) ? savedMode as ToolMode : 'auto'));
+  const toolMode: ToolMode = conv?.settings.toolMode || (newMode || (TOOL_MODES.includes(savedMode as ToolMode) ? savedMode as ToolMode : 'auto'));
 
   const loadList = () => client.listConversations('').then((items) => setList(items.filter((c) => !c.agentId || c.agentId === COMPANION.agentId)), (e: Error) => setErr(e.message));
   const loadSpend = () => usage().then((u) => setSpent(tokenCost(u.today, chatModelId(pickedModel) || 'opus', pricing as { models: Record<string, { input: number; output: number }> })), () => undefined);
@@ -128,7 +128,7 @@ export function CompanionView() {
       ...(chatModelId(pickedModel) ? { model: chatModelId(pickedModel) } : {}),
       ...(persona ? { systemPrompt: persona } : {}),
       tools: rt.settings.get(K.tools) !== false,
-      toolMode,
+      ...(newMode ? { toolMode: newMode } : {}), // otherwise the chat follows the setting, even after it changes
     };
   };
   const ensureConv = async (): Promise<Conversation> => {
@@ -138,13 +138,18 @@ export function CompanionView() {
     return c;
   };
 
+  /** Hands-free he isn't looking at the screen: an error is said out loud, or he'd sit there waiting. */
+  const sayError = (message: string) => { if (viaVoice.current || talk.on) { resetSpeech(); speakStreaming(rt, message, true); } };
+  /** A turn that never started: say why, and let talk mode listen again. */
+  const refuse = (message: string) => { setErr(message); sayError(message); viaVoice.current = false; replyDone(rt); };
+
   const finish = async (cid: string, reply: LiveReply) => {
     abort.current = null;
     if (!reply.error && reply.text.trim()) {
       if (viaVoice.current || talk.on || rt.settings.get(K.speakAlways) === true) speakStreaming(rt, reply.text, true);
       if (rt.settings.get(K.notify) !== false && document.visibilityState !== 'visible') rt.toast(`Gizmo answered: ${reply.text.slice(0, 80)}`, 'info', 'Gizmo');
     }
-    if (reply.error && (viaVoice.current || talk.on)) { resetSpeech(); speakStreaming(rt, reply.error, true); } // hands-free: he isn't looking at the screen
+    if (reply.error) sayError(reply.error);
     viaVoice.current = false;
     replyDone(rt);
     if (convId.current === cid) {
@@ -158,10 +163,10 @@ export function CompanionView() {
 
   const run = async (body: Record<string, unknown>, optimistic?: Message) => {
     if (live) return;
-    if (budget.level === 'over') { setErr(`Today's cap (${money(capUsd)}) is reached. Raise it in Settings → Plugins → Gizmo.`); return; }
+    if (budget.level === 'over') { refuse(`Today's cap (${money(capUsd)}) is reached. Raise it in Settings → Plugins → Gizmo.`); return; }
     setErr('');
     let c: Conversation;
-    try { c = await ensureConv(); } catch (e) { setErr((e as Error).message); return; }
+    try { c = await ensureConv(); } catch (e) { refuse((e as Error).message); return; }
     if (optimistic) {
       const msgs = body.editMessageId ? c.messages.slice(0, c.messages.findIndex((m) => m.id === body.editMessageId)) : c.messages;
       setConv({ ...c, messages: [...msgs, optimistic] });
@@ -177,7 +182,7 @@ export function CompanionView() {
     const ac = new AbortController();
     abort.current = ac;
     try {
-      await watchReply(client, c.id, reply, (r) => { setLive(snapshot(r)); if (speakLive) speakStreaming(rt, r.text, false); }, (on, sig) => client.send(c.id, body, on, sig), ac.signal);
+      await watchReply(client, c.id, reply, (r) => { setLive(snapshot(r)); if (speakLive) speakStreaming(rt, r.text, false); }, (on, sig) => client.send(c.id, { ...body, toolMode }, on, sig), ac.signal);
     } catch (e) { reply.error = (e as Error).message; } finally { await finish(c.id, reply); }
   };
 
@@ -234,8 +239,8 @@ export function CompanionView() {
   };
   const cycleMode = async () => {
     const next = TOOL_MODES[(TOOL_MODES.indexOf(toolMode) + 1) % TOOL_MODES.length] ?? 'auto';
-    setNewMode(next);
-    if (conv) setConv(await client.patchConversation(conv.id, { settings: { toolMode: next } }));
+    if (!conv) { setNewMode(next); return; }
+    try { setConv(await client.patchConversation(conv.id, { settings: { toolMode: next } })); } catch (e) { setErr((e as Error).message); }
   };
   const pin = async (c: ConversationSummary) => { await client.patchConversation(c.id, { pinned: !c.pinned }); void loadList(); };
   const rename = async () => {

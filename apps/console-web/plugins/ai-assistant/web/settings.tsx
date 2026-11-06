@@ -87,7 +87,7 @@ export function ChatSettingsDialog({ settings, onChange, onClose, onOpenFull }: 
         </Field>
         <Toggle label="Tools" hint="repo reading, time, calculator, web fetch, and the agent's tools" checked={settings.tools !== false} onChange={(v) => void onChange({ tools: v })} />
         <Field label="When this chat loads tools" hint="Auto answers plain talk fast and loads only what a message needs. Tools runs the full session every turn.">
-          <select className="fx-input" value={settings.toolMode ?? ''} onChange={(e) => void onChange({ toolMode: (e.target.value || undefined) as ConvSettings['toolMode'] })}>
+          <select className="fx-input" value={settings.toolMode ?? ''} onChange={(e) => void onChange({ toolMode: e.target.value as ConvSettings['toolMode'] })}>
             <option value="">The default</option><option value="auto">Auto</option><option value="chat">Chat only</option><option value="tools">Tools every turn</option>
           </select>
         </Field>
@@ -405,6 +405,7 @@ export function BehaviorPanel() {
   const v = { ...cfg, ...d, params: { ...cfg.params, ...(d.params ?? {}) }, tools: { ...cfg.tools, ...(d.tools ?? {}) }, chatMode: { ...cfg.chatMode, ...(d.chatMode ?? {}) } };
   const set = (p: Partial<Config>) => { setD({ ...d, ...p }); setSaved(false); };
   const setChat = (p: Partial<Config['chatMode']>) => set({ chatMode: { ...v.chatMode, ...p } });
+  // Taken when the box loses focus: parsed on every key, a comma would vanish as soon as it was typed.
   const words = (t: string) => t.split(',').map((w) => w.trim()).filter(Boolean);
   return (
     <div className="fx-stack">
@@ -432,8 +433,8 @@ export function BehaviorPanel() {
         <Field label="Messages of history in a chat turn"><input className="fx-input" type="number" min={2} max={200} value={v.chatMode.historyMessages} onChange={(e) => setChat({ historyMessages: Number(e.target.value) })} /></Field>
         <Field label="Keep agent and memory for (seconds)" hint="0 = read them every turn"><input className="fx-input" type="number" min={0} value={v.chatMode.cacheSec} onChange={(e) => setChat({ cacheSec: Number(e.target.value) })} /></Field>
       </div>
-      <Field label="Action words" hint="Tools load when a sentence starts with one, comma separated"><textarea className="fx-input" rows={3} value={v.chatMode.actionWords.join(', ')} onChange={(e) => setChat({ actionWords: words(e.target.value) })} /></Field>
-      <Field label="Live-data words" hint="Tools load when one appears anywhere in a message, comma separated"><textarea className="fx-input" rows={3} value={v.chatMode.liveWords.join(', ')} onChange={(e) => setChat({ liveWords: words(e.target.value) })} /></Field>
+      <Field label="Action words" hint="Tools load when a sentence starts with one, comma separated"><textarea className="fx-input" rows={3} key={cfg.chatMode.actionWords.join()} defaultValue={v.chatMode.actionWords.join(', ')} onBlur={(e) => setChat({ actionWords: words(e.target.value) })} /></Field>
+      <Field label="Live-data words" hint="Tools load when one appears anywhere in a message, comma separated"><textarea className="fx-input" rows={3} key={cfg.chatMode.liveWords.join()} defaultValue={v.chatMode.liveWords.join(', ')} onBlur={(e) => setChat({ liveWords: words(e.target.value) })} /></Field>
       <Toggle label="Let the model ask for tools" hint="A plain-looking message that really needs tools is run again with them, instead of a guess" checked={v.chatMode.escalate} onChange={(c) => setChat({ escalate: c })} />
       <span className="fx-small fx-muted">Behaviour</span>
       <Toggle label="Extended thinking by default" hint="Anthropic models" checked={v.params.thinking} onChange={(c) => set({ params: { ...v.params, thinking: c } })} />

@@ -409,11 +409,17 @@ export async function readStreamEvents(body: ReadableStream<Uint8Array>, onEvent
 
 // ---------------------------------------------------------------- client (what an app's chat UI talks to)
 
-export interface TurnInput { content?: string; images?: ChatImage[]; context?: ChatContext; editMessageId?: string; regenerate?: boolean }
+export interface TurnInput {
+  content?: string; images?: ChatImage[]; context?: ChatContext; editMessageId?: string; regenerate?: boolean;
+  /** Optional, this turn only: for a host with its own default, which the server can't know. Unset = the chat's mode, then the server default. */
+  toolMode?: ToolMode;
+}
 export interface AssistantStatus {
   assistantName: string; setupComplete: boolean; needsSetup: boolean; defaultProfile: ProviderProfile | null; profiles: number; ready: number;
   cliInstalled: boolean; integrations: { agents: boolean; agentCount: number }; agents: AgentRef[]; defaultAgent: string; tokensToday: number; budget: number;
   suggestions: string[]; prompts: { id: string; title: string; shortcut: string; text: string }[]; showUsage: boolean; me?: { name: string; role: string; perms: string[] };
+  /** what a chat with no `toolMode` of its own does on this host */
+  defaultToolMode?: ToolMode;
 }
 
 /**

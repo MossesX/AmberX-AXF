@@ -47,6 +47,13 @@ _LEAD = re.compile(r"^(?:hey|hi|yo|ok|okay|alright|so|and|now|then|please|just|g
 _SENTENCE = re.compile(r"[.!?\n]+")
 
 
+def _bounded(v: Any, fallback: int, low: int, high: int) -> int:
+    try:
+        return max(low, min(int(v), high))
+    except (TypeError, ValueError):
+        return fallback
+
+
 def normalize(raw: Any) -> dict[str, Any]:
     """A config value with every key present and in range (a broken save never breaks a chat)."""
     r = raw if isinstance(raw, dict) else {}
@@ -56,8 +63,8 @@ def normalize(raw: Any) -> dict[str, Any]:
     for k in ("actionWords", "liveWords"):
         out[k] = ([str(w).strip().lower()[:60] for w in out[k] if str(w).strip()] if isinstance(out[k], list) else list(DEFAULTS[k]))[:300]
     out["escalate"] = bool(out["escalate"])
-    out["historyMessages"] = max(2, min(int(out["historyMessages"] or 16), 200))
-    out["cacheSec"] = max(0, min(int(out["cacheSec"] or 0), 86_400))
+    out["historyMessages"] = _bounded(out["historyMessages"], DEFAULTS["historyMessages"], 2, 200)
+    out["cacheSec"] = _bounded(out["cacheSec"], DEFAULTS["cacheSec"], 0, 86_400)
     return out
 
 

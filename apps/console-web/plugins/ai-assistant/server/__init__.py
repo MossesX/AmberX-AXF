@@ -524,7 +524,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
 
         all_specs = offered(agent)[0]
         tool_groups = (agent or {}).get("toolGroups") or (tools.groups_for(all_specs) if not agent else [])
-        route = chatmode.decide(user_text, "chat" if st.get("tools") is False else st.get("toolMode"), conf, images=bool(msgs[-1].get("images")),
+        # A host with its own default says so per turn (body.toolMode); the chat's own choice is what it sends then.
+        route = chatmode.decide(user_text, "chat" if st.get("tools") is False else (body.get("toolMode") or st.get("toolMode")), conf, images=bool(msgs[-1].get("images")),
                                 groups=tool_groups, names=[t["name"] for t in all_specs])
 
         def recall() -> str:
@@ -838,7 +839,7 @@ def status() -> dict[str, Any]:
         return {"assistantName": cfg.get("assistantName"), "setupComplete": True, "needsSetup": False, "defaultProfile": None, "profiles": 0, "ready": 0,
                 "cliInstalled": False, "integrations": {"agents": bool(agents_u), "agentCount": len(agents_u)}, "agents": agents_u, "defaultAgent": "",
                 "tokensToday": store.user_tokens_today(me.name), "budget": int(cfg.get("userDailyTokens") or 0),
-                "suggestions": cfg.get("suggestions", []), "prompts": [], "showUsage": True, "me": me.public()}
+                "suggestions": cfg.get("suggestions", []), "prompts": [], "showUsage": True, "me": me.public(), "defaultToolMode": chatmode.normalize(cfg.get("chatMode"))["default"]}
     svc = _agents()
     profs = store.public_config(cfg)["profiles"]
     ready = [p for p in profs if p["enabled"] and p["keyReady"]]
@@ -853,7 +854,7 @@ def status() -> dict[str, Any]:
             "defaultProfile": default, "profiles": len(profs), "ready": len(ready), "cliInstalled": providers.cli_available(),
             "integrations": {"agents": bool(svc) and cfg.get("agentIntegration", True), "agentCount": len(agents)},
             "agents": agents, "defaultAgent": cfg.get("defaultAgent", ""), "tokensToday": store.tokens_today(), "budget": cfg.get("dailyTokenBudget", 0),
-            "suggestions": cfg.get("suggestions", []), "prompts": cfg.get("prompts", []), "showUsage": cfg.get("showUsage", True)}
+            "suggestions": cfg.get("suggestions", []), "prompts": cfg.get("prompts", []), "showUsage": cfg.get("showUsage", True), "defaultToolMode": chatmode.normalize(cfg.get("chatMode"))["default"]}
 
 
 @router.get("/catalog")
