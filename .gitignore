@@ -36,3 +36,4 @@ _claude/builds/store.json.live.json
 
 # Auto-land (push banner): a finished worktree claude-sync leaves alone
 .claude-sync-hold
+.axf-api-wait.log
