@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1087,
- "updatedAt": "2026-11-06T02:37:19.537Z",
+ "rev": 1088,
+ "updatedAt": "2026-11-06T02:37:36.182Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87826,14 +87826,14 @@
    "title": "AmberX: slim down + voice queue",
    "category": "",
    "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "amberx-slim-down-voice-queue",
-   "branch": "",
+   "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T02:33:18.141Z",
+   "updatedAt": "2026-11-06T02:37:20.720Z",
    "builtAt": "",
    "notes": [
     {
@@ -87875,12 +87875,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T02:37:18.599Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T02:33:10.261Z",
-     "updatedAt": "2026-11-06T02:33:10.319Z"
+     "updatedAt": "2026-11-06T02:37:18.694Z"
     },
     {
      "id": "s2",
@@ -87897,12 +87897,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T02:37:19.379Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T02:33:11.508Z",
-     "updatedAt": "2026-11-06T02:33:11.638Z"
+     "updatedAt": "2026-11-06T02:37:19.446Z"
     },
     {
      "id": "s3",
@@ -87919,12 +87919,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T02:37:20.132Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T02:33:12.826Z",
-     "updatedAt": "2026-11-06T02:33:12.938Z"
+     "updatedAt": "2026-11-06T02:37:20.188Z"
     },
     {
      "id": "s4",
@@ -88045,7 +88045,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {

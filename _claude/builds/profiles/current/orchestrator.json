@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T02:37:19.537Z",
+ "updatedAt": "2026-11-06T02:37:36.182Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14272,14 +14272,14 @@
    "title": "AmberX: slim down + voice queue",
    "category": "",
    "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "amberx-slim-down-voice-queue",
-   "branch": "",
+   "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T02:33:18.141Z",
+   "updatedAt": "2026-11-06T02:37:20.720Z",
    "builtAt": "",
    "notes": [
     {
@@ -14319,8 +14319,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T02:37:18.599Z",
      "note": "",
      "uid": "st-mw4d0zan018d2b"
     },
@@ -14337,8 +14337,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T02:37:19.379Z",
      "note": "",
      "uid": "st-mw4d10ba01amhs"
     },
@@ -14355,8 +14355,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T02:37:20.132Z",
      "note": "",
      "uid": "st-mw4d11be01hsrx"
     },
