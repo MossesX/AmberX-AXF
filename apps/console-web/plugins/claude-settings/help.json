@@ -15,7 +15,7 @@
       {
         "target": "action:claude-settings.open",
         "title": "Claude settings",
-        "text": "Opens Settings \u2192 Plugins \u2192 Claude: the settings every Claude session reads on axHub before it acts.",
+        "text": "Opens Settings → Plugins → Claude: the settings every Claude session reads on axHub before it acts.",
         "kind": "menu-item"
       },
       {
@@ -35,6 +35,157 @@
         "title": "No wait",
         "text": "Shows while No wait is on: Amber's held calls run at once instead of waiting on the 90 s veto. Turn off revokes the pass straight away.",
         "kind": "banner"
+      },
+      {
+        "target": "claude-settings.rules-briefs",
+        "title": "Rules briefs",
+        "text": "What headless builds get instead of CLAUDE.md and the rules files: several saved briefs, conditions for when each runs, and an option to generate one before send. A build's task brief shows read-only next to what would go with it.",
+        "kind": "card"
+      },
+      {
+        "target": "claude-settings.token-log",
+        "title": "Token log",
+        "text": "Every turn of every session: tokens, cost, model, account, build and files read, with CLAUDE.md and rules reads flagged. Filter it, see the top token eaters and daily totals. Chat and voice rows are estimates.",
+        "kind": "card"
+      },
+      {
+        "target": "claude-settings.api-runs",
+        "title": "API runs",
+        "text": "Every run on an API key waits for your approval with its estimated cost, then shows the final cost. A confirm, never a veto: nothing runs on a timer.",
+        "kind": "card"
+      },
+      {
+        "target": "column:estimate",
+        "title": "Estimate",
+        "text": "The “Estimate” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:final",
+        "title": "Final",
+        "text": "The “Final” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:decided-by",
+        "title": "Decided by",
+        "text": "The “Decided by” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "switched-on",
+        "title": "Switched on",
+        "text": "Turns “Switched on” on or off. It takes effect straight away and is remembered. Part of Claude.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "where-the-text-comes-from",
+        "title": "Where the text comes from",
+        "text": "Where you set “Where the text comes from”. Change it and the app uses the new value. Part of Claude.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "most-characters",
+        "title": "Most characters",
+        "text": "Where you set “Most characters”. Change it and the app uses the new value. Part of Claude.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "lean-headless-launches",
+        "title": "Lean headless launches",
+        "text": "Turns “Lean headless launches” on or off. It takes effect straight away and is remembered. Part of Claude.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "new-brief",
+        "title": "New brief",
+        "text": "Starts a new brief. Part of Claude.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "view:claude-settings.api-run",
+        "title": "Run on an API key",
+        "text": "Opens the Run on an API key screen. Claude settings (claude-settings@1): settings for Claude itself, kept on axHub (/projects/_shared/_data/claude/settings.json) so every Claude session (voice, chat, Claude Code, headless agents) reads the same values at i",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "from",
+        "title": "From",
+        "text": "Where you set “From”. Change it and the app uses the new value. Part of Claude.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "real-or-estimated",
+        "title": "Real or estimated",
+        "text": "Where you set “Real or estimated”. Change it and the app uses the new value. Part of Claude.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "column:turns",
+        "title": "Turns",
+        "text": "The “Turns” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:rules-reads",
+        "title": "Rules reads",
+        "text": "The “Rules reads” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:build-step",
+        "title": "Build / step",
+        "text": "The “Build / step” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:in",
+        "title": "In",
+        "text": "The “In” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:out",
+        "title": "Out",
+        "text": "The “Out” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:cache-read",
+        "title": "Cache read",
+        "text": "The “Cache read” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:cache-write",
+        "title": "Cache write",
+        "text": "The “Cache write” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:rules-read",
+        "title": "Rules read",
+        "text": "The “Rules read” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": []

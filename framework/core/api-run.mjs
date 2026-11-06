@@ -7,6 +7,8 @@ export const FRAME = 'api-run@1';
 export const STATES = ['waiting', 'approved', 'running', 'done', 'denied', 'expired'];
 export const EXPIRE_MS = 24 * 3600 * 1000;
 export const DEFAULT_MINUTES = 30;
+/** Ways Brett's approval may arrive: set by the console server from his request, never by a caller. */
+export const OWNER_VIA = ['console', 'local'];
 
 /** Is this launch billed to an API key? A key in the environment beats a subscription login, so any key counts. */
 export const isApiRun = (env = {}) => env.AXF_CLAUDE_AUTH === 'api' || Boolean(env.ANTHROPIC_API_KEY || env.ANTHROPIC_AUTH_TOKEN);
@@ -28,10 +30,10 @@ export const expired = (r, now) => r.status === 'waiting' && now - Date.parse(r.
 /** The approval check. Throws on anything but Brett's own decision of a waiting run. */
 export function decide(r, decision, { owner, source = '', at }) {
   if (source) throw new Error(`refused: ${source} can't decide an API run; only Brett can`);
-  if (!owner?.by) throw new Error('refused: this needs Brett\'s own signed-in console session');
+  if (!OWNER_VIA.includes(owner?.via) || !owner?.name) throw new Error('refused: this needs Brett\'s own signed-in console session');
   if (r.status !== 'waiting') throw new Error(`this run is ${r.status}, not waiting`);
   if (!['approve', 'deny'].includes(decision)) throw new Error('approve or deny');
-  return { ...r, status: decision === 'approve' ? 'approved' : 'denied', decidedAt: at, decidedBy: String(owner.by).slice(0, 80), via: String(owner.via ?? 'console').slice(0, 20) };
+  return { ...r, status: decision === 'approve' ? 'approved' : 'denied', decidedAt: at, decidedBy: String(owner.name).slice(0, 80), via: owner.via };
 }
 
 /** Dialogs the console owes Brett: runs waiting for a yes, and finished runs he hasn't seen the bill for. */
