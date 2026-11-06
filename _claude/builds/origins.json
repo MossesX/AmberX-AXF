@@ -2081,6 +2081,18 @@
     }
    ]
   },
+  "skins": {
+   "said": "Can the design pack alone make the app look exactly like a Windows program? ... We'll call it a skin. It will include its own assets, its own layout, its own colors, and its own style. You use the style theme, a layout theme and a color theme, and call it a skin. ... I don't want all the apps to inherit just file and colors from that, so I want there to be a switch to do it, but by default they're all their own. And every one has a reset, restore to default. So as of now, store the apps as default, for all. And then create a new one. ... Okay, Opus, but add it for a possible later review.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
    "at": "2026-11-03",
