@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T00:15:49.509Z",
+ "updatedAt": "2026-11-06T00:40:31.973Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14176,19 +14176,24 @@
    "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ai-keys-console-store-2",
    "pr": "#358",
+   "mergedAt": "2026-11-06T00:33:19Z",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:53:46.269Z",
+   "updatedAt": "2026-11-06T00:40:30.194Z",
    "builtAt": "",
    "notes": [
     {
      "text": "PR #358 open, CI running, added to the merge queue. Tokens not copied into keys.json: AI keys rotates refresh tokens; importing them is Brett's call.",
      "at": "2026-11-05T23:53:46.269Z"
+    },
+    {
+     "text": "Reconciler: PR #358 merged; paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T00:40:30.194Z"
     }
    ],
    "approvals": [],

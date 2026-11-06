@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1081,
- "updatedAt": "2026-11-06T00:15:49.509Z",
+ "rev": 1082,
+ "updatedAt": "2026-11-06T00:40:31.973Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87403,19 +87403,24 @@
    "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ai-keys-console-store-2",
    "pr": "#358",
+   "mergedAt": "2026-11-06T00:33:19Z",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:53:46.269Z",
+   "updatedAt": "2026-11-06T00:40:30.194Z",
    "builtAt": "",
    "notes": [
     {
      "text": "PR #358 open, CI running, added to the merge queue. Tokens not copied into keys.json: AI keys rotates refresh tokens; importing them is Brett's call.",
      "at": "2026-11-05T23:53:46.269Z"
+    },
+    {
+     "text": "Reconciler: PR #358 merged; paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T00:40:30.194Z"
     }
    ],
    "approvals": [],
@@ -87508,7 +87513,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
