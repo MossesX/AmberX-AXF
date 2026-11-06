@@ -822,6 +822,18 @@
    "from": "detail",
    "addenda": []
   },
+  "console-approvals-in-place": {
+   "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
+   "at": "2026-11-06T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-commands": {
    "said": "add console commands to the MCP, the API and the CLI so he can tell Amber (a Claude session) to load screens for him.",
    "at": "2026-11-03",

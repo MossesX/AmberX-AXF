@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T02:39:09.380Z",
+ "updatedAt": "2026-11-06T12:17:14.629Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14272,14 +14272,14 @@
    "title": "AmberX: slim down + voice queue",
    "category": "",
    "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "amberx-slim-down-voice-queue",
    "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T02:37:20.720Z",
+   "updatedAt": "2026-11-06T12:14:57.525Z",
    "builtAt": "",
    "notes": [
     {
@@ -14289,6 +14289,10 @@
     {
      "text": "Brett added: a media library and editor for AmberX screen and audio recordings, opened from the console. Full player; crop, cut, and join; AI on/off; lots of prewritten no-AI automation tools. Build restarted as amberx-slim-queue-r2.",
      "at": "2026-11-06T02:29:22.109Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T12:14:57.525Z"
     }
    ],
    "approvals": [],
@@ -14519,6 +14523,128 @@
     "addenda": []
    },
    "steps": []
+  },
+  {
+   "id": "console-approvals-in-place",
+   "title": "Approve / deny axHub approvals inside the Dev Console (no bounce to axHub)",
+   "category": "Console",
+   "detail": "Tapping an approval in the console opened axHub. Now: the console server relays Brett's own hub session (axhub_session cookie on .amberxai.com, wall-signed admin, same-origin tap) to axHub's decide API (session + CSRF + hub Origin), so the banner, app-menu rows, review dialog, Follow Amber pop-up and console_show approval:<id> decide in place with the result shown. Review dialog = in-console approval view (title, description, exact call, countdown, Approve/Deny, result), axHub link only secondary. Console actions approvals.approve/deny/view. AmberX notification taps open the console view.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/today",
+   "pr": "",
+   "createdAt": "2026-11-06T12:17:13.812Z",
+   "updatedAt": "2026-11-06T12:17:13.812Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
+    "at": "2026-11-06T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "headless",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Console server relay: POST /api/plugins/approvals-banner/decide (Brett's hub session → axHub decide API), tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw4xw32c06k8hv"
+    },
+    {
+     "id": "s2",
+     "text": "Console decide host: approvals + veto hosts decide through the relay; banner/menu/follow-amber decide in place",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw4xw32c07tv4p"
+    },
+    {
+     "id": "s3",
+     "text": "In-console approval view replaces the framed hub page; result in place; axHub link secondary",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw4xw32c08b1ip"
+    },
+    {
+     "id": "s4",
+     "text": "Console actions approvals.view/approve/deny + console_show approval:<id> opens the view; AmberX notification taps open it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw4xw32c09dup3"
+    },
+    {
+     "id": "s5",
+     "text": "Help/docs, THREADS row, report, checks, PR (not landed)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw4xw32c0amuou"
+    }
+   ]
   }
  ]
 }
