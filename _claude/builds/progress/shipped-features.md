@@ -6,8 +6,8 @@
 - [x] feature-ledger@1 + deploy-log@1 reviewed + fixed: `statusFromBuild` reads a build like the hook (pending = planned, archived = cancelled), ISO offsets fold to Z in both, `mergeLedgers` edits keep filled fields, `migrate` odd versions, addenda keep session / link
 - [x] plugin `apply.mjs` `statusForBuild` delegates to the contract; SQLite migrations 001 + 002 reviewed, no change needed
 - [x] tests: check-build-hook 25, check-feature-ledger 66, deploy test 51, builds store 37, plugin test 7 (Node 22 / Docker); fixtures + schema snapshots regenerated; console `src/axf` re-baked
-- [x] report section "Fable review" in `_claude/builds/reports/shipped-features.md`; UI Review: r4 shots submitted from the VPS
-- [ ] one PR to the merge queue (supersedes r2 / r3 / r4, PR #350 closes with it)
+- [x] report section "Fable review" in `_claude/builds/reports/shipped-features.md`; UI Review: r4 shots submitted from the VPS (r-20261106-f8fd11bb, group "shipped-features-fable - Nov 6 8:02 PM", waiting for Brett)
+- [x] one PR to the merge queue: [#364](https://github.com/MossesX/AmberX-AXF/pull/364) (`claude/shipped-features-fable`, supersedes r2 / r3 / r4; draft #350 closed as superseded; queued with `merge-queue.mjs add 364`)
 - Follow-ups (not in this build): outbox `compact`; axHub installer `axf_deploy_log`; `AXF_AXHUB_REPO` on the VPS; `data/features-seed.json` model pass; Kotlin twins when Android resumes
 
 ## HANDOFF (Nov 5 2026, Opus thread)
