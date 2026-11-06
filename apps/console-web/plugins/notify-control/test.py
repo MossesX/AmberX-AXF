@@ -19,6 +19,7 @@ os.environ["AXF_NOTIFY_DATA_DIR"] = tempfile.mkdtemp()
 os.environ["AXF_TIMEZONE"] = "America/New_York"
 
 import importlib.util  # noqa: E402
+import threading  # noqa: E402
 
 from fastapi import FastAPI, Request  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -267,5 +268,111 @@ plugin_services.provide("axf.notify@1", mod.Notify(), folder="notify-control")
 ok("notify" in c2.get("/api/alerts", headers={"user-agent": "Dalvik/2.1.0 (Linux; U; Android 16)"}).json(), "AmberX's client gets the phone view")
 ok("notify" in c2.get("/api/alerts", params={"view": "phone"}).json(), "or asks for it")
 ok("notify" not in c2.get("/api/alerts", headers={"user-agent": "Mozilla/5.0"}).json(), "a browser gets the full list")
+
+# ---- groups, triggers, commands
+
+R = sys.modules["notify_server.rules"]
+from datetime import datetime  # noqa: E402
+
+sat = datetime(2026, 11, 7, 12, 0)  # a Saturday, noon
+tr = {"name": "Twice", "on": True, "effect": "only", "event": {"types": ["x"], "groups": [], "source": "", "keyPrefix": "", "severity": ""}, "conditions": [],
+      "threshold": {"count": 2, "minutes": 10}, "schedule": {"days": [], "start": "", "end": ""}}
+alert = {"type": "x", "source": "x", "key": "k", "severity": "error", "title": "Build broke", "meta": {"percent": 90}}
+
+for c_, want, what in [({"field": "meta.percent", "op": "gte", "value": 80}, True, "a number from meta"), ({"field": "meta.percent", "op": "lte", "value": 80}, False, "at most"),
+                       ({"field": "title", "op": "contains", "value": "broke"}, True, "contains ignores case"), ({"field": "meta.nope", "op": "eq", "value": 1}, False, "a missing field isn't equal"),
+                       ({"field": "meta.nope", "op": "ne", "value": 1}, True, "a missing field is not equal"), ({"field": "severity", "op": "not-contains", "value": "err"}, False, "not contains")]:
+    ok(R.holds(R.clean_condition(c_), alert) is want, f"condition: {what}")
+ok(R.in_schedule({"days": ["sat"], "start": "", "end": ""}, sat, C.in_window), "schedule: the day")
+ok(not R.in_schedule({"days": ["mon"], "start": "", "end": ""}, sat, C.in_window), "schedule: not the day")
+ok(not R.in_schedule({"days": [], "start": "13:00", "end": "14:00"}, sat, C.in_window), "schedule: outside the hours")
+ok(R.watches({**tr, "event": {**tr["event"], "types": [], "severity": "warning"}}, alert, {}), "severity: an error is warning or worse")
+ok(not R.watches({**tr, "event": {**tr["event"], "types": [], "severity": "critical"}}, alert, {}), "severity: an error isn't critical")
+ok(R.watches({**tr, "event": {**tr["event"], "types": [], "groups": ["g"]}}, alert, {"g": {"types": ["x"]}}), "event: through a group")
+
+hits: dict = {}
+ok(R.apply({"t": tr}, {}, alert, sat, C.in_window, hits, 1000.0)["hold"].startswith("Waiting on rule"), "threshold: the first one waits")
+ok(R.apply({"t": tr}, {}, alert, sat, C.in_window, hits, 1100.0)["hold"] == "", "threshold: the second one goes")
+ok(hits["t"] == [], "threshold: firing starts the count again")
+R.apply({"t": tr}, {}, alert, sat, C.in_window, hits, 2000.0)
+ok(R.apply({"t": tr}, {}, alert, sat, C.in_window, hits, 2000.0 + 601)["hold"], "threshold: a hit older than the window doesn't count")
+mute = {**tr, "effect": "mute", "threshold": {"count": 1, "minutes": 10}}
+ok(R.apply({"m": mute}, {}, alert, sat, C.in_window, {})["hold"].startswith("Muted by rule"), "mute holds it")
+ok(R.apply({"m": {**mute, "on": False}}, {}, alert, sat, C.in_window, {})["hold"] == "", "a rule that's off does nothing")
+loud = {**mute, "effect": "raise", "title": "Hey", "body": "", "severity": "error"}
+ok([f["id"] for f in R.apply({"r": loud}, {}, alert, sat, C.in_window, {})["fire"]] == ["r"], "raise fires and holds nothing")
+
+ok(C.decide(plain, {**base, "groups": {"g": {"name": "Mine", "on": False, "types": ["x"]}}}, {}, False, apps)["why"] == "Group Mine is off", "a group that's off stops its types")
+ok(C.decide(guard, {**base, "groups": {"g": {"name": "Mine", "on": False, "types": ["g"]}}}, {}, False, apps)["allow"], "a group never stops an approval")
+ok(R.commands_for({"id": "g", "guarded": True}, {}, "view:approvals") == [{"label": "Approve", "kind": "approve", "target": "view:approvals", "icon": "check"}], "a held call has Approve, on its own link")
+cmds = {"g": {"on": True, "types": ["x"], "commands": [{"label": "Logs", "kind": "console", "target": "terminal.claude", "icon": ""}]}}
+ok([c_["label"] for c_ in R.commands_for({"id": "x"}, cmds, "")] == ["Logs"], "a group's own commands")
+ok(R.commands_for({"id": "x"}, {"g": {**cmds["g"], "on": False}}, "") == [], "a group that's off brings none")
+
+ids = {"x"}
+for bad, what in [({"name": ""}, "no name"), ({"name": "a", "types": ["nope"]}, "unknown type"), ({"name": "a", "commands": [{"label": "b", "kind": "shell", "target": "rm"}]}, "a kind that doesn't exist"),
+                  ({"name": "a", "commands": [{"label": "b", "kind": "console", "target": ""}]}, "a console command with no target"), ({"name": "a", "id": "Bad Id"}, "a bad id")]:
+    try:
+        R.clean_group(bad, ids, {})
+        ok(False, f"group refused: {what}")
+    except ValueError:
+        ok(True, f"group refused: {what}")
+ev = {"event": {"types": ["x"]}}
+for bad, what in [({"name": "a"}, "watches nothing"), ({"name": "a", **ev, "effect": "wipe"}, "a bad effect"), ({"name": "a", **ev, "threshold": {"count": 0}}, "a zero threshold"),
+                  ({"name": "a", **ev, "schedule": {"start": "25:00", "end": "26:00"}}, "bad hours"), ({"name": "a", **ev, "schedule": {"days": ["someday"]}}, "a bad day"),
+                  ({"name": "a", **ev, "effect": "raise"}, "raise with no title"), ({"name": "a", **ev, "conditions": [{"field": "x y", "op": "eq", "value": 1}]}, "a bad field"),
+                  ({"name": "a", **ev, "conditions": [{"field": "title", "op": "gte", "value": "lots"}]}, "gte on words")]:
+    try:
+        R.clean_trigger(bad, ids, {}, {})
+        ok(False, f"trigger refused: {what}")
+    except ValueError:
+        ok(True, f"trigger refused: {what}")
+
+# the same through REST, on the real gate
+one = next(t["id"] for t in mod.all_types() if not t["guarded"] and t["enforced"] == "gate" and t.get("match"))
+tp = next(t for t in mod.all_types() if t["id"] == one)
+src = tp["match"]["source"]
+kp = tp["match"].get("keyPrefix") or ""
+r = c.post("/group", json={"name": "My builds", "types": [one], "commands": [{"label": "Terminal", "kind": "console", "target": "terminal.claude"}]})
+ok(r.status_code == 200 and r.json()["id"] == "my-builds", "POST group makes one, with an id from its name")
+gone = lambda: mod.alert_verdict({"source": src, "key": kp + "a", "title": "t"})  # noqa: E731
+ok(gone()["actions"][0]["label"] == "Terminal", "the group's command is on the notification")
+ok(c.post("/group", json={"name": "bad", "types": ["nope"]}).status_code == 400, "POST group says what is wrong")
+c.post("/group", json={"id": "my-builds", "on": False})
+ok(c.get("/groups").json()["groups"]["my-builds"]["types"] == [one], "changing one field keeps the others")
+ok(gone()["why"] == "Group My builds is off" and not gone()["allow"], "group off: the gate stops it")
+c.post("/group", json={"id": "my-builds", "on": True})
+r = c.post("/trigger", json={"name": "Twice", "effect": "only", "event": {"groups": ["my-builds"]}, "threshold": {"count": 2, "minutes": 5}})
+ok(r.status_code == 200 and r.json()["id"] == "twice", "POST trigger")
+gate = mod.Notify()
+first = gate.check({"source": src, "key": kp + "b", "title": "one"})
+ok(first["allow"] is False and first["why"] == "Waiting on rule: Twice", "the first raise is held, and says why")
+ok(not gate.view([{"source": src, "key": kp + "b", "title": "one"}])[0]["notify"]["channels"].get("banner"), "readers see the same answer")
+second = gate.check({"source": src, "key": kp + "b", "title": "two"})
+ok(second["allow"] is True, "the second raise goes")
+ok(c.post("/group-remove", json={"id": "my-builds"}).status_code == 409, "a group a rule watches can't be removed")
+t = c.post("/trigger-test", json={"id": "twice", "alert": {"source": src, "key": kp + "c", "title": "x"}}).json()
+ok(t["watches"] and t["steps"]["threshold"] is False, "trigger-test explains each step")
+ok(c.get("/triggers").json()["triggers"]["twice"]["hits"] == 0, "and counts nothing")
+c.post("/trigger", json={"id": "twice", "effect": "raise", "title": "Twice now", "threshold": {"count": 1, "minutes": 5}})
+sent: list = []
+real_raise, cx.raise_alert = cx.raise_alert, lambda a: sent.append(a)
+gate.check({"source": src, "key": kp + "d", "title": "go"})
+for th in threading.enumerate():
+    if th.name == "notify-rule":
+        th.join(2)
+cx.raise_alert = real_raise
+ok(sent and sent[0]["title"] == "Twice now" and sent[0]["meta"]["notifyRule"] == "twice", "a raise rule sends its own notification")
+hits_before = dict(mod._hits)
+gate.check({**sent[0], "source": src, "key": kp + "d"})
+ok(mod._hits == hits_before, "a rule's own notification doesn't run the rules again")
+held = next((t for t in mod.all_types() if t["guarded"] and t["enforced"] == "gate"), None)
+if held:
+    c.post("/trigger", json={"name": "Mute it", "effect": "mute", "event": {"types": [held["id"]]}})
+    ok(not gate.check({"source": held["match"]["source"], "key": held["match"].get("keyPrefix", "") + "z", "title": "veto"}).get("why", "").startswith("Muted"), "no rule mutes an approval")
+    c.post("/trigger-remove", json={"id": "mute-it"})
+ok(c.post("/trigger-remove", json={"id": "twice"}).status_code == 200 and c.post("/trigger-remove", json={"id": "twice"}).status_code == 404, "POST trigger-remove")
+ok(c.post("/group-remove", json={"id": "my-builds"}).status_code == 200, "POST group-remove")
+ok("userGroups" in c.get("/state").json() and "ruleOptions" in c.get("/state").json(), "the panel gets all of it")
 
 print(f"notify-control: {checks} checks passed")

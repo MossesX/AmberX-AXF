@@ -138,6 +138,10 @@ def local_now(tz: str, at: float | None = None) -> datetime:
     return datetime.fromtimestamp(at, ZoneInfo(tz)) if at is not None else datetime.now(ZoneInfo(tz))
 
 
+def group_off(tid: str, groups: dict[str, Any]) -> str:
+    return next((str(g.get("name")) for g in groups.values() if isinstance(g, dict) and g.get("on") is False and tid in (g.get("types") or [])), "")
+
+
 def decide(t: dict[str, Any], cfg: dict[str, Any], settings: dict[str, Any], quiet: bool, app_of: dict[str, str]) -> dict[str, Any]:
     """Which channels this type may use now. `why` is one plain line for the panel and the recent list."""
     eff = effective(t, cfg, settings)
@@ -148,6 +152,9 @@ def decide(t: dict[str, Any], cfg: dict[str, Any], settings: dict[str, Any], qui
     guarded = t["guarded"]
     if not guarded and cfg.get("master", True) is False:
         return {**base, "allow": False, "channels": none, "held": False, "why": "Master switch is off"}
+    off_group = "" if guarded else group_off(t["id"], cfg.get("groups") or {})
+    if off_group:
+        return {**base, "allow": False, "channels": none, "held": False, "why": f"Group {off_group} is off"}
     if not eff["enabled"]:
         off_by = "Off in Claude settings" if settings.get(t.get("setting") or "", True) is False else "Switched off"
         return {**base, "allow": False, "channels": none, "held": False, "why": off_by}

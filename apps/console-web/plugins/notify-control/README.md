@@ -82,3 +82,38 @@ Routes under `/api/plugins/notify-control/`; plugin-commands@1 puts each on MCP 
 on axHub. Uninstalling leaves the hub as it was. Env: `AXF_NOTIFY_DATA_DIR`, `AXF_TIMEZONE`.
 
 Tests: `python apps/console-web/plugins/notify-control/test.py`.
+
+## Groups, triggers and commands (notify-rules@1)
+
+Brett: "I need groups with commands with triggers with actions." All of it is in the panel and in REST, MCP and CLI. `server/rules.py` is pure.
+
+**Groups** are your own lists: any types, on or off together, each with its own command buttons. A group that is off stops its types.
+
+**Triggers** look at each notification the hub gets:
+
+| Part | What it says |
+| --- | --- |
+| Event | what it watches: types, a group, source, key prefix, lowest severity |
+| Conditions | all must hold: `{field, op, value}`; fields `source key title body severity type priority app meta.<name>`, ops `eq ne contains not-contains gte lte` |
+| Threshold | from the Nth match within N minutes (a count that fires starts again) |
+| Schedule | days and hours, in the console's time zone |
+
+and one effect: `only` holds what it watches unless a rule passes, `mute` holds when it passes, `raise` sends a new notification
+with your title. A rule's own notification doesn't run the rules again, so rules can't loop. A held notification is still in the
+list, already read, and Sent and blocked lately says which rule held it. Trigger hits live in memory: a console restart starts the
+counts again.
+
+**Commands** are buttons on a notification, in the alert list's expanded row: `approve` opens the call's own screen (only your signed-in
+session decides there, a button never approves anything by itself), `open` a screen, `console` a console action. Held calls get Approve
+by themselves; every other button comes from the groups the type is in.
+
+**Approvals and veto are never held** by a group or a rule. A rule that could mute the veto notice could act unseen.
+
+```bash
+axf notify-control group --name "My builds" --types '["ci.failed"]'   # or MCP notify_control_group, POST /group
+POST /trigger {"name":"CI twice","effect":"only","event":{"groups":["my-builds"]},"threshold":{"count":2,"minutes":30}}
+POST /trigger-test {"id":"ci-twice","alert":{"source":"ci","key":"ci:x"}}   # nothing is sent or counted
+```
+
+The buttons draw in the console's alert list. The AmberX Android notification doesn't draw them yet (Android work is on hold, and its veto
+buttons are its own); its alert reply carries them in `notify.actions`.

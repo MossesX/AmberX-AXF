@@ -86,6 +86,150 @@
         "title": "Quiet until",
         "text": "The time of day quiet hours start or end, in your time zone. Press Save after changing it.",
         "kind": "field"
+      },
+      {
+        "target": "take-it-out-of-the-group",
+        "title": "Take it out of the group",
+        "text": "Removes this notification type from the group. The type itself keeps its own settings.",
+        "kind": "button"
+      },
+      {
+        "target": "add-a-type",
+        "title": "Add a type",
+        "text": "Pick a notification type to put in this group. A type can be in more than one group.",
+        "kind": "field"
+      },
+      {
+        "target": "button",
+        "title": "Button",
+        "text": "The words on the command button.",
+        "kind": "field"
+      },
+      {
+        "target": "does",
+        "title": "Does",
+        "text": "What the button does: open the call's approval screen, open a screen, or run a console action.",
+        "kind": "field"
+      },
+      {
+        "target": "add-a-command",
+        "title": "Add a command",
+        "text": "Adds a button to every notification in this group.",
+        "kind": "button"
+      },
+      {
+        "target": "save-group",
+        "title": "Save group",
+        "text": "Saves the group. Its on or off switch and its commands apply at once.",
+        "kind": "button"
+      },
+      {
+        "target": "new-group",
+        "title": "New group",
+        "text": "Starts a group of your own: any types, switched on or off together.",
+        "kind": "button"
+      },
+      {
+        "target": "trigger-name",
+        "title": "Trigger name",
+        "text": "A name you'll recognise. It shows in Sent and blocked lately when this rule holds something.",
+        "kind": "field"
+      },
+      {
+        "target": "what-it-does",
+        "title": "What it does",
+        "text": "Only send when it passes, mute when it passes, or send a new notification when it passes.",
+        "kind": "field"
+      },
+      {
+        "target": "at-least",
+        "title": "At least",
+        "text": "Watch this severity and anything worse.",
+        "kind": "field"
+      },
+      {
+        "target": "source",
+        "title": "Source",
+        "text": "Watch only notifications from this source, for example ci.",
+        "kind": "field"
+      },
+      {
+        "target": "key-starts-with",
+        "title": "Key starts with",
+        "text": "Watch only notifications whose key begins with this.",
+        "kind": "field"
+      },
+      {
+        "target": "field",
+        "title": "Field",
+        "text": "What to test: title, body, severity, source, key, type, priority, app, or meta.<name> for a value the sender attached.",
+        "kind": "field"
+      },
+      {
+        "target": "value",
+        "title": "Value",
+        "text": "What the field is tested against. At least and at most need a number.",
+        "kind": "field"
+      },
+      {
+        "target": "add-a-condition",
+        "title": "Add a condition",
+        "text": "Adds a test. Every condition has to hold for the rule to pass.",
+        "kind": "button"
+      },
+      {
+        "target": "fires-from-the-nth-time",
+        "title": "Fires from the Nth time",
+        "text": "The rule passes from this match on, counted inside the minutes next to it. 1 passes every time.",
+        "kind": "field"
+      },
+      {
+        "target": "within-minutes",
+        "title": "Within minutes",
+        "text": "How far back matches count towards the threshold.",
+        "kind": "field"
+      },
+      {
+        "target": "from",
+        "title": "From",
+        "text": "The rule passes only after this time. Leave both times empty for all day.",
+        "kind": "field"
+      },
+      {
+        "target": "until",
+        "title": "Until",
+        "text": "The rule passes only before this time. Past midnight works, like 22:00 to 07:00.",
+        "kind": "field"
+      },
+      {
+        "target": "notification-title",
+        "title": "Notification title",
+        "text": "The title of the notification this rule sends.",
+        "kind": "field"
+      },
+      {
+        "target": "notification-text",
+        "title": "Notification text",
+        "text": "Its text. Empty uses the title of the notification that set it off.",
+        "kind": "field"
+      },
+      {
+        "target": "severity",
+        "title": "Severity",
+        "text": "How loud the new notification is.",
+        "kind": "field"
+      },
+      {
+        "target": "save-trigger",
+        "title": "Save trigger",
+        "text": "Saves the rule. It applies to the next notification and its count starts again.",
+        "kind": "button"
+      },
+      {
+        "target": "new-trigger",
+        "title": "New trigger",
+        "text": "Starts a rule for when a notification fires: event, conditions, threshold and schedule.",
+        "kind": "button"
       }
     ],
     "intros": []

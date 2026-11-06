@@ -12,3 +12,4 @@
 .axp-notify__recent { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .axp-notify__recent:last-child { border-bottom: 0; }
 .axp-notify__recent > b { flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+.axp-notify__edit { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding-block: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border); }

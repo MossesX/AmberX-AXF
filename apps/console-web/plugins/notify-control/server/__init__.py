@@ -17,8 +17,15 @@ behaves as it always did. Anything the gate can't answer lets the notification t
   POST quiet {enabled?, start?, end?}
   POST test {type}              send a real test through the same path
   POST reset {type?, confirm}   back to the registry's defaults
+  GET  groups                   Brett's own groups, each with its types and commands
+  POST group {id?, name, on?, types?, commands?}      make or change one (commands: {label, kind, target})
+  POST group-remove {id}
+  GET  triggers                 the rules, what they can use, and how many hits each has counted
+  POST trigger {id?, name, on?, effect, event, conditions?, threshold?, schedule?, title?, body?, severity?}
+  POST trigger-remove {id}
+  POST trigger-test {id, alert}  what this rule would do to this notification; nothing is sent or counted
 
-Guarded types (approvals and veto) ignore the master and app switches, and only Brett's own signed-in session may turn
+Groups, triggers and commands are server/rules.py. Guarded types (approvals and veto) ignore the master and app switches, groups and rules, and only Brett's own signed-in session may turn
 them down: a session that could mute the veto notice could act unseen. Data: .axf-console/plugins/notify-control/.
 """
 from __future__ import annotations
@@ -37,6 +44,7 @@ import console_context as cx
 import plugin_services
 
 from . import core as C
+from . import rules as R
 
 router = APIRouter()
 FOLDER = "notify-control"
@@ -54,6 +62,9 @@ _settings: dict[str, Any] = {}
 _settings_at = 0.0
 _refreshing = False
 _cache: tuple[float, dict[str, Any], list[dict[str, Any]]] = (0.0, {}, [])
+_hits: dict[str, list[float]] = {}  # a trigger's matches inside its threshold window
+_held: dict[str, str] = {}  # alert key → the rule that held it: a reader sees the same answer the raise got
+HELD_MAX = 500
 
 
 def _data() -> Path:
@@ -73,7 +84,9 @@ def load_config() -> dict[str, Any]:
         c = {}
     return {"master": c.get("master", True) is not False, "apps": c.get("apps") if isinstance(c.get("apps"), dict) else {},
             "types": c.get("types") if isinstance(c.get("types"), dict) else {},
-            "quiet": c.get("quiet") if isinstance(c.get("quiet"), dict) else {}}
+            "quiet": c.get("quiet") if isinstance(c.get("quiet"), dict) else {},
+            "groups": c.get("groups") if isinstance(c.get("groups"), dict) else {},
+            "triggers": c.get("triggers") if isinstance(c.get("triggers"), dict) else {}}
 
 
 def save_config(c: dict[str, Any]) -> None:
@@ -171,8 +184,45 @@ def alert_verdict(a: dict[str, Any]) -> dict[str, Any]:
     src, key = str(a.get("source") or ""), str(a.get("key") or "")
     t = type_of(src, key or plain_key(src, str(a.get("title") or "")), str(meta.get("notifyType") or ""))
     # AmberX shows warnings and worse. A type promoted past its severity (by the registry or by a click here) must still buzz.
-    picked = ((load_config()["types"].get(t["id"]) or {}).get("channels") or {}).get("amberx") is True
-    return {**verdict_for(t), "promote": t.get("push") is True or picked}
+    cfg = load_config()
+    picked = ((cfg["types"].get(t["id"]) or {}).get("channels") or {}).get("amberx") is True
+    v = {**verdict_for(t), "promote": t.get("push") is True or picked}
+    why = _held.get(key or plain_key(src, str(a.get("title") or ""))) if not t["guarded"] and t["enforced"] not in C.FIXED else None
+    if why:
+        v = {**v, "allow": False, "channels": {c: False for c in v["channels"]}, "why": why}
+    return {**v, "actions": R.commands_for(t, cfg["groups"], str(a.get("link") or ""))}
+
+
+def run_rules(a: dict[str, Any]) -> None:
+    """The triggers on one raise. Runs before the verdict; a raise a rule made itself is not looked at again, so rules can't loop."""
+    cfg = load_config()
+    meta = a.get("meta") if isinstance(a.get("meta"), dict) else {}
+    if not cfg["triggers"] or meta.get("notifyRule"):
+        return
+    src, key = str(a.get("source") or ""), str(a.get("key") or "")
+    key = key or plain_key(src, str(a.get("title") or ""))
+    t = type_of(src, key, str(meta.get("notifyType") or ""))
+    if t["guarded"] or t["enforced"] in C.FIXED:
+        return
+    v = verdict_for(t)
+    view = {**a, "key": key, "type": t["id"], "priority": v["priority"], "app": t.get("app")}
+    with _lock:
+        res = R.apply(cfg["triggers"], cfg["groups"], view, C.local_now(_timezone()), C.in_window, _hits)
+        if res["hold"]:
+            while len(_held) >= HELD_MAX:
+                _held.pop(next(iter(_held)))
+            _held[key] = res["hold"]
+        else:
+            _held.pop(key, None)
+    for tr in res["fire"]:
+        fire(tr, view)
+
+
+def fire(tr: dict[str, Any], a: dict[str, Any]) -> None:
+    """A rule's own notification. On a side thread: the hub is in the middle of the raise that set it off."""
+    alert = {"source": "notify-rule", "severity": tr["severity"], "key": f"notify-rule:{tr['id']}", "title": tr["title"][:200], "body": tr["body"] or str(a.get("title") or ""),
+             "link": str(a.get("link") or "view:notify-control"), "meta": {"notifyRule": tr["id"], "notifyType": a["type"], "label": tr["name"]}}
+    threading.Thread(target=cx.raise_alert, args=(alert,), name="notify-rule", daemon=True).start()
 
 
 def plain_key(source: str, title: str) -> str:
@@ -196,6 +246,7 @@ class Notify:
     """axf.notify@1. The alert hub calls check() and view(); any other sender calls allowed(type, channel)."""
 
     def check(self, inp: dict[str, Any]) -> dict[str, Any]:
+        run_rules(inp)
         v = alert_verdict(inp)
         note(inp, v)
         return v
@@ -206,7 +257,7 @@ class Notify:
         out = []
         for a in items:
             v = alert_verdict(a)
-            na = {**a, "notify": {k: v[k] for k in ("type", "priority", "channels", "held")}}
+            na = {**a, "notify": {k: v[k] for k in ("type", "priority", "channels", "held", "actions")}}
             if phone:
                 done = a.get("resolved") or a.get("ack")
                 if not done and not v["channels"].get("amberx"):
@@ -248,12 +299,19 @@ def type_row(t: dict[str, Any]) -> dict[str, Any]:
         "linkedOff": s.get(t.get("setting") or "", True) is False, "now": verdict_for(t)}
 
 
+RULE_OPTIONS = {"effects": list(R.EFFECTS), "ops": list(R.OPS), "fields": list(R.FIELDS), "severities": list(R.SEVERITIES), "days": list(R.DAYS), "commandKinds": list(R.COMMAND_KINDS)}
+
+
+def trigger_rows(cfg: dict[str, Any]) -> dict[str, Any]:
+    return {k: {**v, "hits": len(R.hits_in(_hits.get(k, []), v["threshold"]["minutes"], time.time()))} for k, v in cfg["triggers"].items()}
+
+
 def state() -> dict[str, Any]:
     reg, _ = registry()
     cfg = load_config()
     rows = [type_row(t) for t in all_types()]
     return {"ok": True, "master": cfg["master"], "apps": [{**a, "on": cfg["apps"].get(a["id"], True) is not False} for a in reg["apps"]],
-            "channels": reg["channels"], "groups": reg["groups"], "priorities": C.PRIORITIES, "quiet": {**quiet_config(), "now": quiet_now(), "timeZone": _timezone()},
+            "channels": reg["channels"], "groups": reg["groups"], "userGroups": cfg["groups"], "triggers": trigger_rows(cfg), "ruleOptions": RULE_OPTIONS, "priorities": C.PRIORITIES, "quiet": {**quiet_config(), "now": quiet_now(), "timeZone": _timezone()},
             "types": rows, "recent": list(_recent)[:30], "counts": {"types": len(rows), "off": sum(1 for r in rows if not r["fixed"] and not r["settings"]["enabled"]),
                                                                      "blocked": sum(1 for x in _recent if not x["allow"])}}
 
@@ -407,6 +465,91 @@ async def reset(request: Request) -> dict[str, Any]:
             find(b["type"])
             c = {**c, "types": {k: v for k, v in c["types"].items() if k != b["type"]}}
         else:
-            c = {**c, "master": True, "apps": {}, "types": {}}
+            c = {**c, "master": True, "apps": {}, "types": {}}  # groups and triggers are his own work: removed one by one
         save_config(c)
     return state()
+
+
+# ---------------------------------------------------------------------- groups, triggers, commands
+
+def _type_ids() -> set[str]:
+    return {t["id"] for t in all_types()}
+
+
+@router.get("/groups")
+def get_groups() -> dict[str, Any]:
+    return {"ok": True, "groups": load_config()["groups"], "commandKinds": list(R.COMMAND_KINDS)}
+
+
+@router.post("/group")
+async def set_group(request: Request) -> dict[str, Any]:
+    b = await body_of(request)
+    with _lock:
+        c = load_config()
+        try:
+            gid, g = R.clean_group(b, _type_ids(), c["groups"])
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from e
+        save_config({**c, "groups": {**c["groups"], gid: g}})
+    return {**state(), "id": gid}
+
+
+@router.post("/group-remove")
+async def remove_group(request: Request) -> dict[str, Any]:
+    b = await body_of(request)
+    with _lock:
+        c = load_config()
+        if b.get("id") not in c["groups"]:
+            raise HTTPException(404, f"no group {b.get('id')!r}")
+        users = [t["name"] for t in c["triggers"].values() if b["id"] in t["event"]["groups"]]
+        if users:
+            raise HTTPException(409, f"rule {users[0]} watches this group: change the rule first")
+        save_config({**c, "groups": {k: v for k, v in c["groups"].items() if k != b["id"]}})
+    return state()
+
+
+@router.get("/triggers")
+def get_triggers() -> dict[str, Any]:
+    return {"ok": True, "triggers": trigger_rows(load_config()), "options": RULE_OPTIONS}
+
+
+@router.post("/trigger")
+async def set_trigger(request: Request) -> dict[str, Any]:
+    b = await body_of(request)
+    with _lock:
+        c = load_config()
+        try:
+            tid, tr = R.clean_trigger(b, _type_ids(), c["groups"], c["triggers"])
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from e
+        _hits.pop(tid, None)
+        save_config({**c, "triggers": {**c["triggers"], tid: tr}})
+    return {**state(), "id": tid}
+
+
+@router.post("/trigger-remove")
+async def remove_trigger(request: Request) -> dict[str, Any]:
+    b = await body_of(request)
+    with _lock:
+        c = load_config()
+        if b.get("id") not in c["triggers"]:
+            raise HTTPException(404, f"no trigger {b.get('id')!r}")
+        _hits.pop(b["id"], None)
+        save_config({**c, "triggers": {k: v for k, v in c["triggers"].items() if k != b["id"]}})
+    return state()
+
+
+@router.post("/trigger-test")
+async def test_trigger(request: Request) -> dict[str, Any]:
+    b = await body_of(request)
+    c = load_config()
+    tr = c["triggers"].get(b.get("id"))
+    if tr is None:
+        raise HTTPException(404, f"no trigger {b.get('id')!r}")
+    a = b.get("alert") if isinstance(b.get("alert"), dict) else {}
+    src, key = str(a.get("source") or ""), str(a.get("key") or "")
+    t = type_of(src, key, str(a.get("type") or ""))
+    view = {**a, "type": t["id"], "priority": verdict_for(t)["priority"], "app": t.get("app"), "key": key}
+    seen = len(R.hits_in(_hits.get(b["id"], []), tr["threshold"]["minutes"], time.time())) + 1
+    r = R.explain(tr, view, c["groups"], C.local_now(_timezone()), C.in_window, seen)
+    return {"ok": True, "type": t["id"], "guarded": t["guarded"], **r}

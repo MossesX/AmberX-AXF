@@ -12,6 +12,8 @@ import { alertsOf } from '@console/axf/libs/alerts';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { RuleSections } from './rules';
+import type { Group, RuleOptions, Trigger } from './rules';
 import './notify.css';
 
 const FOLDER = 'notify-control';
@@ -33,6 +35,7 @@ interface State {
   master: boolean; apps: { id: string; label: string; description: string; on: boolean }[]; channels: Channel[];
   groups: { id: string; label: string; icon: string }[]; priorities: string[]; types: TypeRow[]; recent: Recent[];
   quiet: { enabled: boolean; start: string; end: string; now: boolean; timeZone: string; home: string };
+  userGroups: Record<string, Group>; triggers: Record<string, Trigger>; ruleOptions: RuleOptions;
   counts: { types: number; off: number; blocked: number };
 }
 interface NotifyAlert { key: string; lastAt: number; title: string; body?: string; resolved?: boolean; notify?: { channels: Record<string, boolean>; priority: string } }
@@ -74,7 +77,7 @@ function useNotify() {
     window.addEventListener('focus', refresh);
     return () => { listeners.delete(setState); clearInterval(t); window.removeEventListener('focus', refresh); };
   }, []);
-  const act = useCallback((path: string, body: unknown) => post(path, body).then(() => setError(''), (e: Error) => setError(e.message)), []);
+  const act = useCallback((path: string, body: unknown) => (path === 'touch' ? load() : post(path, body)).then(() => setError(''), (e: Error) => setError(e.message)), []);
   return { state, error, act };
 }
 
@@ -160,6 +163,7 @@ function Panel() {
           </div>
         </div>
       </Container>
+      <RuleSections s={s} act={act} />
       <Note tone="info" icon="info">{s.priorities.map((p) => PRIORITY_TEXT[p]).join('. ')}.</Note>
       <TextField label="Find a notification" value={q} onChange={setQ} placeholder="CI, veto, review…" />
       {groups.map((g) => (
@@ -235,7 +239,7 @@ function startDelivery(rt: AxfRuntime): () => void {
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.notify-control',
   label: 'Notifications',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   register(rt) {
     rt.actions.register('notify-control.open', () => rt.dispatch(`nav:${VIEW}`), { label: 'Notifications' });
@@ -245,7 +249,7 @@ export const plugin: AxfWebLibrary = {
   },
   views: { [VIEW]: { title: 'Notifications', icon: 'bell', render: () => <Page /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Notifications', icon: 'bell', view: VIEW }] },
-  settingsTabs: [{ id: VIEW, label: 'Notifications', icon: 'bell', order: 13, parent: 'plugins', description: 'Every notification: on or off, channels, priority, quiet hours, test send.' }],
+  settingsTabs: [{ id: VIEW, label: 'Notifications', icon: 'bell', order: 13, parent: 'plugins', description: 'Every notification: on or off, channels, priority, quiet hours, test send, groups, triggers and commands.' }],
   settingsPanels: [
     { id: 'notify-control.panel', tab: VIEW, title: 'Notifications', icon: 'bell', order: 1, render: () => <Panel /> },
     { id: 'notify-control.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
