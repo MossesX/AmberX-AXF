@@ -705,20 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · orchestrator
-- 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · foreign-write
-- 2026-11-04 20:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
-- 2026-11-04 19:59 UTC · `handoff-2` s11 done, → built (current) · orchestrator
-- 2026-11-04 19:59 UTC · `handoff-2` note (current) · orchestrator
-- 2026-11-04 20:19 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
-- 2026-11-04 20:25 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 20:29 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 20:17 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
-- 2026-11-04 20:35 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 20:35 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
-- 2026-11-04 20:35 UTC · `settings-placement-everywhere` note (current) · orchestrator
-- 2026-11-04 20:40 UTC · `urgent-console-perf` merged, note (urgent) · reconciler
-- 2026-11-04 20:41 UTC · `molly-banner-match` added (5 steps) (current) · builds-live
 - 2026-11-04 20:42 UTC · `molly-banner-match` note (current) · foreign-write
 - 2026-11-04 20:42 UTC · `urgent-console-perf` s5 done, → complete (urgent) · orchestrator
 - 2026-11-04 20:45 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
@@ -1105,6 +1091,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s4 done (current) · orchestrator
 - 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s5 done (current) · orchestrator
 - 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s6 done (current) · orchestrator
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s16 done, s15 undone (current) · foreign-write
+- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · orchestrator
+- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` s1 done, → complete (current) · orchestrator
+- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → built, branch claude/refresh-token-save, PR #359 (current) · builds-live
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · orchestrator
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s15 done, s16 done, note (current) · orchestrator
+- 2026-11-06 18:06 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · orchestrator
+- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · orchestrator
+- 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · orchestrator
+- 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` s1 done, → complete (current) · orchestrator
+- 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → built, branch claude/refresh-token-save, PR #359 (current) · builds-live
+- 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · orchestrator
+- 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
+- 2026-11-06 18:07 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · orchestrator
 
 ## Token passes (log)
 

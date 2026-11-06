@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T18:06:06.510Z",
+ "updatedAt": "2026-11-06T18:07:17.636Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13654,9 +13654,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-06T13:05:53.940Z",
+   "updatedAt": "2026-11-06T18:07:16.552Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "The 'Save the rotated refresh token' steps are built by first-refresh-token-saved-every-time-it-s-used-v (PR #359): tick them once it merges, don't rebuild them.",
+     "at": "2026-11-06T18:07:16.552Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -13946,7 +13951,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:10:37.510Z",
-   "updatedAt": "2026-11-06T14:13:16.380Z",
+   "updatedAt": "2026-11-06T18:07:15.102Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -14253,8 +14258,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:07:15.102Z",
      "note": "",
      "uid": "st-mw51xwu01cqjxm"
     },
@@ -14821,9 +14826,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T18:05:51.885Z",
+   "updatedAt": "2026-11-06T18:07:15.828Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "The 'Save the rotated refresh token' steps are built by first-refresh-token-saved-every-time-it-s-used-v (PR #359): tick them once it merges, don't rebuild them.",
+     "at": "2026-11-06T18:07:15.828Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17402,6 +17412,56 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw529a1b0wehzo"
+    }
+   ]
+  },
+  {
+   "id": "first-refresh-token-saved-every-time-it-s-used-v",
+   "title": "First: refresh token saved every time it is used",
+   "category": "",
+   "detail": "Save every rotated Claude OAuth pair to all stores of that login at once.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/refresh-token-save",
+   "pr": "#359",
+   "createdAt": "2026-11-06T18:07:12.388Z",
+   "updatedAt": "2026-11-06T18:07:13.914Z",
+   "builtAt": "2026-11-06T18:07:13.301Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.",
+    "at": "2026-11-06T18:07:12.388Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Save rotated tokens back from build copies, the live login and AI keys",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T18:07:13.301Z",
+     "note": "",
+     "uid": "st-mw5ae5pt02t806"
     }
    ]
   }

@@ -1084,6 +1084,18 @@
    "from": "detail",
    "addenda": []
   },
+  "first-refresh-token-saved-every-time-it-s-used-v": {
+   "said": "I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.",
+   "at": "2026-11-06T18:07:12.388Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-banner-snap": {
    "said": "banner items clip and run into each other (Profile chip under the search bar, search squeezed to 'Se', axHub status, build dot and alerts bell cut off at the right edge). Rule: 'always make attached things snap so no overlap'. Fix in the framework (all apps): banner sides sized to their content (never clipped or drawn over a neighbour), the search bar shrinks to a minimum first, anything that still doesn't fit scrolls sideways with scroll snap; same for toolbar widget hosts and the menubar.",
    "at": "2026-10-28",
