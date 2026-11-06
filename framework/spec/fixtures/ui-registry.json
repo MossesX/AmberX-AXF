@@ -62,11 +62,11 @@
         }
       },
       {
-        "id": "settings:plugins/ui-shortcuts",
-        "label": "UI shortcuts settings",
-        "owner": "plugin:ui-shortcuts",
+        "id": "settings:plugins/example",
+        "label": "Example plugin settings",
+        "owner": "plugin:example",
         "open": {
-          "settings": "ui-shortcuts"
+          "settings": "example"
         }
       },
       {
@@ -796,12 +796,12 @@
     "show me the orchestrator page please",
     "take me to builds",
     "plan studio menu entry",
-    "settings for ui shortcuts",
+    "settings for example plugin",
     "the builds menu",
     "pop up chip",
     "uh open uh the terminal window",
     "help mode setting",
-    "ui shortcuts settings tab"
+    "example plugin settings tab"
   ],
   "resolve": [
     "screen:plan-studio",
@@ -819,9 +819,9 @@
     "new plan button",
     "add plan",
     "new plan dialog",
-    "ui shortcuts settings",
-    "ui shortcuts",
-    "settings for ui shortcuts",
+    "example plugin settings",
+    "example plugin",
+    "settings for example plugin",
     "help mode",
     "help mode setting",
     "documentation",
@@ -1000,15 +1000,15 @@
           "source": "declared"
         },
         {
-          "id": "settings:plugins/ui-shortcuts",
+          "id": "settings:plugins/example",
           "kind": "settings",
-          "label": "UI shortcuts settings",
+          "label": "Example plugin settings",
           "open": {
             "via": "settings",
-            "tab": "ui-shortcuts"
+            "tab": "example"
           },
           "app": "console-web",
-          "owner": "plugin:ui-shortcuts",
+          "owner": "plugin:example",
           "source": "declared"
         },
         {
@@ -2069,14 +2069,14 @@
         "whole": "plan studio menu entry"
       },
       {
-        "q": "settings for ui shortcuts",
+        "q": "settings for example plugin",
         "words": [
-          "ui",
-          "shortcuts"
+          "example",
+          "plugin"
         ],
         "kind": "settings",
-        "phrase": "ui shortcuts",
-        "whole": "settings ui shortcuts"
+        "phrase": "example plugin",
+        "whole": "settings example plugin"
       },
       {
         "q": "the builds menu",
@@ -2117,14 +2117,14 @@
         "whole": "help mode setting"
       },
       {
-        "q": "ui shortcuts settings tab",
+        "q": "example plugin settings tab",
         "words": [
-          "ui",
-          "shortcuts"
+          "example",
+          "plugin"
         ],
         "kind": "settings",
-        "phrase": "ui shortcuts",
-        "whole": "ui shortcuts settings tab"
+        "phrase": "example plugin",
+        "whole": "example plugin settings tab"
       }
     ],
     "resolve": [
@@ -2219,20 +2219,20 @@
         "ambiguous": false
       },
       {
-        "q": "ui shortcuts settings",
-        "item": "settings:plugins/ui-shortcuts",
+        "q": "example plugin settings",
+        "item": "settings:plugins/example",
         "via": "label",
         "ambiguous": false
       },
       {
-        "q": "ui shortcuts",
-        "item": "settings:plugins/ui-shortcuts",
+        "q": "example plugin",
+        "item": "settings:plugins/example",
         "via": "fuzzy",
         "ambiguous": false
       },
       {
-        "q": "settings for ui shortcuts",
-        "item": "settings:plugins/ui-shortcuts",
+        "q": "settings for example plugin",
+        "item": "settings:plugins/example",
         "via": "fuzzy",
         "ambiguous": false
       },
@@ -2370,7 +2370,7 @@
           "limit": 4
         },
         "hits": [
-          "settings:plugins/ui-shortcuts"
+          "settings:plugins/example"
         ]
       }
     ],
@@ -2455,12 +2455,12 @@
         }
       },
       {
-        "id": "settings:plugins/ui-shortcuts",
+        "id": "settings:plugins/example",
         "command": {
           "$axf": "control@1",
           "op": "act",
           "target": "console.settings",
-          "path": "ui-shortcuts",
+          "path": "example",
           "action": "open",
           "input": {
             "to": "recent"
@@ -2765,10 +2765,10 @@
         }
       },
       {
-        "id": "settings:plugins/ui-shortcuts",
+        "id": "settings:plugins/example",
         "plan": {
           "via": "settings",
-          "tab": "ui-shortcuts"
+          "tab": "example"
         }
       },
       {
@@ -2949,9 +2949,9 @@
       {
         "heard": "open my plans",
         "item": "screen:plan-studio",
-        "via": "alias",
+        "via": "shortcut",
         "ambiguous": false,
-        "say": "Opening Plan Studio."
+        "say": "Here are your plans."
       },
       {
         "heard": "the shots",
@@ -3042,8 +3042,8 @@
         },
         "run": {
           "action": "ui.open:{item}",
-          "api": "POST /api/plugins/ui-shortcuts/say",
-          "mcp": "ui-shortcuts_say"
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
         },
         "say": "Opening {item}.",
         "help": "open <anything in the UI registry>: a screen, dialog, settings tab, menu entry, button, link… by name or alias",
@@ -3059,8 +3059,8 @@
         ],
         "run": {
           "action": "ui.open:screen:plan-studio",
-          "api": "POST /api/plugins/ui-shortcuts/say",
-          "mcp": "ui-shortcuts_say"
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
         },
         "say": "Here are your plans.",
         "help": "my plans → screen:plan-studio",
@@ -3077,8 +3077,8 @@
         ],
         "run": {
           "action": "ui.open:tab:ui-review.tabs/screenshots",
-          "api": "POST /api/plugins/ui-shortcuts/say",
-          "mcp": "ui-shortcuts_say"
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
         },
         "say": "Opening it.",
         "help": "the shots → tab:ui-review.tabs/screenshots",
@@ -3094,8 +3094,8 @@
         ],
         "run": {
           "action": "ui.open:screen:not-registered",
-          "api": "POST /api/plugins/ui-shortcuts/say",
-          "mcp": "ui-shortcuts_say"
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
         },
         "say": "Opening it.",
         "help": "gone → screen:not-registered",

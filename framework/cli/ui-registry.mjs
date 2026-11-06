@@ -430,7 +430,9 @@ export async function main(argv = process.argv.slice(2)) {
     if (!res.item) { out(json, res, res.say); process.exitCode = 1; return; }
     const url = process.env.AXF_CONSOLE_URL; const tok = process.env.AXF_TOKEN;
     if (!url || !tok) { out(json, { ...res, command: uiOpenCommand(res.item), sent: false }, `${res.say}\n  would send ${JSON.stringify(uiOpenCommand(res.item, { to: flag(rest, 'to') }))}\n  set AXF_CONSOLE_URL + AXF_TOKEN to open it in the console`); return; }
-    const resp = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-shortcuts/open`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${tok}` }, body: JSON.stringify({ id: res.item.id, to: flag(rest, 'to') || 'recent', by: 'cli' }) });
+    const owner = registryOwner();
+    if (!owner) { out(json, { ...res, sent: false }, `${res.say}\n  no console plugin provides ui-registry@1 here; nothing sent`); process.exitCode = 1; return; }
+    const resp = await fetch(`${url.replace(/\/$/, '')}/api/plugins/${owner}/open`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${tok}` }, body: JSON.stringify({ id: res.item.id, to: flag(rest, 'to') || 'recent', by: 'cli' }) });
     const body = await resp.json().catch(() => ({}));
     out(json, { ...res, sent: resp.ok, response: body }, resp.ok ? `${res.say} (${body.message ?? 'sent'})` : `could not open: ${body.message ?? resp.status}`);
     if (!resp.ok) process.exitCode = 1;
@@ -441,8 +443,25 @@ export async function main(argv = process.argv.slice(2)) {
     const results = apps.map((app) => { const asset = existsSync(registryFile(app)) ? readJson(registryFile(app)) : null; const cov = uiRegistryCoverage(asset ? normalizeUiRegistry(asset.data).items : [], scanApp(app).items); return { app: app.folder, ...cov }; });
     return out(json, results, results.map((r) => `${r.app}: ${r.total} items (${Object.entries(r.byKind).map(([k, v]) => `${v} ${k}`).join(', ')}); ${r.missing.length} missing, ${r.unknown.length} stale`).join('\n'));
   }
-  if (cmd === 'voice') { const v = uiVoiceCommands(loadShortcuts(), { api: 'POST /api/plugins/ui-shortcuts/say', mcp: 'ui-shortcuts_say', cli: 'axf ui open <words>' }); return out(json, v, v.map((c) => `${c.id}: ${c.phrases.join(' | ')}`).join('\n')); }
+  if (cmd === 'voice') {
+    const owner = registryOwner();
+    const v = uiVoiceCommands(loadShortcuts(), { cli: 'axf ui open <words>', ...(owner ? { api: `POST /api/plugins/${owner}/say`, mcp: `${owner}_say` } : {}) });
+    return out(json, v, v.map((c) => `${c.id}: ${c.phrases.join(' | ')}`).join('\n'));
+  }
   throw new Error(`unknown command ${cmd} (scan | generate | check | registry | list | search | get | say | open | coverage | voice | apps)`);
+}
+
+/** The console plugin that serves the registry (provides `service:ui-registry@1`), found by capability, never by name; '' when none. */
+export function registryOwner() {
+  const dir = join(ROOT, 'apps/console-web/plugins');
+  try {
+    for (const f of readdirSync(dir)) {
+      if (f.startsWith('_') || f.startsWith('.')) continue;
+      const pj = readJson(join(dir, f, 'plugin.json'));
+      if (Array.isArray(pj?.provides) && pj.provides.includes('service:ui-registry@1')) return f;
+    }
+  } catch { /* no console here */ }
+  return '';
 }
 
 /** User shortcuts for the CLI: the file AXF_UI_SHORTCUTS_FILE names (the console plugin's data folder), else none. */

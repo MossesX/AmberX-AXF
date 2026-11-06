@@ -65,7 +65,7 @@ const shortcuts = fx.shortcuts.map(R.normalizeUiShortcut).filter(Boolean);
 expect('normalizeUiShortcut', shortcuts, 'shortcuts');
 expect('uiShortcutErrors', fx.badShortcuts.map((s) => R.uiShortcutErrors(s)), 'shortcutErrors');
 expect('uiSay', fx.say.map((h) => { const r = R.uiSay(registry.items, shortcuts, h); return { heard: h, item: r.item?.id ?? null, via: r.via ?? null, ambiguous: !!r.ambiguous, say: r.say }; }), 'say');
-expect('uiVoiceCommands', R.uiVoiceCommands(fx.shortcuts, { api: 'POST /api/plugins/ui-shortcuts/say', mcp: 'ui-shortcuts_say' }), 'voice');
+expect('uiVoiceCommands', R.uiVoiceCommands(fx.shortcuts, { api: 'POST /api/plugins/example/say', mcp: 'example_say' }), 'voice');
 expect('uiRegistryCoverage', R.uiRegistryCoverage(registry.items, fx.found), 'coverage');
 
 /* ---- constants + schema + the asset type */

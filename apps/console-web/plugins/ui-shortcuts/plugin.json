@@ -1,0 +1,68 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.ui-shortcuts",
+  "name": "UI shortcuts",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Open anything in the UI by name or by voice (Brett, Nov 6 2026: \"Create a registry so I can open them with my voice\"). Every screen, dialog, pop-up, settings interface and setting, menu and menu entry, navigation item, toolbar and button, link, tab, banner and widget of every app and plugin is an item in the UI registry (ui-registry@1, one asset per app: apps/<app>/src/assets/ui-registry/<app>.json, filled by framework/cli/ui-registry.mjs and by what each running console reports). This plugin finds the item for what you typed or said (its id, label, an alias, a fuzzy match, or one of your own shortcuts) and opens it: a quick-open dialog (type or speak), the actions ui.open:<item>, ui-shortcuts.say:<words> and ui-shortcuts.dialog, Settings → Plugins → UI shortcuts (your shortcuts: a phrase → an item, with a spoken answer; the mic and spoken answers; what is registered per app). Everything is on the API, MCP and CLI through plugin-commands@1 (ui-shortcuts_say, ui-shortcuts_open, ui-shortcuts_items …; axf ui open <words>), so Gizmo, Molly and any Claude session open the same items; the spoken form is voice-command@1 shaped (GET /voice) for the Voice commands plugin and Molly. Opening is navigate-only through console-commands@1 (never a veto); an item whose action changes data needs the caller's own write grant.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:ui-shortcuts",
+    "settings-tab:ui-shortcuts",
+    "service:ui-registry@1",
+    "action:ui.open",
+    "action:ui-shortcuts.dialog",
+    "action:ui-shortcuts.say"
+  ],
+  "optional": [
+    "service:console-commands@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/ui-shortcuts",
+    "env": [
+      "AXF_UI_SHORTCUTS_DATA_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /registry", "id": "registry", "title": "The UI registry: every app, how many items, what the running consoles reported", "readOnly": true },
+      { "route": "GET /items", "id": "items", "title": "List or search registered UI items (screens, dialogs, settings, menu entries, buttons, links …)", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string", "description": "words to search (label, aliases, id; fuzzy)" }, "kind": { "type": "string", "description": "screen | dialog | popup | settings | setting | menu | menu-item | nav-item | toolbar | button | link | tab | banner | widget | action | window | card" }, "app": { "type": "string", "description": "an app's project name (axf-console-web, amberx-droid, molly, axhub-web)" }, "limit": { "type": "integer" } }, "additionalProperties": false } },
+      { "route": "GET /item", "id": "item", "title": "One registered UI item by id or name, with the command that opens it", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string", "description": "the item id (<kind>:<key>) or its name" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "POST /open", "id": "open", "title": "Open a registered UI item in Brett's open console (navigate only; nothing changes)", "navigate": true, "input": { "type": "object", "properties": { "id": { "type": "string", "description": "the item id or words that name it" }, "to": { "type": "string", "description": "recent (default), all, or a console client id" }, "arg": { "type": "string", "description": "a dialog's argument" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "POST /say", "id": "say", "title": "Say what to open (\"open the plan studio\", \"my plans\"): a shortcut, an alias or a fuzzy match opens it and the answer says what happened", "navigate": true, "input": { "type": "object", "properties": { "text": { "type": "string", "description": "what was said" }, "to": { "type": "string" }, "app": { "type": "string", "description": "only this app's items" }, "open": { "type": "boolean", "description": "false = only tell me what would open" } }, "required": ["text"], "additionalProperties": false } },
+      { "route": "GET /shortcuts", "id": "shortcuts", "title": "Your shortcuts: a phrase → a registered item", "readOnly": true },
+      { "route": "POST /shortcuts", "id": "shortcut-add", "title": "Add or replace a shortcut (phrase → item, optional aliases and spoken answer)", "input": { "type": "object", "properties": { "phrase": { "type": "string" }, "item": { "type": "string", "description": "the item id, or words that name it" }, "aliases": { "type": "array", "items": { "type": "string" } }, "say": { "type": "string" }, "id": { "type": "string" } }, "required": ["phrase", "item"], "additionalProperties": false } },
+      { "route": "DELETE /shortcuts", "id": "shortcut-remove", "title": "Remove a shortcut", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "GET /voice", "id": "voice", "title": "The spoken form (voice-command@1 commands): open {item} and every shortcut", "readOnly": true },
+      { "route": "GET /coverage", "id": "coverage", "title": "What is registered per app and per kind, and what the scan finds that isn't", "readOnly": true },
+      { "route": "GET /recent", "id": "recent", "title": "What was opened last", "readOnly": true },
+      { "route": "POST /live", "skip": "the open consoles report their live registry here; not a command a person runs" }
+    ]
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-06"
+  },
+  "help": "help.json",
+  "opens": "dialog",
+  "opensUi": "dialog:ui-shortcuts"
+}

@@ -486,17 +486,22 @@ export function resolveUiItem(items, q, opts = {}) {
   const pool = kind ? scoped.filter((i) => i.kind === kind) : scoped;
   // the name as said, with its kind word ("ui shortcuts settings"), then without it ("ui shortcuts" among the settings)
   const first = (list2, test) => list2.filter(test).sort(byRank)[0];
-  hit = first(scoped, (i) => foldWords(i.label) === whole) ?? first(pool, (i) => foldWords(i.label) === phrase);
+  // a name is compared as said: folded, then without its fillers ("the new one" = "new one")
+  const same = (name, said) => { const f = foldWords(name); return f === said || uiQueryWords(name).whole === said; };
+  hit = first(scoped, (i) => same(i.label, whole)) ?? first(pool, (i) => same(i.label, phrase));
   if (hit) return { item: hit, via: 'label' };
-  hit = first(scoped, (i) => (i.aliases ?? []).some((a) => foldWords(a) === whole)) ?? first(pool, (i) => (i.aliases ?? []).some((a) => foldWords(a) === phrase));
+  hit = first(scoped, (i) => (i.aliases ?? []).some((a) => same(a, whole))) ?? first(pool, (i) => (i.aliases ?? []).some((a) => same(a, phrase)));
   if (hit) return { item: hit, via: 'alias' };
   if (!words.length) return { candidates: [] };
   let scored = searchUiItems(pool, phrase, { limit: 8, hidden: opts.hidden });
   if (!scored.length && kind) scored = searchUiItems(scoped, phrase, { limit: 8, hidden: opts.hidden }); // nothing of that kind: any kind with that name
   if (!scored.length) return { candidates: [] };
-  // a clear winner, or rivals that are the same thing under another kind (the screen, its nav item, its menu entry): the best-ranked one
+  // a clear winner, or rivals that are the same thing under another kind (the screen, its nav item, its menu entry, its
+  // settings tab "<name> settings"): the best-ranked one
   const top = scored[0];
-  const rivals = scored.slice(1).filter((c) => top.score - c.score < 1 && foldWords(c.label) !== foldWords(top.label));
+  const tl = foldWords(top.label);
+  const family = (c) => { const cl = foldWords(c.label); return cl === tl || cl.startsWith(`${tl} `) || tl.startsWith(`${cl} `); };
+  const rivals = scored.slice(1).filter((c) => top.score - c.score < 1 && !family(c));
   if (!rivals.length) return { item: top, via: 'fuzzy' };
   return { candidates: scored.slice(0, 6), ambiguous: true };
 }
@@ -565,7 +570,7 @@ export function matchUiShortcut(shortcuts, heard) {
   if (!exact) return null;
   for (const s of Array.isArray(shortcuts) ? shortcuts : []) {
     if (!s || s.enabled === false) continue;
-    const names = [s.phrase, ...(s.aliases ?? [])].map(foldWords);
+    const names = [s.phrase, ...(s.aliases ?? [])].flatMap((n) => [foldWords(n), uiQueryWords(n).whole]);
     if (names.includes(exact) || names.includes(whole) || (phrase && names.includes(phrase))) return s;
   }
   return null;

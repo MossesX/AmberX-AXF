@@ -1,0 +1,8 @@
+{
+  "$comment": "ui-registry@1: this plugin's own UI, declared (the scanner keeps these as written; aliases are what a person may say).",
+  "items": [
+    { "id": "dialog:ui-shortcuts", "label": "UI shortcuts", "aliases": ["quick open", "open anything", "shortcuts", "the shortcuts dialog", "ui registry"], "icon": "zap", "open": { "dialog": "ui-shortcuts" } },
+    { "id": "settings:plugins/ui-shortcuts", "label": "UI shortcuts settings", "aliases": ["my shortcuts", "shortcut settings", "voice shortcuts"], "icon": "zap", "open": { "settings": "ui-shortcuts" } },
+    { "id": "action:ui-shortcuts.dialog", "label": "Open UI shortcuts", "aliases": ["open the quick open"], "open": { "action": "ui-shortcuts.dialog" } }
+  ]
+}
