@@ -1,17 +1,17 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.notes-browser",
-  "name": "Notes",
+  "name": "Claude files",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Brett's saved notes in one place: handoffs, session logs, plans, install notes and saved commands, kept in the hub's shared Claude files (/projects/_shared/_claude/notes). Folders and notes on the left, the rendered note on the right; search, sort by date or name, new note, rename, move between folders, delete (confirmed, history kept on the hub) and an edit switch that saves only when nobody else changed the note. Provides axf.notes@1 for other plugins (MD Studio's Notes scope).",
+  "description": "The file manager for Brett's saved Markdown notes: handoffs, session logs, plans, install notes and saved commands, kept in the hub's shared Claude files (/projects/_shared/_claude/notes). Folders and notes on the left, the rendered note on the right; search, sort by date or name, new note, rename, move between folders, delete (confirmed, history kept on the hub) and an edit switch that saves only when nobody else changed the note. Provides axf.notes@1 for other plugins (MD Studio's Notes scope).",
   "targets": [
     "axf-console"
   ],
   "provides": [
-    "view:notes",
+    "view:claude-files",
     "service:axf.notes@1",
     "settings-tab:notes-browser"
   ],

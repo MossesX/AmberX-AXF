@@ -20,8 +20,8 @@ import { Button, Chip, Container, Icon, IconButton, Note, SelectField, Switch, T
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '../../../axf/libs/datagrid';
 import { native } from '../../../native';
 import { withMic } from '../../../miclease';
-import { parseIntent, validateIntent } from '../../notes/web/core';
-import { NOTES_ID, load as loadNotes, mutate, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
+import { parseIntent, validateIntent } from '@plugin/notes-tasks/web/notes/core';
+import { NOTES_ID, load as loadNotes, mutate, runIntent, snapshot as notesSnapshot } from '@plugin/notes-tasks/web/notes/store';
 import { aiEnabled, aiReady, molly as askMolly, prompt as askPrompt, useAiEnabled, useAiStatus } from '../../ai/web/client';
 import { askAloud, registerVoiceRouter, say as speak } from '../../voice/web/index';
 import {

@@ -15,14 +15,14 @@ python3 server/test_server.py    # the AmberX server (wall, AI router, intents)
 sudo bash deploy/install.sh      # on the VPS: serve it at https://amberx.amberxai.com (--remove rolls back)
 ```
 
-**Notes, tasks and AI (Oct 27 2026):** plugins `notes` (lists tree with categories and sub-lists, Inbox, a Plugins
+**Notes, tasks and AI (Oct 27 2026):** the shared Notes and tasks plugin (`apps/console-web/plugins/notes-tasks`, the console loads the same folder): notes (lists tree with categories and sub-lists, Inbox, a Plugins <!-- axf-plugin:notes-tasks -->
 folder with one list per plugin made automatically, the console's Voice notes read-only; tabs Inbox / Lists / Notes /
-Pinned / Search, lists manager, export), `tasks` (Today / Upcoming / Todo / All / Done, grid or tree, checklists,
+Pinned / Search, lists manager, export), tasks (Today / Upcoming / Todo / All / Done, grid or tree, checklists,
 subtasks), `dictation` (hands-free note taking with a review card), `voice` (sentences like "note in work: …", "add a todo
 … by friday", "move the last note to ideas" run through the notes intents; Voice commands page with tabs built from the
 app's pages and actions), `web` (pages in tabs, bookmarks and clips as notes) and `ai` (AI connection settings, Ask my
 notes). Data: axHub data server, hub project `amberx-axf`, folder `amberx-notes/` (shared by every device). The core is
-`src/plugins/notes/web/core.ts`; every change goes through an *intent* (`validateIntent` → `applyIntent`), from the
+`apps/console-web/plugins/notes-tasks/web/notes/core.ts`; every change goes through an *intent* (`validateIntent` → `applyIntent`), from the <!-- axf-plugin:notes-tasks -->
 local parser or the AI. **The site is now served by AmberX's own server** (`server/main.py`, FastAPI, behind the wall):
 it serves `dist/` and `/api/ai/*` — the LLM router (Claude plan ↔ Claude API switch, any provider in
 `framework/schemas/ai-providers.json`, fallback order, retries, keep-alive); keys live only on the server in `/data`.

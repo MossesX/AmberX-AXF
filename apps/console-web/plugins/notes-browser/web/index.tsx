@@ -185,12 +185,12 @@ function SettingsPanel() {
 
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.notes-browser',
-  label: 'Notes',
+  label: 'Claude files',
   version: '0.1.0',
   appMenu,
-  views: { notes: { title: 'Notes', icon: 'file', render: () => <NotesView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }] },
-  settingsTabs: [{ id: 'notes-browser', label: 'Notes', icon: 'file', order: 90, parent: 'plugins' }],
+  views: { 'claude-files': { title: 'Claude files', icon: 'file', render: () => <NotesView /> } },
+  nav: { label: 'Plugins', items: [{ id: 'claude-files', label: 'Claude files', icon: 'file', view: 'claude-files' }] },
+  settingsTabs: [{ id: 'notes-browser', label: 'Claude files', icon: 'file', order: 90, parent: 'plugins' }],
   settingsPanels: [
     { id: 'notes-browser.where', tab: 'notes-browser', title: 'Where notes live', icon: 'folder', order: 10, render: () => <SettingsPanel /> },
     { id: 'notes-browser.lifecycle', tab: 'notes-browser', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

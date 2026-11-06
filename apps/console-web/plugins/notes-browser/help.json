@@ -13,8 +13,8 @@
     "scope": "plugin:notes-browser",
     "entries": [
       {
-        "target": "view:notes",
-        "title": "Notes",
+        "target": "view:claude-files",
+        "title": "Claude files",
         "text": "Every note you asked Claude to save, in one place on the hub: handoffs, session logs, plans, install notes and saved commands. Pick one on the left to read it.",
         "kind": "screen"
       },
@@ -102,11 +102,18 @@
         "target": "notes-browser",
         "title": "Notes settings",
         "text": "Where the notes are kept, and the plugin's install and uninstall panel."
+      },
+      {
+        "target": "claude-files",
+        "title": "Claude files",
+        "text": "Shows the “Claude files” part of this screen. Part of Claude files.",
+        "kind": "tab",
+        "draft": true
       }
     ],
     "intros": [
       {
-        "screen": "notes",
+        "screen": "claude-files",
         "title": "Notes",
         "steps": [
           {
