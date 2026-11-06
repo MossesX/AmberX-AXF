@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1149,
- "updatedAt": "2026-11-06T21:13:54.521Z",
+ "rev": 1150,
+ "updatedAt": "2026-11-06T21:14:15.022Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97516,16 +97516,21 @@
    "title": "Notifications control panel",
    "category": "",
    "detail": "One console Notifications panel: one registry every sender checks; per type on/off, channel, priority, quiet hours, test send, master switch, per app; REST + MCP + CLI. Registers the UI Review type from ui-review-notify-session-audio, does not rebuild it.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/notifications-control-panel",
-   "pr": "",
+   "pr": "#367",
    "createdAt": "2026-11-06T20:57:51.699Z",
-   "updatedAt": "2026-11-06T21:13:53.384Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-06T21:13:56.938Z",
+   "builtAt": "2026-11-06T21:13:55.212Z",
+   "notes": [
+    {
+     "text": "PR #367, UI Review submitted. Opus: registry, axf.notify@1 and the additive notify field in /api/alerts; Fable review advised. AmberX needs a new APK to mute approvals and veto.",
+     "at": "2026-11-06T21:13:56.938Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -97644,12 +97649,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T21:13:54.264Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T20:57:51.700Z",
-     "updatedAt": "2026-11-06T20:57:51.700Z"
+     "updatedAt": "2026-11-06T21:13:54.327Z"
     },
     {
      "id": "s6",
@@ -97666,12 +97671,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T21:13:55.211Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T20:57:51.700Z",
-     "updatedAt": "2026-11-06T20:57:51.700Z"
+     "updatedAt": "2026-11-06T21:13:55.268Z"
     }
    ],
    "profiles": [
@@ -97682,7 +97687,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
