@@ -29,7 +29,7 @@ public class ListenerRulesTest {
 
     private static ListenerRules.Policy policy(JSONObject c) { return ListenerRules.policy(c.optJSONObject("policy"), ""); }
 
-    private static long want(JSONObject c) { return c.isNull("want") ? -1 : c.getLong("want"); }
+    private static long want(JSONObject c) throws Exception { return c.isNull("want") ? -1 : c.getLong("want"); }
 
     @Test
     public void defaultsMatchTheLibrary() throws Exception {
