@@ -244,7 +244,11 @@ final class HubRules {
 
     static final class ConsoleAlert {
         final String key, stamp, title, body, severity;
-        ConsoleAlert(String key, String stamp, String title, String body, String severity) { this.key = key; this.stamp = stamp; this.title = title; this.body = body; this.severity = severity; }
+        /** Where a tap goes (one of Brett's pages, {@link OpenUrlRules#linkOr}) and the word in front of the title. */
+        final String link, label;
+        ConsoleAlert(String key, String stamp, String title, String body, String severity, String link, String label) {
+            this.key = key; this.stamp = stamp; this.title = title; this.body = body; this.severity = severity; this.link = link; this.label = label;
+        }
     }
     static final class Alerts {
         /** open, loud alerts (one stamp per key + lastAt: a repeat of the same alert alerts again) */
@@ -271,7 +275,11 @@ final class HubRules {
                 if (a.optBoolean("resolved") || a.optBoolean("ack")) { closed.add(key); continue; }
                 String sev = a.optString("severity", "info");
                 if (!LOUD.contains(sev) || !keys.add(key)) continue;
-                open.add(new ConsoleAlert(key, key + "@" + a.optLong("lastAt"), cap(a.optString("title", "Console alert"), 200), cap(a.optString("body", ""), 600), sev));
+                JSONObject meta = a.optJSONObject("meta");
+                String label = cap(meta == null ? "" : meta.optString("label", ""), 40).trim();
+                if (label.isEmpty()) label = "critical".equals(sev) || "error".equals(sev) ? "Console error" : "Console warning";
+                open.add(new ConsoleAlert(key, key + "@" + a.optLong("lastAt"), cap(a.optString("title", "Console alert"), 200), cap(a.optString("body", ""), 600), sev,
+                    OpenUrlRules.linkOr(a.optString("link", ""), CONSOLE), label));
             }
             return new Alerts(open, closed);
         } catch (Exception e) {

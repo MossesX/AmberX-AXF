@@ -8,7 +8,7 @@ import * as cf from './conform.mjs';
 import * as P from '../../../../../framework/core/ui-predict.mjs';
 import type { Prediction } from '../../../../../framework/core/ui-predict.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
-import { FOLDER, GROUP_BYS, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
+import { FOLDER, GROUP_BYS, GROUP_PARAM, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
 import { ScreenshotsTab } from './screenshots';
 import { CompareView, GalleryView, GridView, GroupsView, TreeView } from './views';
@@ -167,11 +167,12 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const [shotCount, setShotCount] = useState<number | null>(null);
   const [data, setData] = useState<Loaded | null>(null);
   const [error, setError] = useState('');
-  const [kind, setKindRaw] = useState<string>(() => section ?? setting(rt, KEYS.section, ''));
+  const [groupId, setGroupId] = useState(() => new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM) ?? '');
+  const [kind, setKindRaw] = useState<string>(() => section ?? (groupId ? '' : setting(rt, KEYS.section, '')));
   const [view, setViewRaw] = useState<ViewId>(() => setting(rt, KEYS.view, 'grid') as ViewId);
   const [sort, setSortRaw] = useState<string>(() => setting(rt, KEYS.sort, 'waiting'));
   const [groupBy, setGroupByRaw] = useState<GroupBy>(() => setting(rt, KEYS.groupBy, 'kind') as GroupBy);
-  const [status, setStatusRaw] = useState<string>(() => setting(rt, KEYS.status, ''));
+  const [status, setStatusRaw] = useState<string>(() => (groupId ? '' : setting(rt, KEYS.status, '')));
   const [device, setDeviceRaw] = useState<string>(() => setting(rt, KEYS.device, ''));
   const [app, setApp] = useState('');
   const [q, setQ] = useState('');
@@ -195,7 +196,8 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const kinds = useMemo(() => (data ? core.mergeKinds(data.kinds.base, data.kinds.extra, all) : []), [data, all]);
   const counts = useMemo(() => core.counts(all), [all]);
   const appList = useMemo(() => core.apps(all), [all]);
-  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q }), sort), [all, kind, status, app, q, sort]);
+  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q, group: groupId }), sort), [all, kind, status, app, q, groupId, sort]);
+  const groupName = groupId ? String(all.find((x) => x.group === groupId)?.groupName || 'this group') : '';
   const picked = data?.picks.picked ?? [];
 
   const decide = async (ids: string[], d: Decision, comment = '') => {
@@ -252,6 +254,12 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
         <TabGroup id="ui-review.sections" label="Sections" className="axp-ui-review__sections" value={kind} onChange={setKind}
           tabs={[{ value: '', label: 'All', badge: `${c.waiting}/${c.total}` }, ...kinds.map((k) => { const n = counts[k.id] ?? { waiting: 0, total: 0 }; return { value: k.id, label: k.label, icon: k.icon, title: k.desc, badge: `${n.waiting}/${n.total}` }; })]} />
 
+        {groupId && (
+          <div className="fx-row fx-row--wrap">
+            <span className="fx-small">Showing <b>{groupName}</b> ({rows.length})</span>
+            <Button size="sm" tone="quiet" onClick={() => setGroupId('')}>Show everything</Button>
+          </div>
+        )}
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />
           <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">

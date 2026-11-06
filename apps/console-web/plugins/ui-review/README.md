@@ -192,3 +192,11 @@ with and without into, repair of ungrouped shots) · `node --experimental-strip-
 
 Captured with `AXF_APPEARANCE_HUB=off AXF_UI_REVIEW_DIR=<demo> node framework/cli/rebuild-shots.mjs --shots
 _claude/memory/docs/ui-review/shots/shots.json …` (views switched with `AXF.navigate` + the View dropdown).
+
+## Phone notifications (Nov 6 2026)
+
+Every submit raises one console alert per group (`server/notify.py`, source `ui-review`, key `ui-review:group:<id>`):
+title `<build>: <n> items waiting`, link `?axf-review-group=<id>`. AmberX's watch reads `/api/alerts` and shows it on its
+high-importance channel, within its check interval (30 s by default). A tap opens UI Review filtered to that group. New
+items update it, deciding everything takes it away. Plain code, no model. Switch: Settings → Plugins → Claude →
+Notifications → *UI Review ready*.

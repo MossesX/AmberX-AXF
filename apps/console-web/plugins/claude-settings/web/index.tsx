@@ -193,6 +193,7 @@ const GROUP_PANELS: { id: string; title: string; icon: string }[] = [
   { id: 'verification', title: 'Verification', icon: 'shield' },
   { id: 'talking', title: 'Talking', icon: 'mic' },
   { id: 'notifications', title: 'Notifications', icon: 'bell' },
+  { id: 'recording', title: 'Session recording', icon: 'mic' },
   { id: 'memory', title: 'Memory and notes', icon: 'file' },
 ];
 
