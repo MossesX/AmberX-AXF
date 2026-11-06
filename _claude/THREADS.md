@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:10 UTC · `changes-chat-log` s5 done, → complete, branch claude/changes-chat-log, PR #347 (current) · foreign-write
 - 2026-11-04 22:11 UTC · `shipped-features-r2` → pending, note (angel) · reconciler
 - 2026-11-04 22:17 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
 - 2026-11-04 22:19 UTC · `app-voice-commands` note (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 21:07 UTC · `notifications-control-panel` s1 done (current) · orchestrator
 - 2026-11-06 21:07 UTC · `notifications-control-panel` s2 done (current) · orchestrator
 - 2026-11-06 21:07 UTC · `notifications-control-panel` s3 done (current) · orchestrator
+- 2026-11-06 21:13 UTC · `notifications-control-panel` s4 done (current) · orchestrator
 
 ## Token passes (log)
 

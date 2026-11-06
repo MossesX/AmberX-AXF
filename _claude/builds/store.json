@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1148,
- "updatedAt": "2026-11-06T21:07:41.524Z",
+ "rev": 1149,
+ "updatedAt": "2026-11-06T21:13:54.521Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97523,7 +97523,7 @@
    "branch": "claude/notifications-control-panel",
    "pr": "",
    "createdAt": "2026-11-06T20:57:51.699Z",
-   "updatedAt": "2026-11-06T21:07:22.631Z",
+   "updatedAt": "2026-11-06T21:13:53.384Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97622,12 +97622,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T21:13:53.384Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T20:57:51.700Z",
-     "updatedAt": "2026-11-06T20:57:51.700Z"
+     "updatedAt": "2026-11-06T21:13:53.459Z"
     },
     {
      "id": "s5",
@@ -97682,7 +97682,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
