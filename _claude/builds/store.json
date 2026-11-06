@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1103,
- "updatedAt": "2026-11-06T18:07:17.636Z",
+ "rev": 1104,
+ "updatedAt": "2026-11-06T18:07:34.696Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -96502,9 +96502,14 @@
    "branch": "claude/refresh-token-save",
    "pr": "#359",
    "createdAt": "2026-11-06T18:07:12.388Z",
-   "updatedAt": "2026-11-06T18:07:13.914Z",
+   "updatedAt": "2026-11-06T18:07:17.279Z",
    "builtAt": "2026-11-06T18:07:13.301Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #359 open, not landed. Host cron axf-claude-token-save needs deploy/install-console.sh once after merge. Live mossesx login is not saved under a name yet: Save it in Claude accounts (.active still says account-1, brettspend).",
+     "at": "2026-11-06T18:07:17.279Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -96551,7 +96556,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
