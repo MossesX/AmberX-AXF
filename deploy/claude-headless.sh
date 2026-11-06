@@ -57,6 +57,12 @@
 # token refresh writes only to the build's copy, which is deleted when the session ends. Account: --account <name>
 # (or AXF_CLAUDE_ACCOUNT; default the active saved account). It is recorded in the log's `# login …` line, the tmux tag
 # @axf_login, a session-login event and a note on the orchestrator build. AXF_OWN_LOGIN=off runs on the shared login.
+# Progress file (build-progress@1, Brett, Nov 6 2026: "never stops to update the console"): the run names its build
+# (AXF_BUILD_ID, else the --name / brief lookup), exports AXF_BUILD_ID into the session, marks the build's progress file
+# running with the session, agent and worktree when Claude starts and stopped / done when it exits, then folds it into
+# the builds store in the background (framework/cli/build-progress.mjs fold --apply). The brief gets one line: record
+# steps with `build-progress.mjs step <id> done` (a local file write) and carry on; never stop to tick the console.
+# AXF_PROGRESS=off turns it off.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -97,6 +103,14 @@ event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (en
     require("fs").appendFileSync(require("path").join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
 }
 export HDIR
+PROGRESS_JS="$HERE/../framework/cli/build-progress.mjs"
+progress_on() { [[ "${AXF_PROGRESS:-on}" != off ]] && command -v node >/dev/null && [[ -f "$PROGRESS_JS" ]] && [[ -n "${AXF_BUILD_ID:-}" ]]; }
+progress() { progress_on || return 0; node "$PROGRESS_JS" "$@" >/dev/null 2>&1 || true; }   # never fails or holds the run
+if [[ -z "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null; then   # which orchestrator build this run is
+  read -r _ AXF_BUILD_ID < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+fi
+export AXF_BUILD_ID="${AXF_BUILD_ID:-}"
+PROGRESS_NOTE="Progress: this build's progress file is the console's view of where you are. After each step run \`node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"\` (and \`step <next> running\` when you start one; \`note \"…\"\`, \`link --branch <b> --pr <n>\`, \`status blocked --note \"why\"\` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=\${AXF_BUILD_ID} is set for you."
 
 WATCH_LIVE="$HERE/../framework/cli/watch-live.mjs"
 WATCH_NOTE='Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault).'
@@ -212,6 +226,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
+  if progress_on; then
+    prompt="$prompt"$'\n\n'"${PROGRESS_NOTE//\$\{AXF_BUILD_ID\}/$AXF_BUILD_ID}"
+    [[ -f "$(node "$PROGRESS_JS" path "$AXF_BUILD_ID" 2>/dev/null)" ]] || progress init "$AXF_BUILD_ID"
+    progress link --session "$login_session" --agent "${AXF_AGENT_NAME:-$agent}" --worktree "$(pwd)" --branch "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    progress status running --note "session $login_session started"
+  fi
   if look_on; then   # look changes Brett asked for on the predicted look ride along; the look refreshes as the diff grows
     look_add="$(node "$LOOK" addenda --name "$name" --brief "$brief" 2>/dev/null)"
     [[ -n "$look_add" ]] && prompt="$prompt"$'\n\n'"$look_add"
@@ -243,6 +263,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   done
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   release_login   # the build's own login copy goes with the session
+  if progress_on; then   # where the run left off; the store gets it in the background (one fold, zero tokens)
+    left="$(node "$PROGRESS_JS" show "$AXF_BUILD_ID" --json 2>/dev/null | node -e 'try{const p=JSON.parse(require("fs").readFileSync(0,"utf8"));console.log(p.steps.filter(s=>!["done","skipped"].includes(s.state)).length)}catch{console.log(1)}' 2>/dev/null)"
+    if (( st == 0 )) && [[ "$left" == 0 ]]; then progress status done --note "session ended (exit 0), every step done"
+    else progress status stopped --note "session ended (exit $st), ${left:-?} step(s) left"; fi
+    (node "$PROGRESS_JS" fold "$AXF_BUILD_ID" --apply >/dev/null 2>&1 &)
+  fi
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
   event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
@@ -313,7 +339,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_BUILD_ID AXF_PROGRESS AXF_PROGRESS_DIR; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux

@@ -31,7 +31,8 @@ export function findBuild(store, { build = '', name = '', brief = '' } = {}) {
   const live = (store?.builds ?? []).filter((b) => !b.deleted);
   const byId = (id) => (id ? live.find((b) => b.id === id) ?? null : null);
   const bare = String(name).replace(/^axf-/, '').replace(/^build:/, '');
-  const fromBrief = /Continue build ".*?" \(([a-z0-9][a-z0-9._-]*)\)/.exec(brief)?.[1] ?? /orchestrator\.mjs (?:brief|next) ([a-z0-9][a-z0-9._-]*)/.exec(brief)?.[1] ?? '';
+  const fromBrief = /Continue build ".*?" \(([a-z0-9][a-z0-9._-]*)\)/.exec(brief)?.[1] ?? /orchestrator\.mjs (?:brief|next) ([a-z0-9][a-z0-9._-]*)/.exec(brief)?.[1]
+    ?? /Orchestrator build id: ([a-z0-9][a-z0-9._-]*)/.exec(brief)?.[1] ?? ''; // the console's launch brief
   return byId(build) ?? byId(bare) ?? byId(fromBrief);
 }
 
