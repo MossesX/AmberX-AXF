@@ -58,6 +58,31 @@
 # (deploy/claude-token-save.mjs), and the copy is deleted when the session ends. Account: --account <name>
 # (or AXF_CLAUDE_ACCOUNT; default the active saved account). It is recorded in the log's `# login …` line, the tmux tag
 # @axf_login, a session-login event and a note on the orchestrator build. AXF_OWN_LOGIN=off runs on the shared login.
+# Lean headless (token-optimize, Nov 6 2026, Brett: optimization first): the run skips the CLAUDE.md chain and the rules
+# files (CLAUDE_CODE_DISABLE_CLAUDE_MDS=1) and gets its task brief plus a short rules brief instead, composed for this
+# launch by framework/cli/rules-brief.mjs and passed with --append-system-prompt, so it stays in the cached system prompt
+# and survives compaction. No brief composed (none applies, lean switched off in Claude settings → Rules briefs, the CLI
+# failed) = the run loads the full chain as before, never rules-free. AXF_LEAN_HEADLESS=off forces the full chain.
+# Token log (token-turn@1): deploy/claude-stream.mjs writes every turn (tokens, cost, model, account, build/step, files
+# read, CLAUDE.md / rules reads flagged) to the log as it happens, plain code on the VPS. AXF_TOKEN_LOG=off skips it.
+# API runs (api-run@1, Brett, Nov 6 2026): a run billed to an API key (AXF_CLAUDE_AUTH=api or a key in the environment)
+# waits for Brett's own console approval with its estimated cost, and shows the final cost after. A confirm, never a
+# veto: a waiter starts it once he approves, a denied one never starts, and there is no switch that skips it.
+# Progress file (build-progress@1, Brett, Nov 6 2026: "never stops to update the console"): the run names its build
+# (AXF_BUILD_ID, else the --name / brief lookup), exports AXF_BUILD_ID into the session, marks the build's progress file
+# running with the session, agent and worktree when Claude starts and stopped / done when it exits, then folds it into
+# the builds store in the background (framework/cli/build-progress.mjs fold --apply). The brief gets one line: record
+# steps with `build-progress.mjs step <id> done` (a local file write) and carry on; never stop to tick the console.
+# AXF_PROGRESS=off turns it off.
+# Chain control (chain-control@1, Brett, Nov 6 2026: finish the optimization): before each session the run asks
+# framework/cli/chain-control.mjs what to do (the registry shared by Claude settings and MD Studio, with the build's and
+# step's overrides on top): which chain files go in the system prompt and which are only named (the native chain when
+# every file is `always`), the caps on tool output (BASH_MAX_OUTPUT_LENGTH, MAX_MCP_OUTPUT_TOKENS,
+# CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS) and the step's token budget (deploy/claude-stream.mjs warns once and, at the
+# stop level, ends the session). A build runs in one session by default (per-build). per-step runs a fresh session per
+# open step, each opened by a short handoff note from the progress file and the exact files the step lists; a step left
+# open, a budget stop or a step pinned above this run's model ends the loop. per-phase = a fresh session when the model
+# changes. The registry unreachable = the rules brief alone, as before. AXF_CHAIN_CONTROL=off skips all of it.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -98,6 +123,14 @@ event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (en
     require("fs").appendFileSync(require("path").join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
 }
 export HDIR
+PROGRESS_JS="$HERE/../framework/cli/build-progress.mjs"
+progress_on() { [[ "${AXF_PROGRESS:-on}" != off ]] && command -v node >/dev/null && [[ -f "$PROGRESS_JS" ]] && [[ -n "${AXF_BUILD_ID:-}" ]]; }
+progress() { progress_on || return 0; node "$PROGRESS_JS" "$@" >/dev/null 2>&1 || true; }   # never fails or holds the run
+if [[ -z "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null; then   # which orchestrator build this run is
+  read -r _ AXF_BUILD_ID < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+fi
+export AXF_BUILD_ID="${AXF_BUILD_ID:-}"
+PROGRESS_NOTE="Progress: this build's progress file is the console's view of where you are. After each step run \`node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"\` (and \`step <next> running\` when you start one; \`note \"…\"\`, \`link --branch <b> --pr <n>\`, \`status blocked --note \"why\"\` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=\${AXF_BUILD_ID} is set for you."
 
 WATCH_LIVE="$HERE/../framework/cli/watch-live.mjs"
 WATCH_NOTE='Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault).'
@@ -144,6 +177,47 @@ release_login() {
   login_dir="" login_line=""; return 0
 }
 
+RULES_BRIEF="$HERE/../framework/cli/rules-brief.mjs"
+lean_args=() lean_line=""
+lean_setup() {   # sets lean_args + lean_line and drops the CLAUDE.md chain, only once a rules brief really exists
+  [[ "${AXF_LEAN_HEADLESS:-on}" == off ]] && return 0
+  command -v node >/dev/null && [[ -f "$RULES_BRIEF" ]] || return 0
+  local text bytes
+  text="$(node "$RULES_BRIEF" compose --brief "$brief" --name "$name" --model "$model" --agent "${AXF_AGENT:-$agent}" 2>/dev/null)" || return 0
+  [[ -n "$text" ]] || return 0
+  bytes="${#text}"
+  export CLAUDE_CODE_DISABLE_CLAUDE_MDS=1
+  lean_args=(--append-system-prompt "$text")
+  lean_line="# lean: no CLAUDE.md chain · rules brief ~$((bytes / 4)) tokens"
+}
+
+CHAIN_JS="$HERE/../framework/cli/chain-control.mjs"
+cc_dir="" cc_mode=single cc_step="" cc_steps="" cc_native=1 cc_model="" cc_stop=0 cc_bash=0 cc_mcp=0 cc_read=0 cc_warn=0 cc_halt=0 cc_tokens=0
+chain_plan() {   # $1 = the steps the last session had: sets cc_*, lean_args and lean_line for the next session
+  lean_args=() lean_line=""; cc_mode=single; cc_step=""; cc_steps=""; cc_model=""; cc_stop=0
+  if [[ "${AXF_CHAIN_CONTROL:-on}" == off ]] || ! command -v node >/dev/null || [[ ! -f "$CHAIN_JS" ]]; then lean_setup; return 0; fi
+  [[ -n "$cc_dir" ]] || cc_dir="$(mktemp -d "${TMPDIR:-/tmp}/axf-chain-XXXXXX")"
+  rm -f "$cc_dir"/{prompt.md,append.md,stop.txt,budget-stopped,claude.pid}
+  local line
+  line="$(node "$CHAIN_JS" plan --dir "$cc_dir" --brief "$brief" --name "$name" --agent "${AXF_AGENT:-$agent}" ${model:+--model "$model"} ${AXF_BUILD_ID:+--build "$AXF_BUILD_ID"} ${1:+--prev "$1"} 2>/dev/null | grep -E '^cc_mode=(step|single) cc_step=[A-Za-z0-9._-]* cc_steps=[A-Za-z0-9.,_-]* cc_native=[01] cc_model=[A-Za-z0-9._-]* cc_stop=[012] cc_bash=[0-9]+ cc_mcp=[0-9]+ cc_read=[0-9]+ cc_warn=[0-9]+ cc_halt=[0-9]+ cc_tokens=[0-9]+$' | tail -1)"
+  if [[ -z "$line" ]]; then [[ -z "$1" ]] && lean_setup; return 0; fi
+  eval "$line"
+  (( cc_stop == 0 )) || return 0
+  local k v
+  for k in BASH_MAX_OUTPUT_LENGTH:cc_bash MAX_MCP_OUTPUT_TOKENS:cc_mcp CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS:cc_read; do
+    v="${k##*:}"; if (( ${!v} > 0 )); then export "${k%%:*}=${!v}"; else unset "${k%%:*}"; fi
+  done
+  if (( cc_native )); then unset CLAUDE_CODE_DISABLE_CLAUDE_MDS; lean_line="# chain: Claude Code's own chain"
+  else
+    export CLAUDE_CODE_DISABLE_CLAUDE_MDS=1
+    lean_args=(--append-system-prompt "$(cat "$cc_dir/append.md")")
+    lean_line="# lean: no CLAUDE.md chain · chain ~${cc_tokens} tokens"
+  fi
+  [[ -n "$cc_step" ]] && lean_line="$lean_line · fresh session: ${cc_steps}"
+  return 0
+}
+run_claude() { [[ -n "$cc_dir" ]] && printf '%s' "$BASHPID" > "$cc_dir/claude.pid"; exec claude "$@"; }   # the pid is what a budget stop ends
+
 GATE="$HERE/../framework/cli/model-gate.mjs"
 UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run \`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>\`, ask once, and stop. Never approve a model switch upgrade yourself (no \`act approve\` on an upgrade), never relaunch on a higher model."  # axf-plugin:build-orchestrator
 # The line for the policy in force (owner-only Claude setting "Fable upgrades need my approval", Brett, Nov 4 2026)
@@ -187,6 +261,23 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
   fi
 fi
 
+API_GATE="$HERE/../framework/cli/api-run.mjs"
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$API_GATE" ]]; then
+  api_build=""; read -r _ api_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  api_line="$(node "$API_GATE" gate --name "$name" --brief "$brief" --model "${model:-opus}" ${api_build:+--build "$api_build"} 2>&1)"; api_st=$?
+  AXF_API_RUN="$(sed -n 's/^run=//p' <<<"$api_line" | head -1)"
+  api_say="$(grep -v '^run=' <<<"$api_line" | tail -1)"
+  if (( api_st == 5 )); then echo "claude-headless: $api_say" >&2; echo "$api_say"; exit 3; fi
+  if (( api_st == 4 )); then
+    ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait "$2" && exec bash "${@:3}"' _ "$API_GATE" "$AXF_API_RUN" \
+      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-api-wait.log 2>&1 &
+    echo "queued for API approval in $(pwd): $api_say"
+    exit 0
+  fi
+  if (( api_st != 0 )); then echo "claude-headless: not started, the API-run check failed: $api_say" >&2; exit 3; fi
+  export AXF_API_RUN
+fi
+
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
     # shellcheck disable=SC1090
@@ -212,10 +303,16 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   own_login "${account:-active}"
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
-  prompt="$(cat "$brief")"
+  brief_text="$(cat "$brief")"; prompt="$brief_text"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
+  if progress_on; then
+    prompt="$prompt"$'\n\n'"${PROGRESS_NOTE//\$\{AXF_BUILD_ID\}/$AXF_BUILD_ID}"
+    [[ -f "$(node "$PROGRESS_JS" path "$AXF_BUILD_ID" 2>/dev/null)" ]] || progress init "$AXF_BUILD_ID"
+    progress link --session "$login_session" --agent "${AXF_AGENT_NAME:-$agent}" --worktree "$(pwd)" --branch "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    progress status running --note "session $login_session started"
+  fi
   if look_on; then   # look changes Brett asked for on the predicted look ride along; the look refreshes as the diff grows
     look_add="$(node "$LOOK" addenda --name "$name" --brief "$brief" 2>/dev/null)"
     [[ -n "$look_add" ]] && prompt="$prompt"$'\n\n'"$look_add"
@@ -225,28 +322,60 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # Several Claude accounts (Nov 2 2026, Brett): when the run stops on a usage limit ("You've hit your weekly limit"),
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
+  [[ -n "${AXF_API_RUN:-}" ]] && node "$API_GATE" start "$AXF_API_RUN" --session "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" >/dev/null 2>&1
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
-  while :; do
-    if command -v node >/dev/null; then
-      ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
-      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
-    else
-      claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
+  log_build=""   # the build this run's turns are logged on (token log)
+  read -r _ log_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  notes="${prompt:${#brief_text}}"   # what the launcher added to the brief: every session gets it
+  st=0 prev_steps=""
+  while :; do   # one pass = one fresh session: a step (or a phase), or the whole brief when the build runs in one session
+    chain_plan "$prev_steps"
+    if (( cc_stop == 2 )); then printf '\n\033[1m── every step is done ──\033[0m\n'; break; fi
+    if (( cc_stop == 1 )); then
+      why="$(cat "$cc_dir/stop.txt" 2>/dev/null)"; printf '\n\033[1m── stopped: %s ──\033[0m\n' "$why"
+      progress note "stopped: $why"; [[ -n "$prev_steps" ]] || st=3
+      break
     fi
-    st=${PIPESTATUS[0]}
-    (( switches < max_switches )) || break
-    tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
-    sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
-    command -v node >/dev/null && [[ -f "$sw_js" ]] || break
-    printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
-    sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
-    printf '%s · starting again\n\n' "$sw"
-    [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
-    switches=$((switches + 1))
+    [[ -n "$lean_line" ]] && printf '\033[2m%s\033[0m\n' "$lean_line"
+    run_prompt="$prompt"; step_args=(); tee_a=(); [[ -n "$prev_steps" ]] && tee_a=(-a)   # the log keeps every step's session
+    if [[ "$cc_mode" == step ]]; then
+      run_prompt="$(cat "$cc_dir/prompt.md")$notes"
+      [[ -n "$cc_model" ]] && step_args=(--model "$cc_model")
+      progress step "$cc_step" running
+    fi
+    while :; do
+      if command -v node >/dev/null; then
+        ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
+        hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "${cc_model:-$model}" --account "$login_account" --build "${log_build:-${AXF_BUILD_ID:-}}" ${cc_step:+--step "$cc_step"} --budget-warn "$cc_warn" --budget-stop "$cc_halt" ${cc_dir:+--budget-pid "$cc_dir/claude.pid" --budget-stopped "$cc_dir/budget-stopped"})
+        run_claude -p "$@" "${step_args[@]}" "${lean_args[@]}" --output-format stream-json --verbose "$run_prompt" 2>&1 | tee "${tee_a[@]}" "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "${tee_a[@]}" "$log"
+      else
+        claude -p "$@" "${step_args[@]}" "${lean_args[@]}" "$run_prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "${tee_a[@]}" "$log"
+      fi
+      st=${PIPESTATUS[0]}
+      (( switches < max_switches )) || break
+      tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
+      sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
+      command -v node >/dev/null && [[ -f "$sw_js" ]] || break
+      printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
+      sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
+      printf '%s · starting again\n\n' "$sw"
+      [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
+      switches=$((switches + 1))
+    done
+    if [[ -n "$cc_dir" && -f "$cc_dir/budget-stopped" ]]; then progress note "${cc_step:-this session} hit its token budget: stopped"; break; fi
+    (( st == 0 )) && [[ "$cc_mode" == step ]] || break
+    prev_steps="$cc_steps"
   done
+  [[ -n "$cc_dir" ]] && rm -rf "$cc_dir"
+  [[ -n "${AXF_API_RUN:-}" ]] && node "$API_GATE" finish "$AXF_API_RUN" --meter "$HDIR/$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}").meter.json" >/dev/null 2>&1
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   release_login   # the build's own login copy goes with the session
+  if progress_on; then   # where the run left off; the store gets it in the background (one fold, zero tokens)
+    left="$(node "$PROGRESS_JS" show "$AXF_BUILD_ID" --json 2>/dev/null | node -e 'try{const p=JSON.parse(require("fs").readFileSync(0,"utf8"));console.log(p.steps.filter(s=>!["done","skipped"].includes(s.state)).length)}catch{console.log(1)}' 2>/dev/null)"
+    if (( st == 0 )) && [[ "$left" == 0 ]]; then progress status done --note "session ended (exit 0), every step done"
+    else progress status stopped --note "session ended (exit $st), ${left:-?} step(s) left"; fi
+    (node "$PROGRESS_JS" fold "$AXF_BUILD_ID" --apply >/dev/null 2>&1 &)
+  fi
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
   event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
@@ -309,6 +438,7 @@ elif slots_on; then
 fi
 if ! command -v tmux >/dev/null; then
   login_session="$session"; own_login "${account:-active}"
+  lean_setup; set -- "$@" "${lean_args[@]}"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
   nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$(cat "$brief")" &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
@@ -317,7 +447,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_API_RUN AXF_BUILD_ID AXF_PROGRESS AXF_PROGRESS_DIR; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux

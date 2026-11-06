@@ -1622,6 +1622,13 @@ def list_plugin_services() -> dict[str, Any]:
     return {"items": plugin_services.available()}
 
 
+# ---------------------------------------------------------------- chain control (chain-control@1)
+
+# The registry the Claude plugin and MD Studio share, so it lives here and not in either of them.
+import chain_control  # noqa: E402
+
+app.include_router(chain_control.router, prefix="/api/chain-control", dependencies=[Depends(auth_always)])
+
 # ---------------------------------------------------------------- plugin lifecycle (framework/cli/plugin-lifecycle.mjs)
 #
 # Generic install / uninstall / stale-check for every plugin (plugin-lifecycle@1). These routes are the console's,

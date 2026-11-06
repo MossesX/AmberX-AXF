@@ -1,0 +1,18 @@
+/* Shared chain control panel (src/chainControl.tsx). Layout only: every value comes from theme tokens, controls from the framework. */
+.cl-chain__line { margin: 0; overflow-wrap: anywhere }
+.cl-chain__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 22), 1fr)); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
+.cl-chain__num { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; min-width: 0 }
+.cl-chain__num > :first-child { flex: 1 1 calc(var(--fx-space) * 18); min-width: 0 }
+.cl-chain__acts { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
+.cl-chain__rows { display: flex; flex-direction: column }
+.cl-chain__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.cl-chain__row:last-child, .cl-chain__hist:last-child { border-bottom: 0 }
+.cl-chain__row > .fx-stack { flex: 1 1 100%; min-width: 0 }
+.cl-chain__file { flex: 1 1 calc(var(--fx-space) * 24); min-width: 0; display: flex; flex-direction: column; overflow-wrap: anywhere }
+.cl-chain__ctl { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.cl-chain__pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-space) * 34); overflow: auto; padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.cl-chain__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 14), 1fr)); gap: var(--fx-dens-gap-md) }
+.cl-chain__stats > div { display: flex; flex-direction: column; min-width: 0 }
+.cl-chain__stats b { font-size: var(--fx-type-scale-lg) }
+.cl-chain__rule { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 16), 1fr)) auto; gap: var(--fx-dens-gap-md); align-items: end; padding-bottom: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.cl-chain__hist { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }

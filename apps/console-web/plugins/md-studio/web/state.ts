@@ -182,6 +182,17 @@ export function openDoc(id: string, where: 'tab' | 'split' | 'right' | 'bottom' 
   if (ng) setGroup(ng);
 }
 
+/** The chain control panel (shared with Claude settings) as a dock tab. */
+export function openChainControl() {
+  const wm = rt?.windows; if (!wm) return;
+  const tid = 'md-chain-control';
+  const open = wm.groupOf(tid);
+  if (open) { const g = wm.state.groups[open]!; wm.activate(open, g.tabs.findIndex((t) => t.id === tid)); setGroup(open); return; }
+  const tab = { id: tid, title: 'Headless sessions', kind: 'md-chain-control', icon: 'layers' };
+  const gid = targetGroup();
+  if (gid) { wm.addTab(gid, tab); setGroup(gid); } else setGroup(wm.openGroup([tab]));
+}
+
 /** Dock the outline + references beside the docs (IDE view) or take them away. */
 export function setSidePanes(on: boolean) {
   const wm = rt?.windows; if (!wm) return;

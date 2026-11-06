@@ -4,7 +4,12 @@
 // stdin: one JSON event per line; anything that isn't JSON is passed through unchanged. Never exits on a bad line.
 // --meter <file> --chain <file> [--session s] [--name n] [--agent a] [--model m]: also keep the live cost meter and the
 // context chain for the console (deploy/claude-meter.mjs), rewritten at most once a second and when the stream ends.
+// [--account a] [--build id] [--step id]: tag the token log's turns (framework/cli/token-log.mjs, on whenever --meter is on).
+// [--budget-warn n] [--budget-stop n] [--budget-pid file] [--budget-stopped file]: this session's token budget
+// (chain-control@1). Warn prints one line; stop ends claude (its pid is in the file) and leaves the second file behind.
+import { readFileSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
+import { budgetState, budgetTokens } from '../framework/core/chain-control.mjs';
 import { createMeter, readJson, writeJson } from './claude-meter.mjs';
 
 const dim = (s) => `\x1b[2m${s}\x1b[0m`;
@@ -59,7 +64,28 @@ export function parseArgs(argv) {
   return o;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+/** Token budget of one session: says once at warn, ends claude once at stop. */
+export function createBudget(o, meter, kill = (pid) => process.kill(pid, 'SIGTERM')) {
+  const limits = { warnTokens: Number(o['budget-warn']) || 0, stopTokens: Number(o['budget-stop']) || 0 };
+  const start = budgetTokens(meter.snapshot().tokens);
+  let warned = false; let stopped = false;
+  return {
+    check() {
+      const used = budgetTokens(meter.snapshot().tokens) - start;
+      const state = budgetState(used, limits);
+      if (state === 'stop' && !stopped) {
+        stopped = true;
+        if (o['budget-stopped']) writeFileSync(o['budget-stopped'], `${used}\n`);
+        try { kill(Number(readFileSync(o['budget-pid'], 'utf8'))); } catch { /* it already ended */ }
+        return red(`■ token budget: ${used} of ${limits.stopTokens} tokens, stopping this session`);
+      }
+      if (state === 'warn' && !warned) { warned = true; return red(`! token budget: ${used} tokens, past the ${limits.warnTokens} warning`); }
+      return '';
+    },
+  };
+}
+
+if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
   const o = parseArgs(process.argv.slice(2));
   let meter = null;
   if (o.meter) {
@@ -67,6 +93,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null });
     } catch { meter = null; }
   }
+  // Token log (token-turn@1): every turn of this run, as it completes. Plain code; it never stops the stream.
+  let turns = null;
+  if (o.meter && process.env.AXF_TOKEN_LOG !== 'off') {
+    try { turns = (await import('../framework/cli/token-log.mjs')).createWriter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', account: o.account ?? '', build: o.build ?? '', ...(o.step ? { step: o.step } : {}) }); } catch { turns = null; }
+  }
+  const budget = meter && (Number(o['budget-warn']) || Number(o['budget-stop'])) ? createBudget(o, meter) : null;
   let dirty = false; let chainAt = -1;
   const flush = () => {
     if (!meter || !dirty) return; dirty = false;
@@ -80,7 +112,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     let ev = null;
     try { ev = JSON.parse(line); } catch { process.stdout.write(`${line}\n`); return; }
     if (meter) { try { meter.add(ev); dirty = true; } catch { /* never stop the stream */ } }
+    if (budget && ev.type === 'assistant') { const say = budget.check(); if (say) process.stdout.write(`${say}\n`); }
+    if (turns) { try { turns.add(ev); } catch { /* never stop the stream */ } }
     for (const l of render(ev)) process.stdout.write(`${l}\n`);
   });
-  rl.on('close', () => { if (meter) { meter.end(); dirty = true; flush(); clearInterval(timer); } });
+  rl.on('close', () => { if (turns) { try { turns.end(); } catch { /* the stream ended anyway */ } } if (meter) { meter.end(); dirty = true; flush(); clearInterval(timer); } });
 }

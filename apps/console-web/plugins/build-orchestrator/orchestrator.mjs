@@ -102,6 +102,11 @@ async function main(argv) {
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
   if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); const t = core.brief(b, s.rules); return out({ ok: true, brief: t }, t); }
+  if (cmd === 'suggest') {   // the model the chain control rules suggest for each open step; the step's pin still decides
+    const cli = await import('../../../../framework/cli/chain-control.mjs');
+    const rows = cli.suggestFor(rest[0]);
+    return out({ ok: true, suggestions: rows }, rows.map((r) => `${r.step} ${r.differs ? '≠' : '='} pinned ${r.pinned}, suggest ${r.model} (${r.why}): ${r.text.slice(0, 70)}`).join('\n') || 'No open steps.');
+  }
   if (cmd === 'request-upgrade') {
     const [id, ph] = rest; const r = act({ action: 'request-upgrade', id, phase: Number(ph), by: process.env.AXF_SESSION || process.env.AXF_ACTOR || 'session' });
     const b = r.build; const p = core.phases(b)[Number(ph)]; const req = b.upgradeRequests.find((x) => x.phase === p.index && x.state !== 'denied');

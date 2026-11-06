@@ -9,7 +9,11 @@ import { Button, Container, Icon, Note, SelectField, Switch, TextField } from '@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { ChainControlPanel } from '@console/chainControl';
 import { appMenu } from './menu';
+import { RulesBriefsPanel } from './briefs';
+import { TokenLogPanel } from './tokenlog';
+import { ApiRunDialog, ApiRunsBanner, ApiRunsPanel } from './apiruns';
 import './claude-settings.css';
 
 const FOLDER = 'claude-settings';
@@ -199,7 +203,7 @@ const GROUP_PANELS: { id: string; title: string; icon: string }[] = [
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.claude-settings',
   label: 'Claude',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   register(rt) {
     rt.actions.register('claude-settings.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude settings' });
@@ -207,10 +211,18 @@ export const plugin: AxfWebLibrary = {
   views: { [VIEW]: { title: 'Claude', icon: 'sparkles', render: () => <ClaudePage /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },
   contextMenu: [{ id: 'claude-settings.ctx', target: '*', order: 70, items: [{ id: 'claude-settings.open', label: 'Claude settings', icon: 'sparkles', action: 'claude-settings.open' }] }],
-  banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> }],
+  banners: [
+    { id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> },
+    { id: 'claude-api-runs', label: 'API runs', icon: 'key', order: 4.95, render: () => <ApiRunsBanner /> },
+  ],
+  dialogs: { 'claude-settings.api-run': { title: 'Run on an API key', render: (p, close) => <ApiRunDialog id={String(p.id ?? '')} close={close} /> } },
   settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, talking, notifications, memory.' }],
   settingsPanels: [
     ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),
+    { id: 'claude-settings.chain-control', tab: VIEW, title: 'Headless sessions', icon: 'layers', order: 19, render: () => <ChainControlPanel /> },
+    { id: 'claude-settings.rules-briefs', tab: VIEW, title: 'Rules briefs', icon: 'file', order: 20, render: () => <RulesBriefsPanel /> },
+    { id: 'claude-settings.token-log', tab: VIEW, title: 'Token log', icon: 'chart', order: 21, render: () => <TokenLogPanel /> },
+    { id: 'claude-settings.api-runs', tab: VIEW, title: 'API runs', icon: 'key', order: 22, render: () => <ApiRunsPanel /> },
     { id: 'claude-settings.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
