@@ -715,27 +715,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:19 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
-- 2026-11-04 22:19 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` s3 done (urgent) · orchestrator
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` s6 done (urgent) · orchestrator
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` branch claude/ci-bundle-skipped-shell, PR #348 (urgent) · builds-live
-- 2026-11-04 22:20 UTC · `fable-no-approval` → complete, merged, note (current) · reconciler
-- 2026-11-04 22:20 UTC · `tab-group-assets` → complete, merged, note (current) · reconciler
-- 2026-11-04 22:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
-- 2026-11-04 22:39 UTC · `fable-no-approval` note (current) · foreign-write
-- 2026-11-04 22:39 UTC · `tab-group-assets` note (current) · foreign-write
-- 2026-11-04 22:39 UTC · `changes-chat-log` s1 done, s2 done, s3 done, s4 done, s5 done, → complete (current) · foreign-write
-- 2026-11-04 22:39 UTC · `notes-views` s1 done, → running (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` s2 done (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
-- 2026-11-04 22:41 UTC · `notes-views` PR #349 (current) · builds-live
 - 2026-11-04 22:42 UTC · `notes-views` s5 done, → built (current) · claude:notes-views
 - 2026-11-04 23:01 UTC · `fable-review-shipped-features-build-hook-contrac` added (0 steps) (current) · pending
 - 2026-11-04 23:10 UTC · `shipped-features-r2` PR #350, note (angel) · reconciler
@@ -1115,6 +1094,27 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 21:13 UTC · `notifications-control-panel` s6 done, → complete (current) · orchestrator
 - 2026-11-06 21:13 UTC · `notifications-control-panel` → built, PR #367 (current) · builds-live
 - 2026-11-06 21:13 UTC · `notifications-control-panel` note (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` added (8 steps) (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` → running (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` s1 done (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` branch claude/gizmo-rebuild-fable (current) · builds-live
+- 2026-11-06 22:41 UTC · `gizmo-rebuild-fable` s2 done (current) · orchestrator
+- 2026-11-06 22:37 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 22:45 UTC · `gizmo-rebuild-fable` s2 done (current) · foreign-write
+- 2026-11-06 22:45 UTC · `ui-registry-shortcuts` added (6 steps) (current) · orchestrator
+- 2026-11-06 22:54 UTC · `ui-registry-shortcuts` added (6 steps) (current) · foreign-write
+- 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s3 done (current) · orchestrator
+- 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s4 done (current) · orchestrator
+- 2026-11-06 22:58 UTC · `gizmo-rebuild-fable` s5 done (current) · orchestrator
+- 2026-11-06 22:59 UTC · `gizmo-rebuild-fable` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-06 22:59 UTC · `ui-registry-shortcuts` s2 done (current) · orchestrator
+- 2026-11-06 23:05 UTC · `ui-registry-shortcuts` s2 done (current) · foreign-write
+- 2026-11-06 23:05 UTC · `gizmo-rebuild-fable` s6 done (current) · orchestrator
+- 2026-11-06 23:13 UTC · `gizmo-rebuild-fable` s7 done (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` s1 done, → running (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` s2 done (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` note (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-companion` → running, note (current) · orchestrator
 
 ## Token passes (log)
 

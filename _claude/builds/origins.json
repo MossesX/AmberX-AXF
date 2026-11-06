@@ -1233,6 +1233,18 @@
    "from": "brief",
    "addenda": []
   },
+  "gizmo-rebuild-fable": {
+   "said": "I want to use Fable on the highest possible thinking level on ultra code to rebuild Gizmo. Go ahead. I need more powerful controls over the background listeners for AmberX. I've had problems with the microphone... it's crashing with other apps, and sometimes it'll just do that sound over and over.",
+   "at": "2026-11-06T22:31:04.507Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "gizmo-terminal": {
    "said": "It's gonna need an integrated terminal window that can be visible or hidden, and it can be placed at the bottom or the top, or the left or the right. And it can be completely configured.",
    "at": "2026-11-04T14:21:17.381Z",
@@ -2436,6 +2448,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "ui-registry-shortcuts": {
+   "said": "Let's go with a UI shortcuts plugin. All the UIs need to be in a registry. Every single dialog, pop-up, settings interface, main plugin screen, every UI element has to be an asset. Every single asset in the whole app and all its plugins, from a button to a pop-up to a link to a menu to a menu entry, every thing needs to be an asset. That needs to be visible to the API. Create a registry so I can open them with my voice.",
+   "at": "2026-11-06T22:45:12.082Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "ui-review": {
