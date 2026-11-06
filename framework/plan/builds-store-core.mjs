@@ -110,7 +110,11 @@ export function normBuild(b, ctx = {}) {
   const o = b && typeof b === 'object' ? b : {};
   const at = ctx.now || nowIso();
   const id = str(o.id, 80) || slug(o.title);
-  const steps = (Array.isArray(o.steps) ? o.steps : []).map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
+  // one step per uid: a copy of a step (same uid) is the same step, so the first one is kept. A writer that repeated
+  // steps (Nov 6 2026: 16 copies of each step on four builds) otherwise made every live publish invalid and stuck.
+  const uids = new Set();
+  const steps = (Array.isArray(o.steps) ? o.steps : []).map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }))
+    .filter((s) => (uids.has(s.uid) ? false : (uids.add(s.uid), true)));
   const seen = new Set();
   steps.forEach((s, i) => { if (seen.has(s.id)) s.id = `s${i + 1}-${i}`; seen.add(s.id); });
   const profiles = [...new Set((Array.isArray(o.profiles) ? o.profiles : [o.profile || ctx.profile || BASE_PROFILE]).map((p) => str(p, 40)).filter(Boolean))];

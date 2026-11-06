@@ -31,6 +31,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
+import { ensureFor as ensureProgress, progressFile } from './build-progress.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
@@ -231,6 +232,20 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
 }
 
 /** Read, change, save under a lock. fn(store) returns the new store (or { store, ...extra }). */
+/**
+ * Registration gives every new build its progress file (build-progress@1, framework/cli/build-progress.mjs): its steps,
+ * all pending, ready for the session that runs it. A build whose step list changed gets its file's steps refreshed
+ * (what the file already says about a step is kept). Off for a test store named by AXF_BUILDS_STORE alone (it would
+ * write into the live progress dir) and with AXF_PROGRESS=off. Never fails a store write.
+ */
+function seedProgress(changes) {
+  if (process.env.AXF_PROGRESS === 'off' || (process.env.AXF_BUILDS_STORE && !process.env.AXF_PROGRESS_DIR)) return;
+  const ids = (b) => (b?.steps ?? []).map((x) => `${x.id}:${x.title || x.text}`).join('|');
+  const want = changes.filter((c) => c.after && !c.after.deleted && (c.op === 'add' || (c.op === 'change' && ids(c.before) !== ids(c.after))));
+  if (!want.length) return;
+  for (const c of want) { try { if (c.op === 'add' || existsSync(progressFile(c.id))) ensureProgress(c.after); } catch { /* not a valid id: no file */ } }
+}
+
 export function withStore(fn, meta = {}) {
   const f = storeFile();
   const unlock = lock(f, meta.lockWaitMs);
@@ -245,6 +260,7 @@ export function withStore(fn, meta = {}) {
     const next = r && r.$axf ? r : r.store;
     const saved = saveStore(start, next, meta);
     if (exportsOn()) exportAll(saved.store);
+    seedProgress(saved.changes);
     return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
   } finally { unlock(); flushLiveSoon(); }
 }
