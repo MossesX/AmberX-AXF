@@ -54,7 +54,8 @@
 # Claude login into a private per-build config dir (deploy/claude-login.mjs: <folder>/.axf-claude/<session>, 0700,
 # git-ignored) and runs claude with CLAUDE_CONFIG_DIR pointed at it, an inherited CLAUDE_CODE_OAUTH_TOKEN dropped unless
 # the account has a saved token. Logging the VPS out, switching or adding accounts never touches a running build; a
-# token refresh writes only to the build's copy, which is deleted when the session ends. Account: --account <name>
+# token refresh lands in the build's copy, a watcher saves it back to the login's stores at once
+# (deploy/claude-token-save.mjs), and the copy is deleted when the session ends. Account: --account <name>
 # (or AXF_CLAUDE_ACCOUNT; default the active saved account). It is recorded in the log's `# login …` line, the tmux tag
 # @axf_login, a session-login event and a note on the orchestrator build. AXF_OWN_LOGIN=off runs on the shared login.
 set -uo pipefail
@@ -111,6 +112,7 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 }
 
 LOGIN_JS="$HERE/claude-login.mjs"
+TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
 login_session="" login_dir="" login_account="" login_email="" login_source="" login_token=""
 own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
@@ -125,6 +127,8 @@ own_login() {   # $1 = account (active | live | <saved name>): snapshot it for t
   export CLAUDE_CONFIG_DIR="$login_dir"
   # shellcheck disable=SC1091
   source "$login_dir/token.env"   # the account's saved token, else `unset CLAUDE_CODE_OAUTH_TOKEN`: the copy wins
+  # a rotated token goes back to the saved login straight away; the watcher ends with the copy or this run
+  [[ -f "$TOKEN_JS" ]] && { nohup node "$TOKEN_JS" watch --copy "$login_dir" ${inner:+--parent "$$"} >/dev/null 2>&1 & disown; }
   login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})"
   tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
   event session-login "$login_session"

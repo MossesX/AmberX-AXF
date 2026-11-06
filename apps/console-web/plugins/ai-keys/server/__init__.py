@@ -44,6 +44,7 @@ renewal rotates the refresh token, which would log out the saved copy and every 
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -83,6 +84,7 @@ OAUTH_URL = os.environ.get("AXF_CLAUDE_OAUTH_URL") or "https://console.anthropic
 OAUTH_CLIENT_ID = os.environ.get("AXF_CLAUDE_OAUTH_CLIENT_ID") or "9d1c250a-e61b-44d9-88ed-5944d1962f5e"  # Claude Code's public client
 REFRESH_AHEAD_MS = 30 * 60 * 1000  # the thread refreshes pairs this close to expiry
 FRESH_MS = 5 * 60 * 1000  # a read refreshes a pair this close to expiry
+ROTATION_KEEP_S = 7 * 24 * 3600  # a token-rotation@1 drop file nobody collected is gone after this
 VPS_LOG_MAX = 30
 VPS_PREFIX = "vps:"  # ids of the accounts saved on the VPS, which live in ~/.claude-accounts and not in keys.json
 HOST_LIMIT_MS = 24 * 3600 * 1000  # a VPS account that hit a limit isn't picked again for this long
@@ -209,6 +211,64 @@ def _default_test(kind: str, key: str) -> dict[str, Any]:
 TESTER: Callable[[str, str], dict[str, Any]] = _default_test  # replaced by the self-test
 
 
+def token_hash(token: str) -> str:
+    """The token-rotation@1 hash (deploy/claude-token-save.mjs tokenHash): tells two copies of a token apart, never reveals it."""
+    return hashlib.sha256(token.encode()).hexdigest()[:32] if token else ""
+
+
+def rotations_dir() -> Path:
+    return data_dir() / "rotations"
+
+
+def _tell_host(old: str, new: dict[str, Any], pair: dict[str, Any]) -> None:
+    """A renewal spent `old`: leave the new pair for the host, whose logins may hold the same token (claude-token-save.mjs
+    sweep applies it to a login holding `old` and deletes the file). Never in the way of the renewal itself."""
+    if new.get("refresh") == old:
+        return
+    try:
+        fresh = {"accessToken": new["access"], "refreshToken": new["refresh"], "expiresAt": new.get("expiresAt")}
+        if new.get("scopes") or pair.get("scopes"):
+            fresh["scopes"] = new.get("scopes") or pair["scopes"]
+        d = rotations_dir()
+        storage.write_json(d / f"to-host-{token_hash(old)}.json", {"$axf": "token-rotation@1", "old": [token_hash(old)], "fresh": fresh, "at": _now()}, indent=None)
+        for f in d.glob("to-host-*.json"):  # no sweep on this host: nothing with a token stays for long
+            if time.time() - f.stat().st_mtime > ROTATION_KEEP_S:
+                f.unlink(missing_ok=True)
+    except Exception as e:  # noqa: BLE001
+        cx.log("system", f"AI keys: couldn't leave a renewed pair for the VPS: {e.__class__.__name__}", "warn")
+
+
+def absorb_rotations() -> int:
+    """Pairs renewed on the host (a build's or the live login's refresh) replace the spent ones saved here. Returns how many."""
+    n = 0
+    for f in sorted(rotations_dir().glob("to-console-*.json")):
+        try:
+            d = json.loads(f.read_text("utf-8"))
+            fresh, old = d["fresh"], set(d["old"])
+            new = {"key": fresh["accessToken"], "refresh": fresh["refreshToken"], "expiresAt": fresh.get("expiresAt"), "scopes": fresh.get("scopes"), "refreshedAt": _now()}
+        except (OSError, ValueError, KeyError, TypeError):
+            f.unlink(missing_ok=True)
+            continue
+        with _lock:
+            db = _load()
+            hits = [r for r in db["keys"].values() if r.get("kind") == "claude-code" and token_hash(str(r.get("refresh") or "")) in old]
+            for r in hits:
+                _apply_pair(r, new)
+                r.pop("refreshError", None)
+            if hits:
+                _save(db)
+                n += len(hits)
+        f.unlink(missing_ok=True)
+    return n
+
+
+def _renew(refresh: str, pair: dict[str, Any]) -> dict[str, Any]:
+    """Every renewal goes through here, so the moment a token is spent its successor is on its way to the host's logins too."""
+    new = REFRESHER(refresh)
+    _tell_host(refresh, new, pair)
+    return new
+
+
 def _default_refresh(refresh: str) -> dict[str, Any]:
     """Anthropic's OAuth refresh grant: refresh token → {access, refresh (rotated), expiresAt, scopes}. Raises on failure."""
     r = http.request("POST", OAUTH_URL, json_body={"grant_type": "refresh_token", "refresh_token": refresh, "client_id": OAUTH_CLIENT_ID},
@@ -321,7 +381,7 @@ def validate_pair(pair: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any] 
         res["error"] = f"the access token was refused: {first['error'] or 'no answer'}"
         return res, None
     try:
-        new = REFRESHER(refresh)
+        new = _renew(refresh, pair)
     except Exception as e:  # noqa: BLE001
         res["steps"].append({"step": "refresh", "ok": False, "note": _hide(str(e), access, refresh)})
         res["error"] = f"the refresh token was refused: {_hide(str(e), access, refresh)}"
@@ -350,37 +410,42 @@ def is_pair(rec: dict[str, Any]) -> bool:
     return rec.get("kind") != "claude-code" or bool(rec.get("refresh"))
 
 
+_refresh_serial = threading.Lock()
+
+
 def refresh_record(kid: str, force: bool = False, ahead_ms: int = FRESH_MS) -> bool:
     """Refresh one pair when it's close to expiry (or `force`). Saves the rotated pair; True when it changed.
     Writes the VPS credentials when it's the active pair."""
-    with _lock:
-        rec = dict(_load()["keys"].get(kid) or {})
-    if rec.get("kind") != "claude-code" or not rec.get("refresh"):
-        return False
-    if not force and rec.get("expiresAt") and rec["expiresAt"] - _now() > ahead_ms:
-        return False
-    try:
-        new = REFRESHER(rec["refresh"])
-    except Exception as e:  # noqa: BLE001
-        msg = _hide(str(e), rec.get("key", ""), rec.get("refresh", ""))
+    with _refresh_serial:  # one at a time: two threads renewing one pair would spend its token twice
+        absorb_rotations()  # a token the host already renewed must not be spent again from here
+        with _lock:
+            rec = dict(_load()["keys"].get(kid) or {})
+        if rec.get("kind") != "claude-code" or not rec.get("refresh"):
+            return False
+        if not force and rec.get("expiresAt") and rec["expiresAt"] - _now() > ahead_ms:
+            return False
+        try:
+            new = _renew(rec["refresh"], rec)
+        except Exception as e:  # noqa: BLE001
+            msg = _hide(str(e), rec.get("key", ""), rec.get("refresh", ""))
+            with _lock:
+                db = _load()
+                if kid in db["keys"]:
+                    db["keys"][kid]["refreshError"] = {"at": _now(), "error": msg}
+                    _save(db)
+            cx.log("system", f"AI keys: couldn't refresh {rec.get('label')}: {msg}", "warn")
+            return False
         with _lock:
             db = _load()
-            if kid in db["keys"]:
-                db["keys"][kid]["refreshError"] = {"at": _now(), "error": msg}
-                _save(db)
-        cx.log("system", f"AI keys: couldn't refresh {rec.get('label')}: {msg}", "warn")
-        return False
-    with _lock:
-        db = _load()
-        if kid not in db["keys"]:
-            return False
-        r = db["keys"][kid]
-        _apply_pair(r, {"key": new["access"], "refresh": new.get("refresh") or rec["refresh"], "expiresAt": new.get("expiresAt"),
-                        "scopes": new.get("scopes") or None, "refreshedAt": _now()})
-        r.pop("refreshError", None)
-        _save(db)
-        active = db["active"].get("claude-code") == kid
-        needs_email = not r.get("email")
+            if kid not in db["keys"]:
+                return False
+            r = db["keys"][kid]
+            _apply_pair(r, {"key": new["access"], "refresh": new.get("refresh") or rec["refresh"], "expiresAt": new.get("expiresAt"),
+                            "scopes": new.get("scopes") or None, "refreshedAt": _now()})
+            r.pop("refreshError", None)
+            _save(db)
+            active = db["active"].get("claude-code") == kid
+            needs_email = not r.get("email")
     if needs_email:
         fill_profile(kid)
     if active:
@@ -937,6 +1002,7 @@ def _vinny_write() -> None:
 def sync_vps(reason: str = "") -> dict[str, Any]:
     """Write the active subscription pair to Claude Code's credentials on the VPS (direct, else Vinny)."""
     with _sync_lock:
+        absorb_rotations()  # never write a spent pair over a login the host has already renewed
         with _lock:
             db = _load()
         kid = db["active"].get("claude-code") or ""
@@ -1001,7 +1067,8 @@ def post_vps_sync() -> dict[str, Any]:
 
 
 def refresh_due() -> int:
-    """Refresh every pair close to expiry; returns how many were renewed."""
+    """Take in the host's renewals, then refresh every pair close to expiry; returns how many were renewed."""
+    absorb_rotations()
     with _lock:
         ids = [k for k, v in _load()["keys"].items() if v.get("kind") == "claude-code" and v.get("refresh")]
     return sum(1 for k in ids if refresh_record(k, ahead_ms=REFRESH_AHEAD_MS))

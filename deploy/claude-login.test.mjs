@@ -7,7 +7,7 @@
  *
  * Covers deploy/claude-login.mjs (which account, the copy, its permissions, release) and, end to end through
  * deploy/claude-headless.sh in tmux: the shared login is logged out and switched to another account while the build
- * runs, and the build keeps its own login; a token refresh lands only in the build's copy; an inherited
+ * runs, and the build keeps its own login; a token refresh is saved back to that login's saved copy and to no other account; an inherited
  * CLAUDE_CODE_OAUTH_TOKEN never reaches the build; a saved token is used when the account has one; the account is in the
  * log; the copy is gone when the session ends; no credential is ever printed. Plus the agent swarm runner's copy.
  */
@@ -149,7 +149,8 @@ echo '{"type":"result","result":"done"}'
   writeFileSync(join(d1, 'go'), '');
   ok(await until(() => existsSync(join(d1, 'fake', 'creds2'))), 'the build carries on');
   ok(read(join(d1, 'fake', 'creds2')).trim() === sha(credsOf('fake-refreshed-by-build')), 'its token refresh landed in its own copy');
-  ok(read(join(SH, '.credentials.json')) === credsOf(SECRET_B) && read(join(A, 'account-a', '.credentials.json')) === credsOf(SECRET_A), '…and nowhere else (shared login and saved account unchanged)');
+  ok(await until(() => read(join(A, 'account-a', '.credentials.json')) === credsOf('fake-refreshed-by-build')), 'and is saved back to the login it came from (a spent token never stays saved)');
+  ok(read(join(SH, '.credentials.json')) === credsOf(SECRET_B) && read(join(A, 'account-b', '.credentials.json')) === credsOf(SECRET_B), 'and to no other account (the shared login moved to account-b: untouched)');
   ok(await until(() => !existsSync(cfg)), 'the copy is deleted when the session ends');
   const log1 = read(join(d1, 'run.log'));
   ok(/^# login account-a \(a@example\.com\) · own copy \(live\)$/m.test(log1), 'the log says which account it ran on');
@@ -166,7 +167,7 @@ echo '{"type":"result","result":"done"}'
   const d3 = runIn('build3');
   launch(d3, `${tag}-c`, ['--account', 'account-a']);
   ok(await until(() => existsSync(join(d3, 'fake', 'started'))), '--account account-a runs');
-  ok(read(join(d3, 'fake', 'creds1')).trim() === sha(credsOf(SECRET_A)) && read(join(d3, 'fake', 'token_sha')).trim() === sha(''), '--account picks the account per launch (its saved copy, no token)');
+  ok(read(join(d3, 'fake', 'creds1')).trim() === sha(credsOf('fake-refreshed-by-build')) && read(join(d3, 'fake', 'token_sha')).trim() === sha(''), '--account picks the account per launch (its saved copy, no token)');
   writeFileSync(join(d3, 'go'), '');
   const bad = launch(runIn('build4'), `${tag}-d`, ['--account', '../x']);
   ok(bad.status === 2 && /--account is a saved account name/.test(bad.stderr), 'a bad --account is refused before anything starts');

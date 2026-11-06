@@ -46,3 +46,10 @@ its name only. Uninstalling leaves the host script and the saved logins alone.
 ## Test
 
 `python3 apps/console-web/plugins/claude-accounts/test.py`
+
+## Rotated tokens
+
+A Claude refresh token is spent by every renewal, so `deploy/claude-token-save.mjs` carries each new pair to every store
+of that login at once: a build's watcher (and its release) for its private copy, the `axf-claude-token-save` cron (every
+minute) for the live login and for pairs AI keys renews. A store is rewritten only when it holds a token that login has
+already spent, so a login that doesn't match its account name can never overwrite another account.
