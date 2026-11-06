@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1164,
- "updatedAt": "2026-11-06T23:15:34.305Z",
+ "rev": 1165,
+ "updatedAt": "2026-11-06T23:23:36.327Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -68856,7 +68856,7 @@
    "title": "Gizmo: full Claude companion plugin in AmberX",
    "category": "AmberX",
    "detail": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "session",
    "pendingId": "",
@@ -68864,8 +68864,8 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-06T23:15:18.386Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T23:20:24.638Z",
+   "builtAt": "2026-11-06T23:20:24.638Z",
    "notes": [
     {
      "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
@@ -68898,6 +68898,10 @@
     {
      "text": "gizmo-rebuild-fable (Fable) rebuilt talk mode on a foreground service (s3a/s3b hold; screen off + Stop from the notification), fixed the phone-width message box and added the Listeners control panel (AmberX + console, REST/MCP/CLI). s4a, s5, s6a, s7b, s8 and s10 stay open.",
      "at": "2026-11-06T23:15:18.386Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged: complete",
+     "at": "2026-11-06T23:20:24.638Z"
     }
    ],
    "approvals": [],
@@ -69330,17 +69334,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "session",
     "planId": "",
     "createdAt": "2026-11-03T22:18:50.820Z",
-    "builtAt": "",
+    "builtAt": "2026-11-06T23:20:24.638Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mw1927q50kp8hq": "2026-11-03T22:18:50.824Z",
@@ -97721,9 +97725,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/gizmo-rebuild-fable",
-   "pr": "",
+   "pr": "#368",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-06T23:13:51.299Z",
+   "updatedAt": "2026-11-06T23:23:35.403Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97926,7 +97930,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
