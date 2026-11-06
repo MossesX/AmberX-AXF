@@ -705,8 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 19:57 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
-- 2026-11-04 19:59 UTC · `handoff-2` s11 done, → complete, note (current) · foreign-write
 - 2026-11-04 19:59 UTC · `grid-column-hiding` added (6 steps) (current) · orchestrator
 - 2026-11-04 20:01 UTC · `land-merge-queue-first` → complete, note (urgent) · foreign-write
 - 2026-11-04 20:01 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
@@ -1105,6 +1103,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 14:24 UTC · `headless-progress-file-lean-claude-md-chain` → running (current) · orchestrator
 - 2026-11-06 14:25 UTC · `headless-progress-file-lean-claude-md-chain` branch claude/headless-progress-lean-chain (current) · builds-live
 - 2026-11-06 14:30 UTC · `headless-progress-file-lean-claude-md-chain` s1 done (current) · orchestrator
+- 2026-11-06 14:30 UTC · `orch-step-click` → pending, note (refactor) · reconciler
+- 2026-11-06 14:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 
 ## Token passes (log)
 

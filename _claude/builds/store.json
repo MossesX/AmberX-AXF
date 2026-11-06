@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1094,
- "updatedAt": "2026-11-06T14:30:21.365Z",
+ "rev": 1095,
+ "updatedAt": "2026-11-06T14:30:35.603Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49797,14 +49797,14 @@
    "title": "Fix: can't click steps in the Build orchestrator",
    "category": "Console",
    "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-06T04:33:31.807Z",
+   "updatedAt": "2026-11-06T14:30:23.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -49814,6 +49814,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T14:30:23.249Z"
     }
    ],
    "approvals": [],
@@ -49906,7 +49910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -91130,14 +91134,14 @@
    "title": "AmberX: slim down + voice queue",
    "category": "",
    "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "amberx-slim-down-voice-queue",
    "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T12:27:24.575Z",
+   "updatedAt": "2026-11-06T14:30:23.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -91151,6 +91155,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T12:14:57.525Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T14:30:23.249Z"
     }
    ],
    "approvals": [],
@@ -91265,7 +91273,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
