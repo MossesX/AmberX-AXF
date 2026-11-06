@@ -1150,6 +1150,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` note (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` → built (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s3 done (current) · orchestrator
+- 2026-11-06 23:34 UTC · `badges-notify-followup` added (4 steps) (current) · orchestrator
+- 2026-11-06 23:34 UTC · `badges-notify-followup` → running (current) · orchestrator
+- 2026-11-06 23:54 UTC · `gizmo-voice` note (current) · foreign-write
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s1 done (current) · orchestrator
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s2 done (current) · orchestrator
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s3 done (current) · orchestrator
+- 2026-11-06 23:56 UTC · `badges-notify-followup` branch claude/badges-notify-followup, PR #370 (current) · builds-live
+- 2026-11-06 23:57 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
+- 2026-11-06 23:57 UTC · `badges-notify-followup` s4 done, → built (current) · orchestrator
 
 ## Token passes (log)
 

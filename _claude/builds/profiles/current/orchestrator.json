@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T23:33:48.315Z",
+ "updatedAt": "2026-11-06T23:57:20.373Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6936,12 +6936,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-06T23:15:17.452Z",
+   "updatedAt": "2026-11-06T23:50:26.979Z",
    "builtAt": "",
    "notes": [
     {
      "text": "s1 + s2 built by gizmo-rebuild-fable (Fable, branch claude/gizmo-rebuild-fable): TalkService foreground microphone service, companion talk.ts on it, transcript in the chat, Stop from the notification. s3: the APK comes from CI on that PR; the phone test of hands-free + interrupt is Brett's once it is installed.",
      "at": "2026-11-06T23:15:17.452Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T23:50:26.979Z"
     }
    ],
    "approvals": [],
@@ -14869,7 +14873,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T20:27:08.761Z",
+   "updatedAt": "2026-11-06T23:57:03.317Z",
    "builtAt": "",
    "notes": [
     {
@@ -14891,6 +14895,14 @@
     {
      "text": "s34 + s35 (s18 of the parent plan: banner clock badge watches the VPS login, green / yellow / red) are covered by build claude-badge-vps: the VPS connection badge in the Claude badge plugin. Skip them here, don't build it twice.",
      "at": "2026-11-06T20:27:08.761Z"
+    },
+    {
+     "text": "badges-notify-followup (PR 370) covers s34, s35 and s39: VPS login badge with its states and the usage meter badge of the active account, in the Badges plugin. s36 (read used vs total for one account) is there too: percent only. Don't build them twice.",
+     "at": "2026-11-06T23:57:02.321Z"
+    },
+    {
+     "text": "No usage-meter plugin exists: claude/usage-meter and -r2 are empty, both runs stopped before any work.",
+     "at": "2026-11-06T23:57:03.317Z"
     }
    ],
    "approvals": [],
@@ -17391,6 +17403,110 @@
      "doneAt": "2026-11-06T23:33:30.239Z",
      "note": "",
      "uid": "st-mw5kbntq0cd4vf"
+    }
+   ]
+  },
+  {
+   "id": "badges-notify-followup",
+   "title": "Follow-up: one Badges plugin (4 badges, usage meter, tap actions) + notification groups, triggers, actions",
+   "category": "",
+   "detail": "",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/badges-notify-followup",
+   "pr": "#370",
+   "createdAt": "2026-11-06T23:34:55.329Z",
+   "updatedAt": "2026-11-06T23:57:04.190Z",
+   "builtAt": "2026-11-06T23:57:04.190Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Run a follow-up.",
+    "at": "2026-11-06T23:34:55.329Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Merge claude-badge-vps + notifications-control-panel on main; one Badges plugin holds Claude, axHub, VPS, AmberX badges with per-badge settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:54:46.000Z",
+     "note": "",
+     "uid": "st-mw5m3lpd05v2qm"
+    },
+    {
+     "id": "s2",
+     "text": "VPS usage meter badge reusing the usage-meter code; tap actions; accounts drop-down (cached, zero tokens)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:54:46.760Z",
+     "note": "",
+     "uid": "st-mw5m3lpd06xx4q"
+    },
+    {
+     "id": "s3",
+     "text": "Notification groups, triggers, actions: core, REST, MCP, CLI, panel",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:54:47.638Z",
+     "note": "",
+     "uid": "st-mw5m3lpd073ss0"
+    },
+    {
+     "id": "s4",
+     "text": "Tests, README, report, screenshots to UI Review, one PR to the merge queue superseding #366 + #367",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:57:04.190Z",
+     "note": "",
+     "uid": "st-mw5m3lpd087heu"
     }
    ]
   }

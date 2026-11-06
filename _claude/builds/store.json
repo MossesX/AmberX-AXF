@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1170,
- "updatedAt": "2026-11-06T23:33:48.315Z",
+ "rev": 1176,
+ "updatedAt": "2026-11-06T23:57:20.373Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -74694,12 +74694,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-06T23:15:17.452Z",
+   "updatedAt": "2026-11-06T23:50:26.979Z",
    "builtAt": "",
    "notes": [
     {
      "text": "s1 + s2 built by gizmo-rebuild-fable (Fable, branch claude/gizmo-rebuild-fable): TalkService foreground microphone service, companion talk.ts on it, transcript in the chat, Stop from the notification. s3: the APK comes from CI on that PR; the phone test of hands-free + interrupt is Brett's once it is installed.",
      "at": "2026-11-06T23:15:17.452Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T23:50:26.979Z"
     }
    ],
    "approvals": [],
@@ -74792,7 +74796,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93126,7 +93130,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T20:27:08.761Z",
+   "updatedAt": "2026-11-06T23:57:03.317Z",
    "builtAt": "",
    "notes": [
     {
@@ -93148,6 +93152,14 @@
     {
      "text": "s34 + s35 (s18 of the parent plan: banner clock badge watches the VPS login, green / yellow / red) are covered by build claude-badge-vps: the VPS connection badge in the Claude badge plugin. Skip them here, don't build it twice.",
      "at": "2026-11-06T20:27:08.761Z"
+    },
+    {
+     "text": "badges-notify-followup (PR 370) covers s34, s35 and s39: VPS login badge with its states and the usage meter badge of the active account, in the Badges plugin. s36 (read used vs total for one account) is there too: percent only. Don't build them twice.",
+     "at": "2026-11-06T23:57:02.321Z"
+    },
+    {
+     "text": "No usage-meter plugin exists: claude/usage-meter and -r2 are empty, both runs stopped before any work.",
+     "at": "2026-11-06T23:57:03.317Z"
     }
    ],
    "approvals": [],
@@ -94372,7 +94384,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -98123,6 +98135,144 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-06T22:45:12.084Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "badges-notify-followup",
+   "title": "Follow-up: one Badges plugin (4 badges, usage meter, tap actions) + notification groups, triggers, actions",
+   "category": "",
+   "detail": "",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/badges-notify-followup",
+   "pr": "#370",
+   "createdAt": "2026-11-06T23:34:55.329Z",
+   "updatedAt": "2026-11-06T23:57:04.190Z",
+   "builtAt": "2026-11-06T23:57:04.190Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Run a follow-up.",
+    "at": "2026-11-06T23:34:55.329Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw5m3lpd05v2qm",
+     "title": "",
+     "text": "Merge claude-badge-vps + notifications-control-panel on main; one Badges plugin holds Claude, axHub, VPS, AmberX badges with per-badge settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:54:46.000Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-06T23:34:55.330Z",
+     "updatedAt": "2026-11-06T23:54:46.059Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw5m3lpd06xx4q",
+     "title": "",
+     "text": "VPS usage meter badge reusing the usage-meter code; tap actions; accounts drop-down (cached, zero tokens)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:54:46.760Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-06T23:34:55.330Z",
+     "updatedAt": "2026-11-06T23:54:46.836Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw5m3lpd073ss0",
+     "title": "",
+     "text": "Notification groups, triggers, actions: core, REST, MCP, CLI, panel",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:54:47.638Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-06T23:34:55.330Z",
+     "updatedAt": "2026-11-06T23:54:47.720Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw5m3lpd087heu",
+     "title": "",
+     "text": "Tests, README, report, screenshots to UI Review, one PR to the merge queue superseding #366 + #367",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T23:57:04.190Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-06T23:34:55.330Z",
+     "updatedAt": "2026-11-06T23:57:04.302Z"
+    }
+   ],
+   "profiles": [
+    "current"
+   ],
+   "order": {
+    "current": 86
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-06T23:34:55.330Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
