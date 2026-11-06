@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1121,
- "updatedAt": "2026-11-06T19:41:28.061Z",
+ "rev": 1122,
+ "updatedAt": "2026-11-06T19:41:43.926Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -88428,12 +88428,16 @@
    "branch": "claude/notes-views",
    "pr": "#349",
    "createdAt": "2026-11-04T21:58:47.815Z",
-   "updatedAt": "2026-11-04T22:42:30.158Z",
+   "updatedAt": "2026-11-06T19:41:27.667Z",
    "builtAt": "2026-11-04T22:42:30.158Z",
    "notes": [
     {
      "text": "Follow-up: the AmberX app Notes screen (apps/amberx-droid notes plugin) does not share the console component; re-bake AmberX, then use FoldSections in its item view and add the Grid view there. Report _claude/builds/reports/notes-views.md.",
      "at": "2026-11-04T22:39:38.350Z"
+    },
+    {
+     "text": "Clash with notes-tasks-sync: console Notes route moved to the shared notes-tasks plugin; notes-browser is now the Claude files page (view claude-files). Rebase needs that one-line change; Classic/Grid belong on the shared page next.",
+     "at": "2026-11-06T19:41:27.667Z"
     }
    ],
    "approvals": [],
@@ -88570,7 +88574,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {

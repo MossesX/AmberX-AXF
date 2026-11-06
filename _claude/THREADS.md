@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:30 UTC · `build-docs-walkthroughs` added (8 steps) (angel) · orchestrator
 - 2026-11-04 21:30 UTC · `build-docs-walkthroughs` → running (angel) · orchestrator
 - 2026-11-04 21:31 UTC · `molly-banner-match` note (current) · foreign-write
 - 2026-11-04 21:31 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 19:38 UTC · `notes-tasks-sync` s3 done (current) · orchestrator
 - 2026-11-06 19:38 UTC · `notes-tasks-sync` s4 done (current) · orchestrator
 - 2026-11-06 19:41 UTC · `amberx-slim-down-voice-queue` → running, note (current) · orchestrator
+- 2026-11-06 19:41 UTC · `notes-views` note (current) · orchestrator
 
 ## Token passes (log)
 
