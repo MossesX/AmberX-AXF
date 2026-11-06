@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1173,
- "updatedAt": "2026-11-06T23:55:00.974Z",
+ "rev": 1174,
+ "updatedAt": "2026-11-06T23:56:41.010Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -98141,10 +98141,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/badges-notify-followup",
+   "pr": "#370",
    "createdAt": "2026-11-06T23:34:55.329Z",
-   "updatedAt": "2026-11-06T23:54:47.638Z",
+   "updatedAt": "2026-11-06T23:56:40.040Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -98259,7 +98259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
