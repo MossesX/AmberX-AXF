@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
 - 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
 - 2026-11-04 22:19 UTC · `land-merge-queue-first` s3 done (urgent) · orchestrator
 - 2026-11-04 22:19 UTC · `land-merge-queue-first` s6 done (urgent) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` → running (current) · orchestrator
 - 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` s1 done (current) · orchestrator
 - 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` branch claude/gizmo-rebuild-fable (current) · builds-live
+- 2026-11-06 22:41 UTC · `gizmo-rebuild-fable` s2 done (current) · orchestrator
 
 ## Token passes (log)
 
