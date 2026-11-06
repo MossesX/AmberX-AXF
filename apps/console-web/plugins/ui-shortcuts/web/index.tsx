@@ -173,10 +173,11 @@ function QuickOpen({ close }: { close: () => void }) {
       {!reg && <Note tone="info">Reading the registry…</Note>}
       <div className="axp-ui-shortcuts__hits" role="list">
         {hits.map((h) => (
-          <Button key={h.id} tone="ghost" className="axp-ui-shortcuts__hit" onClick={() => open(h)} data-help="ui-hit" role="listitem" title={h.id}>
+          // a menu-style row (the framework's fx-menu__item: hover and focus from the engines), laid out as label + id
+          <button key={h.id} type="button" className="fx-menu__item axp-ui-shortcuts__hit" onClick={() => open(h)} data-help="ui-hit" role="listitem" title={h.id}>
             <span className="axp-ui-shortcuts__hit-text"><span>{h.label}</span><span className="fx-muted">{UI_KIND_LABELS[h.kind] ?? h.kind}{h.owner && h.owner !== 'app' ? ` · ${h.owner.replace(/^(plugin|library):/, '')}` : ''}{h.app && h.app !== APP ? ` · ${h.app}` : ''}</span></span>
             <Chip>{h.id}</Chip>
-          </Button>
+          </button>
         ))}
         {reg && q.trim() && !hits.length && <Note tone="info">Nothing registered matches. Plugins register their UI in <code>ui-registry.json</code>; <code>axf ui generate</code> scans the rest.</Note>}
       </div>
