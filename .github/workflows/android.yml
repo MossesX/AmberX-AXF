@@ -138,7 +138,7 @@ jobs:
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
-      - name: AmberX listeners plugin (listener@1 on the console: devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
+      - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
         run: node apps/console-web/plugins/amberx-listeners/test.mjs  # axf-plugin:amberx-listeners
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
