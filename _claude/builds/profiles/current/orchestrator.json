@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T20:15:52.785Z",
+ "updatedAt": "2026-11-06T20:16:10.365Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -16641,19 +16641,23 @@
    "title": "UI Review phone notifications + truthful wake + auto session recording and transcripts",
    "category": "",
    "detail": "UI Review items raise a high-priority AmberX notification that opens the group. console_show / wake report what really happened and fall back to a tappable notification. Each Claude session asks AmberX's recorder to start and each part is transcribed automatically, locally, saved with the session and searchable. Mic and Android consent unchanged.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-notify-audio",
    "pr": "#365",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-06T20:10:29.073Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T20:15:52.876Z",
+   "builtAt": "2026-11-06T20:15:52.271Z",
    "notes": [
     {
      "text": "Reconciler: PR #365",
      "at": "2026-11-06T20:10:29.073Z"
+    },
+    {
+     "text": "PR #365, 5 items waiting in UI Review. Light PR checks green; the APK, JUnit and console jobs run in the merge queue. Not tried on a phone.",
+     "at": "2026-11-06T20:15:52.876Z"
     }
    ],
    "approvals": [],
@@ -16774,8 +16778,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T20:15:52.270Z",
      "note": "",
      "uid": "st-mw5e1gog0ceen9"
     }
