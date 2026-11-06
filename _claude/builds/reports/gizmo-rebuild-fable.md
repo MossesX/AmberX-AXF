@@ -100,7 +100,7 @@ Restart on every phone. One implementation (`core.mjs`) behind the page, the ser
 
 ## Screenshots
 
-UI Review item (see the PR), group `gizmo-rebuild-fable - Nov 6`. The AmberX production build served locally with the
+UI Review item for [PR #368](https://github.com/MossesX/AmberX-AXF/pull/368), group `gizmo-rebuild-fable - Nov 6 11:30 PM`. The AmberX production build served locally with the
 live axHub look, the assistant API mocked with demo chats; the console build with the hub routes mocked.
 
 | | Phone | Desktop |
