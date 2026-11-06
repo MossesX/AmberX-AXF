@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1167,
- "updatedAt": "2026-11-06T23:31:58.130Z",
+ "rev": 1168,
+ "updatedAt": "2026-11-06T23:32:16.685Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97951,9 +97951,9 @@
    "source": "headless",
    "pendingId": "",
    "branch": "claude/ui-registry-shortcuts",
-   "pr": "",
+   "pr": "#369",
    "createdAt": "2026-11-06T22:45:12.082Z",
-   "updatedAt": "2026-11-06T22:59:23.153Z",
+   "updatedAt": "2026-11-06T23:32:11.567Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -98052,12 +98052,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:31:57.550Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:45:12.084Z",
-     "updatedAt": "2026-11-06T22:45:12.084Z"
+     "updatedAt": "2026-11-06T23:31:57.604Z"
     },
     {
      "id": "s5",
@@ -98074,12 +98074,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:31:58.245Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:45:12.084Z",
-     "updatedAt": "2026-11-06T22:45:12.084Z"
+     "updatedAt": "2026-11-06T23:31:58.375Z"
     },
     {
      "id": "s6",
@@ -98112,7 +98112,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

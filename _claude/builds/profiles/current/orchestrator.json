@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T23:31:58.130Z",
+ "updatedAt": "2026-11-06T23:32:16.685Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17259,9 +17259,9 @@
    "source": "headless",
    "pendingId": "",
    "branch": "claude/ui-registry-shortcuts",
-   "pr": "",
+   "pr": "#369",
    "createdAt": "2026-11-06T22:45:12.082Z",
-   "updatedAt": "2026-11-06T22:59:23.153Z",
+   "updatedAt": "2026-11-06T23:32:11.567Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -17346,8 +17346,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:31:57.550Z",
      "note": "",
      "uid": "st-mw5kbntq0aop3x"
     },
@@ -17364,8 +17364,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:31:58.245Z",
      "note": "",
      "uid": "st-mw5kbntq0bnpta"
     },
