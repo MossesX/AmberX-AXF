@@ -1322,7 +1322,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     spec: { maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: CHECKED_KINDS, itemFields: MENU_ITEM_FIELDS, defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN },
     titles: Object.fromEntries(['pending-builds', 'build_queue', 'a.b.c', 'x', '', '--'].map((id) => [id, titleFromId(id)])),
     truthy: Object.fromEntries(([true, false, 0, 1, -2, '', 'false', 'FALSE', '0', 'off', 'no', 'yes', 'x', ' on '] as const).map((v) => [JSON.stringify(v), truthy(v)])),
-    checked: Object.fromEntries(['setting:a', 'counter:c', 'slot:toolbar', 'hidden:toolbar', 'slot:nav-menu', 'nope:x', 'setting:', ':x', 'plain', ''].map((b) => [b, { parsed: parseChecked(b), resolved: resolveChecked(b, { counter: (n) => (n === 'c' ? 2 : 0), setting: (k) => (k === 'a' ? 'yes' : undefined), hidden: (t) => t === 'toolbar' }) }])),
+    checked: Object.fromEntries(['setting:a', 'setting:a=yes', 'setting:a=no', 'setting:missing=', 'counter:c', 'slot:toolbar', 'hidden:toolbar', 'slot:nav-menu', 'nope:x', 'setting:', ':x', 'plain', ''].map((b) => [b, { parsed: parseChecked(b), resolved: resolveChecked(b, { counter: (n) => (n === 'c' ? 2 : 0), setting: (k) => (k === 'a' ? 'yes' : undefined), hidden: (t) => t === 'toolbar' }) }])),
     asset,
     contributions,
     merged,
@@ -1957,5 +1957,75 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+// Screen layouts (screen-layouts@1; core/engines/screen-layouts.mjs): the plugin@1 `screens` contract, resolution,
+// the hidden-by-default switcher, the shared toolbar + a plugin's copy, UI Review choices, view ids read from source.
+{
+  const sl = await import('../core/engines/screen-layouts.mjs');
+  const three = { layouts: [{ id: 'compact', label: 'Compact', icon: 'list' }, { id: 'standard', label: 'Standard', icon: 'layout', description: 'The everyday arrangement.' }, { id: 'spacious', label: 'Spacious', icon: 'grid' }], default: 'standard' };
+  const manifests: Record<string, unknown> = {
+    'ok-three': { id: 'a.b.ok', provides: ['view:home'], screens: { home: three } },
+    'ok-no-default': { id: 'a.b.nodef', provides: ['view:home'], screens: { home: { layouts: three.layouts } } },
+    'two-layouts': { id: 'a.b.two', provides: ['view:home'], screens: { home: { layouts: three.layouts.slice(0, 2) } } },
+    'bad-default': { id: 'a.b.baddef', provides: ['view:home'], screens: { home: { layouts: three.layouts, default: 'nope' } } },
+    'dup-id': { id: 'a.b.dup', provides: ['view:home'], screens: { home: { layouts: [three.layouts[0], three.layouts[0], three.layouts[2]] } } },
+    'unknown-keys': { id: 'a.b.keys', provides: ['view:home'], screens: { home: { layouts: [{ ...three.layouts[0], colour: 'red' }, three.layouts[1], three.layouts[2]], default: 'compact', extra: 1 } } },
+    'not-provided': { id: 'a.b.np', provides: ['view:home'], screens: { other: three } },
+    'not-an-object': { id: 'a.b.str', provides: ['view:home'], screens: 'three' },
+    'none-declared': { id: 'a.b.none', provides: ['view:home'] },
+    'too-many': { id: 'a.b.many', provides: ['view:home'], screens: { home: { layouts: Array.from({ length: 9 }, (_, i) => ({ id: `l${i}`, label: `L${i}` })) } } },
+  };
+  const contract = Object.fromEntries(Object.entries(manifests).map(([k, m]) => [k, {
+    strict: sl.checkScreens(m as never, { enforceCount: true, views: ['home'] }),
+    grandfathered: sl.checkScreens(m as never, { enforceCount: true, views: ['home'], grandfathered: ['home'] }),
+    lenient: sl.checkScreens(m as never, { enforceCount: false }),
+    normalized: sl.normalizeScreens((m as { screens?: unknown }).screens),
+  }]));
+  const settings = (v: Record<string, unknown>) => (k: string) => v[k] ?? null;
+  const resolution = {
+    'no-save': sl.resolveScreenLayout(three, null), 'saved-valid': sl.resolveScreenLayout(three, 'compact'), 'saved-unknown': sl.resolveScreenLayout(three, 'nope'),
+    'no-default-field': sl.resolveScreenLayout({ layouts: three.layouts }, ''), 'bad-default': sl.resolveScreenLayout({ layouts: three.layouts, default: 'zzz' }, ''), 'no-screen': sl.resolveScreenLayout(null, 'compact'),
+  };
+  const toolbar = {
+    'default-hidden': sl.layoutToolbarShown(settings({}), 'home', three),
+    'app-wide-on': sl.layoutToolbarShown(settings({ [sl.SCREEN_LAYOUT_KEYS.toolbarDefault]: true }), 'home', three),
+    'screen-show': sl.layoutToolbarShown(settings({ [sl.screenToolbarKey('home')]: 'show' }), 'home', three),
+    'screen-hide-beats-app': sl.layoutToolbarShown(settings({ [sl.SCREEN_LAYOUT_KEYS.toolbarDefault]: true, [sl.screenToolbarKey('home')]: 'hide' }), 'home', three),
+    'no-layouts-never': sl.layoutToolbarShown(settings({ [sl.SCREEN_LAYOUT_KEYS.toolbarDefault]: true, [sl.screenToolbarKey('home')]: 'show' }), 'home', null),
+  };
+  const menus = {
+    rows: sl.layoutMenuItems('home', three, 'standard'),
+    'rows-none': sl.layoutMenuItems('home', null, ''),
+    'title-hidden': sl.screenTitleMenu('home', three, false),
+    'title-shown': sl.screenTitleMenu('home', three, true),
+    'title-none': sl.screenTitleMenu('home', null, false),
+    'toolbar-shared': sl.layoutToolbarMenu('home', 'a.b.ok', false),
+    'toolbar-copy': sl.layoutToolbarMenu('home', 'a.b.ok', true),
+  };
+  const shared = { id: sl.LAYOUT_SWITCHER_TOOLBAR, name: 'Layout switcher', data: { variant: 'icons-labels', align: 'start', showSearch: false, groups: [{ id: 'layouts', provider: 'screen-layouts', items: [] }] } };
+  const copies = {
+    'copy-id': sl.copyAssetId('ai.amberx.axf.console.example'), 'copy-id-long': sl.copyAssetId('x'.repeat(80)), 'copy-id-empty': sl.copyAssetId(''),
+    'parse-fresh': sl.parseToolbarCopy(JSON.stringify(sl.newToolbarCopy('a.b.ok')), 'a.b.ok'), 'parse-edited': sl.parseToolbarCopy({ id: 'ls-a-b-ok', data: { variant: 'icons' } }, 'a.b.ok'), 'parse-bad': sl.parseToolbarCopy('{nope', 'a.b.ok'), 'parse-bad-id': sl.parseToolbarCopy({ id: 'Bad Id!', data: {} }, 'a.b.ok'),
+    'resolve-shared': sl.resolveLayoutToolbar(shared, null), 'resolve-fresh-copy': sl.resolveLayoutToolbar(shared, sl.newToolbarCopy('a.b.ok')), 'resolve-edited-copy': sl.resolveLayoutToolbar(shared, { id: 'ls-a-b-ok', data: { variant: 'icons' } }), 'resolve-no-shared': sl.resolveLayoutToolbar(null, sl.newToolbarCopy('a.b.ok')),
+  };
+  const review = {
+    'three': sl.reviewLayoutChoices({ home: three }, 'home'), 'none': sl.reviewLayoutChoices({ home: three }, 'other'), 'empty': sl.reviewLayoutChoices({}, 'home'),
+    'of-manifests': sl.screensOfManifests([manifests['ok-three'] as never, manifests['none-declared'] as never, { id: 'a.b.second', screens: { home: { layouts: three.layouts.slice().reverse() } } }]),
+  };
+  const sources = {
+    literal: sl.viewIdsInSource("export const plugin = { views: { home: { title: 'Home', render: () => null }, 'my-page': { title: 'X', render: () => null } }, nav: { items: [] } };"),
+    'const-same-file': sl.viewIdsInSource("const VIEW = 'thing';\nexport const plugin = { views: { [VIEW]: { title: 'T', render: () => null } } };"),
+    'const-imported': sl.viewIdsInSource("import { VIEW, OTHER as O } from './keys';\nexport const plugin = { views: { [VIEW]: { title: 'T', render: () => null }, [O]: { title: 'O', render: () => null } } };", (p) => (p === './keys' ? "export const VIEW = 'thing';\nexport const OTHER = 'other';" : null)),
+    unresolved: sl.viewIdsInSource("export const plugin = { views: { [VIEW]: { title: 'T', render: () => null } } };"),
+    nested: sl.viewIdsInSource("views: { a: { title: 'A', render: () => <X views={{ z: 1 }} /> , keywords: ['x', 'y'] }, b: { title: 'B', render: () => null } }"),
+    none: sl.viewIdsInSource('export const plugin = { label: "x" };'),
+  };
+  write('screen-layouts.json', {
+    spec: { schema: sl.SCREEN_LAYOUTS_SCHEMA, toolbar: sl.LAYOUT_SWITCHER_TOOLBAR, qualified: sl.LAYOUT_SWITCHER_QUALIFIED, provider: sl.SCREEN_LAYOUTS_PROVIDER, min: sl.MIN_LAYOUTS, max: sl.MAX_LAYOUTS, keys: sl.SCREEN_LAYOUT_KEYS, actions: sl.SCREEN_LAYOUT_ACTIONS, ctx: sl.SCREEN_LAYOUT_CTX, starters: sl.STARTER_LAYOUTS, starterDefault: sl.STARTER_DEFAULT, overrides: sl.TOOLBAR_OVERRIDES },
+    keys: { layout: sl.screenLayoutKey('home'), toolbar: sl.screenToolbarKey('home'), copy: sl.toolbarCopyKey('a.b.ok'), viewOf: { [sl.screenLayoutKey('home')]: sl.viewOfLayoutKey(sl.screenLayoutKey('home')), 'axf.screen.home.layoutToolbar': sl.viewOfLayoutKey('axf.screen.home.layoutToolbar'), other: sl.viewOfLayoutKey('other') } },
+    manifests, contract, resolution, toolbar, menus, copies, review, sources,
+    grandfather: { baseline: { screens: ['old/home', 'wild/*'] }, cases: { 'old/home': sl.grandfathered({ screens: ['old/home', 'wild/*'] }, 'old', 'home'), 'old/other': sl.grandfathered({ screens: ['old/home', 'wild/*'] }, 'old', 'other'), 'wild/any': sl.grandfathered({ screens: ['old/home', 'wild/*'] }, 'wild', 'any'), 'none': sl.grandfathered(null, 'old', 'home') } },
   });
 }

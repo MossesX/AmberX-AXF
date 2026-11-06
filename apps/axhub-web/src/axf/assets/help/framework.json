@@ -1531,6 +1531,11 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "action:screen.layout-toolbar:hide",
+        "title": "Hide the layout toolbar",
+        "text": "Hides this screen's layout toolbar. Show it again by right-clicking the screen's title."
       }
     ],
     "intros": [

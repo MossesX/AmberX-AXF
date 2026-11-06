@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "layout-switcher",
+  "name": "Layout switcher",
+  "version": "1.0.0",
+  "description": "The one shared layout switcher every plugin screen uses (qualified name axf.toolbar.layout-switcher; screen-layouts@1, Brett Nov 4 2026). Hidden by default; shown from the screen title's right-click, a setting or voice. Its buttons are the current screen's layouts (the runtime's `screen-layouts` live list), so editing this asset changes the switcher in every plugin at once; a plugin can take its own copy from the toolbar's right-click.",
+  "author": "AmberX AXF",
+  "tags": ["screens", "layouts", "shared"],
+  "roll": false,
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "density": "compact",
+    "surface": "flat",
+    "showSearch": false,
+    "divider": true,
+    "groups": [
+      { "id": "layouts", "label": "Screen layouts", "provider": "screen-layouts", "max": 8, "items": [] },
+      { "id": "toolbar", "label": "Layout toolbar", "items": [
+        { "id": "hide", "icon": "x", "label": "Hide", "action": "screen.layout-toolbar:hide" }
+      ] }
+    ]
+  }
+}

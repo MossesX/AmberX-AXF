@@ -100,7 +100,7 @@ const envFor = (role: string, hidden: string[] = ['toolbar'], settings: Record<s
   const items = (menu: string) => rt.appMenu().menus.find((m) => m.id === menu)?.items.map((i) => i.id) ?? [];
   const assetMenus = rt.asset('app-menu').data.menus.map((m) => m.id);
   eq(menuIds(), assetMenus, 'no contributions: the asset menus as they are');
-  eq(rt.appMenuProviderIds(), ['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome'], 'built-in live lists');
+  eq(rt.appMenuProviderIds(), ['views', 'screen-layouts', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome'], 'built-in live lists');
 
   // contributions: add, replace by id, remove by module (providers of that module go too)
   rt.addAppMenuItems({ id: 'p1.builds', module: 'p1', menu: 'builds', menuLabel: 'Builds', items: [{ id: 'pending', label: 'Pending builds', action: 'nav:pending', badge: 'builds.pending' }] });

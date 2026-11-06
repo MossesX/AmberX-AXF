@@ -26,6 +26,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
+import { SCREEN_LAYOUT_CTX } from '../../core/engines/screen-layouts.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Segmented, Slider } from './Controls';
@@ -169,6 +170,9 @@ export function installChrome(rt: AxfRuntime): void {
   rt.contextExtras.set('*:chrome', (target, payload) => {
     const type = chromeTypeOfTarget(target);
     if (!type) return [];
+    // screen-layouts@1: the layout toolbar's Change and Move would act on the app's toolbar, so it keeps Settings… here;
+    // its own items (own copy / back to shared / hide) are the way to change it
+    if (target === SCREEN_LAYOUT_CTX.toolbar) return chromeMenu(rt, type, rt.layoutToolbarInstance(payload ?? '')).filter((e) => e.id === `chrome-settings-${type}`);
     const instance = instanceOf(type, payload);
     return instance ? chromeMenu(rt, type, instance) : [];
   });

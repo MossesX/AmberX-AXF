@@ -217,14 +217,14 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
  * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
  * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
  */
-export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
+export function AssetToolbar({ id, search, label = 'Page toolbar', asset, ctxTarget, ctxPayload }: { id: string; search?: ReactNode; label?: string; /** an already resolved toolbar (e.g. a plugin's copy of the shared layout-switcher) drawn instead of looking `id` up */ asset?: { id: string; data: Record<string, unknown> } | null; /** right-click target + payload (data-fx-ctx-target / -payload) */ ctxTarget?: string; ctxPayload?: string }) {
   const rt = useRuntime();
   useAxfState();
-  const tb = rt.registry.list('toolbar').find((a) => a.id === id);
+  const tb = asset ?? rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
   const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
   return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
+    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-fx-ctx-target={ctxTarget} data-fx-ctx-payload={ctxPayload}>
       {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
       {data.showSearch && search}
     </div>

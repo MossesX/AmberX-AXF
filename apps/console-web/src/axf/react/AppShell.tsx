@@ -28,6 +28,14 @@ export interface ViewDef {
   render: () => ReactNode;
   /** extra words the toolbar search should find this view by */
   keywords?: string[];
+  /**
+   * The screen's layouts (screen-layouts@1, Brett Nov 4 2026: every new plugin screen has three, picked with the shared
+   * layout-switcher toolbar, hidden by default). Three or more presets of this screen; plugin.json `screens` mirrors
+   * them for tooling. Read with `useScreenLayout(view)` (components/ScreenLayouts.tsx).
+   */
+  layouts?: { id: string; label: string; icon?: string; description?: string }[];
+  /** which of `layouts` the screen starts on (default: the first) */
+  defaultLayout?: string;
 }
 export type ViewMap = Record<string, ViewDef>;
 

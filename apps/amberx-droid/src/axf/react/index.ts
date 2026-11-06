@@ -47,6 +47,7 @@ export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './h
 export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
 export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, type TapConfirmHost } from './tapConfirm';
+export { useScreenLayout, LayoutToolbar, type ScreenLayoutApi } from './components/ScreenLayouts';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';

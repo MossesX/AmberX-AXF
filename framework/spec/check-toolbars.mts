@@ -21,7 +21,7 @@ const ok = (c: unknown, what: string) => { if (c) n += 1; else failures.push(wha
 const read = (t: string) => existsSync(join(root, 'assets', t)) ? readdirSync(join(root, 'assets', t)).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(root, 'assets', t, f), 'utf8'))) : [];
 const toolbars = read('toolbar');
 const known = new Set<string>();
-const BUILTIN_PROVIDERS = ['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome'];
+const BUILTIN_PROVIDERS = ['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome', 'screen-layouts'];
 // action prefixes the runtime registers with params (plus standard ids); a toolbar item must use one of them
 const PARAM_PREFIXES = ['swap', 'nav', 'dialog', 'spacing', 'slot.hide', 'design.package', 'settings.open', 'assets.random', 'assets.reset', 'alerts.open', 'windows.restore', 'toast', 'role'];
 

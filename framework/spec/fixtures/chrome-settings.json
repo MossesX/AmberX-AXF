@@ -29,7 +29,8 @@
       "tab-group"
     ],
     "toolbar": [
-      "toolbar"
+      "toolbar",
+      "layout-toolbar"
     ],
     "banner": [
       "banner",

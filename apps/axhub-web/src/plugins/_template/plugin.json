@@ -4,6 +4,34 @@
   "name": "Example",
   "version": "0.1.0",
   "description": "Starting point for an axHub web plugin.",
+  "screens": {
+    "example": {
+      "layouts": [
+        {
+          "id": "compact",
+          "label": "Compact",
+          "icon": "list",
+          "description": "Tight rows, more on one screen."
+        },
+        {
+          "id": "standard",
+          "label": "Standard",
+          "icon": "layout",
+          "description": "The everyday arrangement."
+        },
+        {
+          "id": "spacious",
+          "label": "Spacious",
+          "icon": "grid",
+          "description": "Room around every block, big targets."
+        }
+      ],
+      "default": "standard"
+    }
+  },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-10-25" }
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-25"
+  }
 }

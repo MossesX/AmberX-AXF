@@ -1,15 +1,23 @@
 import { useState } from 'react';
-import { Button, Container, useRuntime } from '../../react';
+import { Button, Container, LayoutToolbar, useRuntime, useScreenLayout } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 
 /** {{LABEL}} — generated from the `{{TEMPLATE}}` library template (web port of {{MODULE_ID}}). */
+/** Three layouts per screen (screen-layouts@1): rename to what fits this screen; the page branches on `screen.layout`. */
+const LAYOUTS = [
+  { id: 'compact', label: 'Compact', icon: 'list', description: 'Tight rows, more on one screen.' },
+  { id: 'standard', label: 'Standard', icon: 'layout', description: 'The everyday arrangement.' },
+  { id: 'spacious', label: 'Spacious', icon: 'grid', description: 'Room around every block, big targets.' },
+];
 
 export function {{CLASS}}View() {
   const rt = useRuntime();
+  const screen = useScreenLayout('{{ROUTE}}');
   const [opened, setOpened] = useState(0);
   return (
-    <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">{{MODULE_NAME}} · {{TEMPLATE}}</p><h1>{{LABEL}}</h1><p className="fx-muted">{{DESCRIPTION}}</p></div></header>
+    <div className="fx-stack fx-stack--lg" {...screen.rootProps}>
+      <header className="fx-pagehead"><div {...screen.headProps}><p className="fx-eyebrow">{{MODULE_NAME}} · {{TEMPLATE}}</p><h1>{{LABEL}}</h1><p className="fx-muted">{{DESCRIPTION}}</p></div></header>
+      <LayoutToolbar view="{{ROUTE}}" plugin="{{MODULE_ID}}" />
       <Container title="Getting started" icon="box"><p style={{ marginTop: 0 }}>Build this feature's view here; the route and Open action are registered.</p><Button tone="primary" icon="zap" onClick={() => rt.toast('{{LABEL}} works', 'success')}>Show a toast</Button></Container>
       <Container title="Library" icon="box">
         <p className="fx-muted" style={{ marginTop: 0 }}>Opened {opened} time(s) this session.</p>
@@ -28,5 +36,5 @@ export const library: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('{{ROUTE}}.open', () => rt.navigate('{{ROUTE}}'), { label: 'Open {{LABEL}}' });
   },
-  views: { '{{ROUTE}}': { title: '{{LABEL}}', icon: 'box', render: () => <{{CLASS}}View /> } },
+  views: { '{{ROUTE}}': { title: '{{LABEL}}', icon: 'box', render: () => <{{CLASS}}View />, layouts: LAYOUTS, defaultLayout: 'standard' } },
 };

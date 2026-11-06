@@ -1163,6 +1163,7 @@ def _read_plugin_manifest(folder: Path) -> dict[str, Any]:
         raise ValueError('plugin.json targets must include "axf-console"')
     _plugin_tab(raw)  # a wrong "tabable" is the plugin's own problem, reported like any other
     _plugin_banners(raw)
+    _plugin_screens(raw)
     # build-defaults@1 (Oct 23 2026): fill the build engine's defaults (e.g. where its UI opens) and refuse what a rule
     # requires (the model that built it)
     d = build_defaults.apply_defaults("plugin", raw)
@@ -1187,6 +1188,49 @@ def _plugin_banners(m: dict[str, Any]) -> list[str]:
 
 _VIEW_ID = _re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
 _ICON_ID = _re.compile(r"[a-z0-9][a-z0-9-]{0,39}\Z")
+_LAYOUT_ID = _re.compile(r"[a-z0-9][a-z0-9-]{0,31}\Z")
+_MIN_LAYOUTS = 3
+_MAX_LAYOUTS = 8
+
+
+def _plugin_screens(m: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """plugin@1 `screens` (screen-layouts@1, Nov 4 2026; = framework/core/engines/screen-layouts.mjs checkScreens): per
+    page, its layout presets (three or more) and the default. {} when the plugin declares none (older plugins; the CI
+    check, not the server, decides whether a screen had to). Raises ValueError on a wrong declaration."""
+    s = m.get("screens")
+    if s is None:
+        return {}
+    if not isinstance(s, dict):
+        raise ValueError('"screens" is an object: { "<view id>": { "layouts": [...], "default": "<id>" } }')
+    views = [p[5:] for p in (m.get("provides") or []) if isinstance(p, str) and p.startswith("view:")]
+    out: dict[str, dict[str, Any]] = {}
+    for view, raw in s.items():
+        if not isinstance(view, str) or not _VIEW_ID.match(view):
+            raise ValueError(f'"screens": "{view}" is not a view id')
+        if views and view not in views:
+            raise ValueError(f'"screens": "{view}" is not a page the plugin provides ("view:{view}")')
+        if not isinstance(raw, dict) or set(raw) - {"layouts", "default"} or not isinstance(raw.get("layouts"), list):
+            raise ValueError(f'"screens"."{view}" is {{layouts: [...], default?}}')
+        ids: list[str] = []
+        for i, lay in enumerate(raw["layouts"], 1):
+            if not isinstance(lay, dict) or set(lay) - {"id", "label", "icon", "description"}:
+                raise ValueError(f'"screens"."{view}" layout {i} is {{id, label, icon?, description?}}')
+            if not isinstance(lay.get("id"), str) or not _LAYOUT_ID.match(lay["id"]) or lay["id"] in ids:
+                raise ValueError(f'"screens"."{view}" layout {i}: "id" is a unique short slug')
+            ids.append(lay["id"])
+            if not isinstance(lay.get("label"), str) or not lay["label"].strip() or len(lay["label"]) > 40:
+                raise ValueError(f'"screens"."{view}" layout {i}: "label" is short text')
+            if "icon" in lay and (not isinstance(lay["icon"], str) or not _ICON_ID.match(lay["icon"])):
+                raise ValueError(f'"screens"."{view}" layout {i}: "icon" is an icon name')
+            if "description" in lay and (not isinstance(lay["description"], str) or len(lay["description"]) > 200):
+                raise ValueError(f'"screens"."{view}" layout {i}: "description" is one short sentence')
+        if len(ids) < _MIN_LAYOUTS or len(ids) > _MAX_LAYOUTS:
+            raise ValueError(f'"screens"."{view}" declares {len(ids)} layout(s); every plugin screen has {_MIN_LAYOUTS} to {_MAX_LAYOUTS}')
+        default = raw.get("default", ids[0])
+        if not isinstance(default, str) or default not in ids:
+            raise ValueError(f'"screens"."{view}": "default" names one of its layouts')
+        out[view] = {"layouts": raw["layouts"], "default": default}
+    return out
 
 
 def _plugin_tab(m: dict[str, Any]) -> dict[str, str] | None:

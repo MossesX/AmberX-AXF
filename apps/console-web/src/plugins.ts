@@ -33,6 +33,8 @@ export interface PluginManifest {
   opens?: 'main' | 'window' | 'dialog' | 'tab' | false;
   /** which UI moves (view:<id> / dialog:<id>) */
   opensUi?: string;
+  /** screen-layouts@1 (Nov 4 2026): per page, its three (or more) layouts and the default; mirrors views.<id>.layouts */
+  screens?: Record<string, { layouts: { id: string; label: string; icon?: string; description?: string }[]; default?: string }>;
 }
 
 export interface BundledPlugin {
