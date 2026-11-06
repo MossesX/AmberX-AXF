@@ -1620,6 +1620,18 @@
    "from": "detail",
    "addenda": []
   },
+  "notes-tasks-sync": {
+   "said": "They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.",
+   "at": "2026-11-06T19:31:41.894Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "notes-vault": {
    "said": "gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
    "at": "2026-11-03",

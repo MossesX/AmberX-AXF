@@ -705,9 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:26 UTC · `ui-review-alarm` note (angel) · claude
-- 2026-11-04 21:26 UTC · `build-optimizer` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, → complete (current) · foreign-write
-- 2026-11-04 21:26 UTC · `drag-to-tab` s3 done (current) · orchestrator
 - 2026-11-04 21:26 UTC · `drag-to-tab` s4 done (current) · orchestrator
 - 2026-11-04 21:26 UTC · `drag-to-tab` s5 done, → complete (current) · orchestrator
 - 2026-11-04 21:26 UTC · `drag-to-tab` → built, branch claude/drag-to-tab, PR #344 (current) · builds-live
@@ -1105,6 +1102,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s32-31 done, → complete (current) · orchestrator
 - 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` → built, branch claude/md-chain-control, PR #362 (current) · builds-live
 - 2026-11-06 19:08 UTC · `headless-session-efficiency-shared-chain-control` → built, branch claude/md-chain-control, PR #362 (current) · builds-live
+- 2026-11-06 18:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
+- 2026-11-06 18:40 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
+- 2026-11-06 18:46 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
 
 ## Token passes (log)
 

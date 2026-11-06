@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1116,
- "updatedAt": "2026-11-06T19:08:16.917Z",
+ "rev": 1117,
+ "updatedAt": "2026-11-06T19:31:42.730Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -93102,7 +93102,7 @@
    "upgradeRequests": [],
    "steps": [
     {
-     "id": "s1",
+     "id": "s56-55",
      "uid": "st-mw52nz5g1eb6mj",
      "title": "",
      "text": "Token log: define log record schema (turn, in/out/cache tokens, cost, model, account, build/step, session, files read)",
@@ -93116,15 +93116,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:48.362Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:48.449Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s2",
+     "id": "s57-56",
      "uid": "st-mw52nz5g1fgpcu",
      "title": "",
      "text": "Token log: VPS transcript parser for headless sessions (plain code, zero tokens)",
@@ -93138,15 +93138,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:48.999Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:49.064Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s3",
+     "id": "s58-57",
      "uid": "st-mw52nz5g1glr97",
      "title": "",
      "text": "Token log: flag CLAUDE.md / rules file reads per turn",
@@ -93160,15 +93160,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:49.716Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:49.795Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s4",
+     "id": "s59-58",
      "uid": "st-mw52nz5g1h80xn",
      "title": "",
      "text": "Token log: cost calculator per model + account tagging",
@@ -93182,15 +93182,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:50.467Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:50.534Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s5",
+     "id": "s60-59",
      "uid": "st-mw52nz5g1ief9z",
      "title": "",
      "text": "Token log: write store + watcher that tails new transcripts",
@@ -93204,15 +93204,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:51.176Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:51.245Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s6",
+     "id": "s61-60",
      "uid": "st-mw52nz5g1jkl2e",
      "title": "",
      "text": "Chat/voice sessions: log tool calls + estimates from session notes / synced chats, marked estimated",
@@ -93226,15 +93226,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:51.885Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:51.975Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s7",
+     "id": "s62-61",
      "uid": "st-mw52nz5g1kwo6p",
      "title": "",
      "text": "Token log viewer: read API (filter by session/account/build/model, totals by day)",
@@ -93248,15 +93248,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:05.203Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:05.351Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s8",
+     "id": "s63-62",
      "uid": "st-mw52nz5g1l7hza",
      "title": "",
      "text": "Token log viewer: Claude settings tab with table + filters",
@@ -93270,15 +93270,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:06.363Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:06.570Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s9",
+     "id": "s64-63",
      "uid": "st-mw52nz5g1m81d7",
      "title": "",
      "text": "Token log viewer: top token eaters panel + daily totals chart",
@@ -93292,12 +93292,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:07.393Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:07.465Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
      "id": "s10",
@@ -93322,7 +93322,7 @@
      "updatedAt": "2026-11-06T14:30:53.585Z"
     },
     {
-     "id": "s11",
+     "id": "s66-65",
      "uid": "st-mw52nz5g1obnoq",
      "title": "",
      "text": "API runs: estimated-cost dialog before launch",
@@ -93336,15 +93336,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:08.763Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:08.823Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s12",
+     "id": "s67-66",
      "uid": "st-mw52nz5g1phdk9",
      "title": "",
      "text": "API runs: final-cost dialog after the run",
@@ -93358,15 +93358,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:09.392Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:09.460Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s13",
+     "id": "s68-67",
      "uid": "st-mw52nz5g1qszvw",
      "title": "",
      "text": "Persist the API-run approval rule in _claude/shared/rules/RULES.md + decisions.md (via PR)",
@@ -93380,15 +93380,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:10.048Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:10.123Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s14",
+     "id": "s69-68",
      "uid": "st-mw52nz5g1r524g",
      "title": "",
      "text": "Periodic cheap headless usage check: reads logs + synced chats (no CLAUDE.md), tallies usage",
@@ -93402,15 +93402,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:08.130Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:08.196Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s15",
+     "id": "s70-69",
      "uid": "st-mw52nz5g1sckfs",
      "title": "",
      "text": "Headless launch: skip CLAUDE.md/rules files; update load-rules-first rule to exempt headless",
@@ -93424,15 +93424,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:01:36.569Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:01:36.682Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s16",
+     "id": "s71-70",
      "uid": "st-mw52nz5g1tmnoo",
      "title": "",
      "text": "Headless launch: send orchestrator task brief + rules brief together",
@@ -93446,15 +93446,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:05:47.684Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:05:47.750Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s17",
+     "id": "s72-71",
      "uid": "st-mw52nz5g1u96mp",
      "title": "",
      "text": "Rules briefs: storage + API (multiple saved briefs, conditions for when each runs)",
@@ -93468,15 +93468,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:15:59.525Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:15:59.593Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s18",
+     "id": "s73-72",
      "uid": "st-mw52nz5g1vt3mu",
      "title": "",
      "text": "Rules briefs: editor in Claude settings",
@@ -93490,15 +93490,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:00.310Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:00.413Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s19",
+     "id": "s74-73",
      "uid": "st-mw52nz5g1w0c10",
      "title": "",
      "text": "Rules briefs: condition picker + generate-on-the-fly-before-send option",
@@ -93512,15 +93512,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:01.271Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:01.448Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
-     "id": "s20",
+     "id": "s75-74",
      "uid": "st-mw52nz5g1x96o6",
      "title": "",
      "text": "Rules briefs: orchestrator task brief shown read-only next to the rules brief",
@@ -93534,12 +93534,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T18:16:03.326Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T18:16:03.510Z"
+     "updatedAt": "2026-11-06T18:40:36.521Z"
     },
     {
      "id": "s21",
@@ -96868,12 +96868,13 @@
    "title": "First: refresh token saved every time it is used",
    "category": "",
    "detail": "Save every rotated Claude OAuth pair to all stores of that login at once.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/refresh-token-save",
    "pr": "#359",
+   "mergedAt": "2026-11-06T18:21:20Z",
    "createdAt": "2026-11-06T18:07:12.388Z",
    "updatedAt": "2026-11-06T19:00:28.761Z",
    "builtAt": "2026-11-06T18:07:13.301Z",
@@ -96885,6 +96886,10 @@
     {
      "text": "Reconciler: PR #359 merged",
      "at": "2026-11-06T18:40:18.626Z"
+    },
+    {
+     "text": "Reconciler: PR #359 merged",
+     "at": "2026-11-06T18:46:33.100Z"
     }
    ],
    "approvals": [],
@@ -96933,7 +96938,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
