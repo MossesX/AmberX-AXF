@@ -373,5 +373,19 @@ def ensure_health() -> bool:
     return True
 
 
+
+class Orchestrator:
+    """orchestrator@1 for other plugins: a build's task brief and the open builds, read-only."""
+
+    def brief(self, build_id: str) -> dict[str, Any]:
+        return _run("brief", build_id)
+
+    def open_builds(self) -> list[dict[str, str]]:
+        builds = (_run("state").get("state") or {}).get("builds") or []
+        return [{"id": b.get("id", ""), "title": b.get("title", ""), "status": b.get("status", "")} for b in builds if b.get("status") in ("running", "pending", "queued", "blocked")]
+
+
+plugin_services.provide("orchestrator@1", Orchestrator(), Path(__file__).resolve().parents[1].name)
+
 ensure_health()
 

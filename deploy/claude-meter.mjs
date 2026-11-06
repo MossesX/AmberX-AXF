@@ -108,7 +108,7 @@ export function memoryChain(cwd, { home = homedir(), read = readText, list = lis
 function listDir(d) { try { return readdirSync(d); } catch { return []; } }
 
 /** A live meter for one session. `add(ev)` takes each stream-json event; `snapshot()` / `chain()` give the files' JSON. */
-export function createMeter({ session = '', name = '', agent = '', model = '', cwd = process.cwd(), home = homedir(), pricing = loadPricing(), now = () => Date.now(), read = readText, list = listDir, prev = null, prevChain = null } = {}) {
+export function createMeter({ session = '', name = '', agent = '', model = '', cwd = process.cwd(), home = homedir(), pricing = loadPricing(), now = () => Date.now(), read = readText, list = listDir, prev = null, prevChain = null, lean = process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS === '1' } = {}) {
   const t0 = now();
   const base = prev && prev.session === session ? prev : null;
   const st = {
@@ -159,10 +159,11 @@ export function createMeter({ session = '', name = '', agent = '', model = '', c
     return push(path, 'read', Math.min((r.it.depth ?? 0) + 1, 24), r.it.path, startRule(r.line) ? 'session-start rule' : 'reference', r.line);
   };
   let chainVersion = 0;
-  if (!items.length) { for (const m of memoryChain(cwd, { home, read, list })) push(m.path, m.via, m.depth, m.parent, m.reason); chainVersion++; }
+  if (!items.length && !lean) { for (const m of memoryChain(cwd, { home, read, list })) push(m.path, m.via, m.depth, m.parent, m.reason); chainVersion++; }
 
   /** A file read inside a folder may bring in that folder's CLAUDE.md (Claude Code loads nested memory on demand). */
   const lazyMemory = (file) => {
+    if (lean) return false;
     const root = resolve(cwd); let added = false;
     const dirs = []; for (let d = dirname(file); d.startsWith(root) && d !== root; d = dirname(d)) dirs.unshift(d);
     for (const d of dirs) for (const f of ['CLAUDE.md', join('.claude', 'CLAUDE.md')]) { const p = join(d, f); if (!have.has(p) && read(p) != null) added = push(p, 'nested memory', 0, '', 'nested memory') || added; }

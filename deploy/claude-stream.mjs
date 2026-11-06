@@ -4,6 +4,7 @@
 // stdin: one JSON event per line; anything that isn't JSON is passed through unchanged. Never exits on a bad line.
 // --meter <file> --chain <file> [--session s] [--name n] [--agent a] [--model m]: also keep the live cost meter and the
 // context chain for the console (deploy/claude-meter.mjs), rewritten at most once a second and when the stream ends.
+// [--account a] [--build id]: tag the token log's turns (framework/cli/token-log.mjs, on whenever --meter is on).
 import { createInterface } from 'node:readline';
 import { createMeter, readJson, writeJson } from './claude-meter.mjs';
 
@@ -67,6 +68,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null });
     } catch { meter = null; }
   }
+  // Token log (token-turn@1): every turn of this run, as it completes. Plain code; it never stops the stream.
+  let turns = null;
+  if (o.meter && process.env.AXF_TOKEN_LOG !== 'off') {
+    try { turns = (await import('../framework/cli/token-log.mjs')).createWriter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', account: o.account ?? '', build: o.build ?? '' }); } catch { turns = null; }
+  }
   let dirty = false; let chainAt = -1;
   const flush = () => {
     if (!meter || !dirty) return; dirty = false;
@@ -80,7 +86,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     let ev = null;
     try { ev = JSON.parse(line); } catch { process.stdout.write(`${line}\n`); return; }
     if (meter) { try { meter.add(ev); dirty = true; } catch { /* never stop the stream */ } }
+    if (turns) { try { turns.add(ev); } catch { /* never stop the stream */ } }
     for (const l of render(ev)) process.stdout.write(`${l}\n`);
   });
-  rl.on('close', () => { if (meter) { meter.end(); dirty = true; flush(); clearInterval(timer); } });
+  rl.on('close', () => { if (turns) { try { turns.end(); } catch { /* the stream ended anyway */ } } if (meter) { meter.end(); dirty = true; flush(); clearInterval(timer); } });
 }
