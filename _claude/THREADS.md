@@ -705,8 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → built (current) · orchestrator
-- 2026-11-05 00:13 UTC · `claude-account-switcher` note (current) · orchestrator
 - 2026-11-05 01:38 UTC · `amberx-voice-echo-fix` added (3 steps) (main-framework) · orchestrator
 - 2026-11-05 02:08 UTC · `banner-widgets` added (7 steps) (current) · orchestrator
 - 2026-11-05 02:08 UTC · `banner-widgets` → running (current) · orchestrator
@@ -1105,6 +1103,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` note (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` → built (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s3 done (current) · orchestrator
+- 2026-11-06 23:34 UTC · `badges-notify-followup` added (4 steps) (current) · orchestrator
+- 2026-11-06 23:34 UTC · `badges-notify-followup` → running (current) · orchestrator
 
 ## Token passes (log)
 

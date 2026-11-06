@@ -493,6 +493,18 @@
    "from": "detail",
    "addenda": []
   },
+  "badges-notify-followup": {
+   "said": "Run a follow-up.",
+   "at": "2026-11-06T23:34:55.329Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "banner-fix-fallback": {
    "said": "If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.",
    "at": "2026-10-28",
