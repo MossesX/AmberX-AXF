@@ -16,5 +16,5 @@ Build `claude-badge-vps` (Opus). Covers s18 of `token-usage-log-accounts-plan-st
 - The console test still costs one tiny request per load while its badge shows.
 
 ## Tests
-- claude-badge test.py: 40 checks passing, 15 of them new for the VPS read. ai-keys test.py and claude-accounts test.py extended (133 and 54 passing).
+- claude-badge test.py: 40 checks passing, 14 of them new for the VPS read. ai-keys test.py and claude-accounts test.py extended (133 and 54 passing).
 - Browser check against mocked routes: every state, Icons only, picked icon, hide and show, desktop and phone. Not run against the live VPS read: the route ships with the console deploy.
