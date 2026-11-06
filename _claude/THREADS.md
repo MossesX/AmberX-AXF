@@ -705,9 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:58 UTC · `notes-views` added (5 steps) (current) · claude:notes-views
-- 2026-11-04 22:00 UTC · `three-layouts-per-screen` → pending, note (angel) · reconciler
-- 2026-11-04 22:03 UTC · `notes-views` added (5 steps) (current) · foreign-write
 - 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s6 done (angel) · orchestrator
 - 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s7 done (angel) · orchestrator
 - 2026-11-04 22:04 UTC · `build-docs-walkthroughs` branch claude/build-docs-walkthroughs, PR #346 (angel) · builds-live
@@ -1105,6 +1102,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · foreign-write
 - 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` s6 done, → built (current) · orchestrator
 - 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · orchestrator
+- 2026-11-06 20:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
+- 2026-11-06 20:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
+- 2026-11-06 20:18 UTC · `claude-badge-vps` added (4 steps) (current) · orchestrator
 
 ## Token passes (log)
 

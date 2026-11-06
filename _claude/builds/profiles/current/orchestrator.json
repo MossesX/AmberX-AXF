@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T20:16:10.365Z",
+ "updatedAt": "2026-11-06T20:18:36.004Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14539,19 +14539,23 @@
    "title": "Headless progress file + lean CLAUDE.md chain",
    "category": "Builds",
    "detail": "Every headless build session writes progress to a small status file in the build and never stops to update the console; console reads it when needed. Also make headless sessions efficient with the CLAUDE.md chain (Brett, voice, Nov 6 2026).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T18:40:18.626Z",
+   "updatedAt": "2026-11-06T20:16:43.524Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T15:00:28.470Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T20:16:43.524Z"
     }
    ],
    "approvals": [],
@@ -14836,14 +14840,14 @@
    "title": "Token usage log + accounts + Plan Studio control (small steps)",
    "category": "Builds",
    "detail": "Replaces token-usage-log-accounts-plan-studio-control. Every step sized ~10 min so work isn't lost on an account switch (Brett, voice, Nov 6 2026).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T18:40:18.626Z",
+   "updatedAt": "2026-11-06T20:16:43.524Z",
    "builtAt": "",
    "notes": [
     {
@@ -14857,6 +14861,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T18:40:18.626Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T20:16:43.524Z"
     }
    ],
    "approvals": [],
@@ -16782,6 +16790,110 @@
      "doneAt": "2026-11-06T20:15:52.270Z",
      "note": "",
      "uid": "st-mw5e1gog0ceen9"
+    }
+   ]
+  },
+  {
+   "id": "claude-badge-vps",
+   "title": "Claude badge: VPS and console connections",
+   "category": "Plugin",
+   "detail": "Two banner badges in the Claude badge plugin: console connection (axf.llm@1 test) and VPS connection (the Claude Code login on the VPS, read with plain code, zero tokens). Show/hide, Icons only and per-state icons for each. Covers s18 of token-usage-log-accounts-plan-studio-control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-06T20:18:34.992Z",
+   "updatedAt": "2026-11-06T20:18:34.992Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.",
+    "at": "2026-11-06T20:18:34.992Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server: VPS login status (zero tokens) through the accounts and keys capabilities",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5f33y005z2pg"
+    },
+    {
+     "id": "s2",
+     "text": "Web: second badge, polling, show/hide, Icons only, icon pickers per badge and state",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5f33y006s9i0"
+    },
+    {
+     "id": "s3",
+     "text": "Tests + README + help + note on the token-usage build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5f33y007zkw4"
+    },
+    {
+     "id": "s4",
+     "text": "CI checks, screenshots to UI Review, PR to the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5f33y008kbk1"
     }
    ]
   }
