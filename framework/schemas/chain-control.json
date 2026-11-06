@@ -1,0 +1,47 @@
+{
+  "$axf": "chain-control@1",
+  "about": "Seed for the chain control registry (framework/core/chain-control.mjs). The live document is /projects/_shared/_data/claude/chain-control.json, changed through the shared controls in Claude settings and MD Studio, the API, the CLI or MCP; this seed applies until it exists. Built-in presets always come from here.",
+  "preset": "lean",
+  "presets": [
+    {
+      "id": "lean", "name": "Lean", "description": "Rules brief only, every project file on demand, a fresh session per step, tight output caps. Cheapest.",
+      "config": {
+        "chain": { "defaultMode": "demand", "brief": true, "files": [], "order": [], "maxChars": 40000 },
+        "session": { "mode": "per-step", "handoffChars": 1500, "briefChars": 3000 },
+        "models": { "rules": [
+          { "type": "foundation", "label": "Foundation", "model": "Fable", "words": ["schema", "asset type", "data model", "contract", "kernel", "engine", "migration", "cross-app", "cross-port", "protocol"] },
+          { "type": "ui", "label": "UI", "model": "Opus", "words": ["dialog", "panel", "banner", "toolbar", "screen", "settings tab", "widget"] },
+          { "type": "tests", "label": "Tests and checks", "model": "Opus", "words": ["test", "verify", "check", "screenshot"] },
+          { "type": "docs", "label": "Docs", "model": "Opus", "words": ["docs", "readme", "report", "changelog"] }
+        ] },
+        "output": { "bashChars": 20000, "mcpTokens": 10000, "readTokens": 12000 },
+        "scope": { "mode": "listed", "always": [] },
+        "budget": { "warnTokens": 150000, "stopTokens": 0 }
+      }
+    },
+    {
+      "id": "normal", "name": "Normal", "description": "Project CLAUDE.md and persona loaded, rules on demand, a fresh session when the model changes, roomier caps.",
+      "config": {
+        "chain": { "defaultMode": "demand", "brief": true, "files": [{ "path": "CLAUDE.md", "mode": "always" }, { "path": "_claude/persona.md", "mode": "always" }], "order": [], "maxChars": 60000 },
+        "session": { "mode": "per-phase", "handoffChars": 3000, "briefChars": 6000 },
+        "models": { "rules": [
+          { "type": "foundation", "label": "Foundation", "model": "Fable", "words": ["schema", "asset type", "data model", "contract", "kernel", "engine", "migration", "cross-app", "cross-port", "protocol"] }
+        ] },
+        "output": { "bashChars": 60000, "mcpTokens": 25000, "readTokens": 25000 },
+        "scope": { "mode": "listed", "always": [] },
+        "budget": { "warnTokens": 400000, "stopTokens": 0 }
+      }
+    },
+    {
+      "id": "full", "name": "Full", "description": "Claude Code loads its whole chain, one session for the build, no caps, no scoping. Costs the most.",
+      "config": {
+        "chain": { "defaultMode": "always", "brief": false, "files": [], "order": [], "maxChars": 200000 },
+        "session": { "mode": "per-build", "handoffChars": 3000, "briefChars": 20000 },
+        "models": { "rules": [] },
+        "output": { "bashChars": 0, "mcpTokens": 0, "readTokens": 0 },
+        "scope": { "mode": "off", "always": [] },
+        "budget": { "warnTokens": 0, "stopTokens": 0 }
+      }
+    }
+  ]
+}
