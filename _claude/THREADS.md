@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 23:10 UTC · `shipped-features-r2` PR #350, note (angel) · reconciler
 - 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · orchestrator
 - 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · foreign-write
 - 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done, → running (current) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 23:15 UTC · `gizmo-companion` → running, note (current) · orchestrator
 - 2026-11-06 23:23 UTC · `gizmo-companion` → complete, note (current) · foreign-write
 - 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` PR #368 (current) · builds-live
+- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` s8 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
