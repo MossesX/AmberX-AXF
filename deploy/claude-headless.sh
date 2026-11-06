@@ -346,7 +346,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     while :; do
       if command -v node >/dev/null; then
         ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
-        hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "${cc_model:-$model}" --account "$login_account" --build "${log_build:-}" ${cc_step:+--step "$cc_step"} --budget-warn "$cc_warn" --budget-stop "$cc_halt" ${cc_dir:+--budget-pid "$cc_dir/claude.pid" --budget-stopped "$cc_dir/budget-stopped"})
+        hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "${cc_model:-$model}" --account "$login_account" --build "${log_build:-${AXF_BUILD_ID:-}}" ${cc_step:+--step "$cc_step"} --budget-warn "$cc_warn" --budget-stop "$cc_halt" ${cc_dir:+--budget-pid "$cc_dir/claude.pid" --budget-stopped "$cc_dir/budget-stopped"})
         run_claude -p "$@" "${step_args[@]}" "${lean_args[@]}" --output-format stream-json --verbose "$run_prompt" 2>&1 | tee "${tee_a[@]}" "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "${tee_a[@]}" "$log"
       else
         claude -p "$@" "${step_args[@]}" "${lean_args[@]}" "$run_prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "${tee_a[@]}" "$log"

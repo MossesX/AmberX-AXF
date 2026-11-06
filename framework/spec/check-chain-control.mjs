@@ -113,6 +113,13 @@ ok(cli(['read', 'CLAUDE.md']).version, 'a chain file opens with a version');
 eq(cli(['write', 'CLAUDE.md'], JSON.stringify({ content: 'x', if_version: 'stale' })).code, 'conflict', 'a stale edit is refused');
 eq(cli(['state', '--build', 'nope']).suggestions, [], 'an unknown build is harmless');
 
+const logs = join(TMP, 'tokens'); const day = new Date().toISOString().slice(0, 10).split('-');
+mkdirSync(join(logs, day[0], day[1]), { recursive: true });
+const turn = (build, claudeSession, cacheWrite, costUsd) => JSON.stringify({ build, claudeSession, step: '', input: 1, output: 1, cacheRead: 0, cacheWrite, costUsd, rulesReads: [] });
+writeFileSync(join(logs, day[0], day[1], `${day[2]}.jsonl`), `${[turn('a', 'x', 1000, 1), turn('b', 'y', 400, 0.25), turn('b', 'z', 400, 0.25)].join('\n')}\n`);
+const cmp = JSON.parse(spawnSync('node', [join(HERE, '..', 'cli', 'chain-control.mjs'), 'compare', '--before', 'build=a', '--after', 'build=b', '--json'], { env: { ...env, AXF_TOKEN_LOG_DIR: logs }, encoding: 'utf8' }).stdout);
+eq([cmp.before.sessions, cmp.after.sessions, cmp.before.startPerSession, cmp.saved.costPct], [1, 2, 1001, 50], 'the token log compares before and after');
+
 /* the launcher: a fresh session per step, handoff, caps, stop at a higher pin */
 const D = join(TMP, 'run'); const H = join(TMP, 'fakehome'); const bin = join(H, '.local', 'bin');
 mkdirSync(join(D, '_claude', 'builds'), { recursive: true }); mkdirSync(bin, { recursive: true });

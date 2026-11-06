@@ -195,18 +195,26 @@ export function plan({ build = '', brief = '', dir, prev = '', model = '', name 
 
 const filterOf = (s) => Object.fromEntries(String(s ?? '').split(',').filter(Boolean).map((kv) => kv.split('=')));
 function totals(filter) {
-  const rec = readRecords({ from: '2020-01-01' }).filter((r) => Object.entries(filter).every(([k, v]) => String(r[k] ?? '') === v));
-  const t = { turns: rec.length, sessions: new Set(rec.map((r) => r.session)).size, steps: new Set(rec.map((r) => `${r.build}/${r.step}`)).size, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, costUsd: 0, rulesReads: 0 };
-  for (const r of rec) { for (const k of ['input', 'output', 'cacheRead', 'cacheWrite']) t[k] += r[k] || 0; t.costUsd += r.costUsd || 0; if (r.rulesRead || r.rules?.length) t.rulesReads += 1; }
+  const from = new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10);
+  const rec = readRecords({ from }).filter((r) => Object.entries(filter).every(([k, v]) => String(r[k] ?? '') === v));
+  const t = { turns: rec.length, sessions: 0, steps: new Set(rec.map((r) => `${r.build}/${r.step}`)).size, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, costUsd: 0, rulesReads: 0, startPerSession: 0, costPerTurn: 0 };
+  const first = new Map();
+  for (const r of rec) {
+    for (const k of ['input', 'output', 'cacheRead', 'cacheWrite']) t[k] += r[k] || 0;
+    t.costUsd += r.costUsd || 0; t.rulesReads += r.rulesReads?.length ?? 0;
+    const id = r.claudeSession || `${r.session}/${r.step}`;
+    if (!first.has(id)) first.set(id, (r.input || 0) + (r.cacheRead || 0) + (r.cacheWrite || 0));
+  }
+  t.sessions = first.size;
   t.costUsd = Math.round(t.costUsd * 10000) / 10000;
-  t.startPerSession = t.sessions ? Math.round(t.cacheWrite / t.sessions) : 0;
+  t.startPerSession = first.size ? Math.round([...first.values()].reduce((x, y) => x + y, 0) / first.size) : 0;
   t.costPerTurn = t.turns ? Math.round((t.costUsd / t.turns) * 10000) / 10000 : 0;
   return t;
 }
 export function compare(before, after) {
   const a = totals(filterOf(before)); const b = totals(filterOf(after));
   const pct = (x, y) => (x ? Math.round(((x - y) / x) * 100) : null);
-  return { before: a, after: b, saved: { costPerTurnPct: pct(a.costPerTurn, b.costPerTurn), startPerSessionPct: pct(a.startPerSession, b.startPerSession) } };
+  return { before: a, after: b, saved: { costPct: pct(a.costUsd, b.costUsd), costPerTurnPct: pct(a.costPerTurn, b.costPerTurn), startPerSessionPct: pct(a.startPerSession, b.startPerSession) } };
 }
 
 /* ---------------- CLI ---------------- */
