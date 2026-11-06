@@ -57,21 +57,21 @@
       {
         "target": "column:estimate",
         "title": "Estimate",
-        "text": "The “Estimate” column. Tap its header to sort the list by it.",
+        "text": "The “Estimate” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:final",
         "title": "Final",
-        "text": "The “Final” column. Tap its header to sort the list by it.",
+        "text": "The “Final” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:decided-by",
         "title": "Decided by",
-        "text": "The “Decided by” column. Tap its header to sort the list by it.",
+        "text": "The “Decided by” column.",
         "kind": "column",
         "draft": true
       },
@@ -134,56 +134,56 @@
       {
         "target": "column:turns",
         "title": "Turns",
-        "text": "The “Turns” column. Tap its header to sort the list by it.",
+        "text": "The “Turns” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:rules-reads",
         "title": "Rules reads",
-        "text": "The “Rules reads” column. Tap its header to sort the list by it.",
+        "text": "The “Rules reads” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:build-step",
         "title": "Build / step",
-        "text": "The “Build / step” column. Tap its header to sort the list by it.",
+        "text": "The “Build / step” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:in",
         "title": "In",
-        "text": "The “In” column. Tap its header to sort the list by it.",
+        "text": "The “In” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:out",
         "title": "Out",
-        "text": "The “Out” column. Tap its header to sort the list by it.",
+        "text": "The “Out” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:cache-read",
         "title": "Cache read",
-        "text": "The “Cache read” column. Tap its header to sort the list by it.",
+        "text": "The “Cache read” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:cache-write",
         "title": "Cache write",
-        "text": "The “Cache write” column. Tap its header to sort the list by it.",
+        "text": "The “Cache write” column.",
         "kind": "column",
         "draft": true
       },
       {
         "target": "column:rules-read",
         "title": "Rules read",
-        "text": "The “Rules read” column. Tap its header to sort the list by it.",
+        "text": "The “Rules read” column.",
         "kind": "column",
         "draft": true
       }
