@@ -198,6 +198,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Badges + notification rules (`badges-notify-followup`, Current, Opus) — branch `claude/badges-notify-followup`, supersedes PR 366 and PR 367
+Asked: "Run a follow-up." (requests that arrived after claude-badge-vps and notifications-control-panel finished). State: built, waiting in UI Review, then the merge queue takes it. Left: Brett's UI Review click. Report: `_claude/builds/reports/badges-notify-followup.md`. First message to carry on: "Pick up badges-notify-followup: read its report, check the PR's CI and UI Review, fix what is red." <!-- axf-plugin:claude-badge --> <!-- axf-plugin:notify-control -->
+
 ### Notifications control panel (`notifications-control-panel`, Current, Opus) — branch `claude/notifications-control-panel`, PR #367
 Asked: "You need to have an administration panel. I need to control all the notifications. I need you to build a console control panel to enable and control all possible notifications." State: built, in the merge queue, held on UI Review. Steps left: Brett approves the shots, the queue lands it; then a new AmberX APK to mute approvals and veto on the phone. Coordinates with PR #365 (its type is registered, nothing rebuilt). Read: the plugin's README, `_claude/builds/reports/notifications-control-panel.md`. Check: `python` the plugin's `test.py`. Next (optional): Fable review of the registry and the `notify` field in `/api/alerts`.
 
