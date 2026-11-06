@@ -15,19 +15,8 @@ const PLUGIN_DIR = join(dirname(fileURLToPath(import.meta.url)), '../..');
 let pluginNames = null;
 export const plugins = () => (pluginNames ||= (() => { try { return readdirSync(PLUGIN_DIR, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith('_')).map((d) => d.name); } catch { return []; } })());
 
-/** builds@1 status → the status of the features and edits that build plans. */
-export function statusForBuild(b) {
-  if (b.mergedAt) return 'merged';
-  switch (b.status) {
-    case 'pending': return 'planned';
-    case 'waiting': case 'blocked': return 'queued';
-    case 'running': case 'failed': return b.pr ? 'in-pr' : 'building';
-    case 'built': return b.pr ? 'in-pr' : 'building';
-    case 'complete': return b.pr ? 'merged' : 'merged';
-    case 'archived': return 'cancelled';
-    default: return 'planned';
-  }
-}
+/** builds@1 status → the status of the features and edits that build plans (the contract's reading, feature-ledger@1 statusFromBuild). */
+export function statusForBuild(b) { return L.statusFromBuild(b).status; }
 const editIdFor = (featureId, buildId, stepUid) => `e-${featureId.replace(/^f-/, '')}--${L.slug(buildId)}-${L.slug(stepUid) || 'pr'}`;
 
 /** Move one feature or edit to `to` when the lifecycle allows it and it is a step forward (cancel: any pending state). */

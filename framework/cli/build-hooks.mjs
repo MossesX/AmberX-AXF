@@ -19,7 +19,7 @@
  * Env: AXF_BUILD_HOOKS_DIR (outbox, default <repo>/.axf-console/build-hooks), AXF_BUILD_HOOKS=off (no outbox, no
  * delivery; a scratch AXF_BUILDS_STORE is off unless AXF_BUILD_HOOKS=on), AXF_BUILD_HOOKS_SYNC=1 (deliver in-process instead of detached).
  */
-import { appendFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -30,6 +30,17 @@ const PLUGINS = join(REPO_ROOT, 'apps/console-web/plugins');
 export const hooksDir = () => process.env.AXF_BUILD_HOOKS_DIR || join(REPO_ROOT, '.axf-console', 'build-hooks');
 const outbox = () => join(hooksDir(), 'events.jsonl');
 const cursors = () => join(hooksDir(), 'cursors.json');
+const lockDir = () => join(hooksDir(), 'deliver.lock');
+/** A delivery older than this holds no lock any more (a killed process). */
+export const LOCK_STALE_MS = 10 * 60 * 1000;
+/** One delivery at a time per outbox (mkdir is atomic); false when another one runs. A stale lock is taken over. */
+export function takeLock(stale = LOCK_STALE_MS) {
+  mkdirSync(hooksDir(), { recursive: true });
+  try { mkdirSync(lockDir()); writeFileSync(join(lockDir(), 'pid'), `${process.pid}\n`); return true; } catch { /* held */ }
+  try { if (Date.now() - statSync(lockDir()).mtimeMs > stale) { rmSync(lockDir(), { recursive: true, force: true }); return takeLock(stale); } } catch { /* gone meanwhile */ }
+  return false;
+}
+export const dropLock = () => { try { rmSync(lockDir(), { recursive: true, force: true }); } catch { /* already gone */ } };
 // a scratch store (AXF_BUILDS_STORE, the store's own tests) fires nothing unless AXF_BUILD_HOOKS=on
 const off = () => process.env.AXF_BUILD_HOOKS === 'off' || (!!process.env.AXF_BUILDS_STORE && process.env.AXF_BUILD_HOOKS !== 'on');
 
@@ -71,21 +82,37 @@ export function emitChanges(changes, { at = '', by = 'cli' } = {}) {
   return ev;
 }
 
-/** Hand every listener the events after its cursor. A listener that throws keeps its cursor and gets them again. */
-export async function deliver({ only = '', events = null } = {}) {
-  const all = events || readOutbox(); const cur = readCursors(); const report = {};
-  for (const l of listeners()) {
-    if (only && l.name !== only) continue;
-    const from = events ? 0 : (Number(cur[l.name]) || 0); const batch = all.slice(from).filter(Boolean);
-    if (!batch.length) { report[l.name] = 0; continue; }
-    try {
-      const m = await import(pathToFileURL(l.module).href); const fn = m.onBuildEvents || m.default;
-      if (typeof fn !== 'function') throw new Error(`${l.module} exports no onBuildEvents`);
-      await fn(batch);
-      if (!events) cur[l.name] = all.length; report[l.name] = batch.length;
-    } catch (e) { report[l.name] = `error: ${e.message}`; }
-  }
-  if (!events) writeCursors(cur);
+/**
+ * Hand every listener the events after its cursor. A listener that throws keeps its cursor and gets them again.
+ * One delivery runs at a time per outbox (the lock); events appended while it runs are taken in the next round, so
+ * a second writer's detached `deliver` may find the lock held and leave: nothing is lost.
+ *   only:   one listener name
+ *   events: deliver these instead of the outbox (replay; cursors untouched)
+ *   to:     the listeners (default: every plugin.json with `buildHooks`)
+ *   rounds: how many times to look for new outbox lines after a round (default 20)
+ */
+export async function deliver({ only = '', events = null, to = null, rounds = 20 } = {}) {
+  if (!takeLock()) return { locked: true };
+  const report = {};
+  try {
+    const ls = (to || listeners()).filter((l) => !only || l.name === only);
+    for (let round = 0; round < Math.max(1, rounds); round += 1) {
+      const all = events || readOutbox(); const cur = readCursors(); let delivered = 0;
+      for (const l of ls) {
+        const from = events ? 0 : (Number(cur[l.name]) || 0); const batch = all.slice(from).filter(Boolean);
+        if (!batch.length) { report[l.name] ??= 0; continue; }
+        try {
+          const m = await import(pathToFileURL(l.module).href); const fn = m.onBuildEvents || m.default;
+          if (typeof fn !== 'function') throw new Error(`${l.module} exports no onBuildEvents`);
+          await fn(batch);
+          if (!events) cur[l.name] = all.length;
+          report[l.name] = (typeof report[l.name] === 'number' ? report[l.name] : 0) + batch.length; delivered += batch.length;
+        } catch (e) { report[l.name] = `error: ${e.message}`; }
+      }
+      if (!events) writeCursors(cur);
+      if (events || !delivered || readOutbox().length === all.length) break;
+    }
+  } finally { dropLock(); }
   return report;
 }
 
@@ -100,7 +127,12 @@ export function journalEvents(dir = join(REPO_ROOT, '_claude/builds/journal')) {
 
 async function main(argv) {
   const [cmd = 'deliver', ...rest] = argv;
-  if (cmd === 'deliver') { console.log(JSON.stringify(await deliver({ only: rest[0] || '' }))); return 0; }
+  if (cmd === 'deliver') {
+    // another delivery may hold the lock for a moment: try again a few times so a write's events don't wait for the next write
+    let r = { locked: true };
+    for (let i = 0; i < 5 && r.locked; i += 1) { if (i) await new Promise((ok) => setTimeout(ok, 1500)); r = await deliver({ only: rest[0] || '' }); }
+    console.log(JSON.stringify(r)); return 0;
+  }
   if (cmd === 'listeners') { for (const l of listeners()) console.log(`${l.name}\t${l.module.slice(REPO_ROOT.length + 1)}`); return 0; }
   if (cmd === 'tail') { const n = Number(rest[0]) || 20; for (const e of readOutbox().slice(-n)) console.log(`${e.at}  ${e.event.padEnd(11)} ${e.build.id}${e.steps.length ? ` (${e.steps.length} step${e.steps.length > 1 ? 's' : ''})` : ''}`); return 0; }
   if (cmd === 'replay') { const i = rest.indexOf('--to'); const ev = journalEvents(); console.log(`${ev.length} events from the journal`); console.log(JSON.stringify(await deliver({ only: i >= 0 ? rest[i + 1] : '', events: ev }))); return 0; }

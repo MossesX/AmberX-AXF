@@ -58,7 +58,13 @@ const IN = {
   ],
   // which deploy commits contain which merge commits (git's answer, handed in as a table)
   contains: { 'bbbbbbb|deadbeef1234': true, 'ccccccc|deadbeef1234': true, 'ddddddd|deadbeef1234': true },
-  statusFromBuild: [{ status: 'pending' }, { status: 'pending', planned: true }, { status: 'running' }, { status: 'built', pr: '330' }, { status: 'running', pr: '330' }, { status: 'complete', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'failed' }, { status: 'blocked' }, { status: 'waiting' }, { status: 'complete', live: true }, { status: 'archived' }],
+  statusFromBuild: [{ status: 'pending' }, { status: 'pending', pr: '12' }, { status: 'running' }, { status: 'built', pr: '330' }, { status: 'running', pr: '330' }, { status: 'complete', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'failed' }, { status: 'failed', pr: '330' }, { status: 'blocked' }, { status: 'waiting' }, { status: 'complete', live: true }, { status: 'archived' }, { status: 'archived', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'running', deleted: true }, {}],
+  isoTimes: ['2026-11-05T02:00:00+02:00', '2026-11-05T02:00:00-05:00', '2026-11-05T02:00:00Z', '2026-11-05T02:00', '2026-11-05', '2026-11-05T02:00:00.250+00:00', 'Nov 5', '', 20261105],
+  mergeLedgersEdits: [
+    { version: 1, edits: [{ id: 'e-1', feature: 'f-a', summary: 'First copy', build: 'b1', commit: 'abc1234', status: 'building', at: '2026-11-05T02:00:00Z', files: ['a.ts'] }] },
+    { version: 1, edits: [{ id: 'e-1', feature: 'f-a', summary: 'First copy', build: '', commit: '', pr: 7, status: 'merged', at: '2026-11-05T03:00:00Z', mergedAt: '2026-11-05T04:00:00Z', files: ['b.ts'], liveAt: { console: '2026-11-05T05:00:00Z' } }] },
+  ],
+  oddVersions: [{ version: '0.5', features: [{ name: 'Half', app: 'console', live: '2026-10-20T00:00:00Z' }] }, { version: 7, features: [{ name: 'Future', app: 'console' }], extra: true }, { version: -3, features: [{ name: 'Negative', app: 'console' }] }],
   transitions: [['planned', 'queued'], ['planned', 'live'], ['queued', 'planned'], ['in-pr', 'building'], ['building', 'in-pr'], ['merged', 'building'], ['planned', 'cancelled'], ['merged', 'cancelled'], ['live', 'removed'], ['queued', 'removed'], ['cancelled', 'queued'], ['removed', 'live'], ['live', 'live']],
   events: [['planned', 'queued'], ['queued', 'building'], ['building', 'pr-opened'], ['in-pr', 'pr-closed'], ['in-pr', 'merged'], ['merged', 'deployed'], ['live', 'deployed'], ['cancelled', 'merged'], ['live', 'cancelled'], ['merged', 'removed'], ['planned', 'nonsense']],
   views: {
@@ -85,6 +91,10 @@ function run() {
   out.validatePrompt = Object.fromEntries(Object.entries(IN.prompts).map(([k, v]) => [k, L.validatePrompt(v).errors.map((e) => e.field)]));
   out.promptsFromOrigin = L.promptsFromOrigin('shipped-features-r2', IN.origin, 'angel');
   out.statusFromBuild = IN.statusFromBuild.map((b) => L.statusFromBuild(b));
+  out.isoTimes = IN.isoTimes.map((v) => [L.iso(v), D.iso(v)]);
+  out.mergeLedgersEdits = L.mergeLedgers(IN.mergeLedgersEdits[0], IN.mergeLedgersEdits[1], NOW).edits;
+  out.oddVersions = IN.oddVersions.map((d) => { const m = L.migrate(d, NOW); return { version: m.version, features: m.features.map((f) => [f.name, f.status, f.firstLiveAt]) }; });
+  out.deploysSortedAcrossOffsets = D.sortDeploys([{ target: 'console', sha: 'aaaaaaa', at: '2026-11-05T03:00:00+02:00' }, { target: 'console', sha: 'bbbbbbb', at: '2026-11-05T01:30:00Z' }]).map((d) => [d.sha, d.at]);
   out.transitions = IN.transitions.map(([a, b]) => L.canTransition(a, b));
   out.events = IN.events.map(([s, e]) => L.advance(s, e));
   const contains = new Map(Object.entries(IN.contains));
@@ -121,6 +131,22 @@ t('one lifecycle: features and edits share STATUSES; cancelled / removed never c
   assert.deepEqual([...L.PENDING_STATUSES, ...L.COMPLETED_STATUSES, 'cancelled'].sort(), [...L.STATUSES].sort());
 });
 t('build → status mapping covers every builds@1 status', () => { for (const s of ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived']) assert.ok(L.STATUSES.includes(L.statusFromBuild({ status: s }).status)); });
+t('build → status reads a build the way build-hook@1 does: pending = planned, archived without a merge = cancelled, a merge wins, failed with a PR = in PR (stalled)', () => {
+  const s = actual.statusFromBuild.map((x) => `${x.status}${x.stalled ? '!' : ''}`);
+  assert.deepEqual(s, ['planned', 'planned', 'building', 'in-pr', 'in-pr', 'merged', 'building!', 'in-pr!', 'queued!', 'queued', 'live', 'cancelled', 'merged', 'cancelled', 'planned']);
+});
+t('ISO times with a UTC offset fold to Z (both modules agree), so dates compare as text; anything else is kept or refused', () => {
+  assert.deepEqual(actual.isoTimes.map(([a]) => a), ['2026-11-05T00:00:00Z', '2026-11-05T07:00:00Z', '2026-11-05T02:00:00Z', '2026-11-05T02:00', '2026-11-05', '2026-11-05T02:00:00.250Z', '', '', '']);
+  for (const [a, b] of actual.isoTimes) assert.equal(a, b);
+  assert.deepEqual(actual.deploysSortedAcrossOffsets, [['aaaaaaa', '2026-11-05T01:00:00Z'], ['bbbbbbb', '2026-11-05T01:30:00Z']]);
+});
+t('merging ledgers: two copies of one edit keep the build, commit, PR, files, live date and the later status', () => {
+  const [e] = actual.mergeLedgersEdits; assert.equal(actual.mergeLedgersEdits.length, 1);
+  assert.equal(e.build, 'b1'); assert.equal(e.commit, 'abc1234'); assert.equal(e.pr, 7); assert.deepEqual(e.files, ['a.ts', 'b.ts']); assert.equal(e.status, 'live'); assert.equal(e.at, '2026-11-05T02:00:00Z'); assert.equal(e.mergedAt, '2026-11-05T04:00:00Z');
+});
+t('migration never crashes on an odd version: a fraction rounds down, a newer or negative version is read as current, nothing is dropped', () => {
+  assert.deepEqual(actual.oddVersions.map((m) => m.version), [1, 1, 1]); assert.deepEqual(actual.oddVersions[0].features, [['Half', 'live', '2026-10-20T00:00:00Z']]); assert.equal(actual.oddVersions[1].features.length, 1); assert.equal(actual.oddVersions[2].features.length, 1);
+});
 t('normalisation is idempotent', () => { for (const f of Object.values(actual.features)) if (f) assert.deepEqual(L.normFeature(f), f); for (const e of Object.values(actual.edits)) if (e) assert.deepEqual(L.normEdit(e), e); });
 t('a live date makes the status live, a merge commit alone makes it merged, never backwards', () => {
   assert.equal(actual.withLive.status, 'live'); assert.equal(actual.features.merged.status, 'merged');

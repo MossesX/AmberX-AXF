@@ -26,5 +26,13 @@
   "repos": [
     "amberx-axf",
     "axhub"
+  ],
+  "githubRepos": {
+    "mossesx/amberx-axf": "amberx-axf",
+    "mossesx/axhub": "axhub"
+  },
+  "stepModels": [
+    "Opus",
+    "Fable"
   ]
 }

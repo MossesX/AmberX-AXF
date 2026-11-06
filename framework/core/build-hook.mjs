@@ -25,6 +25,8 @@
  * journal through `eventsFromChange` rebuilds every event since the store began (backfill).
  */
 
+import { ALLOWED_MODELS, DEFAULT_MODEL, coerceModel } from './model-policy.mjs';
+
 export const SCHEMA = 'build-hook@1';
 export const RECORD = 'build-event@1';
 export const VERSION = 1;
@@ -32,6 +34,11 @@ export const EVENTS = ['created', 'steps-added', 'step-done', 'status', 'pr-open
 /** builds@1 statuses, mirrored so a port does not need the store core. */
 export const BUILD_STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 export const REPOS = ['amberx-axf', 'axhub'];
+/** GitHub repo → ledger repo id (the PR URL is the one sure sign of where a build lives). */
+export const GITHUB_REPOS = Object.freeze({ 'mossesx/amberx-axf': 'amberx-axf', 'mossesx/axhub': 'axhub' });
+/** Step models as the policy spells them ('Opus', 'Fable'); a new allowed model in model-policy@1 joins by itself. */
+export const STEP_MODELS = ALLOWED_MODELS.map((m) => m[0].toUpperCase() + m.slice(1));
+const DEFAULT_STEP_MODEL = DEFAULT_MODEL[0].toUpperCase() + DEFAULT_MODEL.slice(1);
 
 const str = (v, max = 8000) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
@@ -41,18 +48,35 @@ export function iso(v) {
   const t = Date.parse(s); return Number.isFinite(t) ? new Date(t).toISOString().replace('.000Z', 'Z') : '';
 }
 
-/** The repo a build lives in: its PR URL or `repo` field, else AmberX-AXF. */
+/**
+ * The repo a build lives in. Only sure signs count: a `repo` field, or the GitHub repo in its PR URL. The branch
+ * name never decides (this repo has `axhub-adapter-*` branches, and axHub work is named `axf-*` at times); without a
+ * sign a build is AmberX-AXF's.
+ */
 export function buildRepo(b) {
   const o = isObj(b) ? b : {};
-  const hay = `${str(o.repo)} ${str(o.pr)} ${str(o.branch)}`.toLowerCase();
-  return /axhub/.test(hay) && !/amberx-axf/.test(hay) ? 'axhub' : 'amberx-axf';
+  const field = str(o.repo, 80).trim().toLowerCase();
+  if (REPOS.includes(field)) return field;
+  if (GITHUB_REPOS[field]) return GITHUB_REPOS[field];
+  const pr = str(isObj(o.pr) ? o.pr.url ?? o.pr.href : o.pr, 300).toLowerCase();
+  const m = /github\.com\/([^/\s]+\/[^/\s#]+)/.exec(pr);
+  if (m && GITHUB_REPOS[m[1].replace(/\.git$/, '')]) return GITHUB_REPOS[m[1].replace(/\.git$/, '')];
+  return 'amberx-axf';
 }
-/** A PR number from builds@1's free `pr` field ('330', '#330', a URL); 0 when none. */
-export function prNumber(v) { const m = str(v, 300).match(/(\d+)\s*$/) || str(v, 300).match(/#(\d+)/) || str(v, 300).match(/\/pull\/(\d+)/); return m ? Number(m[1]) : 0; }
+/** A PR number from builds@1's free `pr` field ('330', '#330', a URL, or an object with number / url); 0 when none. */
+export function prNumber(v) {
+  if (isObj(v)) return prNumber(v.number ?? v.url ?? v.href);
+  if (typeof v === 'number') return Number.isInteger(v) && v > 0 ? v : 0;
+  const s = str(v, 300).trim();
+  const m = s.match(/\/pull\/(\d+)/) || s.match(/#(\d+)/) || s.match(/^(\d+)$/) || s.match(/(\d+)\s*$/);
+  return m ? Number(m[1]) : 0;
+}
+/** 'fable', 'Fable 5.1', '[Fable]', 'claude-opus-5-5' → 'Fable' / 'Opus'; anything else runs as the policy's default. */
+export const stepModel = (v) => { const k = coerceModel(v, DEFAULT_MODEL); return STEP_MODELS.find((m) => m.toLowerCase() === k) || DEFAULT_STEP_MODEL; };
 
 export function normStep(s) {
   const o = isObj(s) ? s : {};
-  return { id: str(o.id, 40), uid: str(o.uid, 60) || str(o.id, 40), title: str(o.title, 200), text: str(o.text, 2000), files: list(o.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), model: o.model === 'Fable' ? 'Fable' : 'Opus', done: o.done === true, doneAt: o.done === true ? iso(o.doneAt) : '' };
+  return { id: str(o.id, 40), uid: str(o.uid, 60) || str(o.id, 40), title: str(o.title, 200), text: str(o.text, 2000), files: list(o.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), model: stepModel(o.model), done: o.done === true, doneAt: o.done === true ? iso(o.doneAt) : '' };
 }
 export function normBuildRef(b) {
   const o = isObj(b) ? b : {};
@@ -108,15 +132,16 @@ export function eventsFromChange(change, { at = '', by = 'cli' } = {}) {
   const ref = normBuildRef(cur);
   const out = [];
   const push = (event, extra = {}) => { const e = normEvent({ event, at: when, by, build: ref, ...extra }); if (e) out.push(e); };
+  // a delete that carries no `after` (an older journal line, a foreign writer): the build is gone, say so once
+  if (!a) { if (!isCancel(b)) push('cancelled', { from: str(b.status, 20), to: 'deleted' }); return out; }
   const prompts = origins(a);
   if (!b || c.op === 'add') {
-    push('created', { steps: list(a?.steps), prompt: prompts[0] || null, to: ref.status });
+    push('created', { steps: list(a.steps), prompt: prompts[0] || null, to: ref.status });
     for (const p of prompts.slice(1)) push('addendum', { prompt: p, id: eventId(ref.id, ref.rev, 'addendum', String(p.index)) });
     if (isCancel(a)) push('cancelled', { from: '', to: a.deleted ? 'deleted' : a.status });
     else if (prNumber(a.pr)) push(iso(a.mergedAt) ? 'pr-merged' : 'pr-opened');
     return out;
   }
-  if (!a) return out;
   const wasCancel = isCancel(b); const nowCancel = isCancel(a);
   if (nowCancel && !wasCancel) { push('cancelled', { from: b.status, to: a.deleted ? 'deleted' : a.status }); return out; }
   if (wasCancel && !nowCancel) push('restored', { from: b.deleted ? 'deleted' : b.status, to: a.status });
@@ -139,10 +164,10 @@ export function eventsFromJournal(lines) {
   return out;
 }
 
-export const REGISTRY = Object.freeze({ schema: SCHEMA, record: RECORD, version: VERSION, events: EVENTS, buildStatuses: BUILD_STATUSES, repos: REPOS });
+export const REGISTRY = Object.freeze({ schema: SCHEMA, record: RECORD, version: VERSION, events: EVENTS, buildStatuses: BUILD_STATUSES, repos: REPOS, githubRepos: GITHUB_REPOS, stepModels: STEP_MODELS });
 
 export function jsonSchemas() {
-  const step = { type: 'object', additionalProperties: false, properties: { id: { type: 'string' }, uid: { type: 'string' }, title: { type: 'string' }, text: { type: 'string' }, files: { type: 'array', items: { type: 'string' } }, model: { enum: ['Opus', 'Fable'] }, done: { type: 'boolean' }, doneAt: { type: 'string' } } };
+  const step = { type: 'object', additionalProperties: false, properties: { id: { type: 'string' }, uid: { type: 'string' }, title: { type: 'string' }, text: { type: 'string' }, files: { type: 'array', items: { type: 'string' } }, model: { enum: STEP_MODELS }, done: { type: 'boolean' }, doneAt: { type: 'string' } } };
   return {
     'build-event.schema.json': {
       $schema: 'https://json-schema.org/draft/2020-12/schema', $id: 'https://amberx.ai/axf/schemas/build-event.schema.json',

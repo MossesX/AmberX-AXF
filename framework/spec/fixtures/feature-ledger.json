@@ -237,7 +237,7 @@
    },
    {
     "status": "pending",
-    "planned": true
+    "pr": "12"
    },
    {
     "status": "running"
@@ -258,6 +258,10 @@
     "status": "failed"
    },
    {
+    "status": "failed",
+    "pr": "330"
+   },
+   {
     "status": "blocked"
    },
    {
@@ -269,6 +273,98 @@
    },
    {
     "status": "archived"
+   },
+   {
+    "status": "archived",
+    "mergedAt": "2026-11-05T00:00:00Z"
+   },
+   {
+    "status": "running",
+    "deleted": true
+   },
+   {}
+  ],
+  "isoTimes": [
+   "2026-11-05T02:00:00+02:00",
+   "2026-11-05T02:00:00-05:00",
+   "2026-11-05T02:00:00Z",
+   "2026-11-05T02:00",
+   "2026-11-05",
+   "2026-11-05T02:00:00.250+00:00",
+   "Nov 5",
+   "",
+   20261105
+  ],
+  "mergeLedgersEdits": [
+   {
+    "version": 1,
+    "edits": [
+     {
+      "id": "e-1",
+      "feature": "f-a",
+      "summary": "First copy",
+      "build": "b1",
+      "commit": "abc1234",
+      "status": "building",
+      "at": "2026-11-05T02:00:00Z",
+      "files": [
+       "a.ts"
+      ]
+     }
+    ]
+   },
+   {
+    "version": 1,
+    "edits": [
+     {
+      "id": "e-1",
+      "feature": "f-a",
+      "summary": "First copy",
+      "build": "",
+      "commit": "",
+      "pr": 7,
+      "status": "merged",
+      "at": "2026-11-05T03:00:00Z",
+      "mergedAt": "2026-11-05T04:00:00Z",
+      "files": [
+       "b.ts"
+      ],
+      "liveAt": {
+       "console": "2026-11-05T05:00:00Z"
+      }
+     }
+    ]
+   }
+  ],
+  "oddVersions": [
+   {
+    "version": "0.5",
+    "features": [
+     {
+      "name": "Half",
+      "app": "console",
+      "live": "2026-10-20T00:00:00Z"
+     }
+    ]
+   },
+   {
+    "version": 7,
+    "features": [
+     {
+      "name": "Future",
+      "app": "console"
+     }
+    ],
+    "extra": true
+   },
+   {
+    "version": -3,
+    "features": [
+     {
+      "name": "Negative",
+      "app": "console"
+     }
+    ]
    }
   ],
   "transitions": [
@@ -1080,7 +1176,7 @@
   ],
   "statusFromBuild": [
    {
-    "status": "queued",
+    "status": "planned",
     "stalled": false
    },
    {
@@ -1108,6 +1204,10 @@
     "stalled": true
    },
    {
+    "status": "in-pr",
+    "stalled": true
+   },
+   {
     "status": "queued",
     "stalled": true
    },
@@ -1120,9 +1220,138 @@
     "stalled": false
    },
    {
+    "status": "cancelled",
+    "stalled": false
+   },
+   {
     "status": "merged",
     "stalled": false
+   },
+   {
+    "status": "cancelled",
+    "stalled": false
+   },
+   {
+    "status": "planned",
+    "stalled": false
    }
+  ],
+  "isoTimes": [
+   [
+    "2026-11-05T00:00:00Z",
+    "2026-11-05T00:00:00Z"
+   ],
+   [
+    "2026-11-05T07:00:00Z",
+    "2026-11-05T07:00:00Z"
+   ],
+   [
+    "2026-11-05T02:00:00Z",
+    "2026-11-05T02:00:00Z"
+   ],
+   [
+    "2026-11-05T02:00",
+    "2026-11-05T02:00"
+   ],
+   [
+    "2026-11-05",
+    "2026-11-05"
+   ],
+   [
+    "2026-11-05T02:00:00.250Z",
+    "2026-11-05T02:00:00.250Z"
+   ],
+   [
+    "",
+    ""
+   ],
+   [
+    "",
+    ""
+   ],
+   [
+    "",
+    ""
+   ]
+  ],
+  "mergeLedgersEdits": [
+   {
+    "$axf": "feature-edit@1",
+    "id": "e-1",
+    "feature": "f-a",
+    "kind": "changed",
+    "summary": "First copy",
+    "build": "b1",
+    "profile": "",
+    "pr": 7,
+    "repo": "amberx-axf",
+    "commit": "abc1234",
+    "prompt": "",
+    "passage": "",
+    "model": "",
+    "agent": "",
+    "session": "",
+    "status": "live",
+    "at": "2026-11-05T02:00:00Z",
+    "mergedAt": "2026-11-05T04:00:00Z",
+    "liveAt": {
+     "console": {
+      "at": "2026-11-05T05:00:00Z",
+      "guessed": false,
+      "deploy": ""
+     }
+    },
+    "files": [
+     "a.ts",
+     "b.ts"
+    ],
+    "source": "live",
+    "createdAt": "2026-11-05T03:00:00Z",
+    "updatedAt": "2026-11-05T03:00:00Z",
+    "rev": 2
+   }
+  ],
+  "oddVersions": [
+   {
+    "version": 1,
+    "features": [
+     [
+      "Half",
+      "live",
+      "2026-10-20T00:00:00Z"
+     ]
+    ]
+   },
+   {
+    "version": 1,
+    "features": [
+     [
+      "Future",
+      "planned",
+      ""
+     ]
+    ]
+   },
+   {
+    "version": 1,
+    "features": [
+     [
+      "Negative",
+      "planned",
+      ""
+     ]
+    ]
+   }
+  ],
+  "deploysSortedAcrossOffsets": [
+   [
+    "aaaaaaa",
+    "2026-11-05T01:00:00Z"
+   ],
+   [
+    "bbbbbbb",
+    "2026-11-05T01:30:00Z"
+   ]
   ],
   "transitions": [
    true,

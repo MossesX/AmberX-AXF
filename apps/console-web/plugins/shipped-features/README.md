@@ -8,8 +8,9 @@ went live, with every later change kept as an edit of that feature.
 > so you can hide completed ones and pending ones." "Anytime a feature in that list is getting changed or altered, it
 > will appear as an edit."
 
-Built on Opus because Fable had no credits; the contracts and the SQLite schema are marked for a Fable review
-(`_claude/builds/progress/shipped-features.md`, "REDO WITH FABLE").
+Built on Opus because Fable had no credits; the contracts (build-hook@1, feature-ledger@1, deploy-log@1), this
+plugin's listener and the SQLite schema were Fable-reviewed on Nov 6 2026 (`_claude/builds/reports/shipped-features.md`
+→ Fable review: what was wrong and what changed).
 
 ## How data gets in
 

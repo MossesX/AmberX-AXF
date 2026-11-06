@@ -48,7 +48,7 @@ export function iso(v: unknown): string;
 export function slug(s: unknown): string;
 export function normStatus(v: unknown, d?: string): Status; export function statusGroup(s: Status): StatusGroup; export function isPending(s: string): boolean; export function isCompleted(s: string): boolean;
 export function canTransition(from: string, to: string): boolean; export function advance(status: string, event: string): Status; export function laterStatus(a: string, b: string): Status;
-export function statusFromBuild(b: { status?: string; pr?: string; mergedAt?: string; live?: boolean; planned?: boolean }): { status: Status; stalled: boolean };
+export function statusFromBuild(b: { status?: string; pr?: string | number; mergedAt?: string; live?: boolean; deleted?: boolean }): { status: Status; stalled: boolean };
 export function normType(v: unknown): FeatureType; export function normRepo(v: unknown): string; export function normRole(v: unknown, d?: Role): Role;
 export function featureId(name: string, scope?: string): string; export function prKey(repo: string, number: number): string; export function buildKey(profile: string, id: string): string; export function promptId(buildId: string, index?: number): string; export function editId(featureId: string, at: string, seq?: number): string; export function featureKey(f: Partial<Feature>): string;
 export function normFeature(v: unknown, opts?: { now?: string }): Feature | null; export function normEdit(v: unknown, opts?: { now?: string }): Edit | null; export function normPr(v: unknown): Pr | null; export function normBuildRecord(v: unknown): BuildRecord | null; export function normPrompt(v: unknown): Prompt | null;

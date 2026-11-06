@@ -49,7 +49,12 @@ export const SHA_RE = /^[0-9a-f]{7,40}$/;
 const ISO = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})?)?$/;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
-export const iso = (v) => { const s = str(v, 40).trim(); return ISO.test(s) ? s : ''; };
+/** An ISO time as given; one with a UTC offset is folded to `Z`, so deploys from any host sort as text. */
+export const iso = (v) => {
+  const s = str(v, 40).trim(); if (!ISO.test(s)) return '';
+  if (!/[+-]\d{2}:\d{2}$/.test(s)) return s;
+  const t = Date.parse(s); return Number.isFinite(t) ? new Date(t).toISOString().replace('.000Z', 'Z') : '';
+};
 /** A target name folded to its id ('Console' → 'console', 'APK amberx' → 'apk:amberx'); '' when it can't be one. */
 export function normTarget(v) {
   let s = str(v, 80).trim().toLowerCase().replace(/\s+/g, '-');

@@ -48,7 +48,12 @@ const EVENT_TO = { planned: 'planned', queued: 'queued', building: 'building', '
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const ISO = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})?)?$/;
-export const iso = (v) => { const s = str(v, 40).trim(); return ISO.test(s) ? s : ''; };
+/** An ISO time as given; one with a UTC offset is folded to `Z`, so every date on a line compares as text. */
+export const iso = (v) => {
+  const s = str(v, 40).trim(); if (!ISO.test(s)) return '';
+  if (!/[+-]\d{2}:\d{2}$/.test(s)) return s;
+  const t = Date.parse(s); return Number.isFinite(t) ? new Date(t).toISOString().replace('.000Z', 'Z') : '';
+};
 const bool = (v, d = false) => (typeof v === 'boolean' ? v : d);
 const list = (v) => (Array.isArray(v) ? v : []);
 const uniq = (a) => [...new Set(a)];
@@ -80,17 +85,19 @@ export const laterStatus = (a, b) => { const x = normStatus(a); const y = normSt
 
 /**
  * A builds@1 record → the ledger status of the features it is building. `live` = already live on at least one target.
- * failed / blocked builds keep their position and are flagged `stalled`.
+ * failed / blocked builds keep their position and are flagged `stalled`. The same reading as build-hook@1: a build
+ * archived without a merge was cancelled, a pending build's features are planned (queued once it waits on something).
  */
-export function statusFromBuild({ status = '', pr = '', mergedAt = '', live = false, planned = false } = {}) {
+export function statusFromBuild({ status = '', pr = '', mergedAt = '', live = false, deleted = false } = {}) {
   const s = str(status, 20);
   if (live) return { status: 'live', stalled: false };
-  if (mergedAt || s === 'complete' || s === 'archived') return { status: 'merged', stalled: false };
-  if (s === 'built' || (pr && s !== 'pending')) return { status: 'in-pr', stalled: false };
+  if (mergedAt || s === 'complete') return { status: 'merged', stalled: false };
+  if (deleted === true || s === 'archived') return { status: 'cancelled', stalled: false };
+  if (s === 'built' || (pr && s !== 'pending')) return { status: 'in-pr', stalled: s === 'failed' || s === 'blocked' };
   if (s === 'running') return { status: 'building', stalled: false };
   if (s === 'failed') return { status: 'building', stalled: true };
   if (s === 'blocked' || s === 'waiting') return { status: 'queued', stalled: s === 'blocked' };
-  return { status: planned ? 'planned' : 'queued', stalled: false };
+  return { status: 'planned', stalled: false };
 }
 
 // ------------------------------------------------------------------ registries
@@ -229,7 +236,7 @@ export function normPrompt(v) {
 export function promptsFromOrigin(buildId, origin, profile = '') {
   const o = origin && typeof origin === 'object' ? origin : {}; const out = [];
   if (str(o.said).trim()) out.push(normPrompt({ build: buildId, profile, index: 0, kind: 'origin', said: o.said, at: o.at, source: o.source, by: o.by, session: o.session, link: o.link, verbatim: o.verbatim !== false, from: o.from }));
-  list(o.addenda).forEach((a, i) => { const p = normPrompt({ build: buildId, profile, index: i + 1, kind: 'addendum', said: a?.said, at: a?.at, source: a?.source, by: a?.by, verbatim: a?.verbatim !== false }); if (p) out.push(p); });
+  list(o.addenda).forEach((a, i) => { const p = normPrompt({ build: buildId, profile, index: i + 1, kind: 'addendum', said: a?.said, at: a?.at, source: a?.source, by: a?.by, session: a?.session, link: a?.link, from: a?.from, verbatim: a?.verbatim !== false && a?.mayBeParaphrased !== true }); if (p) out.push(p); });
   return out;
 }
 
@@ -340,8 +347,9 @@ export const MIGRATIONS = [
 ];
 export function migrate(doc, now = '') {
   let d = doc && typeof doc === 'object' && !Array.isArray(doc) ? clone(doc) : {};
-  let v = Number(d.version) || 0;
-  while (v < VERSION) { d = MIGRATIONS[v](d); v = Number(d.version) || v + 1; }
+  let v = Math.max(0, Math.floor(Number(d.version) || 0));
+  // a newer document than this module knows is read as the current version: nothing is dropped, unknown fields fall away
+  while (v < VERSION) { const step = MIGRATIONS[v]; if (typeof step !== 'function') break; d = step(d); v = Math.max(v + 1, Math.floor(Number(d.version) || 0)); }
   const out = emptyLedger(now);
   out.since = iso(d.since); out.updatedAt = iso(d.updatedAt) || out.updatedAt; out.repos = { ...out.repos, ...(d.repos && typeof d.repos === 'object' ? d.repos : {}) };
   out.features = list(d.features).map((f) => normFeature(f, { now })).filter(Boolean);
@@ -357,7 +365,9 @@ export function mergeLedgers(a, b, now = '') {
   const x = migrate(a, now); const y = migrate(b, now);
   const byId = (arr, key = (r) => r.id) => new Map(arr.map((r) => [key(r), r]));
   const fm = byId(x.features); for (const f of y.features) fm.set(f.id, fm.has(f.id) ? mergeFeature(fm.get(f.id), f) : f);
-  const em = byId(x.edits); for (const e of y.edits) em.set(e.id, em.has(e.id) ? normEdit({ ...em.get(e.id), ...e, status: laterStatus(em.get(e.id).status, e.status), rev: Math.max(em.get(e.id).rev, e.rev) + 1 }) : e);
+  const filled = (r) => Object.fromEntries(Object.entries(r).filter(([, v]) => v !== '' && !(Array.isArray(v) && !v.length) && !(v && typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length)));
+  // two copies of one edit: the later copy's filled fields win, an empty one never wipes a date, build, PR or commit
+  const em = byId(x.edits); for (const e of y.edits) em.set(e.id, em.has(e.id) ? normEdit({ ...em.get(e.id), ...filled(e), liveAt: mergeLive(em.get(e.id).liveAt, e.liveAt), files: uniq([...em.get(e.id).files, ...e.files]), status: laterStatus(em.get(e.id).status, e.status), at: earliest(em.get(e.id).at, e.at), rev: Math.max(em.get(e.id).rev, e.rev) + 1 }) : e);
   const pm = byId(x.prs, (p) => p.key); for (const p of y.prs) pm.set(p.key, { ...(pm.get(p.key) ?? {}), ...Object.fromEntries(Object.entries(p).filter(([, v]) => v !== '' && !(Array.isArray(v) && !v.length))), features: uniq([...(pm.get(p.key)?.features ?? []), ...p.features]) });
   const bm = byId(x.builds, (b) => b.key); for (const b of y.builds) bm.set(b.key, { ...(bm.get(b.key) ?? {}), ...Object.fromEntries(Object.entries(b).filter(([, v]) => v !== '' && !(Array.isArray(v) && !v.length))), features: uniq([...(bm.get(b.key)?.features ?? []), ...b.features]) });
   const prm = byId(x.prompts); for (const p of y.prompts) if (!prm.has(p.id) || (!prm.get(p.id).verbatim && p.verbatim)) prm.set(p.id, p);
