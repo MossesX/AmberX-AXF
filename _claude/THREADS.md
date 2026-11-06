@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 02:17 UTC · `banner-widgets` s1 done (current) · orchestrator
 - 2026-11-05 02:17 UTC · `banner-widgets` s2 done (current) · orchestrator
 - 2026-11-05 02:29 UTC · `banner-widgets` branch claude/banner-widgets, PR #352 (current) · builds-live
 - 2026-11-05 02:29 UTC · `banner-widgets` s3 done (current) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 23:54 UTC · `badges-notify-followup` s2 done (current) · orchestrator
 - 2026-11-06 23:54 UTC · `badges-notify-followup` s3 done (current) · orchestrator
 - 2026-11-06 23:56 UTC · `badges-notify-followup` branch claude/badges-notify-followup, PR #370 (current) · builds-live
+- 2026-11-06 23:57 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
 
 ## Token passes (log)
 

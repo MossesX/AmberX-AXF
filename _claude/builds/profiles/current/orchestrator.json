@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T23:56:41.010Z",
+ "updatedAt": "2026-11-06T23:57:03.392Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14873,7 +14873,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T20:27:08.761Z",
+   "updatedAt": "2026-11-06T23:57:02.321Z",
    "builtAt": "",
    "notes": [
     {
@@ -14895,6 +14895,10 @@
     {
      "text": "s34 + s35 (s18 of the parent plan: banner clock badge watches the VPS login, green / yellow / red) are covered by build claude-badge-vps: the VPS connection badge in the Claude badge plugin. Skip them here, don't build it twice.",
      "at": "2026-11-06T20:27:08.761Z"
+    },
+    {
+     "text": "badges-notify-followup (PR 370) covers s34, s35 and s39: VPS login badge with its states and the usage meter badge of the active account, in the Badges plugin. s36 (read used vs total for one account) is there too: percent only. Don't build them twice.",
+     "at": "2026-11-06T23:57:02.321Z"
     }
    ],
    "approvals": [],
