@@ -198,6 +198,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Notifications control panel (`notifications-control-panel`, Current, Opus) — branch `claude/notifications-control-panel`, PR #367
+Asked: "You need to have an administration panel. I need to control all the notifications. I need you to build a console control panel to enable and control all possible notifications." State: built, in the merge queue, held on UI Review. Steps left: Brett approves the shots, the queue lands it; then a new AmberX APK to mute approvals and veto on the phone. Coordinates with PR #365 (its type is registered, nothing rebuilt). Read: the plugin's README, `_claude/builds/reports/notifications-control-panel.md`. Check: `python` the plugin's `test.py`. Next (optional): Fable review of the registry and the `notify` field in `/api/alerts`.
+
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
 - **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->
@@ -705,6 +708,45 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
+- 2026-11-04 22:10 UTC · `changes-chat-log` s5 done, → complete, branch claude/changes-chat-log, PR #347 (current) · foreign-write
+- 2026-11-04 22:11 UTC · `shipped-features-r2` → pending, note (angel) · reconciler
+- 2026-11-04 22:17 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
+- 2026-11-04 22:19 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 22:19 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 22:19 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
+- 2026-11-04 22:19 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` s3 done (urgent) · orchestrator
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` s6 done (urgent) · orchestrator
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` branch claude/ci-bundle-skipped-shell, PR #348 (urgent) · builds-live
+- 2026-11-04 22:20 UTC · `fable-no-approval` → complete, merged, note (current) · reconciler
+- 2026-11-04 22:20 UTC · `tab-group-assets` → complete, merged, note (current) · reconciler
+- 2026-11-04 22:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 22:39 UTC · `fable-no-approval` note (current) · foreign-write
+- 2026-11-04 22:39 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 22:39 UTC · `changes-chat-log` s1 done, s2 done, s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 22:39 UTC · `notes-views` s1 done, → running (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s2 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
+- 2026-11-04 22:41 UTC · `notes-views` PR #349 (current) · builds-live
+- 2026-11-04 22:42 UTC · `notes-views` s5 done, → built (current) · claude:notes-views
+- 2026-11-04 23:01 UTC · `fable-review-shipped-features-build-hook-contrac` added (0 steps) (current) · pending
+- 2026-11-04 23:10 UTC · `shipped-features-r2` PR #350, note (angel) · reconciler
+- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · orchestrator
+- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · foreign-write
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done, → running (current) · orchestrator
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done (current) · foreign-write
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s1 done (current) · orchestrator
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s2 done (current) · orchestrator
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s3 done (current) · orchestrator
+- 2026-11-05 00:12 UTC · `claude-account-switcher` s2 done, s3 done (current) · foreign-write
+- 2026-11-05 00:13 UTC · `claude-account-switcher` branch claude/claude-account-switcher, PR #351 (current) · builds-live
+- 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → complete, note (current) · foreign-write
 - 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → built (current) · orchestrator
 - 2026-11-05 00:13 UTC · `claude-account-switcher` note (current) · orchestrator
 - 2026-11-05 01:38 UTC · `amberx-voice-echo-fix` added (3 steps) (main-framework) · orchestrator

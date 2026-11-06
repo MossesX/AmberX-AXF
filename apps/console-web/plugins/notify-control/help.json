@@ -1,0 +1,93 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "notify-control-help",
+  "name": "notify-control help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:notify-control (the Notifications panel).",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:notify-control",
+    "entries": [
+      {
+        "target": "view:notify-control",
+        "title": "Notifications",
+        "text": "Every notification the console, AmberX and axHub can send. Each one has its own switch, channels, priority and a test button."
+      },
+      {
+        "target": "action:notify-control.open",
+        "title": "Notifications",
+        "text": "Opens the Notifications panel.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "notifications",
+        "title": "Notifications",
+        "text": "The same panel, inside Settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "all-notifications",
+        "title": "All notifications",
+        "text": "The master switch. Off silences everything except approvals and veto notices, so you can still stop a held call.",
+        "kind": "toggle"
+      },
+      {
+        "target": "quiet-hours",
+        "title": "Quiet hours",
+        "text": "Holds phone pushes, sound and pop-ups during these hours, except urgent ones and approvals. A held alert that's still open reaches the phone when they end.",
+        "kind": "toggle"
+      },
+      {
+        "target": "find-a-notification",
+        "title": "Find a notification",
+        "text": "Filters the list by name, id or where it comes from."
+      },
+      {
+        "target": "test",
+        "title": "Test",
+        "text": "Sends a real test of this notification down its current channels and says where it went. It clears by itself after 90 seconds.",
+        "kind": "button"
+      },
+      {
+        "target": "reset",
+        "title": "Reset",
+        "text": "Puts this notification back to its defaults.",
+        "kind": "button"
+      },
+      {
+        "target": "reset-everything",
+        "title": "Reset everything",
+        "text": "Puts every notification, the master switch and the app switches back to their defaults. Quiet hours stay as they are.",
+        "kind": "button"
+      },
+      {
+        "target": "priority",
+        "title": "Priority",
+        "text": "Low shows in the banner only. Normal uses every channel that's on and waits out quiet hours. High uses a stronger tone and pop-up. Urgent also goes through quiet hours."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves the quiet hours times.",
+        "kind": "button"
+      },
+      {
+        "target": "quiet-from",
+        "title": "Quiet from",
+        "text": "The time of day quiet hours start or end, in your time zone. Press Save after changing it.",
+        "kind": "field"
+      },
+      {
+        "target": "quiet-until",
+        "title": "Quiet until",
+        "text": "The time of day quiet hours start or end, in your time zone. Press Save after changing it.",
+        "kind": "field"
+      }
+    ],
+    "intros": []
+  }
+}
