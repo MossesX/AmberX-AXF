@@ -2,7 +2,7 @@
 .axp-listeners { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
 .axp-listeners__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
 .axp-listeners__grow { flex: 1 1 auto; min-width: 0; }
-.axp-listeners__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 34), 1fr)); gap: var(--fx-dens-gap-xl); }
+.axp-listeners__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 62)), 1fr)); gap: var(--fx-dens-gap-xl); }
 .axp-listeners__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
 .axp-listeners__state { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }
 .axp-listeners__about { margin: 0; color: var(--fx-muted); }

@@ -3,7 +3,7 @@
 .axp-amberx-listeners__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
 .axp-amberx-listeners__grow { flex: 1 1 auto; min-width: 0; }
 .axp-amberx-listeners__device { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
-.axp-amberx-listeners__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 32), 1fr)); gap: var(--fx-dens-gap-lg); }
+.axp-amberx-listeners__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 52)), 1fr)); gap: var(--fx-dens-gap-lg); }
 .axp-amberx-listeners__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
 .axp-amberx-listeners__state { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
 .axp-amberx-listeners__name { margin: 0; }

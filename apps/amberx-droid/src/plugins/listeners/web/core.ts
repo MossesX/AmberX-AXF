@@ -58,7 +58,7 @@ export function pageRows(scene: PageScene, native: boolean): (Partial<ListenerIn
  */
 export function combine(native: ListenersStatus | null, page: (Partial<ListenerInfo> & { id: string })[], d: { device: string; name: string; side: ListenerSide; now: number }, get: (key: string) => unknown): DeviceListeners {
   const rows = new Map<string, Partial<ListenerInfo> & { id: string }>();
-  for (const r of native?.listeners ?? []) { const x = r as Partial<ListenerInfo> & { id?: unknown }; if (typeof x.id === 'string') rows.set(x.id, { ...x, id: x.id, side: 'native' }); }
+  for (const r of native?.listeners ?? []) { const x = r as Partial<ListenerInfo> & { id?: unknown }; if (typeof x.id === 'string') rows.set(x.id, { ...x, id: x.id, side: x.side === 'page' ? 'page' : 'native' }); }
   for (const r of page) { const have = rows.get(r.id); if (!have || (r.state === 'on' && have.state !== 'on')) rows.set(r.id, { ...(have ?? {}), ...r }); }
   // Every known listener shows, even one nobody reported yet (off), so the panel always has the same rows.
   for (const l of LISTENERS) if (!rows.has(l.id) && (d.side === 'native' ? l.side === 'native' || l.side === 'page' : l.side === 'page' || l.id === 'talk')) rows.set(l.id, { id: l.id, side: l.side, state: 'off' });
