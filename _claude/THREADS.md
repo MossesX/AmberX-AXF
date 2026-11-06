@@ -705,13 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:50 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `drag-to-tab` s1 done, → running (current) · orchestrator
-- 2026-11-04 20:53 UTC · `drag-to-tab` s2 done (current) · orchestrator
-- 2026-11-04 20:41 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
-- 2026-11-04 21:00 UTC · `molly-banner-match` note (current) · foreign-write
 - 2026-11-04 21:00 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
 - 2026-11-04 21:00 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
 - 2026-11-04 21:01 UTC · `molly-banner-match` branch claude/molly-banner-match-r2, PR #341 (current) · builds-live
@@ -1105,6 +1098,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s8 done (current) · orchestrator
 - 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
 - 2026-11-06 18:17 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` branch claude/token-optimize, PR #360 (current) · builds-live
+- 2026-11-06 18:06 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · foreign-write
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s15 undone, s16 undone, note (current) · foreign-write
+- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · foreign-write
+- 2026-11-06 18:49 UTC · `assistant-chat-mode` s5 done, s6 done (current) · foreign-write
+- 2026-11-06 18:49 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
+- 2026-11-06 18:49 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
 
 ## Token passes (log)
 
