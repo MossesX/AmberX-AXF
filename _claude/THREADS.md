@@ -34,6 +34,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
+| Every headless build keeps its own Claude login (Current `build-own-login`, Opus; Brett Nov 5 voice: "Yeah, it should be like that already."): per-build `CLAUDE_CONFIG_DIR` copy of the active saved account (`deploy/claude-login.mjs`), inherited OAuth token dropped, account recorded (log, tmux tag, event, build note), `--account` per launch, swarm runner too | built, in the merge queue | `claude/build-own-login-r2` | (see Live build log) | Report `_claude/builds/reports/build-own-login.md`. Brett: none | 2026-11-05 |
+| AI keys accept new Anthropic key formats (`ai-keys-new-format`, Opus; Brett Nov 5 voice: "Put someone else on it."): `sk-ant-usr…` and any unknown `sk-ant-` API format accepted and checked live (OK / invalid / no credit), `sk-ant-oat` stays a subscription login; shared `axf.anthropic_keys`; report `_claude/builds/reports/ai-keys-new-format.md` | built, in merge queue | claude/ai-keys-new-format-r4 | #356 | merge queue lands it | 2026-11-05 |
 | Tab groups, toolbars, banners and nav menus are assets with an asset settings interface (Current `tab-group-assets`, Fable; Brett Nov 4 voice: "all tab groups are supposed to be assets. With a settings interface, that's also an asset." + addenda: all four chrome kinds, one shared default settings interface per type + a custom copy per app, the default selected by default): tab-group@1 extended (position left/right, display, overflow more/dropdown, chips, sticky, collapsible, closable, reorderable, badges, rememberLast; 7 starters), chrome-settings@1 (`settings/chrome-<type>` + `chrome-<type>-<app>` with `extends`, `axf.chrome.settings.<type>`), framework `TabGroup`, shared chrome context menu (Settings… / Change… / Move) on every tab group, toolbar, banner, nav and menu bar, 40 hard-coded tab rows migrated (console, AmberX, framework), CI `check-chrome-assets.mjs` + ratchet, console actions `chrome.*` for voice | review (s1–s6 done: all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group "tab-group-assets - Nov 4 11:38 AM"; PR open, push banner lands it) | `claude/tab-group-assets` | [#327](https://github.com/MossesX/AmberX-AXF/pull/327) | Report `_claude/builds/reports/tab-group-assets.md`; after merge: redeploy console, AmberX, axHub web | 2026-11-04 |
 | Terminal stops stealing focus (Current `terminal-no-focus`, Opus, agent Janitor Joey; Brett Nov 4 voice: "I don't want the terminal to come to the front on every session."): new Terminal setting *When a new session starts* (Add tab quietly = default, background tab + count on the Terminal toolbar icon, never pops or switches; Do nothing; Bring Terminal to front), REST/MCP/CLI `new-session` | review (PR open, merges on green CI) | `claude/terminal-no-focus` | [#305](https://github.com/MossesX/AmberX-AXF/pull/305) | Report `_claude/builds/reports/terminal-no-focus.md`. Brett: none needed | 2026-11-04 |
 | Fable upgrades need no approval (Current `fable-no-approval`, Opus, agent Snap Sully; Brett Nov 4 voice: "I don't want the approvals. Just put everything that needs to be on Fable on Fable."): owner-only Claude setting *Fable upgrades need my approval* (`builds.fableUpgradeApproval`, off by default); orchestrator, launch gate, swarm and briefs follow it; 8 waiting upgrade phases (6 builds) switched; Fable review `fable-review-nov3` queued (7 Fable steps); rule in RULES.md. Report `_claude/builds/reports/fable-no-approval.md`. | built (CI red on an unrelated ai-assistant check, re-run) | `claude/fable-no-approval` | #319 | `fable-review-nov3` (Fable) queued; toolbar-tap-confirm s9–s21 need a follow-up build (PR #272 merged) | Nov 4 2026 |
@@ -702,41 +704,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:35 UTC · `jump-menu-asset` s5 done, → built (current) · orchestrator
-- 2026-11-04 16:35 UTC · `jump-menu-asset` note (current) · orchestrator
-- 2026-11-04 16:38 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` PR #328 (current) · builds-live
-- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` s4 done, → built (current) · orchestrator
-- 2026-11-04 16:40 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
-- 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built, note (current) · builds-live
-- 2026-11-04 16:40 UTC · `jump-menu-asset` → complete (current) · builds-live
-- 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` → complete (current) · builds-live
-- 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built (current) · orchestrator
-- 2026-11-04 16:40 UTC · `tab-group-assets` note (current) · orchestrator
-- 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
-- 2026-11-04 16:42 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 16:42 UTC · `tab-group-assets` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
-- 2026-11-04 16:42 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 16:42 UTC · `settings-placement-everywhere` note (current) · foreign-write
-- 2026-11-04 16:42 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
-- 2026-11-04 16:46 UTC · `live-sessions-plugin` added (6 steps) (current) · orchestrator
-- 2026-11-04 16:44 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:47 UTC · `tab-group-assets` note (current) · foreign-write
-- 2026-11-04 16:47 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:50 UTC · `tab-group-assets` note (current) · foreign-write
-- 2026-11-04 16:50 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:50 UTC · `live-sessions-plugin` s1 done (current) · foreign-write
-- 2026-11-04 16:57 UTC · `plugin-settings-placement` note (current) · foreign-write
-- 2026-11-04 16:57 UTC · `tab-group-assets` note (current) · foreign-write
-- 2026-11-04 16:57 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:57 UTC · `live-sessions-plugin` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-04 17:00 UTC · `settings-placement-everywhere` PR #329, note (current) · reconciler
-- 2026-11-04 16:47 UTC · `live-sessions-plugin` s1 done, → running (current) · orchestrator
-- 2026-11-04 16:50 UTC · `live-sessions-plugin` s2 done (current) · orchestrator
-- 2026-11-04 16:56 UTC · `plugin-settings-placement` note (current) · foreign-write
-- 2026-11-04 16:56 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:56 UTC · `live-sessions-plugin` s3 done (current) · orchestrator
 - 2026-11-04 17:03 UTC · `live-sessions-plugin` s4 done (current) · orchestrator
 - 2026-11-04 17:03 UTC · `plugin-settings-placement` note (current) · foreign-write
 - 2026-11-04 17:03 UTC · `tab-group-assets` note (current) · foreign-write
@@ -1102,6 +1069,41 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
 - 2026-11-05 11:20 UTC · `three-layouts-per-screen` PR #355, note (angel) · reconciler
+- 2026-11-05 11:50 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
+- 2026-11-05 11:50 UTC · `handoff-2-addenda-r2` → pending, note (current) · reconciler
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` added (8 steps) (current) · orchestrator
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` → running (current) · orchestrator
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` s1 done (current) · orchestrator
+- 2026-11-05 18:42 UTC · `assistant-chat-mode` s2 done (current) · orchestrator
+- 2026-11-05 18:42 UTC · `assistant-chat-mode` s3 done (current) · orchestrator
+- 2026-11-05 18:42 UTC · `assistant-chat-mode` s4 done (current) · orchestrator
+- 2026-11-05 19:10 UTC · `assistant-chat-mode` → pending, note (current) · reconciler
+- 2026-11-05 20:00 UTC · `claude-account-switcher` → complete, merged, note (current) · reconciler
+- 2026-11-05 22:37 UTC · `build-own-login` added (4 steps) (current) · orchestrator
+- 2026-11-05 22:40 UTC · `build-own-login` added (4 steps) (current) · foreign-write
+- 2026-11-05 22:41 UTC · `ai-keys-new-format` added (3 steps) (current) · orchestrator
+- 2026-11-05 22:41 UTC · `ai-keys-new-format` s1 done, → running (current) · orchestrator
+- 2026-11-05 22:41 UTC · `ai-keys-new-format` s2 done (current) · orchestrator
+- 2026-11-05 22:42 UTC · `ai-keys-new-format` branch claude/ai-keys-new-format-r4, PR #356 (current) · builds-live
+- 2026-11-05 22:42 UTC · `ai-keys-new-format` s3 done, → built (current) · orchestrator
+- 2026-11-05 22:43 UTC · `ai-keys-new-format` added (3 steps) (current) · foreign-write
+- 2026-11-05 22:49 UTC · `build-own-login` s1 done, → running (current) · orchestrator
+- 2026-11-05 22:49 UTC · `build-own-login` s2 done (current) · orchestrator
+- 2026-11-05 22:49 UTC · `build-own-login` s3 done (current) · orchestrator
+- 2026-11-05 22:49 UTC · `build-own-login` note (current) · orchestrator
+- 2026-11-05 22:49 UTC · `build-own-login` branch claude/build-own-login-r2, PR #357 (current) · builds-live
+- 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built, branch claude/build-own-login-r2, PR #357 (current) · builds-live
+- 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built (current) · orchestrator
+- 2026-11-05 23:10 UTC · `ai-keys-new-format` → complete, merged, note (current) · reconciler
+- 2026-11-05 23:30 UTC · `build-own-login` note (current) · foreign-write
+- 2026-11-05 23:28 UTC · `build-own-login` → complete, merged, note (current) · reconciler
+- 2026-11-05 23:30 UTC · `console-account-picker` added (5 steps) (current) · orchestrator
+- 2026-11-05 23:51 UTC · `ai-keys-console-store` added (3 steps) (current) · orchestrator
+- 2026-11-05 23:51 UTC · `ai-keys-console-store` s1 done, → running (current) · orchestrator
+- 2026-11-05 23:51 UTC · `ai-keys-console-store` s2 done (current) · orchestrator
+- 2026-11-05 23:51 UTC · `console-account-picker` note (current) · orchestrator
+- 2026-11-05 23:53 UTC · `ai-keys-console-store` branch claude/ai-keys-console-store-2, PR #358 (current) · builds-live
+- 2026-11-05 23:53 UTC · `ai-keys-console-store` note (current) · orchestrator
 
 ## Token passes (log)
 

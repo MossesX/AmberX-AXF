@@ -73,6 +73,30 @@
    "from": "detail",
    "addenda": []
   },
+  "ai-keys-console-store": {
+   "said": "AI keys: store every key in the console, not per user\n\nBrett saved 4 Claude subscription accounts and 1 API key (5 keys) in AI keys while logged into the console as himself. The VPS side (apps/console-web/plugins/ai-keys/switch.mjs, deploy/claude-headless.sh, the /api/plugins/ai-keys routes called with AXF_TOKEN from /opt/axf/.axf-console/env) authenticates as a different console identity, and GET /keys returns NO keys. So Amber and the VPS can't see or switch accounts without Brett pressing a button.",
+   "at": "2026-11-05T23:51:02.650Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ai-keys-new-format": {
+   "said": "Put someone else on it.",
+   "at": "2026-11-05T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-appearance-lock": {
    "said": "AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
    "at": "2026-10-27",
@@ -349,6 +373,18 @@
    "from": "detail",
    "addenda": []
   },
+  "assistant-chat-mode": {
+   "said": "\"What's up with the Claude chat in AmberX? Gizmo was loading all the tools, and we were supposed to fix that. So we didn't load the tools, so I could talk quick, like I'm talking to you.\" (Nov 5 2026, voice). Started by, Nov 4 2026, voice: \"In the Claude in my app, it calls all kinds of tools. It takes forever. Why is it calling all these tools?\" … \"Yeah, build that right now.\"",
+   "at": "2026-11-05T18:36:01.911Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "assistant-no-subagents": {
    "said": "Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
    "at": "2026-10-29",
@@ -589,6 +625,18 @@
    "from": "notes",
    "addenda": []
   },
+  "build-own-login": {
+   "said": "Yeah, it should be like that already.",
+   "at": "2026-11-05T22:37:31.309Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "build-own-login-r2",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-profiles": {
    "said": "multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
    "at": "2026-10-27",
@@ -724,6 +772,18 @@
    "brief": "# Build: claude-settings (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.\" Assigned agent: **Janitor Joey** (book on his card; AXF_AGENT=janitor-joey if supported). Register in Urgent (id `claude-settings`) + banner entry.\n\n## Plugin\nConsole plugin **Claude** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Claude, context-menu hook 'Claude settings' everywhere). Settings are stored on axHub (shared `_data/claude/settings.json` or a hub settings namespace) so every Claude session (voice, chat, Claude Code, headless agents) reads the same values.\n\n## Settings (grouped, framework settings renderer with the level toolbar)\n- **No wait** (owner-only): when ON, Amber's held calls run immediately instead of the 90 s veto / approval. Implement as a standing axHub pass that the console creates on Brett's signed-in click (reuse pass-all / `axhub.pass_grant` machinery, scope all, `include_irreversible` false by default with its own separate switch 'Include irreversible' also owner-only). Options: duration (1 h / 4 h / until I turn it off), auto-off at night. Banner chip while on. Turning it off revokes the pass instantly.\n- **Follow Amber** (link to / share state with the follow-amber build's switch; don't duplicate it - read the same setting).\n- **Builds:** default model (Opus/Fable/split), launch builds without asking (on/off), max parallel builds, per-build budget cap and daily budget cap (stop + notify when hit), always assign a named agent (locked on), UI Review gate (on).\n- **Verification:** trust live store by default, verify only on conflict (current rule) vs always verify.\n- **Talking:** persona on/off, tone level, address terms, swearing level, response length (short/normal/detailed), say costs out loud, read build reports aloud vs summary.\n- **Notifications:** push on build done / blocked / approval waiting, quiet hours.\n- **Memory/notes:** save session notes to Notes Vault automatically, handoff note at end of session.\n- Open registry so new Claude settings can be added as data without code changes.\n\n## Claude reads them\n- MCP tools via axf-console (and axHub builtin if simpler): `claude_settings_get` (policy ALLOW, read-only) returning all values with plain descriptions; `claude_settings_set` for NON-owner settings only (veto policy). Owner-only settings (No wait, Include irreversible, approvals, budget caps raising) can ONLY be changed by Brett's signed-in console click - agents/sessions can never change them (test enforces).\n- Rule in shared RULES.md + CLAUDE.md (top): 'At session start and before acting, read Claude settings (claude_settings_get) and follow them.'\n- Commands declared once -> REST + MCP + CLI.\n\n## Done\nTests (owner-only enforcement, pass created/revoked by the switch, read tool), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/claude-settings.md`, THREADS, PR, steps through the store. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "console-account-picker": {
+   "said": "I need to be able to flip them from the console.",
+   "at": "2026-11-05T23:30:48.450Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "console-android-app-tabs": {

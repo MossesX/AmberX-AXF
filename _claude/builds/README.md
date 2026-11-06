@@ -74,6 +74,17 @@ node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
 ```
 
+## Own Claude login per build (since Nov 5 2026)
+
+Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):
+`deploy/claude-headless.sh` (and the agent swarm runner) snapshot the active saved account (`~/.claude-accounts`, or the
+live login) into `<build folder>/.axf-claude/<session>/` (0700, git-ignored) and run `claude` with `CLAUDE_CONFIG_DIR`
+pointed at it; an inherited `CLAUDE_CODE_OAUTH_TOKEN` is dropped unless the account has a saved token. Logging the VPS
+out, switching or adding accounts never touches a running build; its token refreshes stay in its copy, which is deleted
+when the session ends. Pick an account per launch with `--account <name>` (or `AXF_CLAUDE_ACCOUNT`); the log's
+`# login …` line, the tmux tag `@axf_login` (Terminal `login` field) and a note on the build say which one it ran on.
+`AXF_OWN_LOGIN=off` = the shared login. Test: `node deploy/claude-login.test.mjs`. Report: `reports/build-own-login.md`.
+
 ## Build profiles
 
 Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) is a field on the builds in the store. The
