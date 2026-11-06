@@ -14,8 +14,15 @@ const durations = {};
 let made = 0;
 for (const ch of CHAPTERS) {
   ch.scenes.forEach((s, i) => {
-    const hash = createHash('sha1').update(`${WALKTHROUGH.voice}|${WALKTHROUGH.speed === 1 ? '' : WALKTHROUGH.speed}|${s.say}`).digest('hex').slice(0, 12);
+    const hash = createHash('sha1').update(`${WALKTHROUGH.narration === false ? 'quiet|' : ''}${WALKTHROUGH.voice}|${WALKTHROUGH.speed === 1 ? '' : WALKTHROUGH.speed}|${s.say}`).digest('hex').slice(0, 12);
     const cached = `${OUT}/audio/cache/${hash}.wav`;
+    if (WALKTHROUGH.narration === false) {
+      // narration off: silence as long as the line would take, so captions and timing still follow the script
+      const secs = Math.max(3, s.say.split(/\s+/).length / (2.5 * (WALKTHROUGH.speed || 1)));
+      const quiet = `${OUT}/audio/cache/quiet-${secs.toFixed(1)}.wav`;
+      if (!existsSync(quiet)) execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'anullsrc=r=22050:cl=mono', '-t', secs.toFixed(1), quiet]);
+      copyFileSync(quiet, cached);
+    }
     if (!existsSync(cached)) {
       execFileSync('/opt/piper/piper', ['--model', VOICE, '--output_file', cached, '--sentence_silence', '0.3', '--length_scale', (0.97 / WALKTHROUGH.speed).toFixed(3)], { input: s.say, stdio: ['pipe', 'ignore', 'ignore'] });
       made++;

@@ -1,0 +1,359 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-docs-help",
+  "name": "build-docs help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:build-docs.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:build-docs",
+    "entries": [
+      {
+        "target": "view:build-docs",
+        "title": "Docs & videos",
+        "text": "Every docs and walkthrough-video job: progress, cancel, re-run with tweaks, the video player and the docs pull request.",
+        "kind": "nav"
+      },
+      {
+        "target": "action:build-docs.open",
+        "title": "Docs & videos",
+        "text": "Opens the Docs & videos page.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:build-docs.docs",
+        "title": "Create documentation…",
+        "text": "Opens Create documentation: pick built builds or single steps, the audience and depth, then it writes Markdown docs as a pull request.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:build-docs.video",
+        "title": "Create walkthrough video…",
+        "text": "Opens Create walkthrough video: pick builds, length, what to cover and how it looks; you approve the script before anything is recorded.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "view:build-docs.docs",
+        "title": "Create documentation",
+        "text": "Writes Markdown docs from the build: Brett's words, its steps, report, diff and the screens and commands it added. Opens a PR through the merge queue.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-docs.video",
+        "title": "Create walkthrough video",
+        "text": "Plans a narrated click-path through the build's screens. Approve the script and the VPS records a real browser session to MP4.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-docs.script",
+        "title": "Walkthrough script",
+        "text": "Every scene of the planned video: the spoken line and what it shows. Edit lines or leave scenes out, then approve to record.",
+        "kind": "screen"
+      },
+      {
+        "target": "build-docs",
+        "title": "Build docs",
+        "text": "Defaults for new docs and videos, what's running now, and install / uninstall.",
+        "kind": "tab"
+      },
+      {
+        "target": "video-length-seconds",
+        "title": "Video length (seconds)",
+        "text": "The length new videos start with in the dialog.",
+        "kind": "field"
+      },
+      {
+        "target": "narration",
+        "title": "Narration",
+        "text": "Narration on or off for new videos (off = silent, captions still timed).",
+        "kind": "field"
+      },
+      {
+        "target": "captions-burned-in",
+        "title": "Captions burned in",
+        "text": "Burns the captions into the picture. The .vtt captions file is saved either way.",
+        "kind": "field"
+      },
+      {
+        "target": "docs-audience",
+        "title": "Docs audience",
+        "text": "Who new docs are written for by default.",
+        "kind": "field"
+      },
+      {
+        "target": "docs-depth",
+        "title": "Docs depth",
+        "text": "How much detail new docs have by default.",
+        "kind": "field"
+      },
+      {
+        "target": "video-viewport",
+        "title": "Video viewport",
+        "text": "Desktop (1920×1080) or phone layout for new videos.",
+        "kind": "field"
+      },
+      {
+        "target": "search-built-builds",
+        "title": "Search built builds",
+        "text": "Filters the list of builds that have something built.",
+        "kind": "field"
+      },
+      {
+        "target": "add-builds-or-steps",
+        "title": "Add builds or steps",
+        "text": "Shows the list of built builds and their done steps to add to this job.",
+        "kind": "button"
+      },
+      {
+        "target": "include-screenshots-captured-automatically",
+        "title": "Include screenshots",
+        "text": "Adds screenshots of the build's screens to the docs.",
+        "kind": "toggle"
+      },
+      {
+        "target": "deep-mode-ai-writes-it",
+        "title": "Deep mode (AI writes it)",
+        "text": "The AI writes the docs from the build's material. Off, or no AI provider: a template filled from the same material.",
+        "kind": "toggle"
+      },
+      {
+        "target": "anything-special-to-cover",
+        "title": "Anything special to cover",
+        "text": "Free text: what the docs must cover, e.g. the right-click menu or the voice commands.",
+        "kind": "field"
+      },
+      {
+        "target": "create-documentation",
+        "title": "Create documentation",
+        "text": "Starts the docs job. Follow it on Docs & videos; the PR link shows there when it's open.",
+        "kind": "button"
+      },
+      {
+        "target": "audience",
+        "title": "Audience",
+        "text": "Me: short and plain. Developer: files, contracts, commands. End user: how to use it, no internals.",
+        "kind": "tab"
+      },
+      {
+        "target": "depth",
+        "title": "Depth",
+        "text": "Brief, Standard or Deep: how much of the build the docs go into.",
+        "kind": "tab"
+      },
+      {
+        "target": "length",
+        "title": "Length",
+        "text": "How long the video runs. The script is fitted to it.",
+        "kind": "tab"
+      },
+      {
+        "target": "custom",
+        "title": "Custom",
+        "text": "Any length in seconds.",
+        "kind": "tab"
+      },
+      {
+        "target": "seconds",
+        "title": "Seconds",
+        "text": "The video's length in seconds (15 s to 30 min).",
+        "kind": "field"
+      },
+      {
+        "target": "special-stuff-to-cover",
+        "title": "Special stuff to cover",
+        "text": "Free text the script must cover; it's also shown as a card near the start.",
+        "kind": "field"
+      },
+      {
+        "target": "desktop",
+        "title": "Desktop",
+        "text": "Records at 1920×1080 on the desktop layout.",
+        "kind": "tab"
+      },
+      {
+        "target": "phone",
+        "title": "Phone",
+        "text": "Records in the phone layout (412×915), cut to 720×1600.",
+        "kind": "tab"
+      },
+      {
+        "target": "viewport",
+        "title": "Viewport",
+        "text": "Desktop or phone layout for the recording.",
+        "kind": "tab"
+      },
+      {
+        "target": "theme-design-package",
+        "title": "Theme (design package)",
+        "text": "Records under this design package, in the recorder's browser only: the shared look on axHub never changes.",
+        "kind": "field"
+      },
+      {
+        "target": "layout",
+        "title": "Layout",
+        "text": "Records under this layout instead of the theme's own.",
+        "kind": "field"
+      },
+      {
+        "target": "intro-card",
+        "title": "Intro card",
+        "text": "A title card with the build's name at the start.",
+        "kind": "toggle"
+      },
+      {
+        "target": "outro-card",
+        "title": "Outro card",
+        "text": "A closing card at the end.",
+        "kind": "toggle"
+      },
+      {
+        "target": "voice",
+        "title": "Voice",
+        "text": "The Piper voice that narrates.",
+        "kind": "field"
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "How fast the narration is spoken (also sets how long each scene stays).",
+        "kind": "slider"
+      },
+      {
+        "target": "deep-mode-ai-plans-the-script",
+        "title": "Deep mode (AI plans the script)",
+        "text": "The AI plans the click path and the lines. Off, or no AI provider: the build's screens in order.",
+        "kind": "toggle"
+      },
+      {
+        "target": "plan-the-script",
+        "title": "Plan the script",
+        "text": "Makes the script and opens it for your approval. Nothing is recorded yet.",
+        "kind": "button"
+      },
+      {
+        "target": "leave-this-scene-out",
+        "title": "Leave this scene out",
+        "text": "Drops this scene from the video.",
+        "kind": "toggle"
+      },
+      {
+        "target": "cancel-job",
+        "title": "Cancel job",
+        "text": "Stops the job. A recording in progress is stopped on the VPS.",
+        "kind": "button"
+      },
+      {
+        "target": "save-edits",
+        "title": "Save edits",
+        "text": "Saves your changes to the lines and scenes.",
+        "kind": "button"
+      },
+      {
+        "target": "change-options",
+        "title": "Change options",
+        "text": "Back to the video options to plan the script again with changes.",
+        "kind": "button"
+      },
+      {
+        "target": "approve-and-record",
+        "title": "Approve and record",
+        "text": "Sends one veto call to axHub; when it runs, the VPS records the video in a heavy slot.",
+        "kind": "button"
+      },
+      {
+        "target": "play-the-video",
+        "title": "Play the video",
+        "text": "Loads the MP4 and plays it here.",
+        "kind": "button"
+      },
+      {
+        "target": "download-mp4",
+        "title": "Download MP4",
+        "text": "Saves the video file.",
+        "kind": "button"
+      },
+      {
+        "target": "captions",
+        "title": "Captions",
+        "text": "Saves the captions (.vtt).",
+        "kind": "button"
+      },
+      {
+        "target": "transcript",
+        "title": "Transcript",
+        "text": "Saves the transcript: every spoken line by chapter.",
+        "kind": "button"
+      },
+      {
+        "target": "read-the-docs-here",
+        "title": "Read the docs here",
+        "text": "Shows the written Markdown on this page.",
+        "kind": "button"
+      },
+      {
+        "target": "review-the-script",
+        "title": "Review the script",
+        "text": "Opens the planned script for edits and approval.",
+        "kind": "button"
+      },
+      {
+        "target": "re-run-with-tweaks",
+        "title": "Re-run with tweaks",
+        "text": "Opens the dialog with this job's options to change them and run it again.",
+        "kind": "button"
+      },
+      {
+        "target": "recorder-log",
+        "title": "Recorder log",
+        "text": "Saves the VPS recorder's log for this video.",
+        "kind": "button"
+      },
+      {
+        "target": "show",
+        "title": "Show",
+        "text": "All jobs, only docs or only videos.",
+        "kind": "tab"
+      },
+      {
+        "target": "docs",
+        "title": "Docs",
+        "text": "Only docs jobs.",
+        "kind": "tab"
+      },
+      {
+        "target": "videos",
+        "title": "Videos",
+        "text": "Only video jobs.",
+        "kind": "tab"
+      },
+      {
+        "target": "new-docs",
+        "title": "New docs",
+        "text": "Opens Create documentation with nothing picked yet.",
+        "kind": "button"
+      },
+      {
+        "target": "new-video",
+        "title": "New video",
+        "text": "Opens Create walkthrough video with nothing picked yet.",
+        "kind": "button"
+      },
+      {
+        "target": "ctx:create-documentation",
+        "title": "Create documentation",
+        "text": "Right-click a built build or step anywhere builds show: writes docs for it.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "ctx:create-walkthrough-video",
+        "title": "Create walkthrough video",
+        "text": "Right-click a built build or step anywhere builds show: plans and records a walkthrough video of it.",
+        "kind": "menu-item"
+      }
+    ]
+  }
+}

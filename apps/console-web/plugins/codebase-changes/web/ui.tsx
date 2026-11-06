@@ -230,7 +230,7 @@ function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onTo
   const ref = useRef<HTMLLIElement>(null);
   useEffect(() => { if (open) ref.current?.scrollIntoView?.({ block: 'nearest' }); }, [open]);
   return (
-    <li ref={ref} className={`axp-codebase-changes__row is-${s.state}${s.closed ? ' is-closed' : ''}`} data-axf-anchor={`codebase-changes:${s.id}`}>
+    <li ref={ref} className={`axp-codebase-changes__row is-${s.state}${s.closed ? ' is-closed' : ''}`} data-axf-anchor={`codebase-changes:${s.id}`} data-fx-ctx-target="axf-change-entry" data-fx-ctx-payload={s.id}>
       <button type="button" data-fx-row className="axp-codebase-changes__head" aria-expanded={open} onClick={onToggle}>
         {/* title line + one meta line; the result summary is in the detail (compact pages, Oct 30 2026) */}
         <span className="axp-codebase-changes__line axp-codebase-changes__line--title" title={s.result?.summary || undefined}>

@@ -31,7 +31,7 @@ export const STATUS_IDS = STATUSES.map((s) => s.id);
 export const PRIORITIES = ['P0', 'P1', 'P2', 'P3'];
 export const MODELS = ['Fable', 'Opus', 'Sonnet'];
 export const LINK_KINDS = ['depends', 'blocks', 'part-of', 'related', 'pr', 'branch', 'build', 'doc', 'url'];
-export const ATTACH_KINDS = ['image', 'file', 'voice'];
+export const ATTACH_KINDS = ['image', 'file', 'voice', 'video'];
 export const FEATURE_STATES = ['have', 'partial', 'planned', 'idea'];
 /** USD per working minute, from framework/schemas/model-pricing.json's heuristic (the CLI recomputes it from the file). */
 export const PRICE_PER_MIN = { Fable: 0.275, Opus: 0.14, Sonnet: 0.07 };

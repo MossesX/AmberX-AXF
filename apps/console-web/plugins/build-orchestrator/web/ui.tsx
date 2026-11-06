@@ -258,7 +258,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
 function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
   return (
-    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
+    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`} data-fx-ctx-target="axf-orchestrator-step" data-fx-ctx-payload={`${b.id}/${s.id}`}>
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>

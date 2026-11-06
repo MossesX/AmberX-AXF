@@ -19,6 +19,9 @@ const ONLY = (process.env.ONLY || '').split(',').filter(Boolean);
 const RANDOM_LOOK = (process.env.RANDOM_LOOK || '').split(',').filter(Boolean);
 const LOOK_POOL = (() => { try { return JSON.parse(Buffer.from(process.env.LOOK_POOL_B64 || '', 'base64').toString() || '{}'); } catch { return {}; } })();
 let forcedLook = null; // { id, slots } while a RANDOM_LOOK chapter records
+// LOOK_B64 ({ id, slots }): every chapter recorded under that one look (a build walkthrough's theme / layout pick),
+// again in this browser only.
+const FIXED_LOOK = (() => { try { const v = JSON.parse(Buffer.from(process.env.LOOK_B64 || '', 'base64').toString() || 'null'); return v && v.slots ? v : null; } catch { return null; } })();
 let lastLook = '';
 function pickLook() {
   const ids = Object.keys(LOOK_POOL).filter((id) => id !== lastLook);
@@ -158,6 +161,32 @@ function helpers(page, log) {
       await page.waitForTimeout(900);
     }),
     step: () => soft('step', () => page.evaluate(() => window.wtStep?.())),
+    // a full-screen title card over the page (intro / outro of a build walkthrough); the next move takes it down
+    card: (title, sub) => soft('card', async () => {
+      await unring();
+      await page.evaluate(([title, sub]) => {
+        let c = document.getElementById('wt-card');
+        if (!c) {
+          c = document.createElement('div'); c.id = 'wt-card';
+          c.style.cssText = 'position:fixed;inset:0;z-index:2147483645;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#14110c;color:#fff4e0;font-family:system-ui,sans-serif;text-align:center;padding:40px;transition:opacity .4s';
+          document.body.appendChild(c);
+        }
+        c.innerHTML = '';
+        const h = document.createElement('div'); h.textContent = title || ''; h.style.cssText = 'font:800 clamp(28px,5vw,64px)/1.15 system-ui,sans-serif;color:#ffb02e;max-width:90%';
+        const s = document.createElement('div'); s.textContent = sub || ''; s.style.cssText = 'font:500 clamp(16px,2.2vw,28px)/1.35 system-ui,sans-serif;opacity:.85;max-width:80%';
+        c.append(h, s); c.style.opacity = '1';
+      }, [title ?? '', sub ?? '']);
+    }),
+    // an AXF app's own navigation and actions (window.AXF, the runtime): true when the app took it
+    navigate: async (view) => { try { const ok = await page.evaluate((v) => { if (!window.AXF?.navigate) return false; window.AXF.navigate(v); return true; }, view); if (ok) { await unring(); await page.waitForTimeout(2500); } return ok; } catch { return false; } },
+    dispatch: async (action) => { try { const ok = await page.evaluate((a) => { if (!window.AXF?.dispatch) return false; window.AXF.dispatch(a); return true; }, action); if (ok) await page.waitForTimeout(1800); return ok; } catch { return false; } },
+    uncard: () => page.evaluate(() => document.getElementById('wt-card')?.remove()).catch(() => {}),
+    // a dialog of an AXF app by id (the runtime's openDialog; the console exposes it as window.AXF)
+    dialog: (id) => soft(`dialog ${id}`, async () => {
+      await unring();
+      await page.evaluate((id) => window.AXF?.openDialog?.(id), id);
+      await page.waitForTimeout(1500);
+    }),
     steps: async (n, gap = 1400) => { for (let i = 0; i < n; i++) { await h.step(); await page.waitForTimeout(gap); } },
     // a view on a desktop AXF app (console, axHub): its nav link, else the banner search
     view: (name, label) => soft(`view ${name}`, async () => {
@@ -278,7 +307,7 @@ for (const ch of CHAPTERS) {
   const kind = deviceOf(ch);
   VIEW = DEVICES[kind].viewport;
   const ctx = await contextFor(kind);
-  forcedLook = RANDOM_LOOK.includes(ch.id) ? pickLook() : null;
+  forcedLook = FIXED_LOOK ?? (RANDOM_LOOK.includes(ch.id) ? pickLook() : null);
   const page = await ctx.newPage();
   const t0 = Date.now();
   const log = [`## ${ch.id}${forcedLook ? ` (look: ${forcedLook.id})` : ''}`];

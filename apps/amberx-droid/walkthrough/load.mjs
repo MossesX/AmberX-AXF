@@ -4,6 +4,7 @@
 // Every recorder step (tts, record, assemble, check) loads the script through here, so an edited line is voiced,
 // timed and captioned the same way. The edits are data only: a voice name, a number and plain text per scene.
 import { existsSync, readFileSync } from 'node:fs';
+import { loadScriptFile } from './script-file.mjs';
 
 export const WALKTHROUGHS = {
   'amberx-app': './script.mjs',
@@ -55,8 +56,10 @@ function readOverrides(out) {
 /** The walkthrough with its edits applied: { WALKTHROUGH, CHAPTERS, walkthroughErrors, overrides }. */
 export async function loadWalkthrough(id = process.env.WALKTHROUGH || 'amberx-app', out = process.env.OUT || '/out') {
   const path = WALKTHROUGHS[id];
-  if (!path) throw new Error(`no walkthrough "${id}" (known: ${Object.keys(WALKTHROUGHS).join(', ')})`);
-  const mod = await import(path);
+  // a walkthrough written as data (Build docs plugin): $OUT/script.input.json, or WALKTHROUGH_SCRIPT
+  const dataFile = process.env.WALKTHROUGH_SCRIPT || `${out}/script.input.json`;
+  if (!path && !existsSync(dataFile)) throw new Error(`no walkthrough "${id}" (known: ${Object.keys(WALKTHROUGHS).join(', ')}, or a script.input.json in ${out})`);
+  const mod = path ? await import(path) : loadScriptFile(dataFile);
   const overrides = normalizeOverrides(readOverrides(out), mod.CHAPTERS);
   const WALKTHROUGH = { ...mod.WALKTHROUGH, voice: overrides.voice ?? mod.WALKTHROUGH.voice, speed: overrides.speed ?? mod.WALKTHROUGH.speed ?? 1 };
   const CHAPTERS = mod.CHAPTERS.map((c) => ({ ...c, scenes: c.scenes.map((s, i) => ({ ...s, say: overrides.lines[`${c.id}-${i}`] ?? s.say })) }));

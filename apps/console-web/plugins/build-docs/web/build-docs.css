@@ -1,0 +1,28 @@
+/* Build docs: dialogs, the script review and the Docs & videos page. Theme tokens only. */
+.axp-build-docs { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-build-docs__bar { align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-build-docs__text { margin: 0; overflow-wrap: anywhere }
+.axp-build-docs__dialog { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: min(100%, calc(var(--fx-font-size) * 34)) }
+.axp-build-docs__foot { justify-content: flex-end; gap: var(--fx-dens-gap-sm) }
+.axp-build-docs__chips { gap: var(--fx-dens-gap-xs) }
+.axp-build-docs__chip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axp-build-docs__picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-build-docs__pick-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-font-size) * 18); overflow: auto }
+.axp-build-docs__steps { padding-left: var(--fx-dens-gap-lg); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-build-docs__features { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-build-docs__script { margin: 0; padding-left: var(--fx-dens-gap-lg); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); max-height: calc(var(--fx-font-size) * 30); overflow: auto }
+.axp-build-docs__script ol { list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-build-docs__script ol > li { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-build-docs__script li.is-dropped { opacity: var(--fx-opacity-muted) }
+.axp-build-docs__jobs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-build-docs__job { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-build-docs__job.is-script-ready { border-color: var(--fx-accent) }
+.axp-build-docs__job.is-failed { border-color: var(--fx-danger) }
+.axp-build-docs__head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer }
+.axp-build-docs__head:focus-visible { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: var(--fx-border-w) }
+.axp-build-docs__title { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; font-weight: 600 }
+.axp-build-docs__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding-top: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-docs__log { margin: 0; padding-left: var(--fx-dens-gap-lg) }
+.axp-build-docs__video { width: 100%; max-height: 70vh; border-radius: var(--fx-radius-md); background: var(--fx-bg) }
+.axp-build-docs__docs { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm) }
+.axp-build-docs__link { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); align-self: flex-start }

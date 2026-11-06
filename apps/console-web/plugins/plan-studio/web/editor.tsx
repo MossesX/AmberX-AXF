@@ -155,6 +155,10 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
         <BodyEditor value={plan.body} onChange={(body) => edit({ body })} />
       </Sec>
 
+      <Sec id="docs" title={`Docs (${docsOf(plan).length})`} icon="file">
+        <DocsList plan={plan} />
+      </Sec>
+
       <Sec id="files" title={`Attachments (${plan.attachments.length})`} icon="upload">
         <Attachments plan={plan} onChange={(attachments) => edit({ attachments })} />
       </Sec>
@@ -319,6 +323,28 @@ function BodyEditor({ value, onChange }: { value: string; onChange: (v: string) 
   );
 }
 
+/** The plan's docs: links of kind doc (docs pull requests, written docs) and video attachments (walkthroughs). */
+function docsOf(plan: Plan) {
+  return [
+    ...plan.links.filter((l) => l.kind === 'doc').map((l) => ({ id: `l-${l.ref}`, icon: (l as { media?: string }).media === 'video' ? 'play' : 'file', label: l.label || l.ref, href: l.ref })),
+    ...plan.attachments.filter((a) => a.kind === 'video' && !plan.links.some((l) => l.kind === 'doc' && l.ref === a.url)).map((a) => ({ id: a.id, icon: 'play', label: a.name, href: a.url })),
+  ];
+}
+function DocsList({ plan }: { plan: Plan }) {
+  const docs = docsOf(plan);
+  if (!docs.length) return <p className="fx-muted axp-plan-studio__hint">No docs yet. Right-click the build (or a step) → Create documentation or Create walkthrough video; the result lands here.</p>;
+  return (
+    <ul className="axp-plan-studio__files">
+      {docs.map((d) => (
+        <li key={d.id}>
+          <Icon name={d.icon} size={14} />
+          <span className="axp-plan-studio__fname">{d.href.startsWith('#') ? <a href={d.href}>{d.label}</a> : <a href={d.href} target="_blank" rel="noopener noreferrer">{d.label}</a>}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function Attachments({ plan, onChange }: { plan: Plan; onChange: (a: Plan['attachments']) => void }) {
   const [err, setErr] = useState('');
   const add = async (files: FileList | null) => {
@@ -339,8 +365,8 @@ function Attachments({ plan, onChange }: { plan: Plan; onChange: (a: Plan['attac
       <ul>
         {plan.attachments.map((a, i) => (
           <li key={a.id}>
-            {a.kind === 'image' && a.url ? <img src={a.url} alt={a.name} className="axp-plan-studio__thumb" /> : <Icon name={a.kind === 'voice' ? 'mic' : 'file'} size={14} />}
-            <span className="axp-plan-studio__fname">{a.url ? <a href={a.url} download={a.name}>{a.name}</a> : a.name}</span>
+            {a.kind === 'image' && a.url ? <img src={a.url} alt={a.name} className="axp-plan-studio__thumb" /> : <Icon name={a.kind === 'voice' ? 'mic' : a.kind === 'video' ? 'play' : 'file'} size={14} />}
+            <span className="axp-plan-studio__fname">{a.url ? <a href={a.url} download={a.url.startsWith('#') ? undefined : a.name}>{a.name}</a> : a.name}</span>
             {a.kind === 'voice' && <><audio controls src={a.url} className="axp-plan-studio__audio" /><input className="fx-input" placeholder="Transcript" value={a.transcript} onChange={(e) => onChange(plan.attachments.map((x, j) => (j === i ? { ...x, transcript: e.target.value } : x)))} aria-label="Transcript" /></>}
             <IconButton icon="trash" label={`Remove ${a.name}`} onClick={() => onChange(plan.attachments.filter((_, j) => j !== i))} />
           </li>

@@ -12,6 +12,8 @@
 #                                                           recorder's browser only (the shared look on axHub is untouched)
 #   NO_PUBLISH=1 bash …/rebuild.sh                           record and check, don't publish
 #   UI_CHECK=1 bash …/rebuild.sh                             after publishing, check the entry + player on the live app
+#   WALKTHROUGH=build-<x> (any id not in load.mjs) + $WORK/script.input.json   a walkthrough written as data (the console's
+#                                                           Build docs plugin); LOOK_B64={id,slots} records it under one look
 #
 # Steps: script check → demo data (seed.mts) → recorder image (Piper voice, Playwright, ffmpeg) → secrets scan of every
 # frame's text → copy publish/ to AmberX's data folder, served at /api/walkthrough/* (the app's Walkthrough player).
@@ -65,7 +67,7 @@ if [ ! -s "$WORK/voice/$VOICE.onnx" ]; then
 fi
 say "${VOICE_ONLY:+re-voicing}${VOICE_ONLY:-recording} (voice $VOICE, live apps, assembly)"
 docker run --rm --name "amberx-walkthrough-rec-$WT" --env-file "$ENVF" -e OUT=/out -e ONLY="${ONLY:-}" -e WALKTHROUGH="$WT" -e VOICE_ONLY="${VOICE_ONLY:-}" \
-  -e RANDOM_LOOK="${RANDOM_LOOK:-}" -e LOOK_POOL_B64="$LOOK_POOL_B64" \
+  -e RANDOM_LOOK="${RANDOM_LOOK:-}" -e LOOK_POOL_B64="$LOOK_POOL_B64" -e LOOK_B64="${LOOK_B64:-}" \
   -e VOICE_MODEL="/voice/$VOICE.onnx" \
   -v "$HERE:/rec:ro" -v "$WORK:/out" -v "$WORK/voice:/voice:ro" "$IMAGE" bash /rec/run.sh 2>&1 | tee "$WORK/run.log"
 rm -f "$WORK/state.json"
