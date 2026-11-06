@@ -563,6 +563,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
     _register_claude_settings_tools(mcp)
+    _register_chain_control_tools(mcp)
     _register_expenses_tools(mcp)
 
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
@@ -663,6 +664,74 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
+
+
+# ---------------------------------------------------------------------- chain control (chain-control@1)
+
+CHAIN_CONTROL_CLI = Path(__file__).resolve().parents[3] / "framework" / "cli" / "chain-control.mjs"
+
+
+def _chain_control(*args: str, stdin: dict[str, Any] | None = None) -> dict[str, Any]:
+    """One chain-control.mjs command: the store the console, the launcher and the CLI share."""
+    try:
+        p = subprocess.run(["node", str(CHAIN_CONTROL_CLI), *args, "--json"], input=json.dumps(stdin) if stdin is not None else "", cwd=CHAIN_CONTROL_CLI.parents[2], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "code": "unavailable", "message": str(e)[:200]}
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "code": "unexpected", "message": p.stderr.strip()[-400:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "code": "unexpected", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def _register_chain_control_tools(mcp: MCPServer) -> None:
+    async def go(*args: str, stdin: dict[str, Any] | None = None) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _chain_control(*args, stdin=stdin))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        r.pop("ok", None)
+        return r
+
+    def level(build: str, step: str) -> list[str]:
+        return [*(["--build", build] if build else []), *(["--step", step] if step else [])]
+
+    @mcp.tool(annotations=READ)
+    async def chain_control_get(build: str = "", step: str = "", model: str = "opus") -> dict[str, Any]:
+        """How headless sessions are set up (chain-control@1, shared by Claude settings and MD Studio): the CLAUDE.md chain in
+        load order with size, tokens and mode, session mode, handoff size, model rules, output caps, file scoping, token
+        budget, a cost preview, presets and recent changes. `build` / `step` show what applies there, with its overrides."""
+        return await go("state", *level(build, step), "--model", model)
+
+    @mcp.tool(annotations=READ)
+    async def chain_control_suggestions_list(build: str) -> dict[str, Any]:
+        """The model the rules suggest for each open step of a build, next to what it is pinned to. Advice only: the pin decides."""
+        return await go("suggest", build)
+
+    @mcp.tool(annotations=READ)
+    async def chain_control_savings_get(before: str, after: str) -> dict[str, Any]:
+        """Token log totals side by side, to prove a saving. Each side is k=v[,k=v] on token log fields, e.g. build=x or session=y."""
+        return await go("compare", "--before", before, "--after", after)
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def chain_control_set(patch: dict[str, Any], build: str = "", step: str = "", by: str = "") -> dict[str, Any]:
+        """Change the registry: {session: {mode, handoffChars}, output: {bashChars, mcpTokens, readTokens}, scope: {mode, always,
+        files}, budget: {warnTokens, stopTokens}, chain: {defaultMode, brief, order}, models: {rules}}. With `build` / `step` it
+        is an override on that build or step; without, the global config."""
+        return await go("set", *level(build, step), "--by", by or "mcp", stdin={"patch": patch})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def chain_control_file(path: str, mode: str, build: str = "", step: str = "", by: str = "") -> dict[str, Any]:
+        """Set how one chain file loads: always (its text goes in), demand (named, read when needed) or never."""
+        return await go("file", path, mode, *level(build, step), "--by", by or "mcp")
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def chain_control_preset(action: str, name: str = "", by: str = "") -> dict[str, Any]:
+        """Presets: action = apply (lean, normal, full or a saved one), save (the current config under `name`), delete, or reset (back to Lean, overrides gone)."""
+        if action == "reset":
+            return await go("reset", "--by", by or "mcp")
+        if action not in ("apply", "save", "delete"):
+            raise ToolError("invalid: action is apply, save, delete or reset")
+        return await go("preset", action, name, "--by", by or "mcp")
 
 
 # ---------------------------------------------------------------------- Expenses (apps/expenses, /api/expenses/v1)

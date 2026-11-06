@@ -9,11 +9,12 @@ import { useEffect } from 'react';
 import { DockHost, IconButton, Note, Segmented, useRuntime, useIsPhone } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { ChainControlPanel } from '@console/chainControl';
 import { Column } from './Column';
 import { ChainPane, DocPane, OutlinePane, RefsPane } from './Doc';
 import { appMenu } from './menu';
 import { VIEWS, idFromLoose, viewOf, type ViewId } from './model';
-import { FOLDER, K, VIEW_ID, activeDocId, bindRuntime, loadListing, openDoc, saveDoc, setEditable, setSidePanes, setView, studio, useStudio } from './state';
+import { FOLDER, K, VIEW_ID, activeDocId, bindRuntime, loadListing, openChainControl, openDoc, saveDoc, setEditable, setSidePanes, setView, studio, useStudio } from './state';
 import './md-studio.css';
 
 const ID = 'ai.amberx.axf.console.md-studio';
@@ -41,6 +42,7 @@ function StudioView() {
         <div className="axp-md-studio__label"><p className="fx-eyebrow">Claude files · docs</p><h1>MD Studio</h1><p className="fx-muted axp-md-studio__hint">Every Markdown file by scope, opened as tabs you can split, float and edit safely. {v.hint}</p></div>
         <div className="axp-md-studio__acts">
           <Segmented label="View" size="sm" value={view} onChange={(x) => setView(x as ViewId)} options={VIEWS.map((x) => ({ value: x.id, label: x.label, icon: x.icon }))} />
+          <IconButton icon="layers" label="Headless sessions: the CLAUDE.md chain and its controls" onClick={openChainControl} />
           <IconButton icon="layout" label="Pane layouts" onClick={() => rt.openDialog('dock-layout', { arg: rt.windows.mainWindowId })} />
           <IconButton icon="refresh" label="Reload the file list" onClick={() => void loadListing()} />
         </div>
@@ -83,12 +85,14 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('md-studio.toggle-edit', (args, ctx) => { const s = arg(args, ctx.payload); const id = s ? idFromLoose(s) : activeDocId(); if (id) setEditable(id, !studio().editable[id]); }, { label: 'Switch editing on or off for a file', params: true });
     rt.actions.register('md-studio.save', () => { const id = activeDocId(); if (id) void saveDoc(id); }, { label: 'Save the open Markdown file' });
     rt.actions.register('md-studio.view', (args) => { const v = viewOf(args[0]); setView(v.id); go(); }, { label: 'Switch the MD Studio view (browse, read, write, ide)', params: true });
+    rt.actions.register('md-studio.chain-control', () => { go(); openChainControl(); }, { label: 'Open the headless session controls in MD Studio' });
     rt.actions.register('md-studio.notes', () => { go(); void loadListing(); }, { label: 'Open the Notes Vault in MD Studio' });
   },
   views: { [VIEW_ID]: { title: 'MD Studio', icon: 'file', render: () => <StudioView /> } },
   tabs: {
     'md-doc': (t) => <DocPane id={t.payload ?? ''} />,
     'md-chain': (t) => <ChainPane id={t.payload ?? ''} />,
+    'md-chain-control': () => <div className="axp-md-studio__control"><ChainControlPanel /></div>,
     'md-outline': () => <OutlinePane />,
     'md-refs': () => <RefsPane />,
   },
@@ -115,6 +119,7 @@ export const plugin: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
+    { id: 'md-studio.chain-control', tab: FOLDER, title: 'Headless sessions', icon: 'layers', order: 15, render: () => <ChainControlPanel /> },
     { id: 'md-studio.where', tab: FOLDER, title: 'What it opens', icon: 'folder', order: 20, render: () => <SettingsPanel /> },
     { id: 'md-studio.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

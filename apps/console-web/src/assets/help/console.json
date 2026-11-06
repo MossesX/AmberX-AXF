@@ -995,6 +995,108 @@
         "target": "view:plan-studio.reader",
         "title": "Reader",
         "text": "Read a plan like a document."
+      },
+      {
+        "target": "always",
+        "title": "Always",
+        "text": "Sends this file's full text at the start of every headless session.",
+        "kind": "tab"
+      },
+      {
+        "target": "on-demand",
+        "title": "On demand",
+        "text": "Names this file for the session and leaves it out; the session reads it only when a step needs it.",
+        "kind": "tab"
+      },
+      {
+        "target": "never",
+        "title": "Never",
+        "text": "Keeps this file out of headless sessions completely, not even named.",
+        "kind": "tab"
+      },
+      {
+        "target": "price-it-on",
+        "title": "Price it on",
+        "text": "Which model the token cost preview is priced on.",
+        "kind": "field"
+      },
+      {
+        "target": "sessions",
+        "title": "Sessions",
+        "text": "Whether a build runs a fresh session per step, a fresh one when the model changes, or one session throughout. Fresh sessions start small and carry on from a short handoff note.",
+        "kind": "field"
+      },
+      {
+        "target": "send-the-rules-brief",
+        "title": "Send the rules brief",
+        "text": "Puts the short brief from Rules briefs in front of the chain files.",
+        "kind": "toggle"
+      },
+      {
+        "target": "step-type",
+        "title": "Step type",
+        "text": "The name of this kind of step, shown beside its suggestion.",
+        "kind": "field"
+      },
+      {
+        "target": "words",
+        "title": "Words",
+        "text": "Comma-separated words. A step that contains one of them matches this rule.",
+        "kind": "field"
+      },
+      {
+        "target": "add-a-rule",
+        "title": "Add a rule",
+        "text": "Adds a rule that suggests a model for steps with certain words.",
+        "kind": "button"
+      },
+      {
+        "target": "file-scoping",
+        "title": "File scoping",
+        "text": "Lists a step's exact files in its session so it reads those instead of exploring the repo.",
+        "kind": "field"
+      },
+      {
+        "target": "files-every-step-gets",
+        "title": "Files every step gets",
+        "text": "Files added to every step's list, comma separated.",
+        "kind": "field"
+      },
+      {
+        "target": "custom",
+        "title": "Custom",
+        "text": "The settings no longer match a preset because they were changed by hand.",
+        "kind": "tab"
+      },
+      {
+        "target": "save-these-settings-as-a-preset",
+        "title": "Save these settings as a preset",
+        "text": "Name the current settings to keep them as a preset you can apply later.",
+        "kind": "field"
+      },
+      {
+        "target": "delete-preset",
+        "title": "Delete preset",
+        "text": "Deletes this saved preset. Built-in presets stay.",
+        "kind": "button"
+      },
+      {
+        "target": "step",
+        "title": "Step",
+        "text": "Pick one step to see or change what applies to it alone.",
+        "kind": "field"
+      },
+      {
+        "target": "clear-this-override",
+        "title": "Clear this override",
+        "text": "Drops what was set for this build or step, so it follows the global settings again.",
+        "kind": "button"
+      },
+      {
+        "target": "headless-sessions-the-claude-md-chain-and-its-controls",
+        "title": "Headless sessions",
+        "text": "Opens the CLAUDE.md chain and the controls for headless sessions, the same ones as in Claude settings.",
+        "kind": "button"
       }
     ],
     "intros": [

@@ -9,6 +9,7 @@ import { Button, Container, Icon, Note, SelectField, Switch, TextField } from '@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { ChainControlPanel } from '@console/chainControl';
 import { appMenu } from './menu';
 import { RulesBriefsPanel } from './briefs';
 import { TokenLogPanel } from './tokenlog';
@@ -218,6 +219,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, talking, notifications, memory.' }],
   settingsPanels: [
     ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),
+    { id: 'claude-settings.chain-control', tab: VIEW, title: 'Headless sessions', icon: 'layers', order: 19, render: () => <ChainControlPanel /> },
     { id: 'claude-settings.rules-briefs', tab: VIEW, title: 'Rules briefs', icon: 'file', order: 20, render: () => <RulesBriefsPanel /> },
     { id: 'claude-settings.token-log', tab: VIEW, title: 'Token log', icon: 'chart', order: 21, render: () => <TokenLogPanel /> },
     { id: 'claude-settings.api-runs', tab: VIEW, title: 'API runs', icon: 'key', order: 22, render: () => <ApiRunsPanel /> },
