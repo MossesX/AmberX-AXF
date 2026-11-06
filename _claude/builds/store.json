@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1135,
- "updatedAt": "2026-11-06T20:04:49.369Z",
+ "rev": 1136,
+ "updatedAt": "2026-11-06T20:07:44.200Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97150,7 +97150,7 @@
    "branch": "claude/ui-review-notify-audio",
    "pr": "",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-06T19:59:31.537Z",
+   "updatedAt": "2026-11-06T20:07:30.268Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97271,12 +97271,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T20:07:30.268Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T19:49:18.566Z",
-     "updatedAt": "2026-11-06T19:49:18.566Z"
+     "updatedAt": "2026-11-06T20:07:30.328Z"
     },
     {
      "id": "s6",
@@ -97309,7 +97309,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
