@@ -90,8 +90,10 @@ not addressable by one id; no aliases, no fuzzy voice match, no user shortcuts, 
 
 ## Screenshots
 
-UI Review → Screenshots, group `ui-registry-shortcuts - Nov 6 …`: the quick-open dialog (desktop + phone, "plan" typed)
-and Settings → Plugins → UI shortcuts (desktop + phone). Files: `_claude/builds/reports/ui-registry-shortcuts/shots/`.
+UI Review (approve / reject queue), group `ui-registry-shortcuts - Nov 6 6:35 PM`: the quick-open dialog (desktop +
+phone, "plan" typed) and Settings → Plugins → UI shortcuts (desktop + phone). Files:
+`_claude/builds/reports/ui-registry-shortcuts/shots/`. PR [#369](https://github.com/MossesX/AmberX-AXF/pull/369), in
+the merge queue (held until the review is approved).
 
 ## Known gaps / follow-ups
 - voice-command@1 (PR #323) is not on main: `GET /voice` already answers in its shape; once #323 lands, its generator
