@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1151,
- "updatedAt": "2026-11-06T22:31:14.145Z",
+ "rev": 1152,
+ "updatedAt": "2026-11-06T22:31:31.361Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97703,14 +97703,14 @@
    "title": "Gizmo rebuild on Fable: talk mode in the background, listener controls, one mic owner",
    "category": "AmberX > Gizmo",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-rebuild-fable",
    "pr": "",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-06T22:31:04.510Z",
+   "updatedAt": "2026-11-06T22:31:16.227Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97743,12 +97743,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T22:31:15.436Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:31:04.511Z",
-     "updatedAt": "2026-11-06T22:31:04.511Z"
+     "updatedAt": "2026-11-06T22:31:15.502Z"
     },
     {
      "id": "s2",
@@ -97913,7 +97913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
