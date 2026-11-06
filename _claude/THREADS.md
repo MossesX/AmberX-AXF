@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:56 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
 - 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s4 done (angel) · orchestrator
 - 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s5 done (angel) · orchestrator
 - 2026-11-04 21:58 UTC · `notes-views` added (5 steps) (current) · claude:notes-views
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 20:07 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, note (current) · foreign-write
 - 2026-11-06 20:07 UTC · `ui-review-notify-session-audio` s5 done (current) · orchestrator
 - 2026-11-06 20:09 UTC · `ui-review-notify-session-audio` PR #365 (current) · builds-live
+- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · foreign-write
 
 ## Token passes (log)
 

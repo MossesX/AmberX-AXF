@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1137,
- "updatedAt": "2026-11-06T20:09:56.080Z",
+ "rev": 1138,
+ "updatedAt": "2026-11-06T20:15:52.785Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91154,7 +91154,7 @@
    "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T19:41:26.993Z",
+   "updatedAt": "2026-11-06T20:10:29.073Z",
    "builtAt": "",
    "notes": [
     {
@@ -91290,7 +91290,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91302,7 +91302,12 @@
     "createdAt": "2026-11-06T02:27:27.755Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw4d0zan018d2b": "2026-11-06T02:33:10.261Z",
+     "st-mw4d10ba01amhs": "2026-11-06T02:33:11.508Z",
+     "st-mw4d11be01hsrx": "2026-11-06T02:33:12.826Z",
+     "st-mw4d15du01rc8e": "2026-11-06T02:33:18.142Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-06T02:33:10.261Z",
@@ -97150,9 +97155,14 @@
    "branch": "claude/ui-review-notify-audio",
    "pr": "#365",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-06T20:09:55.425Z",
+   "updatedAt": "2026-11-06T20:10:29.073Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #365",
+     "at": "2026-11-06T20:10:29.073Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -97309,10 +97319,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-06T19:49:18.566Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw5e1gog07kx4c": "2026-11-06T19:49:18.566Z",
+     "st-mw5e1gog082s81": "2026-11-06T19:49:18.566Z",
+     "st-mw5e1gog09kg0v": "2026-11-06T19:49:18.566Z",
+     "st-mw5e1gog0aavde": "2026-11-06T19:49:18.566Z",
+     "st-mw5e1gog0bx3vg": "2026-11-06T19:49:18.566Z",
+     "st-mw5e1gog0ceen9": "2026-11-06T19:49:18.566Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-06T19:49:18.566Z",
    "rearranged": false,
