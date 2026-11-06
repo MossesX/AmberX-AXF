@@ -21,10 +21,7 @@ export const plugin: AxfWebLibrary = {
   provides: ['amberx.notes', 'amberx.tasks'],
   appMenu,
   views: { ...notesLibrary.views, ...tasksLibrary.views },
-  nav: { label: NAV_GROUP, items: [
-    { id: 'notes', label: 'Notes', icon: 'file', view: 'notes' },
-    { id: 'tasks', label: 'Tasks', icon: 'check-circle', view: 'tasks', badge: 'tasks.today' },
-  ] },
+  nav: { label: NAV_GROUP, items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }, { id: 'tasks', label: 'Tasks', icon: 'check-circle', view: 'tasks', badge: 'tasks.today' }] },
   dialogs: { ...notesLibrary.dialogs, ...tasksLibrary.dialogs },
   contextMenu: [...(notesLibrary.contextMenu ?? []), ...(tasksLibrary.contextMenu ?? [])],
   settingsTabs: [{ id: 'notes-tasks', label: 'Notes and tasks', icon: 'check-circle', order: 30, parent: 'plugins' }],
