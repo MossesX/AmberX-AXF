@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:19 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
 - 2026-11-04 22:19 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
 - 2026-11-04 22:19 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
 - 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 21:13 UTC · `notifications-control-panel` s6 done, → complete (current) · orchestrator
 - 2026-11-06 21:13 UTC · `notifications-control-panel` → built, PR #367 (current) · builds-live
 - 2026-11-06 21:13 UTC · `notifications-control-panel` note (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` added (8 steps) (current) · orchestrator
 
 ## Token passes (log)
 
