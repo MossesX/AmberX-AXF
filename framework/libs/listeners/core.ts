@@ -31,6 +31,8 @@
  *   every listener of every phone: state, since when, last error, who holds the mic.
  */
 
+import registry from './registry.json';
+
 /* ---------------------------------------------------------------- the registry */
 
 export type ListenerKind = 'mic' | 'poll' | 'sound';
@@ -50,27 +52,15 @@ export interface ListenerDef {
   defaults?: Partial<ListenerPolicy>;
 }
 
-/** Every listener AmberX runs. Open: add a row here (or publish an unknown id) and the panel shows it. */
-export const LISTENERS: readonly ListenerDef[] = [
-  { id: 'handsfree', label: 'Hands-free (wake word)', kind: 'mic', side: 'native', about: 'Listens for the wake phrases (or everything, when always armed) on screen and with the screen off.' },
-  { id: 'oneshot', label: 'Command after the wake word', kind: 'mic', side: 'native', about: "One Google utterance after a wake phrase, then back to the silent wake listener.", without: ['on'] },
-  { id: 'speak', label: 'Speak button', kind: 'mic', side: 'native', about: 'One utterance when you tap Speak or push to talk.' },
-  { id: 'talk', label: 'Gizmo talk mode', kind: 'mic', side: 'native', about: 'Hands-free conversation with Gizmo that keeps going with the screen off or AmberX in the background (a notification with Stop).' },
-  { id: 'recorder-mic', label: 'Recorder microphone', kind: 'mic', side: 'native', about: "The Audio Output Recorder's opt-in mic track.", without: ['retries', 'sound'] },
-  { id: 'monitor', label: 'axHub watch (approvals)', kind: 'poll', side: 'native', about: 'Reads the approvals feed with the screen off and raises alerts.', without: ['pauseOnCall', 'pauseForOtherApps', 'sound'] },
-  { id: 'veto-alarm', label: 'Veto alarm', kind: 'sound', side: 'native', about: 'Rings for a held command until you decide it.', without: ['pauseOnCall', 'pauseForOtherApps', 'retries'], defaults: { sound: true } },
-  { id: 'browser-handsfree', label: 'Hands-free in this browser', kind: 'mic', side: 'page', about: 'Web Speech recognition while an AmberX tab is open (the phone app listens natively instead).' },
-  { id: 'dictation', label: 'Dictation', kind: 'mic', side: 'page', about: 'The dictation plugin while it records.', without: ['retries'] },
-  { id: 'voice-command', label: 'Speak a command (page)', kind: 'mic', side: 'page', about: 'The voice plugin waiting for the next command in a browser.', without: ['retries'] },
-  { id: 'agent-voice', label: 'Assistant microphone', kind: 'mic', side: 'page', about: 'The agent voice console plugin loaded into AmberX.', without: ['retries'] },
-  { id: 'notes', label: 'Voice notes', kind: 'mic', side: 'page', about: 'Voice notes while one records.', without: ['retries'] },
-];
+/** Every listener AmberX runs (registry.json, data shared with the console's Python and Node sides). Open: add a row
+ * there (or publish an unknown id) and the panel shows it. */
+export const LISTENERS: readonly ListenerDef[] = (registry as { listeners: ListenerDef[] }).listeners;
 
 const DEFS = new Map(LISTENERS.map((d) => [d.id, d]));
 export const listenerDef = (id: string): ListenerDef => DEFS.get(id) ?? { id, label: id, kind: 'mic', side: 'page', about: '' };
 export const listenerLabel = (id: string): string => listenerDef(id).label;
 /** Ids that may hold the microphone, highest priority first: the one the person is talking to wins. */
-export const MIC_PRIORITY: readonly string[] = ['talk', 'speak', 'voice-command', 'dictation', 'notes', 'agent-voice', 'oneshot', 'handsfree', 'browser-handsfree', 'recorder-mic'];
+export const MIC_PRIORITY: readonly string[] = (registry as { micPriority: string[] }).micPriority;
 
 /** Of the listeners asking for the microphone, the one that gets it (null for none). Unknown ids rank last. */
 export function micWinner(asking: readonly string[]): string | null {
@@ -101,12 +91,10 @@ export interface ListenerPolicy {
   cooldownMs: number;
 }
 
-export const POLICY_DEFAULTS: ListenerPolicy = { on: true, pauseOnCall: true, pauseForOtherApps: true, sound: false, retries: 6, backoffMs: 1000, maxBackoffMs: 30_000, cooldownMs: 60_000 };
+export const POLICY_DEFAULTS: ListenerPolicy = (registry as { defaults: ListenerPolicy }).defaults;
 export const POLICY_FIELDS = Object.keys(POLICY_DEFAULTS) as (keyof ListenerPolicy)[];
 /** The restart limits the panel offers. */
-export const RETRY_CHOICES: readonly { value: number; label: string }[] = [
-  { value: 0, label: 'Never restart' }, { value: 3, label: '3 tries' }, { value: 6, label: '6 tries' }, { value: 10, label: '10 tries' }, { value: -1, label: 'Keep trying (backs off)' },
-];
+export const RETRY_CHOICES: readonly { value: number; label: string }[] = (registry as { retryChoices: { value: number; label: string }[] }).retryChoices;
 /** A listener session shorter than this (ms) ended at once: something refused it. */
 export const QUICK_END_MS = 1500;
 /** The pause before an ordinary restart (a turn that ran its course). */
@@ -173,8 +161,9 @@ export function policyFieldsFor(id: string): (keyof ListenerPolicy)[] {
   return (['on', 'pauseOnCall', 'pauseForOtherApps', 'sound', 'retries'] as (keyof ListenerPolicy)[]).filter((f) => !w.has(f));
 }
 
-/** Settings-group entries (the app's settings registry) for a listener, so its policy is declared and synced. */
-export function policySettings(id: string): { key: string; label: string; kind: 'toggle' | 'choice'; default: boolean | number; options?: { value: number; label: string }[]; description?: string }[] {
+/** Settings-group entries (the app's settings registry) for a listener, so its policy is declared and synced. A choice's
+ * values are strings (the registry's shape); {@link normalizePolicy} reads them back as numbers. */
+export function policySettings(id: string): { key: string; label: string; kind: 'toggle' | 'choice'; default: boolean | string; options?: { value: string; label: string }[]; description?: string }[] {
   const keys = policyKeys(id);
   const d = normalizePolicy(null, id);
   const out: ReturnType<typeof policySettings> = [];
@@ -183,7 +172,19 @@ export function policySettings(id: string): { key: string; label: string; kind: 
     else if (f === 'pauseOnCall') out.push({ key: keys.pauseOnCall, label: `${listenerLabel(id)}: pause for calls`, kind: 'toggle', default: d.pauseOnCall });
     else if (f === 'pauseForOtherApps') out.push({ key: keys.pauseForOtherApps, label: `${listenerLabel(id)}: pause for other apps`, kind: 'toggle', default: d.pauseForOtherApps });
     else if (f === 'sound') out.push({ key: keys.sound, label: `${listenerLabel(id)}: start sound`, kind: 'toggle', default: d.sound, description: 'Only for a start you asked for; restarts and resumes are always silent.' });
-    else if (f === 'retries') out.push({ key: keys.retries, label: `${listenerLabel(id)}: restarts before it gives up`, kind: 'choice', default: d.retries, options: RETRY_CHOICES.map((c) => ({ value: c.value, label: c.label })) });
+    else if (f === 'retries') out.push({ key: keys.retries, label: `${listenerLabel(id)}: restarts before it gives up`, kind: 'choice', default: String(d.retries), options: RETRY_CHOICES.map((c) => ({ value: String(c.value), label: c.label })) });
+  }
+  return out;
+}
+
+/** The policy fields that differ from a listener's defaults, as a settings patch (what the console writes to the hub). */
+export function policyPatch(id: string, policy: Partial<ListenerPolicy>): Record<string, boolean | string> {
+  const keys = policyKeys(id);
+  const out: Record<string, boolean | string> = {};
+  for (const f of POLICY_FIELDS) {
+    const v = policy[f];
+    if (v === undefined) continue;
+    out[keys[f]] = typeof v === 'boolean' ? v : String(v);
   }
   return out;
 }

@@ -1,0 +1,11 @@
+/* Listeners plugin: layout only (THEMING.md); every control is a framework control, sizes and colours are theme tokens. */
+.axp-listeners { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-listeners__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-listeners__grow { flex: 1 1 auto; min-width: 0; }
+.axp-listeners__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 34), 1fr)); gap: var(--fx-dens-gap-xl); }
+.axp-listeners__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-listeners__state { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-listeners__about { margin: 0; color: var(--fx-muted); }
+.axp-listeners__error { margin: 0; color: var(--fx-danger); overflow-wrap: anywhere; }
+.axp-listeners__controls { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-listeners__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }

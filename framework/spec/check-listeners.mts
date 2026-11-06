@@ -18,7 +18,7 @@ console.log('listeners (listener@1)');
 
 // ---- baked copies
 for (const app of ['console-web', 'amberx-droid']) {
-  for (const f of ['core.ts', 'index.ts', 'library.json', 'cases.json']) check(src(`../../apps/${app}/src/axf/libs/listeners/${f}`) === src(`../libs/listeners/${f}`), `${app} bakes the current ${f}`);
+  for (const f of ['core.ts', 'index.ts', 'library.json', 'cases.json', 'registry.json']) check(src(`../../apps/${app}/src/axf/libs/listeners/${f}`) === src(`../libs/listeners/${f}`), `${app} bakes the current ${f}`);
 }
 
 // ---- the shared cases (Java reads the same file)
@@ -64,7 +64,9 @@ check(lib.policyFrom(get, 'handsfree').sound === true && lib.policyFrom(get, 'ha
 check(Object.keys(lib.policiesFrom(get)).length === lib.LISTENERS.length, 'policiesFrom covers every known listener');
 check(!lib.policyFieldsFor('monitor').includes('pauseOnCall') && !lib.policyFieldsFor('oneshot').includes('on') && lib.policyFieldsFor('talk').length === 5, 'policyFieldsFor leaves out what a listener has not got');
 const ps = lib.policySettings('talk');
-check(ps.length === 5 && ps.every((s) => s.key.startsWith('amberx.listeners.talk.')) && ps.find((s) => s.kind === 'choice')?.options?.length === lib.RETRY_CHOICES.length, 'policySettings: declared settings for the registry (synced through axHub)');
+check(ps.length === 5 && ps.every((s) => s.key.startsWith('amberx.listeners.talk.')) && ps.find((s) => s.kind === 'choice')?.options?.length === lib.RETRY_CHOICES.length && ps.find((s) => s.kind === 'choice')?.default === '6', 'policySettings: declared settings for the registry (synced through axHub), choice values as strings');
+check(lib.normalizePolicy({ retries: '-1' }).retries === -1 && lib.policyFrom((k) => (k === 'amberx.listeners.talk.retries' ? '3' : undefined), 'talk').retries === 3, 'a choice saved as a string reads back as the number');
+check(same(lib.policyPatch('talk', { on: false, retries: 3 }), { 'amberx.listeners.talk.on': false, 'amberx.listeners.talk.retries': '3' }), 'policyPatch: the settings keys the console writes');
 check(lib.RETRY_CHOICES.some((c) => c.value === -1) && lib.RETRY_CHOICES.some((c) => c.value === 0), 'retry choices offer never and keep trying');
 
 // ---- restarts beyond the cases
