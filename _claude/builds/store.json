@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1140,
- "updatedAt": "2026-11-06T20:18:36.004Z",
+ "rev": 1141,
+ "updatedAt": "2026-11-06T20:27:07.498Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97364,14 +97364,14 @@
    "title": "Claude badge: VPS and console connections",
    "category": "Plugin",
    "detail": "Two banner badges in the Claude badge plugin: console connection (axf.llm@1 test) and VPS connection (the Claude Code login on the VPS, read with plain code, zero tokens). Show/hide, Icons only and per-state icons for each. Covers s18 of token-usage-log-accounts-plan-studio-control.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T20:18:34.992Z",
-   "updatedAt": "2026-11-06T20:18:34.992Z",
+   "updatedAt": "2026-11-06T20:27:06.402Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97404,12 +97404,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T20:27:06.402Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T20:18:34.993Z",
-     "updatedAt": "2026-11-06T20:18:34.993Z"
+     "updatedAt": "2026-11-06T20:27:06.476Z"
     },
     {
      "id": "s2",
@@ -97486,7 +97486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
