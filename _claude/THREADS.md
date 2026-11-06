@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:31 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
 - 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s1 done (angel) · orchestrator
 - 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s2 done (angel) · orchestrator
 - 2026-11-04 21:28 UTC · `molly-banner-match` → pending, note (current) · reconciler
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · builds-live
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · orchestrator
 - 2026-11-06 19:49 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · orchestrator
+- 2026-11-06 19:49 UTC · `ui-review-notify-session-audio` → running (current) · orchestrator
 
 ## Token passes (log)
 
