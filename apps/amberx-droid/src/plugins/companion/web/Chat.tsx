@@ -370,8 +370,7 @@ export function CompanionView() {
               {m.role === 'user' && !live && <IconButton icon="edit" label="Edit and resend" onClick={() => { setEditing(m.id); setText(m.content); inputRef.current?.focus(); }} />}
               {m.role === 'assistant' && <IconButton icon="mic" label="Read aloud" onClick={() => { resetSpeech(); speakStreaming(rt, m.content, true); }} />}
               {m.id === lastAssistant?.id && !live && <IconButton icon="refresh" label="Regenerate" onClick={() => void run({ regenerate: true })} />}
-              {m.meta?.model && <span className="fx-muted">{modelName(m.meta.model)}</span>}
-              {m.role === 'assistant' && replyLine(m) && <span className="fx-muted axp-companion__clip">{replyLine(m)}</span>}
+              {(m.meta?.model || m.role === 'assistant') && <span className="fx-muted axp-companion__clip">{[m.meta?.model ? modelName(m.meta.model) : '', m.role === 'assistant' ? replyLine(m) : ''].filter(Boolean).join(' · ')}</span>}
             </div>
           </article>
         ))}
