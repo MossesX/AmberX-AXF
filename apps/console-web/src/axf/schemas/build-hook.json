@@ -1,0 +1,30 @@
+{
+  "schema": "build-hook@1",
+  "record": "build-event@1",
+  "version": 1,
+  "events": [
+    "created",
+    "steps-added",
+    "step-done",
+    "status",
+    "pr-opened",
+    "pr-merged",
+    "addendum",
+    "cancelled",
+    "restored"
+  ],
+  "buildStatuses": [
+    "pending",
+    "running",
+    "waiting",
+    "blocked",
+    "failed",
+    "built",
+    "complete",
+    "archived"
+  ],
+  "repos": [
+    "amberx-axf",
+    "axhub"
+  ]
+}

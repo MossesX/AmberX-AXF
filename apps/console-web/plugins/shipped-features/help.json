@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "shipped-features-help",
+  "name": "Shipped features help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Shipped features page.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:shipped-features",
+    "entries": [
+      {
+        "target": "view:shipped-features",
+        "title": "Shipped features",
+        "text": "Every feature of AmberX-AXF and axHub in one list, from the moment a build plans it to when it went live, with every later change as an edit. Tap a row to see what you said, the builds and PRs behind it, and its edits.",
+        "kind": "screen"
+      },
+      {
+        "target": "Shipped features view",
+        "title": "View by",
+        "text": "Groups the list by pull request, build, day, app, plugin, feature type or repo, or shows it flat. The counts on each group follow your filters."
+      },
+      {
+        "target": "Shipped features filters",
+        "title": "Quick filters",
+        "text": "Hide completed hides Merged, Live and Removed; Hide pending hides Planned, Queued, Building and In PR; tap status chips to show only those. Has edits and Being edited now narrow to changed features. This phone or computer remembers your choice."
+      },
+      {
+        "target": "Shipped features actions",
+        "title": "Sync and export",
+        "text": "Sync picks up new build events, merged PRs and deploys right away (it also runs by itself every couple of minutes). CSV and Markdown save the rows you see."
+      },
+      {
+        "target": "shipped-features",
+        "title": "Shipped features settings",
+        "text": "Install, uninstall or rebuild the Shipped features ledger (a SQLite file in the console's data folder)."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "shipped-features",
+        "title": "Shipped features",
+        "steps": [
+          {
+            "say": "This is every feature we've planned or shipped. New builds show up here as Planned the moment they're created.",
+            "target": ""
+          },
+          {
+            "say": "Status shows where each one is: Planned, Queued, Building, In PR, Merged, Live. A tilde means the date was reconstructed from history.",
+            "target": ""
+          },
+          {
+            "say": "Open a row for what you said, the PRs, and the Edits timeline: every later change to that feature, newest first.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}
