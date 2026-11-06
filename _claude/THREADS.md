@@ -705,17 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:00 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
-- 2026-11-04 21:01 UTC · `molly-banner-match` branch claude/molly-banner-match-r2, PR #341 (current) · builds-live
-- 2026-11-04 21:01 UTC · `molly-banner-match` s1 done, → running (current) · orchestrator
-- 2026-11-04 21:01 UTC · `molly-banner-match` s2 done (current) · orchestrator
-- 2026-11-04 21:01 UTC · `molly-banner-match` s3 done (current) · orchestrator
-- 2026-11-04 21:01 UTC · `molly-banner-match` s4 done (current) · orchestrator
-- 2026-11-04 21:01 UTC · `molly-banner-match` s5 done (current) · orchestrator
-- 2026-11-04 21:01 UTC · `molly-banner-match` note (current) · orchestrator
-- 2026-11-04 21:05 UTC · `molly-banner-match` s1 done, s4 done, s5 done, note (current) · foreign-write
-- 2026-11-04 21:05 UTC · `drag-to-tab` s1 done, s2 done (angel, current) · foreign-write
-- 2026-11-04 21:05 UTC · `build-optimizer` s1 done, → running (current) · orchestrator
 - 2026-11-04 21:05 UTC · `build-optimizer` s2 done (current) · orchestrator
 - 2026-11-04 21:05 UTC · `build-optimizer` s3 done (current) · orchestrator
 - 2026-11-04 21:05 UTC · `build-optimizer` s4 done (current) · orchestrator
@@ -1105,6 +1094,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:49 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
 - 2026-11-06 18:49 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s1 done, → running (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s2 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s3 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s4 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s5 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s6 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s17-16 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s18-17 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s19-18 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s20-19 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s21-20 done (current) · orchestrator
+- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s22-21 done (current) · orchestrator
 
 ## Token passes (log)
 
