@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1162,
- "updatedAt": "2026-11-06T23:13:52.382Z",
+ "rev": 1163,
+ "updatedAt": "2026-11-06T23:15:16.953Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -74679,14 +74679,14 @@
    "title": "Gizmo voice: talk mode that works with the screen off",
    "category": "AmberX",
    "detail": "Addendum 2 of gizmo-companion. Push-to-talk, hands-free, interrupt-to-stop, voice + speed picker and streamed spoken replies already shipped in PR #296 (companion talk.ts). Left: keep talk mode alive with the screen off / app in the background (AmberX foreground service, native: allowed Android exception), transcript in the chat checked on the phone, end-to-end phone test. Base: main after #296.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-04T15:51:35.864Z",
+   "updatedAt": "2026-11-06T23:15:15.743Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -74719,12 +74719,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:15:15.743Z",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T18:55:12.567Z"
+     "updatedAt": "2026-11-06T23:15:15.831Z"
     },
     {
      "id": "s2",
@@ -74779,7 +74779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {

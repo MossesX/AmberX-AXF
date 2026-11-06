@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
 - 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
 - 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
 - 2026-11-04 22:41 UTC · `notes-views` PR #349 (current) · builds-live
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 23:05 UTC · `ui-registry-shortcuts` s2 done (current) · foreign-write
 - 2026-11-06 23:05 UTC · `gizmo-rebuild-fable` s6 done (current) · orchestrator
 - 2026-11-06 23:13 UTC · `gizmo-rebuild-fable` s7 done (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` s1 done, → running (current) · orchestrator
 
 ## Token passes (log)
 
