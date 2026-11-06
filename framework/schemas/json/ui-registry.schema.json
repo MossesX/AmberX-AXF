@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/ui-registry.schema.json",
+  "title": "AmberX AXF UI registry asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "ui-registry"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "app",
+        "items"
+      ],
+      "properties": {
+        "app": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,62}$",
+          "description": "the app (project manifest name)"
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 5000,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^([a-z][a-z0-9-]*):([A-Za-z0-9_][A-Za-z0-9._/@:+-]{0,190})$",
+                "maxLength": 200,
+                "description": "<kind>:<key>"
+              },
+              "kind": {
+                "enum": [
+                  "screen",
+                  "dialog",
+                  "popup",
+                  "settings",
+                  "settings-group",
+                  "setting",
+                  "menu",
+                  "menu-item",
+                  "nav-item",
+                  "toolbar",
+                  "button",
+                  "link",
+                  "tab-group",
+                  "tab",
+                  "banner",
+                  "widget",
+                  "action",
+                  "window",
+                  "card",
+                  "control"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 160
+              },
+              "open": {
+                "type": "object",
+                "description": "exactly one way to open it",
+                "properties": {
+                  "via": {
+                    "enum": [
+                      "view",
+                      "dialog",
+                      "settings",
+                      "action",
+                      "url",
+                      "element",
+                      "menu"
+                    ]
+                  },
+                  "view": {
+                    "type": "string"
+                  },
+                  "dialog": {
+                    "type": "string"
+                  },
+                  "arg": {
+                    "type": "string"
+                  },
+                  "settings": {
+                    "type": "string"
+                  },
+                  "tab": {
+                    "type": "string"
+                  },
+                  "anchor": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "spec": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "element": {
+                    "type": "string"
+                  },
+                  "selector": {
+                    "type": "string"
+                  },
+                  "click": {
+                    "type": "boolean"
+                  },
+                  "menu": {
+                    "type": "string"
+                  }
+                }
+              },
+              "app": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string",
+                "pattern": "^(app|framework|plugin:[a-z0-9][a-z0-9._-]{0,62}|library:[A-Za-z0-9][A-Za-z0-9._-]{0,120})$"
+              },
+              "parent": {
+                "type": "string"
+              },
+              "aliases": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "keywords": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "detail": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "icon": {
+                "type": "string"
+              },
+              "requires": {
+                "type": "string"
+              },
+              "help": {
+                "type": "string"
+              },
+              "effect": {
+                "enum": [
+                  "navigate",
+                  "read",
+                  "write",
+                  "destructive"
+                ]
+              },
+              "source": {
+                "enum": [
+                  "declared",
+                  "authored",
+                  "scanned",
+                  "live"
+                ]
+              },
+              "hidden": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "source": {
+          "enum": [
+            "declared",
+            "authored",
+            "scanned",
+            "live",
+            "mixed"
+          ]
+        },
+        "generatedFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "generatedAt": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -47,7 +47,8 @@
     "sizing",
     "agent-card",
     "job-type",
-    "card"
+    "card",
+    "ui-registry"
   ],
   "parsed": {
     "full": {
