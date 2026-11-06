@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T19:42:40.831Z",
+ "updatedAt": "2026-11-06T19:42:55.032Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -16514,15 +16514,15 @@
    "title": "Notes, tasks and to-do: one shared plugin and one store (console + AmberX)",
    "category": "Apps > Notes",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/notes-tasks-sync",
    "pr": "#363",
    "createdAt": "2026-11-06T19:31:41.894Z",
-   "updatedAt": "2026-11-06T19:42:40.109Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T19:42:51.161Z",
+   "builtAt": "2026-11-06T19:42:51.161Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -16624,8 +16624,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T19:42:51.161Z",
      "note": "",
      "uid": "st-mw5detc90ar182"
     }

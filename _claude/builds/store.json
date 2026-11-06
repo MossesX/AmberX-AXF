@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1123,
- "updatedAt": "2026-11-06T19:42:40.831Z",
+ "rev": 1124,
+ "updatedAt": "2026-11-06T19:42:55.032Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -96974,15 +96974,15 @@
    "title": "Notes, tasks and to-do: one shared plugin and one store (console + AmberX)",
    "category": "Apps > Notes",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/notes-tasks-sync",
    "pr": "#363",
    "createdAt": "2026-11-06T19:31:41.894Z",
-   "updatedAt": "2026-11-06T19:42:40.109Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T19:42:51.161Z",
+   "builtAt": "2026-11-06T19:42:51.161Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -97102,12 +97102,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T19:42:51.161Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T19:31:41.895Z",
-     "updatedAt": "2026-11-06T19:31:41.895Z"
+     "updatedAt": "2026-11-06T19:42:51.219Z"
     }
    ],
    "profiles": [
@@ -97118,7 +97118,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
