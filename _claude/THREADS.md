@@ -30,6 +30,9 @@ States: `working`, `testing`, `review` (PR open / needs merge), `deploy` (merged
 for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of credits, usage limit, session ended),
 `on hold`, `done`.
 
+## Handoff: md-chain-control (Nov 6 2026)
+Built, PR #362 open on `claude/md-chain-control`, waiting on UI Review and the merge queue. Contains PR #360's work and the paused `claude/headless-progress-lean-chain` commits (that build's s4 and s5 are still open). Left for Brett: whether `per-step` stays the default, since it cost more than one lean session on tiny steps (`_claude/builds/reports/md-chain-control.md`). Next session: nothing to build unless UI Review asks for changes.
+
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
