@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T19:38:24.521Z",
+ "updatedAt": "2026-11-06T19:41:28.061Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13264,14 +13264,14 @@
    "title": "AmberX: slim down + voice queue",
    "category": "",
    "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "amberx-slim-down-voice-queue",
    "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T14:30:23.249Z",
+   "updatedAt": "2026-11-06T19:41:26.993Z",
    "builtAt": "",
    "notes": [
     {
@@ -13289,6 +13289,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T14:30:23.249Z"
+    },
+    {
+     "text": "Clash with notes-tasks-sync: AmberX's notes and tasks folders moved to the shared console plugin notes-tasks. slim.json must drop keep.local.notes/tasks and add keep.console.notes-tasks.",
+     "at": "2026-11-06T19:41:26.993Z"
     }
    ],
    "approvals": [],
