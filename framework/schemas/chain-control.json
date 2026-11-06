@@ -4,10 +4,10 @@
   "preset": "lean",
   "presets": [
     {
-      "id": "lean", "name": "Lean", "description": "Rules brief only, every project file on demand, a fresh session per step, tight output caps. Cheapest.",
+      "id": "lean", "name": "Lean", "description": "Rules brief only, every project file on demand, one session for the build, tight output caps. Cheapest.",
       "config": {
         "chain": { "defaultMode": "demand", "brief": true, "files": [], "order": [], "maxChars": 40000 },
-        "session": { "mode": "per-step", "handoffChars": 1500, "briefChars": 3000 },
+        "session": { "mode": "per-build", "handoffChars": 1500, "briefChars": 3000 },
         "models": { "rules": [
           { "type": "foundation", "label": "Foundation", "model": "Fable", "words": ["schema", "asset type", "data model", "contract", "kernel", "engine", "migration", "cross-app", "cross-port", "protocol"] },
           { "type": "ui", "label": "UI", "model": "Opus", "words": ["dialog", "panel", "banner", "toolbar", "screen", "settings tab", "widget"] },

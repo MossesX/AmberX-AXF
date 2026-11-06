@@ -31,7 +31,7 @@ const LIMITS = {
 };
 export const DEFAULTS = Object.freeze({
   chain: { defaultMode: 'demand', brief: true, files: [], order: [], maxChars: 40000 },
-  session: { mode: 'per-step', handoffChars: 1500, briefChars: 3000 },
+  session: { mode: 'per-build', handoffChars: 1500, briefChars: 3000 },
   models: { rules: [] },
   output: { bashChars: 20000, mcpTokens: 10000, readTokens: 12000 },
   scope: { mode: 'listed', always: [] },

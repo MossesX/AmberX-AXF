@@ -19,7 +19,7 @@ Same three small steps, real Claude, Opus, scratch folders, token log (`chain-co
 The two cost columns differ because Claude's total includes work the turn log doesn't see. Compare within a column.
 
 ## Open
-- **Decision for Brett:** `per-step` is the default as he asked. On builds of tiny steps `per-phase` or `per-build` is cheaper.
+- **Decided (Brett, Nov 6 2026):** `per-build` is the default, so a build runs in one session. `per-step` stays as an option.
 - Model rules only say Opus or Fable: the item's Haiku/Sonnet wording is overridden by the model policy.
 - File scoping is an instruction in the prompt, not enforced.
 - The live launcher in /opt/axf picks this up only after merge.

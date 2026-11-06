@@ -31,7 +31,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 `on hold`, `done`.
 
 ## Handoff: md-chain-control (Nov 6 2026)
-Built, PR #362 open on `claude/md-chain-control`, waiting on UI Review and the merge queue. Contains PR #360's work and the paused `claude/headless-progress-lean-chain` commits (that build's s4 and s5 are still open). Left for Brett: whether `per-step` stays the default, since it cost more than one lean session on tiny steps (`_claude/builds/reports/md-chain-control.md`). Next session: nothing to build unless UI Review asks for changes.
+Built, PR #362 open on `claude/md-chain-control`, waiting on UI Review and the merge queue. Contains PR #360's work and the paused `claude/headless-progress-lean-chain` commits (that build's s4 and s5 are still open). `per-build` (one session for the build) is the default since Brett's call of Nov 6; `per-step` stays an option.md`). Next session: nothing to build unless UI Review asks for changes.
 
 ## Active
 

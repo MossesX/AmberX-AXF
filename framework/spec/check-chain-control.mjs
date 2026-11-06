@@ -2,7 +2,7 @@
 /** chain-control@1: the registry, its levels and presets, the load plan, handoffs, budgets and the launcher's per-step loop. Scratch folders only; no network, no model. */
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,15 +20,17 @@ const doc = cc.normDoc(null, seed);
 /* levels */
 eq(doc.preset, 'lean', 'the seed is lean');
 eq(Object.keys(doc.presets), ['lean', 'normal', 'full'], 'three built-in presets');
-const scoped = cc.applyPatch(cc.applyPatch(doc, { session: { mode: 'per-build' } }, { build: 'b' }), { budget: { stopTokens: 5000 } }, { build: 'b', step: 's2' });
-eq(cc.resolve(scoped, {}).config.session.mode, 'per-step', 'the global config is untouched');
-eq(cc.resolve(scoped, { build: 'b' }).config.session.mode, 'per-build', 'a build override wins');
+const scoped = cc.applyPatch(cc.applyPatch(doc, { session: { mode: 'per-step' } }, { build: 'b' }), { budget: { stopTokens: 5000 } }, { build: 'b', step: 's2' });
+eq(cc.resolve(scoped, {}).config.session.mode, 'per-build', 'the global config is untouched: one session for the build');
+eq(cc.resolve(scoped, { build: 'b' }).config.session.mode, 'per-step', 'a build override wins');
 eq(cc.resolve(scoped, { build: 'b', step: 's2' }).sources, { 'session.mode': 'build', 'budget.stopTokens': 'step' }, 'sources name the level');
 eq(cc.resolve(scoped, { build: 'b', step: 's3' }).config.budget.stopTokens, 0, 'a step override stays on its step');
-eq(cc.resolve(cc.clearOverride(scoped, { build: 'b' }), { build: 'b' }).config.session.mode, 'per-step', 'clearing drops it');
+eq(cc.resolve(cc.clearOverride(scoped, { build: 'b' }), { build: 'b' }).config.session.mode, 'per-build', 'clearing drops it');
 eq(cc.applyPatch(doc, { output: { bashChars: 1000 } }).preset, '', 'a hand change leaves the preset');
 eq(cc.normConfig({ output: { bashChars: 9e9 } }).output.bashChars, 500000, 'numbers clamp');
-eq(cc.normConfig({ session: { mode: 'nope' } }).session.mode, 'per-step', 'a bad choice falls back');
+eq(cc.normConfig({ session: { mode: 'nope' } }).session.mode, 'per-build', 'a bad choice falls back');
+eq(doc.presets.lean.config.session.mode, 'per-build', 'lean runs one session for the build');
+ok(cc.SESSION_MODES.includes('per-step'), 'a fresh session per step stays an option');
 ok(!cc.validPath('../x.md') && cc.validPath('~/.claude/CLAUDE.md'), 'paths stay put');
 eq(cc.normPartial({ chain: { files: [{ path: 'a.md', mode: 'never' }, { path: 'b.md', mode: 'wat' }] } }).chain.files, [{ path: 'a.md', mode: 'never' }], 'file modes are checked');
 
@@ -120,7 +122,7 @@ writeFileSync(join(logs, day[0], day[1], `${day[2]}.jsonl`), `${[turn('a', 'x', 
 const cmp = JSON.parse(spawnSync('node', [join(HERE, '..', 'cli', 'chain-control.mjs'), 'compare', '--before', 'build=a', '--after', 'build=b', '--json'], { env: { ...env, AXF_TOKEN_LOG_DIR: logs }, encoding: 'utf8' }).stdout);
 eq([cmp.before.sessions, cmp.after.sessions, cmp.before.startPerSession, cmp.saved.costPct], [1, 2, 1001, 50], 'the token log compares before and after');
 
-/* the launcher: a fresh session per step, handoff, caps, stop at a higher pin */
+/* the launcher: one session by default; per-step = a fresh session per step, handoff, caps, stop at a higher pin */
 const D = join(TMP, 'run'); const H = join(TMP, 'fakehome'); const bin = join(H, '.local', 'bin');
 mkdirSync(join(D, '_claude', 'builds'), { recursive: true }); mkdirSync(bin, { recursive: true });
 const FAKE = join(TMP, 'fake.log');
@@ -134,11 +136,20 @@ chmodSync(join(bin, 'claude'), 0o755);
 writeFileSync(join(D, '_claude', 'builds', 'store.json'), JSON.stringify({ builds: [{ id: 'demo', title: 'Demo', status: 'running', steps: [{ id: 's1', text: 'one', model: 'Opus', files: ['src/b.ts'] }, { id: 's2', text: 'two', model: 'Opus' }, { id: 's3', text: 'three', model: 'Fable' }] }] }));
 writeFileSync(join(D, 'brief.md'), '# brief\n');
 const runEnv = { ...env, HOME: H, AXF_CHAIN_CONTROL_FILE: join(TMP, 'cc2.json'), AXF_PROGRESS_DIR: join(TMP, 'prog'), AXF_BUILD_ID: 'demo', AXF_SLOTS: 'off', AXF_OWN_LOGIN: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off', AXF_HEADLESS_DIR: join(TMP, 'h'), AXF_ORIGIN: 'off', AXF_TOKEN_LOG: 'off', TMUX: '' };
-const child = spawn('bash', [join(REPO, 'deploy', 'claude-headless.sh'), '--inner', '--name', 'demo', '--brief', 'brief.md', '--log', 'o.log', '--', '--model', 'claude-opus-5-5'], { cwd: D, env: runEnv, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
-let out = ''; child.stdout.on('data', (x) => { out += x; }); child.stderr.on('data', (x) => { out += x; });
-for (let i = 0; i < 120 && !out.includes('finished (exit'); i += 1) await new Promise((r) => { setTimeout(r, 250); });
-try { process.kill(-child.pid, 'SIGKILL'); } catch { /* it ended */ }
-ok(out.includes('finished (exit 0)'), `the run finishes\n${out.slice(-600)}`);
+const launch = async () => {
+  const child = spawn('bash', [join(REPO, 'deploy', 'claude-headless.sh'), '--inner', '--name', 'demo', '--brief', 'brief.md', '--log', 'o.log', '--', '--model', 'claude-opus-5-5'], { cwd: D, env: runEnv, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
+  let out = ''; child.stdout.on('data', (x) => { out += x; }); child.stderr.on('data', (x) => { out += x; });
+  for (let i = 0; i < 120 && !out.includes('finished (exit'); i += 1) await new Promise((r) => { setTimeout(r, 250); });
+  try { process.kill(-child.pid, 'SIGKILL'); } catch { /* it ended */ }
+  ok(out.includes('finished (exit 0)'), `the run finishes\n${out.slice(-600)}`);
+  return out;
+};
+const single = await launch();
+eq(readFileSync(FAKE, 'utf8').trim().split('\n').map((l) => /step=(\S*)/.exec(l)[1]), [''], 'one session for the whole build by default');
+ok(!single.includes('fresh session'), 'the default run opens no step sessions');
+rmSync(FAKE); rmSync(join(TMP, 'prog'), { recursive: true, force: true });
+eq(spawnSync('node', [join(HERE, '..', 'cli', 'chain-control.mjs'), 'set', 'session.mode=per-step', '--by', 'test'], { env: runEnv, cwd: REPO }).status, 0, 'per-step can be picked');
+const out = await launch();
 const runs = readFileSync(FAKE, 'utf8').trim().split('\n');
 eq(runs.map((l) => /step=(\S*)/.exec(l)[1]), ['s1', 's2'], 'one fresh session per step, stopping at the step pinned above the run');
 ok(runs.every((l) => l.includes('bash=20000') && l.includes('nomd=1') && l.includes('handoff=1')), 'each session is capped, lean and handed off');

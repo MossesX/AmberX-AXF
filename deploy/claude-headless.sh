@@ -79,10 +79,10 @@
 # step's overrides on top): which chain files go in the system prompt and which are only named (the native chain when
 # every file is `always`), the caps on tool output (BASH_MAX_OUTPUT_LENGTH, MAX_MCP_OUTPUT_TOKENS,
 # CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS) and the step's token budget (deploy/claude-stream.mjs warns once and, at the
-# stop level, ends the session). A build in per-step mode runs a fresh session per open step, each opened by a short
-# handoff note from the progress file and the exact files the step lists; a step left open, a budget stop or a step
-# pinned above this run's model ends the loop. per-phase = a fresh session when the model changes; per-build = the old
-# single session. The registry unreachable = the rules brief alone, as before. AXF_CHAIN_CONTROL=off skips all of it.
+# stop level, ends the session). A build runs in one session by default (per-build). per-step runs a fresh session per
+# open step, each opened by a short handoff note from the progress file and the exact files the step lists; a step left
+# open, a budget stop or a step pinned above this run's model ends the loop. per-phase = a fresh session when the model
+# changes. The registry unreachable = the rules brief alone, as before. AXF_CHAIN_CONTROL=off skips all of it.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
