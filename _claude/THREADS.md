@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:04 UTC · `ui-review-alarm` added (10 steps) (angel) · claude
 - 2026-11-04 21:04 UTC · `ui-review-alarm` branch claude/ui-review-alarm (angel) · builds-live
 - 2026-11-04 21:08 UTC · `build-optimizer` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done (current) · foreign-write
 - 2026-11-04 21:12 UTC · `ui-review-alarm` s1 done, → running (angel) · claude
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` s7 done (current) · orchestrator
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` s8 done, → built (current) · orchestrator
 - 2026-11-06 19:00 UTC · `assistant-chat-mode` s7 done, s8 done, → complete (current) · foreign-write
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s7 done (current) · orchestrator
 
 ## Token passes (log)
 
