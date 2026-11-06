@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T23:57:03.392Z",
+ "updatedAt": "2026-11-06T23:57:20.373Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14873,7 +14873,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T23:57:02.321Z",
+   "updatedAt": "2026-11-06T23:57:03.317Z",
    "builtAt": "",
    "notes": [
     {
@@ -14899,6 +14899,10 @@
     {
      "text": "badges-notify-followup (PR 370) covers s34, s35 and s39: VPS login badge with its states and the usage meter badge of the active account, in the Badges plugin. s36 (read used vs total for one account) is there too: percent only. Don't build them twice.",
      "at": "2026-11-06T23:57:02.321Z"
+    },
+    {
+     "text": "No usage-meter plugin exists: claude/usage-meter and -r2 are empty, both runs stopped before any work.",
+     "at": "2026-11-06T23:57:03.317Z"
     }
    ],
    "approvals": [],
@@ -17407,15 +17411,15 @@
    "title": "Follow-up: one Badges plugin (4 badges, usage meter, tap actions) + notification groups, triggers, actions",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badges-notify-followup",
    "pr": "#370",
    "createdAt": "2026-11-06T23:34:55.329Z",
-   "updatedAt": "2026-11-06T23:56:40.040Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T23:57:04.190Z",
+   "builtAt": "2026-11-06T23:57:04.190Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -17499,8 +17503,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:57:04.190Z",
      "note": "",
      "uid": "st-mw5m3lpd087heu"
     }

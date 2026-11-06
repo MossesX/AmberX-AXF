@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1175,
- "updatedAt": "2026-11-06T23:57:03.392Z",
+ "rev": 1176,
+ "updatedAt": "2026-11-06T23:57:20.373Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -93130,7 +93130,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T23:57:02.321Z",
+   "updatedAt": "2026-11-06T23:57:03.317Z",
    "builtAt": "",
    "notes": [
     {
@@ -93156,6 +93156,10 @@
     {
      "text": "badges-notify-followup (PR 370) covers s34, s35 and s39: VPS login badge with its states and the usage meter badge of the active account, in the Badges plugin. s36 (read used vs total for one account) is there too: percent only. Don't build them twice.",
      "at": "2026-11-06T23:57:02.321Z"
+    },
+    {
+     "text": "No usage-meter plugin exists: claude/usage-meter and -r2 are empty, both runs stopped before any work.",
+     "at": "2026-11-06T23:57:03.317Z"
     }
    ],
    "approvals": [],
@@ -94380,7 +94384,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -98141,15 +98145,15 @@
    "title": "Follow-up: one Badges plugin (4 badges, usage meter, tap actions) + notification groups, triggers, actions",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badges-notify-followup",
    "pr": "#370",
    "createdAt": "2026-11-06T23:34:55.329Z",
-   "updatedAt": "2026-11-06T23:56:40.040Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T23:57:04.190Z",
+   "builtAt": "2026-11-06T23:57:04.190Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -98247,12 +98251,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:57:04.190Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T23:34:55.330Z",
-     "updatedAt": "2026-11-06T23:34:55.330Z"
+     "updatedAt": "2026-11-06T23:57:04.302Z"
     }
    ],
    "profiles": [
@@ -98263,7 +98267,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
