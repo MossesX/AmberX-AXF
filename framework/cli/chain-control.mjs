@@ -107,7 +107,8 @@ const versionOf = (text) => createHash('sha1').update(text).digest('hex').slice(
 
 const buildOf = (id) => (id ? readJson(join(process.cwd(), '_claude', 'builds', 'store.json')) ?? readJson(join(ROOT, '_claude', 'builds', 'store.json')) : null)?.builds?.find((b) => b.id === id) ?? null;
 const progressOf = (id) => { try { return existsSync(progressFile(id)) ? readProgress(id) : null; } catch { return null; } };
-const openBuilds = () => (readJson(join(ROOT, '_claude', 'builds', 'store.json'))?.builds ?? []).filter((b) => !b.deleted && !b.hidden && !['complete', 'archived'].includes(b.status) && (b.steps ?? []).some((s) => !s.done && !s.skip)).map((b) => ({ id: b.id, title: b.title || b.id, steps: b.steps.map((s) => ({ id: s.id, text: s.text ?? '', done: !!s.done })) }));
+/** Builds with work left, for the pickers; only the picked one carries its steps. */
+const openBuilds = (picked) => (readJson(join(ROOT, '_claude', 'builds', 'store.json'))?.builds ?? []).filter((b) => b.id === picked || (!b.deleted && !b.hidden && !['complete', 'archived'].includes(b.status) && (b.steps ?? []).some((s) => !s.done && !s.skip))).map((b) => ({ id: b.id, title: b.title || b.id, steps: b.id === picked ? b.steps.map((s) => ({ id: s.id, text: String(s.text ?? '').slice(0, 80), done: !!s.done })) : [] }));
 
 function briefFor(task, ctx = {}) {
   const docs = loadBriefs();
@@ -138,7 +139,7 @@ export function state(opts = {}) {
   return { rev: doc.rev, preset: doc.preset, updatedAt: doc.updatedAt, updatedBy: doc.updatedBy, store: storeFile(), live: storeFile().startsWith(process.env.AXHUB_PROJECTS_DIR || '/projects'), global: doc.config,
     presets: Object.values(doc.presets).map(({ config, ...p }) => p), overrides: { builds: Object.keys(doc.overrides.builds), steps: Object.keys(doc.overrides.steps) },
     override: opts.build ? (opts.step ? doc.overrides.steps[cc.stepKey(opts.build, opts.step)] : doc.overrides.builds[opts.build]) ?? {} : null,
-    builds: openBuilds(), suggestions: opts.build && buildOf(opts.build) ? cc.suggestions(buildOf(opts.build), cc.resolve(doc, { build: opts.build }).config) : [], history: history(30), options: { fileModes: cc.FILE_MODES, sessionModes: cc.SESSION_MODES, scopeModes: cc.SCOPE_MODES }, ...preview(opts) };
+    builds: openBuilds(opts.build), suggestions: opts.build && buildOf(opts.build) ? cc.suggestions(buildOf(opts.build), cc.resolve(doc, { build: opts.build }).config) : [], history: history(30), options: { fileModes: cc.FILE_MODES, sessionModes: cc.SESSION_MODES, scopeModes: cc.SCOPE_MODES }, ...preview(opts) };
 }
 export const history = (limit = 50) => readHistory().slice(-limit).reverse().map(({ doc, ...e }) => e);
 
