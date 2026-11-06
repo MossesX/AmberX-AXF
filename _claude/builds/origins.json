@@ -2438,6 +2438,18 @@
    "from": "",
    "addenda": []
   },
+  "ui-review-notify-session-audio": {
+   "said": "Anything that's ready for UI review, send me a notification through the AmberX. Yeah, I want you to build it and it's not open on the phone. I want this, the audio... automatically audio built in transcriptions automatic every session.",
+   "at": "2026-11-06T19:49:18.565Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-review-predicted": {
    "said": "UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).",
    "at": "2026-11-03",
