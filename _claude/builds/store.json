@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1142,
- "updatedAt": "2026-11-06T20:27:25.081Z",
+ "rev": 1143,
+ "updatedAt": "2026-11-06T20:31:15.087Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97377,10 +97377,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/claude-badge-vps",
+   "pr": "#366",
    "createdAt": "2026-11-06T20:18:34.992Z",
-   "updatedAt": "2026-11-06T20:27:10.558Z",
+   "updatedAt": "2026-11-06T20:31:13.965Z",
    "builtAt": "",
    "notes": [
     {
@@ -97500,7 +97500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
