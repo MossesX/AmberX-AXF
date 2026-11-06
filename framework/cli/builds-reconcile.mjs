@@ -29,6 +29,8 @@ import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
 import { createGitHub, parseRepo } from './github.mjs';
 import { loadState as slotState, tmuxSessions } from './agent-slots.mjs';
+import { foldPlan, isFresh } from '../core/build-progress.mjs';
+import { listProgress, writeProgress } from './build-progress.mjs';
 
 export const reportFile = () => {
   const hub = persistRoot();
@@ -96,8 +98,33 @@ export function liveBuilds({ now = new Date() } = {}) {
   if (process.env.AXF_RECONCILE_IDLE === 'off') return null;
   const tmux = tmuxSessions(); if (!tmux) return null;
   const slots = slotState().running.filter((r) => r.state === 'running' || r.state === 'starting');
-  return aliveIds({ sessions: [...tmux.keys()], slots, changes: recentChanges(now), now: now.toISOString() });
+  const ids = aliveIds({ sessions: [...tmux.keys()], slots, changes: recentChanges(now), now: now.toISOString() });
+  for (const p of listProgress()) if (isFresh(p, now.toISOString())) ids.add(p.build); // a progress file written lately
+  return ids;
 }
+
+/**
+ * Progress files (build-progress@1, framework/cli/build-progress.mjs) into the builds store: steps a session marked
+ * done there are ticked, its branch / PR linked. Local files only (zero tokens, no GitHub). `only` = one build id.
+ * With `apply`, one store write (live to main) and each file's `folded` records what was taken.
+ */
+export function foldProgress({ only = '', apply = false, builds = null } = {}) {
+  const list = builds ?? loadStore().builds.filter((b) => !b.deleted);
+  const files = listProgress().filter((p) => !only || p.build === only);
+  const changes = [];
+  for (const pf of files) {
+    const b = list.find((x) => x.id === pf.build); if (!b) continue;
+    const c = foldPlan(b, pf);
+    if (c.steps.length || Object.keys(c.set).length) changes.push({ id: b.id, ...c });
+  }
+  if (apply && changes.length) {
+    applyPlan({ changes }, 'progress');
+    const at = new Date().toISOString();
+    for (const c of changes) { const pf = files.find((x) => x.build === c.id); try { writeProgress({ ...pf, folded: { at, steps: [...new Set([...pf.folded.steps, ...c.steps])] } }); } catch { /* the store has it */ } }
+  }
+  return changes;
+}
+export const foldAll = async (o) => foldProgress(o);
 
 /** Apply a plan in one store write (live to main). Returns the changes the store saw. */
 export function applyPlan(p, by = 'reconciler') {
@@ -130,6 +157,14 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   let gathered; let error = '';
   try { gathered = await gather({ gh, repo }); } catch (e) { error = String(e.message ?? e).slice(0, 300); gathered = { prs: [], branches: [] }; }
   const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, gathered.prs, gathered.branches, { now: at });
+  // what running sessions wrote to their progress files (no GitHub needed, so also when GitHub can't be read)
+  for (const c of foldProgress({ builds })) {
+    const same = p.changes.find((x) => x.id === c.id);
+    if (!same) { p.changes.push(c); continue; }
+    for (const id of c.steps) if (!same.steps.includes(id)) { same.steps.push(id); same.stepNotes[id] = c.stepNotes[id]; }
+    for (const [k, v] of Object.entries(c.set)) if (!same.set[k]) same.set[k] = v;
+    same.why.push(...c.why);
+  }
   // running = a live process runs it (zero tokens: tmux, agent slots and build-log heartbeats on this host)
   const alive = liveBuilds();
   const idle = idlePlan(builds, alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });
