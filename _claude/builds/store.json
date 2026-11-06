@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1084,
- "updatedAt": "2026-11-06T02:30:09.216Z",
+ "rev": 1085,
+ "updatedAt": "2026-11-06T02:33:12.067Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87833,7 +87833,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T02:29:22.109Z",
+   "updatedAt": "2026-11-06T02:33:10.261Z",
    "builtAt": "",
    "notes": [
     {
@@ -87859,12 +87859,107 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw4d0zan018d2b",
+     "title": "",
+     "text": "Slim down: keep-list (amberx-slim@1), loader drops the rest from the bundle; nav/menus/tests follow",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-06T02:33:10.261Z",
+     "updatedAt": "2026-11-06T02:33:10.319Z"
+    }
+   ],
    "profiles": [
     "current"
    ],
    "order": {
     "current": 67
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-06T02:27:27.755Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "2026-11-06T02:33:10.261Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "planner-select-items-and-build-them",
+   "title": "Planner: select items and build them",
+   "category": "",
+   "detail": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "planner-select-items-and-build-them",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-06T02:30:29.394Z",
+   "updatedAt": "2026-11-06T02:31:32.608Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett: \"Without AI.\" Select and create build must work with no AI: plain UI that assembles the brief from the selected items directly.",
+     "at": "2026-11-06T02:30:34.165Z"
+    },
+    {
+     "text": "Brett: \"So whenever you plan something, it gets a file that writes out what it would prompt AI to say. What it would tell you, but it doesn't say anything until you, unless you add it to a new build.\" Every plan item has a stored, prewritten prompt file. Nothing is sent to AI until the selection is added to a new build, and then those prompts make up the brief.",
+     "at": "2026-11-06T02:31:11.887Z"
+    },
+    {
+     "text": "Brett: \"You can view that file through hooks, the theater. The different steps, maybe the context menu. Or you can do multiple selection, make them rebuild and view the prompt that it generates. Without AI.\" The prompt file can be viewed per step (theater/hover view, context menu). Multi-select, then rebuild or preview the generated prompt before sending. All of it without AI.",
+     "at": "2026-11-06T02:31:32.608Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "current"
+   ],
+   "order": {
+    "current": 68
    },
    "kind": "build",
    "planRef": "",
@@ -87877,7 +87972,7 @@
     "estimate": "",
     "source": "mcp",
     "planId": "",
-    "createdAt": "2026-11-06T02:27:27.755Z",
+    "createdAt": "2026-11-06T02:30:29.394Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}
