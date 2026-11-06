@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1093,
- "updatedAt": "2026-11-06T14:29:10.209Z",
+ "rev": 1094,
+ "updatedAt": "2026-11-06T14:30:21.365Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91641,11 +91641,11 @@
     "current"
    ],
    "order": {
-    "current": 69
+    "current": 71
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -91754,11 +91754,11 @@
     "current"
    ],
    "order": {
-    "current": 69
+    "current": 70
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91912,11 +91912,11 @@
     "current"
    ],
    "order": {
-    "current": 70
+    "current": 72
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -92016,11 +92016,11 @@
     "current"
    ],
    "order": {
-    "current": 71
+    "current": 76
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -92098,11 +92098,11 @@
     "current"
    ],
    "order": {
-    "current": 70
+    "current": 73
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -92818,11 +92818,11 @@
     "current"
    ],
    "order": {
-    "current": 70
+    "current": 74
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -94066,11 +94066,11 @@
     "current"
    ],
    "order": {
-    "current": 71
+    "current": 77
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -94093,7 +94093,7 @@
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T14:25:00.491Z",
+   "updatedAt": "2026-11-06T14:30:20.170Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -94114,12 +94114,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T14:30:20.170Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:24:50.005Z",
-     "updatedAt": "2026-11-06T14:24:50.005Z"
+     "updatedAt": "2026-11-06T14:30:20.238Z"
     },
     {
      "id": "s2",
@@ -94280,11 +94280,11 @@
     "current"
    ],
    "order": {
-    "current": 70
+    "current": 75
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -94670,11 +94670,11 @@
     "current"
    ],
    "order": {
-    "current": 71
+    "current": 78
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
