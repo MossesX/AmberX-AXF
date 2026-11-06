@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T19:55:12.511Z",
+ "updatedAt": "2026-11-06T19:59:32.454Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -16643,7 +16643,7 @@
    "branch": "claude/ui-review-notify-audio",
    "pr": "",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-06T19:55:11.208Z",
+   "updatedAt": "2026-11-06T19:59:31.537Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -16728,8 +16728,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T19:59:31.537Z",
      "note": "",
      "uid": "st-mw5e1gog0aavde"
     },
