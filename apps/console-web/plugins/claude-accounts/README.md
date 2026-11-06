@@ -10,6 +10,7 @@ Saved logins stay in `/root/.claude-accounts/` on the host. The active one is co
 - Settings → Plugins → Claude accounts, or Builds → Claude accounts
 - Banner chip with the active account: tap it to switch
 - CLI: `axf claude-accounts list | who | use --name <n> | save --name <n>`
+- Capability `axf.claude-accounts@1` (`view()`, `use(name, by)`): the same list and the same held switch for other plugins; AI keys lists these accounts beside its own keys through it
 - MCP: `claude_accounts_list`, `_who`, `_use`, `_save` (voice: "switch Claude to account 2"; `account 2` becomes `account-2`)
 
 ## How it works
