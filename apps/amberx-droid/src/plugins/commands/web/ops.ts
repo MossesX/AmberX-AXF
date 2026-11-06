@@ -11,7 +11,7 @@ import {
   addItem, addList, childrenOf, dueBucket, findItem, findList, flatTree, itemsIn, latest, localDay, mergeItems, moveItems,
   moveList, norm, pathOf, PRIORITY_LABEL, removeItems, removeList, renameList, search, spokenDate, spokenPriority, SYS, tagList,
   titleCase, toMarkdown, updateItem, type Item, type ItemKind, type NoteList, type Priority, type Store,
-} from '../../notes/web/core';
+} from '@plugin/notes-tasks/web/notes/core';
 
 export interface OpResult { ok: boolean; say: string; changed: boolean; open?: string; copy?: string }
 export type OpArgs = Record<string, string>;

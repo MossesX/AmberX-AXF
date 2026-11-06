@@ -15,8 +15,8 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import { Button, Chip, Container, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
-import { search, pathOf, type Item, type Store } from '../../notes/web/core';
-import { useNotes } from '../../notes/web/store';
+import { search, pathOf, type Item, type Store } from '@plugin/notes-tasks/web/notes/core';
+import { useNotes } from '@plugin/notes-tasks/web/notes/store';
 import { ApprovalsBadge, approvalsBadgesOnScreen, requestApprovalsOpen } from '../../../axf/libs/approvals/react';
 import { isApprovalId } from '../../../axf/libs/hub';
 import { HUB } from '../../../hub/useHub';

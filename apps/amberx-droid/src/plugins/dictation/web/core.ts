@@ -3,7 +3,7 @@
  * the text becomes a draft note (title, list, kind, checkboxes, tasks) for the review card. Tested by
  * `apps/amberx-droid/test.mjs`.
  */
-import { extractCheckboxes, titleFrom, type Intent, type ItemKind, type NewItem, type Priority } from '../../notes/web/core';
+import { extractCheckboxes, titleFrom, type Intent, type ItemKind, type NewItem, type Priority } from '@plugin/notes-tasks/web/notes/core';
 
 export const DEFAULT_STOP = ['stop note', 'end note', 'thats it'];
 export const DEFAULT_START = ['take a note', 'start dictation', 'start a note', 'dictate'];

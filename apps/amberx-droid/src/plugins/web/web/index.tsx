@@ -9,9 +9,9 @@ import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import { Button, Container, Icon, IconButton, Note, SelectField, TabGroup, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { DataGrid, type GridColumn } from '../../../axf/libs/datagrid';
-import type { Item } from '../../notes/web/core';
-import { addItem, addList, flatTree, type Store } from '../../notes/web/core';
-import { mutate, useNotes } from '../../notes/web/store';
+import type { Item } from '@plugin/notes-tasks/web/notes/core';
+import { addItem, addList, flatTree, type Store } from '@plugin/notes-tasks/web/notes/core';
+import { mutate, useNotes } from '@plugin/notes-tasks/web/notes/store';
 import { MAX_TABS, WEB_LIST, clipToItem, hostOf, toUrl } from './core';
 import './web.css';
 

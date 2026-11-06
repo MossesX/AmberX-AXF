@@ -12,8 +12,8 @@ import { Button, Checkbox, Container, Note, Segmented, SelectField, TextField, u
 import { isNative, native } from '../../../native';
 import { HOLDER_LABEL, micLease } from '../../../miclease';
 import { mayMakeSound } from '../../../sound';
-import { addItem, findList, flatTree, localDay, parseIntent, type ItemKind } from '../../notes/web/core';
-import { NOTES_ID, deviceName, load as loadNotes, mutate, snapshot as notesSnapshot, useNotes } from '../../notes/web/store';
+import { addItem, findList, flatTree, localDay, parseIntent, type ItemKind } from '@plugin/notes-tasks/web/notes/core';
+import { NOTES_ID, deviceName, load as loadNotes, mutate, snapshot as notesSnapshot, useNotes } from '@plugin/notes-tasks/web/notes/store';
 import { aiReady, parseNote } from '../../ai/web/client';
 import { heardEcho, registerVoiceCommands, say } from '../../voice/web/index';
 import {

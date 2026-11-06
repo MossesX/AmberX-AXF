@@ -71,6 +71,13 @@
         "title": "More",
         "text": "Part of the predicted mockup: stands in for the screen's More menu. It does nothing here.",
         "kind": "button"
+      },
+      {
+        "target": "clear-the-selection",
+        "title": "Clear the selection",
+        "text": "Clears the selection. Part of UI Review.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []
