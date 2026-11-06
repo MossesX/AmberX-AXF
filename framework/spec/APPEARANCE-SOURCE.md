@@ -1,9 +1,25 @@
 # Appearance source: a developer app's look and settings live on axHub
 
-> **The rule (Brett, Nov 1 2026): the apps get their appearance from axHub only, period, and any look change in one app
-> applies to all.** No opt-out switch, no local look tabs, no local fallback; the look settings (Sliders, per-asset
-> tokens, banner looks, rolls) ride the document's `settings` map. **Every app ships every shareable asset**
-> (`framework/cli/shared-assets.mjs`: baked at `src/axf/assets`, CI-checked), so a pick made anywhere resolves everywhere.
+> **The rule (Brett, Nov 1 2026, changed by build `skins`, Nov 4 2026): the apps get their appearance from axHub only,
+> with no local look tabs and no local fallback, and each app has its own look document there.** "By default they're
+> all their own": slots, spacing and hidden chrome come from the app's `shared/settings/looks/<app>.json` (app-look@1,
+> below), so a pick in one app stays in that app. Control@1 token overrides (`axf.tokens.*`) in `appearance.json` still
+> reach every app. **Every app ships every shareable asset** (`framework/cli/shared-assets.mjs`: baked at `src/axf/assets`,
+> CI-checked), so a pick made anywhere resolves everywhere.
+
+## Each app's own look: `app-look@1`
+
+Project `shared`, path `settings/looks/<app>.json`. Written only by that app, or by `framework/cli/skins.mjs` for voice,
+MCP and REST. The format is in one module, `framework/core/engines/skin.ts` + `skin-rules.mjs`.
+
+- `default`: the snapshot of the look the app had when skins landed (`skins.mjs snapshot --all`), so nothing changed.
+- `own`: picks made with no skin on. `skin`: `{ use, id, overrides }`, the Use skin switch, the skin and the picks that
+  beat it. `undo`: the one step Restore to default can take back.
+- Effective look = default + own picks; with Use skin on, that + the skin + its overrides.
+
+An app without a hub source keeps the same document in a setting (`axf.skin.look`), so a new app from a template gets the
+same Settings → Appearance. The sections below describe the shared document, which stays the transport and the source
+of the shared token overrides.
 
 Brett's decision (Oct 20 2026, refined the same night): **all settings and shared data of his developer apps come
 from the axHub data server.** The theme is *data*: the selection (asset id per appearance slot, spacing, hidden chrome)

@@ -804,12 +804,13 @@ function applyDisplay(rt: AxfRuntime): void {
 /* Theme-engine tokens only (framework/core/engines/theme.ts + framework/ui/axf.css): no literal colours,
    sizes come from --fx-space / radius / border tokens, so every color-theme and style-theme asset applies. */
 const CSS = `
-.axf-skin__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--fx-space)*20),1fr));gap:var(--fx-dens-gap-md);max-height:calc(var(--fx-space)*44);overflow-y:auto}
-.axf-skin__tile{display:flex;flex-direction:column;align-items:stretch;gap:var(--fx-dens-gap-xs);height:auto;min-width:0}
-.axf-skin__tile.is-picked{outline:var(--fx-border-w) solid var(--fx-accent)}
-.axf-skin__swatches{display:flex;height:calc(var(--fx-space)*2.5);border-radius:var(--fx-radius-sm);overflow:hidden;border:var(--fx-border-w) solid var(--fx-border)}
+.axf-skin__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--fx-space)*26),1fr));gap:var(--fx-dens-gap-md);max-height:calc(var(--fx-space)*72);overflow-y:auto;padding:var(--fx-border-w)}
+.axf-skin__tile{height:auto;min-width:0;overflow:hidden;padding:var(--fx-dens-gap-sm)}
+.axf-skin__tile>span{display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs);min-width:0;width:100%}
+.axf-skin__tile.is-picked{outline:calc(var(--fx-border-w)*2) solid var(--fx-accent);outline-offset:calc(var(--fx-border-w)*-2)}
+.axf-skin__swatches{display:flex;height:calc(var(--fx-space)*4);border-radius:var(--fx-radius-sm);overflow:hidden;border:var(--fx-border-w) solid var(--fx-border)}
 .axf-skin__swatches>span{flex:1}
-.axf-skin__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fx-text-xs)}
+.axf-skin__name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:var(--fx-type-scale-xs)}
 .axf-skin__dot{display:inline-block;width:calc(var(--fx-space)*.75);height:calc(var(--fx-space)*.75);margin-left:var(--fx-dens-gap-xs);border-radius:999px;background:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__row{display:flex;gap:var(--fx-dens-gap-2xl);align-items:center;justify-content:space-between;flex-wrap:wrap}

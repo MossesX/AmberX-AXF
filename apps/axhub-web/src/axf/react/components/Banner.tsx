@@ -97,6 +97,9 @@ function bannerMarkPx(data: { height?: number }): number {
   return Math.round(((data.height ?? 24) * 0.55));
 }
 
+/** logo.text that stands for the app's own name, for a banner every app can use (the Windows title bar). */
+const BANNER_APP_NAME = '{app}';
+
 /** `preview`: a look-only copy (the Widgets picker): nothing on it reacts, and nothing moves into the ⋯ menu. */
 export function Banner({ preview = false }: { preview?: boolean }) {
   const rt = useRuntime();
@@ -120,7 +123,7 @@ export function Banner({ preview = false }: { preview?: boolean }) {
           {side === 'left' && data.logo?.show !== false && (
             <span className="fx-banner__logo">
               {drawsMark ? <BrandMark slot="banner" height={bannerMarkPx(data)} /> : <span className="fx-brand__mark" aria-hidden="true" />}
-              {showText && <span className="fx-banner__name">{data.logo?.text}</span>}
+              {showText && <span className="fx-banner__name">{data.logo?.text === BANNER_APP_NAME ? rt.manifest.app.name : data.logo?.text}</span>}
             </span>
           )}
           {arrangedSide(arrange, side, placed[side].filter((a) => !overflow.includes(a.key)), (a, i) => arrange.item(a, i, 'fx-banner__item', { 'data-axf-banner-item': a.key, 'data-axf-origin': a.origin, ...bannerItemAttrs(rt, a.key) }, <Attached a={a} />))}

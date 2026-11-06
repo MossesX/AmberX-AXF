@@ -129,3 +129,7 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 ## Deferred: build priority (Nov 5 2026)
 
 `framework/core/build-priority.mjs` and `framework/react/components/PriorityTag.tsx` have no Kotlin twin. Android work is on hold; builds show only in the web console today. A port needs the same levels (P0-P3), the same read-time default and the same `waitingOn` rows.
+
+## Deferred: skin@1 + app-look@1 (Nov 2026)
+
+`framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
