@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1099,
- "updatedAt": "2026-11-06T15:00:29.722Z",
+ "rev": 1100,
+ "updatedAt": "2026-11-06T18:01:37.715Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -93066,14 +93066,14 @@
    "title": "Token usage log + accounts + Plan Studio control (small steps)",
    "category": "Builds",
    "detail": "Replaces token-usage-log-accounts-plan-studio-control. Every step sized ~10 min so work isn't lost on an account switch (Brett, voice, Nov 6 2026).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T14:13:14.290Z",
+   "updatedAt": "2026-11-06T18:01:36.569Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -93402,12 +93402,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:01:36.569Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:01:36.682Z"
     },
     {
      "id": "s16",
@@ -95508,7 +95508,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
