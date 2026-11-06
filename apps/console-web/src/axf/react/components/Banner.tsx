@@ -113,7 +113,9 @@ export function Banner({ preview = false }: { preview?: boolean }) {
   const brand = useBrandPlace('banner');
   const host = brandHostProps(brand);
   if (!data) return null;
-  const drawsMark = !!brand?.svg;
+  // a banner that names the app draws its own name, never a lockup that carries the brand's
+  const namesApp = data.logo?.text === BANNER_APP_NAME;
+  const drawsMark = !!brand?.svg && (!namesApp || brand.mode === 'mark' || brand.mode === 'animated');
   // a lockup / wordmark already carries the brand name, so the asset's own logo text is only shown next to a plain mark
   const showText = data.logo?.text && (!drawsMark || brand?.mode === 'mark' || brand?.mode === 'animated');
   return (
@@ -123,7 +125,7 @@ export function Banner({ preview = false }: { preview?: boolean }) {
           {side === 'left' && data.logo?.show !== false && (
             <span className="fx-banner__logo">
               {drawsMark ? <BrandMark slot="banner" height={bannerMarkPx(data)} /> : <span className="fx-brand__mark" aria-hidden="true" />}
-              {showText && <span className="fx-banner__name">{data.logo?.text === BANNER_APP_NAME ? rt.manifest.app.name : data.logo?.text}</span>}
+              {showText && <span className="fx-banner__name">{namesApp ? rt.manifest.app.name : data.logo?.text}</span>}
             </span>
           )}
           {arrangedSide(arrange, side, placed[side].filter((a) => !overflow.includes(a.key)), (a, i) => arrange.item(a, i, 'fx-banner__item', { 'data-axf-banner-item': a.key, 'data-axf-origin': a.origin, ...bannerItemAttrs(rt, a.key) }, <Attached a={a} />))}
