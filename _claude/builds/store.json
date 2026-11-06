@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1110,
- "updatedAt": "2026-11-06T18:52:51.509Z",
+ "rev": 1111,
+ "updatedAt": "2026-11-06T18:58:50.050Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -89858,15 +89858,15 @@
    "title": "Fast talk: Gizmo and the console assistant answer plain chat without loading tools",
    "category": "Feature",
    "detail": "Chat mode for assistant@1: no tool definitions, no CLAUDE.md or hooks, short prompt, fastest allowed model, streaming; tools load per turn by intent (only the relevant group) then drop back. Chip + force setting in Gizmo and the console. Measured before/after. Runs assistant-chat-mode and -r2 died on the usage limit; this is r3, branch claude/assistant-chat-mode-r3.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/assistant-chat-mode-r3",
-   "pr": "",
+   "branch": "claude/assistant-chat-mode-r4",
+   "pr": "#361",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-06T18:45:28.338Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T18:57:48.129Z",
+   "builtAt": "2026-11-06T18:57:48.129Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
@@ -90035,12 +90035,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:57:47.548Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T18:36:01.932Z",
-     "updatedAt": "2026-11-05T18:36:01.932Z"
+     "updatedAt": "2026-11-06T18:57:47.607Z"
     },
     {
      "id": "s8",
@@ -90057,12 +90057,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:57:48.129Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T18:36:01.932Z",
-     "updatedAt": "2026-11-05T18:36:01.932Z"
+     "updatedAt": "2026-11-06T18:57:48.192Z"
     }
    ],
    "profiles": [
@@ -90073,7 +90073,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {

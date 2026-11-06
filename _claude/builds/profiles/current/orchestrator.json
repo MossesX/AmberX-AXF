@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T18:52:51.509Z",
+ "updatedAt": "2026-11-06T18:58:50.050Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12654,15 +12654,15 @@
    "title": "Fast talk: Gizmo and the console assistant answer plain chat without loading tools",
    "category": "Feature",
    "detail": "Chat mode for assistant@1: no tool definitions, no CLAUDE.md or hooks, short prompt, fastest allowed model, streaming; tools load per turn by intent (only the relevant group) then drop back. Chip + force setting in Gizmo and the console. Measured before/after. Runs assistant-chat-mode and -r2 died on the usage limit; this is r3, branch claude/assistant-chat-mode-r3.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/assistant-chat-mode-r3",
-   "pr": "",
+   "branch": "claude/assistant-chat-mode-r4",
+   "pr": "#361",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-06T18:45:28.338Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T18:57:48.129Z",
+   "builtAt": "2026-11-06T18:57:48.129Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
@@ -12805,8 +12805,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:57:47.548Z",
      "note": "",
      "uid": "st-mw3vzdti0f7r2d"
     },
@@ -12823,8 +12823,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:57:48.129Z",
      "note": "",
      "uid": "st-mw3vzdti0giu87"
     }

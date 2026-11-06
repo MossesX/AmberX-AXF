@@ -705,12 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:05 UTC · `build-optimizer` s2 done (current) · orchestrator
-- 2026-11-04 21:05 UTC · `build-optimizer` s3 done (current) · orchestrator
-- 2026-11-04 21:05 UTC · `build-optimizer` s4 done (current) · orchestrator
-- 2026-11-04 21:05 UTC · `build-optimizer` s5 done (current) · orchestrator
-- 2026-11-04 21:05 UTC · `build-optimizer` s6 done (current) · orchestrator
-- 2026-11-04 21:05 UTC · `build-optimizer` s7 done (current) · orchestrator
 - 2026-11-04 21:05 UTC · `build-optimizer` s8 done (current) · orchestrator
 - 2026-11-04 21:04 UTC · `ui-review-alarm` added (10 steps) (angel) · claude
 - 2026-11-04 21:04 UTC · `ui-review-alarm` branch claude/ui-review-alarm (angel) · builds-live
@@ -1105,6 +1099,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s20-19 done (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s21-20 done (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s22-21 done (current) · orchestrator
+- 2026-11-06 18:45 UTC · `assistant-chat-mode` s5 done, → running (current) · orchestrator
+- 2026-11-06 18:45 UTC · `assistant-chat-mode` s6 done (current) · orchestrator
+- 2026-11-06 18:45 UTC · `assistant-chat-mode` branch claude/assistant-chat-mode-r4 (current) · builds-live
+- 2026-11-06 18:57 UTC · `assistant-chat-mode` PR #361 (current) · builds-live
+- 2026-11-06 18:57 UTC · `assistant-chat-mode` s7 done (current) · orchestrator
+- 2026-11-06 18:57 UTC · `assistant-chat-mode` s8 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
