@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1161,
- "updatedAt": "2026-11-06T23:06:04.550Z",
+ "rev": 1162,
+ "updatedAt": "2026-11-06T23:13:52.382Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97714,7 +97714,7 @@
    "branch": "claude/gizmo-rebuild-fable",
    "pr": "",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-06T23:05:46.328Z",
+   "updatedAt": "2026-11-06T23:13:51.299Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97879,12 +97879,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:13:51.298Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:31:04.511Z",
-     "updatedAt": "2026-11-06T22:31:04.511Z"
+     "updatedAt": "2026-11-06T23:13:51.354Z"
     },
     {
      "id": "s8",
@@ -97917,7 +97917,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

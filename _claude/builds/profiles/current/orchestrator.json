@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T23:06:04.550Z",
+ "updatedAt": "2026-11-06T23:13:52.382Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17072,7 +17072,7 @@
    "branch": "claude/gizmo-rebuild-fable",
    "pr": "",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-06T23:05:46.328Z",
+   "updatedAt": "2026-11-06T23:13:51.299Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -17211,8 +17211,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:13:51.298Z",
      "note": "",
      "uid": "st-mw5jthuy0f5kys"
     },
