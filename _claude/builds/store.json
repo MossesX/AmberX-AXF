@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1098,
- "updatedAt": "2026-11-06T14:35:15.648Z",
+ "rev": 1099,
+ "updatedAt": "2026-11-06T15:00:29.722Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -95524,16 +95524,21 @@
    "title": "Headless progress file + lean CLAUDE.md chain",
    "category": "Builds",
    "detail": "Every headless build session writes progress to a small status file in the build and never stops to update the console; console reads it when needed. Also make headless sessions efficient with the CLAUDE.md chain (Brett, voice, Nov 6 2026).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T14:35:14.673Z",
+   "updatedAt": "2026-11-06T15:00:28.470Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T15:00:28.470Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -95722,7 +95727,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:11 UTC · `model-thinking-audit` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, → complete, note (current) · foreign-write
 - 2026-11-04 20:11 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
 - 2026-11-04 20:11 UTC · `handoff-2` added (11 steps) (current) · foreign-write
 - 2026-11-04 20:11 UTC · `fable-packager` added (5 steps) (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 14:30 UTC · `headless-session-efficiency-shared-chain-control` added (16 steps) (current) · foreign-write
 - 2026-11-06 14:34 UTC · `headless-progress-file-lean-claude-md-chain` s2 done (current) · orchestrator
 - 2026-11-06 14:35 UTC · `headless-progress-file-lean-claude-md-chain` s3 done (current) · orchestrator
+- 2026-11-06 15:00 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
 
 ## Token passes (log)
 
