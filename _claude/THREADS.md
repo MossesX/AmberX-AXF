@@ -705,16 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 19:59 UTC · `grid-column-hiding` added (6 steps) (current) · orchestrator
-- 2026-11-04 20:01 UTC · `land-merge-queue-first` → complete, note (urgent) · foreign-write
-- 2026-11-04 20:01 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
-- 2026-11-04 20:01 UTC · `land-merge-queue-first` note (urgent) · reconciler
-- 2026-11-04 20:05 UTC · `handoff-2` note (current) · foreign-write
-- 2026-11-04 20:05 UTC · `grid-column-hiding` s1 done, → running (current) · orchestrator
-- 2026-11-04 20:05 UTC · `grid-column-hiding` s2 done (current) · orchestrator
-- 2026-11-04 20:10 UTC · `grid-column-hiding` s9-8 done (current) · orchestrator
-- 2026-11-04 20:10 UTC · `grid-column-hiding` s10-9 done (current) · orchestrator
-- 2026-11-04 20:10 UTC · `grid-column-hiding` s11-10 done (current) · orchestrator
 - 2026-11-04 20:11 UTC · `merge-queue` note (current) · foreign-write
 - 2026-11-04 20:11 UTC · `fable-review-nov3` note (current) · foreign-write
 - 2026-11-04 20:11 UTC · `model-thinking-audit` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, → complete, note (current) · foreign-write
@@ -1105,6 +1095,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 14:30 UTC · `headless-progress-file-lean-claude-md-chain` s1 done (current) · orchestrator
 - 2026-11-06 14:30 UTC · `orch-step-click` → pending, note (refactor) · reconciler
 - 2026-11-06 14:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 14:30 UTC · `console-approvals-in-place` note (current) · foreign-write
+- 2026-11-06 14:30 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `auto-switch-claude-account-when-the-active-one-r` added (0 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` added (5 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` added (2 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `token-usage-log-accounts-plan-studio-control` added (31 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `headless-progress-file-lean-claude-md-chain` added (8 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` added (3 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` added (55 steps) (current) · foreign-write
+- 2026-11-06 14:30 UTC · `headless-session-efficiency-shared-chain-control` added (16 steps) (current) · foreign-write
 
 ## Token passes (log)
 
