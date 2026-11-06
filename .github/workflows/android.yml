@@ -110,6 +110,8 @@ jobs:
       - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
+      - run: node framework/spec/check-ui-registry.mjs               # ui-registry@1: every UI item of every app as one registry (fixtures/ui-registry.json: ids, kinds, open shapes, search + fuzzy, voice, shortcuts, coverage)
+      - run: node framework/cli/ui-registry.mjs check                # every app's UI registry asset exists, validates and holds every screen / dialog / settings tab / menu entry / button the scan finds (new UI must be registered: `ui-registry.mjs generate <app>`)
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
@@ -311,6 +313,7 @@ jobs:
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm  # axf-plugin:console-commands
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
+            python apps/console-web/plugins/ui-shortcuts/test.py  # UI shortcuts: the registry through the CLI, say / open through console-commands@1 (navigate grants), shortcuts, live items, voice-command@1 projection  # axf-plugin:ui-shortcuts
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths

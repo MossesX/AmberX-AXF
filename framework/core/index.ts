@@ -27,6 +27,7 @@ export * from './engines/chrome-settings-rules.mjs';
 export * from './engines/scale';
 export * from './engines/agent-card-rules.mjs';
 export * from './engines/job-type-rules.mjs';
+export * from './engines/ui-registry-rules.mjs';
 // card@1 + home-layout@1 as one namespace (its names would clash with agent-card's and layout's); import the engine directly for single names.
 export * as cardRules from './engines/card-rules.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';

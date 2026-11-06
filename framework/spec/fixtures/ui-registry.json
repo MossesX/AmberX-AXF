@@ -1,0 +1,3140 @@
+{
+  "$comment": "ui-registry@1 fixture (core/engines/ui-registry-rules.mjs). Inputs are hand-written; `expected` is written by `node framework/spec/check-ui-registry.mjs --write` and replayed by the checker. A Kotlin twin replays the same file.",
+  "registry": {
+    "app": "console-web",
+    "source": "mixed",
+    "generatedFrom": [
+      "manifests",
+      "web",
+      "menus",
+      "declared"
+    ],
+    "items": [
+      {
+        "id": "screen:plan-studio",
+        "label": "Plan Studio",
+        "aliases": [
+          "plans",
+          "planner",
+          "the plan studio"
+        ],
+        "owner": "plugin:plan-studio",
+        "icon": "map",
+        "source": "declared"
+      },
+      {
+        "id": "screen:build-orchestrator",
+        "label": "Build orchestrator",
+        "aliases": [
+          "orchestrator"
+        ],
+        "owner": "plugin:build-orchestrator",
+        "source": "scanned"
+      },
+      {
+        "id": "screen:builds",
+        "label": "Builds",
+        "owner": "plugin:builds-page",
+        "source": "scanned"
+      },
+      {
+        "id": "screen:home",
+        "label": "Home",
+        "owner": "app",
+        "source": "scanned"
+      },
+      {
+        "id": "dialog:about",
+        "label": "About",
+        "owner": "framework",
+        "source": "live"
+      },
+      {
+        "id": "dialog:plan-studio.new",
+        "label": "New plan",
+        "aliases": [
+          "new plan dialog"
+        ],
+        "owner": "plugin:plan-studio",
+        "open": {
+          "dialog": "plan-studio.new",
+          "arg": "blank"
+        }
+      },
+      {
+        "id": "settings:plugins/example",
+        "label": "Example plugin settings",
+        "owner": "plugin:example",
+        "open": {
+          "settings": "example"
+        }
+      },
+      {
+        "id": "setting:appearance/axf.help.mode",
+        "label": "Help mode",
+        "parent": "settings:appearance",
+        "open": {
+          "settings": "appearance",
+          "anchor": "axf.help.mode"
+        }
+      },
+      {
+        "id": "menu:builds",
+        "label": "Builds",
+        "owner": "framework"
+      },
+      {
+        "id": "menu-item:builds/plan-studio",
+        "label": "Plan Studio",
+        "parent": "menu:builds",
+        "open": {
+          "action": "nav:plan-studio"
+        }
+      },
+      {
+        "id": "menu-item:builds/orchestrator",
+        "label": "Build orchestrator",
+        "parent": "menu:builds",
+        "open": {
+          "action": "nav:build-orchestrator"
+        },
+        "hidden": true
+      },
+      {
+        "id": "nav-item:plan-studio",
+        "label": "Plan Studio",
+        "open": {
+          "view": "plan-studio"
+        }
+      },
+      {
+        "id": "toolbar:main",
+        "label": "Main toolbar",
+        "owner": "app"
+      },
+      {
+        "id": "button:main/search",
+        "label": "Search",
+        "parent": "toolbar:main",
+        "open": {
+          "action": "search.open"
+        }
+      },
+      {
+        "id": "button:plan-studio/new-plan",
+        "label": "New plan",
+        "aliases": [
+          "add plan"
+        ],
+        "parent": "screen:plan-studio",
+        "help": "new-plan",
+        "open": {
+          "element": "[data-help=\"new-plan\"]",
+          "click": true,
+          "view": "plan-studio"
+        }
+      },
+      {
+        "id": "link:home/docs",
+        "label": "Documentation",
+        "open": {
+          "url": "https://axf.amberxai.com/docs"
+        }
+      },
+      {
+        "id": "tab:ui-review.tabs/screenshots",
+        "label": "Screenshots",
+        "parent": "screen:ui-review",
+        "open": {
+          "element": "[data-axf-ui=\"tab:ui-review.tabs/screenshots\"]",
+          "click": true,
+          "view": "ui-review"
+        }
+      },
+      {
+        "id": "banner:push",
+        "label": "Push banner",
+        "owner": "plugin:push-banner",
+        "open": {
+          "element": "[data-axf-banner=\"push\"]"
+        }
+      },
+      {
+        "id": "widget:banner/clock",
+        "label": "Clock",
+        "parent": "banner:main"
+      },
+      {
+        "id": "action:help.mode",
+        "label": "Help mode",
+        "effect": "write",
+        "open": {
+          "action": "help.mode:toggle"
+        }
+      },
+      {
+        "id": "action:plan.delete",
+        "label": "Delete plan",
+        "open": {
+          "action": "plan.delete"
+        }
+      },
+      {
+        "id": "window:terminal",
+        "label": "Terminal window"
+      },
+      {
+        "id": "card:home/builds",
+        "label": "Builds card",
+        "open": {
+          "element": "[data-axf-ui=\"card:home/builds\"]",
+          "view": "home"
+        }
+      },
+      {
+        "id": "menu-item:more/help-center",
+        "label": "Help center",
+        "open": {
+          "menu": "more/help-center"
+        }
+      },
+      {
+        "id": "screen:plan-studio",
+        "label": "A duplicate that is dropped"
+      },
+      {
+        "id": "nothing",
+        "label": "No kind"
+      },
+      {
+        "id": "widget:no-open",
+        "label": "An element item with an empty open",
+        "open": {}
+      }
+    ]
+  },
+  "bad": {
+    "app": "Bad App",
+    "source": "guess",
+    "items": [
+      {
+        "id": "nope",
+        "label": "No kind"
+      },
+      {
+        "id": "gizmo:x",
+        "label": "Unknown kind"
+      },
+      {
+        "id": "screen:a",
+        "kind": "dialog",
+        "label": "Kind disagrees"
+      },
+      {
+        "id": "screen:a",
+        "label": "Twice"
+      },
+      {
+        "id": "screen:b"
+      },
+      {
+        "id": "widget:c",
+        "label": "Bad open",
+        "open": {
+          "via": "teleport"
+        }
+      },
+      {
+        "id": "screen:d",
+        "label": "Bad aliases",
+        "aliases": "plans"
+      },
+      {
+        "id": "screen:e",
+        "label": "Bad owner",
+        "owner": "someone"
+      },
+      {
+        "id": "screen:f",
+        "label": "Bad effect",
+        "effect": "boom"
+      },
+      {
+        "id": "screen:g",
+        "label": "Bad source",
+        "source": "dreamt"
+      },
+      {
+        "id": "screen:h",
+        "label": "Bad parent",
+        "parent": "x"
+      },
+      "not an object"
+    ]
+  },
+  "items": [
+    {
+      "id": "plan-studio",
+      "kind": "screen",
+      "label": "Plan Studio"
+    },
+    {
+      "id": "dialog:about",
+      "title": "About"
+    },
+    {
+      "id": "settings:plugins/plan-studio",
+      "label": "Plan Studio settings"
+    },
+    {
+      "id": "settings-group:appearance/group:colors",
+      "label": "Colours"
+    },
+    {
+      "id": "setting:appearance/axf.help.mode",
+      "label": "Help mode"
+    },
+    {
+      "id": "action:help.mode",
+      "label": "Help mode"
+    },
+    {
+      "id": "window:terminal",
+      "label": "Terminal"
+    },
+    {
+      "id": "button:x/go",
+      "label": "Go"
+    },
+    {
+      "id": "link:x/docs",
+      "label": "Docs"
+    },
+    {
+      "id": "tab:x/one",
+      "label": "One"
+    },
+    {
+      "id": "menu-item:more/x",
+      "label": "X"
+    },
+    {
+      "id": "menu:more",
+      "label": "More"
+    },
+    {
+      "id": "toolbar:main",
+      "label": "Main"
+    },
+    {
+      "id": "banner:push",
+      "label": "Push"
+    },
+    {
+      "id": "popup:chip/menu",
+      "label": "Chip menu"
+    },
+    {
+      "id": "screen:x",
+      "label": "X",
+      "aliases": [
+        "x",
+        " X ",
+        "ex",
+        "ex",
+        "the x screen"
+      ],
+      "keywords": [
+        "a",
+        "a"
+      ],
+      "detail": "detail",
+      "icon": "box",
+      "requires": "admin",
+      "help": "x",
+      "effect": "read",
+      "source": "authored",
+      "hidden": true,
+      "extra": "dropped"
+    },
+    {
+      "id": "link:bad/js",
+      "label": "Bad link",
+      "open": {
+        "url": "javascript:alert(1)"
+      }
+    },
+    {
+      "id": "screen:y",
+      "label": "Y",
+      "owner": "nobody",
+      "app": "Not A Slug",
+      "parent": "bad"
+    }
+  ],
+  "catalog": {
+    "$axf": "console-catalog@1",
+    "app": "molly/console-web",
+    "items": [
+      {
+        "kind": "screen",
+        "id": "plan-studio",
+        "label": "Plan Studio",
+        "icon": "map",
+        "keywords": [
+          "plans"
+        ],
+        "module": "ai.amberx.axf.console.plan-studio"
+      },
+      {
+        "kind": "dialog",
+        "id": "about",
+        "label": "About",
+        "module": "axf.framework"
+      },
+      {
+        "kind": "settings",
+        "id": "plan-studio",
+        "label": "Plan Studio",
+        "parent": "plugins"
+      },
+      {
+        "kind": "settings",
+        "id": "appearance",
+        "label": "Appearance"
+      },
+      {
+        "kind": "action",
+        "id": "help.mode",
+        "label": "Help mode",
+        "effect": "write",
+        "requires": "help"
+      },
+      {
+        "kind": "action",
+        "id": "swap",
+        "label": "Swap asset",
+        "params": true
+      },
+      {
+        "kind": "unknown",
+        "id": "x",
+        "label": "X"
+      }
+    ]
+  },
+  "search": {
+    "entries": [
+      {
+        "id": "view:plan-studio",
+        "kind": "view",
+        "label": "Plan Studio",
+        "icon": "map",
+        "focus": {
+          "kind": "view",
+          "view": "plan-studio"
+        }
+      },
+      {
+        "id": "settings-tab:plan-studio",
+        "kind": "settings-tab",
+        "label": "Plan Studio settings",
+        "parent": "plugins",
+        "focus": {
+          "kind": "setting",
+          "tab": "plan-studio"
+        }
+      },
+      {
+        "id": "setting:axf.help.mode",
+        "kind": "setting",
+        "label": "Help mode",
+        "detail": "Settings › General",
+        "focus": {
+          "kind": "setting",
+          "tab": "general",
+          "anchor": "axf.help.mode"
+        }
+      },
+      {
+        "id": "setting:group",
+        "kind": "setting",
+        "label": "Colours",
+        "focus": {
+          "kind": "setting",
+          "tab": "appearance",
+          "anchor": "group:colors"
+        }
+      },
+      {
+        "id": "dialog:about",
+        "kind": "dialog",
+        "label": "About",
+        "focus": {
+          "kind": "dialog",
+          "id": "about"
+        }
+      },
+      {
+        "id": "menu:builds/plan-studio",
+        "kind": "menu",
+        "label": "Plan Studio",
+        "detail": "Builds",
+        "focus": {
+          "kind": "action",
+          "spec": "nav:plan-studio"
+        }
+      },
+      {
+        "id": "window:terminal",
+        "kind": "window",
+        "label": "Terminal",
+        "focus": {
+          "kind": "window",
+          "id": "terminal"
+        }
+      },
+      {
+        "id": "text:x",
+        "kind": "text",
+        "label": "Words",
+        "focus": {
+          "kind": "text",
+          "view": "home",
+          "tag": "p",
+          "text": "x"
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "help.mode",
+        "meta": {
+          "label": "Help mode",
+          "module": "axf.framework",
+          "effect": "write"
+        }
+      },
+      {
+        "id": "swap",
+        "meta": {
+          "label": "Swap",
+          "params": true
+        }
+      },
+      {
+        "id": "stub.x",
+        "meta": {
+          "label": "Stub",
+          "stub": true
+        }
+      },
+      {
+        "id": "plan.new",
+        "meta": {
+          "label": "New plan",
+          "module": "ai.amberx.axf.console.plan-studio"
+        }
+      }
+    ],
+    "queries": [
+      {
+        "q": "plan",
+        "opts": {
+          "limit": 5
+        }
+      },
+      {
+        "q": "plan studio",
+        "opts": {
+          "kind": "menu-item",
+          "hidden": true
+        }
+      },
+      {
+        "q": "orkestrator",
+        "opts": {}
+      },
+      {
+        "q": "",
+        "opts": {
+          "kinds": [
+            "dialog"
+          ],
+          "limit": 3
+        }
+      },
+      {
+        "q": "builds",
+        "opts": {
+          "owner": "framework"
+        }
+      },
+      {
+        "q": "settings",
+        "opts": {
+          "limit": 4
+        }
+      }
+    ]
+  },
+  "menus": {
+    "appMenu": {
+      "$axf": "asset@1",
+      "type": "app-menu",
+      "id": "console",
+      "name": "Console menu",
+      "data": {
+        "menus": [
+          {
+            "id": "builds",
+            "label": "Builds",
+            "icon": "layers",
+            "items": [
+              {
+                "id": "plan-studio",
+                "label": "Plan Studio",
+                "icon": "map",
+                "action": "nav:plan-studio"
+              },
+              {
+                "type": "separator"
+              },
+              {
+                "id": "more",
+                "label": "More",
+                "items": [
+                  {
+                    "id": "orchestrator",
+                    "label": "Build orchestrator",
+                    "action": "nav:build-orchestrator"
+                  },
+                  {
+                    "id": "no-action",
+                    "label": "Just a label"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "help",
+            "label": "Help",
+            "items": [
+              {
+                "id": "docs",
+                "label": "Docs",
+                "href": "https://axf.amberxai.com/docs"
+              }
+            ]
+          },
+          {
+            "label": "No id"
+          }
+        ]
+      }
+    },
+    "contextMenu": {
+      "$axf": "asset@1",
+      "type": "context-menu",
+      "id": "console",
+      "data": {
+        "targets": {
+          "tab-group": [
+            {
+              "id": "settings",
+              "label": "Settings…",
+              "action": "chrome.settings"
+            },
+            {
+              "type": "separator"
+            }
+          ],
+          "banner": [
+            {
+              "label": "Banner settings",
+              "action": "banners.settings"
+            }
+          ]
+        }
+      }
+    },
+    "navMenu": {
+      "$axf": "asset@1",
+      "type": "nav-menu",
+      "id": "console",
+      "data": {
+        "sections": [
+          {
+            "id": "main",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home",
+                "view": "home"
+              },
+              {
+                "id": "builds",
+                "label": "Builds",
+                "items": [
+                  {
+                    "id": "plan-studio",
+                    "label": "Plan Studio",
+                    "view": "plan-studio"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "action": "settings.open"
+          }
+        ]
+      }
+    },
+    "toolbar": {
+      "$axf": "asset@1",
+      "type": "toolbar",
+      "id": "main",
+      "name": "Main toolbar",
+      "data": {
+        "items": [
+          {
+            "id": "search",
+            "label": "Search",
+            "icon": "search",
+            "action": "search.open"
+          },
+          {
+            "action": "help.mode:toggle",
+            "tooltip": "Help mode"
+          }
+        ],
+        "groups": [
+          {
+            "id": "right",
+            "items": [
+              {
+                "id": "theme",
+                "label": "Theme",
+                "action": "swap:color-theme:next"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "manifest": {
+    "$axf": "plugin@1",
+    "id": "ai.amberx.axf.console.plan-studio",
+    "name": "Plan Studio",
+    "provides": [
+      "view:plan-studio",
+      "view:plan-studio.archive",
+      "dialog:plan-studio.new",
+      "settings-tab:plan-studio",
+      "action:plan.new",
+      "banner:plan-studio",
+      "service:plans@1",
+      "broken"
+    ]
+  },
+  "merge": {
+    "declared": [
+      {
+        "id": "screen:plan-studio",
+        "label": "Plan Studio",
+        "aliases": [
+          "plans"
+        ],
+        "source": "declared"
+      }
+    ],
+    "live": [
+      {
+        "id": "screen:plan-studio",
+        "label": "Plan studio (live)",
+        "aliases": [
+          "planner"
+        ],
+        "icon": "map",
+        "detail": "Builds",
+        "source": "live"
+      },
+      {
+        "id": "dialog:about",
+        "label": "About",
+        "source": "live"
+      }
+    ],
+    "scanned": [
+      {
+        "id": "screen:plan-studio",
+        "label": "Plan Studio",
+        "owner": "plugin:plan-studio",
+        "source": "scanned"
+      },
+      {
+        "id": "screen:home",
+        "label": "Home",
+        "source": "scanned"
+      },
+      {
+        "id": "bad",
+        "label": "dropped"
+      }
+    ]
+  },
+  "queries": [
+    "open the plan studio",
+    "show me the orchestrator page please",
+    "take me to builds",
+    "plan studio menu entry",
+    "settings for example plugin",
+    "the builds menu",
+    "pop up chip",
+    "uh open uh the terminal window",
+    "help mode setting",
+    "example plugin settings tab"
+  ],
+  "resolve": [
+    "screen:plan-studio",
+    "SCREEN:PLAN-STUDIO",
+    "open the plan studio",
+    "plans",
+    "the planner",
+    "orkestrator",
+    "orchestrator screen",
+    "take me to builds",
+    "builds menu",
+    "plan studio menu entry",
+    "plan studio",
+    "new plan",
+    "new plan button",
+    "add plan",
+    "new plan dialog",
+    "example plugin settings",
+    "example plugin",
+    "settings for example plugin",
+    "help mode",
+    "help mode setting",
+    "documentation",
+    "docs",
+    "screenshots tab",
+    "push banner",
+    "terminal window",
+    "the clock",
+    "delete plan",
+    "nothing like this at all",
+    "",
+    "build orchestrator menu entry"
+  ],
+  "shortcuts": [
+    {
+      "phrase": "my plans",
+      "item": "screen:plan-studio",
+      "say": "Here are your plans."
+    },
+    {
+      "id": "sc-shots",
+      "phrase": "the shots",
+      "aliases": [
+        "screenshots please",
+        "the shots"
+      ],
+      "item": "tab:ui-review.tabs/screenshots"
+    },
+    {
+      "phrase": "gone",
+      "item": "screen:not-registered"
+    },
+    {
+      "phrase": "off",
+      "item": "screen:home",
+      "enabled": false
+    },
+    {
+      "phrase": "",
+      "item": "screen:home"
+    },
+    {
+      "phrase": "bad item",
+      "item": "nope"
+    }
+  ],
+  "badShortcuts": [
+    {
+      "phrase": "x",
+      "item": "screen:home"
+    },
+    {
+      "phrase": "",
+      "item": "nope"
+    },
+    "nope",
+    {
+      "phrase": "x",
+      "item": "screen:home",
+      "aliases": "y"
+    }
+  ],
+  "say": [
+    "my plans",
+    "open my plans",
+    "the shots",
+    "screenshots please",
+    "gone",
+    "off",
+    "plan studio",
+    "orkestrator",
+    "builds menu",
+    "plan studio menu entry",
+    "nothing like this at all"
+  ],
+  "found": [
+    {
+      "id": "screen:plan-studio"
+    },
+    {
+      "id": "screen:new-thing"
+    },
+    {
+      "id": "dialog:about"
+    },
+    {}
+  ],
+  "expected": {
+    "registry": {
+      "$axf": "ui-registry@1",
+      "app": "console-web",
+      "items": [
+        {
+          "id": "screen:plan-studio",
+          "kind": "screen",
+          "label": "Plan Studio",
+          "open": {
+            "via": "view",
+            "view": "plan-studio"
+          },
+          "app": "console-web",
+          "owner": "plugin:plan-studio",
+          "aliases": [
+            "plans",
+            "planner",
+            "the plan studio"
+          ],
+          "icon": "map",
+          "source": "declared"
+        },
+        {
+          "id": "screen:build-orchestrator",
+          "kind": "screen",
+          "label": "Build orchestrator",
+          "open": {
+            "via": "view",
+            "view": "build-orchestrator"
+          },
+          "app": "console-web",
+          "owner": "plugin:build-orchestrator",
+          "aliases": [
+            "orchestrator"
+          ],
+          "source": "scanned"
+        },
+        {
+          "id": "screen:builds",
+          "kind": "screen",
+          "label": "Builds",
+          "open": {
+            "via": "view",
+            "view": "builds"
+          },
+          "app": "console-web",
+          "owner": "plugin:builds-page",
+          "source": "scanned"
+        },
+        {
+          "id": "screen:home",
+          "kind": "screen",
+          "label": "Home",
+          "open": {
+            "via": "view",
+            "view": "home"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "scanned"
+        },
+        {
+          "id": "dialog:about",
+          "kind": "dialog",
+          "label": "About",
+          "open": {
+            "via": "dialog",
+            "dialog": "about"
+          },
+          "app": "console-web",
+          "owner": "framework",
+          "source": "live"
+        },
+        {
+          "id": "dialog:plan-studio.new",
+          "kind": "dialog",
+          "label": "New plan",
+          "open": {
+            "via": "dialog",
+            "dialog": "plan-studio.new",
+            "arg": "blank"
+          },
+          "app": "console-web",
+          "owner": "plugin:plan-studio",
+          "aliases": [
+            "new plan dialog"
+          ],
+          "source": "declared"
+        },
+        {
+          "id": "settings:plugins/example",
+          "kind": "settings",
+          "label": "Example plugin settings",
+          "open": {
+            "via": "settings",
+            "tab": "example"
+          },
+          "app": "console-web",
+          "owner": "plugin:example",
+          "source": "declared"
+        },
+        {
+          "id": "setting:appearance/axf.help.mode",
+          "kind": "setting",
+          "label": "Help mode",
+          "open": {
+            "via": "settings",
+            "tab": "appearance",
+            "anchor": "axf.help.mode"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "settings:appearance",
+          "source": "declared"
+        },
+        {
+          "id": "menu:builds",
+          "kind": "menu",
+          "label": "Builds",
+          "open": {
+            "via": "element",
+            "selector": "[data-axf-ui=\"menu:builds\"]"
+          },
+          "app": "console-web",
+          "owner": "framework",
+          "source": "declared"
+        },
+        {
+          "id": "menu-item:builds/plan-studio",
+          "kind": "menu-item",
+          "label": "Plan Studio",
+          "open": {
+            "via": "action",
+            "action": "nav:plan-studio"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "menu:builds",
+          "source": "declared"
+        },
+        {
+          "id": "menu-item:builds/orchestrator",
+          "kind": "menu-item",
+          "label": "Build orchestrator",
+          "open": {
+            "via": "action",
+            "action": "nav:build-orchestrator"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "menu:builds",
+          "source": "declared",
+          "hidden": true
+        },
+        {
+          "id": "nav-item:plan-studio",
+          "kind": "nav-item",
+          "label": "Plan Studio",
+          "open": {
+            "via": "view",
+            "view": "plan-studio"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        },
+        {
+          "id": "toolbar:main",
+          "kind": "toolbar",
+          "label": "Main toolbar",
+          "open": {
+            "via": "element",
+            "selector": "[data-axf-ui=\"toolbar:main\"]"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        },
+        {
+          "id": "button:main/search",
+          "kind": "button",
+          "label": "Search",
+          "open": {
+            "via": "action",
+            "action": "search.open"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "toolbar:main",
+          "source": "declared"
+        },
+        {
+          "id": "button:plan-studio/new-plan",
+          "kind": "button",
+          "label": "New plan",
+          "open": {
+            "via": "view",
+            "view": "plan-studio"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "screen:plan-studio",
+          "aliases": [
+            "add plan"
+          ],
+          "help": "new-plan",
+          "source": "declared"
+        },
+        {
+          "id": "link:home/docs",
+          "kind": "link",
+          "label": "Documentation",
+          "open": {
+            "via": "url",
+            "url": "https://axf.amberxai.com/docs"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        },
+        {
+          "id": "tab:ui-review.tabs/screenshots",
+          "kind": "tab",
+          "label": "Screenshots",
+          "open": {
+            "via": "view",
+            "view": "ui-review"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "screen:ui-review",
+          "source": "declared"
+        },
+        {
+          "id": "banner:push",
+          "kind": "banner",
+          "label": "Push banner",
+          "open": {
+            "via": "element",
+            "selector": "[data-axf-banner=\"push\"]"
+          },
+          "app": "console-web",
+          "owner": "plugin:push-banner",
+          "source": "declared"
+        },
+        {
+          "id": "widget:banner/clock",
+          "kind": "widget",
+          "label": "Clock",
+          "open": {
+            "via": "element",
+            "selector": "[data-axf-ui=\"widget:banner/clock\"]"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "parent": "banner:main",
+          "source": "declared"
+        },
+        {
+          "id": "action:help.mode",
+          "kind": "action",
+          "label": "Help mode",
+          "open": {
+            "via": "action",
+            "action": "help.mode:toggle"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "effect": "write",
+          "source": "declared"
+        },
+        {
+          "id": "action:plan.delete",
+          "kind": "action",
+          "label": "Delete plan",
+          "open": {
+            "via": "action",
+            "action": "plan.delete"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        },
+        {
+          "id": "window:terminal",
+          "kind": "window",
+          "label": "Terminal window",
+          "open": {
+            "via": "action",
+            "action": "windows.focus:terminal"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        },
+        {
+          "id": "card:home/builds",
+          "kind": "card",
+          "label": "Builds card",
+          "open": {
+            "via": "view",
+            "view": "home"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        },
+        {
+          "id": "menu-item:more/help-center",
+          "kind": "menu-item",
+          "label": "Help center",
+          "open": {
+            "via": "menu",
+            "menu": "more/help-center"
+          },
+          "app": "console-web",
+          "owner": "app",
+          "source": "declared"
+        }
+      ],
+      "source": "mixed",
+      "generatedFrom": [
+        "manifests",
+        "web",
+        "menus",
+        "declared"
+      ]
+    },
+    "validOk": [
+      "data.items[24].id \"screen:plan-studio\" is declared twice",
+      "data.items[25].id must be <kind>:<key> (e.g. screen:plan-studio, button:plan-studio/new-plan)",
+      "data.items[26].open must be one of { view } | { dialog, arg? } | { settings, anchor? } | { action } | { url } | { element, click? } | { menu }"
+    ],
+    "badErrors": [
+      "data.app is the app (its project manifest name: lowercase letters, digits and dashes)",
+      "data.source must be one of declared, authored, scanned, live, mixed",
+      "data.items[0].id must be <kind>:<key> (e.g. screen:plan-studio, button:plan-studio/new-plan)",
+      "data.items[1].id kind \"gizmo\" is not a UI kind (screen, dialog, popup, settings, settings-group, setting, menu, menu-item, nav-item, toolbar, button, link, tab-group, tab, banner, widget, action, window, card, control)",
+      "data.items[1].open is needed: a gizmo has no default way to open",
+      "data.items[2].kind \"dialog\" disagrees with the id's kind \"screen\"",
+      "data.items[3].id \"screen:a\" is declared twice",
+      "data.items[4].label is what the item is called (up to 160 characters)",
+      "data.items[5].open must be one of { view } | { dialog, arg? } | { settings, anchor? } | { action } | { url } | { element, click? } | { menu }",
+      "data.items[6].aliases must list up to 12 short names",
+      "data.items[7].owner must be app, framework, plugin:<folder> or library:<id>",
+      "data.items[8].effect must be one of navigate, read, write, destructive",
+      "data.items[9].source must be one of declared, authored, scanned, live",
+      "data.items[10].parent must be an item id",
+      "data.items[11] must be an object"
+    ],
+    "items": [
+      {
+        "id": "screen:plan-studio",
+        "kind": "screen",
+        "label": "Plan Studio",
+        "open": {
+          "via": "view",
+          "view": "plan-studio"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "dialog:about",
+        "kind": "dialog",
+        "label": "About",
+        "open": {
+          "via": "dialog",
+          "dialog": "about"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "settings:plugins/plan-studio",
+        "kind": "settings",
+        "label": "Plan Studio settings",
+        "open": {
+          "via": "settings",
+          "tab": "plan-studio"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "settings-group:appearance/group:colors",
+        "kind": "settings-group",
+        "label": "Colours",
+        "open": {
+          "via": "settings",
+          "tab": "appearance",
+          "anchor": "group:colors"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "setting:appearance/axf.help.mode",
+        "kind": "setting",
+        "label": "Help mode",
+        "open": {
+          "via": "settings",
+          "tab": "appearance",
+          "anchor": "axf.help.mode"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "action:help.mode",
+        "kind": "action",
+        "label": "Help mode",
+        "open": {
+          "via": "action",
+          "action": "help.mode"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "window:terminal",
+        "kind": "window",
+        "label": "Terminal",
+        "open": {
+          "via": "action",
+          "action": "windows.focus:terminal"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "button:x/go",
+        "kind": "button",
+        "label": "Go",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"button:x/go\"]",
+          "click": true
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "link:x/docs",
+        "kind": "link",
+        "label": "Docs",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"link:x/docs\"]",
+          "click": true
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "tab:x/one",
+        "kind": "tab",
+        "label": "One",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"tab:x/one\"]",
+          "click": true
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "menu-item:more/x",
+        "kind": "menu-item",
+        "label": "X",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu-item:more/x\"]",
+          "click": true
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "menu:more",
+        "kind": "menu",
+        "label": "More",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu:more\"]"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "toolbar:main",
+        "kind": "toolbar",
+        "label": "Main",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"toolbar:main\"]"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "banner:push",
+        "kind": "banner",
+        "label": "Push",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"banner:push\"]"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "popup:chip/menu",
+        "kind": "popup",
+        "label": "Chip menu",
+        "open": {
+          "via": "dialog",
+          "dialog": "chip/menu"
+        },
+        "app": "demo",
+        "owner": "app",
+        "source": "declared"
+      },
+      {
+        "id": "screen:x",
+        "kind": "screen",
+        "label": "X",
+        "open": {
+          "via": "view",
+          "view": "x"
+        },
+        "app": "demo",
+        "owner": "app",
+        "aliases": [
+          "ex",
+          "the x screen"
+        ],
+        "keywords": [
+          "a"
+        ],
+        "detail": "detail",
+        "icon": "box",
+        "requires": "admin",
+        "help": "x",
+        "effect": "read",
+        "source": "authored",
+        "hidden": true
+      },
+      null,
+      {
+        "id": "screen:y",
+        "kind": "screen",
+        "label": "Y",
+        "open": {
+          "via": "view",
+          "view": "y"
+        },
+        "source": "declared"
+      }
+    ],
+    "fromCatalog": [
+      {
+        "id": "screen:plan-studio",
+        "kind": "screen",
+        "label": "Plan Studio",
+        "open": {
+          "via": "view",
+          "view": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "library:ai.amberx.axf.console.plan-studio",
+        "keywords": [
+          "plans"
+        ],
+        "icon": "map",
+        "source": "live"
+      },
+      {
+        "id": "dialog:about",
+        "kind": "dialog",
+        "label": "About",
+        "open": {
+          "via": "dialog",
+          "dialog": "about"
+        },
+        "app": "console-web",
+        "owner": "framework",
+        "source": "live"
+      },
+      {
+        "id": "settings:plugins/plan-studio",
+        "kind": "settings",
+        "label": "Plan Studio",
+        "open": {
+          "via": "settings",
+          "tab": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "live"
+      },
+      {
+        "id": "settings:appearance",
+        "kind": "settings",
+        "label": "Appearance",
+        "open": {
+          "via": "settings",
+          "tab": "appearance"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "live"
+      },
+      {
+        "id": "action:help.mode",
+        "kind": "action",
+        "label": "Help mode",
+        "open": {
+          "via": "action",
+          "action": "help.mode"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "requires": "help",
+        "effect": "write",
+        "source": "live"
+      },
+      {
+        "id": "action:swap",
+        "kind": "action",
+        "label": "Swap asset",
+        "open": {
+          "via": "action",
+          "action": "swap"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "live"
+      }
+    ],
+    "fromSearch": [
+      {
+        "id": "screen:plan-studio",
+        "kind": "screen",
+        "label": "Plan Studio",
+        "open": {
+          "via": "view",
+          "view": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "icon": "map",
+        "source": "live"
+      },
+      {
+        "id": "settings:plugins/plan-studio",
+        "kind": "settings",
+        "label": "Plan Studio",
+        "open": {
+          "via": "settings",
+          "tab": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "source": "live"
+      },
+      {
+        "id": "setting:general/axf.help.mode",
+        "kind": "setting",
+        "label": "Help mode",
+        "open": {
+          "via": "settings",
+          "tab": "general",
+          "anchor": "axf.help.mode"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "settings:general",
+        "detail": "Settings › General",
+        "source": "live"
+      },
+      {
+        "id": "settings-group:appearance/group:colors",
+        "kind": "settings-group",
+        "label": "Colours",
+        "open": {
+          "via": "settings",
+          "tab": "appearance",
+          "anchor": "group:colors"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "settings:appearance",
+        "source": "live"
+      },
+      {
+        "id": "dialog:about",
+        "kind": "dialog",
+        "label": "About",
+        "open": {
+          "via": "dialog",
+          "dialog": "about"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "live"
+      },
+      {
+        "id": "menu-item:builds/plan-studio",
+        "kind": "menu-item",
+        "label": "Plan Studio",
+        "open": {
+          "via": "action",
+          "action": "nav:plan-studio"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "detail": "Builds",
+        "source": "live"
+      },
+      {
+        "id": "window:terminal",
+        "kind": "window",
+        "label": "Terminal",
+        "open": {
+          "via": "action",
+          "action": "windows.focus:terminal"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "live"
+      },
+      {
+        "id": "action:help.mode",
+        "kind": "action",
+        "label": "Help mode",
+        "open": {
+          "via": "action",
+          "action": "help.mode"
+        },
+        "app": "console-web",
+        "owner": "framework",
+        "detail": "help.mode",
+        "effect": "write",
+        "source": "live"
+      },
+      {
+        "id": "action:plan.new",
+        "kind": "action",
+        "label": "New plan",
+        "open": {
+          "via": "action",
+          "action": "plan.new"
+        },
+        "app": "console-web",
+        "owner": "library:ai.amberx.axf.console.plan-studio",
+        "detail": "plan.new",
+        "source": "live"
+      }
+    ],
+    "fromAppMenu": [
+      {
+        "id": "menu:builds",
+        "kind": "menu",
+        "label": "Builds",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu:builds\"]",
+          "click": true
+        },
+        "app": "console-web",
+        "owner": "app",
+        "icon": "layers",
+        "source": "scanned"
+      },
+      {
+        "id": "menu-item:builds/plan-studio",
+        "kind": "menu-item",
+        "label": "Plan Studio",
+        "open": {
+          "via": "action",
+          "action": "nav:plan-studio"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "menu:builds",
+        "icon": "map",
+        "source": "scanned"
+      },
+      {
+        "id": "menu-item:builds/more",
+        "kind": "menu-item",
+        "label": "More",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu-item:builds/more\"]",
+          "click": true
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "menu:builds",
+        "source": "scanned"
+      },
+      {
+        "id": "menu-item:builds/more/orchestrator",
+        "kind": "menu-item",
+        "label": "Build orchestrator",
+        "open": {
+          "via": "action",
+          "action": "nav:build-orchestrator"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "menu-item:builds/more",
+        "source": "scanned"
+      },
+      {
+        "id": "menu-item:builds/more/no-action",
+        "kind": "menu-item",
+        "label": "Just a label",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu-item:builds/more/no-action\"]",
+          "click": true
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "menu-item:builds/more",
+        "source": "scanned"
+      },
+      {
+        "id": "menu:help",
+        "kind": "menu",
+        "label": "Help",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu:help\"]",
+          "click": true
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "scanned"
+      },
+      {
+        "id": "menu-item:help/docs",
+        "kind": "menu-item",
+        "label": "Docs",
+        "open": {
+          "via": "url",
+          "url": "https://axf.amberxai.com/docs"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "menu:help",
+        "source": "scanned"
+      }
+    ],
+    "fromContextMenu": [
+      {
+        "id": "menu-item:tab-group/settings",
+        "kind": "menu-item",
+        "label": "Settings…",
+        "open": {
+          "via": "action",
+          "action": "chrome.settings"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "scanned"
+      },
+      {
+        "id": "menu-item:banner/banner-settings",
+        "kind": "menu-item",
+        "label": "Banner settings",
+        "open": {
+          "via": "action",
+          "action": "banners.settings"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "scanned"
+      }
+    ],
+    "fromNavMenu": [
+      {
+        "id": "nav-item:home",
+        "kind": "nav-item",
+        "label": "Home",
+        "open": {
+          "via": "view",
+          "view": "home"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "icon": "home",
+        "source": "scanned"
+      },
+      {
+        "id": "nav-item:builds",
+        "kind": "nav-item",
+        "label": "Builds",
+        "open": {
+          "via": "view",
+          "view": "builds"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "scanned"
+      },
+      {
+        "id": "nav-item:plan-studio",
+        "kind": "nav-item",
+        "label": "Plan Studio",
+        "open": {
+          "via": "view",
+          "view": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "nav-item:builds",
+        "source": "scanned"
+      },
+      {
+        "id": "nav-item:settings",
+        "kind": "nav-item",
+        "label": "Settings",
+        "open": {
+          "via": "action",
+          "action": "settings.open"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "scanned"
+      }
+    ],
+    "fromToolbar": [
+      {
+        "id": "toolbar:main",
+        "kind": "toolbar",
+        "label": "Main toolbar",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-toolbar=\"main\"], [data-axf-ui=\"toolbar:main\"]"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "source": "scanned"
+      },
+      {
+        "id": "button:main/search",
+        "kind": "button",
+        "label": "Search",
+        "open": {
+          "via": "action",
+          "action": "search.open"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "toolbar:main",
+        "icon": "search",
+        "source": "scanned"
+      },
+      {
+        "id": "button:main/help-mode",
+        "kind": "button",
+        "label": "Help mode",
+        "open": {
+          "via": "action",
+          "action": "help.mode:toggle"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "toolbar:main",
+        "source": "scanned"
+      },
+      {
+        "id": "button:main/theme",
+        "kind": "button",
+        "label": "Theme",
+        "open": {
+          "via": "action",
+          "action": "swap:color-theme:next"
+        },
+        "app": "console-web",
+        "owner": "app",
+        "parent": "toolbar:main",
+        "source": "scanned"
+      }
+    ],
+    "fromManifest": [
+      {
+        "id": "screen:plan-studio",
+        "kind": "screen",
+        "label": "Plan Studio",
+        "open": {
+          "via": "view",
+          "view": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "source": "scanned"
+      },
+      {
+        "id": "screen:plan-studio.archive",
+        "kind": "screen",
+        "label": "Plan Studio: Archive",
+        "open": {
+          "via": "view",
+          "view": "plan-studio.archive"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "source": "scanned"
+      },
+      {
+        "id": "dialog:plan-studio.new",
+        "kind": "dialog",
+        "label": "Plan Studio: New dialog",
+        "open": {
+          "via": "dialog",
+          "dialog": "plan-studio.new"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "source": "scanned"
+      },
+      {
+        "id": "settings:plugins/plan-studio",
+        "kind": "settings",
+        "label": "Plan Studio settings",
+        "open": {
+          "via": "settings",
+          "tab": "plan-studio"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "aliases": [
+          "Plan Studio plugin settings"
+        ],
+        "source": "scanned"
+      },
+      {
+        "id": "action:plan.new",
+        "kind": "action",
+        "label": "Plan Studio: New",
+        "open": {
+          "via": "action",
+          "action": "plan.new"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "source": "scanned"
+      },
+      {
+        "id": "banner:plan-studio",
+        "kind": "banner",
+        "label": "Plan Studio banner",
+        "open": {
+          "via": "element",
+          "selector": "[data-axf-banner=\"plan-studio\"], [data-axf-ui=\"banner:plan-studio\"]"
+        },
+        "app": "console-web",
+        "owner": "plugin:plan-studio",
+        "source": "scanned"
+      }
+    ],
+    "merged": [
+      {
+        "id": "screen:plan-studio",
+        "kind": "screen",
+        "label": "Plan Studio",
+        "open": {
+          "via": "view",
+          "view": "plan-studio"
+        },
+        "aliases": [
+          "plans",
+          "planner"
+        ],
+        "source": "declared",
+        "detail": "Builds",
+        "icon": "map",
+        "owner": "plugin:plan-studio"
+      },
+      {
+        "id": "dialog:about",
+        "kind": "dialog",
+        "label": "About",
+        "open": {
+          "via": "dialog",
+          "dialog": "about"
+        },
+        "source": "live"
+      },
+      {
+        "id": "screen:home",
+        "kind": "screen",
+        "label": "Home",
+        "open": {
+          "via": "view",
+          "view": "home"
+        },
+        "source": "scanned"
+      }
+    ],
+    "queryWords": [
+      {
+        "q": "open the plan studio",
+        "words": [
+          "plan",
+          "studio"
+        ],
+        "kind": "",
+        "phrase": "plan studio",
+        "whole": "plan studio"
+      },
+      {
+        "q": "show me the orchestrator page please",
+        "words": [
+          "orchestrator"
+        ],
+        "kind": "screen",
+        "phrase": "orchestrator",
+        "whole": "orchestrator page"
+      },
+      {
+        "q": "take me to builds",
+        "words": [
+          "builds"
+        ],
+        "kind": "",
+        "phrase": "builds",
+        "whole": "builds"
+      },
+      {
+        "q": "plan studio menu entry",
+        "words": [
+          "plan",
+          "studio"
+        ],
+        "kind": "menu-item",
+        "phrase": "plan studio",
+        "whole": "plan studio menu entry"
+      },
+      {
+        "q": "settings for example plugin",
+        "words": [
+          "example",
+          "plugin"
+        ],
+        "kind": "settings",
+        "phrase": "example plugin",
+        "whole": "settings example plugin"
+      },
+      {
+        "q": "the builds menu",
+        "words": [
+          "builds"
+        ],
+        "kind": "menu",
+        "phrase": "builds",
+        "whole": "builds menu"
+      },
+      {
+        "q": "pop up chip",
+        "words": [
+          "pop",
+          "chip"
+        ],
+        "kind": "",
+        "phrase": "pop chip",
+        "whole": "pop chip"
+      },
+      {
+        "q": "uh open uh the terminal window",
+        "words": [
+          "terminal"
+        ],
+        "kind": "window",
+        "phrase": "terminal",
+        "whole": "terminal window"
+      },
+      {
+        "q": "help mode setting",
+        "words": [
+          "help",
+          "mode"
+        ],
+        "kind": "setting",
+        "phrase": "help mode",
+        "whole": "help mode setting"
+      },
+      {
+        "q": "example plugin settings tab",
+        "words": [
+          "example",
+          "plugin"
+        ],
+        "kind": "settings",
+        "phrase": "example plugin",
+        "whole": "example plugin settings tab"
+      }
+    ],
+    "resolve": [
+      {
+        "q": "screen:plan-studio",
+        "item": "screen:plan-studio",
+        "via": "id",
+        "ambiguous": false
+      },
+      {
+        "q": "SCREEN:PLAN-STUDIO",
+        "item": "screen:plan-studio",
+        "via": "id",
+        "ambiguous": false
+      },
+      {
+        "q": "open the plan studio",
+        "item": "screen:plan-studio",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "plans",
+        "item": "screen:plan-studio",
+        "via": "alias",
+        "ambiguous": false
+      },
+      {
+        "q": "the planner",
+        "item": "screen:plan-studio",
+        "via": "alias",
+        "ambiguous": false
+      },
+      {
+        "q": "orkestrator",
+        "item": "screen:build-orchestrator",
+        "via": "fuzzy",
+        "ambiguous": false
+      },
+      {
+        "q": "orchestrator screen",
+        "item": "screen:build-orchestrator",
+        "via": "alias",
+        "ambiguous": false
+      },
+      {
+        "q": "take me to builds",
+        "item": "screen:builds",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "builds menu",
+        "item": "menu:builds",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "plan studio menu entry",
+        "item": "menu-item:builds/plan-studio",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "plan studio",
+        "item": "screen:plan-studio",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "new plan",
+        "item": "dialog:plan-studio.new",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "new plan button",
+        "item": "button:plan-studio/new-plan",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "add plan",
+        "item": "button:plan-studio/new-plan",
+        "via": "alias",
+        "ambiguous": false
+      },
+      {
+        "q": "new plan dialog",
+        "item": "dialog:plan-studio.new",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "example plugin settings",
+        "item": "settings:plugins/example",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "example plugin",
+        "item": "settings:plugins/example",
+        "via": "fuzzy",
+        "ambiguous": false
+      },
+      {
+        "q": "settings for example plugin",
+        "item": "settings:plugins/example",
+        "via": "fuzzy",
+        "ambiguous": false
+      },
+      {
+        "q": "help mode",
+        "item": "setting:appearance/axf.help.mode",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "help mode setting",
+        "item": "setting:appearance/axf.help.mode",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "documentation",
+        "item": "link:home/docs",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "docs",
+        "item": "link:home/docs",
+        "via": "fuzzy",
+        "ambiguous": false
+      },
+      {
+        "q": "screenshots tab",
+        "item": "tab:ui-review.tabs/screenshots",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "push banner",
+        "item": "banner:push",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "terminal window",
+        "item": "window:terminal",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "the clock",
+        "item": "widget:banner/clock",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "delete plan",
+        "item": "action:plan.delete",
+        "via": "label",
+        "ambiguous": false
+      },
+      {
+        "q": "nothing like this at all",
+        "item": null,
+        "via": null,
+        "ambiguous": false,
+        "candidates": []
+      },
+      {
+        "q": "",
+        "item": null,
+        "via": null,
+        "ambiguous": false,
+        "candidates": []
+      },
+      {
+        "q": "build orchestrator menu entry",
+        "item": "menu-item:builds/orchestrator",
+        "via": "label",
+        "ambiguous": false
+      }
+    ],
+    "search": [
+      {
+        "q": "plan",
+        "opts": {
+          "limit": 5
+        },
+        "hits": [
+          "screen:plan-studio",
+          "menu-item:builds/plan-studio",
+          "nav-item:plan-studio",
+          "dialog:plan-studio.new",
+          "action:plan.delete"
+        ]
+      },
+      {
+        "q": "plan studio",
+        "opts": {
+          "kind": "menu-item",
+          "hidden": true
+        },
+        "hits": [
+          "menu-item:builds/plan-studio"
+        ]
+      },
+      {
+        "q": "orkestrator",
+        "opts": {},
+        "hits": [
+          "screen:build-orchestrator"
+        ]
+      },
+      {
+        "q": "",
+        "opts": {
+          "kinds": [
+            "dialog"
+          ],
+          "limit": 3
+        },
+        "hits": [
+          "dialog:about",
+          "dialog:plan-studio.new"
+        ]
+      },
+      {
+        "q": "builds",
+        "opts": {
+          "owner": "framework"
+        },
+        "hits": [
+          "menu:builds"
+        ]
+      },
+      {
+        "q": "settings",
+        "opts": {
+          "limit": 4
+        },
+        "hits": [
+          "settings:plugins/example"
+        ]
+      }
+    ],
+    "openCommands": [
+      {
+        "id": "screen:plan-studio",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "plan-studio",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "screen:build-orchestrator",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "build-orchestrator",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "screen:builds",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "builds",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "screen:home",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "home",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "dialog:about",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.dialogs",
+          "path": "about",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "dialog:plan-studio.new",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.dialogs",
+          "path": "plan-studio.new",
+          "action": "open",
+          "input": {
+            "to": "recent",
+            "arg": "blank"
+          }
+        }
+      },
+      {
+        "id": "settings:plugins/example",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.settings",
+          "path": "example",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "setting:appearance/axf.help.mode",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.settings",
+          "path": "appearance",
+          "action": "open",
+          "input": {
+            "to": "recent",
+            "anchor": "axf.help.mode"
+          }
+        }
+      },
+      {
+        "id": "menu:builds",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "ui.open",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "menu:builds"
+            ]
+          }
+        }
+      },
+      {
+        "id": "menu-item:builds/plan-studio",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "nav",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "plan-studio"
+            ]
+          }
+        }
+      },
+      {
+        "id": "menu-item:builds/orchestrator",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "nav",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "build-orchestrator"
+            ]
+          }
+        }
+      },
+      {
+        "id": "nav-item:plan-studio",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "plan-studio",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "toolbar:main",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "ui.open",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "toolbar:main"
+            ]
+          }
+        }
+      },
+      {
+        "id": "button:main/search",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "search.open",
+          "action": "run",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "button:plan-studio/new-plan",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "plan-studio",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "link:home/docs",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "ui.open",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "link:home/docs"
+            ]
+          }
+        }
+      },
+      {
+        "id": "tab:ui-review.tabs/screenshots",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "ui-review",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "banner:push",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "ui.open",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "banner:push"
+            ]
+          }
+        }
+      },
+      {
+        "id": "widget:banner/clock",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "ui.open",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "widget:banner/clock"
+            ]
+          }
+        }
+      },
+      {
+        "id": "action:help.mode",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "help.mode",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "toggle"
+            ]
+          }
+        }
+      },
+      {
+        "id": "action:plan.delete",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "plan.delete",
+          "action": "run",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "window:terminal",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "windows.focus",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "terminal"
+            ]
+          }
+        }
+      },
+      {
+        "id": "card:home/builds",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.screens",
+          "path": "home",
+          "action": "open",
+          "input": {
+            "to": "recent"
+          }
+        }
+      },
+      {
+        "id": "menu-item:more/help-center",
+        "command": {
+          "$axf": "control@1",
+          "op": "act",
+          "target": "console.actions",
+          "path": "ui.open",
+          "action": "run",
+          "input": {
+            "to": "recent",
+            "args": [
+              "menu-item:more/help-center"
+            ]
+          }
+        }
+      }
+    ],
+    "openPlans": [
+      {
+        "id": "screen:plan-studio",
+        "plan": {
+          "via": "view",
+          "view": "plan-studio"
+        }
+      },
+      {
+        "id": "screen:build-orchestrator",
+        "plan": {
+          "via": "view",
+          "view": "build-orchestrator"
+        }
+      },
+      {
+        "id": "screen:builds",
+        "plan": {
+          "via": "view",
+          "view": "builds"
+        }
+      },
+      {
+        "id": "screen:home",
+        "plan": {
+          "via": "view",
+          "view": "home"
+        }
+      },
+      {
+        "id": "dialog:about",
+        "plan": {
+          "via": "dialog",
+          "dialog": "about"
+        }
+      },
+      {
+        "id": "dialog:plan-studio.new",
+        "plan": {
+          "via": "dialog",
+          "dialog": "plan-studio.new",
+          "arg": "blank"
+        }
+      },
+      {
+        "id": "settings:plugins/example",
+        "plan": {
+          "via": "settings",
+          "tab": "example"
+        }
+      },
+      {
+        "id": "setting:appearance/axf.help.mode",
+        "plan": {
+          "via": "settings",
+          "tab": "appearance",
+          "anchor": "axf.help.mode"
+        }
+      },
+      {
+        "id": "menu:builds",
+        "plan": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"menu:builds\"], [data-axf-ui=\"menu:builds\"]",
+          "click": false
+        }
+      },
+      {
+        "id": "menu-item:builds/plan-studio",
+        "plan": {
+          "via": "action",
+          "action": "nav:plan-studio"
+        }
+      },
+      {
+        "id": "menu-item:builds/orchestrator",
+        "plan": {
+          "via": "action",
+          "action": "nav:build-orchestrator"
+        }
+      },
+      {
+        "id": "nav-item:plan-studio",
+        "plan": {
+          "via": "view",
+          "view": "plan-studio"
+        }
+      },
+      {
+        "id": "toolbar:main",
+        "plan": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"toolbar:main\"], [data-axf-ui=\"toolbar:main\"]",
+          "click": false
+        }
+      },
+      {
+        "id": "button:main/search",
+        "plan": {
+          "via": "action",
+          "action": "search.open"
+        }
+      },
+      {
+        "id": "button:plan-studio/new-plan",
+        "plan": {
+          "via": "view",
+          "view": "plan-studio"
+        }
+      },
+      {
+        "id": "link:home/docs",
+        "plan": {
+          "via": "url",
+          "url": "https://axf.amberxai.com/docs"
+        }
+      },
+      {
+        "id": "tab:ui-review.tabs/screenshots",
+        "plan": {
+          "via": "view",
+          "view": "ui-review"
+        }
+      },
+      {
+        "id": "banner:push",
+        "plan": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"banner:push\"], [data-axf-banner=\"push\"]",
+          "click": false
+        }
+      },
+      {
+        "id": "widget:banner/clock",
+        "plan": {
+          "via": "element",
+          "selector": "[data-axf-ui=\"widget:banner/clock\"], [data-axf-ui=\"widget:banner/clock\"]",
+          "click": false
+        }
+      },
+      {
+        "id": "action:help.mode",
+        "plan": {
+          "via": "action",
+          "action": "help.mode:toggle"
+        }
+      },
+      {
+        "id": "action:plan.delete",
+        "plan": {
+          "via": "action",
+          "action": "plan.delete"
+        }
+      },
+      {
+        "id": "window:terminal",
+        "plan": {
+          "via": "action",
+          "action": "windows.focus:terminal"
+        }
+      },
+      {
+        "id": "card:home/builds",
+        "plan": {
+          "via": "view",
+          "view": "home"
+        }
+      },
+      {
+        "id": "menu-item:more/help-center",
+        "plan": {
+          "via": "menu",
+          "menu": "more",
+          "item": "help-center",
+          "selector": "[data-axf-ui=\"menu-item:more/help-center\"]"
+        }
+      }
+    ],
+    "shortcuts": [
+      {
+        "id": "sc-my-plans",
+        "phrase": "my plans",
+        "item": "screen:plan-studio",
+        "say": "Here are your plans."
+      },
+      {
+        "id": "sc-shots",
+        "phrase": "the shots",
+        "item": "tab:ui-review.tabs/screenshots",
+        "aliases": [
+          "screenshots please"
+        ]
+      },
+      {
+        "id": "sc-gone",
+        "phrase": "gone",
+        "item": "screen:not-registered"
+      },
+      {
+        "id": "sc-off",
+        "phrase": "off",
+        "item": "screen:home",
+        "enabled": false
+      }
+    ],
+    "shortcutErrors": [
+      [],
+      [
+        "phrase is what you say (up to 120 characters)",
+        "item must be a registry item id (<kind>:<key>)"
+      ],
+      [
+        "a shortcut must be an object { phrase, item, aliases?, say? }"
+      ],
+      [
+        "aliases must list up to 12 other phrases"
+      ]
+    ],
+    "say": [
+      {
+        "heard": "my plans",
+        "item": "screen:plan-studio",
+        "via": "shortcut",
+        "ambiguous": false,
+        "say": "Here are your plans."
+      },
+      {
+        "heard": "open my plans",
+        "item": "screen:plan-studio",
+        "via": "shortcut",
+        "ambiguous": false,
+        "say": "Here are your plans."
+      },
+      {
+        "heard": "the shots",
+        "item": "tab:ui-review.tabs/screenshots",
+        "via": "shortcut",
+        "ambiguous": false,
+        "say": "Opening Screenshots."
+      },
+      {
+        "heard": "screenshots please",
+        "item": "tab:ui-review.tabs/screenshots",
+        "via": "shortcut",
+        "ambiguous": false,
+        "say": "Opening Screenshots."
+      },
+      {
+        "heard": "gone",
+        "item": null,
+        "via": null,
+        "ambiguous": false,
+        "say": "The shortcut \"gone\" points at screen:not-registered, which is not registered."
+      },
+      {
+        "heard": "off",
+        "item": null,
+        "via": null,
+        "ambiguous": false,
+        "say": "I know nothing called \"off\"."
+      },
+      {
+        "heard": "plan studio",
+        "item": "screen:plan-studio",
+        "via": "label",
+        "ambiguous": false,
+        "say": "Opening Plan Studio."
+      },
+      {
+        "heard": "orkestrator",
+        "item": "screen:build-orchestrator",
+        "via": "fuzzy",
+        "ambiguous": false,
+        "say": "Opening Build orchestrator."
+      },
+      {
+        "heard": "builds menu",
+        "item": "menu:builds",
+        "via": "label",
+        "ambiguous": false,
+        "say": "Opening Builds."
+      },
+      {
+        "heard": "plan studio menu entry",
+        "item": "menu-item:builds/plan-studio",
+        "via": "label",
+        "ambiguous": false,
+        "say": "Opening Plan Studio."
+      },
+      {
+        "heard": "nothing like this at all",
+        "item": null,
+        "via": null,
+        "ambiguous": false,
+        "say": "I know nothing called \"nothing like this at all\"."
+      }
+    ],
+    "voice": [
+      {
+        "id": "ui.open",
+        "title": "Open any screen, dialog, setting, menu entry or button",
+        "effect": "navigate",
+        "confirm": "never",
+        "phrases": [
+          "open {item}",
+          "show {item}",
+          "show me {item}",
+          "go to {item}",
+          "take me to {item}",
+          "bring up {item}",
+          "pull up {item}",
+          "shortcut {item}"
+        ],
+        "slots": {
+          "item": {
+            "type": "text",
+            "required": true,
+            "say": "What should I open?"
+          }
+        },
+        "run": {
+          "action": "ui.open:{item}",
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
+        },
+        "say": "Opening {item}.",
+        "help": "open <anything in the UI registry>: a screen, dialog, settings tab, menu entry, button, link… by name or alias",
+        "source": "generated"
+      },
+      {
+        "id": "ui.shortcut.sc-my-plans",
+        "title": "Shortcut: my plans",
+        "effect": "navigate",
+        "confirm": "never",
+        "phrases": [
+          "my plans"
+        ],
+        "run": {
+          "action": "ui.open:screen:plan-studio",
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
+        },
+        "say": "Here are your plans.",
+        "help": "my plans → screen:plan-studio",
+        "source": "authored"
+      },
+      {
+        "id": "ui.shortcut.sc-shots",
+        "title": "Shortcut: the shots",
+        "effect": "navigate",
+        "confirm": "never",
+        "phrases": [
+          "the shots",
+          "screenshots please"
+        ],
+        "run": {
+          "action": "ui.open:tab:ui-review.tabs/screenshots",
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
+        },
+        "say": "Opening it.",
+        "help": "the shots → tab:ui-review.tabs/screenshots",
+        "source": "authored"
+      },
+      {
+        "id": "ui.shortcut.sc-gone",
+        "title": "Shortcut: gone",
+        "effect": "navigate",
+        "confirm": "never",
+        "phrases": [
+          "gone"
+        ],
+        "run": {
+          "action": "ui.open:screen:not-registered",
+          "api": "POST /api/plugins/example/say",
+          "mcp": "example_say"
+        },
+        "say": "Opening it.",
+        "help": "gone → screen:not-registered",
+        "source": "authored"
+      }
+    ],
+    "coverage": {
+      "total": 24,
+      "byKind": {
+        "screen": 4,
+        "dialog": 2,
+        "settings": 1,
+        "setting": 1,
+        "menu": 1,
+        "menu-item": 3,
+        "nav-item": 1,
+        "toolbar": 1,
+        "button": 2,
+        "link": 1,
+        "tab": 1,
+        "banner": 1,
+        "widget": 1,
+        "action": 2,
+        "window": 1,
+        "card": 1
+      },
+      "bySource": {
+        "declared": 20,
+        "scanned": 3,
+        "live": 1
+      },
+      "missing": [
+        "screen:new-thing"
+      ],
+      "unknown": [
+        "screen:build-orchestrator",
+        "screen:builds",
+        "screen:home"
+      ]
+    }
+  }
+}

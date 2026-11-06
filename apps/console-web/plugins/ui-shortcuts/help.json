@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ui-shortcuts-help",
+  "name": "UI shortcuts help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the UI shortcuts plugin (help@1): the quick-open dialog, its controls, the settings tab and the actions.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ui-shortcuts",
+    "entries": [
+      { "target": "dialog:ui-shortcuts", "title": "UI shortcuts", "text": "Type or say what you want to open: a screen, a dialog, a settings tab, a menu entry, a button, a link. The first match opens on Enter; tap any other match to open it instead.", "kind": "screen" },
+      { "target": "ui-shortcuts", "title": "UI shortcuts settings", "text": "Your own shortcuts (a phrase that opens an item), the microphone and spoken answers, and what is registered for every app." },
+      { "target": "what-do-you-want-to-open", "title": "What to open", "text": "Type a name, an alias, or a sentence like \"open the plan studio\". Spelling slips are fine: \"orkestrator\" still finds the Build orchestrator.", "kind": "field" },
+      { "target": "ui-say", "title": "Open", "text": "Opens the best match. If several match equally well, the list below shows them so you can pick one.", "kind": "button" },
+      { "target": "ui-mic", "title": "Speak", "text": "Listens once with this browser's speech recognition and opens what you said. The microphone switch in the settings hides this button.", "kind": "button" },
+      { "target": "ui-hit", "title": "A match", "text": "One registered item that matches what you typed: its kind, where it belongs and its id. Tap to open it.", "kind": "button" },
+      { "target": "ui-kind", "title": "Kind filter", "text": "Narrows the matches to one kind of UI: screens, dialogs, settings, menu entries, buttons…", "kind": "button" },
+      { "target": "phrase", "title": "Phrase", "text": "What you will say or type to open the item, exactly (\"my plans\"). Other wordings go in the aliases.", "kind": "field" },
+      { "target": "item-id-or-words", "title": "Item", "text": "The registered item the phrase opens: its id, or words that name it (\"plan studio screen\"); it is settled to one item when you add the shortcut.", "kind": "field" },
+      { "target": "spoken-answer-optional", "title": "Spoken answer", "text": "What the voice answers when this shortcut runs. Empty = \"Opening <item>.\"", "kind": "field" },
+      { "target": "ui-shortcut-add", "title": "Add shortcut", "text": "Saves the shortcut. It is matched before every other name, so a short phrase can point anywhere.", "kind": "button" },
+      { "target": "ui-shortcut-try", "title": "Try", "text": "Runs the shortcut now, so you can see where it goes.", "kind": "button" },
+      { "target": "ui-shortcut-remove", "title": "Remove", "text": "Deletes this shortcut. Nothing else changes.", "kind": "button" },
+      { "target": "microphone-button-in-the-quick-open-dialog", "title": "Microphone button", "text": "Shows the Speak button in the quick-open dialog where the browser can listen. Off hides it; typing still works.", "kind": "toggle" },
+      { "target": "speak-the-answers", "title": "Speak the answers", "text": "Reads the answer aloud (\"Opening Plan Studio.\") with the browser's voice. Off = answers are only shown.", "kind": "toggle" },
+      { "target": "ui-reload", "title": "Reload", "text": "Reads the registry again: how many items every app has and what the open consoles reported.", "kind": "button" },
+      { "target": "ui-report-live", "title": "Report this console", "text": "Sends this console's live UI registry (every screen, dialog, settings tab and action it has right now) to the server, so a just-installed plugin can be opened by voice.", "kind": "button" },
+      { "target": "action:ui-shortcuts.dialog", "title": "UI shortcuts…", "text": "Opens the quick-open dialog: type or say what to open.", "kind": "menu-item" },
+      { "target": "action:ui.open", "title": "Open a registered item", "text": "The framework action every registered item opens through: ui.open:<item id>. Menus, voice and the API all use it.", "kind": "control" },
+      { "target": "action:ui-shortcuts.say", "title": "Say what to open", "text": "ui-shortcuts.say:<words> opens what the words name, as if you had said them.", "kind": "control" }
+    ],
+    "intros": [
+      {
+        "screen": "ui-shortcuts",
+        "title": "UI shortcuts",
+        "steps": [
+          { "say": "Type what you want to open, or tap Speak and say it.", "target": "what-do-you-want-to-open" },
+          { "say": "Your own phrases live in Settings → Plugins → UI shortcuts.", "target": "ui-say" }
+        ]
+      }
+    ]
+  }
+}

@@ -119,6 +119,8 @@ function* walk(dir) {
 
 const APPS_DIR = join(ROOT, 'apps');
 const CONSOLE_APP_DIR = dirname(PLUGINS_DIR);
+/** A generated ui-registry@1 asset (framework/cli/ui-registry.mjs): data about the code, refreshed by `generate`. */
+const UI_REGISTRY_ASSET = /^apps\/[^/]+\/src\/assets\/ui-registry\/[^/]+\.json$/;
 
 /**
  * Inside another app's tree (apps/<app>/, not the host app's) a bare `plugins/<folder>` is that app's own plugin
@@ -143,6 +145,9 @@ export function scanReferences(p) {
     if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file))) continue;
     // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.
     if (file.startsWith(APPS_DIR + '/') && file.slice(APPS_DIR.length).split('/').slice(2, 4).join('/') === 'src/axf') continue;
+    // An app's UI registry asset (ui-registry@1, apps/<app>/src/assets/ui-registry/*.json) is generated from the code by
+    // framework/cli/ui-registry.mjs: a removed plugin's items go when the registry is regenerated (uninstall --all does it).
+    if (UI_REGISTRY_ASSET.test(relative(ROOT, file))) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.
@@ -308,6 +313,12 @@ export async function uninstall(folder, opts = {}, log = () => {}) {
       if (dry) log(`would delete ${PLUGINS_REL}/${folder}/ (${sizeOf(p.dir).files} files)`);
       else { rmSync(p.dir, { recursive: true, force: true }); log(`deleted ${PLUGINS_REL}/${folder}/`); }
       result.code = true;
+      // the console's UI registry asset (ui-registry@1) listed this plugin's screens, dialogs and buttons: regenerate it
+      const gen = join(ROOT, 'framework/cli/ui-registry.mjs');
+      if (existsSync(gen)) {
+        if (dry) log('would regenerate the console UI registry (framework/cli/ui-registry.mjs generate)');
+        else { const r = spawnSync(process.execPath, [gen, 'generate', relative(ROOT, CONSOLE_APP_DIR)], { cwd: ROOT, encoding: 'utf8' }); log(r.status === 0 ? 'regenerated the console UI registry' : `UI registry not regenerated: ${(r.stderr || r.stdout || '').trim().slice(0, 200)}`); }
+      }
     } else log('plugin code already gone');
     if (!dry) {
       result.stale = scanReferences({ ...p, present: false }).filter((r) => !r.managed);
