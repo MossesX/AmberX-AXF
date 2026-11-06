@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1134,
- "updatedAt": "2026-11-06T20:04:32.616Z",
+ "rev": 1135,
+ "updatedAt": "2026-11-06T20:04:49.369Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87930,7 +87930,7 @@
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-06T20:04:31.580Z",
+   "updatedAt": "2026-11-06T20:04:32.352Z",
    "builtAt": "2026-11-06T20:04:31.580Z",
    "notes": [
     {
@@ -87940,6 +87940,10 @@
     {
      "text": "Reconciler: PR #350",
      "at": "2026-11-04T23:10:22.519Z"
+    },
+    {
+     "text": "Fable review landed with build shipped-features-fable: PR #364 (claude/shipped-features-fable) supersedes r2/r3/r4, #350 closed; see _claude/builds/reports/shipped-features.md → Fable review",
+     "at": "2026-11-06T20:04:32.352Z"
     }
    ],
    "approvals": [],
@@ -88229,7 +88233,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
