@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1105,
- "updatedAt": "2026-11-06T18:16:01.326Z",
+ "rev": 1106,
+ "updatedAt": "2026-11-06T18:16:19.334Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -93078,12 +93078,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T18:15:59.525Z",
+   "updatedAt": "2026-11-06T18:16:12.664Z",
    "builtAt": "",
    "notes": [
     {
      "text": "The 'Save the rotated refresh token' steps are built by first-refresh-token-saved-every-time-it-s-used-v (PR #359): tick them once it merges, don't rebuild them.",
      "at": "2026-11-06T18:07:15.828Z"
+    },
+    {
+     "text": "token-optimize build: steps s1-s9, s11-s20 done on branch claude/token-optimize. s10 stays open: the gate is Brett's console click; no axHub tool or policy yet. Same steps repeat as s56-s75 (the list is doubled).",
+     "at": "2026-11-06T18:16:12.664Z"
     }
    ],
    "approvals": [],
@@ -93236,12 +93240,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:05.203Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:05.351Z"
     },
     {
      "id": "s8",
@@ -93258,12 +93262,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:06.363Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:06.570Z"
     },
     {
      "id": "s9",
@@ -93280,12 +93284,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:07.393Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:07.465Z"
     },
     {
      "id": "s10",
@@ -93324,12 +93328,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:08.763Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:08.823Z"
     },
     {
      "id": "s12",
@@ -93346,12 +93350,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:09.392Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:09.460Z"
     },
     {
      "id": "s13",
@@ -93368,12 +93372,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:10.048Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:10.123Z"
     },
     {
      "id": "s14",
@@ -93390,12 +93394,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:08.130Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:08.196Z"
     },
     {
      "id": "s15",
@@ -93478,12 +93482,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:00.310Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:00.413Z"
     },
     {
      "id": "s19",
@@ -93500,12 +93504,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:01.271Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:01.448Z"
     },
     {
      "id": "s20",
@@ -93522,12 +93526,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:03.326Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:13:14.292Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-06T18:16:03.510Z"
     },
     {
      "id": "s21",
@@ -95518,7 +95522,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -95534,14 +95538,14 @@
    "title": "Headless progress file + lean CLAUDE.md chain",
    "category": "Builds",
    "detail": "Every headless build session writes progress to a small status file in the build and never stops to update the console; console reads it when needed. Also make headless sessions efficient with the CLAUDE.md chain (Brett, voice, Nov 6 2026).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T15:00:28.470Z",
+   "updatedAt": "2026-11-06T18:16:12.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -95677,12 +95681,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:10.662Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:24:50.005Z",
-     "updatedAt": "2026-11-06T14:24:50.005Z"
+     "updatedAt": "2026-11-06T18:16:10.731Z"
     },
     {
      "id": "s7",
@@ -95699,12 +95703,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:11.353Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:24:50.005Z",
-     "updatedAt": "2026-11-06T14:24:50.005Z"
+     "updatedAt": "2026-11-06T18:16:11.422Z"
     },
     {
      "id": "s8",
@@ -95721,12 +95725,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:12.014Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:24:50.005Z",
-     "updatedAt": "2026-11-06T14:24:50.005Z"
+     "updatedAt": "2026-11-06T18:16:12.083Z"
     }
    ],
    "profiles": [
@@ -95737,7 +95741,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

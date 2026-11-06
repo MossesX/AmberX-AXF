@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T18:16:01.326Z",
+ "updatedAt": "2026-11-06T18:16:19.334Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14522,14 +14522,14 @@
    "title": "Headless progress file + lean CLAUDE.md chain",
    "category": "Builds",
    "detail": "Every headless build session writes progress to a small status file in the build and never stops to update the console; console reads it when needed. Also make headless sessions efficient with the CLAUDE.md chain (Brett, voice, Nov 6 2026).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T15:00:28.470Z",
+   "updatedAt": "2026-11-06T18:16:12.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -14643,8 +14643,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:10.662Z",
      "note": "",
      "uid": "st-mw525ipv0emdf1"
     },
@@ -14661,8 +14661,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:11.353Z",
      "note": "",
      "uid": "st-mw525ipv0f0n54"
     },
@@ -14679,8 +14679,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:12.014Z",
      "note": "",
      "uid": "st-mw525ipv0gencv"
     }
@@ -14826,12 +14826,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T18:15:59.525Z",
+   "updatedAt": "2026-11-06T18:16:12.664Z",
    "builtAt": "",
    "notes": [
     {
      "text": "The 'Save the rotated refresh token' steps are built by first-refresh-token-saved-every-time-it-s-used-v (PR #359): tick them once it merges, don't rebuild them.",
      "at": "2026-11-06T18:07:15.828Z"
+    },
+    {
+     "text": "token-optimize build: steps s1-s9, s11-s20 done on branch claude/token-optimize. s10 stays open: the gate is Brett's console click; no axHub tool or policy yet. Same steps repeat as s56-s75 (the list is doubled).",
+     "at": "2026-11-06T18:16:12.664Z"
     }
    ],
    "approvals": [],
@@ -14958,8 +14962,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:05.203Z",
      "note": "",
      "uid": "st-mw52nz5g1kwo6p"
     },
@@ -14976,8 +14980,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:06.363Z",
      "note": "",
      "uid": "st-mw52nz5g1l7hza"
     },
@@ -14994,8 +14998,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:07.393Z",
      "note": "",
      "uid": "st-mw52nz5g1m81d7"
     },
@@ -15030,8 +15034,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:08.763Z",
      "note": "",
      "uid": "st-mw52nz5g1obnoq"
     },
@@ -15048,8 +15052,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:09.392Z",
      "note": "",
      "uid": "st-mw52nz5g1phdk9"
     },
@@ -15066,8 +15070,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:10.048Z",
      "note": "",
      "uid": "st-mw52nz5g1qszvw"
     },
@@ -15084,8 +15088,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:08.130Z",
      "note": "",
      "uid": "st-mw52nz5g1r524g"
     },
@@ -15156,8 +15160,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:00.310Z",
      "note": "",
      "uid": "st-mw52nz5g1vt3mu"
     },
@@ -15174,8 +15178,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:01.271Z",
      "note": "",
      "uid": "st-mw52nz5g1w0c10"
     },
@@ -15192,8 +15196,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:03.326Z",
      "note": "",
      "uid": "st-mw52nz5g1x96o6"
     },

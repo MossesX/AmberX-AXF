@@ -705,20 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:44 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
-- 2026-11-04 20:46 UTC · `build-optimizer` added (9 steps) (current) · orchestrator
-- 2026-11-04 20:50 UTC · `plugin-settings-placement` note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `merge-queue` note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `fable-review-nov3` note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `app-voice-commands` s6 done, → complete, note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `tab-group-assets` note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
-- 2026-11-04 20:50 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
-- 2026-11-04 20:50 UTC · `handoff-2` added (11 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `fable-packager` added (5 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
@@ -1105,6 +1091,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · builds-live
 - 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · builds-live
 - 2026-11-06 18:15 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s17 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s18 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s19 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s20 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s7 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s8 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s9 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s14 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s11 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s12 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s13 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s6 done, → running (current) · orchestrator
+- 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s7 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s8 done (current) · orchestrator
+- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
 
 ## Token passes (log)
 
