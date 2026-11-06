@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1171,
- "updatedAt": "2026-11-06T23:40:03.076Z",
+ "rev": 1172,
+ "updatedAt": "2026-11-06T23:54:46.549Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -74694,12 +74694,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-06T23:15:17.452Z",
+   "updatedAt": "2026-11-06T23:50:26.979Z",
    "builtAt": "",
    "notes": [
     {
      "text": "s1 + s2 built by gizmo-rebuild-fable (Fable, branch claude/gizmo-rebuild-fable): TalkService foreground microphone service, companion talk.ts on it, transcript in the chat, Stop from the notification. s3: the APK comes from CI on that PR; the phone test of hands-free + interrupt is Brett's once it is installed.",
      "at": "2026-11-06T23:15:17.452Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T23:50:26.979Z"
     }
    ],
    "approvals": [],
@@ -74792,7 +74796,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
