@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1106,
- "updatedAt": "2026-11-06T18:16:19.334Z",
+ "rev": 1107,
+ "updatedAt": "2026-11-06T18:17:41.543Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -93075,10 +93075,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/token-optimize",
+   "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T18:16:12.664Z",
+   "updatedAt": "2026-11-06T18:17:40.684Z",
    "builtAt": "",
    "notes": [
     {
@@ -95522,7 +95522,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

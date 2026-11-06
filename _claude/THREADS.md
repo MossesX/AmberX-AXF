@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:50 UTC · `fable-packager` added (5 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s7 done (current) · orchestrator
 - 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s8 done (current) · orchestrator
 - 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
+- 2026-11-06 18:17 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` branch claude/token-optimize, PR #360 (current) · builds-live
 
 ## Token passes (log)
 
