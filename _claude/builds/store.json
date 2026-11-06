@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1168,
- "updatedAt": "2026-11-06T23:32:16.685Z",
+ "rev": 1169,
+ "updatedAt": "2026-11-06T23:33:31.499Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97953,7 +97953,7 @@
    "branch": "claude/ui-registry-shortcuts",
    "pr": "#369",
    "createdAt": "2026-11-06T22:45:12.082Z",
-   "updatedAt": "2026-11-06T23:32:11.567Z",
+   "updatedAt": "2026-11-06T23:33:30.239Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -98096,12 +98096,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:33:30.239Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:45:12.084Z",
-     "updatedAt": "2026-11-06T22:45:12.084Z"
+     "updatedAt": "2026-11-06T23:33:30.301Z"
     }
    ],
    "profiles": [
@@ -98112,7 +98112,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
