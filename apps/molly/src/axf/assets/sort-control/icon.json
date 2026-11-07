@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "sort-control",
+  "id": "icon",
+  "name": "Sort, icon only",
+  "version": "1.0.0",
+  "description": "A quiet icon-only sort button for tight bars; the badge shows how many keys are on.",
+  "author": "AmberX AXF",
+  "tags": ["sort", "dataset", "data-set-bar", "compact"],
+  "data": { "display": "icon", "style": "menu", "label": "Sort", "icon": "chevron-down", "tone": "quiet", "size": "sm", "maxKeys": 3, "savedSorts": true, "showCount": true }
+}

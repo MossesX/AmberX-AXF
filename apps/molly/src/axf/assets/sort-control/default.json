@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "sort-control",
+  "id": "default",
+  "name": "Sort",
+  "version": "1.0.0",
+  "description": "One button that opens the sort menu: up to three keys, each ascending or descending, saved sorts.",
+  "author": "AmberX AXF",
+  "tags": ["sort", "dataset", "data-set-bar"],
+  "data": { "display": "both", "style": "menu", "label": "Sort", "icon": "chevron-down", "tone": "neutral", "size": "sm", "maxKeys": 3, "savedSorts": true, "quickFields": [], "showCount": true }
+}

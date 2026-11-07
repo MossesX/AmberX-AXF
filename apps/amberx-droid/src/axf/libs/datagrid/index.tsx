@@ -12,7 +12,7 @@ import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
-import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
+import { anyRowHooks, applyDataset, DATASET_FOOTER_SLOT, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
 import './datagrid.css';
 
@@ -193,8 +193,24 @@ export function DataGrid<R>(p: DataGridProps<R>) {
       {lines.length > 0 && filtered && !lines.some((l) => l.kind === 'row') && <div className="axf-grid-empty">No rows match the filter.</div>}
     </div>
   );
-  // plugins attached to this dataset draw above it (a toolbar, chips); nothing contributed = just the grid
-  return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}</> : grid;
+  // plugins attached to this dataset draw above it (a toolbar, chips) or below it (a footer bar); nothing contributed = just the grid
+  return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}<Slot name={DATASET_FOOTER_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} /></> : grid;
+}
+
+/**
+ * The frame a view that isn't a `DataGrid` (a list, a tree, a table) puts around the rows it registered with `useDataset`:
+ * the dataset's top and footer slots (where attached plugins such as the Data set bar draw) and the `data-axf-dataset`
+ * name the context menu host reads, so right-click / long-press on the rows offers Attach / Detach like on a grid.
+ */
+export function DatasetFrame({ dataset, label, className, children }: { dataset: string; label?: string; className?: string; children?: ReactNode }) {
+  if (!dataset) return <>{children}</>;
+  return (
+    <div className={`axf-dataset ${className ?? ''}`} data-axf-dataset={dataset}>
+      <Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset, label: label ?? dataset }} />
+      {children}
+      <Slot name={DATASET_FOOTER_SLOT} props={{ dataset, label: label ?? dataset }} />
+    </div>
+  );
 }
 
 function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {

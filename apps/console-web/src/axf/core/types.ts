@@ -58,11 +58,14 @@ export const ASSET_TYPES = [
   'job-type',
   'card',
   'help',
+  'filter-button',
+  'sort-control',
+  'data-set-bar',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'filter-button', 'sort-control', 'data-set-bar'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -414,6 +417,16 @@ export interface SearchBarData {
   width: 'compact' | 'regular' | 'wide';
   kinds?: string[];
   shortcut?: boolean;
+  /** app (default): the whole app; dataset: the rows of the data set it is attached to (engines/datasetbar.ts) */
+  scope?: 'app' | 'dataset';
+  /** dataset scope: fuzzy matching (default true) */
+  fuzzy?: boolean;
+  /** dataset scope: field ids searched (empty = every field) */
+  fields?: string[];
+  /** dataset scope: a field picker next to the box (default true) */
+  fieldPicker?: boolean;
+  /** dataset scope: characters typed before the search applies (default 1) */
+  minChars?: number;
 }
 /** A widget placed on a toolbar (asset type toolbar → data.widgets). */
 export interface ToolbarWidget { type: string; id: string; at: 'start' | 'end'; order?: number }
@@ -631,6 +644,9 @@ export interface AssetDataMap {
   'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
   card: import('./engines/card-rules.mjs').CardData;
   help: import('./engines/help').HelpData;
+  'filter-button': import('./engines/datasetbar').FilterButtonData;
+  'sort-control': import('./engines/datasetbar').SortControlData;
+  'data-set-bar': import('./engines/datasetbar').DataSetBarData;
   'uac-policy': UACPolicyData;
 }
 
@@ -638,7 +654,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'filter-button' | 'sort-control' | 'data-set-bar';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

@@ -969,6 +969,8 @@ export class AxfRuntime {
   /** Everything that ever attached itself to the banner while this page ran. */
   /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
   contextBannerWidget: string | null = null;
+  /** The data set (`data-axf-dataset`) under the last right-click or long-press, set by the context menu host; plugins that attach to data sets (the Data set bar) read it for their menu items. */
+  contextDataset: string | null = null;
   private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
 
   /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */

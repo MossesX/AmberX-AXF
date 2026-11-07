@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "sort-control",
+  "id": "chips",
+  "name": "Sort chips",
+  "version": "1.0.0",
+  "description": "The active sort keys as chips you tap to flip and × to remove, with an Add key button.",
+  "author": "AmberX AXF",
+  "tags": ["sort", "dataset", "data-set-bar"],
+  "data": { "display": "both", "style": "chips", "label": "Sort", "icon": "chevron-down", "tone": "quiet", "size": "sm", "maxKeys": 3, "savedSorts": true, "quickFields": [], "showCount": false }
+}

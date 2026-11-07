@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "filter-button",
+  "id": "icon",
+  "name": "Filter, icon only",
+  "version": "1.0.0",
+  "description": "A quiet icon-only filter button for tight bars; the badge still shows how many rules are on.",
+  "author": "AmberX AXF",
+  "tags": ["filter", "dataset", "data-set-bar", "compact"],
+  "data": { "display": "icon", "match": "all", "label": "Filter", "icon": "sliders", "tone": "quiet", "size": "sm", "savedFilters": true, "maxRules": 10, "showCount": true, "clear": true }
+}

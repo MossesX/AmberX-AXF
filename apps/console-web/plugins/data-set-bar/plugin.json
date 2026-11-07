@@ -1,0 +1,54 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.data-set-bar",
+  "name": "Data set bar",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Attaches a search / filter / sort bar to ANY data set (grid, list, tree, table), hidden until attached. Search, Filter and Sort are each their own registry asset (search-bar with scope dataset, filter-button, sort-control), reusable on their own, plus the combined data-set-bar asset. Attach by right-clicking a data set (Attach data set bar ▸ Top / Bottom / Inline / Floating, or one piece at a time), from the Registry Browser's asset cards (Attach to data set), by voice (console actions) or through the API / MCP / CLI (plugin-commands); detach the same way. Filter: rules per field with saved filters. Sort: multi-key with saved sorts. Search: field-scoped and fuzzy. Per-attachment config lives in this device's settings (local-first) with Reset to default. The top-bar search is an instance of the same search-bar asset.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:data-set-bar.filter",
+    "dialog:data-set-bar.sort",
+    "dialog:data-set-bar.settings",
+    "settings-tab:data-set-bar",
+    "slot:axf.dataset.toolbar",
+    "slot:axf.dataset.footer"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "action": "data-set-bar.list", "id": "list", "title": "List attached data sets", "readOnly": true, "description": "Lists every data set the bar or a piece is attached to on this device, with placement and what is applied." },
+      { "action": "data-set-bar.attach", "id": "attach", "title": "Attach the data set bar", "description": "Attach the data set bar to a data set: args dataset, placement (top | bottom | inline | floating, optional), bar asset id (optional)." },
+      { "action": "data-set-bar.detach", "id": "detach", "title": "Detach the data set bar", "description": "Take the bar and every piece off a data set (its saved filters and sorts go too)." },
+      { "action": "data-set-bar.piece", "id": "attach-piece", "title": "Attach one piece", "description": "Attach a search bar, filter button or sort control alone: args dataset, piece (search | filter | sort), asset id (optional)." },
+      { "action": "data-set-bar.unpiece", "id": "detach-piece", "title": "Detach one piece", "description": "Take one piece off a data set: args dataset, piece." },
+      { "action": "data-set-bar.move", "id": "move", "title": "Move the bar", "description": "Change where the bar sits on a data set: args dataset, placement." },
+      { "action": "data-set-bar.bar", "id": "change-bar", "title": "Change the bar asset", "description": "Use another data-set-bar asset for a data set: args dataset, asset id." },
+      { "action": "data-set-bar.reset", "id": "reset", "title": "Reset an attachment to default", "description": "Drop the attachment's overrides, applied search / rules / sort and the pill's spot; saved filters and sorts stay." },
+      { "action": "data-set-bar.search", "id": "search", "title": "Search a data set", "description": "Set the bar's search text on a data set: args dataset, text (empty clears)." },
+      { "action": "data-set-bar.clear", "id": "clear", "title": "Clear a data set's search, rules and sort" }
+    ]
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-07" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/data-set-bar",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": "dialog"
+}

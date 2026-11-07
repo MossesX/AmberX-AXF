@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "search-bar",
+  "id": "dataset-exact",
+  "name": "Data set search, exact",
+  "version": "1.0.0",
+  "description": "A compact data set search that matches exactly what is typed (no fuzzy matching, no field picker).",
+  "author": "AmberX AXF",
+  "tags": ["search", "dataset", "data-set-bar"],
+  "data": { "placeholder": "Find…", "maxResults": 14, "width": "compact", "shortcut": false, "scope": "dataset", "fuzzy": false, "fields": [], "fieldPicker": false, "minChars": 2 }
+}

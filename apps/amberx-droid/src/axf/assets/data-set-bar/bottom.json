@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "data-set-bar",
+  "id": "bottom",
+  "name": "Data set bar, footer",
+  "version": "1.0.0",
+  "description": "Option D: the full bar as a footer under the data set (search, Filter, Sort chips, count), for grids whose top is already busy.",
+  "author": "AmberX AXF",
+  "tags": ["dataset", "data-set-bar"],
+  "data": { "placement": "bottom", "search": "dataset", "filter": "default", "sort": "chips", "count": true, "clear": true, "align": "spread", "density": "regular", "surface": "raised", "label": "Data set bar (footer)" }
+}

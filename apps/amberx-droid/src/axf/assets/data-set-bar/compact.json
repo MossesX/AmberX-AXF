@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "data-set-bar",
+  "id": "compact",
+  "name": "Data set bar, compact",
+  "version": "1.0.0",
+  "description": "Option B: one quiet inline line on the data set's own header edge: a narrow exact search and icon-only Filter and Sort, count at the end.",
+  "author": "AmberX AXF",
+  "tags": ["dataset", "data-set-bar", "compact"],
+  "data": { "placement": "inline", "search": "dataset-exact", "filter": "icon", "sort": "icon", "count": true, "clear": false, "align": "end", "density": "compact", "surface": "flat", "label": "Data set bar (compact)" }
+}

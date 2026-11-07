@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "data-set-bar",
+  "id": "default",
+  "name": "Data set bar",
+  "version": "1.0.0",
+  "description": "Option A: a full bar above the data set: fuzzy search with a field picker, Filter and Sort buttons with labels, row count and Clear all.",
+  "author": "AmberX AXF",
+  "tags": ["dataset", "data-set-bar"],
+  "data": { "placement": "top", "search": "dataset", "filter": "default", "sort": "default", "count": true, "clear": true, "align": "start", "density": "compact", "surface": "flat", "label": "Data set bar" }
+}

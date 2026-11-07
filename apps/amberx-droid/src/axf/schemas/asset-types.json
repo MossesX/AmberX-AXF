@@ -702,7 +702,7 @@
       "label": "Search bar",
       "group": "Widgets",
       "icon": "search",
-      "description": "A search bar widget: searches the whole app (views, settings, actions, assets, windows, words on the page, and anything a module adds, e.g. the console's plan features, pending builds and plugins). Attaches to banners and toolbars.",
+      "description": "A search bar widget (search-bar@1). scope app (default): searches the whole app (views, settings, actions, assets, windows, words on the page, and anything a module adds, e.g. the console's plan features, pending builds and plugins); attaches to banners and toolbars. scope dataset: the same asset type scoped to the rows of the data set it is attached to (the Data set bar plugin attaches it to any grid, list, tree or table; engine core/engines/datasetbar.ts): field-scoped, fuzzy. The top-bar search is an instance of this type (search-bar/everything), and so is every data set search (search-bar/dataset).",
       "required": [
         "placeholder",
         "maxResults",
@@ -713,6 +713,10 @@
           "compact",
           "regular",
           "wide"
+        ],
+        "scope": [
+          "app",
+          "dataset"
         ]
       },
       "optional": true,
@@ -724,7 +728,12 @@
       },
       "optional_fields": {
         "kinds": "string[] — only these result kinds (default: all)",
-        "shortcut": "boolean — Ctrl/Cmd+K and / focus it (default true)"
+        "shortcut": "boolean — Ctrl/Cmd+K and / focus it (default true)",
+        "scope": "app (default) | dataset — what the bar searches: the whole app, or the rows of the data set it is attached to",
+        "fuzzy": "boolean — dataset scope: fuzzy matching (words in any order, small typos, subsequence match) instead of exact substring; default true for dataset, ignored for app",
+        "fields": "string[] — dataset scope: field ids the search looks through (empty / left out = every field of the data set)",
+        "fieldPicker": "boolean — dataset scope: a picker next to the box to narrow the search to one field (default true)",
+        "minChars": "number 0–5 — dataset scope: characters typed before the search applies (default 1)"
       }
     },
     "action-button": {
@@ -1647,6 +1656,158 @@
         "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
       },
       "optional": true
+    },
+    "filter-button": {
+      "label": "Filter button",
+      "group": "Data",
+      "icon": "sliders",
+      "description": "filter-button@1: a filter control for a data set (grid, list, tree, table): one button that opens the filter dialog (rules per column / field: contains, is, starts, ends, one of, >, <, between, empty; match all / any) and keeps saved filters (named, per data set, local-first). Reusable on its own or as the filter piece of a data-set-bar; attached to a data set by the Data set bar plugin (right-click, Registry Browser, voice, API / MCP / CLI). Engine core/engines/datasetbar.ts.",
+      "required": [
+        "display",
+        "match"
+      ],
+      "enums": {
+        "display": [
+          "icon",
+          "label",
+          "both"
+        ],
+        "match": [
+          "all",
+          "any"
+        ],
+        "tone": [
+          "neutral",
+          "primary",
+          "ghost",
+          "quiet"
+        ],
+        "size": [
+          "sm",
+          "md"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "label": "string — button text (default Filter)",
+        "icon": "string — icon name (default sliders)",
+        "tone": "neutral (default) | primary | ghost | quiet — button tone (button asset tones)",
+        "size": "sm (default) | md",
+        "savedFilters": "boolean — show and keep saved filters in the dialog (default true)",
+        "quickFields": "string[] — field ids offered first when adding a rule (default: the data set's field order)",
+        "maxRules": "number 1–20 — most rules one filter may hold (default 10)",
+        "showCount": "boolean — badge with the number of active rules on the button (default true)",
+        "clear": "boolean — a Clear filter entry in the dialog and on the button's menu (default true)"
+      }
+    },
+    "sort-control": {
+      "label": "Sort control",
+      "group": "Data",
+      "icon": "chevron-down",
+      "description": "sort-control@1: a sort control for a data set: multi-key sort (up to maxKeys fields, each ascending or descending, in order) with saved sorts (named, per data set, local-first). style menu = one button opening the sort list; chips = the active keys as chips you can flip or remove; buttons = one toggle button per quick field. Reusable on its own or as the sort piece of a data-set-bar. Engine core/engines/datasetbar.ts.",
+      "required": [
+        "display",
+        "style"
+      ],
+      "enums": {
+        "display": [
+          "icon",
+          "label",
+          "both"
+        ],
+        "style": [
+          "menu",
+          "chips",
+          "buttons"
+        ],
+        "tone": [
+          "neutral",
+          "primary",
+          "ghost",
+          "quiet"
+        ],
+        "size": [
+          "sm",
+          "md"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "label": "string — button text (default Sort)",
+        "icon": "string — icon name (default chevron-down)",
+        "tone": "neutral (default) | primary | ghost | quiet",
+        "size": "sm (default) | md",
+        "maxKeys": "number 1–5 — how many sort keys at once (default 3)",
+        "savedSorts": "boolean — show and keep saved sorts (default true)",
+        "quickFields": "string[] — field ids shown as the first choices (style buttons: the buttons drawn)",
+        "showCount": "boolean — badge with the number of active keys (default true)"
+      }
+    },
+    "data-set-bar": {
+      "label": "Data set bar",
+      "group": "Data",
+      "icon": "list",
+      "description": "data-set-bar@1: the combined bar the Data set bar plugin attaches to ANY data set (grid, list, tree, table), hidden until attached: a search-bar (scope dataset), a filter-button and a sort-control, each named by asset id (or \"\" to leave the piece out), with a row count and a clear-all button. placement top | bottom | inline | floating says where it sits against the data set; every attachment may override the asset's placement and pieces (per-attachment config, local-first, Reset to default). Attach / detach: right-click the data set, the Registry Browser, voice, API / MCP / CLI. Engine core/engines/datasetbar.ts.",
+      "required": [
+        "placement",
+        "search",
+        "filter",
+        "sort"
+      ],
+      "enums": {
+        "placement": [
+          "top",
+          "bottom",
+          "inline",
+          "floating"
+        ],
+        "align": [
+          "start",
+          "center",
+          "end",
+          "spread"
+        ],
+        "density": [
+          "compact",
+          "regular"
+        ],
+        "surface": [
+          "flat",
+          "raised",
+          "glass"
+        ],
+        "floatingSide": [
+          "bottom-end",
+          "bottom-start",
+          "top-end",
+          "top-start"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "search": "string — id of the search-bar asset used as the search piece (scope dataset); \"\" = no search",
+        "filter": "string — id of the filter-button asset; \"\" = no filter",
+        "sort": "string — id of the sort-control asset; \"\" = no sort",
+        "count": "boolean — show rows shown of total (default true)",
+        "clear": "boolean — a clear-all button when anything is applied (default true)",
+        "align": "start (default) | center | end | spread",
+        "density": "compact (default) | regular",
+        "surface": "flat (default) | raised | glass",
+        "label": "string — accessible name of the bar (default Data set bar)",
+        "floatingSide": "bottom-end (default) | bottom-start | top-end | top-start — floating placement: where the pill starts; the person can drag it and the spot is remembered per attachment"
+      }
     },
     "uac-policy": {
       "label": "User account control",

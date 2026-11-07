@@ -138,6 +138,8 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       // which banner widget was hit: its menu offers Widget settings for that one
       rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // which data set was hit (lib-datagrid grids and anything else that names one): its menu offers Attach / Detach data set bar
+      rt.contextDataset = target?.closest('[data-axf-dataset]')?.getAttribute('data-axf-dataset') || null;
       // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
       // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
       const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');

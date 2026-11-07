@@ -6,8 +6,10 @@
  *   transform applied. Every `DataGrid` does this by itself (its id and columns), so every grid is a dataset.
  * - A plugin attaches a transform: `setDatasetTransform(dataset, owner, { filter?, compare?, active? })`. Transforms
  *   from several owners run in owner order (filters AND-ed, sorts chained); `clearDatasetTransform` takes it off.
- * - A plugin may draw above an attached dataset through the slot `DATASET_TOOLBAR_SLOT` (props `{ dataset }`), which
- *   `DataGrid` renders, and views using `useDataset` render with `<DatasetToolbar dataset=… />`.
+ * - A plugin may draw above an attached dataset through the slot `DATASET_TOOLBAR_SLOT` and below it through
+ *   `DATASET_FOOTER_SLOT` (props `{ dataset, label }`), which `DataGrid` renders; views using `useDataset` wrap their rows
+ *   in `<DatasetFrame dataset=… label=…>` (index.tsx), which renders both slots and names the dataset for right-click
+ *   (`data-axf-dataset`, read by the context menu host into `rt.contextDataset`).
  *
  * Pure data + a tiny store (no React state outside the hooks), so it ports: Android twin recorded as a deferred gap
  * (placeholder `axf.datagrid.datasets.android` in library.json).
@@ -15,6 +17,8 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 
 export const DATASET_TOOLBAR_SLOT = 'axf.dataset.toolbar';
+/** Below an attached dataset (data-set-bar@1 placement `bottom`); same props as the toolbar slot. */
+export const DATASET_FOOTER_SLOT = 'axf.dataset.footer';
 
 export type FieldKind = 'text' | 'number' | 'date' | 'choice' | 'bool';
 export interface DatasetField<R = unknown> {
