@@ -1834,6 +1834,18 @@
    "from": "",
    "addenda": []
   },
+  "maintenance-redundancy-scan": {
+   "said": "Maintenance: redundancy scan (Brett, Nov 7)\n\nAdd a job to the Maintenance plan/runner (reuse maintenance-vps-monitor / AmberX Maintenance / syscheck pieces where they exist) that searches for redundant data sets in a controlled, methodical way and REPORTS them. It never deletes or merges anything.",
+   "at": "2026-11-07T13:46:06.752Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",
