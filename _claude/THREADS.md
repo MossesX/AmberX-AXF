@@ -705,18 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 22:49 UTC · `build-own-login` branch claude/build-own-login-r2, PR #357 (current) · builds-live
-- 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built, branch claude/build-own-login-r2, PR #357 (current) · builds-live
-- 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built (current) · orchestrator
-- 2026-11-05 23:10 UTC · `ai-keys-new-format` → complete, merged, note (current) · reconciler
-- 2026-11-05 23:30 UTC · `build-own-login` note (current) · foreign-write
-- 2026-11-05 23:28 UTC · `build-own-login` → complete, merged, note (current) · reconciler
-- 2026-11-05 23:30 UTC · `console-account-picker` added (5 steps) (current) · orchestrator
-- 2026-11-05 23:51 UTC · `ai-keys-console-store` added (3 steps) (current) · orchestrator
-- 2026-11-05 23:51 UTC · `ai-keys-console-store` s1 done, → running (current) · orchestrator
-- 2026-11-05 23:51 UTC · `ai-keys-console-store` s2 done (current) · orchestrator
-- 2026-11-05 23:51 UTC · `console-account-picker` note (current) · orchestrator
-- 2026-11-05 23:53 UTC · `ai-keys-console-store` branch claude/ai-keys-console-store-2, PR #358 (current) · builds-live
 - 2026-11-05 23:53 UTC · `ai-keys-console-store` note (current) · orchestrator
 - 2026-11-06 00:15 UTC · `skins` added (11 steps) (main-framework) · orchestrator
 - 2026-11-06 00:40 UTC · `ai-keys-console-store` → pending, merged, note (current) · reconciler
@@ -1105,6 +1093,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` → built (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` note (current) · foreign-write
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` branch claude/notes-tasks-calendar, PR #374 (current) · builds-live
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s3 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s4 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s5 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s6 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s6-1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s6-2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7-1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7-2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8 done (current) · orchestrator
 
 ## Token passes (log)
 

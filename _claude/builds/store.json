@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1208,
- "updatedAt": "2026-11-07T01:31:33.030Z",
+ "rev": 1209,
+ "updatedAt": "2026-11-07T01:31:51.672Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -101916,7 +101916,7 @@
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:31:30.313Z",
+   "updatedAt": "2026-11-07T01:31:49.908Z",
    "builtAt": "",
    "notes": [
     {
@@ -101976,12 +101976,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:39.270Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:23.622Z",
-     "updatedAt": "2026-11-07T00:48:23.622Z"
+     "updatedAt": "2026-11-07T01:31:39.347Z"
     },
     {
      "id": "s2",
@@ -101998,12 +101998,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:40.050Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:23.622Z",
-     "updatedAt": "2026-11-07T00:48:23.622Z"
+     "updatedAt": "2026-11-07T01:31:40.191Z"
     },
     {
      "id": "s3",
@@ -102020,12 +102020,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:40.928Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:23.622Z",
-     "updatedAt": "2026-11-07T00:48:23.622Z"
+     "updatedAt": "2026-11-07T01:31:41.012Z"
     },
     {
      "id": "s4",
@@ -102042,12 +102042,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:41.669Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:23.622Z",
-     "updatedAt": "2026-11-07T00:48:23.622Z"
+     "updatedAt": "2026-11-07T01:31:41.753Z"
     },
     {
      "id": "s5",
@@ -102064,12 +102064,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:42.589Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:23.622Z",
-     "updatedAt": "2026-11-07T00:48:23.622Z"
+     "updatedAt": "2026-11-07T01:31:42.662Z"
     },
     {
      "id": "s6",
@@ -102086,12 +102086,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:43.502Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T00:48:24.663Z"
+     "updatedAt": "2026-11-07T01:31:43.611Z"
     },
     {
      "id": "s6-1",
@@ -102174,12 +102174,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:47.995Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T00:48:24.663Z"
+     "updatedAt": "2026-11-07T01:31:48.127Z"
     },
     {
      "id": "s7-2",
@@ -102196,12 +102196,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:48.915Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T00:48:24.663Z"
+     "updatedAt": "2026-11-07T01:31:48.987Z"
     },
     {
      "id": "s8",
@@ -102218,12 +102218,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:49.908Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T00:48:24.663Z"
+     "updatedAt": "2026-11-07T01:31:50.015Z"
     },
     {
      "id": "s8-1",
@@ -102300,7 +102300,7 @@
    },
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 6,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {

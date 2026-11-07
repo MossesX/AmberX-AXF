@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T01:31:33.030Z",
+ "updatedAt": "2026-11-07T01:31:51.672Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20198,7 +20198,7 @@
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:31:30.313Z",
+   "updatedAt": "2026-11-07T01:31:49.908Z",
    "builtAt": "",
    "notes": [
     {
@@ -20256,8 +20256,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:39.270Z",
      "note": "",
      "uid": "st-mw5oq3992kv4j8"
     },
@@ -20274,8 +20274,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:40.050Z",
      "note": "",
      "uid": "st-mw5oq3992lu2w9"
     },
@@ -20292,8 +20292,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:40.928Z",
      "note": "",
      "uid": "st-mw5oq3992mjial"
     },
@@ -20310,8 +20310,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:41.669Z",
      "note": "",
      "uid": "st-mw5oq3992n2p80"
     },
@@ -20328,8 +20328,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:42.589Z",
      "note": "",
      "uid": "st-mw5oq3992ov681"
     },
@@ -20346,8 +20346,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:43.502Z",
      "note": "",
      "uid": "st-mw5oq3x32pxvnb"
     },
@@ -20418,8 +20418,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:47.995Z",
      "note": "",
      "uid": "st-mw5oq3x42tnyga"
     },
@@ -20436,8 +20436,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:48.915Z",
      "note": "",
      "uid": "st-mw5oq3x42u86ou"
     },
@@ -20454,8 +20454,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:49.908Z",
      "note": "",
      "uid": "st-mw5oq3x42vbibe"
     },
