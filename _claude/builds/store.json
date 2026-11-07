@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1212,
- "updatedAt": "2026-11-07T01:33:11.333Z",
+ "rev": 1213,
+ "updatedAt": "2026-11-07T01:33:38.010Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91815,14 +91815,14 @@
    "title": "Approve / deny axHub approvals inside the Dev Console (no bounce to axHub)",
    "category": "Console",
    "detail": "Tapping an approval in the console opened axHub. Now: the console server relays Brett's own hub session (axhub_session cookie on .amberxai.com, wall-signed admin, same-origin tap) to axHub's decide API (session + CSRF + hub Origin), so the banner, app-menu rows, review dialog, Follow Amber pop-up and console_show approval:<id> decide in place with the result shown. Review dialog = in-console approval view (title, description, exact call, countdown, Approve/Deny, result), axHub link only secondary. Console actions approvals.approve/deny/view. AmberX notification taps open the console view.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approvals-in-place-r2",
    "pr": "#375",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T01:33:10.441Z",
+   "updatedAt": "2026-11-07T01:33:36.746Z",
    "builtAt": "",
    "notes": [
     {
@@ -91984,12 +91984,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:36.746Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T12:17:13.813Z",
-     "updatedAt": "2026-11-06T12:17:13.813Z"
+     "updatedAt": "2026-11-07T01:33:36.822Z"
     },
     {
      "id": "s6",
@@ -92374,7 +92374,7 @@
    },
    "kind": "build",
    "planRef": "console-approvals-in-place",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
