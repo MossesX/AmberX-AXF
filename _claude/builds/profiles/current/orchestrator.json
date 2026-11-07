@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T00:30:57.121Z",
+ "updatedAt": "2026-11-07T00:31:17.715Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14745,9 +14745,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-06T13:08:05.609Z",
+   "updatedAt": "2026-11-07T00:30:57.756Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlap with claude-settings-tabs-veto (PR 371): its Approvals & veto tab is the tool for s2 / s5-4 (default plan: hold only VPS writes and account switches). Not ticked: no live policy changed; it needs that build's Fable step s4 (axHub policy API) and Brett's Apply click. s1 pop-up windows and s3 rules are untouched.",
+     "at": "2026-11-07T00:30:57.756Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17680,7 +17685,7 @@
    "branch": "claude/claude-settings-tabs-veto",
    "pr": "#371",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-07T00:30:55.887Z",
+   "updatedAt": "2026-11-07T00:30:56.751Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -17810,8 +17815,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:30:56.751Z",
      "note": "",
      "uid": "st-mw5nheni0jk7j1"
     }

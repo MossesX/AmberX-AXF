@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1185,
- "updatedAt": "2026-11-07T00:30:57.121Z",
+ "rev": 1186,
+ "updatedAt": "2026-11-07T00:31:17.715Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -92109,9 +92109,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-06T13:08:05.609Z",
+   "updatedAt": "2026-11-07T00:30:57.756Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlap with claude-settings-tabs-veto (PR 371): its Approvals & veto tab is the tool for s2 / s5-4 (default plan: hold only VPS writes and account switches). Not ticked: no live policy changed; it needs that build's Fable step s4 (axHub policy API) and Brett's Apply click. s1 pop-up windows and s3 rules are untouched.",
+     "at": "2026-11-07T00:30:57.756Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -92256,7 +92261,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -98494,7 +98499,7 @@
    "branch": "claude/claude-settings-tabs-veto",
    "pr": "#371",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-07T00:30:55.887Z",
+   "updatedAt": "2026-11-07T00:30:56.751Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -98646,12 +98651,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:30:56.751Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:13:39.003Z",
-     "updatedAt": "2026-11-07T00:13:39.003Z"
+     "updatedAt": "2026-11-07T00:30:56.874Z"
     }
    ],
    "profiles": [
@@ -98662,7 +98667,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
