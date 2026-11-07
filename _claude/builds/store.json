@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1188,
- "updatedAt": "2026-11-07T00:35:31.266Z",
+ "rev": 1189,
+ "updatedAt": "2026-11-07T00:36:51.845Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -98293,9 +98293,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/settings-sections-everywhere",
-   "pr": "",
+   "pr": "#372",
    "createdAt": "2026-11-07T00:13:07.252Z",
-   "updatedAt": "2026-11-07T00:22:58.705Z",
+   "updatedAt": "2026-11-07T00:36:50.963Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -98476,7 +98476,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -98546,7 +98546,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:39.003Z",
-     "updatedAt": "2026-11-07T00:28:55.674Z"
+     "updatedAt": "2026-11-07T00:36:50.763Z"
     },
     {
      "id": "s2",
@@ -98568,7 +98568,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:39.003Z",
-     "updatedAt": "2026-11-07T00:28:57.076Z"
+     "updatedAt": "2026-11-07T00:36:50.763Z"
     },
     {
      "id": "s3",
@@ -98590,7 +98590,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:39.003Z",
-     "updatedAt": "2026-11-07T00:28:58.915Z"
+     "updatedAt": "2026-11-07T00:36:50.763Z"
     },
     {
      "id": "s4",
@@ -98634,7 +98634,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:39.003Z",
-     "updatedAt": "2026-11-07T00:29:01.276Z"
+     "updatedAt": "2026-11-07T00:36:50.763Z"
     },
     {
      "id": "s6",
@@ -98656,7 +98656,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:39.003Z",
-     "updatedAt": "2026-11-07T00:30:56.874Z"
+     "updatedAt": "2026-11-07T00:36:50.763Z"
     }
    ],
    "profiles": [

@@ -705,10 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · builds-live
-- 2026-11-05 06:01 UTC · `priority-tags` → complete, merged, note (current) · reconciler
-- 2026-11-05 11:04 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
-- 2026-11-05 11:04 UTC · `three-layouts-per-screen` note (angel) · orchestrator
 - 2026-11-05 11:04 UTC · `three-layouts-per-screen` branch claude/three-layouts-per-screen-r2 (angel) · builds-live
 - 2026-11-05 11:08 UTC · `handoff-2-addenda-r2` added (8 steps) (current) · foreign-write
 - 2026-11-05 11:08 UTC · `three-layouts-per-screen` s1 done (angel) · orchestrator
@@ -1105,6 +1101,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:30 UTC · `claude-settings-tabs-veto` s6 done (current) · orchestrator
 - 2026-11-07 00:30 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
 - 2026-11-07 00:35 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · orchestrator
+- 2026-11-07 00:36 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · foreign-write
+- 2026-11-07 00:36 UTC · `claude-settings-tabs-veto` s1 done, s2 done, s3 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-07 00:36 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · foreign-write
+- 2026-11-07 00:36 UTC · `settings-sections-everywhere` PR #372 (current) · builds-live
 
 ## Token passes (log)
 
