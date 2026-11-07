@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1403,
- "updatedAt": "2026-11-07T17:03:09.358Z",
+ "rev": 1404,
+ "updatedAt": "2026-11-07T17:11:46.060Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112357,12 +112357,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T17:00:11.176Z",
-   "updatedAt": "2026-11-07T17:03:07.813Z",
+   "updatedAt": "2026-11-07T17:11:45.170Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Every concept must look and feel like a real, working desktop application, not a mockup or static screenshot: real navigation, working screens, real controls and states, using AmberX's actual features and data. Brett: \"I love the design to look like a real application, dude.\"",
      "at": "2026-11-07T17:01:19.405Z"
+    },
+    {
+     "text": "PREVIEWS FIRST. Each of the 8 steps now only produces a preview (static mockup screens of what Patches / AmberX would closely look like in that style) and posts it to UI Review. Do NOT build any real app code. Stop after all 8 previews and wait for Brett to pick one in UI Review; only the picked concept gets fully built. Note: patches.amberxai.com (the Patches app) was deleted; the picked concept becomes its from-scratch rebuild. Brett: \"before you go crazy building, I need some previews in the UI review. Okay, what it closely might look like.\"",
+     "at": "2026-11-07T17:11:45.170Z"
     }
    ],
    "approvals": [],
@@ -112553,7 +112557,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
