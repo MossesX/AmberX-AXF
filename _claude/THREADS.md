@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 03:00 UTC · `amberx-approvals-fix` → pending, note (urgent) · reconciler
 - 2026-11-05 03:20 UTC · `banner-widgets` → pending, note (current) · reconciler
 - 2026-11-05 03:30 UTC · `banner-widgets` merged, note (current) · reconciler
 - 2026-11-05 04:53 UTC · `priority-tags` added (6 steps) (current) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:22 UTC · `settings-sections-everywhere` s3 done (current) · orchestrator
 - 2026-11-07 00:22 UTC · `settings-sections-everywhere` s4 done (current) · orchestrator
 - 2026-11-07 00:22 UTC · `settings-sections-everywhere` s5 done (current) · orchestrator
+- 2026-11-07 00:28 UTC · `settings-sections-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
 
 ## Token passes (log)
 
