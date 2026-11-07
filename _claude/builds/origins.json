@@ -810,6 +810,18 @@
    "from": "",
    "addenda": []
   },
+  "claude-accounts-edit": {
+   "said": "Where it lists the accounts, I need to have an edit button next to the switch buttons... that runs the wizard again.",
+   "at": "2026-11-06",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "backfill",
+   "brief": "# claude-accounts-edit: Edit button per account that reruns the wizard\n\n(r2: r1 died at launch, account-2 OAuth expired.)\n\nBrett's words (voice, Nov 6 2026): \"Where it lists the accounts, I need to have an edit button next to the switch buttons... that runs the wizard again.\"\n\n## Problem\nIn the console's Claude accounts list (ai-keys \"Manage Claude accounts\" view and the claude-accounts screen), each account row only has Switch. When an account's login expires, there is no way to re-log that specific account. The add-account wizard only adds a new one. Also: the wizard's \"Save current account\" fails with a bare 'VPS command failed, exit 1' when nobody is logged in (claude-account save prints 'nothing to save: log in or pass a token'); show that message in the UI.\n\n## Build\n1. Add an **Edit** button on every account row, right next to Switch, in every place the account list is shown.\n2. Edit opens the existing add-account wizard bound to that account (pre-filled name/slot). Finishing it replaces that account's login/credentials in place: same slot, no new account. Per-build login copies for that account pick up the new credentials.\n3. Show a clear state on rows whose login is expired/invalid (e.g. \"Login expired\").\n4. Wizard: surface the claude-account command's own output on failure instead of only 'exit 1'.\n5. Register a console action claude-accounts.edit (account id arg) so it runs through console commands too.\n\n## Rules\nFollow CLAUDE.md and _claude/rules/RULES.md. Never print or log secrets/tokens. Tests for the edit path (re-log replaces creds in place, no duplicate). Update help/docs, THREADS row, orchestrator entry, report. Don't land; leave it for Brett's go.\n",
+   "verbatim": true,
+   "from": "brief",
+   "addenda": []
+  },
   "claude-badge-vps": {
    "said": "I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.",
    "at": "2026-11-06T20:18:34.992Z",
