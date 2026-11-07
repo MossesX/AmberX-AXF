@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T11:17:35.528Z",
+ "updatedAt": "2026-11-07T11:17:43.323Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7206,10 +7206,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-07T11:17:33.433Z",
+   "updatedAt": "2026-11-07T11:17:36.348Z",
    "builtAt": "2026-11-07T11:17:33.434Z",
    "notes": [
     {
@@ -64998,10 +64998,10 @@
    "hidden": false,
    "source": "voice",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-05T01:38:10.037Z",
-   "updatedAt": "2026-11-07T11:17:32.753Z",
+   "updatedAt": "2026-11-07T11:17:36.892Z",
    "builtAt": "2026-11-07T11:17:32.753Z",
    "notes": [
     {

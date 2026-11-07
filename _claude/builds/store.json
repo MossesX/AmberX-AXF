@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1281,
- "updatedAt": "2026-11-07T11:17:35.528Z",
+ "rev": 1282,
+ "updatedAt": "2026-11-07T11:17:43.323Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -76317,10 +76317,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-07T11:17:33.433Z",
+   "updatedAt": "2026-11-07T11:17:36.348Z",
    "builtAt": "2026-11-07T11:17:33.434Z",
    "notes": [
     {
@@ -76431,7 +76431,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "gizmo-voice",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90962,10 +90962,10 @@
    "hidden": false,
    "source": "voice",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-05T01:38:10.037Z",
-   "updatedAt": "2026-11-07T11:17:32.753Z",
+   "updatedAt": "2026-11-07T11:17:36.892Z",
    "builtAt": "2026-11-07T11:17:32.753Z",
    "notes": [
     {
@@ -91068,7 +91068,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
