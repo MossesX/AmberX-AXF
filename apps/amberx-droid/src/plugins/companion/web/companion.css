@@ -44,6 +44,7 @@
 .axp-companion__talk { display: flex; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-accent); min-width: 0; }
 .axp-companion__attached { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
 .axp-companion__inputrow { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axp-companion__mode { flex: 0 1 auto; min-width: 0; }
 .axp-companion__input { width: 100%; resize: none; max-height: calc(var(--fx-space) * 10); }
 .axp-companion-voice { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
 

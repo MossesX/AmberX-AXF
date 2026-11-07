@@ -35,6 +35,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
 | UI Review phone notifications + truthful wake + auto session recording and transcripts (`ui-review-notify-session-audio`) | built, waiting on UI Review | claude/ui-review-notify-audio | #365 | Brett approves 5 items, then the merge queue takes it; a new AmberX APK for the phone half | 2026-11-06 |
+| Fast talk: Gizmo and the console assistant answer plain chat without tools (`assistant-chat-mode`, Current, Opus; r1 and r2 hit the usage limit, r3 unpushed, r4 finished it) | built | `claude/assistant-chat-mode-r4` | see build | Report `_claude/builds/reports/assistant-chat-mode.md`. Plain talk: first word about 1 s, was about 8 s. Waiting on Brett's UI Review, then the merge queue | 2026-11-06 |
 | Every headless build keeps its own Claude login (Current `build-own-login`, Opus; Brett Nov 5 voice: "Yeah, it should be like that already."): per-build `CLAUDE_CONFIG_DIR` copy of the active saved account (`deploy/claude-login.mjs`), inherited OAuth token dropped, account recorded (log, tmux tag, event, build note), `--account` per launch, swarm runner too | built, in the merge queue | `claude/build-own-login-r2` | (see Live build log) | Report `_claude/builds/reports/build-own-login.md`. Brett: none | 2026-11-05 |
 | AI keys console-wide store (`ai-keys-console-store`, Opus; Janitor Joey): AI keys was already one store and never held a key, Brett's 5 are in `~/.claude-accounts`. Added an admin + service-token guard, a per-user store migration (no such files today), `vpsAccounts` on GET /keys, POST /active and /switch for VPS accounts (held), fixed claude-accounts dropping `[token]` / `[api key]` rows. Tokens deliberately not copied: AI keys rotates refresh tokens. Importing them is Brett's call | in progress | claude/ai-keys-console-store-2 | | merge queue, redeploy, verify | 2026-11-05 |
 | AI keys accept new Anthropic key formats (`ai-keys-new-format`, Opus; Brett Nov 5 voice: "Put someone else on it."): `sk-ant-usr…` and any unknown `sk-ant-` API format accepted and checked live (OK / invalid / no credit), `sk-ant-oat` stays a subscription login; shared `axf.anthropic_keys`; report `_claude/builds/reports/ai-keys-new-format.md` | built, in merge queue | claude/ai-keys-new-format-r4 | #356 | merge queue lands it | 2026-11-05 |
@@ -205,6 +206,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Left:** Brett approves the 5 UI Review items; the merge queue lands it. After the merge: build and install a new AmberX APK, then try it on the phone (notification tap, overlay start, recorder prompt) and check one real 30-minute part.
 - **Read:** `_claude/builds/reports/ui-review-notify-session-audio.md`.
 - **First message:** "Check PR #365 after it lands: confirm the console image has faster-whisper, the systems check shows Session transcripts, and a real recording gets a transcript."
+### Fast talk (`assistant-chat-mode`, Current, Opus) — branch `claude/assistant-chat-mode-r4`
+All 8 steps done on the branch. Waits on Brett's UI Review, then the merge queue lands it. Do not merge by hand. Check: the AI assistant plugin's `test.py`. After landing, measure once on the phone through AmberX, since the report's figures are from the VPS.
 
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
@@ -713,210 +716,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:31 UTC · `three-layouts-per-screen` added (5 steps) (angel) · orchestrator
-- 2026-11-04 21:31 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
-- 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s1 done (angel) · orchestrator
-- 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s2 done (angel) · orchestrator
-- 2026-11-04 21:28 UTC · `molly-banner-match` → pending, note (current) · reconciler
-- 2026-11-04 21:40 UTC · `molly-banner-match` → pending, note (current) · builds-live
-- 2026-11-04 21:41 UTC · `follow-amber-flash` added (4 steps) (angel) · orchestrator
-- 2026-11-04 21:42 UTC · `follow-amber-flash` s1 done, → running (angel) · orchestrator
-- 2026-11-04 21:42 UTC · `follow-amber-flash` s2 done (angel) · orchestrator
-- 2026-11-04 21:42 UTC · `follow-amber-flash` s3 done (angel) · orchestrator
-- 2026-11-04 21:44 UTC · `build-docs-walkthroughs` s3 done (angel) · orchestrator
-- 2026-11-04 21:45 UTC · `shipped-features-r2` added (10 steps) (angel) · gina (headless)
-- 2026-11-04 21:45 UTC · `shipped-features-r2` → running (angel) · gina (headless)
-- 2026-11-04 21:47 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
-- 2026-11-04 21:51 UTC · `follow-amber-flash` s4 done, → built, branch claude/follow-amber-flash, PR #345 (angel) · builds-live
-- 2026-11-04 21:55 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
-- 2026-11-04 21:56 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
-- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s4 done (angel) · orchestrator
-- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s5 done (angel) · orchestrator
-- 2026-11-04 21:58 UTC · `notes-views` added (5 steps) (current) · claude:notes-views
-- 2026-11-04 22:00 UTC · `three-layouts-per-screen` → pending, note (angel) · reconciler
-- 2026-11-04 22:03 UTC · `notes-views` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s6 done (angel) · orchestrator
-- 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s7 done (angel) · orchestrator
-- 2026-11-04 22:04 UTC · `build-docs-walkthroughs` branch claude/build-docs-walkthroughs, PR #346 (angel) · builds-live
-- 2026-11-04 21:53 UTC · `changes-chat-log` added (5 steps) (current) · orchestrator
-- 2026-11-04 22:04 UTC · `notes-views` added (10 steps) (current) · foreign-write
-- 2026-11-04 22:04 UTC · `changes-chat-log` s1 done, → running (current) · orchestrator
-- 2026-11-04 22:04 UTC · `changes-chat-log` s2 done (current) · orchestrator
-- 2026-11-04 22:04 UTC · `changes-chat-log` s3 done (current) · orchestrator
-- 2026-11-04 22:04 UTC · `changes-chat-log` s4 done (current) · orchestrator
-- 2026-11-04 22:07 UTC · `build-docs-walkthroughs` s8 done, → built (angel) · orchestrator
-- 2026-11-04 22:07 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
-- 2026-11-04 22:09 UTC · `changes-chat-log` branch claude/changes-chat-log, PR #347 (current) · builds-live
-- 2026-11-04 22:09 UTC · `changes-chat-log` s5 done, → built (current) · orchestrator
-- 2026-11-04 22:10 UTC · `changes-chat-log` s5 done, → complete, branch claude/changes-chat-log, PR #347 (current) · foreign-write
-- 2026-11-04 22:11 UTC · `shipped-features-r2` → pending, note (angel) · reconciler
-- 2026-11-04 22:17 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
-- 2026-11-04 22:19 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 22:19 UTC · `settings-placement-everywhere` note (current) · foreign-write
-- 2026-11-04 22:19 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
-- 2026-11-04 22:19 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` s3 done (urgent) · orchestrator
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` s6 done (urgent) · orchestrator
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` branch claude/ci-bundle-skipped-shell, PR #348 (urgent) · builds-live
-- 2026-11-04 22:20 UTC · `fable-no-approval` → complete, merged, note (current) · reconciler
-- 2026-11-04 22:20 UTC · `tab-group-assets` → complete, merged, note (current) · reconciler
-- 2026-11-04 22:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
-- 2026-11-04 22:39 UTC · `fable-no-approval` note (current) · foreign-write
-- 2026-11-04 22:39 UTC · `tab-group-assets` note (current) · foreign-write
-- 2026-11-04 22:39 UTC · `changes-chat-log` s1 done, s2 done, s3 done, s4 done, s5 done, → complete (current) · foreign-write
-- 2026-11-04 22:39 UTC · `notes-views` s1 done, → running (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` s2 done (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
-- 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
-- 2026-11-04 22:41 UTC · `notes-views` PR #349 (current) · builds-live
-- 2026-11-04 22:42 UTC · `notes-views` s5 done, → built (current) · claude:notes-views
-- 2026-11-04 23:01 UTC · `fable-review-shipped-features-build-hook-contrac` added (0 steps) (current) · pending
-- 2026-11-04 23:10 UTC · `shipped-features-r2` PR #350, note (angel) · reconciler
-- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · orchestrator
-- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · foreign-write
-- 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done, → running (current) · orchestrator
-- 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done (current) · foreign-write
-- 2026-11-05 00:11 UTC · `claude-account-switcher` s1 done (current) · orchestrator
-- 2026-11-05 00:11 UTC · `claude-account-switcher` s2 done (current) · orchestrator
-- 2026-11-05 00:11 UTC · `claude-account-switcher` s3 done (current) · orchestrator
-- 2026-11-05 00:12 UTC · `claude-account-switcher` s2 done, s3 done (current) · foreign-write
-- 2026-11-05 00:13 UTC · `claude-account-switcher` branch claude/claude-account-switcher, PR #351 (current) · builds-live
-- 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → complete, note (current) · foreign-write
-- 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → built (current) · orchestrator
-- 2026-11-05 00:13 UTC · `claude-account-switcher` note (current) · orchestrator
-- 2026-11-05 01:38 UTC · `amberx-voice-echo-fix` added (3 steps) (main-framework) · orchestrator
-- 2026-11-05 02:08 UTC · `banner-widgets` added (7 steps) (current) · orchestrator
-- 2026-11-05 02:08 UTC · `banner-widgets` → running (current) · orchestrator
-- 2026-11-05 02:14 UTC · `amberx-approvals-fix` added (6 steps) (urgent) · orchestrator
-- 2026-11-05 02:14 UTC · `amberx-approvals-fix` s1 done, → running (urgent) · orchestrator
-- 2026-11-05 02:17 UTC · `banner-widgets` s1 done (current) · orchestrator
-- 2026-11-05 02:17 UTC · `banner-widgets` s2 done (current) · orchestrator
-- 2026-11-05 02:29 UTC · `banner-widgets` branch claude/banner-widgets, PR #352 (current) · builds-live
-- 2026-11-05 02:29 UTC · `banner-widgets` s3 done (current) · orchestrator
-- 2026-11-05 02:29 UTC · `banner-widgets` s4 done (current) · orchestrator
-- 2026-11-05 02:29 UTC · `banner-widgets` s5 done (current) · orchestrator
-- 2026-11-05 02:29 UTC · `banner-widgets` s6 done (current) · orchestrator
-- 2026-11-05 02:36 UTC · `banner-widgets` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` branch claude/amberx-approvals-fix, PR #353 (urgent) · builds-live
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s2 done (urgent) · orchestrator
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s3 done (urgent) · orchestrator
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s4 done (urgent) · orchestrator
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s5 done (urgent) · orchestrator
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` note (urgent) · orchestrator
-- 2026-11-05 02:46 UTC · `banner-widgets` note (current) · orchestrator
-- 2026-11-05 02:49 UTC · `banner-widgets` note (current) · orchestrator
-- 2026-11-05 03:00 UTC · `amberx-approvals-fix` → pending, note (urgent) · reconciler
-- 2026-11-05 03:20 UTC · `banner-widgets` → pending, note (current) · reconciler
-- 2026-11-05 03:30 UTC · `banner-widgets` merged, note (current) · reconciler
-- 2026-11-05 04:53 UTC · `priority-tags` added (6 steps) (current) · orchestrator
-- 2026-11-05 04:53 UTC · `priority-tags` branch claude/priority-tags (current) · builds-live
-- 2026-11-05 05:10 UTC · `priority-tags` PR #354, note (current) · reconciler
-- 2026-11-05 05:10 UTC · `priority-tags` PR #354 (current) · builds-live
-- 2026-11-05 05:10 UTC · `priority-tags` s1 done, s2 done, s3 done, s4 done, s5 done, → running (current) · builds-live
-- 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · orchestrator
-- 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · builds-live
-- 2026-11-05 06:01 UTC · `priority-tags` → complete, merged, note (current) · reconciler
-- 2026-11-05 11:04 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
-- 2026-11-05 11:04 UTC · `three-layouts-per-screen` note (angel) · orchestrator
-- 2026-11-05 11:04 UTC · `three-layouts-per-screen` branch claude/three-layouts-per-screen-r2 (angel) · builds-live
-- 2026-11-05 11:08 UTC · `handoff-2-addenda-r2` added (8 steps) (current) · foreign-write
-- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s1 done (angel) · orchestrator
-- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s2 done (angel) · orchestrator
-- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s3 done (angel) · orchestrator
-- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s4 done (angel) · orchestrator
-- 2026-11-05 11:11 UTC · `ui-review-alarm` → running, note (angel) · orchestrator
-- 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
-- 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
-- 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
-- 2026-11-05 11:20 UTC · `three-layouts-per-screen` PR #355, note (angel) · reconciler
-- 2026-11-05 11:50 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
-- 2026-11-05 11:50 UTC · `handoff-2-addenda-r2` → pending, note (current) · reconciler
-- 2026-11-05 18:36 UTC · `assistant-chat-mode` added (8 steps) (current) · orchestrator
-- 2026-11-05 18:36 UTC · `assistant-chat-mode` → running (current) · orchestrator
-- 2026-11-05 18:36 UTC · `assistant-chat-mode` s1 done (current) · orchestrator
-- 2026-11-05 18:42 UTC · `assistant-chat-mode` s2 done (current) · orchestrator
-- 2026-11-05 18:42 UTC · `assistant-chat-mode` s3 done (current) · orchestrator
-- 2026-11-05 18:42 UTC · `assistant-chat-mode` s4 done (current) · orchestrator
-- 2026-11-05 19:10 UTC · `assistant-chat-mode` → pending, note (current) · reconciler
-- 2026-11-05 20:00 UTC · `claude-account-switcher` → complete, merged, note (current) · reconciler
-- 2026-11-05 22:37 UTC · `build-own-login` added (4 steps) (current) · orchestrator
-- 2026-11-05 22:40 UTC · `build-own-login` added (4 steps) (current) · foreign-write
-- 2026-11-05 22:41 UTC · `ai-keys-new-format` added (3 steps) (current) · orchestrator
-- 2026-11-05 22:41 UTC · `ai-keys-new-format` s1 done, → running (current) · orchestrator
-- 2026-11-05 22:41 UTC · `ai-keys-new-format` s2 done (current) · orchestrator
-- 2026-11-05 22:42 UTC · `ai-keys-new-format` branch claude/ai-keys-new-format-r4, PR #356 (current) · builds-live
-- 2026-11-05 22:42 UTC · `ai-keys-new-format` s3 done, → built (current) · orchestrator
-- 2026-11-05 22:43 UTC · `ai-keys-new-format` added (3 steps) (current) · foreign-write
-- 2026-11-05 22:49 UTC · `build-own-login` s1 done, → running (current) · orchestrator
-- 2026-11-05 22:49 UTC · `build-own-login` s2 done (current) · orchestrator
-- 2026-11-05 22:49 UTC · `build-own-login` s3 done (current) · orchestrator
-- 2026-11-05 22:49 UTC · `build-own-login` note (current) · orchestrator
-- 2026-11-05 22:49 UTC · `build-own-login` branch claude/build-own-login-r2, PR #357 (current) · builds-live
-- 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built, branch claude/build-own-login-r2, PR #357 (current) · builds-live
-- 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built (current) · orchestrator
-- 2026-11-05 23:10 UTC · `ai-keys-new-format` → complete, merged, note (current) · reconciler
-- 2026-11-05 23:30 UTC · `build-own-login` note (current) · foreign-write
-- 2026-11-05 23:28 UTC · `build-own-login` → complete, merged, note (current) · reconciler
-- 2026-11-05 23:30 UTC · `console-account-picker` added (5 steps) (current) · orchestrator
-- 2026-11-05 23:51 UTC · `ai-keys-console-store` added (3 steps) (current) · orchestrator
-- 2026-11-05 23:51 UTC · `ai-keys-console-store` s1 done, → running (current) · orchestrator
-- 2026-11-05 23:51 UTC · `ai-keys-console-store` s2 done (current) · orchestrator
-- 2026-11-05 23:51 UTC · `console-account-picker` note (current) · orchestrator
-- 2026-11-05 23:53 UTC · `ai-keys-console-store` branch claude/ai-keys-console-store-2, PR #358 (current) · builds-live
-- 2026-11-05 23:53 UTC · `ai-keys-console-store` note (current) · orchestrator
-- 2026-11-06 00:15 UTC · `skins` added (11 steps) (main-framework) · orchestrator
-- 2026-11-06 00:40 UTC · `ai-keys-console-store` → pending, merged, note (current) · reconciler
-- 2026-11-06 00:50 UTC · `skins` → pending, note (main-framework) · reconciler
-- 2026-11-06 02:30 UTC · `amberx-slim-down-voice-queue` added (0 steps) (current) · foreign-write
-- 2026-11-06 02:32 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · foreign-write
-- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · foreign-write
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s1 done, → running (current) · orchestrator
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s2 done (current) · orchestrator
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s3 done (current) · orchestrator
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` branch claude/amberx-slim-queue-r2 (current) · builds-live
-- 2026-11-06 02:39 UTC · `amberx-slim-down-voice-queue` added (8 steps) (current) · foreign-write
-- 2026-11-06 02:39 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · foreign-write
-- 2026-11-06 12:14 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 12:17 UTC · `console-approvals-in-place` added (5 steps) (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s1 done, → running (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s2 done (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s3 done (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s4 done (current) · orchestrator
-- 2026-11-06 02:27 UTC · `amberx-slim-down-voice-queue` added (0 steps) (current) · pending
-- 2026-11-06 02:28 UTC · `amberx-slim-down-voice-queue` note (current) · pending
-- 2026-11-06 02:29 UTC · `amberx-slim-down-voice-queue` note (current) · pending
-- 2026-11-06 02:30 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · pending
-- 2026-11-06 02:30 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:31 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:31 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:33 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:34 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:38 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:38 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
-- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
-- 2026-11-06 02:40 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
-- 2026-11-06 02:41 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
-- 2026-11-06 03:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 04:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 04:33 UTC · `orch-step-click` s3 done, → complete (refactor) · builds-page
 - 2026-11-06 04:33 UTC · `orch-step-click` s3 undone, → running (refactor) · builds-page
@@ -1113,6 +912,210 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` branch claude/notes-tasks-sync, PR #363 (current) · builds-live
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · builds-live
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · orchestrator
+- 2026-11-06 19:49 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · orchestrator
+- 2026-11-06 19:49 UTC · `ui-review-notify-session-audio` → running (current) · orchestrator
+- 2026-11-06 19:53 UTC · `ui-review-notify-session-audio` s1 done (current) · orchestrator
+- 2026-11-06 19:53 UTC · `ui-review-notify-session-audio` s2 done (current) · orchestrator
+- 2026-11-06 19:55 UTC · `ui-review-notify-session-audio` s3 done (current) · orchestrator
+- 2026-11-06 19:59 UTC · `ui-review-notify-session-audio` s4 done (current) · orchestrator
+- 2026-11-06 20:02 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · foreign-write
+- 2026-11-06 20:02 UTC · `fable-review-shipped-features-build-hook-contrac` branch claude/shipped-features-fable, PR #364 (current) · builds-live
+- 2026-11-06 20:02 UTC · `shipped-features-r2` branch claude/shipped-features-fable, PR #364 (angel) · builds-live
+- 2026-11-06 20:04 UTC · `fable-review-shipped-features-build-hook-contrac` note (current) · orchestrator
+- 2026-11-06 20:04 UTC · `fable-review-shipped-features-build-hook-contrac` → built (current) · orchestrator
+- 2026-11-06 20:04 UTC · `shipped-features-r2` → built (angel) · orchestrator
+- 2026-11-06 20:04 UTC · `shipped-features-r2` note (angel) · orchestrator
+- 2026-11-06 20:07 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, note (current) · foreign-write
+- 2026-11-06 20:07 UTC · `ui-review-notify-session-audio` s5 done (current) · orchestrator
+- 2026-11-06 20:09 UTC · `ui-review-notify-session-audio` PR #365 (current) · builds-live
+- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · foreign-write
+- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` s6 done, → built (current) · orchestrator
+- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · orchestrator
+- 2026-11-06 20:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
+- 2026-11-06 20:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
+- 2026-11-06 20:18 UTC · `claude-badge-vps` added (4 steps) (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` s1 done, → running (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` s2 done (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` s3 done (current) · orchestrator
+- 2026-11-06 20:27 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
+- 2026-11-06 20:27 UTC · `token-usage-log-accounts-plan-studio-control` note (current) · orchestrator
+- 2026-11-06 20:27 UTC · `claude-badge-vps` note (current) · orchestrator
+- 2026-11-06 20:31 UTC · `claude-badge-vps` branch claude/claude-badge-vps, PR #366 (current) · builds-live
+- 2026-11-06 20:31 UTC · `claude-badge-vps` s4 done, → built (current) · orchestrator
+- 2026-11-06 20:57 UTC · `notifications-control-panel` added (6 steps) (current) · orchestrator
+- 2026-11-06 20:57 UTC · `notifications-control-panel` → running (current) · orchestrator
+- 2026-11-06 21:07 UTC · `notifications-control-panel` s1 done (current) · orchestrator
+- 2026-11-06 21:07 UTC · `notifications-control-panel` s2 done (current) · orchestrator
+- 2026-11-06 21:07 UTC · `notifications-control-panel` s3 done (current) · orchestrator
+- 2026-11-06 21:13 UTC · `notifications-control-panel` s4 done (current) · orchestrator
+- 2026-11-06 21:13 UTC · `notifications-control-panel` s5 done (current) · orchestrator
+- 2026-11-06 21:13 UTC · `notifications-control-panel` s6 done, → complete (current) · orchestrator
+- 2026-11-06 21:13 UTC · `notifications-control-panel` → built, PR #367 (current) · builds-live
+- 2026-11-06 21:13 UTC · `notifications-control-panel` note (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` added (8 steps) (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` → running (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` s1 done (current) · orchestrator
+- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` branch claude/gizmo-rebuild-fable (current) · builds-live
+- 2026-11-06 22:41 UTC · `gizmo-rebuild-fable` s2 done (current) · orchestrator
+- 2026-11-06 22:37 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
+- 2026-11-06 22:45 UTC · `gizmo-rebuild-fable` s2 done (current) · foreign-write
+- 2026-11-06 22:45 UTC · `ui-registry-shortcuts` added (6 steps) (current) · orchestrator
+- 2026-11-06 22:54 UTC · `ui-registry-shortcuts` added (6 steps) (current) · foreign-write
+- 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s3 done (current) · orchestrator
+- 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s4 done (current) · orchestrator
+- 2026-11-06 22:58 UTC · `gizmo-rebuild-fable` s5 done (current) · orchestrator
+- 2026-11-06 22:59 UTC · `gizmo-rebuild-fable` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-06 22:59 UTC · `ui-registry-shortcuts` s2 done (current) · orchestrator
+- 2026-11-06 23:05 UTC · `ui-registry-shortcuts` s2 done (current) · foreign-write
+- 2026-11-06 23:05 UTC · `gizmo-rebuild-fable` s6 done (current) · orchestrator
+- 2026-11-06 23:13 UTC · `gizmo-rebuild-fable` s7 done (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` s1 done, → running (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` s2 done (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-voice` note (current) · orchestrator
+- 2026-11-06 23:15 UTC · `gizmo-companion` → running, note (current) · orchestrator
+- 2026-11-06 23:23 UTC · `gizmo-companion` → complete, note (current) · foreign-write
+- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` PR #368 (current) · builds-live
+- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` s8 done, → built (current) · orchestrator
+- 2026-11-06 23:31 UTC · `gizmo-companion` → complete, note (current) · foreign-write
+- 2026-11-06 23:31 UTC · `gizmo-voice` s1 done, s2 done, note (current) · foreign-write
+- 2026-11-06 23:31 UTC · `gizmo-rebuild-fable` s6 done, s7 done, s8 done, → complete (current) · foreign-write
+- 2026-11-06 23:31 UTC · `ui-registry-shortcuts` s4 done (current) · orchestrator
+- 2026-11-06 23:31 UTC · `ui-registry-shortcuts` s5 done (current) · orchestrator
+- 2026-11-06 23:32 UTC · `ui-registry-shortcuts` PR #369 (current) · builds-live
+- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s6 done (current) · orchestrator
+- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` note (current) · orchestrator
+- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` → built (current) · orchestrator
+- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s3 done (current) · orchestrator
+- 2026-11-06 23:34 UTC · `badges-notify-followup` added (4 steps) (current) · orchestrator
+- 2026-11-06 23:34 UTC · `badges-notify-followup` → running (current) · orchestrator
+- 2026-11-06 23:54 UTC · `gizmo-voice` note (current) · foreign-write
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s1 done (current) · orchestrator
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s2 done (current) · orchestrator
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s3 done (current) · orchestrator
+- 2026-11-06 23:56 UTC · `badges-notify-followup` branch claude/badges-notify-followup, PR #370 (current) · builds-live
+- 2026-11-06 23:57 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
+- 2026-11-06 23:57 UTC · `badges-notify-followup` s4 done, → built (current) · orchestrator
+- 2026-11-07 00:10 UTC · `gizmo-voice` note (current) · foreign-write
+- 2026-11-07 00:10 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
+- 2026-11-07 00:10 UTC · `ui-registry-shortcuts` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-07 00:10 UTC · `badges-notify-followup` added (4 steps) (current) · foreign-write
+- 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · orchestrator
+- 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · foreign-write
+- 2026-11-07 00:13 UTC · `claude-settings-tabs-veto` added (6 steps) (current) · orchestrator
+- 2026-11-07 00:13 UTC · `claude-settings-tabs-veto` branch claude/claude-settings-tabs-veto (current) · builds-live
+- 2026-11-07 00:15 UTC · `claude-settings-tabs-veto` added (6 steps) (current) · foreign-write
+- 2026-11-07 00:15 UTC · `settings-sections-everywhere` s1 done, → running (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s2 done (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s3 done (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s4 done (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s5 done (current) · orchestrator
+- 2026-11-07 00:28 UTC · `settings-sections-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-07 00:28 UTC · `claude-settings-tabs-veto` s1 done, → running (current) · orchestrator
+- 2026-11-07 00:28 UTC · `claude-settings-tabs-veto` s2 done (current) · orchestrator
+- 2026-11-07 00:28 UTC · `claude-settings-tabs-veto` s3 done (current) · orchestrator
+- 2026-11-07 00:29 UTC · `claude-settings-tabs-veto` s5 done (current) · orchestrator
+- 2026-11-07 00:30 UTC · `claude-settings-tabs-veto` PR #371 (current) · builds-live
+- 2026-11-07 00:30 UTC · `claude-settings-tabs-veto` s6 done (current) · orchestrator
+- 2026-11-07 00:30 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
+- 2026-11-07 00:35 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · orchestrator
+- 2026-11-07 00:36 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · foreign-write
+- 2026-11-07 00:36 UTC · `claude-settings-tabs-veto` s1 done, s2 done, s3 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-07 00:36 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · foreign-write
+- 2026-11-07 00:36 UTC · `settings-sections-everywhere` PR #372 (current) · builds-live
+- 2026-11-07 00:36 UTC · `settings-sections-everywhere` s6 done (current) · orchestrator
+- 2026-11-07 00:37 UTC · `settings-sections-everywhere` s7 done, → built (current) · orchestrator
+- 2026-11-07 00:45 UTC · `settings-sections-everywhere` s6 done, s7 done, → complete (current) · foreign-write
+- 2026-11-07 00:45 UTC · `amberx-open-any-url-apk` added (2 steps) (current) · foreign-write
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s1 done, → running (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s2 done (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s3 done (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s4 done (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s5 done (current) · orchestrator
+- 2026-11-07 00:47 UTC · `claude-accounts-edit` added (5 steps) (current) · backfill
+- 2026-11-07 00:47 UTC · `claude-accounts-edit` → pending (current) · orchestrator
+- 2026-11-07 00:47 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s56-55 done, s57-56 done, s58-57 done, s59-58 done, s60-59 done, s61-60 done, s62-61 done, s63-62 done, s64-63 done, s66-65 done, s67-66 done, s68-67 done, s69-68 done, s70-69 done, s71-70 done, s72-71 done, s73-72 done, s74-73 done, s75-74 done (current) · orchestrator
+- 2026-11-07 00:47 UTC · `ui-review-notify-session-audio` s7 done, s7-1 done (current) · orchestrator
+- 2026-11-07 00:47 UTC · `shipped-features-r2` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s11-1 done, s12 done, s12-1 done, s13 done, s13-1 done, s14 done, s14-1 done, s15 done, s15-1 done, s16 done, s16-1 done (angel) · orchestrator
+- 2026-11-07 00:48 UTC · `claude-badge-vps` s5 done, s5-1 done, s6 done, s6-1 done, s6-2 done (current) · orchestrator
+- 2026-11-07 00:48 UTC · `notifications-control-panel` s7 done, s7-1 done, s7-2 done, s7-3 done, s7-4 done (current) · orchestrator
+- 2026-11-07 00:48 UTC · `gizmo-rebuild-fable` s9 done, s9-1 done, s9-2 done, s9-3 done, s10 done, s10-1 done, s10-2 done, s10-3 done, s11 done, s11-1 done, s11-2 done, s12 done, s12-1 done, s13 done, s13-1 done, s13-2 done, s14 done, s14-1 done, s14-2 done, s14-3 done, s14-4 done, s15 done, s15-1 done, s15-2 done, s15-3 done, s15-4 done, s16 done, s16-1 done, s16-2 done, s16-3 done, s16-4 done (current) · orchestrator
+- 2026-11-07 00:48 UTC · `ui-registry-shortcuts` s7 done, s7-1 done, s7-2 done, s7-3 done, s8 done, s8-1 done, s8-2 done (current) · orchestrator
+- 2026-11-07 00:48 UTC · `badges-notify-followup` s5 done, s5-1 done, s5-2 done, s6 done, s6-1 done, s7 done, s7-1 done, s7-2 done, s7-3 done, s7-4 done (current) · orchestrator
+- 2026-11-07 00:48 UTC · `amberx-open-any-url` added (4 steps) (current) · backfill
+- 2026-11-07 00:48 UTC · `axhub-google` added (4 steps) (current) · backfill
+- 2026-11-07 00:48 UTC · `notes-tasks-calendar` added (5 steps) (current) · backfill
+- 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s6 done (current) · orchestrator
+- 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s7 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `build-todo-sync` → running, note (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` branch claude/plan-studio-backfill-12h, PR #373 (current) · builds-live
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s8 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10-1 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10-2 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10 done, s10-3 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` → built (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` note (current) · foreign-write
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` branch claude/notes-tasks-calendar, PR #374 (current) · builds-live
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s3 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s4 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s5 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s6 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s6-1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s6-2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7-1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7-2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7-1 done, s7-2 done, s8 done, s8-1 done, note (current) · foreign-write
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-1 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-2 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-3 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `notes-tasks-calendar` s8-2 done, s8-3 done, note (current) · foreign-write
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` branch claude/approvals-in-place-r2, PR #375 (current) · builds-live
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s5 done, → running (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-3 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-4 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s8 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s8-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s8-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s9 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s9-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-3 done, → built (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` note (current) · orchestrator
+- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s1 done, → running (current) · orchestrator
+- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s4-3 done, → running (current) · orchestrator
+- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
+- 2026-11-07 02:11 UTC · `ui-asset-designer` added (40 steps) (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s1 done, → running (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s2 done (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s3 done (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s4 done (current) · orchestrator
+- 2026-11-07 02:14 UTC · `asset-designer` note (main-framework) · orchestrator
+- 2026-11-07 02:18 UTC · `ui-asset-designer` s5 done (current) · orchestrator
+- 2026-11-07 02:19 UTC · `ui-asset-designer` PR #376 (current) · builds-live
+- 2026-11-07 02:19 UTC · `ui-asset-designer` s6 done (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` added (10 steps) (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` → running (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` branch claude/icon-browser-manager (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` note (current) · orchestrator
+- 2026-11-07 03:07 UTC · `icon-browser-manager` s1 done (current) · orchestrator
+- 2026-11-07 03:16 UTC · `icon-browser-manager` s2 done (current) · orchestrator
+- 2026-11-07 03:31 UTC · `icon-browser-manager` s3 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s4 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s5 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s6 done (current) · orchestrator
+- 2026-11-07 04:00 UTC · `icon-browser-manager` PR #377 (current) · builds-live
+- 2026-11-07 04:00 UTC · `icon-browser-manager` note (current) · orchestrator
 
 ## Token passes (log)
 

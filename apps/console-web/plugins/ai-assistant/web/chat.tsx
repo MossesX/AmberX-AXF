@@ -14,11 +14,12 @@ import { MoreMenu } from './more';
 import { ChatSettingsDialog } from './settings';
 import { VoiceMicStandIn } from './voicemic';
 import {
-  APPROVALS_BADGE_KEY, FOLDER, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
+  APPROVALS_BADGE_KEY, FOLDER, TOOL_MODES, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, turnModeLabel, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
 interface TextFile { name: string; text: string }
+const MODE_NAME = { auto: 'Auto', chat: 'Chat only', tools: 'Tools on' };
 
 /** The chat window used last (the one voice input goes to when several are open). */
 let lastWindow = '';
@@ -461,14 +462,23 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               ))}
             </div>
           )}
-          {(editing || ctx || images.length > 0 || files.length > 0) && (
+          {(() => {
+            const shown = live?.mode ?? [...(conv?.messages ?? [])].reverse().find((m) => m.role === 'assistant' && !m.meta?.step)?.meta?.mode;
+            const turn = turnModeLabel(shown);
+            const mode = settings.toolMode || status?.defaultToolMode || 'auto';
+            return (
             <div className="axp-ai-assistant__chips">
+              <button type="button" className="fx-chip" title={`Tools: ${MODE_NAME[mode]}${turn ? `. This turn: ${turn}` : ''}. Click to change.`}
+                onClick={() => void updateSettings({ toolMode: TOOL_MODES[(TOOL_MODES.indexOf(mode) + 1) % TOOL_MODES.length] })}>
+                <Icon name={shown?.mode === 'tools' ? 'zap' : 'sparkles'} size={10} /> {mode === 'auto' && turn ? `Auto · ${turn}` : MODE_NAME[mode]}
+              </button>
               {editing && <span className="fx-chip">Editing a message <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Cancel edit" onClick={() => { setEditing(''); setText(''); }}><Icon name="x" size={10} /></button></span>}
               {ctx && <span className="fx-chip"><Icon name="monitor" size={10} /> {ctx.view ? `View: ${ctx.view}` : 'Context'}{ctx.selection ? ` · “${ctx.selection.slice(0, 40)}”` : ''} <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Remove context" onClick={() => setCtx(undefined)}><Icon name="x" size={10} /></button></span>}
               {images.map((im, i) => <span key={i} className="fx-chip"><Icon name="eye" size={10} /> {im.name || 'image'} <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Remove image" onClick={() => setImages((x) => x.filter((_, j) => j !== i))}><Icon name="x" size={10} /></button></span>)}
               {files.map((f, i) => <span key={i} className="fx-chip"><Icon name="file" size={10} /> {f.name} <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Remove file" onClick={() => setFiles((x) => x.filter((_, j) => j !== i))}><Icon name="x" size={10} /></button></span>)}
             </div>
-          )}
+            );
+          })()}
           <div className="axp-ai-assistant__inputrow">
             <button type="button" className="fx-iconbtn" title="Attach images or text files" onClick={() => fileRef.current?.click()}><Icon name="plus" size={16} /></button>
             <input ref={fileRef} type="file" multiple hidden onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
@@ -517,7 +527,7 @@ function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegen
         {ai && meta.batch && <BatchFromId id={meta.batch} />}
         {!ai && meta.context?.view && <span className="fx-small fx-muted">context: {meta.context.view}{meta.context.selection ? ` · “${meta.context.selection.slice(0, 80)}”` : ''}</span>}
         <div className="axp-ai-assistant__meta">
-          {ai && showUsage && (meta.model || meta.usage) && <span className="fx-small fx-muted">{meta.model}{meta.latencyMs ? ` · ${(meta.latencyMs / 1000).toFixed(1)}s` : ''}{meta.usage ? ` · ${fmtNum(meta.usage.input)}→${fmtNum(meta.usage.output)} tok` : ''}</span>}
+          {ai && showUsage && (meta.model || meta.usage) && <span className="fx-small fx-muted">{meta.mode ? `${turnModeLabel(meta.mode)} · ` : ''}{meta.model}{meta.firstWordMs ? ` · first word ${(meta.firstWordMs / 1000).toFixed(1)}s` : ''}{meta.latencyMs ? ` · ${(meta.latencyMs / 1000).toFixed(1)}s` : ''}{meta.usage ? ` · ${fmtNum(meta.usage.input)}→${fmtNum(meta.usage.output)} tok` : ''}</span>}
           <span className="axp-ai-assistant__acts">
             <button type="button" className="fx-iconbtn" title="Copy" onClick={onCopy}><Icon name="copy" size={12} /></button>
             {ai && m.content && <Slot name="assistant.reply" props={{ agentId: meta.agentId ?? '', agentName: meta.agentName ?? '', text: m.content }} />}
