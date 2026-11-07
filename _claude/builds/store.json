@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1278,
- "updatedAt": "2026-11-07T11:07:42.518Z",
+ "rev": 1288,
+ "updatedAt": "2026-11-07T11:37:34.028Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -76313,15 +76313,15 @@
    "title": "Gizmo voice: talk mode that works with the screen off",
    "category": "AmberX",
    "detail": "Addendum 2 of gizmo-companion. Push-to-talk, hands-free, interrupt-to-stop, voice + speed picker and streamed spoken replies already shipped in PR #296 (companion talk.ts). Left: keep talk mode alive with the screen off / app in the background (AmberX foreground service, native: allowed Android exception), transcript in the chat checked on the phone, end-to-end phone test. Base: main after #296.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-07T00:48:07.302Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:17:45.358Z",
+   "builtAt": "2026-11-07T11:17:33.434Z",
    "notes": [
     {
      "text": "s1 + s2 built by gizmo-rebuild-fable (Fable, branch claude/gizmo-rebuild-fable): TalkService foreground microphone service, companion talk.ts on it, transcript in the chat, Stop from the notification. s3: the APK comes from CI on that PR; the phone test of hands-free + interrupt is Brett's once it is installed.",
@@ -76338,6 +76338,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Nov 7: fixed on branch claude/gizmo-voice-fix (committed, not pushed yet). Report _claude/builds/reports/gizmo-voice.md. Phone test of the new APK is Brett's.",
+     "at": "2026-11-07T11:17:45.358Z"
     }
    ],
    "approvals": [],
@@ -76414,12 +76418,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:33.433Z",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-07T11:17:33.516Z"
     }
    ],
    "profiles": [
@@ -76431,7 +76435,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "gizmo-voice",
-   "rev": 17,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90958,19 +90962,23 @@
    "title": "AmberX: stop the Note saved to Inbox echo loop",
    "category": "AmberX",
    "detail": "The mic hears the app speak Note saved to Inbox and the notes parser (apps/amberx-droid/src/plugins/notes/web/core.ts:615, any sentence starting with note = add note) saves it again. Fix: parser ignores the app own reply lines (Note/Task/Todo saved to ...), speechgate.ts echo guard matches near copies of what was just spoken, regression test replays the loop.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-05T01:38:10.037Z",
-   "updatedAt": "2026-11-05T01:38:10.037Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:17:46.296Z",
+   "builtAt": "2026-11-07T11:17:32.753Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Nov 7: fixed on branch claude/gizmo-voice-fix (committed, not pushed yet). Report _claude/builds/reports/gizmo-voice.md. Phone test of the new APK is Brett's.",
+     "at": "2026-11-07T11:17:46.296Z"
     }
    ],
    "approvals": [],
@@ -91005,12 +91013,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:31.253Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T01:38:10.038Z",
-     "updatedAt": "2026-11-05T01:38:10.038Z"
+     "updatedAt": "2026-11-07T11:17:31.350Z"
     },
     {
      "id": "s2",
@@ -91029,12 +91037,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:31.984Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T01:38:10.038Z",
-     "updatedAt": "2026-11-05T01:38:10.038Z"
+     "updatedAt": "2026-11-07T11:17:32.094Z"
     },
     {
      "id": "s3",
@@ -91051,12 +91059,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:32.753Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T01:38:10.038Z",
-     "updatedAt": "2026-11-05T01:38:10.038Z"
+     "updatedAt": "2026-11-07T11:17:32.854Z"
     }
    ],
    "profiles": [
@@ -91068,7 +91076,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -106915,14 +106923,14 @@
    "title": "glossary-index-demos",
    "category": "",
    "detail": "Encyclopedia glossary + index of everything, registry-sourced; Demonstration Designer off walkthroughs; Book Builder (wizard, chapters, drag from glossary, live sandbox preview, walkthrough video); interactive HTML/TS docs option; orchestrator auto-updates catalog every build; generated clips auto-tagged registry assets. Brief: /root/axf-builds/glossary-index-demos/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "glossary-index-demos",
    "branch": "claude/glossary-index-demos-r2",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T11:07:36.470Z",
+   "updatedAt": "2026-11-07T11:30:27.779Z",
    "builtAt": "",
    "notes": [
     {
@@ -106936,6 +106944,10 @@
     {
      "text": "s1 done on Opus (claude/glossary-index-demos-r2, commits 8c1aa0edd + polish): plugin glossary-index, glossary-catalog@1 built from plugin manifests, help@1, assets, asset types, CLI, build options, feature tracker, UI registry; CI test.mts + catalog.mjs --check. Stopped at s2: needs Fable for the demo / book+chapter / docs / clip asset contracts. s5 (post-build hook = catalog.mjs build --reason build --build <id>) can run on Opus any time.",
      "at": "2026-11-07T11:07:28.001Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T11:30:27.779Z"
     }
    ],
    "approvals": [],
@@ -107095,7 +107107,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109638,20 +109650,24 @@
    "title": "Build pipeline v2: one clean pipeline (Pending → Queued → Building)",
    "category": "Builds",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/pipeline-v2",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T10:50:06.361Z",
-   "updatedAt": "2026-11-07T11:00:38.903Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:37:27.954Z",
+   "builtAt": "2026-11-07T11:37:26.588Z",
    "notes": [
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-07T11:00:37.408Z"
+    },
+    {
+     "text": "Built on claude/pipeline-v2 (committed, not pushed, per the brief). Report _claude/builds/reports/build-pipeline-v2.md. UI Review shots for the Pipeline tab go with the PR.",
+     "at": "2026-11-07T11:37:27.954Z"
     }
    ],
    "approvals": [
@@ -109664,6 +109680,14 @@
      "via": "policy",
      "kind": "upgrade",
      "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T11:09:06.653Z",
+     "by": "auto",
+     "kind": "downgrade"
     }
    ],
    "upgradeRequests": [],
@@ -109798,12 +109822,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:09:04.443Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:09:04.583Z"
     },
     {
      "id": "s6",
@@ -109823,12 +109847,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:09:05.456Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:09:05.624Z"
     },
     {
      "id": "s7",
@@ -109849,12 +109873,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:29:58.556Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:29:58.629Z"
     },
     {
      "id": "s8",
@@ -109874,12 +109898,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:09:06.653Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:09:06.819Z"
     },
     {
      "id": "s9",
@@ -109899,12 +109923,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:09:07.862Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:09:07.992Z"
     },
     {
      "id": "s10",
@@ -109924,12 +109948,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:09:08.777Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:09:08.915Z"
     },
     {
      "id": "s11",
@@ -109948,12 +109972,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:09:09.611Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:09:09.736Z"
     },
     {
      "id": "s12",
@@ -109972,12 +109996,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:29:59.234Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:29:59.334Z"
     },
     {
      "id": "s13",
@@ -109996,12 +110020,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:30:00.011Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:30:00.399Z"
     },
     {
      "id": "s14",
@@ -110021,12 +110045,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:37:25.834Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:37:25.929Z"
     },
     {
      "id": "s15",
@@ -110045,12 +110069,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:37:26.587Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:37:26.696Z"
     }
    ],
    "profiles": [
@@ -110061,7 +110085,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

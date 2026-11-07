@@ -51,6 +51,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Banner widgets (`banner-widgets`, Opus, agent Gina; Brett Nov 4 voice: right-click the banner, pick widgets, set sizes; fast-track): picker, per-widget settings, ⋯ overflow, compact defaults, one registry + CI check | built, waiting on the merge queue, then deploy | `claude/banner-widgets` | (see Live build log) | Report `_claude/builds/reports/banner-widgets.md`. Usage meter chip joins by itself once `usage-meter` lands | 2026-11-05 |
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
 |---|---|---|---|---|---|
+| approvals-in-place-r2: console approvals in place, nightly deploy, refresh, UI Review choices | review | `claude/approvals-in-place-r2` | pending | Waits for UI Review, then the merge queue. Report `_claude/builds/reports/approvals-in-place-r2.md` | 2026-11-07 |
 | Finish the one-profile merge (`profiles-all-finish`, All, Opus; Brett approved: fold main-framework into all, delete the old profile folders everywhere): `all` is the one base profile, old folders gone from repo + hub, publisher/resolver/merge-all keep them gone, `postgres-console` added | built (committed, not pushed) | `claude/profiles-all-finish` | – | land through the merge queue (after `merge-profiles-one`); then `node framework/cli/profiles.mjs merge-all` once to prune the hub's `framework/plan/profiles/all/`; Fable review of s1 | 2026-11-07 |
 | Merge every build profile into one (`merge-profiles-one`, profile All, Opus; Brett: "combine every build profile into ONE new profile on main and delete the others"): current, urgent, angel, big-dog, breakroom, refactor → `all` (229 builds, `fromProfile` on each, Urgent → priority P0, old ids resolve to `all`); profile-manager superseded | built (committed, not pushed) | `claude/merge-profiles-one` | – | land with build_land; then clear the old hub profile folders (Brett's OK) | 2026-11-07 |
 | Console slow to load (Urgent `urgent-console-perf`, Opus; Brett Nov 4 voice: "How come console is taking forever to load? I thought lazy loader was in."): /api/build-queue 500 (store lock + never-recorded export = every read took the write lock), node spawned per read per client, client fell back to stale /data on any 5xx, zombies, reconcile storms | PR open | `claude/urgent-console-perf` | (opening) | CI → auto-merge → console auto-update (flock); measured 6-round load: CPU 112 → 11.5 s, peak node 35 → 4, round 10–18 → 0.7–2.6 s. Report `_claude/builds/reports/urgent-console-perf.md` | 2026-11-04 |
@@ -206,6 +207,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### approvals-in-place-r2
+
+Asked: Approve / Deny in place in the console (never bounce to axHub), UI Review approve likewise, plus addenda 1-5 (full
+words on build `console-approvals-in-place`). Model Opus. Branch `claude/approvals-in-place-r2` has all of it. Left: Brett's UI
+Review pick, then the merge queue. After deploy, the first real tap proves the relay against the live hub. Gaps are
+in the report. Checks: the `test.py` of the approvals banner and UI Review plugins. First message: "Carry on approvals-in-place-r2: read its report and land it."
 ### Worker accounts (multi-account-headless-workers)
 Asked: the console signs into more than one subscription; one is interactive, the others only run headless jobs the orchestrator sends them. Model Opus. Branch `claude/multi-account-headless-workers`, PR #382, all steps built. Left: UI Review approval, then the merge queue. Report: `_claude/builds/reports/multi-account-headless-workers.md`. Check: `node deploy/claude-workers.test.mjs`. Waits on Brett: approve the look, sign a second subscription in, tap Make worker. First message: "Carry on multi-account-headless-workers from its report."
 ### Finish the one-profile merge (`profiles-all-finish`, All, Opus) — branch `claude/profiles-all-finish`
@@ -741,28 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:15 UTC · `gizmo-voice` s1 done, → running (current) · orchestrator
-- 2026-11-06 23:15 UTC · `gizmo-voice` s2 done (current) · orchestrator
-- 2026-11-06 23:15 UTC · `gizmo-voice` note (current) · orchestrator
-- 2026-11-06 23:15 UTC · `gizmo-companion` → running, note (current) · orchestrator
-- 2026-11-06 23:23 UTC · `gizmo-companion` → complete, note (current) · foreign-write
-- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` PR #368 (current) · builds-live
-- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` s8 done, → built (current) · orchestrator
-- 2026-11-06 23:31 UTC · `gizmo-companion` → complete, note (current) · foreign-write
-- 2026-11-06 23:31 UTC · `gizmo-voice` s1 done, s2 done, note (current) · foreign-write
-- 2026-11-06 23:31 UTC · `gizmo-rebuild-fable` s6 done, s7 done, s8 done, → complete (current) · foreign-write
-- 2026-11-06 23:31 UTC · `ui-registry-shortcuts` s4 done (current) · orchestrator
-- 2026-11-06 23:31 UTC · `ui-registry-shortcuts` s5 done (current) · orchestrator
-- 2026-11-06 23:32 UTC · `ui-registry-shortcuts` PR #369 (current) · builds-live
-- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s6 done (current) · orchestrator
-- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` note (current) · orchestrator
-- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` → built (current) · orchestrator
-- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s3 done (current) · orchestrator
-- 2026-11-06 23:34 UTC · `badges-notify-followup` added (4 steps) (current) · orchestrator
-- 2026-11-06 23:34 UTC · `badges-notify-followup` → running (current) · orchestrator
-- 2026-11-06 23:54 UTC · `gizmo-voice` note (current) · foreign-write
-- 2026-11-06 23:54 UTC · `badges-notify-followup` s1 done (current) · orchestrator
-- 2026-11-06 23:54 UTC · `badges-notify-followup` s2 done (current) · orchestrator
 - 2026-11-06 23:54 UTC · `badges-notify-followup` s3 done (current) · orchestrator
 - 2026-11-06 23:56 UTC · `badges-notify-followup` branch claude/badges-notify-followup, PR #370 (current) · builds-live
 - 2026-11-06 23:57 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
@@ -1141,6 +1126,28 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:07 UTC · `glossary-index-demos` s1 done, → running (all) · orchestrator
 - 2026-11-07 11:07 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 11:07 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r2 (all) · builds-live
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s5 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s6 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s8 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s9 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s10 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s11 done (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s1 done, → running (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s2 done (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s3 done, → complete (all) · orchestrator
+- 2026-11-07 11:17 UTC · `gizmo-voice` s3 done, → complete (all) · orchestrator
+- 2026-11-07 11:17 UTC · `gizmo-voice` branch claude/gizmo-voice-fix (all) · builds-live
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` branch claude/gizmo-voice-fix (all) · builds-live
+- 2026-11-07 11:17 UTC · `gizmo-voice` note (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` note (all) · orchestrator
+- 2026-11-07 11:29 UTC · `build-pipeline-v2` s7 done (all) · orchestrator
+- 2026-11-07 11:29 UTC · `build-pipeline-v2` s12 done (all) · orchestrator
+- 2026-11-07 11:30 UTC · `build-pipeline-v2` s13 done (all) · orchestrator
+- 2026-11-07 11:30 UTC · `glossary-index-demos` → pending, note (all) · reconciler
+- 2026-11-07 11:37 UTC · `build-pipeline-v2` s14 done (all) · orchestrator
+- 2026-11-07 11:37 UTC · `build-pipeline-v2` s15 done, → complete (all) · orchestrator
+- 2026-11-07 11:37 UTC · `build-pipeline-v2` branch claude/pipeline-v2 (all) · builds-live
+- 2026-11-07 11:37 UTC · `build-pipeline-v2` note (all) · orchestrator
 
 ## Token passes (log)
 

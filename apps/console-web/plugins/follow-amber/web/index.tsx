@@ -9,8 +9,8 @@
  *     description, the exact call folded away, the countdown on a veto call, big Approve (green) and Deny (red) that act
  *     on one tap, a queue when several wait. The feed is read with his own hub session (lib-approvals), every few
  *     seconds and at once when the server says one is waiting (`approval` frame). Decisions go through the app's host
- *     (AmberX's hub session), else directly from a page on the hub's origin, else the hub's own page opens framed in
- *     the dialog for the tap. The console server never decides anything.
+ *     (the console's relay with this browser's hub session, AmberX's hub session), else directly from a page on the
+ *     hub's origin, and the result shows in the pop-up. The console server never decides by itself.
  * Off: nothing opens by itself; approvals stay in the approvals banner.
  *
  * The switch is one value for all of Brett's consoles (the server keeps it, so Amber can read it): Settings → Plugins →
@@ -211,10 +211,13 @@ function openOnHub(url: string) {
 /** Where a decision can go from this page (the hub frames its page only for the origins it lists: `frame`). */
 const decideEnv = (hub: string): DecideEnv => ({ hub, origin: globalThis.location?.origin ?? '', vetoAct: vetoHost().act, approvalDecide: approvalsHost().decide, frame: approvalsHost().frame === true });
 
-/** One tap from either the pop-up or its fallback: the decision, or axHub's page when the console can't sign it. */
+/**
+ * One tap from either the pop-up or its fallback. The result shows here, always (Brett, Nov 6 2026): the console's relay
+ * or the app's host decides; a page with neither says so, and "Open on axHub" stays a separate button. Nothing opens by
+ * itself (pending approvals-no-window-spam s1).
+ */
 async function tapDecision(item: ApprovalItem, approve: boolean, hub: string): Promise<FollowDecision> {
-  const r = await decide(item, approve, decideEnv(hub)).catch((e: unknown) => ({ ok: false, route: 'open', open: true, message: `Couldn't reach axHub (${(e as Error)?.message ?? e}): opened its page instead.` }) as FollowDecision);
-  if (r.open && item.url) openOnHub(item.url);
+  const r = await decide(item, approve, decideEnv(hub)).catch((e: unknown) => ({ ok: false, route: 'host', message: `Couldn't reach axHub (${(e as Error)?.message ?? e}). Nothing was decided.` }) as FollowDecision);
   if (r.ok) { decided.add(item.id); runtime?.toast(r.message, approve ? 'success' : 'info', 'Follow Amber'); set({ queue: queueOf(st.queue, decided) }); void checkFor(); }
   else if (r.open) runtime?.toast(r.message, 'info', 'Follow Amber');
   return r;
@@ -306,7 +309,7 @@ function ApprovalDialog({ id }: { id: string }) {
           <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== '' || !offers(item, true)} aria-label={`Approve: ${item.title}`} onClick={() => void tap(true)} data-axf-one-tap="">Approve</Button>
         </div>
       )}
-      {(route === 'frame' || route === 'open') && !result?.frame && <p className="fx-small fx-muted">The console can't sign this from here: the tap opens axHub's own page to confirm it.</p>}
+      {(route === 'frame' || route === 'open') && !result?.frame && <p className="fx-small fx-muted">This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.</p>}
       {result && !result.ok && !result.frame && <Note tone={result.open ? 'info' : 'danger'}>{result.message}</Note>}
       <div className="fx-row fx-row--wrap axp-follow-amber__foot">
         {s.queue.length > 1 && <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => { const n = s.queue[(pos + 1) % s.queue.length]; if (n) set({ current: n.id }); }}>Next</Button>}

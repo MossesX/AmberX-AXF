@@ -32,9 +32,10 @@ export async function actOn(t: Track, action: VetoAction): Promise<void> {
 export const deny = (t: Track) => actOn(t, 'deny');
 
 /**
- * lib-approvals' deciding path on the phone (the assistant title bar badge): Deny or Approve (run it now) a held call with
- * the phone's hub session (the veto host), falling back to its page; Approve / Decline on a call waiting for an approval
- * open it in the signed-in hub web view.
+ * lib-approvals' deciding path on the phone (the assistant title bar badge, the banner, the veto screen): Deny or Approve
+ * (run it now) a held call through the veto host, Approve / Decline a call waiting for an approval through the native
+ * side, both with the phone's hub session and the result shown in place (Brett, Nov 7 2026). Only a phone without that
+ * native method (an older APK, a browser) still opens the signed-in hub view.
  */
 export async function decideFromPhone(item: ApprovalItem, d: ApprovalDecision): Promise<DecideResult> {
   const act = vetoHost().act;
@@ -42,7 +43,12 @@ export async function decideFromPhone(item: ApprovalItem, d: ApprovalDecision): 
   if (action && act) {
     const r = await act(item.id, action).catch((e) => ({ ok: false, error: String(e?.message ?? e) }));
     if (r.ok) { if (action === 'deny') markDenied(item.id); void checkVeto(); return { ok: true, message: `${DONE[action]}: ${item.title}` }; }
-    runtime?.toast(`Couldn't ${VETO_ACTION_LABELS[action].toLowerCase()} it here (${r.error ?? 'hub refused'}). Opening it on the hub.`, 'warning', 'Approvals');
+    return { ok: false, message: `Couldn't ${VETO_ACTION_LABELS[action].toLowerCase()} it (${r.error ?? 'hub refused'}).` };
+  }
+  if (item.kind === 'approval') {
+    const r = await native.approvalDecide({ id: item.id, action: d === 'approve' ? 'approve' : 'decline' }).catch(() => null);
+    if (r?.ok) { void checkVeto(); return { ok: true, message: `${d === 'approve' ? 'Approved' : 'Denied'}: ${item.title}` }; }
+    if (r) return { ok: false, message: "That didn't go through on the phone: sign in to axHub, then tap it again." };
   }
   await native.hubOpen({ url: item.url }).catch(() => undefined);
   void checkVeto();

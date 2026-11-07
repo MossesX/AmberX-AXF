@@ -1,6 +1,7 @@
 // @ts-nocheck: a Node test, not part of the console's build
 /** Approvals (veto) banner self-test: the alarm model. node --experimental-strip-types apps/console-web/plugins/approvals-banner/test.mts */
 import assert from 'node:assert/strict';
+import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
@@ -65,4 +66,46 @@ t('sound owner (sound-owner@1): only the owner page rings', () => {
   assert.equal(soundAllowed({ __axfSoundOwner: { $axf: 'sound-owner@1', allowed: () => true } }), true);
   assert.equal(soundAllowed({ __axfSoundOwner: { $axf: 'other@1', allowed: () => false } }), true); // not the contract: ignored
 });
+/* ---- the relay: a tap stays in the console */
+const ID = '0123abcd-0123-4abc-8def-0123456789ab';
+const posted: unknown[] = [];
+const post = (status: number, json: unknown) => async (b: unknown) => { posted.push(b); return { status, json }; };
+const at = async (name: string, f: () => Promise<void>) => { try { await f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
+await at('a tap reaches the relay and the hub\'s answer comes back', async () => {
+  const r = await relayDecide(post(200, { ok: true, state: 'approved-now', message: 'Done.' }), ID, 'approve-now', 4, true);
+  assert.deepEqual(r, { ok: true, state: 'approved-now', message: 'Done.' });
+  assert.deepEqual(posted.at(-1), { id: ID, action: 'approve-now', rev: 4 });
+});
+await at('no tap, no call: a remote dispatch never reaches the relay', async () => {
+  const before = posted.length;
+  const r = await relayDecide(post(200, { ok: true }), ID, 'approve', null, false);
+  assert.equal(r.ok, false); assert.equal(r.code, 'no_tap'); assert.equal(posted.length, before);
+});
+await at('never ok unless the hub said so', async () => {
+  assert.equal((await relayDecide(post(200, {}), ID, 'approve', null, true)).ok, false);
+  assert.equal((await relayDecide(post(200, null), ID, 'approve', null, true)).ok, false);
+  const refused = await relayDecide(post(200, { ok: false, code: 'too_late', message: 'Too late.' }), ID, 'deny', null, true);
+  assert.deepEqual([refused.ok, refused.code, refused.message], [false, 'too_late', 'Too late.']);
+  assert.match((await relayDecide(post(403, { detail: 'Only your own signed-in browser can decide' }), ID, 'deny', null, true)).message!, /signed-in browser/);
+  const down = await relayDecide(async () => { throw new Error('offline'); }, ID, 'deny', null, true);
+  assert.equal(down.code, 'unreachable'); assert.match(down.message!, /Nothing was decided/);
+});
+t('decisions map to the hub\'s actions', () => {
+  assert.equal(relayAction({ kind: 'held' }, 'approve'), 'approve-now');
+  assert.equal(relayAction({ kind: 'held' }, 'deny'), 'deny');
+  assert.equal(relayAction({ kind: 'approval' }, 'approve'), 'approve');
+  assert.equal(relayAction({ kind: 'approval' }, 'decline'), 'decline');
+  assert.equal(relayAction({ kind: 'approval' }, 'deny'), 'decline');
+});
+await at('the seams report in place: no frame, no opened page', async () => {
+  const h = relayHosts(post(200, { ok: false, code: 'too_late', message: 'Too late.' }));
+  assert.equal(h.approvals.frame, false);
+  assert.equal(h.veto.open, undefined);
+  assert.equal((globalThis as { navigator?: { userActivation?: unknown } }).navigator?.userActivation, undefined, 'Node has no activation API: the relay falls to the server');
+  const v = await h.veto.act!(ID, 'deny');
+  assert.deepEqual(v, { ok: false, error: 'Too late.' });
+  const a = await h.approvals.decide!({ id: ID, kind: 'approval', title: 'T', revision: 2 } as never, 'approve');
+  assert.equal(a.opened, undefined);
+});
+
 console.log(`✓ approvals-banner: ${n} checks passed`);

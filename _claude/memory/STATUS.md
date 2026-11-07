@@ -2,6 +2,8 @@
 
 Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Read the parts you need (Grep, then read by line range); keep it updated whenever something meaningful changes.
 
+- **Nov 7 2026, approvals-in-place-r2 (PR pending):** Approve / Deny stay in the console through the approvals banner's relay; `console.refresh`; nightly console deploy; UI Review choices (ui-choices@1) with a three-option rule; Settings → Appearance → Choose from every asset. Report `_claude/builds/reports/approvals-in-place-r2.md`.
+
 ## Status (as of Oct 21 2026)
 
 - **Worker accounts (Nov 7 2026, Opus, `claude/multi-account-headless-workers`, build `multi-account-headless-workers`):** the console stays on one Claude subscription; accounts marked as workers only run headless jobs. `deploy/claude-workers.mjs` routes each job to the least busy worker, moves a run on when a worker hits its limit, and keeps runs and cost per account. Report `_claude/builds/reports/multi-account-headless-workers.md`. <!-- axf-plugin:claude-accounts -->

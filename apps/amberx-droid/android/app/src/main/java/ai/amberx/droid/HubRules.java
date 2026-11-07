@@ -332,6 +332,9 @@ final class HubRules {
         return code == 200 && body != null && body.contains("\"ok\":true") && body.contains("\"result\":\"approved\"");
     }
 
+    /** A decline answers ok; only a hub refusal or a dropped reply counts as not done. */
+    static boolean declinedReply(int code, String body) { return code == 200 && body != null && body.contains("\"ok\":true"); }
+
     /* ---------------------------------------------------------------- HTTP (cookie from Android's store) */
 
     static final class Reply {
@@ -431,9 +434,14 @@ final class HubRules {
         }
     }
 
-    static boolean approve(String hub, String id, String cookie) {
+    static boolean approve(String hub, String id, String cookie) { return decide(hub, id, "approve", cookie); }
+
+    /** Approve or decline in place, with the phone's hub session (Brett, Nov 7 2026: never bounce to the hub's page). */
+    static boolean isDecision(String action) { return "approve".equals(action) || "decline".equals(action); }
+
+    static boolean decide(String hub, String id, String action, String cookie) {
         String url = approvalApiUrl(hub, id);
-        if (url == null || cookie == null || !isHub(HUB, hub)) return false;
+        if (url == null || cookie == null || !isHub(HUB, hub) || !isDecision(action)) return false;
         try {
             Reply session = get(hub + SESSION_PATH, cookie);
             String csrf = session.status == 200 ? csrfFromSession(session.body) : null;
@@ -448,10 +456,11 @@ final class HubRules {
                 c.setRequestProperty("Content-Type", "application/json");
                 c.setRequestProperty("Accept", "application/json");
                 c.setRequestProperty("X-AxHub-CSRF", csrf);
-                c.getOutputStream().write("{\"action\":\"approve\"}".getBytes(StandardCharsets.UTF_8));
+                c.getOutputStream().write(("{\"action\":\"" + action + "\"}").getBytes(StandardCharsets.UTF_8));
                 int code = c.getResponseCode();
                 InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
-                return approvedReply(code, in == null ? "" : readLimited(in, FEED_MAX_BYTES));
+                String reply = in == null ? "" : readLimited(in, FEED_MAX_BYTES);
+                return "approve".equals(action) ? approvedReply(code, reply) : declinedReply(code, reply);
             } finally {
                 c.disconnect();
             }
