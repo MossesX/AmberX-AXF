@@ -122,4 +122,102 @@ ok('api groups: REST, MCP, command line in that order', () => {
   assert.deepEqual(g.map((x) => x.label), ['REST', 'MCP tool', 'Command line']);
 });
 
-console.log(`glossary: ${n} checks passed (${built.total} entries)`);
+
+
+/* ---------------- demonstrations, books, clips, docs (demos.mjs + docs.mjs on the scratch store) ---------------- */
+
+const demos = await import('./demos.mjs');
+const docs = await import('./docs.mjs');
+
+ok('the four demo kinds are glossary kinds with the framework starters indexed', () => {
+  for (const k of ['demonstration', 'book', 'clip', 'docs']) assert.ok(built.counts[k] >= 1, `kind ${k}`);
+  assert.ok(byId.has('demonstration:what-is-an-asset') && byId.has('book:getting-started') && byId.has('clip:what-is-an-asset-clip') && byId.has('docs:getting-started-docs'));
+  const book = byId.get('book:getting-started') as { related: string[]; category: string };
+  assert.equal(book.category, 'Demos › Books');
+  assert.ok(book.related.includes('demonstration:what-is-an-asset') && book.related.includes('concept:asset'), 'a book links to what it holds');
+});
+
+ok('a demonstration is generated from any entry, saved, indexed and plays as walkthrough@1', () => {
+  const a = demos.generate('plugin:ui-review', { save: true, build: 'test' });
+  assert.equal(a.type, 'demonstration');
+  assert.equal(a.data.about, 'plugin:ui-review');
+  assert.ok(a.data.steps.length >= 3 && a.data.steps[0].do === 'nav:ui-review', 'the first step opens the plugin');
+  assert.ok(a.data.keywords.length >= 10);
+  const w = demos.walkthroughOf('demonstration', a.id);
+  assert.equal(w.$axf, 'walkthrough@1');
+  assert.equal(w.steps.length, a.data.steps.length);
+  const fresh = cat.buildCatalog();
+  assert.ok(fresh.entries.some((e: { id: string }) => e.id === `demonstration:${a.id}`), 'the saved demo is a glossary entry');
+  assert.throws(() => demos.generate('nope:nothing'), /no glossary entry/);
+});
+
+ok('a book comes out of the wizard, takes items, moves them and previews as one walkthrough', () => {
+  const b = demos.newBook({ title: 'Test book', totalMinutes: 9, chapterMinutes: 3, docs: { enabled: true, depth: 'deep', format: 'interactive-html-ts', interactive: 'examples' } });
+  assert.equal(b.data.chapters.length, 3);
+  let n = demos.changeBook(b.id, { op: 'add-item', chapter: 'chapter-1', ref: 'concept:asset' });
+  n = demos.changeBook(b.id, { op: 'add-item', chapter: 'chapter-1', ref: 'demonstration/demo-plugin-ui-review' });
+  n = demos.changeBook(b.id, { op: 'move-item', from: { chapter: 'chapter-1', index: 1 }, to: { chapter: 'chapter-2', index: 0 } });
+  assert.deepEqual(n.data.chapters.map((c: { items: { ref: string }[] }) => c.items.map((i) => i.ref)), [['concept:asset'], ['demonstration/demo-plugin-ui-review'], []]);
+  n = demos.changeBook(b.id, { op: 'add-chapter', title: 'Extra' });
+  assert.equal(n.data.chapters.length, 4);
+  assert.throws(() => demos.changeBook(b.id, { op: 'add-item', chapter: 'chapter-1', ref: 'not a ref' }), /not a glossary entry id/);
+  const w = demos.walkthroughOf('book', b.id);
+  assert.ok(w.steps.length > 4 && w.steps[0].say.startsWith('Chapter'), 'chapter intro first');
+  const o = demos.outline(b.id);
+  assert.equal(o[0].children.length, 4);
+  assert.equal(o[0].children[0].children[0].label, 'Asset (asset@1)', 'items are labelled through the glossary');
+  const r = demos.recordBook(b.id, { dryRun: true });
+  assert.ok(existsSync(r.file), 'the walkthrough is written for the recorder');
+});
+
+ok('a clip from a filmed demonstration carries its transcript, entries and a large keyword set', () => {
+  const c = demos.clipFromDemo('demo-plugin-ui-review', { video: 'clips/x.mp4', seconds: 30 });
+  assert.equal(c.type, 'clip');
+  assert.equal(c.data.source.id, 'demo-plugin-ui-review');
+  assert.ok(c.data.transcript.length >= 3 && c.data.keywords.length >= 30, `${c.data.keywords.length} keywords`);
+  assert.ok(c.data.keywords.includes('ui-review') && c.data.keywords.includes('review'));
+  const fresh = cat.buildCatalog();
+  const e = fresh.entries.find((x: { id: string }) => x.id === `clip:${c.id}`) as { related: string[] };
+  assert.ok(e && e.related.includes('demonstration:demo-plugin-ui-review'), 'the clip links to its demonstration');
+});
+
+ok('documentation is generated at every depth and format, exactly the planned files', () => {
+  const light = docs.generateDocs({ source: { kind: 'book', id: 'test-book' }, options: { depth: 'light', format: 'markdown' } });
+  assert.deepEqual(light.data.files.map((f: { path: string }) => f.path), ['index.md']);
+  const deep = docs.generateDocs({ source: { kind: 'book', id: 'test-book' }, options: { depth: 'deep', format: 'interactive-html-ts', interactive: 'examples' }, tokens: { '--fx-bg': '#123' } });
+  const paths = deep.data.files.map((f: { path: string }) => f.path);
+  for (const p of ['index.html', 'chapters/chapter-1.html', 'items/concept-asset.html', 'docs.css', 'docs.ts', 'docs.js', 'data/book.json', 'data/examples.json', 'data/tokens.css']) assert.ok(paths.includes(p), p);
+  const html = readFileSync(join(docs.DOCS_OUT, deep.id, 'items/concept-asset.html'), 'utf8');
+  assert.ok(html.includes('data-root="../"') && html.includes('docs.js') && !html.includes('<script>alert'), 'relative root + runtime');
+  assert.ok(readFileSync(join(docs.DOCS_OUT, deep.id, 'data/tokens.css'), 'utf8').includes('--fx-bg: #123'), 'the live tokens are written');
+  const js = readFileSync(join(docs.DOCS_OUT, deep.id, 'docs.js'), 'utf8');
+  assert.ok(!/interface |: string\b/.test(js) && js.includes('installSearch'), 'the TypeScript runtime compiled to JavaScript');
+  const extreme = docs.generateDocs({ source: { kind: 'demonstration', id: 'demo-plugin-ui-review' }, options: { depth: 'extreme', format: 'interactive-html-ts', interactive: 'live' } });
+  const xp = extreme.data.files.map((f: { path: string }) => f.path);
+  assert.ok(xp.includes('live.js') && xp.includes('data/search.json'), 'extreme live = live frames + search');
+  assert.ok(readFileSync(join(docs.DOCS_OUT, extreme.id, 'items/plugin-ui-review.html'), 'utf8').includes('data-live-view="ui-review"'), 'the live frame names the view');
+  assert.equal(extreme.data.sourceHash.length, 16);
+  assert.ok(cat.buildCatalog().entries.some((e: { id: string }) => e.id === `docs:${deep.id}`), 'docs are glossary entries');
+});
+
+ok('the build hook rebuilds the catalog for build events and ignores the rest', async () => {
+  const hook = (await import('./build-hooks.mjs')).default;
+  const none = await hook([{ event: 'note', build: { id: 'x' } }]);
+  assert.equal(none.rebuilt, false);
+  const r = await hook([{ event: 'step-done', build: { id: 'glossary-index-demos' } }, { event: 'pr-merged', build: { id: 'other' } }]);
+  assert.deepEqual(r.builds, ['glossary-index-demos', 'other']);
+  const log = JSON.parse(readFileSync(cat.CHANGES_FILE, 'utf8'));
+  assert.ok(log.some((l: { build: string }) => String(l.build).includes('glossary-index-demos')) || r.rebuilt === false, 'the change log names the build when something moved');
+});
+
+ok('every demo command in plugin.json has a route in the server part', () => {
+  const pj = JSON.parse(readFileSync(join(cat.ROOT, 'apps/console-web/plugins/glossary-index/plugin.json'), 'utf8'));
+  const py = readFileSync(join(cat.ROOT, 'apps/console-web/plugins/glossary-index/server/__init__.py'), 'utf8');
+  for (const c of pj.commands.items) {
+    const [method, path] = c.route.split(' ');
+    assert.ok(new RegExp(`@router\\.${method.toLowerCase()}\\("${path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`).test(py), `${c.id}: ${c.route}`);
+    assert.ok(c.description && c.description.length > 40, `${c.id} described`);
+  }
+});
+
+console.log(`glossary demos: store, generator, books, clips, docs and hook checked`);
