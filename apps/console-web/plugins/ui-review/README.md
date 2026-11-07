@@ -192,3 +192,14 @@ with and without into, repair of ungrouped shots) · `node --experimental-strip-
 
 Captured with `AXF_APPEARANCE_HUB=off AXF_UI_REVIEW_DIR=<demo> node framework/cli/rebuild-shots.mjs --shots
 _claude/memory/docs/ui-review/shots/shots.json …` (views switched with `AXF.navigate` + the View dropdown).
+
+## Choices (ui-choices@1)
+
+A build ships at least 3 options for a UI: `review.mjs submit --choices <file.json>`, or `choices` on `POST submit`.
+Pictures are the item's shots named `opt-<option id>--…`. Each option is a real asset of its type: the CLI writes it to
+`plugins/<owner>/assets/<type>/` (it ships in the PR), the API keeps it in the data folder under the same path. All of
+them join the asset library, picked or not. Brett picks in the item's Choices tab; `choices/decision` reads it, and the
+build waits like any hold. Multi-pick is offered only for the types in `MULTI_VIEW_TYPES`
+(`framework/core/ui-choices.mjs`); the first pick is the default view. `choices/ask` asks him how many options to make
+when that setting is on. Routes are listed in `server/choices.py`.
+

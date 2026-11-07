@@ -2,6 +2,8 @@
 
 Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Read the parts you need (Grep, then read by line range); keep it updated whenever something meaningful changes.
 
+- **Nov 7 2026, approvals-in-place-r2 (PR pending):** Approve / Deny stay in the console through the approvals banner's relay; `console.refresh`; nightly console deploy; UI Review choices (ui-choices@1) with a three-option rule; Settings → Appearance → Choose from every asset. Report `_claude/builds/reports/approvals-in-place-r2.md`.
+
 ## Status (as of Oct 21 2026)
 
 - **Terminal sessions nav (Nov 3 2026, Opus, `claude/terminal-sessions-nav`, PR #286 on #274; build `terminal-sessions-nav`):** Brett: a collapsible left nav in the Terminal listing live sessions incl. his own Claude sessions, to mirror and jump in. Terminal 0.5.0: rail (My sessions / Agents / Connections / Recent; icons when collapsed, drawer on phones; search, filter, sort, timers; setting `sessionsNav`), read-only tmux mirrors (`tmux attach -r`, input dropped server-side) with **Jump in**, any plain tmux name attachable now, claude.ai chat feeds from the new MCP tool `console_session_note` + a recorder of every console MCP call (capability `axf.session-feed@1`, `feeds.json`), live websocket `nav/ws`, commands sessions-list/feed/note/stop/mirror/jump. Gap: axHub doesn't forward the caller's session downstream, so other hub calls aren't in a chat's feed. Tests: terminal 132, MCP tools 145, `check-terminal-nav.mts` 13. Report `_claude/builds/reports/terminal-sessions-nav.md`. <!-- axf-plugin:console-terminal -->
