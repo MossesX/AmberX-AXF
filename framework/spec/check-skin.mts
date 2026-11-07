@@ -7,10 +7,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, composeLook, lookAfterChange, newAppLook, normalizeSkin, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime, type AppearanceSource } from '../core/runtime';
-import type { AppearanceDocument, AppearanceSourceState } from '../core/engines/appearance';
+import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
 import type { AxfManifest } from '../core/types';
 import * as engine from '../cli/build-engine.mjs';
 
@@ -192,3 +192,96 @@ eq({ ...local.getState().active, skin: '' }, { ...localBefore, skin: '' }, 'loca
 /* the toolbar and title bar actions exist */
 ok(['skin.use', 'skin.off', 'skin.restore', 'skin.undo', 'skin.window.minimize', 'skin.window.maximize', 'skin.window.close'].every((id) => a.rt.actions.list().some((x) => x.id === id)), 'the skin actions are registered');
 console.log(`check-skin: ${n} checks passed`);
+
+/* ---- skin-coverage@1 (build skins-asset-types): every registered type is covered, scopes, parts, icon pack ---- */
+{
+  const cv = fx.coverage;
+  const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } } };
+  const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' } };
+  const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+  const table = coverageTable(types as never, targets, never);
+  eq(table, cv.table, 'coverage table = fixture');
+  eq(uncoveredTypes(types as never, targets, never).map((r) => r.type), ['badge', 'help', 'mystery', 'hush'], 'uncovered: an attachable without a target, an excluded type with no declaration, bad declarations');
+  eq(table.find((r) => r.type === 'button')!.by, 'slot', 'a plain type is a slot');
+  eq(table.find((r) => r.type === 'button')!.also, ['parts'], 'a slot with a style target also takes parts');
+  eq(table.find((r) => r.type === 'label')!.by, 'parts', 'a widget is covered by parts');
+  eq(table.find((r) => r.type === 'icon-pack')!.by, 'reference', 'a declared reference');
+  eq(coverageSummary(table), cv.summary, 'summary');
+  eq(partsTypes(types as never, targets), ['button', 'label'], 'parts types = registered types with a target');
+  eq(partElements(targets.toolbar), ['box', 'text', 'icon', 'items'], 'composite elements with items');
+  eq(partElements(targets.button), ['box', 'text', 'icon'], 'composite elements without items');
+  eq(partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), cv.partsErrors.bad, 'parts errors');
+  eq(declarationErrors('mystery', types.mystery), ['mystery: skin.by must be one of slot, parts, reference, bundle, none'], 'a kind outside the list');
+  eq(declarationErrors('hush', types.hush), ['hush: skin.by "none" needs a why'], 'none needs a why');
+
+  // the real registry: nothing uncovered (CI: spec/check-skin-coverage.mjs says the same from plain node)
+  eq(skinUncovered().map((r) => `${r.type}: ${r.why}`), [], 'every registered asset type has skin coverage');
+  const real = skinCoverage();
+  eq(real.map((r) => r.type), Object.keys(JSON.parse(readFileSync(join(root, 'schemas/asset-types.json'), 'utf8')).types), 'coverage lists every type in registry order');
+  ok(real.filter((r) => r.by === 'parts').every((r) => r.elements.length >= 3), 'every widget has box, text and icon parts');
+  ok(skinPartsTypes().includes('label') && skinPartsTypes().includes('badge') && skinPartsTypes().includes('button'), 'labels, badges and buttons take parts');
+  ok(skinCoverageSummary().uncovered === 0 && skinCoverageSummary().total === real.length, 'summary counts');
+
+  // scopes: plugin → ui → app → global, the child overrides the parent
+  const sc = fx.scopes;
+  const place = { app: 'app', ui: 'home', plugin: 'notes' };
+  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global'], 'chain from the leaf');
+  eq(skinScopeChain({ app: 'app' }), ['app', 'global'], 'the app chain');
+  eq([skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], ['plugin:notes', 'ui:home', 'app'], 'keys');
+  eq(['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), ['global', 'app', 'ui', 'plugin'], 'kinds');
+  eq(skinScopeSelector('plugin:notes'), '[data-axf-plugin="notes"]', 'a plugin scope is drawn under its root');
+  eq(skinScopeSelector('ui:home'), '[data-axf-ui="home"]', 'a UI scope is drawn under its view root');
+  eq(skinScopeSelector('app'), '', 'the app is the page itself');
+  eq(normalizeSkinScope({ app: 'App!', ui: 'home', plugin: 'ai.amberx.notes' }), { app: '', ui: 'home', plugin: 'ai.amberx.notes' }, 'bad ids drop');
+  eq(resolveSkinChain(['a', 'b', 'c'], (k) => ({ a: { use: 'inherit' }, b: { use: 'on', id: 'x', overrides: { button: 'b' } }, c: { use: 'on', id: 'y', overrides: { button: 'c', dialog: 'c' } } } as never)[k]), { id: 'x', overrides: { button: 'b' }, from: 'b' }, 'the first deciding level wins; the overrides of a parent level belong to its own skin');
+  eq(resolveSkinChain(['a', 'b'], () => ({ use: 'inherit' })), { id: '', overrides: {}, from: '' }, 'all inherit = nothing');
+  eq(resolveSkinChain(['a', 'b'], (k) => (k === 'a' ? { use: 'off' } : { use: 'on', id: 'x' })), { id: '', overrides: {}, from: 'a' }, 'off at the leaf hides the parent skin');
+  const skinned = normalizeSkin(sc.skinned);
+  eq(skinned, sc.skinned, 'a skin with parts and an icon pack normalizes');
+  eq(skinned.iconPack, 'lucide-sharp', 'icon pack kept');
+  eq(Object.keys(skinned.parts!), ['button', 'label'], 'parts kept only for types with a target and real values');
+  eq(skinErrors({ ...skin, iconPack: 'Bad', parts: { nothing: { radius: 'pill' } } }).length, 2, 'bad icon pack and unknown parts type refused');
+  eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, iconPack: 'Bad', parts: { nothing: { radius: 'pill' }, 'uac-policy': {} } }), skinErrors({ ...skin, iconPack: 'Bad', parts: { nothing: { radius: 'pill' }, 'uac-policy': {} } }), 'build engine agrees on icon pack and parts');
+  const skins: Record<string, typeof skinned> = { windows: skinned, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+  const skinOf = (id: string) => skins[id] ?? null;
+  const inherit = setInheritSkin(look0, true);
+  const withGlobal = { ...shared, skin: { id: 'aurora', overrides: { button: 'global-button' } } };
+  eq(resolveLookSkin(look0, null, place), sc.resolve.appOff, 'no skin anywhere');
+  eq(resolveLookSkin(look0, globalSkinOf(withGlobal as never), place).id, '', 'an app that does not inherit ignores the hub-wide skin');
+  eq(resolveLookSkin(inherit, globalSkinOf(withGlobal as never), place), { id: 'aurora', overrides: { button: 'global-button' }, from: 'global' }, 'inherit takes the hub-wide skin');
+  eq(resolveLookSkin(inherit, null, place).id, '', 'inherit with no hub-wide skin = none');
+  const pluginOn = setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'on', 'aurora');
+  eq(resolveLookSkin(pluginOn, null, place), { id: 'aurora', overrides: {}, from: 'plugin:notes' }, 'a plugin skin beats the app skin inside the plugin');
+  eq(resolveLookSkin(pluginOn, null, { app: 'app', ui: 'home' }), { id: 'windows', overrides: {}, from: 'app' }, 'outside the plugin the app skin holds');
+  eq(resolveLookSkin(setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'off'), null, place).id, '', 'a plugin can switch skins off for itself');
+  const uiOver = setScopeOverride(setUseSkin(pickSkin(look0, 'windows'), true), 'ui:home', 'button', 'ui-button');
+  eq(resolveLookSkin(uiOver, null, place), { id: 'windows', overrides: { button: 'ui-button' }, from: 'app' }, 'a UI override rides the app skin');
+  eq(sc.resolve, { appOff: sc.resolve.appOff, appOn: resolveLookSkin(setUseSkin(pickSkin(look0, 'windows'), true), null, place), inheritNoGlobal: resolveLookSkin(inherit, null, place), inheritGlobal: resolveLookSkin(inherit, globalSkinOf(withGlobal as never), place), ownBeatsGlobal: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place), pluginOn: resolveLookSkin(pluginOn, null, place), pluginOff: sc.resolve.pluginOff, pluginInheritsApp: resolveLookSkin(pluginOn, null, { app: 'app', ui: 'home' }), uiOverride: resolveLookSkin(uiOver, null, place), chainOverrides: sc.resolve.chainOverrides }, 'resolution = fixture');
+  const composedApp = composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'windows'), true), skinOf);
+  eq(composedApp, sc.composed.app, 'composed app = fixture');
+  eq(composedApp.doc.slots, composeLook(shared as never, setUseSkin(pickSkin(look0, 'windows'), true), skinned).slots, 'composeLookAt at the app = composeLook');
+  eq(composedApp.doc.settings!['axf.icons.pack.app'], 'lucide-sharp', 'the skin puts its icon pack in force at the app');
+  eq(composedApp.parts, skinned.parts, 'the parts ride along');
+  const composedPlugin = composeLookAt(shared as never, pluginOn, skinOf, place);
+  eq(composedPlugin.doc.slots!['color-theme'], 'aurora-night', 'inside the plugin: the plugin skin');
+  eq(composedPlugin.scopeKey, 'plugin:notes', 'scope key');
+  eq(composedPlugin.skin.from, 'plugin:notes', 'who decided');
+  eq(composeLookAt(withGlobal as never, inherit, skinOf).doc.slots!.button, 'global-button', 'the hub-wide override reaches an inheriting app');
+  eq(composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'nope'), true), skinOf).doc.slots, composeLook(shared as never, look0, null).slots, 'an unknown skin reads as none');
+  eq(scopeEntries(pluginOn), [{ key: 'plugin:notes', use: 'on', id: 'aurora', overrides: {} }], 'entries');
+  eq(scopeState(inherit, 'app'), { use: 'inherit', id: '', overrides: {} }, 'the app level as a state');
+  eq(setScopeSkin(pluginOn, 'plugin:notes', 'inherit', '').scopes, {}, 'inherit with nothing else drops the entry');
+  eq(parseAppLook(JSON.stringify(pluginOn)), pluginOn, 'scopes round trip');
+  eq(restoreAppDefault(pluginOn, 'now').scopes, {}, 'Restore clears the scopes');
+  eq(undoRestore(restoreAppDefault(pluginOn, 'now')).scopes, pluginOn.scopes, 'and undo brings them back');
+  eq(skinCovers(skinned).find((c) => c.type === 'label'), { type: 'label', by: 'parts', covered: true, how: ['parts textColor'] }, 'what this skin covers: a label through parts');
+  eq(skinCovers(skinned).find((c) => c.type === 'icon-pack')!.how, ['iconPack lucide-sharp'], 'the icon pack reference');
+  ok(skinCovers(skinned).find((c) => c.type === 'nav-menu')!.covered === false, 'a type the skin does not set is shown as not covered by it');
+  eq(globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never), null, 'a junk hub-wide skin is none');
+  // the hub-wide skin survives the shared document's parser and merge
+  const parsed = parseAppearance(JSON.stringify(withGlobal));
+  eq(parsed?.skin, { id: 'aurora', overrides: { button: 'global-button' } }, 'appearance@1 keeps the hub-wide skin');
+  eq(mergeAppearance(parsed, { skin: null }, 'test', 'now').skin, undefined, 'a null change clears it');
+  eq(mergeAppearance(parsed, { skin: { id: 'windows' } }, 'test', 'now').skin, { id: 'windows' }, 'a pick replaces it');
+}
+console.log(`check-skin (coverage + scopes): ${n} checks passed`);

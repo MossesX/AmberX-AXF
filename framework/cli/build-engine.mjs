@@ -12,6 +12,7 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
@@ -30,6 +31,8 @@ export const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '.
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
 export const spec = readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json'));
+/** The style targets skins and the customize engine draw with (skin-coverage@1). */
+const customizeSpec = readJson(join(FRAMEWORK_DIR, 'schemas/customize.json'));
 /** Port-specific asset types (android first) layered on the shared spec. They are optional slots: validation never requires them. */
 const ANDROID_SPEC = join(FRAMEWORK_DIR, 'schemas/asset-types.android.json');
 if (existsSync(ANDROID_SPEC)) {
@@ -203,6 +206,8 @@ export function skinErrors(d) {
     if (SKIN_NEVER.includes(t) || Object.values(SKIN_THEMES).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
     else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.assets.${t} must be an asset id`);
   }
+  if ('iconPack' in d && (typeof d.iconPack !== 'string' || !ID.test(d.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
+  errors.push(...skinPartsErrors(d.parts, spec.types, customizeSpec.targets));
   if ('preview' in d && !isO(d.preview)) errors.push('data.preview must be an object');
   if ('extras' in d) {
     const x = d.extras;
