@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1220,
- "updatedAt": "2026-11-07T04:02:42.644Z",
+ "rev": 1221,
+ "updatedAt": "2026-11-07T04:50:15.316Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -90161,19 +90161,24 @@
    "title": "Fast talk: Gizmo and the console assistant answer plain chat without loading tools",
    "category": "Feature",
    "detail": "Chat mode for assistant@1: no tool definitions, no CLAUDE.md or hooks, short prompt, fastest allowed model, streaming; tools load per turn by intent (only the relevant group) then drop back. Chip + force setting in Gizmo and the console. Measured before/after. Runs assistant-chat-mode and -r2 died on the usage limit; this is r3, branch claude/assistant-chat-mode-r3.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/assistant-chat-mode-r4",
    "pr": "#361",
+   "mergedAt": "2026-11-07T04:09:27Z",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-07T00:47:50.977Z",
+   "updatedAt": "2026-11-07T04:49:27.594Z",
    "builtAt": "2026-11-06T18:57:48.129Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-05T19:10:18.022Z"
+    },
+    {
+     "text": "Reconciler: PR #361 merged",
+     "at": "2026-11-07T04:49:27.594Z"
     }
    ],
    "approvals": [],
@@ -90376,7 +90381,7 @@
    },
    "kind": "build",
    "planRef": "assistant-chat-mode",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92789,14 +92794,14 @@
    "title": "Approvals: no window spam on Approve; veto only for VPS writes and account switches",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> when I click approve and the consoles pop up, I don't want it to launch a window of access. It's opening a thousand fucking windows. And also you only need to send the veto rules that ask for approval or deny if you are actually writing something to the VPS or if you are switching accounts.\n> All right, go ahead, build that shit.\n\nNotes: touches Follow Amber approval pop-up (console) and axHub tool policies (veto vs allow). Changing which calls are veto is a policy change in axHub and the shared rule 'It's a veto system'; update rules + decisions.md to match.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-07T01:33:54.885Z",
+   "updatedAt": "2026-11-07T04:49:27.594Z",
    "builtAt": "",
    "notes": [
     {
@@ -92806,6 +92811,10 @@
     {
      "text": "s1 / s4-3 covered by PR 375 (claude/approvals-in-place-r2): Approve and Deny act in place, nothing opens a window. The policy and rules steps are untouched.",
      "at": "2026-11-07T01:33:54.885Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T04:49:27.594Z"
     }
    ],
    "approvals": [],
@@ -92952,7 +92961,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -97926,14 +97935,15 @@
    "title": "UI Review phone notifications + truthful wake + auto session recording and transcripts",
    "category": "",
    "detail": "UI Review items raise a high-priority AmberX notification that opens the group. console_show / wake report what really happened and fall back to a tappable notification. Each Claude session asks AmberX's recorder to start and each part is transcribed automatically, locally, saved with the session and searchable. Mic and Android consent unchanged.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-notify-audio",
    "pr": "#365",
+   "mergedAt": "2026-11-07T04:42:28Z",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-07T00:47:57.275Z",
+   "updatedAt": "2026-11-07T04:49:27.594Z",
    "builtAt": "2026-11-06T20:15:52.271Z",
    "notes": [
     {
@@ -97943,6 +97953,10 @@
     {
      "text": "PR #365, 5 items waiting in UI Review. Light PR checks green; the APK, JUnit and console jobs run in the merge queue. Not tried on a phone.",
      "at": "2026-11-06T20:15:52.876Z"
+    },
+    {
+     "text": "Reconciler: PR #365 merged",
+     "at": "2026-11-07T04:49:27.594Z"
     }
    ],
    "approvals": [],
@@ -98153,7 +98167,7 @@
    },
    "kind": "build",
    "planRef": "ui-review-notify-session-audio",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -98186,19 +98200,24 @@
    "title": "Claude badge: VPS and console connections",
    "category": "Plugin",
    "detail": "Two banner badges in the Claude badge plugin: console connection (axf.llm@1 test) and VPS connection (the Claude Code login on the VPS, read with plain code, zero tokens). Show/hide, Icons only and per-state icons for each. Covers s18 of token-usage-log-accounts-plan-studio-control.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-badge-vps",
    "pr": "#366",
+   "mergedAt": "2026-11-07T04:24:24Z",
    "createdAt": "2026-11-06T20:18:34.992Z",
-   "updatedAt": "2026-11-07T00:48:03.722Z",
+   "updatedAt": "2026-11-07T04:49:27.594Z",
    "builtAt": "2026-11-06T20:31:14.742Z",
    "notes": [
     {
      "text": "Covers s18 of token-usage-log-accounts-plan-studio-control (s34/s35 of its small-steps build).",
      "at": "2026-11-06T20:27:10.558Z"
+    },
+    {
+     "text": "Reconciler: PR #366 merged",
+     "at": "2026-11-07T04:49:27.594Z"
     }
    ],
    "approvals": [],
@@ -98438,7 +98457,7 @@
    },
    "kind": "build",
    "planRef": "claude-badge-vps",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -102359,16 +102378,21 @@
    "title": "UI asset designer: host plugin + designer add-ons (app menu, nav menu, toolbar, banner, embed, widget), designed@1 manifests, asset context section",
    "category": "Assets",
    "detail": "Fable phase: designer@1 contracts (add-on model, designer + embed asset types, designed@1 manifest + identifier + registration, designer-doc@1 interaction contract, asset-context@1 section), fixtures, validators, checks, PORTING.md, DESIGNER.md. Opus phase: the host plugin, six standalone add-on plugins, voice + API/MCP/CLI, tests, UI Review. Plan Studio: Proposed > Assets (proposed-fzf3). Supersedes the menu / toolbar editors of the old asset-designer pending build.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-asset-designer",
    "pr": "#376",
    "createdAt": "2026-11-07T02:11:01.038Z",
-   "updatedAt": "2026-11-07T02:19:11.599Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-07T04:49:27.594Z",
+   "builtAt": "2026-11-07T04:49:27.594Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #376 names s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40 done",
+     "at": "2026-11-07T04:49:27.594Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -102550,12 +102574,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s8",
@@ -102574,12 +102598,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s9",
@@ -102598,12 +102622,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s10",
@@ -102622,12 +102646,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s11",
@@ -102646,12 +102670,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s12",
@@ -102670,12 +102694,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s13",
@@ -102694,12 +102718,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s14",
@@ -102719,12 +102743,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s15",
@@ -102743,12 +102767,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s16",
@@ -102768,12 +102792,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s17",
@@ -102793,12 +102817,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s18",
@@ -102817,12 +102841,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s19",
@@ -102841,12 +102865,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s20",
@@ -102865,12 +102889,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s21",
@@ -102889,12 +102913,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s22",
@@ -102913,12 +102937,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s23",
@@ -102937,12 +102961,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s24",
@@ -102961,12 +102985,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s25",
@@ -102985,12 +103009,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s26",
@@ -103009,12 +103033,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s27",
@@ -103033,12 +103057,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s28",
@@ -103057,12 +103081,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s29",
@@ -103081,12 +103105,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s30",
@@ -103105,12 +103129,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s31",
@@ -103129,12 +103153,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s32",
@@ -103154,12 +103178,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s33",
@@ -103178,12 +103202,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s34",
@@ -103202,12 +103226,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s35",
@@ -103226,12 +103250,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s36",
@@ -103250,12 +103274,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s37",
@@ -103274,12 +103298,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s38",
@@ -103299,12 +103323,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s39",
@@ -103323,12 +103347,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     },
     {
      "id": "s40",
@@ -103345,12 +103369,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-07T04:49:27.594Z",
+     "note": "PR #376 (claude/ui-asset-designer)",
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T04:49:27.595Z"
     }
    ],
    "profiles": [
@@ -103361,7 +103385,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -103377,14 +103401,14 @@
    "title": "Icon Browser plugin + Icon Manager (icon library, icon maps, icon packs)",
    "category": "Assets",
    "detail": "Icon Browser plugin: starter library of open-licensed icon sets stored as icon-pack assets (framework/icon-library, served by the plugin, never bundled); tree / grid / list views with categories, sort, filter, search and a thumbnails toggle; configurable sources of any kind (local, HTTP, REST, MCP, FTP/SFTP, Google Drive, Google Photos, Dropbox, known online repositories) with per-type forms and secrets in the plugin's private store; packs composed by drag and drop between collapsible / floatable panes; selected icons open into docked or floating tab groups; packs saved as icon-pack assets. Icon Manager: every UI and plugin has an icon map (icon-map@1: slot -> icon ref, inheritance app root -> UI -> plugin, child overrides parent); list / grid of every UI with a map, filterable by app; map editor + live preview with drops; Save / Apply; a global pack listing every icon; switch packs globally, randomize, generate cohesive packs. Everything is assets with API / MCP / CLI parity and voice actions; settings in categorized collapsible sections; UI options to UI Review first (3+).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/icon-browser-manager",
    "pr": "#377",
    "createdAt": "2026-11-07T02:52:29.111Z",
-   "updatedAt": "2026-11-07T04:00:59.102Z",
+   "updatedAt": "2026-11-07T04:49:27.594Z",
    "builtAt": "",
    "notes": [
     {
@@ -103398,6 +103422,10 @@
     {
      "text": "Phase 1 (s1-s6, Fable) done and pushed: PR #377 (draft until UI Review in s10). Stopped at the model switch to Opus (s7-s10: sources forms + icon-repos.json, map scanner for every app, polish, shots). Launch the Opus phase from the brief. Report _claude/builds/reports/icon-browser-manager.md.",
      "at": "2026-11-07T04:00:59.102Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T04:49:27.594Z"
     }
    ],
    "approvals": [],
@@ -103674,7 +103702,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {

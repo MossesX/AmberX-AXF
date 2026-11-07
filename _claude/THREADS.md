@@ -716,12 +716,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 04:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:33 UTC · `orch-step-click` s3 done, → complete (refactor) · builds-page
-- 2026-11-06 04:33 UTC · `orch-step-click` s3 undone, → running (refactor) · builds-page
-- 2026-11-06 04:39 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:47 UTC · `auto-switch-claude-account-when-the-active-one-r` added (0 steps) (current) · pending
-- 2026-11-06 04:48 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 05:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 05:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 05:17 UTC · `amberx-slim-down-voice-queue` note (current) · foreign-write
@@ -1116,6 +1110,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 03:55 UTC · `icon-browser-manager` s6 done (current) · orchestrator
 - 2026-11-07 04:00 UTC · `icon-browser-manager` PR #377 (current) · builds-live
 - 2026-11-07 04:00 UTC · `icon-browser-manager` note (current) · orchestrator
+- 2026-11-07 04:50 UTC · `assistant-chat-mode` → complete, merged, note (current) · builds-live
+- 2026-11-07 04:50 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending, note (current) · builds-live
+- 2026-11-07 04:50 UTC · `ui-review-notify-session-audio` → complete, merged, note (current) · builds-live
+- 2026-11-07 04:50 UTC · `claude-badge-vps` → complete, merged, note (current) · builds-live
+- 2026-11-07 04:50 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · builds-live
+- 2026-11-07 04:50 UTC · `icon-browser-manager` → pending, note (current) · builds-live
 
 ## Token passes (log)
 
