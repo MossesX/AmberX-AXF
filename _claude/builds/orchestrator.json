@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T15:09:19.144Z",
+ "updatedAt": "2026-11-07T15:11:03.365Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67150,15 +67150,15 @@
    "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
    "category": "Plan Studio",
    "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/blueprint-notes-tasks",
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-07T15:09:17.384Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T15:11:01.804Z",
+   "builtAt": "2026-11-07T15:11:01.804Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -67296,8 +67296,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T15:11:01.804Z",
      "note": "",
      "uid": "st-mw6im5390e9ooy"
     }
