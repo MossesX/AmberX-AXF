@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1413,
- "updatedAt": "2026-11-07T21:58:50.809Z",
+ "rev": 1414,
+ "updatedAt": "2026-11-07T21:59:03.394Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108094,15 +108094,15 @@
    "title": "glossary-index-demos",
    "category": "",
    "detail": "Encyclopedia glossary + index of everything, registry-sourced; Demonstration Designer off walkthroughs; Book Builder (wizard, chapters, drag from glossary, live sandbox preview, walkthrough video); interactive HTML/TS docs option; orchestrator auto-updates catalog every build; generated clips auto-tagged registry assets. Brief: /root/axf-builds/glossary-index-demos/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "glossary-index-demos",
    "branch": "claude/glossary-index-demos-r2",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T21:58:49.622Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T21:58:53.210Z",
+   "builtAt": "2026-11-07T21:58:52.269Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -108131,6 +108131,10 @@
     {
      "text": "s2 done (Fable): demonstration@1, book@1, clip@1, docs@1 in framework/core/engines/demo-rules.mjs (validators in core + build engine, fixture spec/fixtures/demo.json, check-demo.mts 243 checks, starters, schemas, PORTING gap); Demonstration Designer view + player window + Generate demonstration on every glossary entry; demos.mjs store/CLI + server routes + 14 commands.",
      "at": "2026-11-07T21:33:55.198Z"
+    },
+    {
+     "text": "s3 Book Builder (wizard, tree with drag, chapter editor, content picker, live sandbox preview, Preview book, Record video → Walkthrough producer job), s4 docs output (docs.mjs: markdown / html / interactive HTML + TS with runnable examples and live frames), s5 build-hooks.mjs (catalog rebuilt on every build event; rule in RULES.md + BRIEF-TEMPLATE), s6 clips (clip from-demo, Register a clip, large keyword set) done on Fable in r3. Checks green: check-demo 243, plugin test.mts, catalog --check (ratchet 388), help-coverage 100%, theme/controls/toolbars/chrome/lifecycle/plugin-commands, tsc, vite build, server routes. Report _claude/builds/reports/glossary-index-demos.md.",
+     "at": "2026-11-07T21:58:53.210Z"
     }
    ],
    "approvals": [
@@ -108248,12 +108252,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T21:58:50.482Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:02:18.386Z",
-     "updatedAt": "2026-11-07T04:45:25.537Z"
+     "updatedAt": "2026-11-07T21:58:50.587Z"
     },
     {
      "id": "s5",
@@ -108270,12 +108274,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T21:58:51.375Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:02:18.386Z",
-     "updatedAt": "2026-11-07T04:45:25.537Z"
+     "updatedAt": "2026-11-07T21:58:51.485Z"
     },
     {
      "id": "s6",
@@ -108292,12 +108296,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T21:58:52.269Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:02:18.386Z",
-     "updatedAt": "2026-11-07T04:45:25.537Z"
+     "updatedAt": "2026-11-07T21:58:52.387Z"
     }
    ],
    "profiles": [
@@ -108309,7 +108313,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -749,10 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 19:23 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
-- 2026-11-06 19:30 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
-- 2026-11-06 19:30 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
-- 2026-11-06 19:30 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
 - 2026-11-06 19:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
 - 2026-11-06 19:40 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
 - 2026-11-06 19:43 UTC · `notes-tasks-sync` s5 done, → complete (current) · foreign-write
@@ -1149,6 +1145,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 21:33 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 21:39 UTC · `investor-demo-player-shell-with-login-gate-skins` added (0 steps) (all) · pending
 - 2026-11-07 21:58 UTC · `glossary-index-demos` s3 done (all) · orchestrator
+- 2026-11-07 21:58 UTC · `glossary-index-demos` s4 done (all) · orchestrator
+- 2026-11-07 21:58 UTC · `glossary-index-demos` s5 done (all) · orchestrator
+- 2026-11-07 21:58 UTC · `glossary-index-demos` s6 done, → complete (all) · orchestrator
+- 2026-11-07 21:58 UTC · `glossary-index-demos` note (all) · orchestrator
 
 ## Token passes (log)
 
