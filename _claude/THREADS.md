@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:48 UTC · `gizmo-rebuild-fable` s9 done, s9-1 done, s9-2 done, s9-3 done, s10 done, s10-1 done, s10-2 done, s10-3 done, s11 done, s11-1 done, s11-2 done, s12 done, s12-1 done, s13 done, s13-1 done, s13-2 done, s14 done, s14-1 done, s14-2 done, s14-3 done, s14-4 done, s15 done, s15-1 done, s15-2 done, s15-3 done, s15-4 done, s16 done, s16-1 done, s16-2 done, s16-3 done, s16-4 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `ui-registry-shortcuts` s7 done, s7-1 done, s7-2 done, s7-3 done, s8 done, s8-1 done, s8-2 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `badges-notify-followup` s5 done, s5-1 done, s5-2 done, s6 done, s6-1 done, s7 done, s7-1 done, s7-2 done, s7-3 done, s7-4 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `amberx-open-any-url` added (4 steps) (current) · backfill
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:43 UTC · `plan-blueprints` → complete, note (all) · gina
 - 2026-11-07 13:44 UTC · `plan-blueprints` → built (all) · gina
 - 2026-11-07 13:44 UTC · `orchestrator-gate` s1 done (all) · orchestrator
+- 2026-11-07 13:50 UTC · `style-override-rule` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
