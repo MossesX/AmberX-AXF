@@ -726,9 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:49 UTC · `assistant-chat-mode` s5 done, s6 done (current) · foreign-write
-- 2026-11-06 18:49 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
-- 2026-11-06 18:49 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s1 done, → running (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s2 done (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s3 done (current) · orchestrator
@@ -1126,6 +1123,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:00 UTC · `dataset-bar` note (current) · foreign-write
 - 2026-11-07 05:00 UTC · `multi-account-headless-workers` note (current) · orchestrator
 - 2026-11-07 05:02 UTC · `skins-asset-types` s4 done, s5 done, s7 done (current) · foreign-write
+- 2026-11-07 05:00 UTC · `gizmo-rebuild-fable` → complete, merged, note (current) · reconciler
+- 2026-11-07 05:00 UTC · `dataset-bar` → built, branch claude/dataset-bar, PR #380, note (current) · reconciler
+- 2026-11-07 05:00 UTC · `library-harvest` branch claude/library-harvest, PR #378, note (current) · reconciler
 
 ## Token passes (log)
 
