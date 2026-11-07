@@ -225,8 +225,9 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
 
     reg.register({"id": "git-push", "label": "git push from the VPS checkout", "service": "github", "order": 13,
                   "when": lambda: (root / ".git").exists(), "run": lambda: probes.git_push(str(root)),
-                  "fix": {"type": "host", "command": "gh auth setup-git && git -C /opt/axf push --dry-run origin HEAD:refs/heads/axf-health-probe"},
-                  "instructions": ["On the VPS: gh auth login (or store a token with git's credential helper), then gh auth setup-git.",
+                  "fix": {"type": "host", "command": "docker exec axf-console sh -c 'ln -sf /axf/framework/deploy/axf-git-cred /usr/local/bin/axf-git-cred && git -c safe.directory=* -C /axf push --dry-run origin HEAD:refs/heads/axf-health-probe'"},
+                  "instructions": ["The check runs inside axf-console, where the checkout is mounted at /axf. The image links /usr/local/bin/axf-git-cred to the mounted helper; an older image needs the link made (the fix command) or a rebuild (bash /opt/axf/deploy/install-console.sh).",
+                                   "If the helper is there and GitHub still refuses: the token is dead. Settings → Plugins → GitHub (GitHub App), or a new GITHUB_TOKEN in the console's secrets.",
                                    "The check runs git push --dry-run, which signs in and stops before sending anything."]}, OWNER)
 
     gh_ci = github_svc.client(user_agent="axf-console-health") if github_svc is not None else None

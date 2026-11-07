@@ -23,7 +23,7 @@ Commit statuses (read), Metadata (read). Private app, webhook off.
   and takes over again whenever the app can't mint. `AXF_GITHUB_TOKEN_SOURCE` = app | legacy | none.
 - **Systems check**: the GitHub route defaults to `auto` (the local token first while it is the app's, else axHub);
   the "GitHub token" item tests the old token (amber a week before it expires, amber not red while the app works).
-- **VPS**: `framework/deploy/axf-git-cred` (git: installation token, then the old token) and `framework/deploy/gh-app`
+- **VPS and the console container** (the image links the helper to the mounted checkout): `framework/deploy/axf-git-cred` (git: installation token, then the old token) and `framework/deploy/gh-app`
   (`gh`: the user token, else the installation token), installed by `framework/deploy/install-github-helpers.sh`.
 - **Node tools**: `framework/cli/github.mjs` `githubToken()` = env token, else the app's installation token, else `gh`.
 

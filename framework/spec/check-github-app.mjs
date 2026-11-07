@@ -195,6 +195,7 @@ try {
     assert.equal(r.stdout, `username=x-access-token\npassword=${pat}\n`);
     assert.equal((await run('sh', [join(DEPLOY, 'axf-git-cred'), 'get'])).stdout, `username=x-access-token\npassword=${pat}\n`, 'shell helper falls back too');
     assert.equal((await run('sh', [join(DEPLOY, 'axf-git-cred'), 'get'], { AXF_GITHUB_BROKER: '/nonexistent' })).stdout, `username=x-access-token\npassword=${pat}\n`, 'no broker → old token');
+    assert.equal((await run('sh', [join(DEPLOY, 'axf-git-cred'), 'get'], { AXF_GITHUB_BROKER: '/nonexistent', AXF_CONSOLE_SECRETS: '', AXF_DIR: join(root, 'no-such-dir'), AXF_ROOT: root })).stdout, `username=x-access-token\npassword=${pat}\n`, 'console container: no /opt/axf, the checkout is AXF_ROOT');
     assert.equal((await cli(['token', '--json'])).stdout.includes('"source":"legacy"'), true);
     rmSync(join(root, '.axf-console', 'secrets.env'));
     r = await cli(['credential', 'get']);

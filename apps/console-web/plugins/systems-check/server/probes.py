@@ -263,6 +263,9 @@ def git_push(root: str, run: Callable[..., Any] = subprocess.run) -> Probe:
     if r.returncode == 0:
         return p("ok", "The VPS checkout can push to GitHub (dry run).")
     low = out.lower()
+    if "axf-git-cred" in low and "not found" in low:
+        return p("error", "git's credential helper (axf-git-cred) isn't installed where this check runs, so git had no credentials to send.", dead=True,
+                 details=[ln for ln in out.splitlines() if ln.strip()][-4:])
     if "could not read username" in low or "terminal prompts disabled" in low:
         return p("error", "The VPS checkout has no GitHub credentials for pushing (git would have to ask for a password).", dead=True,
                  details=[ln for ln in out.splitlines() if ln.strip()][-4:])

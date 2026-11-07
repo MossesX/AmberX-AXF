@@ -653,6 +653,8 @@ class Run:
 check(probes.git_push("/x", run=lambda *a, **k: Run(0))["status"] == "ok", "git push dry run ok")
 gp = probes.git_push("/x", run=lambda *a, **k: Run(128, "remote: Invalid username or password.\nfatal: Authentication failed for 'https://tok@github.com/x'"))
 check(gp["status"] == "error" and gp.get("dead") and "tok@" not in json.dumps(gp), "git push refused: red, credentials stripped from the output")
+gp = probes.git_push("/x", run=lambda *a, **k: Run(128, "/usr/local/bin/axf-git-cred get: 1: /usr/local/bin/axf-git-cred: not found\nfatal: Authentication failed for 'https://github.com/x'"))
+check(gp["status"] == "error" and gp.get("dead") and "isn't installed" in gp["summary"] and "refused" not in gp["summary"], "git push: a missing helper is named, not blamed on GitHub")
 
 iso = lambda ms: time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(ms / 1000)) + "Z"
 nm = NOW * 1000

@@ -1,10 +1,13 @@
 #!/bin/sh
-# git credential helper for the AmberX VPS (github-app@1, Nov 1 2026), installed as /usr/local/bin/axf-git-cred.
+# git credential helper for the AmberX VPS (github-app@1, Nov 1 2026), installed as /usr/local/bin/axf-git-cred
+# on the host (install-github-helpers.sh) and in the console image (Dockerfile).
 # Order: the GitHub App's installation token (framework/cli/github-token.mjs, minted and cached on the console server),
 # then the console's old GITHUB_TOKEN (secrets.env) as the fallback until Brett deletes it. Only `get` answers.
 [ "$1" = get ] || exit 0
 cat >/dev/null 2>&1 || true   # git's request on stdin isn't needed
+# The checkout is /opt/axf on the host and AXF_ROOT (/axf) in the console container, which has no /opt/axf.
 AXF_DIR="${AXF_DIR:-/opt/axf}"
+[ -d "$AXF_DIR/.axf-console" ] || AXF_DIR="${AXF_ROOT:-$AXF_DIR}"
 B="${AXF_GITHUB_BROKER:-$AXF_DIR/framework/cli/github-token.mjs}"
 S="${AXF_CONSOLE_SECRETS:-$AXF_DIR/.axf-console/secrets.env}"
 T=""
