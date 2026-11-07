@@ -705,10 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
-- 2026-11-05 11:20 UTC · `three-layouts-per-screen` PR #355, note (angel) · reconciler
-- 2026-11-05 11:50 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
-- 2026-11-05 11:50 UTC · `handoff-2-addenda-r2` → pending, note (current) · reconciler
 - 2026-11-05 18:36 UTC · `assistant-chat-mode` added (8 steps) (current) · orchestrator
 - 2026-11-05 18:36 UTC · `assistant-chat-mode` → running (current) · orchestrator
 - 2026-11-05 18:36 UTC · `assistant-chat-mode` s1 done (current) · orchestrator
@@ -1105,6 +1101,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s3 done (current) · orchestrator
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s4 done (current) · orchestrator
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s5 done (current) · orchestrator
+- 2026-11-07 00:47 UTC · `claude-accounts-edit` added (5 steps) (current) · backfill
+- 2026-11-07 00:47 UTC · `claude-accounts-edit` → pending (current) · orchestrator
+- 2026-11-07 00:47 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s56-55 done, s57-56 done, s58-57 done, s59-58 done, s60-59 done, s61-60 done, s62-61 done, s63-62 done, s64-63 done, s66-65 done, s67-66 done, s68-67 done, s69-68 done, s70-69 done, s71-70 done, s72-71 done, s73-72 done, s74-73 done, s75-74 done (current) · orchestrator
+- 2026-11-07 00:47 UTC · `ui-review-notify-session-audio` s7 done, s7-1 done (current) · orchestrator
 
 ## Token passes (log)
 

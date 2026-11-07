@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T00:47:39.601Z",
+ "updatedAt": "2026-11-07T00:47:59.286Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12687,7 +12687,7 @@
    "branch": "claude/assistant-chat-mode-r4",
    "pr": "#361",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-06T18:57:48.129Z",
+   "updatedAt": "2026-11-07T00:47:50.977Z",
    "builtAt": "2026-11-06T18:57:48.129Z",
    "notes": [
     {
@@ -12703,8 +12703,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "backfill",
+    "brief": "# Build: assistant-chat-mode-r4 (pending item assistant-chat-mode)\n\nBrett: Gizmo chat in AmberX has to talk fast, like a normal conversation, without loading all the tools. Steps 1-4 were done in the unpushed worktree /root/axf-builds/assistant-chat-mode-r3 (measured, lean provider, turn router, assistant@1 toolMode). First bring that work in: commit anything uncommitted there and merge or cherry-pick its commits onto this branch.\n\nThen do the remaining steps only:\n5. Gizmo (AmberX companion plugin): Chat / Tools chip, force setting, per-chat mode, spoken errors.\n6. Console assistant: same chip + settings (default mode, words, cache).\n7. Tests, type checks.\n8. Measure after on the real turn path; report, PR to the merge queue. Do not land.\n\nDon't load the full CLAUDE.md chain; read only files you need. Tick steps on the pending item as they finish.",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -13561,7 +13561,7 @@
    "branch": "claude/today",
    "pr": "",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-06T14:20:16.509Z",
+   "updatedAt": "2026-11-07T00:47:43.139Z",
    "builtAt": "",
    "notes": [
     {
@@ -13573,14 +13573,14 @@
    "upgradeRequests": [],
    "origin": {
     "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
-    "at": "2026-11-06T00:00:00Z",
+    "at": "2026-11-06",
     "source": "voice",
     "session": "",
     "link": "",
-    "by": "headless",
-    "brief": "",
+    "by": "backfill",
+    "brief": "# today: approve/deny axHub approvals inside the Dev Console\n\nBrett's words (voice, Nov 6 2026): \"It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.\"\n\n## Problem\nWhen an axHub approval (confirm or veto countdown) is waiting, the console pops it up (approvals-banner / approval popup), but tapping it navigates to https://axhub.amberxai.com/auth/admin/approvals/<id>. Brett wants to stay in the console.\n\n## Build\n1. In the console's approval popup/banner (and any approval row in the console, incl. phone layout), tapping the approval opens an in-console approval view: title, description, the exact call/command, countdown if veto, and Approve / Deny buttons.\n2. Approve / Deny call axHub's approval API server-side from the console (console proxy using its existing axHub auth), never by sending Brett to the axHub site. Show the result in place (approved, denied, ran, failed).\n3. No link to the axHub page as the default tap. At most a small secondary \"open in axHub\" option.\n4. Register console actions (e.g. approvals.approve / approvals.deny with id) so they work through console commands too, and make console_show approval:<id> open this in-console view.\n5. AmberX phone notifications for approvals should open the console's in-console view, not axHub.\n\n## Rules\nFollow CLAUDE.md and _claude/rules/RULES.md. Never print or log secrets/tokens. Tests for approve/deny from the console. Update help/docs, THREADS row, orchestrator entry, report. Don't land; leave it for Brett's go.\n",
     "verbatim": true,
-    "from": "",
+    "from": "brief",
     "addenda": []
    },
    "steps": [
@@ -14572,7 +14572,7 @@
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T20:16:43.524Z",
+   "updatedAt": "2026-11-07T00:47:45.038Z",
    "builtAt": "",
    "notes": [
     {
@@ -14586,6 +14586,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: Headless progress file + lean CLAUDE.md chain\nOrchestrator build id: headless-progress-file-lean-claude-md-chain (planner.builds). Follow the CLAUDE.md chain and rules as usual.\n\nGoal: headless sessions never stop to update the console; they write progress to a small file the console reads. Cut tokens spent on the CLAUDE.md chain.\n\nSteps (each ~10 min, commit after each):\n1. Define progress file format + location per build (current step, status, last update, notes).\n2. Headless runner (deploy/claude-headless.sh etc.): write/update progress file after each step without pausing. Use it yourself in this build from step 2 on.\n3. Orchestrator: include progress file in every new build on registration.\n4. Console: read progress file on demand and show where the build is.\n5. Remove old stop-to-update-console behavior from headless sessions.\n6. Audit the CLAUDE.md chain headless sessions load (files, size, tokens per step).\n7. Headless: load a slim build brief instead of full chain; pull rules files only when a step needs them.\n8. Load chain once per session, not every step; verify.\n\nTick each step done in the orchestrator as you go. Finish with README/help update, report, PR to merge queue.",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -14878,7 +14890,7 @@
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T23:57:03.317Z",
+   "updatedAt": "2026-11-07T00:47:50.046Z",
    "builtAt": "",
    "notes": [
     {
@@ -14912,6 +14924,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: token-optimize (optimization part of pending item token-usage-log-accounts-plan-studio-control)\n\nBrett: optimization first, before anything else. Build ONLY these steps of that item, in this order:\n1. Step 7: headless sessions skip CLAUDE.md/rules files; get the orchestrator task brief + a short rules brief (digest). Update the load-rules-first rule to exempt headless.\n2. Step 8: Claude settings > Rules briefs: editor, multiple saved briefs, conditions for when each runs, option to generate on the fly before send.\n3. Step 9: orchestrator task brief shown read-only next to the rules brief; both sent together on launch.\n4. Step 1: token log: every headless session logs per turn input/output/cache tokens, cost, model, account, build/step, session, files read (flag CLAUDE.md/rules reads), from transcripts; plain code on the VPS, zero tokens.\n5. Step 2: chat/voice sessions log what they can, marked estimated.\n6. Step 3: Claude settings > Token log viewer (per session/account/build/model, top token eaters, filters, daily totals).\n7. Step 6: periodic cheap usage check (no CLAUDE.md).\n8. Steps 4-5: every API-key run is a confirm approval (never veto) with cost before/after; persist the rule in shared RULES.md + decisions.md.\n\nAnother build (refresh-token-save) runs at the same time and touches apps/console-web/plugins/ai-keys; stay out of that plugin. Don't load the full CLAUDE.md chain; read only files you need. Tick each step on the pending item as it finishes. Commit on this branch, open a PR, do not land.",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s56-55",
@@ -14926,9 +14950,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:48.362Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1eb6mj"
     },
     {
@@ -14944,9 +14968,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:48.999Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1fgpcu"
     },
     {
@@ -14962,9 +14986,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:49.716Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1glr97"
     },
     {
@@ -14980,9 +15004,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:50.467Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1h80xn"
     },
     {
@@ -14998,9 +15022,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:51.176Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1ief9z"
     },
     {
@@ -15016,9 +15040,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:51.885Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1jkl2e"
     },
     {
@@ -15034,9 +15058,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:05.203Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1kwo6p"
     },
     {
@@ -15052,9 +15076,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:06.363Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1l7hza"
     },
     {
@@ -15070,9 +15094,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:07.393Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1m81d7"
     },
     {
@@ -15106,9 +15130,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:08.763Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1obnoq"
     },
     {
@@ -15124,9 +15148,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:09.392Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1phdk9"
     },
     {
@@ -15142,9 +15166,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:10.048Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1qszvw"
     },
     {
@@ -15160,9 +15184,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:08.130Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1r524g"
     },
     {
@@ -15178,9 +15202,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:01:36.569Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1sckfs"
     },
     {
@@ -15196,9 +15220,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:47.684Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1tmnoo"
     },
     {
@@ -15214,9 +15238,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:15:59.525Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1u96mp"
     },
     {
@@ -15232,9 +15256,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:00.310Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1vt3mu"
     },
     {
@@ -15250,9 +15274,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:01.271Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1w0c10"
     },
     {
@@ -15268,9 +15292,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:16:03.326Z",
+     "note": "Ticked by the backfill from the build's evidence.",
      "uid": "st-mw52nz5g1x96o6"
     },
     {
@@ -15917,11 +15941,23 @@
    "branch": "claude/md-chain-control",
    "pr": "#362",
    "createdAt": "2026-11-06T14:24:50.756Z",
-   "updatedAt": "2026-11-06T19:07:58.439Z",
+   "updatedAt": "2026-11-07T00:47:52.413Z",
    "builtAt": "2026-11-06T19:07:36.652Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: md-chain-control (pending item headless-session-efficiency-shared-chain-control)\n\nBrett: finish the optimization in Claude MD Studio. The token log, rules briefs and headless-skips-CLAUDE.md work is on branch claude/token-optimize (PR open, not merged): merge origin/claude/token-optimize into this branch first and build on it; don't redo any of it.\n\nThat item lists every step twice; do each once:\n1. Fresh session per step with a short handoff note from the progress file.\n2. Per-step model choice suggested by the orchestrator.\n3. Steps list the exact files they need; sessions read only those.\n4. Trim long tool output (configurable caps).\n5. Shared registry (schema + store + read/write API with change events) used by both the Claude plugin and Claude MD Studio.\n6. Shared controls in both plugins: CLAUDE.md chain view in load order with size and tokens; per-file include/exclude and always / on demand / never, reorder, edit, preview; per-build and per-step overrides; session mode, handoff size, model rules; output caps, file scoping, token budget per step with warn/stop; live token cost preview; presets lean/normal/full, reset, history.\n7. API, CLI and MCP for the registry.\n8. Verify savings with the token log on a test build.\n\nStay out of apps/console-web/plugins/ai-keys and the Gizmo companion plugin (other builds). Don't load the full CLAUDE.md chain. Tick steps as they finish. PR, do not land.",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -16514,7 +16550,7 @@
    "pr": "#359",
    "mergedAt": "2026-11-06T18:21:20Z",
    "createdAt": "2026-11-06T18:07:12.388Z",
-   "updatedAt": "2026-11-06T19:00:28.761Z",
+   "updatedAt": "2026-11-07T00:47:46.559Z",
    "builtAt": "2026-11-06T18:07:13.301Z",
    "notes": [
     {
@@ -16538,10 +16574,10 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "backfill",
+    "brief": "# Build: refresh-token-save (pending id first-refresh-token-saved-every-time-it-s-used-v)\n\nBrett said (verbatim): \"I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.\"\n\nTarget: ~20 minutes. Do ONLY this, nothing else.\n\nThe VPS Claude login is now mossesx@gmail.com (/root/.claude/.credentials.json). Whenever that login (or any saved account in /root/.claude-accounts or the ai-keys plugin store) uses or renews its OAuth refresh token, write the rotated refresh + access token back to the saved copy immediately, so the next run never uses a dead token. Check the ai-keys renew thread (apps/console-web/plugins/ai-keys), deploy/claude-headless.sh launches, and the account switch path.\n\nDon't load the full CLAUDE.md chain; read only the files you need. Small test with fake tokens. Commit on this branch, open a PR, do not land. Tick step 17 of pending item token-usage-log-accounts-plan-studio-control and mark pending item first-refresh-token-saved-every-time-it-s-used-v complete when done.",
     "verbatim": true,
-    "from": "",
+    "from": "brief",
     "addenda": []
    },
    "steps": [
@@ -16585,11 +16621,11 @@
    "origin": {
     "said": "They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.",
     "at": "2026-11-06T19:31:41.894Z",
-    "source": "",
+    "source": "voice",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "backfill",
+    "brief": "# Build: notes-tasks-sync\n\nBrett (voice, verbatim): \"They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.\"\n\nProblem: AmberX's notes (https://amberx.amberxai.com/#/notes) show different notes than the Dev Console's Notes page. Same for tasks and to-dos.\n\nDo:\n1. Find where each copy stores data now (AmberX notes/tasks plugins, console notes, todo-manager, tasks). Report it.\n2. Make notes, task manager and to-do ONE shared plugin (or one plugin per kind, same code) that both the console and AmberX load, reading and writing ONE store on the server (console API / axHub shared data). No per-app copies.\n3. Migrate: merge existing AmberX and console data into the one store, no data lost (back up first).\n4. Live sync: a change on one shows on the other without reload.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly; everything goes through the merge queue.\n\nHeads up: paused build amberx-slim-queue-r2 also touches AmberX's plugin list (keep list includes notes, tasks); keep notes/tasks/to-do on AmberX's keep list. Don't load the full CLAUDE.md chain; one session for the whole build; read only files you need.",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -16699,7 +16735,7 @@
    "branch": "claude/ui-review-notify-audio",
    "pr": "#365",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-06T20:15:52.876Z",
+   "updatedAt": "2026-11-07T00:47:57.275Z",
    "builtAt": "2026-11-06T20:15:52.271Z",
    "notes": [
     {
@@ -16719,11 +16755,21 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "backfill",
+    "brief": "# Build: ui-review-notify-session-audio\n\nBrett (voice, verbatim): \"Anything that's ready for UI review, send me a notification through the AmberX.\" \"Yeah, I want you to build it and it's not open on the phone. I want this, the audio... automatically audio built in transcriptions automatic every session.\"\n\n1. UI Review notifications: whenever a build adds items to UI Review, AmberX on Brett's phone shows a high-priority notification (build name + item count); tapping it opens UI Review on that group. Plain code, zero Claude tokens.\n2. Fix: console_show / wake-via-AmberX reported 'opened UI Review' but nothing opened on the phone. Find why (AmberX wake / open_url / Android background start) and fix it so it really opens, or falls back to a tappable notification.\n3. Every session automatically recorded and transcribed: when a Claude session starts (voice, console, AmberX/Gizmo), AmberX's session recorder (output-recorder) starts on its own, and each part is transcribed automatically and saved with the session (searchable, linked from the session). Setting to turn it off. Mic stays off unless Brett's own mic switch is on; respect Android capture consent.\n4. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOther builds running: notes-tasks-sync (notes/tasks/todo plugins). Don't touch those. Nothing gets removed from AmberX. One session for the whole build, read only files you need, no full CLAUDE.md chain.\n## Addendum (Brett, voice)\n\"From now on, no matter where I am, when I'm on my phone, bring AmberX to the front and show me the screenshot.\"\n- When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.\n",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "From now on, no matter where I am, when I'm on my phone, bring AmberX to the front and show me the screenshot.",
+      "at": "",
+      "source": "",
+      "by": "",
+      "verbatim": true,
+      "summary": "When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.",
+      "step": "s7"
+     }
+    ]
    },
    "steps": [
     {
@@ -16833,6 +16879,44 @@
      "doneAt": "2026-11-06T20:15:52.270Z",
      "note": "",
      "uid": "st-mw5e1gog0ceen9"
+    },
+    {
+     "id": "s7",
+     "text": "Addendum 1: When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T00:47:57.275Z",
+     "note": "",
+     "addendum": 1,
+     "uid": "st-mw5opigt066ijg"
+    },
+    {
+     "id": "s7-1",
+     "text": "When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T20:15:52.271Z",
+     "note": "Ticked by the backfill from the build's evidence.",
+     "parent": "s7",
+     "uid": "st-mw5opigt07tab0"
     }
    ]
   },
@@ -18071,6 +18155,128 @@
      "doneAt": "",
      "note": "",
      "uid": "st-i6yum8"
+    }
+   ]
+  },
+  {
+   "id": "claude-accounts-edit",
+   "title": "claude-accounts-edit",
+   "category": "",
+   "detail": "Launched without an orchestrator entry; record made from its brief (claude-accounts-edit-r2).",
+   "status": "pending",
+   "hidden": false,
+   "source": "headless",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T00:47:40.021Z",
+   "updatedAt": "2026-11-07T00:47:41.137Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Where it lists the accounts, I need to have an edit button next to the switch buttons... that runs the wizard again.",
+    "at": "2026-11-06",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# claude-accounts-edit: Edit button per account that reruns the wizard\n\n(r2: r1 died at launch, account-2 OAuth expired.)\n\nBrett's words (voice, Nov 6 2026): \"Where it lists the accounts, I need to have an edit button next to the switch buttons... that runs the wizard again.\"\n\n## Problem\nIn the console's Claude accounts list (ai-keys \"Manage Claude accounts\" view and the claude-accounts screen), each account row only has Switch. When an account's login expires, there is no way to re-log that specific account. The add-account wizard only adds a new one. Also: the wizard's \"Save current account\" fails with a bare 'VPS command failed, exit 1' when nobody is logged in (claude-account save prints 'nothing to save: log in or pass a token'); show that message in the UI.\n\n## Build\n1. Add an **Edit** button on every account row, right next to Switch, in every place the account list is shown.\n2. Edit opens the existing add-account wizard bound to that account (pre-filled name/slot). Finishing it replaces that account's login/credentials in place: same slot, no new account. Per-build login copies for that account pick up the new credentials.\n3. Show a clear state on rows whose login is expired/invalid (e.g. \"Login expired\").\n4. Wizard: surface the claude-account command's own output on failure instead of only 'exit 1'.\n5. Register a console action claude-accounts.edit (account id arg) so it runs through console commands too.\n\n## Rules\nFollow CLAUDE.md and _claude/rules/RULES.md. Never print or log secrets/tokens. Tests for the edit path (re-log replaces creds in place, no duplicate). Update help/docs, THREADS row, orchestrator entry, report. Don't land; leave it for Brett's go.\n",
+    "verbatim": true,
+    "from": "brief",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add an **Edit** button on every account row, right next to Switch, in every place the account list is shown.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5op5p801ucfo"
+    },
+    {
+     "id": "s2",
+     "text": "Edit opens the existing add-account wizard bound to that account (pre-filled name/slot). Finishing it replaces that account's login/credentials in place: same slot, no new account. Per-build login copies for that account pick up the new credentials.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5op5p802t71e"
+    },
+    {
+     "id": "s3",
+     "text": "Show a clear state on rows whose login is expired/invalid (e.g. \"Login expired\").",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5op5p803phdc"
+    },
+    {
+     "id": "s4",
+     "text": "Wizard: surface the claude-account command's own output on failure instead of only 'exit 1'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5op5p804isdp"
+    },
+    {
+     "id": "s5",
+     "text": "Register a console action claude-accounts.edit (account id arg) so it runs through console commands too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5op5p805ro8d"
     }
    ]
   }
