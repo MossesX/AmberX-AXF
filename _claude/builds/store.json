@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1382,
- "updatedAt": "2026-11-07T16:17:36.477Z",
+ "rev": 1383,
+ "updatedAt": "2026-11-07T16:17:47.234Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111910,14 +111910,14 @@
    "title": "The API controls everything in the console",
    "category": "",
    "detail": "Step 1 terminal typing (open tab on target, type visibly ~30 chars/s, keys, read screen, close; 'terminal' screen id). Step 2 audit every UI element, coverage table + registry. Step 3 fill gaps through control@1 generic addressing, UI Review approve/reject/pick. Step 4 CI check + rules.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:09:37.164Z",
+   "updatedAt": "2026-11-07T16:17:36.794Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -111950,12 +111950,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:17:36.001Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:09:37.165Z",
-     "updatedAt": "2026-11-07T16:09:37.165Z"
+     "updatedAt": "2026-11-07T16:17:36.109Z"
     },
     {
      "id": "s2",
@@ -111972,12 +111972,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:17:36.794Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:09:37.165Z",
-     "updatedAt": "2026-11-07T16:09:37.165Z"
+     "updatedAt": "2026-11-07T16:17:36.909Z"
     },
     {
      "id": "s3",
@@ -112076,7 +112076,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
