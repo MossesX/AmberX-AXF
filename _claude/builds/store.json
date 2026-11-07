@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1371,
- "updatedAt": "2026-11-07T15:13:56.453Z",
+ "rev": 1372,
+ "updatedAt": "2026-11-07T15:21:51.591Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107761,12 +107761,16 @@
    "branch": "claude/orchestrator-vps-gate",
    "pr": "",
    "createdAt": "2026-11-07T04:55:09.050Z",
-   "updatedAt": "2026-11-07T14:51:35.881Z",
+   "updatedAt": "2026-11-07T15:21:50.550Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Built on branch claude/orchestrator-vps-gate (committed, not pushed per the brief). Report _claude/builds/reports/orchestrator-vps-gate.md; UI Review has the three settings-interface options (set vps-gate-settings). Next: push through the broker, open the PR into the merge queue, set DEFAULT_INTERFACE to Brett's pick.",
+     "at": "2026-11-07T15:21:50.550Z"
     }
    ],
    "approvals": [],
@@ -107904,7 +107908,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
