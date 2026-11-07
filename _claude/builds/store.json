@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1319,
- "updatedAt": "2026-11-07T13:36:22.372Z",
+ "rev": 1320,
+ "updatedAt": "2026-11-07T13:36:31.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110769,7 +110769,7 @@
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:36:21.254Z",
+   "updatedAt": "2026-11-07T13:36:24.206Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -110877,12 +110877,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:36:22.144Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:13:15.893Z",
-     "updatedAt": "2026-11-07T13:13:15.893Z"
+     "updatedAt": "2026-11-07T13:36:22.282Z"
     },
     {
      "id": "s5",
@@ -110899,12 +110899,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:36:23.366Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:13:15.893Z",
-     "updatedAt": "2026-11-07T13:13:15.893Z"
+     "updatedAt": "2026-11-07T13:36:23.493Z"
     },
     {
      "id": "s6",
@@ -110921,12 +110921,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:36:24.206Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:13:15.893Z",
-     "updatedAt": "2026-11-07T13:13:15.893Z"
+     "updatedAt": "2026-11-07T13:36:24.335Z"
     },
     {
      "id": "s7",
@@ -110959,7 +110959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

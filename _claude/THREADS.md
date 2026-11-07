@@ -748,9 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s5 done (current) · orchestrator
-- 2026-11-07 00:47 UTC · `claude-accounts-edit` added (5 steps) (current) · backfill
-- 2026-11-07 00:47 UTC · `claude-accounts-edit` → pending (current) · orchestrator
 - 2026-11-07 00:47 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s56-55 done, s57-56 done, s58-57 done, s59-58 done, s60-59 done, s61-60 done, s62-61 done, s63-62 done, s64-63 done, s66-65 done, s67-66 done, s68-67 done, s69-68 done, s70-69 done, s71-70 done, s72-71 done, s73-72 done, s74-73 done, s75-74 done (current) · orchestrator
 - 2026-11-07 00:47 UTC · `ui-review-notify-session-audio` s7 done, s7-1 done (current) · orchestrator
 - 2026-11-07 00:47 UTC · `shipped-features-r2` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s11-1 done, s12 done, s12-1 done, s13 done, s13-1 done, s14 done, s14-1 done, s15 done, s15-1 done, s16 done, s16-1 done (angel) · orchestrator
@@ -1148,6 +1145,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:32 UTC · `orchestrator-gate` branch claude/orchestrator-vps-gate (all) · orchestrator
 - 2026-11-07 13:32 UTC · `orchestrator-gate` → running (all) · orchestrator
 - 2026-11-07 13:36 UTC · `plan-blueprints` s3 done (all) · gina
+- 2026-11-07 13:36 UTC · `plan-blueprints` s4 done (all) · gina
+- 2026-11-07 13:36 UTC · `plan-blueprints` s5 done (all) · gina
+- 2026-11-07 13:36 UTC · `plan-blueprints` s6 done (all) · gina
 
 ## Token passes (log)
 
