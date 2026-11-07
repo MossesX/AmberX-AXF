@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1198,
- "updatedAt": "2026-11-07T00:49:00.294Z",
+ "rev": 1199,
+ "updatedAt": "2026-11-07T00:49:37.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97801,7 +97801,7 @@
    "branch": "claude/notes-tasks-sync",
    "pr": "#363",
    "createdAt": "2026-11-06T19:31:41.894Z",
-   "updatedAt": "2026-11-06T19:42:51.161Z",
+   "updatedAt": "2026-11-07T00:49:36.557Z",
    "builtAt": "2026-11-06T19:42:51.161Z",
    "notes": [],
    "approvals": [],
@@ -97815,7 +97815,7 @@
     "by": "backfill",
     "brief": "# Build: notes-tasks-sync\n\nBrett (voice, verbatim): \"They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.\"\n\nProblem: AmberX's notes (https://amberx.amberxai.com/#/notes) show different notes than the Dev Console's Notes page. Same for tasks and to-dos.\n\nDo:\n1. Find where each copy stores data now (AmberX notes/tasks plugins, console notes, todo-manager, tasks). Report it.\n2. Make notes, task manager and to-do ONE shared plugin (or one plugin per kind, same code) that both the console and AmberX load, reading and writing ONE store on the server (console API / axHub shared data). No per-app copies.\n3. Migrate: merge existing AmberX and console data into the one store, no data lost (back up first).\n4. Live sync: a change on one shows on the other without reload.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly; everything goes through the merge queue.\n\nHeads up: paused build amberx-slim-queue-r2 also touches AmberX's plugin list (keep list includes notes, tasks); keep notes/tasks/to-do on AmberX's keep list. Don't load the full CLAUDE.md chain; one session for the whole build; read only files you need.",
     "verbatim": true,
-    "from": "",
+    "from": "brief",
     "addenda": []
    },
    "steps": [
@@ -97938,7 +97938,7 @@
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
