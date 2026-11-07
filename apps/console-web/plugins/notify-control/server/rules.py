@@ -260,10 +260,15 @@ def apply(triggers: dict[str, Any], groups: dict[str, Any], alert: dict[str, Any
 
 def commands_for(t: dict[str, Any], groups: dict[str, Any], link: str) -> list[dict[str, Any]]:
     """The buttons on one notification: Approve on a held call, then the commands of every group it is in that is on.
-    `approve` takes the notification's own link, so it opens the screen where Brett's own session decides."""
+    `approve` takes the notification's own link, so it opens the screen where Brett's own session decides. A type may
+    bring its own buttons (`commands` in its notify.json); they come first, after Approve."""
     out: list[dict[str, Any]] = []
     if t.get("guarded") and link:
         out.append({"label": "Approve", "kind": "approve", "target": link, "icon": "check"})
+    for c in t.get("commands") or []:
+        target = c.get("target") or link
+        if target and not any(x["label"] == c.get("label") for x in out):
+            out.append({**c, "target": target})
     for g in groups.values():
         if g.get("on") is False or t["id"] not in (g.get("types") or []):
             continue

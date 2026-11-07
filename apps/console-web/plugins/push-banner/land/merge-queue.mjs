@@ -30,6 +30,8 @@ import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
 import { ciOf, mergeMain, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { conflictRound } from './conflicts.mjs';
+import { isConflictRefusal } from './conflicts-core.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -111,7 +113,7 @@ const agentOf = (b, pr) => {
   return by && !/^(backfill|brett|console|orchestrator)$/i.test(by) ? by : (pr?.user?.login || '');
 };
 
-export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false } = {}) {
+export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false, watch = {} } = {}) {
   const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s);
   const at = now().toISOString();
   const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth };
@@ -183,12 +185,13 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   const holdDeploy = join(s.dataDir, 'queue-merging');
   if (!dry && (d.merge || []).length) writeFileSync(holdDeploy, `${at}\n`);
   let newExpect = mainMoved ? mainSha : expect;
+  const refused = {}; // passed, but GitHub refused it over conflicts: the conflict watch alerts on it this round
   for (const n of d.merge) {
     const e = stack.find((x) => x.pr === n);
     const p = prs.find((x) => x.number === n);
     if (dry) { e.state = 'merging'; continue; }
     const r = await mergeTested({ s, git, gh, e, p, log });
-    if (!r.merged) { e.state = 'passed'; e.why = r.why; log(`queue: #${n} passed but didn't merge: ${r.why}`); break; }
+    if (!r.merged) { e.state = 'passed'; e.why = r.why; log(`queue: #${n} passed but didn't merge: ${r.why}`); if (isConflictRefusal(r.why)) refused[n] = r.why; break; }
     merged.push({ pr: n, title: p?.title || '', sha: r.sha, queueSha: e.sha, at, retested: false, branch: q.queueBranch(n), agent: p?.agent || '' });
     newExpect = r.sha;
     git(['fetch', '-q', s.remote, s.base]);
@@ -265,6 +268,10 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
   const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
+  try {
+    const open = prs.filter((p) => !mergedNow.has(p.number));
+    await conflictRound({ s, git, api, prs: open, mainSha: git(['rev-parse', `${s.remote}/${s.base}`]).out, refused, dry, now, log, requeue: (n) => queueControl(s, 'add', n), ...watch });
+  } catch (err) { log(`conflict watch: ${err.message}`); } // never stops the queue
   return st;
 }
 
@@ -284,7 +291,11 @@ async function mergeTested({ s, git, gh, e, p, log }) {
     git(['fetch', '-q', s.remote, `+refs/heads/${p.branch}:refs/remotes/${s.remote}/${p.branch}`]);
     head = m.sha;
     if (!q.sameCodeFiles(lines(git(['diff', '--name-only', e.sha, head]).out))) return { merged: false, why: 'after main was merged in, its code differs from what the queue tested; retested' };
-    try { r = await tryMerge(head); } catch (err2) { return { merged: false, why: err2.message }; }
+    // GitHub works out mergeability after a push, so a refusal right after ours is not an answer yet
+    for (let i = 0; ; i++) {
+      try { r = await tryMerge(head); break; }
+      catch (err2) { if (i >= (s.mergeRetries ?? 3) || ![405, 409].includes(err2.status)) return { merged: false, why: err2.message }; await new Promise((f) => { setTimeout(f, s.mergeWaitMs ?? 5000); }); }
+    }
   }
   if (!r?.merged) return { merged: false, why: r?.message || 'GitHub did not merge it' };
   git(['fetch', '-q', s.remote, s.base]);

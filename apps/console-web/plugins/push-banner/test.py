@@ -394,6 +394,19 @@ check(c.get("/p/config").json()["mergeQueue"] is True and c.get("/p/config").jso
 r = AM()
 check(not any(x.get("merged") for x in r) and any(x.get("why") == "merged by the merge queue" for x in r), "merge queue on: auto-merge leaves AmberX-AXF to the queue")
 check(c.put("/p/config", json={"queueDepth": 9}).status_code == 400 and c.put("/p/config", json={"queueDepth": 2}).json()["queueDepth"] == 2, "queueDepth is 1 to 6")
+# conflict watch: read what the host runner wrote; only Brett's own click asks for a fix
+_d = Path(os.environ["AXF_PUSH_BANNER_DIR"])
+check(c.get("/p/conflicts").json()["count"] == 0, "GET /conflicts: empty before the first scan")
+(_d / "pr-conflicts.json").write_text(json.dumps({"at": "2026-11-07T00:00:00Z", "items": [{"pr": 18, "title": "T", "head": "abc1234", "files": ["a.ts"], "since": "x", "fix": None}]}))
+check(c.get("/p/conflicts").json()["count"] == 1, "GET /conflicts: what the runner saw")
+check(c.post("/p/conflicts/fix", json={"pr": 18, "head": "abc1234"}).status_code == 403, "Fix conflicts now is Brett's own click (the console token alone is refused)")
+check(not (_d / "pr-conflicts-control.json").exists(), "a refused fix writes nothing")
+check(mod.PUSHES.conflict_fix({"pr": 18, "head": "abc1234"}, owner="brett")["asked"] == [18], "his click asks for the fix, pinned to the head")
+for _b, _code in (({"pr": 18, "head": "fffffff"}, 409), ({"pr": 99, "head": "abc1234"}, 404), ({"pr": "x"}, 400)):
+    try:
+        mod.PUSHES.conflict_fix(_b, owner="brett"); check(False, f"conflict_fix {_b}")
+    except mod.HTTPException as e:
+        check(e.status_code == _code, f"conflict_fix refuses {_b} with {_code}")
 q = c.get("/p/queue").json()
 check(q["$axf"] == "merge-queue@1" and q["on"] is True and q["chip"]["label"] == "Merge queue: 0", "GET /queue: the line and the banner chip")
 check(c.post("/p/queue/move", json={"pr": 18, "to": 0}).status_code == 403, "Jump to front is Brett's own click (the console token alone is refused)")

@@ -1,0 +1,52 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "conflict-fix",
+  "name": "Fix a PR's merge conflicts",
+  "version": "1.0.0",
+  "description": "Merge main into a PR's branch, resolve the conflicts keeping both sides' intent, rerun its checks and push, so the PR rejoins the merge queue. Started by Brett's Fix conflicts now.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "git"
+  ],
+  "data": {
+    "specialty": "landing",
+    "model": "opus",
+    "budget": {
+      "tokens": 400000,
+      "maxTurns": 60,
+      "usd": 6
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "pr.conflict-fix"
+    },
+    "inputs": [
+      {
+        "id": "pr",
+        "label": "PR number",
+        "required": true
+      },
+      {
+        "id": "branch",
+        "label": "Branch",
+        "required": true
+      },
+      {
+        "id": "build",
+        "label": "Build id",
+        "required": true
+      },
+      {
+        "id": "files",
+        "label": "Conflicted files",
+        "default": ""
+      }
+    ],
+    "brief": "PR #{{pr}} (branch {{branch}}, build {{build}}) conflicts with main in: {{files}}. Brett tapped Fix conflicts now.\n1. Work in your own worktree: git fetch origin; git worktree add --detach <dir> origin/{{branch}}. Merge origin/main in (never rebase, never force push).\n2. Resolve every conflict keeping both sides' intent: read what each side changed and why (git log on both). axf.lock.json and baked src/axf files: take main's, then re-bake with node framework/cli/rebake.mjs apply <app>. Builds files and logs: keep both sides' lines, main's builds store.\n3. If a conflict is a real choice between the two sides, don't guess: abort, list the files and both sides' intent in the report, and leave the branch as it was.\n4. Rerun the checks the conflicted code belongs to (its plugin's tests, the framework checks it touches).\n5. Green: git push origin HEAD:{{branch}}. Never push to main and never merge the PR: a new head rejoins the merge queue by itself. Red: report, don't push.\n6. If no check run starts on the new head within a few minutes, dispatch android.yml once on the branch.\nReport what conflicted, how each was resolved and the checks that ran.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/conflict-fix/{{stamp}}.md"
+    }
+  }
+}

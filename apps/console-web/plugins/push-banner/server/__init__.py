@@ -395,6 +395,37 @@ class Pushes:
                 "chip": {"label": f"Merge queue: {len(items)}", "count": len(items), "testing": sum(1 for x in items if x.get("state") == "testing"),
                          "kicked": len(kicked), "tone": "warning" if kicked else "info" if items else "muted"}}
 
+    def conflicts(self) -> dict[str, Any]:
+        """What the conflict watch (land/conflicts.mjs on the host) last saw."""
+        st = storage.read_json(data_dir() / "pr-conflicts.json", {}) or {}
+        items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
+        ctl = storage.read_json(data_dir() / "pr-conflicts-control.json", {}) or {}
+        asked = ctl.get("fix") if isinstance(ctl.get("fix"), dict) else {}
+        return {"$axf": "pr-conflicts@1", "at": st.get("at"), "count": len(items), "items": items, "asked": sorted(int(k) for k in asked if str(k).isdigit())}
+
+    def conflict_fix(self, body: Any, owner: str = "") -> dict[str, Any]:
+        """Fix conflicts now: Brett's own click only, because it spends money. Pinned to the head he saw; the host runner
+        starts the job at its next round (the console container can't launch agents)."""
+        if not owner:
+            raise HTTPException(403, "Fix conflicts now is Brett's own click in the console (signed in on axHub)")
+        if not isinstance(body, dict) or set(body) - {"pr", "head"}:
+            raise HTTPException(400, "send {pr: <PR number>, head: <the head shown>}")
+        pr, head = body.get("pr"), body.get("head")
+        if not isinstance(pr, int) or isinstance(pr, bool) or pr <= 0 or not isinstance(head, str) or not re.fullmatch(r"[0-9a-f]{7,40}", head):
+            raise HTTPException(400, "pr is the PR number and head its head commit")
+        it = next((x for x in self.conflicts()["items"] if x.get("pr") == pr), None)
+        if not it:
+            raise HTTPException(404, f"#{pr} has no conflict open")
+        if it.get("head") != head:
+            raise HTTPException(409, f"#{pr} moved since this was shown; look again")
+        if (it.get("fix") or {}).get("state") == "running":
+            raise HTTPException(409, f"a fix is already running on #{pr}")
+        f = data_dir() / "pr-conflicts-control.json"
+        ctl = storage.read_json(f, {}) or {}
+        fix = ctl.get("fix") if isinstance(ctl.get("fix"), dict) else {}
+        storage.write_json(f, {"$axf": "pr-conflicts-control@1", "fix": {**fix, str(pr): {"head": head, "by": owner, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}}})
+        return {"ok": True, "pr": pr, "note": "the fix job starts at the next round (within 3 minutes)", **self.conflicts()}
+
     def queue_command(self, cmd: str, body: Any, owner: str = "") -> dict[str, Any]:
         """add | remove | move: one implementation, land/merge-queue.mjs (the same file the CLI and the host runner use).
         Jump to front (move to 0) is Brett's own click: a script, session or agent may move a PR anywhere but the front."""
@@ -1472,6 +1503,16 @@ def queue_remove(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/queue/move")
 def queue_move(request: Request, body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.queue_command("move", body, owner=_owner(request))
+
+
+@router.get("/conflicts")
+def conflicts_list() -> dict[str, Any]:
+    return PUSHES.conflicts()
+
+
+@router.post("/conflicts/fix")
+def conflicts_fix(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.conflict_fix(body, owner=_owner(request))
 
 
 @router.get("/config")

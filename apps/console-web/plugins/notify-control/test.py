@@ -308,6 +308,7 @@ ok(R.commands_for({"id": "g", "guarded": True}, {}, "view:approvals") == [{"labe
 cmds = {"g": {"on": True, "types": ["x"], "commands": [{"label": "Logs", "kind": "console", "target": "terminal.claude", "icon": ""}]}}
 ok([c_["label"] for c_ in R.commands_for({"id": "x"}, cmds, "")] == ["Logs"], "a group's own commands")
 ok(R.commands_for({"id": "x"}, {"g": {**cmds["g"], "on": False}}, "") == [], "a group that's off brings none")
+ok(R.commands_for({"id": "x", "commands": [{"label": "Fix conflicts now", "kind": "open", "target": "settings:push-banner"}]}, {}, "https://x")[0]["target"] == "settings:push-banner", "a type brings its own button")
 
 ids = {"x"}
 for bad, what in [({"name": ""}, "no name"), ({"name": "a", "types": ["nope"]}, "unknown type"), ({"name": "a", "commands": [{"label": "b", "kind": "shell", "target": "rm"}]}, "a kind that doesn't exist"),

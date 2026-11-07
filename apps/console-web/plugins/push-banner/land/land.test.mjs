@@ -23,7 +23,7 @@ const check = (c, m) => { if (c) { ok++; console.log(`  ✓ ${m}`); } else { bad
 console.log('zero tokens: the merge pipeline never calls a model');
 const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-sdk/, /\bclaude\s+-p\b/, /['"]claude['"]\s*,/, /claude-headless\.sh/, /axf\.llm@1/, /\bllm\b.*\bimport\b|\bimport\b.*\bllm\b/i, /chat[-_]engine/, /swarm-chat/, /\bgenerativeai\b|\bmistral\b|\bollama\b|\bcohere\b/i];
 const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$/.test(f));
-const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs']);
+const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs', './conflicts-core.mjs', './conflicts.mjs']);
 for (const f of landFiles) {
   const text = readFileSync(join(HERE, f), 'utf8');
   const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)|require\(\s*['"]([^'"]+)['"]\s*\)/gm)].map((m) => m[1] || m[2] || m[3]);

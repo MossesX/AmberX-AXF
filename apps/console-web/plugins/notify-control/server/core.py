@@ -76,7 +76,7 @@ def normal(t: dict[str, Any], channels: list[str]) -> dict[str, Any]:
     defaults = {c: (t.get("channels") or {}).get(c, start[c]) is True for c in allowed}
     pri = t.get("priority") if t.get("priority") in PRIORITIES else "normal"
     return {**t, "enforced": t.get("enforced") or "gate", "allowed": allowed, "defaults": defaults, "priority": pri,
-            "guarded": t.get("guarded") is True, "match": t.get("match") or None}
+            "guarded": t.get("guarded") is True, "match": t.get("match") or None, "commands": [c for c in t.get("commands") or [] if isinstance(c, dict)]}
 
 
 def build_types(reg: dict[str, Any], extra: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:

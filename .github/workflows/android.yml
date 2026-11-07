@@ -144,6 +144,8 @@ jobs:
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
+      - name: Conflict watch (push banner) — scan, baseline digest, one push per new conflict, Fix pinned to Brett's click; real git
+        run: node apps/console-web/plugins/push-banner/land/conflicts.test.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them

@@ -11,6 +11,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { BANNER_KEY, FOLDER, ID, VERSION, load, start } from './store';
 import { PushBanner, PushSettings } from './ui';
 import { MergeQueueView } from './queue';
+import { startConflicts } from './conflicts';
 import { appMenu } from './menu';
 import './push-banner.css';
 
@@ -21,6 +22,7 @@ export const plugin: AxfWebLibrary = {
   version: VERSION,
   register(rt) {
     start();
+    startConflicts(rt);
     rt.actions.register('push-banner.queue', () => rt.dispatch('settings.open:push-banner'), { label: 'Merge queue' });
     rt.actions.register('push-banner.check', () => { void load(true); rt.toast('Checking every branch against main…', 'info', 'Push banner'); }, { label: 'Check branches not on main' });
   },

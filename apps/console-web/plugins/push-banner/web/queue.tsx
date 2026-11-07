@@ -7,6 +7,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf/react';
+import { ConflictsSection } from './conflicts';
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
@@ -90,6 +91,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
       <p className="fx-small fx-muted">Each PR is tested once, on top of main and every PR ahead of it ({d.depth} at a time); when its run is green it merges with no retest. A red one is kicked out with the reason and the ones behind it are retested without it.{d.avgMin ? ` A run takes ~${d.avgMin} min.` : ''}{d.at ? ` Checked ${new Date(d.at).toLocaleTimeString()}.` : ''}</p>
       {d.variableError && <p className="fx-small axp-push-banner__note is-danger">{d.variableError}</p>}
       {q.note && <p className="fx-small axp-push-banner__note" role="status">{q.note}</p>}
+      <ConflictsSection />
       <section className="axp-push-banner__group" aria-label="In the queue">
         <h4 className="axp-push-banner__group-title">In the queue <span>{d.items.length}</span></h4>
         {d.items.length

@@ -162,6 +162,17 @@
         "title": "Merge queue",
         "text": "On: each PR is tested once on top of main and the PRs ahead of it, then merges with no second run.",
         "kind": "toggle"
+      },
+      {
+        "target": "conflicts",
+        "title": "Merge conflicts",
+        "text": "Open PRs that conflict with main in code, checked every queue round. Each stays here and on the banner until it is resolved."
+      },
+      {
+        "target": "fix-conflicts-now",
+        "title": "Fix conflicts now",
+        "text": "Starts a job that merges main into the PR, resolves the conflicts, reruns its checks and pushes, so the PR rejoins the merge queue. Only your own click starts it.",
+        "kind": "button"
       }
     ],
     "intros": []

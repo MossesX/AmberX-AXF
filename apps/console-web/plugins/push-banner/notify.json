@@ -26,6 +26,27 @@
         "keyPrefix": "queue:"
       },
       "priority": "high"
+    },
+    {
+      "id": "merge.conflict",
+      "label": "PR has merge conflicts",
+      "group": "merge",
+      "app": "console",
+      "source": "Merge queue, conflict watch",
+      "description": "An open PR conflicts with main in code, or GitHub refused its merge over conflicts. Stays on the banner until it is resolved; Fix conflicts now starts the fix job.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "conflict:"
+      },
+      "priority": "urgent",
+      "commands": [
+        {
+          "label": "Fix conflicts now",
+          "kind": "open",
+          "target": "settings:push-banner",
+          "icon": "play"
+        }
+      ]
     }
   ]
 }
