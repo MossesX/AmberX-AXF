@@ -119,6 +119,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: API controls everything — every switch, setting, button, menu item, toolbar, dialog, tab, screen and action of the console has an API path (control@1 / MCP / CLI); file:line + what to add
+        run: node framework/cli/api-coverage.mjs check && node framework/spec/check-api-coverage.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
