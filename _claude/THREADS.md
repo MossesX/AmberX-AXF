@@ -749,8 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:00 UTC · `icon-browser-manager` PR #377 (current) · builds-live
-- 2026-11-07 04:00 UTC · `icon-browser-manager` note (current) · orchestrator
 - 2026-11-07 04:50 UTC · `assistant-chat-mode` → complete, merged, note (current) · builds-live
 - 2026-11-07 04:50 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending, note (current) · builds-live
 - 2026-11-07 04:50 UTC · `ui-review-notify-session-audio` → complete, merged, note (current) · builds-live
@@ -1149,6 +1147,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:36 UTC · `full-api-control` s5 done (all) · orchestrator
 - 2026-11-07 16:36 UTC · `full-api-control` s6 done (all) · orchestrator
 - 2026-11-07 16:36 UTC · `approve-button-fix` added (5 steps) (all) · orchestrator
+- 2026-11-07 16:40 UTC · `shipped-features-r2` → complete, merged, note (all) · reconciler
+- 2026-11-07 16:40 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1391,
- "updatedAt": "2026-11-07T16:37:00.556Z",
+ "rev": 1392,
+ "updatedAt": "2026-11-07T16:40:44.837Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -89807,14 +89807,15 @@
    "title": "Shipped features",
    "category": "Plugin",
    "detail": "Feature database (SQLite on the data volume) of every individual feature ever shipped from MossesX/AmberX-AXF and MossesX/axHub, split out of PRs and builds and linked to Brett's verbatim prompt; deploy log for real live dates; three-level expanding grid (View by PR / Plugin / App / Feature type / Build / Day / Repo / Flat); Live / Merged-not-deployed badges on Build manager + Codebase changes; API/MCP/CLI + voice. Planned features appear the moment a build is created (Addendum 4); later changes to a feature show as edits (Addendum 5). Foundation on Fable: feature-ledger@1, build-events@1 (one hook every build creator fires), deploy-log@1. Then Opus for the database, importer, grid, badges, commands and UI. Full brief: /root/axf-builds/shipped-features/.brief.md + takeover brief (Nov 4 2026). Taken over from the helper account (branch claude/shipped-features-acct2 never existed; fresh start).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
+   "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-07T00:47:59.495Z",
+   "updatedAt": "2026-11-07T16:40:42.034Z",
    "builtAt": "2026-11-06T20:04:31.580Z",
    "notes": [
     {
@@ -89832,6 +89833,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #364 merged",
+     "at": "2026-11-07T16:40:42.034Z"
     }
    ],
    "approvals": [],
@@ -90386,7 +90391,7 @@
    "fromProfile": "angel",
    "kind": "build",
    "planRef": "shipped-features-r2",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -90774,14 +90779,15 @@
    "title": "Fable review: Shipped features build hook contract",
    "category": "",
    "detail": "Shipped features s4 (the build hook contract: one framework event every build creator fires for create, status change, PR open/merge) was built on Opus by Brett's override, since the main account ran out of credits mid-build. Fable reviews it and rebuilds it where needed, along with feature-ledger@1 and deploy-log@1 (built on Fable by Gina but cut off before review/tests). Branch claude/shipped-features-r2; progress file _claude/builds/progress/shipped-features.md. Do it after the Shipped features PR lands, as a follow-up PR through the merge queue.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fable-review-shipped-features-build-hook-contrac",
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
+   "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T23:01:17.835Z",
-   "updatedAt": "2026-11-06T20:04:15.490Z",
+   "updatedAt": "2026-11-07T16:40:42.034Z",
    "builtAt": "2026-11-06T20:04:15.490Z",
    "notes": [
     {
@@ -90791,6 +90797,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #364 merged",
+     "at": "2026-11-07T16:40:42.034Z"
     }
    ],
    "approvals": [],
@@ -90817,7 +90827,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "fable-review-shipped-features-build-hook-contrac",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
