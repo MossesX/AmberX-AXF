@@ -1,0 +1,103 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "glossary-index-help",
+  "name": "Glossary & Index help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Glossary & Index plugin: the page, its three views, the filters, the detail panel and its settings.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:glossary-index",
+    "entries": [
+      {
+        "target": "view:glossary-index",
+        "title": "Glossary & Index",
+        "text": "Everything in AmberX AXF in one place: every plugin, feature, screen, control, setting, command, asset and tool, defined in the Glossary, filed in the Index and listed in the Grid.",
+        "kind": "screen"
+      },
+      {
+        "target": "glossary-index",
+        "title": "Glossary & Index settings",
+        "text": "Which view the page opens in, how entries are sorted, how many are drawn at once, whether draft help shows, and a button to rebuild the catalog now.",
+        "kind": "tab"
+      },
+      {
+        "target": "drafts",
+        "title": "Drafts",
+        "text": "On: controls whose help text is still a draft (made from the code, not reviewed yet) are listed too. Off: only reviewed entries.",
+        "kind": "toggle"
+      },
+      {
+        "target": "only-undescribed",
+        "title": "Only undescribed",
+        "text": "Shows only entries whose source has no description of its own, so you can see what still needs writing. Their summary is generated.",
+        "kind": "toggle"
+      },
+      {
+        "target": "close-details",
+        "title": "Close details",
+        "text": "Closes the detail panel and gives the list the full width again.",
+        "kind": "button"
+      },
+      {
+        "target": "rebuild-now",
+        "title": "Rebuild now",
+        "text": "Rebuilds the glossary and index from the registries right away (it also rebuilds by itself after every build) and says how many entries were added, changed or removed.",
+        "kind": "button"
+      },
+      {
+        "target": "show-draft-help-entries",
+        "title": "Show draft help entries",
+        "text": "Whether controls with draft help text are listed by default.",
+        "kind": "field"
+      },
+      {
+        "target": "expand-all",
+        "title": "Expand all",
+        "text": "Opens every heading of the index, all the way down.",
+        "kind": "button"
+      },
+      {
+        "target": "collapse-all",
+        "title": "Collapse all",
+        "text": "Closes every heading of the index back to the top-level categories.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-entry-id",
+        "title": "Copy entry id",
+        "text": "Copies this entry's id (for example plugin:build-manager) so you can use it with the API, MCP tools or the command line.",
+        "kind": "button"
+      },
+      {
+        "target": "show-more",
+        "title": "Show more",
+        "text": "Draws the next page of entries; set the page size in the plugin's settings.",
+        "kind": "button"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "glossary-index",
+        "title": "Glossary & Index",
+        "steps": [
+          {
+            "say": "This is the encyclopedia of the whole system: every plugin, feature, screen, control, setting, command, asset and tool has an entry here.",
+            "target": ""
+          },
+          {
+            "say": "Type in Search to find anything; every word has to match. Pick a kind to narrow it down.",
+            "target": ""
+          },
+          {
+            "say": "Switch between the A to Z Glossary, the categorized Index and the Grid with the tabs. Tap any entry to see what it does, where it appears, its API and what it links to.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.glossary-index",
+  "name": "Glossary & Index",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "An encyclopedia of AmberX AXF: a glossary and an index of every plugin, feature, screen, control, setting, command, asset, asset type, CLI tool, build option, job type and core concept, built from what the repo registers (plugin manifests, help entries, framework assets, the feature tracker, the UI registry) so it stays complete with no hand-kept list. Glossary (A–Z definitions), Index (a categorized tree, like the back of a book) and Grid views, each searchable, filterable by kind and sortable; every entry shows what it is, what it does, where it appears, its API (REST, MCP, CLI), what it links to and what links to it. Rebuilt after every build; CI fails when something registered has no entry. Also over REST, the MCP tools glossary_index_* and `axf glossary-index …`. No model, no tokens.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:glossary-index",
+    "settings-tab:glossary-index",
+    "service:glossary@1"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/glossary-index",
+    "env": [
+      "AXF_GLOSSARY_DIR"
+    ],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "stats", "route": "GET /stats", "title": "Glossary size", "description": "How many entries the glossary has, per kind (plugins, features, screens, controls, settings, commands, assets, CLI tools…), when it was built and how many still lack a description of their own.", "readOnly": true, "output": "{ generatedAt, total, counts, generic, kinds }" },
+      { "id": "search", "route": "GET /search", "title": "Search the glossary", "description": "Entries matching every word (term, summary, keywords, category), best first; optionally only some kinds (comma-separated: plugin, feature, screen, control, setting, command, asset, asset-type, cli, concept…).", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string", "description": "the words to look for" }, "kind": { "type": "string", "description": "only these kinds, comma-separated" }, "limit": { "type": "integer", "description": "at most this many (default 30, max 200)" } } }, "output": "{ q, results: glossary entries }" },
+      { "id": "entry", "route": "GET /entry", "title": "One glossary entry", "description": "One entry by id (e.g. plugin:build-manager, concept:asset, control:console-web:ui-review:approve) with what it is, what it does, where it appears, its API, its links and what links to it.", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string", "description": "the entry id" } }, "required": ["id"] }, "output": "glossary entry + linkedFrom" },
+      { "id": "changes", "route": "GET /changes", "title": "Glossary change log", "description": "What each rebuild of the glossary added, changed and removed, newest first, with the build that caused it.", "readOnly": true, "output": "[{ at, reason, build, counts, added, changed, removed }]" },
+      { "id": "rebuild", "route": "POST /rebuild", "title": "Rebuild the glossary", "description": "Rebuild the glossary and index from the registries now (it also rebuilds by itself after every build). Writes only when something moved.", "readOnly": false, "input": { "type": "object", "properties": { "reason": { "type": "string" }, "build": { "type": "string", "description": "the build that changed things" } } }, "output": "{ wrote, total, counts, diff }" }
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-07" },
+  "help": "help.json",
+  "opens": "main"
+}
