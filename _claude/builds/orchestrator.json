@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T14:27:48.306Z",
+ "updatedAt": "2026-11-07T14:29:46.263Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -65427,7 +65427,7 @@
    "title": "Postgres for the console: orchestrator ID registry + all build data",
    "category": "Framework > Database",
    "detail": "Parked for Molly. Replace JSON builds/plans files with Postgres bundled in the console container; orchestrator assigns and registers every ID; queryable from the console. Supersedes the SQLite idea in 'Build data on a real database'.\n\nFrom Plan Studio plan postgres-for-the-console-orchestrator-id-registr-anyx (parked for Molly; not to be run until Brett says so).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -65435,7 +65435,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T14:11:23.379Z",
+   "updatedAt": "2026-11-07T14:29:43.031Z",
    "builtAt": "",
    "notes": [
     {
@@ -65471,8 +65471,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:29:43.031Z",
      "note": "",
      "uid": "st-mw697ux5083ai9"
     },

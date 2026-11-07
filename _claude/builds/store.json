@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1347,
- "updatedAt": "2026-11-07T14:27:48.306Z",
+ "rev": 1348,
+ "updatedAt": "2026-11-07T14:29:46.263Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109297,7 +109297,7 @@
    "title": "Postgres for the console: orchestrator ID registry + all build data",
    "category": "Framework > Database",
    "detail": "Parked for Molly. Replace JSON builds/plans files with Postgres bundled in the console container; orchestrator assigns and registers every ID; queryable from the console. Supersedes the SQLite idea in 'Build data on a real database'.\n\nFrom Plan Studio plan postgres-for-the-console-orchestrator-id-registr-anyx (parked for Molly; not to be run until Brett says so).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -109305,7 +109305,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T14:11:23.379Z",
+   "updatedAt": "2026-11-07T14:29:43.031Z",
    "builtAt": "",
    "notes": [
     {
@@ -109343,12 +109343,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:29:43.031Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:22:04.647Z",
-     "updatedAt": "2026-11-07T10:22:04.647Z"
+     "updatedAt": "2026-11-07T14:29:43.130Z"
     },
     {
      "id": "s2",
