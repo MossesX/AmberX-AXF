@@ -8,7 +8,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import * as core from './review-core.mjs';
 import { GROUPS as SHOT_GROUPS } from './shots-core.mjs';
 import { appMenu } from './menu';
-import { FOLDER, GROUP_BYS, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
+import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
 import { LookApprovalPanel } from './look-settings';
@@ -26,6 +26,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
+    // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
+    if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);
     if (new URLSearchParams(globalThis.location?.search ?? '').get(SHOT_PARAM)) setTimeout(() => rt.navigate(SHOTS_VIEW), 0);
     // a build's predicted look (?ui-mockup=<spec>, ui-predict.mjs) opens the mockup page
     if (new URLSearchParams(globalThis.location?.search ?? '').get(MOCKUP_PARAM)) setTimeout(() => rt.navigate(MOCKUP_VIEW), 0);

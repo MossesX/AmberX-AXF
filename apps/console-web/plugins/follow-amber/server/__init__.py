@@ -140,7 +140,17 @@ def _open(kind: str, name: str, to: str, by: str) -> dict[str, Any]:
     if to and to != "recent":
         cmd["input"] = {"to": to}
     # navigate only: the runner refuses anything that would change data
-    return svc.run(cmd, NAVIGATE, by)
+    r = svc.run(cmd, NAVIGATE, by)
+    if r.get("ok") and not r.get("queued") and "delivered" in r and not _acked(r):
+        # a connected console that never answered (a frozen phone tab): it opens on the next console, AmberX wakes one
+        q = svc.queue_for_owner(cmd, NAVIGATE, by)
+        r = {**r, "queued": True, "delivery": {"how": "queued", **q}, "message": "the open console didn't answer, so this waits for one to open; AmberX is asked to open it"}
+    return r
+
+
+def _acked(r: dict[str, Any]) -> bool:
+    """A console really carried it out: its ack came back. `ok` alone only means the command was accepted or queued."""
+    return any(x.get("ok") for x in r.get("delivered") or [] if isinstance(x, dict))
 
 
 def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber") -> dict[str, Any]:
@@ -170,6 +180,9 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
                 break
         if not r.get("ok"):
             r = {**{x: v for x, v in r.items() if x not in ("op", "path", "action")}, "shown": False, **base, "tried": tried}
+        elif r.get("queued"):
+            # not on screen yet: never say "opened" for something only waiting for a console
+            r = {"ok": True, "shown": False, "queued": True, **base, "kind": k, "delivery": r.get("delivery") or {}, "message": str(r.get("message") or "queued until a console opens")}
         else:
             item = r.get("item") or {}
             label = item.get("label") or name

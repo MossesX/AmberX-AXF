@@ -80,6 +80,15 @@ public class HubRulesTest {
         assertEquals("ci:main@5", a.open.get(0).stamp);
         assertEquals("CI failed", a.open.get(0).title);
         assertTrue(a.closed.contains("sys:disk"));
+        assertEquals("Console error", a.open.get(0).label);
+        assertEquals(HubRules.CONSOLE, a.open.get(0).link);
+        HubRules.Alerts review = HubRules.consoleAlerts(200, "{\"alerts\":[{\"key\":\"ui-review:group:g-1\",\"severity\":\"warning\",\"title\":\"Build: 2 items waiting\",\"lastAt\":9,"
+            + "\"link\":\"https://console.amberxai.com/?axf-review-group=g-1\",\"meta\":{\"label\":\"UI Review\"}},"
+            + "{\"key\":\"bad\",\"severity\":\"warning\",\"link\":\"https://evil.example/\"}]}");
+        assertEquals("UI Review", review.open.get(0).label);
+        assertEquals("https://console.amberxai.com/?axf-review-group=g-1", review.open.get(0).link);
+        assertEquals("Console warning", review.open.get(1).label);
+        assertEquals(HubRules.CONSOLE, review.open.get(1).link);
         assertNull(HubRules.consoleAlerts(302, ""));
         assertNull(HubRules.consoleAlerts(200, "<html>sign in</html>"));
     }

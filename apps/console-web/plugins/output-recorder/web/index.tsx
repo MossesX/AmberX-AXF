@@ -11,11 +11,12 @@
  *  - actions `output-recorder.start | stop | toggle`, voice phrases for each (core.ts VOICE)
  * The work is native (OutputRecorderPlugin.java and friends, see bridge.ts).
  */
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Container, Note, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Note, Switch, TextField, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { nativeBridge } from './bridge';
+import { FIND_KEY, HubRecordings, clock, searchTranscripts, type Transcript } from './core';
 import {
   DEFAULTS, FOLDER, ID, K, KBPS, MIC_BUSY_LABEL, UPLOAD_LABEL, VOICE, byGroup, capHours, chunkBytes, chunkName, formatSize, formatTime, hubHours, hubOf, micLine, readSettings,
   type Recording,
@@ -103,9 +104,22 @@ function Recorder() {
 
 /* ---------------------------------------------------------------- the recordings on axHub (AmberX + console) */
 
-function RecordingRow({ r }: { r: Recording }) {
+function TranscriptText({ t }: { t: Transcript }) {
+  if (t.silent) return <p className="fx-small fx-muted">Nothing but silence in this part.</p>;
+  return (
+    <div className="axp-output-recorder-transcript">
+      {t.segments.length
+        ? t.segments.map(([at, line], i) => <p key={`${at}-${i}`} className="fx-small"><span className="fx-muted">{clock(at)}</span> {line}</p>)
+        : <p className="fx-small">{t.text}</p>}
+      {t.truncated && <p className="fx-small fx-muted">This part was too long to keep in full.</p>}
+    </div>
+  );
+}
+
+function RecordingRow({ r, transcript }: { r: Recording; transcript?: Transcript }) {
   const c = controller();
   const s = useStore();
+  const [reading, setReading] = useState(false);
   const working = s.busy[r.id];
   const time = new Date(r.startedAt);
   return (
@@ -115,8 +129,10 @@ function RecordingRow({ r }: { r: Recording }) {
         <span className="fx-small fx-muted">{formatTime(r.durationMs)} · {formatSize(r.bytes)}{r.mic ? ' · playback + mic' : ''}{r.device ? ` · ${r.device}` : ''}</span>
       </div>
       {s.playing?.id === r.id && <audio className="axp-output-recorder-audio" src={s.playing.url} controls autoPlay onEnded={() => c.stopPlaying()} />}
+      {reading && transcript && <TranscriptText t={transcript} />}
       <div className="fx-row fx-row--wrap fx-row--end">
         {working && <span className="fx-small fx-muted">{working}…</span>}
+        {transcript && <Button size="sm" tone="quiet" icon="file" onClick={() => setReading(!reading)}>{reading ? 'Hide transcript' : 'Transcript'}</Button>}
         {s.playing?.id === r.id
           ? <Button size="sm" tone="quiet" icon="x" onClick={() => c.stopPlaying()}>Close</Button>
           : <Button size="sm" tone="quiet" icon="play" disabled={!!working} onClick={() => void c.play(r)}>Play</Button>}
@@ -133,16 +149,41 @@ function HubList() {
   const s = useStore();
   const rt = useRuntime();
   useEffect(() => { if (!s.hub.loaded && !s.hub.loading) void c.refreshHub(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const [texts, setTexts] = useState<Transcript[]>([]);
+  // a session's Transcript button opens this page on its own recordings
+  const [q, setQ] = useState(() => { const v = rt.settings.get(FIND_KEY); return typeof v === 'string' ? v : ''; });
+  useEffect(() => { if (q && rt.settings.get(FIND_KEY)) rt.settings.set(FIND_KEY, ''); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    let live = true;
+    new HubRecordings({ hub: hubOf(), project: settingsOf(rt).project }).transcripts().then((t) => { if (live) setTexts(t); }).catch(() => { /* the list above says what's wrong with the hub */ });
+    return () => { live = false; };
+  }, [s.hub.loaded, s.hub.loading]); // eslint-disable-line react-hooks/exhaustive-deps
+  const byId = useMemo(() => new Map(texts.map((t) => [t.id, t])), [texts]);
+  const hits = useMemo(() => searchTranscripts(texts, q), [texts, q]);
   const days = byGroup(s.hub.items);
   return (
     <Container title={`On axHub · ${settingsOf(rt).project}`} icon="cloud" actions={<Button size="sm" tone="quiet" icon="refresh" busy={s.hub.loading} onClick={() => void c.refreshHub()}>Refresh</Button>}>
-      {s.hub.error ? <Note tone="warning">{s.hub.error}</Note>
+      <TextField label="Search what was said" value={q} onChange={setQ} placeholder={texts.length ? `${texts.length} transcript${texts.length === 1 ? '' : 's'}` : 'No transcripts yet'} />
+      {q.trim() ? (
+        hits.length ? (
+          <ul className="axp-output-recorder-list">
+            {hits.map(({ transcript: t, snippet }) => {
+              const rec = s.hub.items.find((x) => x.id === t.id);
+              return <li key={t.id} className="axp-output-recorder-row">
+                <div className="axp-output-recorder-rowhead"><span className="axp-output-recorder-name">{t.session || t.name}</span><span className="fx-small fx-muted">{new Date(t.startedAt).toLocaleString()}</span></div>
+                <p className="fx-small">{snippet}</p>
+                {rec ? <ul className="axp-output-recorder-list"><RecordingRow r={rec} transcript={t} /></ul> : <TranscriptText t={t} />}
+              </li>;
+            })}
+          </ul>
+        ) : <p className="fx-muted">Nothing said matches that.</p>
+      ) : s.hub.error ? <Note tone="warning">{s.hub.error}</Note>
         : !s.hub.loaded ? <p className="fx-muted">Loading…</p>
           : !days.length ? <p className="fx-muted">No recordings on axHub yet.</p>
             : days.map((d) => (
               <div key={d.key} className="fx-stack">
                 <p className="fx-eyebrow">{d.group ? `Session · ${d.label}` : d.label}</p>
-                <ul className="axp-output-recorder-list">{d.items.map((r) => <RecordingRow key={r.id} r={r} />)}</ul>
+                <ul className="axp-output-recorder-list">{d.items.map((r) => <RecordingRow key={r.id} r={r} transcript={byId.get(r.id)} />)}</ul>
               </div>
             ))}
     </Container>
@@ -160,7 +201,7 @@ function OutputRecorderView() {
           <p className="fx-muted">Everything the phone plays, recorded while it’s on and kept on axHub. Your mic only when you turn it on.</p>
         </div>
       </header>
-      {c.native() ? <Recorder /> : <Note tone="info">Recording runs in the AmberX app on Android (switch or the “Record audio out” quick-settings tile). Here you can play, download and delete what it sent to axHub.</Note>}
+      {c.native() ? <Recorder /> : <Note tone="info">Recording runs in the AmberX app on Android (switch or the “Record audio out” quick-settings tile). Here you can play, download, read, search and delete what it sent to axHub.</Note>}
       <HubList />
     </div>
   );

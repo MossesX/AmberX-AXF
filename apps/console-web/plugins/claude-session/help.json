@@ -14,7 +14,7 @@
     "entries": [
       {
         "target": "action:claude.pick",
-        "title": "Choose Claude's agent\u2026",
+        "title": "Choose Claude's agent…",
         "text": "Opens the agent picker: pick which crew agent every new Claude session works as.",
         "kind": "menu-item"
       },
@@ -110,7 +110,7 @@
       },
       {
         "target": "choose-claudes-agent",
-        "title": "Choose Claude's agent\u2026",
+        "title": "Choose Claude's agent…",
         "text": "Opens the agent picker.",
         "kind": "button"
       },
@@ -124,6 +124,12 @@
         "target": "claudes-agent",
         "title": "Claude's agent",
         "text": "This agent is already Claude's agent.",
+        "kind": "button"
+      },
+      {
+        "target": "transcript",
+        "title": "Transcript",
+        "text": "Opens the Audio Output Recorder on this session’s recordings, with what was said in each part.",
         "kind": "button"
       }
     ],
