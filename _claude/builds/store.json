@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1353,
- "updatedAt": "2026-11-07T14:42:13.511Z",
+ "rev": 1354,
+ "updatedAt": "2026-11-07T14:42:27.929Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111336,15 +111336,15 @@
    "title": "Plan Designer in AmberX: voice plans at zero Claude tokens",
    "category": "Plans",
    "detail": "Part of Plan Studio. Talk a plan through with a local Ollama model on the VPS (assistant@1 Ollama provider, small CPU model picked in settings, never Claude while drafting); voice in/out through AmberX talk mode (mic lease + echo gate) and text editing; draft saved on the VPS as it goes (and on the device); dictation-only mode when the model is slow or Ollama is missing (plain setup line); Send to orchestrator = ONE Claude request that picks models, splits into <=30-min steps and assigns the id, with a token-saving estimate. UI from assets (3 layout options through UI Review), settings in place, tests with a mock Ollama, Shipped features entry.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T14:21:02.462Z",
-   "updatedAt": "2026-11-07T14:36:38.178Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T14:42:19.556Z",
+   "builtAt": "2026-11-07T14:42:19.556Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -111486,12 +111486,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:42:19.556Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T14:21:02.463Z",
-     "updatedAt": "2026-11-07T14:21:02.463Z"
+     "updatedAt": "2026-11-07T14:42:19.747Z"
     }
    ],
    "profiles": [
