@@ -16,6 +16,15 @@
     { "id": "drag", "label": "Drag rows", "description": "Rows and groups drag to rearrange, or onto the trash can (needs lib-dnd).", "params": [ { "key": "trash", "label": "Deleting by dropping on the trash can", "type": "bool", "default": true } ] },
     { "id": "compact", "label": "Compact rows switch", "description": "A switch for tighter rows.", "default": false }
   ],
+  "config": {
+    "connections": [
+      { "id": "rows", "label": "Rows to show", "kind": "dataset", "direction": "in", "required": false, "accepts": ["dataset"], "description": "A data set whose rows the grid shows (leave empty when the view passes rows itself)." },
+      { "id": "dataset", "label": "Registers as a data set", "kind": "dataset", "direction": "out", "description": "Every grid registers itself as a data set (datasets.ts) so filters, sorts and toolbars from plugins attach to it." },
+      { "id": "toolbar", "label": "Toolbar above the grid", "kind": "registry-ui", "direction": "in", "many": true, "description": "Registry UIs drawn in the axf.dataset.toolbar slot (the Basic filter plugin is one)." },
+      { "id": "row-hooks", "label": "Row hooks", "kind": "plugin", "direction": "in", "many": true, "description": "Plugins that add a row button or a right-click item per row kind (grid-hook@1)." }
+    ],
+    "wizard": { "mode": "both", "intro": "Set up a data grid: pick what it does, say where its rows come from and what attaches to it." }
+  },
   "ports": { "web": { "status": "compiled", "dir": "libs/datagrid" } },
   "placeholders": [ { "capability": "axf.datagrid.android", "note": "Compose port — Android on hold." }, { "capability": "axf.datagrid.virtual", "note": "Windowed rendering for 10k+ rows — not built." }, { "capability": "axf.datagrid.resize", "note": "Column resizing by dragging the header edge — not built." }, { "capability": "axf.datagrid.datasets.android", "note": "Dataset registry + attachable transforms (datasets.ts) — Compose twin deferred, Android on hold." } ]
 }

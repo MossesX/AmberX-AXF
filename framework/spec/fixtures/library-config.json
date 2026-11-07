@@ -1,0 +1,937 @@
+{
+ "$axf": "library-config-fixture@1",
+ "reference": "framework/core/library-config.mjs (Kotlin twin deferred: Android on hold)",
+ "sampleLibrary": {
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.sample",
+  "module": "lib-sample",
+  "version": "1.2.0",
+  "name": "Sample feed",
+  "description": "Shows a feed of rows from a data set.",
+  "dependsOn": [
+   "ai.amberx.axf.datagrid"
+  ],
+  "provides": [
+   "axf.sample@1"
+  ],
+  "manifestKey": "libraries.sample",
+  "params": [
+   {
+    "key": "pageSize",
+    "label": "Rows per page",
+    "type": "number",
+    "default": 25,
+    "min": 5,
+    "max": 200
+   },
+   {
+    "key": "apiToken",
+    "label": "API token",
+    "type": "text",
+    "required": true,
+    "help": "The feed server token."
+   }
+  ],
+  "parts": [
+   {
+    "id": "feed",
+    "label": "Feed view",
+    "description": "The list itself.",
+    "params": [
+     {
+      "key": "title",
+      "label": "Title",
+      "type": "text",
+      "default": "Feed"
+     }
+    ]
+   },
+   {
+    "id": "filters",
+    "label": "Filters",
+    "requires": [
+     "feed"
+    ],
+    "default": false
+   },
+   {
+    "id": "export",
+    "label": "Export",
+    "params": [
+     {
+      "key": "format",
+      "label": "Format",
+      "type": "choice",
+      "choices": [
+       "csv",
+       "json"
+      ],
+      "default": "csv"
+     }
+    ]
+   }
+  ],
+  "ports": {
+   "web": {
+    "status": "compiled",
+    "dir": "libs/sample"
+   }
+  },
+  "placeholders": [
+   {
+    "capability": "axf.sample.android",
+    "note": "Compose port — Android on hold."
+   }
+  ],
+  "config": {
+   "connections": [
+    {
+     "id": "rows",
+     "label": "Rows",
+     "kind": "dataset",
+     "direction": "in",
+     "required": true,
+     "accepts": [
+      "dataset"
+     ],
+     "description": "Where the rows come from."
+    },
+    {
+     "id": "picked",
+     "label": "Picked row",
+     "kind": "action",
+     "direction": "out"
+    },
+    {
+     "id": "filter-ui",
+     "label": "Filter UI",
+     "kind": "registry-ui",
+     "direction": "in",
+     "forCapability": "filters",
+     "many": true
+    }
+   ],
+   "credentials": [
+    {
+     "key": "hubKey",
+     "label": "Hub key",
+     "required": false,
+     "env": "AXF_SAMPLE_HUB_KEY"
+    }
+   ],
+   "wizard": {
+    "mode": "assisted",
+    "intro": "Let us set the feed up."
+   }
+  }
+ },
+ "manifest": {
+  "$axf": "library-config@1",
+  "library": "ai.amberx.axf.sample",
+  "module": "lib-sample",
+  "version": "1.2.0",
+  "name": "Sample feed",
+  "description": "Shows a feed of rows from a data set.",
+  "manifestKey": "libraries.sample",
+  "capabilities": [
+   {
+    "id": "feed",
+    "label": "Feed view",
+    "description": "The list itself.",
+    "default": true,
+    "requires": [],
+    "params": [
+     {
+      "key": "title",
+      "label": "Title",
+      "type": "text",
+      "default": "Feed"
+     }
+    ]
+   },
+   {
+    "id": "filters",
+    "label": "Filters",
+    "description": "",
+    "default": false,
+    "requires": [
+     "feed"
+    ],
+    "params": []
+   },
+   {
+    "id": "export",
+    "label": "Export",
+    "description": "",
+    "default": true,
+    "requires": [],
+    "params": [
+     {
+      "key": "format",
+      "label": "Format",
+      "type": "choice",
+      "default": "csv",
+      "choices": [
+       "csv",
+       "json"
+      ]
+     }
+    ]
+   }
+  ],
+  "settings": [
+   {
+    "key": "pageSize",
+    "label": "Rows per page",
+    "type": "number",
+    "default": 25,
+    "min": 5,
+    "max": 200
+   }
+  ],
+  "connections": [
+   {
+    "id": "rows",
+    "label": "Rows",
+    "kind": "dataset",
+    "direction": "in",
+    "required": true,
+    "description": "Where the rows come from.",
+    "accepts": [
+     "dataset"
+    ]
+   },
+   {
+    "id": "picked",
+    "label": "Picked row",
+    "kind": "action",
+    "direction": "out",
+    "required": false
+   },
+   {
+    "id": "filter-ui",
+    "label": "Filter UI",
+    "kind": "registry-ui",
+    "direction": "in",
+    "required": false,
+    "many": true,
+    "forCapability": "filters"
+   }
+  ],
+  "credentials": [
+   {
+    "key": "apiToken",
+    "label": "API token",
+    "required": true,
+    "help": "The feed server token."
+   },
+   {
+    "key": "hubKey",
+    "label": "Hub key",
+    "required": false,
+    "env": "AXF_SAMPLE_HUB_KEY"
+   }
+  ],
+  "dependsOn": [
+   "ai.amberx.axf.datagrid"
+  ],
+  "provides": [
+   "axf.sample@1"
+  ],
+  "ports": [
+   "web"
+  ],
+  "notYet": [
+   {
+    "capability": "axf.sample.android",
+    "note": "Compose port — Android on hold."
+   }
+  ],
+  "wizard": {
+   "mode": "assisted",
+   "intro": "Let us set the feed up.",
+   "steps": [
+    "about",
+    "capabilities",
+    "connections",
+    "settings",
+    "credentials",
+    "review"
+   ]
+  }
+ },
+ "steps": [
+  {
+   "id": "about",
+   "title": "About Sample feed",
+   "ask": "Sample feed: Shows a feed of rows from a data set. It can feed view, filters, export. Needs ai.amberx.axf.datagrid.",
+   "fields": []
+  },
+  {
+   "id": "capabilities",
+   "title": "What do you want it to do?",
+   "ask": "Pick what the library should do for you. Everything on by default stays on unless you turn it off.",
+   "fields": [
+    {
+     "id": "feed",
+     "label": "Feed view",
+     "type": "bool",
+     "default": true,
+     "help": "The list itself.",
+     "requires": [],
+     "params": [
+      {
+       "key": "title",
+       "label": "Title",
+       "type": "text",
+       "default": "Feed"
+      }
+     ]
+    },
+    {
+     "id": "filters",
+     "label": "Filters",
+     "type": "bool",
+     "default": false,
+     "help": "",
+     "requires": [
+      "feed"
+     ],
+     "params": []
+    },
+    {
+     "id": "export",
+     "label": "Export",
+     "type": "bool",
+     "default": true,
+     "help": "",
+     "requires": [],
+     "params": [
+      {
+       "key": "format",
+       "label": "Format",
+       "type": "choice",
+       "default": "csv",
+       "choices": [
+        "csv",
+        "json"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "connections",
+   "title": "Connect inputs and outputs",
+   "ask": "Say where each input comes from and where each output goes: a data set, a registry UI, a plugin, a service, an action or an asset.",
+   "fields": [
+    {
+     "id": "rows",
+     "label": "Rows",
+     "type": "ref",
+     "kind": "dataset",
+     "direction": "in",
+     "required": true,
+     "accepts": [
+      "dataset"
+     ],
+     "many": false,
+     "help": "Where the rows come from.",
+     "forCapability": ""
+    },
+    {
+     "id": "picked",
+     "label": "Picked row",
+     "type": "ref",
+     "kind": "action",
+     "direction": "out",
+     "required": false,
+     "accepts": [],
+     "many": false,
+     "help": "",
+     "forCapability": ""
+    },
+    {
+     "id": "filter-ui",
+     "label": "Filter UI",
+     "type": "ref",
+     "kind": "registry-ui",
+     "direction": "in",
+     "required": false,
+     "accepts": [],
+     "many": true,
+     "help": "",
+     "forCapability": "filters"
+    }
+   ]
+  },
+  {
+   "id": "settings",
+   "title": "Settings",
+   "ask": "The settings this library needs. Defaults are filled in.",
+   "fields": [
+    {
+     "id": "pageSize",
+     "label": "Rows per page",
+     "type": "number",
+     "default": 25,
+     "required": false,
+     "help": "",
+     "choices": [],
+     "min": 5,
+     "max": 200
+    }
+   ]
+  },
+  {
+   "id": "credentials",
+   "title": "Credentials",
+   "ask": "Point each credential at where it is kept (an environment variable, the secret store or the hub). Values are never saved here.",
+   "fields": [
+    {
+     "id": "apiToken",
+     "label": "API token",
+     "type": "credential-ref",
+     "required": true,
+     "help": "The feed server token.",
+     "env": ""
+    },
+    {
+     "id": "hubKey",
+     "label": "Hub key",
+     "type": "credential-ref",
+     "required": false,
+     "help": "",
+     "env": "AXF_SAMPLE_HUB_KEY"
+    }
+   ]
+  },
+  {
+   "id": "review",
+   "title": "Review and apply",
+   "ask": "Check what will be set up, then apply. You can reconfigure or remove it later.",
+   "fields": []
+  }
+ ],
+ "draft": {
+  "capabilities": {
+   "feed": {
+    "title": "Feed"
+   },
+   "filters": false,
+   "export": {
+    "format": "csv"
+   }
+  },
+  "params": {
+   "pageSize": 25
+  },
+  "connections": {},
+  "credentials": {}
+ },
+ "answers": {
+  "capabilities": {
+   "draft": {
+    "capabilities": {
+     "feed": {
+      "title": "Feed"
+     },
+     "filters": {},
+     "export": {
+      "format": "json"
+     }
+    },
+    "params": {
+     "pageSize": 25
+    },
+    "connections": {},
+    "credentials": {}
+   },
+   "errors": []
+  },
+  "connections": {
+   "draft": {
+    "capabilities": {
+     "feed": {
+      "title": "Feed"
+     },
+     "filters": {},
+     "export": {
+      "format": "json"
+     }
+    },
+    "params": {
+     "pageSize": 25
+    },
+    "connections": {
+     "rows": "dataset:changes",
+     "picked": "action:changes.open",
+     "filter-ui": [
+      "ui:basic-filter",
+      "ui:saved-filters"
+     ]
+    },
+    "credentials": {}
+   },
+   "errors": []
+  },
+  "settings": {
+   "draft": {
+    "capabilities": {
+     "feed": {
+      "title": "Feed"
+     },
+     "filters": {},
+     "export": {
+      "format": "json"
+     }
+    },
+    "params": {
+     "pageSize": 50
+    },
+    "connections": {
+     "rows": "dataset:changes",
+     "picked": "action:changes.open",
+     "filter-ui": [
+      "ui:basic-filter",
+      "ui:saved-filters"
+     ]
+    },
+    "credentials": {}
+   },
+   "errors": []
+  },
+  "credentials": {
+   "draft": {
+    "capabilities": {
+     "feed": {
+      "title": "Feed"
+     },
+     "filters": {},
+     "export": {
+      "format": "json"
+     }
+    },
+    "params": {
+     "pageSize": 50
+    },
+    "connections": {
+     "rows": "dataset:changes",
+     "picked": "action:changes.open",
+     "filter-ui": [
+      "ui:basic-filter",
+      "ui:saved-filters"
+     ]
+    },
+    "credentials": {
+     "apiToken": {
+      "ref": "env:SAMPLE_TOKEN"
+     }
+    }
+   },
+   "errors": []
+  }
+ },
+ "errorsBeforeCredentials": [
+  "credential \"API token\" needs a reference"
+ ],
+ "instance": {
+  "$axf": "library-instance@1",
+  "id": "sample-console-web",
+  "library": "ai.amberx.axf.sample",
+  "version": "1.2.0",
+  "app": "console-web",
+  "status": "configured",
+  "createdAt": "2026-11-07T04:00:00.000Z",
+  "updatedAt": "2026-11-07T04:00:00.000Z",
+  "capabilities": [
+   "feed",
+   "filters",
+   "export"
+  ],
+  "capabilityParams": {
+   "feed": {
+    "title": "Feed"
+   },
+   "export": {
+    "format": "json"
+   }
+  },
+  "params": {
+   "pageSize": 50
+  },
+  "connections": {
+   "rows": {
+    "kind": "dataset",
+    "ref": "dataset:changes"
+   },
+   "picked": {
+    "kind": "action",
+    "ref": "action:changes.open"
+   },
+   "filter-ui": {
+    "kind": "registry-ui",
+    "ref": [
+     "ui:basic-filter",
+     "ui:saved-filters"
+    ]
+   }
+  },
+  "credentials": {
+   "apiToken": {
+    "ref": "env:SAMPLE_TOKEN"
+   }
+  },
+  "history": [
+   {
+    "at": "2026-11-07T04:00:00.000Z",
+    "by": "amber",
+    "kind": "configured",
+    "note": "Configured through the cli"
+   }
+  ]
+ },
+ "instanceErrors": [],
+ "summary": [
+  "Sample feed 1.2.0 in console-web (configured)",
+  "Does: Feed view, Filters, Export",
+  "Connected: Rows → dataset:changes; Picked row → action:changes.open; Filter UI → ui:basic-filter, ui:saved-filters",
+  "Settings: Rows per page = 50",
+  "Credentials: API token from env:SAMPLE_TOKEN",
+  "Not built yet: axf.sample.android"
+ ],
+ "installConfig": {
+  "pageSize": 50,
+  "parts": {
+   "feed": {
+    "title": "Feed"
+   },
+   "filters": {},
+   "export": {
+    "format": "json"
+   }
+  },
+  "connections": {
+   "rows": "dataset:changes",
+   "picked": "action:changes.open",
+   "filter-ui": [
+    "ui:basic-filter",
+    "ui:saved-filters"
+   ]
+  },
+  "credentials": {
+   "apiToken": "env:SAMPLE_TOKEN"
+  },
+  "instance": "sample-console-web"
+ },
+ "draftFromInstance": {
+  "capabilities": {
+   "feed": {
+    "title": "Feed"
+   },
+   "filters": {},
+   "export": {
+    "format": "json"
+   }
+  },
+  "params": {
+   "pageSize": 50
+  },
+  "connections": {
+   "rows": "dataset:changes",
+   "picked": "action:changes.open",
+   "filter-ui": [
+    "ui:basic-filter",
+    "ui:saved-filters"
+   ]
+  },
+  "credentials": {
+   "apiToken": {
+    "ref": "env:SAMPLE_TOKEN"
+   }
+  }
+ },
+ "reconfigured": {
+  "$axf": "library-instance@1",
+  "id": "sample-console-web",
+  "library": "ai.amberx.axf.sample",
+  "version": "1.2.0",
+  "app": "console-web",
+  "status": "configured",
+  "createdAt": "2026-11-07T04:00:00.000Z",
+  "updatedAt": "2026-11-07T05:00:00.000Z",
+  "capabilities": [
+   "feed",
+   "export"
+  ],
+  "capabilityParams": {
+   "feed": {
+    "title": "Feed"
+   },
+   "export": {
+    "format": "json"
+   }
+  },
+  "params": {
+   "pageSize": 50
+  },
+  "connections": {
+   "rows": {
+    "kind": "dataset",
+    "ref": "dataset:changes"
+   },
+   "picked": {
+    "kind": "action",
+    "ref": "action:changes.open"
+   },
+   "filter-ui": {
+    "kind": "registry-ui",
+    "ref": [
+     "ui:basic-filter",
+     "ui:saved-filters"
+    ]
+   }
+  },
+  "credentials": {
+   "apiToken": {
+    "ref": "env:SAMPLE_TOKEN"
+   }
+  },
+  "history": [
+   {
+    "at": "2026-11-07T04:00:00.000Z",
+    "by": "amber",
+    "kind": "configured",
+    "note": "Configured through the cli"
+   },
+   {
+    "at": "2026-11-07T05:00:00.000Z",
+    "by": "amber",
+    "kind": "reconfigured",
+    "note": "Reconfigured"
+   }
+  ]
+ },
+ "disabled": {
+  "$axf": "library-instance@1",
+  "id": "sample-console-web",
+  "library": "ai.amberx.axf.sample",
+  "version": "1.2.0",
+  "app": "console-web",
+  "status": "disabled",
+  "createdAt": "2026-11-07T04:00:00.000Z",
+  "updatedAt": "2026-11-07T05:00:00.000Z",
+  "capabilities": [
+   "feed",
+   "export"
+  ],
+  "capabilityParams": {
+   "feed": {
+    "title": "Feed"
+   },
+   "export": {
+    "format": "json"
+   }
+  },
+  "params": {
+   "pageSize": 50
+  },
+  "connections": {
+   "rows": {
+    "kind": "dataset",
+    "ref": "dataset:changes"
+   },
+   "picked": {
+    "kind": "action",
+    "ref": "action:changes.open"
+   },
+   "filter-ui": {
+    "kind": "registry-ui",
+    "ref": [
+     "ui:basic-filter",
+     "ui:saved-filters"
+    ]
+   }
+  },
+  "credentials": {
+   "apiToken": {
+    "ref": "env:SAMPLE_TOKEN"
+   }
+  },
+  "history": [
+   {
+    "at": "2026-11-07T04:00:00.000Z",
+    "by": "amber",
+    "kind": "configured",
+    "note": "Configured through the cli"
+   },
+   {
+    "at": "2026-11-07T05:00:00.000Z",
+    "by": "amber",
+    "kind": "reconfigured",
+    "note": "Reconfigured"
+   },
+   {
+    "at": "2026-11-07T05:00:00.000Z",
+    "by": "amber",
+    "kind": "disabled",
+    "note": "disabled"
+   }
+  ]
+ },
+ "removed": {
+  "$axf": "library-instance@1",
+  "id": "sample-console-web",
+  "library": "ai.amberx.axf.sample",
+  "version": "1.2.0",
+  "app": "console-web",
+  "status": "removed",
+  "createdAt": "2026-11-07T04:00:00.000Z",
+  "updatedAt": "2026-11-07T05:00:00.000Z",
+  "capabilities": [
+   "feed",
+   "export"
+  ],
+  "capabilityParams": {
+   "feed": {
+    "title": "Feed"
+   },
+   "export": {
+    "format": "json"
+   }
+  },
+  "params": {
+   "pageSize": 50
+  },
+  "connections": {
+   "rows": {
+    "kind": "dataset",
+    "ref": "dataset:changes"
+   },
+   "picked": {
+    "kind": "action",
+    "ref": "action:changes.open"
+   },
+   "filter-ui": {
+    "kind": "registry-ui",
+    "ref": [
+     "ui:basic-filter",
+     "ui:saved-filters"
+    ]
+   }
+  },
+  "credentials": {
+   "apiToken": {
+    "ref": "env:SAMPLE_TOKEN"
+   }
+  },
+  "history": [
+   {
+    "at": "2026-11-07T04:00:00.000Z",
+    "by": "amber",
+    "kind": "configured",
+    "note": "Configured through the cli"
+   },
+   {
+    "at": "2026-11-07T05:00:00.000Z",
+    "by": "amber",
+    "kind": "reconfigured",
+    "note": "Reconfigured"
+   },
+   {
+    "at": "2026-11-07T05:00:00.000Z",
+    "by": "amber",
+    "kind": "disabled",
+    "note": "disabled"
+   },
+   {
+    "at": "2026-11-07T05:00:00.000Z",
+    "by": "amber",
+    "kind": "removed",
+    "note": "removed"
+   }
+  ]
+ },
+ "badAnswers": {
+  "capabilities": [
+   "no capability \"nope\"",
+   "Export: \"Format\" must be one of csv, json"
+  ],
+  "connections": [
+   "Rows: ui:wrong should look like dataset:<id>",
+   "Picked row takes one connection"
+  ],
+  "settings": [
+   "\"Rows per page\" must be at most 200",
+   "no setting \"ghost\""
+  ],
+  "credentials": [
+   "API token: credentials are references only (env:NAME, secret:KEY, hub:PATH), never a value",
+   "API token: \"sk-live-123\" is not a credential reference (env:NAME, secret:KEY, hub:PATH)"
+  ],
+  "step": [
+   "no wizard step \"bogus\""
+  ]
+ },
+ "brokenManifest": [
+  "library \"Nope\" is not a dotted library id (ai.amberx.axf.<name>)",
+  "capability \"feed\" is listed twice",
+  "capability \"feed\" requires unknown \"ghost\"",
+  "credential \"k\" carries a value: credentials are references only"
+ ],
+ "registry": {
+  "$axf": "library-config-registry@1",
+  "wizardSteps": [
+   "about",
+   "capabilities",
+   "connections",
+   "settings",
+   "credentials",
+   "review"
+  ],
+  "wizardModes": [
+   "scripted",
+   "assisted",
+   "both"
+  ],
+  "connectionKinds": [
+   "dataset",
+   "registry-ui",
+   "plugin",
+   "service",
+   "action",
+   "asset"
+  ],
+  "connectionRefPrefix": {
+   "dataset": "dataset:",
+   "registry-ui": "ui:",
+   "plugin": "plugin:",
+   "service": "service:",
+   "action": "action:",
+   "asset": "asset:"
+  },
+  "connectionDirections": [
+   "in",
+   "out",
+   "both"
+  ],
+  "instanceStatuses": [
+   "configured",
+   "disabled",
+   "removed"
+  ],
+  "credentialSchemes": [
+   "env",
+   "secret",
+   "hub"
+  ],
+  "paramTypes": [
+   "text",
+   "list",
+   "bool",
+   "number",
+   "choice"
+  ]
+ }
+}

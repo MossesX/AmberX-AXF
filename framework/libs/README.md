@@ -186,3 +186,14 @@ installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifes
 - **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
 - Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
 - Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).
+
+## Every library has a configuration manifest (library-config@1, Nov 7 2026)
+
+The no-code import wizard (build `library-harvest`, addendum 1) reads every library's `library.json` through
+`framework/core/library-config.mjs`: parts become capabilities ("what do you want it to do"), params become settings,
+secret params credentials, and an optional `config` block adds **connections** (inputs / outputs to data sets, registry
+UIs, plugins, services, actions, assets) and the wizard mode (`lib-datagrid` is the example). The wizard's steps are the
+same on every surface (CLI today: `node framework/cli/library-config.mjs steps <lib>` / `wizard <lib> --app <dir>`;
+App Designer, API / MCP and voice to follow) and end in a configured instance (library-instance@1,
+`<app>/library-instances/<id>.json`) that can be reconfigured, disabled or removed. Credentials are references only.
+Docs: `_claude/memory/docs/library-config.md`. Check: `npx -y tsx framework/spec/check-library-config.mts`.
