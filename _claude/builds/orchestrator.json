@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T21:00:55.631Z",
+ "updatedAt": "2026-11-07T21:09:09.017Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -23008,14 +23008,14 @@
    "title": "glossary-index-demos",
    "category": "",
    "detail": "Encyclopedia glossary + index of everything, registry-sourced; Demonstration Designer off walkthroughs; Book Builder (wizard, chapters, drag from glossary, live sandbox preview, walkthrough video); interactive HTML/TS docs option; orchestrator auto-updates catalog every build; generated clips auto-tagged registry assets. Brief: /root/axf-builds/glossary-index-demos/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "glossary-index-demos",
    "branch": "claude/glossary-index-demos-r2",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T11:30:27.779Z",
+   "updatedAt": "2026-11-07T21:09:03.329Z",
    "builtAt": "",
    "notes": [
     {
@@ -23033,6 +23033,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-07T11:30:27.779Z"
+    },
+    {
+     "text": "r3 restarted on Fable (Brett, Nov 7 voice: restart the glossary-index-demos build on Fable). r2's s1 merged into claude/glossary-index-demos-r3. s2 runs on Fable as pinned; s3, s4, s5 and s6 are raised to Fable for this session (one session, no relaunch; Fable upgrades need no approval, Brett Nov 4) rather than launching an Opus step on a higher model. Agent: joey.",
+     "at": "2026-11-07T21:09:03.329Z"
     }
    ],
    "approvals": [],
