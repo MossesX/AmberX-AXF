@@ -749,9 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:50 UTC · `icon-browser-manager` → pending, note (current) · builds-live
-- 2026-11-06 17:33 UTC · `memory-restructure-chunked-claude-md-store-memor` added (0 steps) (current) · pending
-- 2026-11-06 17:38 UTC · `token-usage-log-accounts-plan-studio-control` → pending (current) · pending
 - 2026-11-06 17:38 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note, removed (current) · pending
 - 2026-11-06 17:40 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · pending
 - 2026-11-06 17:40 UTC · `console-account-picker` note (current) · pending
@@ -1149,6 +1146,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:49 UTC · `settings-placement-everywhere` note (all) · orchestrator
 - 2026-11-07 16:49 UTC · `full-api-control` note (all) · orchestrator
 - 2026-11-07 16:49 UTC · `approve-button-fix` s1 done, → running (all) · orchestrator
+- 2026-11-07 16:49 UTC · `approve-button-fix` s2 done (all) · orchestrator
+- 2026-11-07 16:49 UTC · `approve-button-fix` s3 done (all) · orchestrator
+- 2026-11-07 16:49 UTC · `approve-button-fix` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
