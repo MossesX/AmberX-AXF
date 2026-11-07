@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T16:17:47.234Z",
+ "updatedAt": "2026-11-07T16:17:57.360Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67128,7 +67128,7 @@
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:17:36.794Z",
+   "updatedAt": "2026-11-07T16:17:56.811Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -67143,7 +67143,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "A real, polished API Browser plugin in the console listing EVERY API path (control@1 targets/actions, REST routes, MCP tools, CLI commands, plugin reads/commands) from one generated registry.\n- Multiple views: Grid (sort/filter/search), Tree (by app > plugin > screen > element), Cards, and a Coverage view (which UI elements have API paths, red for gaps).\n- Each entry: what it does, inputs/outputs schema, policy (instant/veto/approve), REST + MCP + CLI names, the UI element it maps to, links to docs/glossary.\n- \"Try it\" panel: fill inputs, run (respecting policy), see the result; reads run instantly.\n- Nice and pretty: from assets only, three looks to UI Review (--choices).",
+      "at": "",
+      "source": "console",
+      "by": "sully",
+      "verbatim": true
+     }
+    ]
    },
    "steps": [
     {
