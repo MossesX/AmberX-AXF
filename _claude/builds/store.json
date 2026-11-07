@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1248,
- "updatedAt": "2026-11-07T05:43:05.504Z",
+ "rev": 1249,
+ "updatedAt": "2026-11-07T05:46:29.623Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -104278,9 +104278,9 @@
    "source": "console",
    "pendingId": "skins-asset-types",
    "branch": "claude/skins-asset-types",
-   "pr": "",
+   "pr": "#383",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-07T05:34:38.687Z",
+   "updatedAt": "2026-11-07T05:46:28.504Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -104491,7 +104491,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {

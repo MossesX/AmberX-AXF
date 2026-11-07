@@ -726,7 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 20:02 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · foreign-write
 - 2026-11-06 20:02 UTC · `fable-review-shipped-features-build-hook-contrac` branch claude/shipped-features-fable, PR #364 (current) · builds-live
 - 2026-11-06 20:02 UTC · `shipped-features-r2` branch claude/shipped-features-fable, PR #364 (angel) · builds-live
 - 2026-11-06 20:04 UTC · `fable-review-shipped-features-build-hook-contrac` note (current) · orchestrator
@@ -1126,6 +1125,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:34 UTC · `skins` s11 done, → complete (main-framework) · orchestrator
 - 2026-11-07 05:34 UTC · `skins` note (main-framework) · orchestrator
 - 2026-11-07 05:35 UTC · `skins` branch claude/skins-asset-types (main-framework) · builds-live
+- 2026-11-07 05:46 UTC · `skins-asset-types` PR #383 (current) · builds-live
 
 ## Token passes (log)
 
