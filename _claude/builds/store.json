@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1238,
- "updatedAt": "2026-11-07T05:15:14.828Z",
+ "rev": 1239,
+ "updatedAt": "2026-11-07T05:15:35.452Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -104803,15 +104803,15 @@
    "title": "multi-account-headless-workers",
    "category": "accounts",
    "detail": "Console signs into MORE THAN ONE Claude subscription at once. The console itself uses one account (interactive). Additional accounts exist only as headless worker sessions; the orchestrator sends build jobs to them. Account manager to add/sign in/remove worker accounts, see each one's usage/limits, and route jobs (orchestrator picks which worker account runs a job, fails over when one hits its limit). Check existing account-failover / account-switch-handoff / claude-accounts work and reuse it. Orchestrator assigns models.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/multi-account-headless-workers",
    "pr": "#382",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T05:15:13.432Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T05:15:15.700Z",
+   "builtAt": "2026-11-07T05:15:15.700Z",
    "notes": [
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-multi-account-headless-workers--rhonda, own login copy)",
@@ -104896,12 +104896,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:15:14.408Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:45:26.037Z",
-     "updatedAt": "2026-11-07T04:45:26.037Z"
+     "updatedAt": "2026-11-07T05:15:14.590Z"
     },
     {
      "id": "s4",
@@ -104940,12 +104940,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:15:15.700Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:45:26.037Z",
-     "updatedAt": "2026-11-07T04:45:26.037Z"
+     "updatedAt": "2026-11-07T05:15:15.782Z"
     }
    ],
    "profiles": [
@@ -104956,7 +104956,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

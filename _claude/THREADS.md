@@ -726,8 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s10 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s11 done (current) · orchestrator
 - 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s12 done (current) · orchestrator
 - 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s13 done (current) · orchestrator
 - 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s14 done (current) · orchestrator
@@ -1126,6 +1124,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:14 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · orchestrator
 - 2026-11-07 05:14 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → running, note (current) · orchestrator
 - 2026-11-07 05:15 UTC · `multi-account-headless-workers` branch claude/multi-account-headless-workers, PR #382 (current) · builds-live
+- 2026-11-07 05:15 UTC · `multi-account-headless-workers` s3 done (current) · orchestrator
+- 2026-11-07 05:15 UTC · `multi-account-headless-workers` s5 done, → built (current) · orchestrator
 
 ## Token passes (log)
 

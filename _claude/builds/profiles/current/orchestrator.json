@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:15:14.828Z",
+ "updatedAt": "2026-11-07T05:15:35.452Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22539,15 +22539,15 @@
    "title": "multi-account-headless-workers",
    "category": "accounts",
    "detail": "Console signs into MORE THAN ONE Claude subscription at once. The console itself uses one account (interactive). Additional accounts exist only as headless worker sessions; the orchestrator sends build jobs to them. Account manager to add/sign in/remove worker accounts, see each one's usage/limits, and route jobs (orchestrator picks which worker account runs a job, fails over when one hits its limit). Check existing account-failover / account-switch-handoff / claude-accounts work and reuse it. Orchestrator assigns models.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/multi-account-headless-workers",
    "pr": "#382",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T05:15:13.432Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T05:15:15.700Z",
+   "builtAt": "2026-11-07T05:15:15.700Z",
    "notes": [
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-multi-account-headless-workers--rhonda, own login copy)",
@@ -22622,8 +22622,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:15:14.408Z",
      "note": "",
      "uid": "st-mw5x6x8k0tdfj9"
     },
@@ -22658,8 +22658,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:15:15.700Z",
      "note": "",
      "uid": "st-mw5x6x8k0vlp8i"
     }
