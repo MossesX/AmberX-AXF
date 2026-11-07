@@ -8,6 +8,7 @@
     { "id": "verification", "label": "Verification", "icon": "shield", "order": 40, "description": "How much Claude trusts the live builds store." },
     { "id": "talking", "label": "Talking", "icon": "mic", "order": 50, "description": "How Amber talks to Brett (voice and chat)." },
     { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the AmberX app, and when it stays quiet." },
+    { "id": "recording", "label": "Session recording", "icon": "mic", "order": 65, "description": "AmberX records each Claude session and every part is transcribed. Android's capture prompt and your own mic switch still decide." },
     { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." },
     { "id": "deploy", "label": "Nightly deploy", "icon": "refresh", "order": 80, "description": "The console rebuilds and deploys from main once a night, when code changed." }
   ],
@@ -81,6 +82,13 @@
       "description": "Start of quiet hours." },
     { "key": "notify.quietEnd", "group": "notifications", "label": "Quiet until", "kind": "time", "default": "07:00", "level": "developer",
       "description": "End of quiet hours." },
+    { "key": "notify.uiReview", "group": "notifications", "label": "UI Review ready", "kind": "toggle", "default": true, "level": "basic",
+      "description": "Push when a build adds items to UI Review (build name + how many; a tap opens that group)." },
+
+    { "key": "recording.autoStart", "group": "recording", "label": "Record every session", "kind": "toggle", "default": true, "level": "basic",
+      "description": "When a voice, chat or console session starts, AmberX's recorder is asked to start for it. Headless builds never are. The recorder approval and Android's capture prompt still appear; the mic follows your own Record my mic too switch." },
+    { "key": "recording.transcribe", "group": "recording", "label": "Transcribe every part", "kind": "toggle", "default": true, "level": "basic",
+      "description": "Each uploaded part is transcribed on the VPS (no model tokens, nothing sent elsewhere) and saved with its session, searchable in the Audio Output Recorder page." },
 
     { "key": "memory.sessionNotes", "group": "memory", "label": "Save session notes to Notes Vault", "kind": "toggle", "default": true, "level": "basic",
       "description": "Each session saves its notes to the Notes Vault on its own." },

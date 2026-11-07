@@ -46,6 +46,7 @@ from .screenshots import Store as ShotStore, resolve_group, router_for as shots_
 from . import screenshots as shots_mod
 from . import choices as choices_mod
 from . import predicted as predicted_mod
+from . import notify
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -286,6 +287,8 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
             (folder / fn).write_bytes(raw)
         doc["items"].append(item)
         _save_items(doc)
+        snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
+    notify.ready(snapshot, g)  # outside the lock: AmberX shows it, a tap opens this group
     return stored
 
 
@@ -307,6 +310,8 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
                 changed.append(x)
         _save_items(doc)
         decided = [doc["items"][by_id[x]] for x in changed if x in by_id]
+        snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
+    notify.decided(snapshot, [str(it.get("group") or "") for it in decided])
     after_decide(decided)  # Ask changes on a predicted look → the build gets the comment
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
 

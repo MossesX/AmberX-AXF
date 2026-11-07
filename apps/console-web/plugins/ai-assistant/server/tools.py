@@ -38,6 +38,17 @@ SPECS: list[dict[str, Any]] = [
 GROUPS = {"repo": "Read the AXF repository", "utility": "Time and calculator", "web": "Fetch public web pages"}
 
 
+# What says a message needs a built-in group (chat mode): a plain assistant has no skills to take these from.
+_GROUP_TRIGGERS = {"repo": ["code", "file", "files", "repo", "repository", "codebase", "framework", "readme", "function", "class"],
+                   "utility": ["time", "date", "calculate", "add up", "sum"], "web": ["http", "https", "website", "web page", "url", "link", "fetch"]}
+
+
+def groups_for(offered: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The built-in tool groups among the tools a chat is offered."""
+    names = {t["name"] for t in offered}
+    return [{"id": g, "name": g, "triggers": _GROUP_TRIGGERS.get(g, []), "tools": [s["name"] for s in SPECS if s["group"] == g and s["name"] in names]} for g in GROUPS]
+
+
 def specs(enabled: dict[str, bool]) -> list[dict[str, Any]]:
     return [{k: v for k, v in s.items() if k != "group"} for s in SPECS if enabled.get(s["group"], s["group"] != "web")]
 

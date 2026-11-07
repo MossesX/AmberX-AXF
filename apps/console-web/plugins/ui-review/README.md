@@ -203,3 +203,10 @@ build waits like any hold. Multi-pick is offered only for the types in `MULTI_VI
 (`framework/core/ui-choices.mjs`); the first pick is the default view. `choices/ask` asks him how many options to make
 when that setting is on. Routes are listed in `server/choices.py`.
 
+## Phone notifications (Nov 6 2026)
+
+Every submit raises one console alert per group (`server/notify.py`, source `ui-review`, key `ui-review:group:<id>`):
+title `<build>: <n> items waiting`, link `?axf-review-group=<id>`. AmberX's watch reads `/api/alerts` and shows it on its
+high-importance channel, within its check interval (30 s by default). A tap opens UI Review filtered to that group. New
+items update it, deciding everything takes it away. Plain code, no model. Switch: Settings → Plugins → Claude →
+Notifications → *UI Review ready*.

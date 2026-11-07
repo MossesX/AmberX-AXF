@@ -134,7 +134,7 @@ export function matches(it, q) {
 
 /** Filters: kind ('' = all), status ('' | id | 'open' = not approved), app, branch, pr, q. */
 export function filterItems(items, f = {}) {
-  return items.filter((it) => (!f.kind || it.kind === f.kind)
+  return items.filter((it) => (!f.kind || it.kind === f.kind) && (!f.group || it.group === f.group)
     && (!f.status || (f.status === 'open' ? it.status !== 'approved' : it.status === f.status))
     && (!f.app || it.app === f.app) && (!f.branch || it.branch === f.branch)
     && (!f.pr || Number(it.pr) === Number(f.pr)) && matches(it, f.q));

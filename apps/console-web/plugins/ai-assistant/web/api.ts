@@ -1,7 +1,7 @@
 /* AI assistant — web API layer. Types and the client come from the framework's assistant contract (assistant@1,
  * framework/core/assistant.ts); this file binds them to the console (pluginFetch adds the console token) and adds the
  * plugin's extra routes (config, profiles, compare, usage, batches). Other apps use the same core. */
-import { HttpAssistantClient, type AssistantStatus, type ProviderKind, type ProviderProfile } from '@console/axf/core';
+import { HttpAssistantClient, type AssistantStatus, type ProviderKind, type ProviderProfile, type ToolMode } from '@console/axf/core';
 import { pluginApi, pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'ai-assistant';
@@ -19,15 +19,18 @@ export async function consoleHub(): Promise<string> {
 
 export type {
   AgentRef, ChatContext as Ctx, ChatImage as Image, Conversation, ConversationSettings as ConvSettings, ConversationSummary as ConvSummary,
-  LiveReply, Message, ProviderKind, ProviderProfile as Profile, StreamEvent, ToolLogEntry as ToolLog, TurnEvent, WriteMode,
+  LiveReply, Message, ProviderKind, ProviderProfile as Profile, StreamEvent, ToolLogEntry as ToolLog, ToolMode, TurnEvent, WriteMode,
 } from '@console/axf/core';
-export { applyStreamEvent, contextExtra, emptyLiveReply, normalizeChatContext, watchReply } from '@console/axf/core';
+export { TOOL_MODES, applyStreamEvent, contextExtra, emptyLiveReply, normalizeChatContext, turnModeLabel, watchReply } from '@console/axf/core';
 export type { LiveSessionInfo } from '@console/axf/core';
 export type Status = AssistantStatus;
 
 export interface PromptItem { id: string; title: string; shortcut: string; text: string }
 export interface Params { temperature: number | null; max_tokens: number | null; top_p: number | null; thinking: boolean; thinking_budget: number; reasoning_effort: string }
+/** Chat mode: when a turn loads tools, what counts as asking for them, and what a chat turn uses. */
+export interface ChatModeConfig { default: ToolMode; actionWords: string[]; liveWords: string[]; escalate: boolean; model: 'policy' | 'conversation'; historyMessages: number; cacheSec: number }
 export interface Config {
+  chatMode: ChatModeConfig;
   setupComplete: boolean; assistantName: string; persona: string; instructions: string; defaultProfile: string; fallback: string[];
   params: Params; contextMessages: number; tools: Record<string, boolean>; maxToolRounds: number; autoTitle: boolean; showUsage: boolean;
   showThinking: boolean; redactSecrets: boolean; dailyTokenBudget: number; agentIntegration: boolean; defaultAgent: string; userDailyTokens: number; keepInterrupted: boolean;

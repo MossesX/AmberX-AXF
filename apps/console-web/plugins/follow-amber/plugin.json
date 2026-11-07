@@ -33,6 +33,7 @@
       "AXF_FOLLOW_AMBER_DATA_DIR"
     ],
     "mentions": [
+      ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/shared/rules/RULES.md",
       "_claude/THREADS.md",

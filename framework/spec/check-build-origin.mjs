@@ -79,22 +79,22 @@ t('subtitle + originText', () => {
 });
 
 // ------------------------------------------------------------------ the store keeps it
-const rec = (extra = {}) => c.normBuild({ id: 'b1', title: 'B1', profiles: ['current'], order: { current: 0 }, steps: [{ id: 's1', text: 'x', model: 'Opus' }], ...extra });
+const rec = (extra = {}) => c.normBuild({ id: 'b1', title: 'B1', profiles: ['all'], order: { all: 0 }, steps: [{ id: 's1', text: 'x', model: 'Opus' }], ...extra });
 t('normBuild keeps origin, and leaves it out when there is none (byte-stable stores)', () => {
   assert.equal(rec({ origin: real }).origin.said, WORDS); assert.ok(!('origin' in rec()));
 });
 t('an orchestrator write without origin (older code, a projection) never drops it', () => {
   const s = { ...c.emptyStore(), builds: [rec({ origin: real })] };
-  const proj = c.projectOrchestrator(s, 'current'); assert.equal(proj.builds[0].origin.said, WORDS);
+  const proj = c.projectOrchestrator(s, 'all'); assert.equal(proj.builds[0].origin.said, WORDS);
   delete proj.builds[0].origin; proj.builds[0].title = 'renamed';
-  const next = c.absorbOrchestrator(s, 'current', proj);
+  const next = c.absorbOrchestrator(s, 'all', proj);
   assert.equal(next.builds[0].origin.said, WORDS); assert.equal(next.builds[0].title, 'renamed');
 });
 t('pending items carry it both ways; a pending add with `said` records his words', () => {
   const s = { ...c.emptyStore(), builds: [rec({ origin: real })] };
-  const pp = c.projectPending(s, 'current'); assert.equal(pp.items[0].origin.said, WORDS);
+  const pp = c.projectPending(s, 'all'); assert.equal(pp.items[0].origin.said, WORDS);
   const r = pending.apply(pp, { action: 'add', title: 'New one', said: WORDS, source: 'console' });
-  const next = c.absorbPending(s, 'current', r.state);
+  const next = c.absorbPending(s, 'all', r.state);
   const added = next.builds.find((b) => b.title === 'New one'); assert.equal(added.origin.said, WORDS); assert.equal(added.origin.verbatim, true);
   assert.equal(next.builds.find((b) => b.id === 'b1').origin.said, WORDS);
 });
@@ -109,7 +109,7 @@ t('validateStore accepts builds with origin', () => assert.deepEqual(c.validateS
 const dir = mkdtempSync(join(tmpdir(), 'axf-origin-'));
 const storeF = join(dir, 'store.json');
 const env = { ...process.env, AXF_BUILDS_STORE: storeF, AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0', AXF_BUILDS_DIR: join(dir, 'builds') };
-writeFileSync(storeF, JSON.stringify({ ...c.emptyStore(), builds: [rec(), c.normBuild({ id: 'demo-build', title: 'Demo', profiles: ['current'], order: { current: 1 }, detail: 'Brett, Oct 30 2026 (voice): make every list show what I asked for please.' })] }));
+writeFileSync(storeF, JSON.stringify({ ...c.emptyStore(), builds: [rec(), c.normBuild({ id: 'demo-build', title: 'Demo', profiles: ['all'], order: { all: 1 }, detail: 'Brett, Oct 30 2026 (voice): make every list show what I asked for please.' })] }));
 const cli = (...a) => JSON.parse(execFileSync('node', [join(ROOT, 'framework/cli/build-origin.mjs'), ...a, '--json'], { env, encoding: 'utf8' }).trim().split('\n').pop());
 const cliFails = (...a) => { try { execFileSync('node', [join(ROOT, 'framework/cli/build-origin.mjs'), ...a, '--json'], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); return null; } catch (e) { return JSON.parse(String(e.stdout).trim().split('\n').pop()); } };
 t('set records his words; a different verbatim quote is refused (addendum instead)', () => {

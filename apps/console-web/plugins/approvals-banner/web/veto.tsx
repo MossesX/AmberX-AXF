@@ -123,6 +123,10 @@ export function VetoScreen({ c, deps, onClose }: { c: VetoCall | null; deps: Vet
 
 /* ---------------------------------------------------------------- notices + alarm */
 
+/** The Notifications panel's answer where it is installed (the console); anywhere else, yes. */
+const notifyAllowed = (type: string, channel: string) =>
+  (globalThis as { AXF_NOTIFY?: { allowed(t: string, c: string): boolean } }).AXF_NOTIFY?.allowed(type, channel) !== false;
+
 const SENT_KEY = 'approvals-banner.sent';
 const ALARMED_KEY = 'approvals-banner.alarmed';
 const loadAlarmed = (): string[] => { try { const v = JSON.parse(globalThis.localStorage?.getItem(ALARMED_KEY) ?? '[]'); return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []; } catch { return []; } };
@@ -171,13 +175,13 @@ class VetoWatcher {
       if (due) {
         this.alarmed.add(due.id);
         saveAlarmed(this.alarmed);
-        if (may) { this.ringingFor = due.id; this.alarm.start(cfg); }
+        if (may && notifyAllowed('veto.alarm', 'sound')) { this.ringingFor = due.id; this.alarm.start(cfg); }
       }
     }
     // Kept after a call leaves the list (a read that misses it must not ring it again); only the oldest go, past 200.
     for (const id of [...this.alarmed].slice(0, Math.max(0, this.alarmed.size - 200))) this.alarmed.delete(id);
     // Notices: browser notifications while the page is open, unless the native side raises them.
-    if (native || this.get(ALARM_KEYS.notices) === false || !may) return;
+    if (native || this.get(ALARM_KEYS.notices) === false || !may || !notifyAllowed('veto.notice', 'popup')) return;
     const plan = notifyPlan(loadSent(), held, now);
     saveSent(plan.sent);
     if (!plan.send.length || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;

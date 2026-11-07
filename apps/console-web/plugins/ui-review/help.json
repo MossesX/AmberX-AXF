@@ -92,6 +92,12 @@
         "text": "Where you set “Minutes to wait for my answer”. Change it and the app uses the new value. Part of UI Review.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "show-everything",
+        "title": "Show everything",
+        "text": "Clears the group a phone notification opened, so the whole queue shows again.",
+        "kind": "button"
       }
     ],
     "intros": []

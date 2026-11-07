@@ -65,6 +65,7 @@ CATALOG_MAX_BYTES = 1_500_000
 OWNER = "owner"
 DELIVERY_WAIT_S = 60.0  # how long a call waits for a queued (or reconnecting) command to reach a console
 WAKE_AFTER_S = 3.0      # no console connected this long after queuing → ask AmberX to open one
+FALLBACK_KEY = "console:wake-fallback"
 WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment to open)
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
@@ -281,6 +282,24 @@ def _hub_wake(url: str, browser: str) -> dict[str, Any]:
 WAKER: Callable[[str, str], dict[str, Any]] = _hub_wake  # tests swap in a fake phone
 
 
+def _fallback_alert(cid: str, why: str) -> None:
+    """The phone can't be reached right now: a console alert AmberX's watch reads, whose tap opens the console."""
+    try:
+        import console_context as cx
+        cx.raise_alert({"source": "console", "severity": "warning", "key": FALLBACK_KEY, "title": "Tap to open the Dev Console", "body": f"Amber has something to show you. {why}"[:300],
+                        "link": f"{CONSOLE_URL}/?axf-cmd={cid}", "meta": {"label": "Dev Console"}})
+    except Exception:  # noqa: BLE001 — the command stays queued either way
+        pass
+
+
+def _fallback_clear() -> None:
+    try:
+        import console_context as cx
+        cx.resolve_alerts([FALLBACK_KEY])
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def _wake_later(entry: dict[str, Any]) -> None:
     """WAKE_AFTER_S after queuing: still no console → open one on the owner's phone (once per WAKE_AGAIN_S)."""
     def go() -> None:
@@ -302,10 +321,13 @@ def _wake_later(entry: dict[str, Any]) -> None:
             r = WAKER(f"{CONSOLE_URL}/?axf-cmd={entry['id']}", st["browser"])
         except Exception as e:  # noqa: BLE001 — a failed wake leaves the command queued; the answer says why
             r = {"ok": False, "message": str(e)[:300]}
-        entry["wake"] = {"sent": bool(r.get("ok")), "message": str(r.get("message") or "")[:300], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        entry["wake"] = {"sent": bool(r.get("ok")), "opened": r.get("opened") is True, "notified": r.get("notified") is True, "message": str(r.get("message") or "")[:300],
+                         "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
         if not r.get("ok"):
             with _lock:
                 _woke_at.pop(audience, None)
+        if not r.get("ok") or not (r.get("opened") or r.get("notified")):
+            _fallback_alert(entry["id"], str(r.get("message") or ""))
 
     t = threading.Timer(WAKE_AFTER_S, go)
     t.daemon = True
@@ -338,6 +360,12 @@ def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str)
     return e
 
 
+def queue_for_owner(command: dict[str, Any], grants: list[str], by: str) -> dict[str, Any]:
+    """Queue a navigate-only command for the next console that opens, and wake one: for a console that is connected but
+    never answered (a frozen phone tab). Never for anything that changes data: the frozen tab may still run its copy."""
+    return _enqueue({k: v for k, v in command.items() if v not in (None, "")}, grants, by, OWNER)
+
+
 def queued_for(audience: str) -> list[dict[str, Any]]:
     _expire()
     with _lock:
@@ -347,7 +375,8 @@ def queued_for(audience: str) -> list[dict[str, Any]]:
 
 
 def _how(e: dict[str, Any]) -> str:
-    return "woke via AmberX" if e["picked"] or (e["wake"] or {}).get("sent") else "after reconnect"
+    # only the console that opened from the wake link proves the wake; the phone's own yes never does
+    return "woke via AmberX" if e["picked"] else "after reconnect"
 
 
 def drain(audience: str, pick: str = "") -> None:
@@ -385,6 +414,7 @@ def drain(audience: str, pick: str = "") -> None:
                 e["result"], e["state"] = r, "delivered" if r.get("ok") else "failed"
             e["event"].set()
             _log(e["command"], r, e["by"], audience)
+            _fallback_clear()
     finally:
         with _lock:
             _draining.discard(audience)
@@ -465,9 +495,7 @@ def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: s
     out = {**base, "ok": waiting, "queued": waiting,
            "delivery": {"how": "queued" if waiting else state, "id": e["id"], "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {})}}
     if waiting:
-        woke = (e["wake"] or {}).get("sent")
-        out["message"] = f"queued, waiting for the console: it runs the moment one opens (until {_iso(e['expires'])})" + (
-            "; AmberX was asked to open it on Brett's phone" if woke else (f"; {e['wake']['message']}" if e["wake"] else ""))
+        out["message"] = f"queued, not open yet: it runs the moment a console opens (until {_iso(e['expires'])})" + (f"; {e['wake']['message']}" if e["wake"] else "; AmberX is asked to open it if none does")
     else:
         out.update({"code": "not_found", "message": "no console opened before the command expired (Settings → Plugins → Console commands: how long a command waits)"})
     _log(command, out, by, audience)
@@ -730,6 +758,10 @@ class ConsoleCommands:
 
     def run_for(self, request: Request, command: dict[str, Any]) -> dict[str, Any]:
         return run_for(request, command)
+
+    def queue_for_owner(self, command: dict[str, Any], grants: list[str], by: str = "") -> dict[str, Any]:
+        e = queue_for_owner(command, grants, by)
+        return {"id": e["id"], "expiresAt": _iso(e["expires"])}
 
     def queue(self, audience: str = OWNER) -> list[dict[str, Any]]:
         return queued_for(audience)

@@ -227,7 +227,7 @@ def test_profile(profile: dict[str, Any], model: str | None = None) -> dict[str,
     started = time.monotonic()
     text, usage = "", {}
     for ev in stream_chat(profile, [{"role": "user", "content": "Reply with exactly: OK"}], system="You are a connection test.",
-                          model=model, params={"max_tokens": 16, "temperature": 0}):
+                          model=model, params={"max_tokens": 16, "temperature": 0}, lean=True):
         if ev["type"] == "text":
             text += ev["text"]
         elif ev["type"] == "usage":
@@ -295,13 +295,16 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
                 tools: list[dict[str, Any]] | None = None, params: dict[str, Any] | None = None,
                 cancel: threading.Event | None = None, cwd: str | None = None,
                 tool_runner: Callable[[str, dict[str, Any]], tuple[bool, str]] | None = None,
-                read_files: bool = True, build: dict[str, Any] | None = None) -> Iterator[dict[str, Any]]:
+                read_files: bool = True, build: dict[str, Any] | None = None, lean: bool = False) -> Iterator[dict[str, Any]]:
     """Stream one model call. ``read_files=False`` (hub users without assistant.tools): the Claude Code CLI gets no
     file tools, an empty working folder and a throwaway config folder, so it can't read the server's files or
     earlier sessions' transcripts. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job.
     ``tool_runner(name, args) -> (ok, text)`` is for providers that run their own tool loop (the Claude Code CLI).
     ``build={"root": path}`` (build mode, Oct 28 2026: admins chatting with a build agent such as Mosses) gives the
-    Claude Code CLI its own Edit / Write / MultiEdit / Bash in that folder without asking; other providers ignore it."""
+    Claude Code CLI its own Edit / Write / MultiEdit / Bash in that folder without asking; other providers ignore it.
+    ``lean=True`` (chat mode, Nov 5 2026) starts the Claude Code CLI without CLAUDE.md, settings, hooks, skills or session
+    files, and with no built-in tools when ``tools`` is empty: a plain "hi" costs about 600 tokens and a second instead of
+    60,000 tokens and ten seconds. Build mode ignores it; other providers have nothing to skip."""
     proto = protocol_of(profile)
     model = model or profile.get("defaultModel") or (kind(profile.get("kind", "")).get("models") or [""])[0]
     if not model:
@@ -310,13 +313,17 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
     if proto == "anthropic":
         yield from _stream_anthropic(profile, messages, system, model, tools, params, cancel)
     elif proto == "claude-cli":
-        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner, read_files=read_files, build=build)
+        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner, read_files=read_files, build=build, lean=lean)
     elif proto == "openai":
         yield from _stream_openai(profile, messages, system, model, tools, params, cancel)
     elif proto in PROTOCOLS:
         yield from PROTOCOLS[proto](profile, messages, system, model, tools, params, cancel, cwd=cwd, tool_runner=tool_runner, read_files=read_files)
     else:
         raise ProviderError(f"no driver for protocol {proto}", 400)
+
+
+# Claude 5 models answer 400 "`temperature` is deprecated for this model" when a sampling parameter is sent.
+_NO_SAMPLING = re.compile(r"claude-(opus|fable|sonnet|haiku)-[5-9]")
 
 
 def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
@@ -328,9 +335,9 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
     body: dict[str, Any] = {"model": model, "max_tokens": int(params.get("max_tokens") or 8192), "messages": _to_anthropic(messages), "stream": True}
     if system:
         body["system"] = [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
-    if params.get("temperature") is not None:
+    if params.get("temperature") is not None and not _NO_SAMPLING.search(model):
         body["temperature"] = float(params["temperature"])
-    if params.get("top_p") is not None:
+    if params.get("top_p") is not None and not _NO_SAMPLING.search(model):
         body["top_p"] = float(params["top_p"])
     if params.get("stop"):
         body["stop_sequences"] = list(params["stop"])[:4]
@@ -508,6 +515,11 @@ def _cli_abs_deny(cwd: str | None, tools: tuple[str, ...] = ("Read", "Grep", "Gl
 
 
 CLI_DEADLINE = float(os.environ.get("AXF_AI_CLI_TIMEOUT", "600"))
+# What the CLI prints instead of a reply when the plan or account is used up. It arrives as ordinary text, so it has to be
+# caught here: as text it passed for a reply, the fallback chain never ran and the credit check saw only "exited with code 1".
+_CLI_LIMIT = re.compile(r"hit your (?:[\w-]+ )?limit|usage limit|credit balance|out of credits?", re.I)
+# Skips CLAUDE.md, settings, hooks, skills and the session file.
+_CLI_LEAN = ("--setting-sources", "", "--disable-slash-commands", "--no-session-persistence")
 
 
 class _Bridge:
@@ -578,7 +590,15 @@ class _Bridge:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
-def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True, build=None):
+def _cli_chat_args(model: str, system: str | None) -> list[str]:
+    """Plain talk: no tools of any kind, the given prompt instead of Claude Code's own. Low effort skips the thinking pass that
+    otherwise comes before the first word on about half of chat turns (1.1-1.3 s to the first word instead of up to 2 s)."""
+    args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
+            "--model", model, "--effort", "low", "--tools", "", "--strict-mcp-config", *_CLI_LEAN]
+    return args + (["--system-prompt", system[:100_000]] if system else [])
+
+
+def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True, build=None, lean=False):
     import tempfile
     token = resolve_key(profile)
     if not token:
@@ -617,14 +637,28 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = [*_cli_abs_deny(cwd, ("Edit", "Write", "MultiEdit")), *_cli_deny(("Edit", "Write", "MultiEdit"))]
     args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = _cli_abs_deny(cwd)
     jail = None
+    lean = bool(lean) and not (build and read_files and build.get("root"))
+    if lean:
+        env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
+    if lean and not bridge:
+        args = _cli_chat_args(model, system)
+    elif lean:
+        # A tool turn without the session baggage: the host's tools plus reading files, nothing else built in.
+        args += ["--tools", "Read,Grep,Glob" if read_files else "", *_CLI_LEAN]
+    if lean and not bridge and read_files:
+        # An empty folder, so nothing around the working directory is picked up either.
+        jail = tempfile.mkdtemp(prefix="axf-cli-chat-")
+        os.chmod(jail, 0o700)
+        cwd = jail
     if not read_files:
         # No file tools at all, an empty folder to run in, and a config folder that is thrown away afterwards.
-        i = args.index("--allowedTools")
-        j = args.index("--disallowedTools")
-        kept = [a for a in args[i + 1:j] if a.startswith("mcp__")]
-        args[i:j] = (["--allowedTools", *kept] if kept else [])
-        k = args.index("--disallowedTools")
-        args[k + 1:k + 1] = ["Read", "Grep", "Glob", "LS", "WebSearch"]
+        if "--allowedTools" in args:
+            i = args.index("--allowedTools")
+            j = args.index("--disallowedTools")
+            kept = [a for a in args[i + 1:j] if a.startswith("mcp__")]
+            args[i:j] = (["--allowedTools", *kept] if kept else [])
+            k = args.index("--disallowedTools")
+            args[k + 1:k + 1] = ["Read", "Grep", "Glob", "LS", "WebSearch"]
         jail = tempfile.mkdtemp(prefix="axf-cli-jail-")
         os.chmod(jail, 0o700)
         cwd = jail
@@ -673,6 +707,9 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
                         hint = next((str(inp[k]) for k in ("file_path", "path", "pattern", "query") if isinstance(inp.get(k), str)), "")
                         yield {"type": "status", "text": f"{b.get('name')} {hint}".strip()}
                     elif b.get("type") == "text" and b.get("text") and streamed == 0:
+                        if _CLI_LIMIT.search(b["text"]) and len(b["text"]) < 300:
+                            raise ProviderError(b["text"].strip(), 429)
+                        streamed += len(b["text"])
                         yield {"type": "text", "text": b["text"]}
             elif t == "result":
                 u = ev.get("usage") or {}
@@ -680,6 +717,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
                 if ev.get("is_error") and streamed == 0 and isinstance(ev.get("result"), str):
                     if re.search(r"invalid api key|please run /login|oauth|unauthori[sz]ed|401", ev["result"], re.I):
                         raise ProviderError("Claude Code rejected the token. Run `claude setup-token` on the VPS (sign in when asked), copy the long-lived sk-ant-oat01-… token it prints, and paste it into this provider (Edit → Save & test). A token copied from ~/.claude after /login expires and won't work here", 400)
+                    if _CLI_LIMIT.search(ev["result"]) and len(ev["result"]) < 300:
+                        raise ProviderError(ev["result"].strip(), 429)
                     yield {"type": "text", "text": ev["result"]}
         proc.wait(timeout=10)
         if bridge:

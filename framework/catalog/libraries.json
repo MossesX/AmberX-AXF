@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-11-07T01:24:29.841Z",
+  "generatedAt": "2026-11-07T10:31:56.917Z",
   "items": [
     {
       "$axf": "library@1",
@@ -1079,6 +1079,29 @@
         {
           "capability": "axf.hubsync.layout-data",
           "note": "Per-app layout state (window positions, dock) as a hub table — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.listeners",
+      "module": "lib-listeners",
+      "name": "Listeners (the rules behind AmberX's background listeners)",
+      "description": "The pure rules every side of AmberX's background listeners shares (listener@1): the registry of listeners (hands-free wake word, the command after it, Speak, Gizmo talk mode, the recorder mic, the axHub watch, the veto alarm, page-side listeners), one policy per listener (allowed, pause for calls, pause for other apps, start sound, restarts before it gives up, backoff) kept as app settings that ride axHub, restart backoff with a give-up and a cold retry, silent restarts (the start tone only for a start the person asked for), when to let go of the microphone and when to come back, one owner of the microphone at a time, and the listener-state@1 document a device publishes so the Dev Console shows every listener of every phone. No UI, no network, no clock. The Android shell's ListenerRules.java gives the same answers on cases.json. Built Nov 6 2026 (Fable), build gizmo-rebuild-fable.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.listeners",
+      "params": [],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/listeners"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.listeners.android",
+          "note": "Kotlin twin of core.ts for the framework's Android port (on hold; recorded in framework/spec/PORTING.md). AmberX's Java ListenerRules.java covers the phone meanwhile."
         }
       ]
     },

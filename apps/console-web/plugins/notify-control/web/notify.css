@@ -1,0 +1,15 @@
+/* Notifications panel (notify-control): layout only; controls come from the framework. */
+.axp-notify__head { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: flex-end; }
+.axp-notify__head > * { flex: 1 1 12em; min-width: 0; }
+.axp-notify__muted { margin: 0; color: var(--fx-muted); }
+.axp-notify__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-notify__row:last-child { border-bottom: 0; }
+.axp-notify__top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
+.axp-notify__name { flex: 1 1 16em; min-width: 0; }
+.axp-notify__why { color: var(--fx-muted); }
+.axp-notify__line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-notify__pri { flex: 0 1 10em; min-width: 0; }
+.axp-notify__recent { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-notify__recent:last-child { border-bottom: 0; }
+.axp-notify__recent > b { flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+.axp-notify__edit { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding-block: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border); }
