@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T14:11:35.134Z",
+ "updatedAt": "2026-11-07T14:11:44.490Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66726,19 +66726,23 @@
    "title": "Maintenance: redundancy scan (report-only)",
    "category": "Maintenance",
    "detail": "Read-only job in the Maintenance plugin that searches for redundant data sets stage by stage (builds store, plans, tracker/catalog/ledger, branches+worktrees, assets/baked copies, memory/docs, rest) under time/size budgets, and reports grouped findings with source of truth, confidence and suggested action. Never deletes or merges.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/maintenance-redundancy-scan",
    "pr": "",
    "createdAt": "2026-11-07T13:46:06.752Z",
-   "updatedAt": "2026-11-07T14:10:59.918Z",
+   "updatedAt": "2026-11-07T14:11:43.264Z",
    "builtAt": "2026-11-07T14:10:50.074Z",
    "notes": [
     {
      "text": "All 5 steps done on branch claude/maintenance-redundancy-scan (committed, not pushed). UI Review r-20261107-38c6ff69. Report _claude/builds/reports/maintenance-redundancy-scan.md",
      "at": "2026-11-07T14:10:51.385Z"
+    },
+    {
+     "text": "From orchestrator-dup-check (claude/orchestrator-dup-check): the shared finding format is framework/core/redundancy-finding.mjs (redundancy-finding@1), same fields as redundancy.mjs's F.add (kind, title, where, source, confidence, level, action, actionLabel, detail) plus producer / subject / match / reasons; KINDS and ACTIONS hold both producers' lists. The split-time check's findings are served by capability axf.redundancy-findings@1 (findings(limit)) and GET /api/plugins/build-orchestrator/dup-check/findings: the report can list them as a source. Suggest redundancy.mjs imports KINDS/ACTIONS/finding() from there when both have landed.",
+     "at": "2026-11-07T14:11:43.264Z"
     }
    ],
    "approvals": [],
