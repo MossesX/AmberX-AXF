@@ -75,7 +75,11 @@ def compose(agent_id: str) -> dict[str, Any]:
             trecs.append({"id": f"delegate.{d['id']}", "name": f"ask_{re.sub(r'[^a-zA-Z0-9_]', '_', d['id'])}"[:64], "kind": "agent", "config": {"agentId": d["id"]},
                           "description": f"Delegate a task to {d.get('name')}: {d.get('description', '')[:200]}", "parameters": {"type": "object", "properties": {"task": {"type": "string"}}, "required": ["task"]}})
     system = contract.compose_system_prompt(a, p, sk, lg, r["extras"], mcfg["type"] != "none", [t["name"] for t in trecs])
-    return {"agent": a, "system": system, "tools": trecs, "model": a.get("model") or {}, "memory": mcfg, "writeMode": r["writeMode"], "dropped": r["dropped"],
+    # Chat mode (the assistant's quick turns): who the agent is in a line or two, and its skills as tool groups.
+    ident = [f"You are {a.get('name')}" + (f", {p['role']}." if p and p.get("role") else "."), *([f"Voice: {p['voice']}."] if p and p.get("voice") else []), *([f"Tone: {p['tone']}."] if p and p.get("tone") else [])]
+    all_tools = store.items("tools")
+    groups = [{"id": s.get("id"), "name": s.get("name"), "triggers": s.get("triggers") or [], "tools": [all_tools[t]["name"] for t in s.get("toolIds") or [] if t in all_tools]} for s in sk]
+    return {"agent": a, "system": system, "chatPrompt": " ".join(ident), "toolGroups": groups, "tools": trecs, "model": a.get("model") or {}, "memory": mcfg, "writeMode": r["writeMode"], "dropped": r["dropped"],
             "buildMode": {"root": gittools.root(), "repo": gittools.repo()} if build else None}
 
 

@@ -31,6 +31,7 @@ terminal_lines: Callable[[], list[dict[str, Any]]] = lambda: []  # noqa: E731 â€
 # No-ops until main.py wires the alert hub (it is created after the plugins load); plugins call them at request time.
 raise_alert: Callable[[dict[str, Any]], dict[str, Any]] = lambda inp: {}  # noqa: E731
 resolve_alerts: Callable[[list[str]], None] = lambda keys: None  # noqa: E731
+alerts_changed: Callable[[], None] = lambda: None  # noqa: E731 â€” what readers see changed: the alert streams send it again
 # The console's ASGI app (a plugin calls another plugin's route in-process) and its MCP server (the Plugin commands
 # plugin adds <plugin>_<command> tools as plugins come and go). None until main.py sets them.
 asgi_app: Any = None

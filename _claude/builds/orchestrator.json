@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T19:42:55.032Z",
+ "updatedAt": "2026-11-07T09:43:53.378Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2371,9 +2371,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-07T02:14:26.562Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Superseded in part by build ui-asset-designer (Current, Nov 7 2026, Fable): the menu editor (s5), toolbar editor (s6) and the generic designer shell / storage / validation gate are built from scratch there (designer@1 host + add-ons, framework/spec/DESIGNER.md). What stays here: the drawer asset type (s7, s8), layout editor (s9), colour-theme editor (s10), style-theme editor (s11); build them on the designer@1 host when picked up.",
+     "at": "2026-11-07T02:14:26.562Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -19898,19 +19903,23 @@
    "title": "Skins: one look per app, skin@1 + app-look@1, the Windows skin, Settings > Appearance as the Theme manager",
    "category": "Design",
    "detail": "skin@1 asset type + app-look@1 per-app doc on the hub (shared/settings/looks/<app>.json). A skin never changes other apps. Windows skin renders in console, AmberX web, axHub web, Molly. Earlier runs: claude/skins-r2, claude/skins-r3 (both stopped on usage limits).",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skins-r4",
-   "pr": "",
+   "branch": "claude/skins-asset-types",
+   "pr": "#383",
    "createdAt": "2026-11-06T00:15:34.281Z",
-   "updatedAt": "2026-11-06T00:50:23.231Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T05:46:29.207Z",
+   "builtAt": "2026-11-07T05:34:58.589Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T00:50:23.231Z"
+    },
+    {
+     "text": "s9–s11 finished by build skins-asset-types on claude/skins-asset-types (claude/skins-r4 merged into it): CI list, shots in UI Review, docs, PORTING, rule, report, PR",
+     "at": "2026-11-07T05:34:59.628Z"
     }
    ],
    "approvals": [],
@@ -20085,8 +20094,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:56.292Z",
      "note": "",
      "uid": "st-mw4840y10kj4ym"
     },
@@ -20103,8 +20112,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:57.419Z",
      "note": "",
      "uid": "st-mw4840y10l01ql"
     },
@@ -20121,8 +20130,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:58.589Z",
      "note": "",
      "uid": "st-mw4840y10manms"
     }

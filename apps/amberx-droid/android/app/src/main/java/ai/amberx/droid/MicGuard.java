@@ -48,6 +48,7 @@ final class MicGuard {
         prefs(app).edit().putBoolean("off", off).putLong("changedAt", System.currentTimeMillis()).apply();
         if (off) {
             AmberxNativePlugin.cancelListen();
+            if (TalkService.running != null) TalkService.stop(app, "Mic off was switched on.");
             if (OutputRecordService.running && OutputRecordService.micOn) {
                 try { app.startService(new Intent(app, OutputRecordService.class).setAction(OutputRecordService.ACTION_STOP_MIC)); }
                 catch (RuntimeException ignored) { /* the recorder isn't running after all */ }
@@ -66,6 +67,48 @@ final class MicGuard {
     static void claim(int session) { if (session > 0) OURS.add(session); }
 
     static void release(int session) { OURS.remove(session); }
+
+    /* ---------------------------------------------------------------- one owner of the microphone at a time (Nov 6 2026) */
+
+    /** The listener that holds the microphone right now (a listener id from ListenerRules), or null. */
+    private static volatile String holder;
+    private static volatile long heldSince;
+
+    static String holder() { return holder; }
+
+    /**
+     * A listener wants the microphone. It gets it when nobody holds it, when it already holds it, or when it outranks
+     * the holder ({@link ListenerRules#outranks}: talk mode beats Speak beats the hands-free loop); then the previous
+     * holder is told to let go ({@link WatchService#micTaken}). False = someone with priority has it: wait.
+     */
+    static synchronized boolean acquire(String owner) {
+        if (owner == null || owner.isEmpty()) return false;
+        String h = holder;
+        if (owner.equals(h)) return true;
+        if (!ListenerRules.outranks(owner, h)) return false;
+        holder = owner;
+        heldSince = System.currentTimeMillis();
+        if (h != null) WatchService.micTaken(h, owner);
+        ListenerRegistry.changed();
+        return true;
+    }
+
+    /** The listener is done with the microphone (only the holder can release it). */
+    static synchronized void releaseOwner(String owner) {
+        if (owner != null && owner.equals(holder)) {
+            holder = null;
+            heldSince = 0;
+            ListenerRegistry.changed();
+        }
+    }
+
+    /** True while `owner` may open the microphone: Mic off is off, its policy allows it, and nobody outranks it. */
+    static boolean mayOpen(Context c, String owner) {
+        if (!mayOpen(c)) return false;
+        if (owner != null && !ListenerRegistry.allowed(c, owner)) return false;
+        String h = holder;
+        return h == null || h.equals(owner) || ListenerRules.outranks(owner, h);
+    }
 
     private static List<AudioRecordingConfiguration> recordings(Context c) {
         try {
@@ -112,7 +155,9 @@ final class MicGuard {
         try {
             o.put("off", off).put("yielded", y == null ? JSONObject.NULL : y).put("label", MicRules.label(y))
                 .put("listening", !off && WatchService.status.optBoolean("listening", false))
-                .put("recorderMic", OutputRecordService.running && OutputRecordService.micOn);
+                .put("recorderMic", OutputRecordService.running && OutputRecordService.micOn)
+                .put("holder", holder == null ? JSONObject.NULL : holder)
+                .put("heldSince", heldSince > 0 ? heldSince : JSONObject.NULL);
         } catch (Exception ignored) {}
         return o;
     }

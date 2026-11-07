@@ -508,7 +508,7 @@
     "src/axf/assets/uac-policy/strict-enterprise.json": "307b10d413f7ccb3",
     "src/axf/core/agent-directory.ts": "40b52b963a42c9bb",
     "src/axf/core/agents.ts": "8c0f9d3bed06ed90",
-    "src/axf/core/assistant.ts": "1d1b21a4b63aba2b",
+    "src/axf/core/assistant.ts": "8f9a504189fa1db5",
     "src/axf/core/build-origin.d.mts": "06f24a33582e3ff6",
     "src/axf/core/build-origin.mjs": "f2923181df39063a",
     "src/axf/core/build-priority.d.mts": "f4864780baaea162",
@@ -618,7 +618,7 @@
     "src/axf/libs/README.md": "68f9104795971647",
     "src/axf/libs/alerts/alerts-sw.js": "cfdb9579eab00e35",
     "src/axf/libs/alerts/alerts.css": "966280d51557745d",
-    "src/axf/libs/alerts/index.tsx": "9818dada3c1c2b5b",
+    "src/axf/libs/alerts/index.tsx": "0e34c5d6804656d9",
     "src/axf/libs/alerts/vite-plugin.mjs": "fb723a288144289f",
     "src/axf/libs/apiclient/client.ts": "507a2b50eff72a2a",
     "src/axf/libs/apiclient/index.tsx": "cd746d64b6375f91",
@@ -668,6 +668,11 @@
     "src/axf/libs/hubsync/index.tsx": "e9540d138b9b898c",
     "src/axf/libs/hubsync/library.json": "38c4bec134850f5e",
     "src/axf/libs/hubsync/sync.ts": "978e7c206415b63d",
+    "src/axf/libs/listeners/cases.json": "e8bed8d198b60ff7",
+    "src/axf/libs/listeners/core.ts": "190314a250930f76",
+    "src/axf/libs/listeners/index.ts": "e770172ecaec345a",
+    "src/axf/libs/listeners/library.json": "83beb4e0b3410561",
+    "src/axf/libs/listeners/registry.json": "f82ad0b6515bbab0",
     "src/axf/libs/mcp/client.ts": "1de950f095e33a61",
     "src/axf/libs/mcp/host.ts": "9752a89d8a76759e",
     "src/axf/libs/mcp/index.tsx": "2ea42b0f0db90e9a",
@@ -839,6 +844,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
-    "src/axf/ui/axf.css": "d3ea360b5f522422"
+    "src/axf/ui/axf.css": "3bc11b40439a63cd"
   }
 }

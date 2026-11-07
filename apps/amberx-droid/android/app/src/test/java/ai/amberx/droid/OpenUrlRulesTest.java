@@ -11,6 +11,15 @@ import org.junit.Test;
 /** Console wake (Nov 3 2026): AmberX opens only Brett's own https sites when the hub asks. */
 public class OpenUrlRulesTest {
     @Test
+    public void alertLinksStayOnOwnSites() {
+        String console = "https://console.amberxai.com";
+        assertEquals(console + "/?axf-review-group=g-1", OpenUrlRules.linkOr(console + "/?axf-review-group=g-1", console));
+        assertEquals(console, OpenUrlRules.linkOr("", console));
+        assertEquals(console, OpenUrlRules.linkOr("https://evil.example/x", console));
+        assertEquals(console, OpenUrlRules.linkOr("view:ui-review", console));
+    }
+
+    @Test
     public void ownSitesOpen() {
         assertEquals("https://console.amberxai.com/?axf-cmd=cq-1a2b-abc123", OpenUrlRules.allowed("https://console.amberxai.com/?axf-cmd=cq-1a2b-abc123"));
         assertEquals("https://amberxai.com/", OpenUrlRules.allowed(" https://amberxai.com/ "));

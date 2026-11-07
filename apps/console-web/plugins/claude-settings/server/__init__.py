@@ -177,10 +177,14 @@ def _clock() -> None:
 
 
 class ClaudeSettings:
-    """axf.claude-settings@1 for other plugins: get() → every setting (claude-settings@1 view)."""
+    """axf.claude-settings@1 for other plugins: get() → every setting (claude-settings@1 view), set() → change ones
+    that aren't owner-only (never with the owner's approval: an owner-only key is refused like any session's)."""
 
     def get(self) -> dict[str, Any]:
         return cli("get")
+
+    def set(self, values: dict[str, Any], by: str) -> dict[str, Any]:
+        return cli("owner-set", stdin={"patch": values, "owner": None, "by": by})
 
 
 plugin_services.provide("axf.claude-settings@1", ClaudeSettings(), FOLDER)
