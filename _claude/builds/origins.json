@@ -1429,6 +1429,18 @@
    "from": "detail",
    "addenda": []
   },
+  "full-api-control": {
+   "said": "The API controls EVERYTHING in the console. Rule: the API (control@1 / MCP / CLI / voice) must be able to do anything Brett can do by hand in the console and every plugin. Today it can't (e.g. it can open a terminal tab but can't type in it).",
+   "at": "2026-11-07T16:09:37.164Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "github-app": {
    "said": "",
    "at": "",
