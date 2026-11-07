@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1328,
- "updatedAt": "2026-11-07T13:53:12.043Z",
+ "rev": 1329,
+ "updatedAt": "2026-11-07T13:53:19.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110985,14 +110985,14 @@
    "title": "Maintenance: redundancy scan (report-only)",
    "category": "Maintenance",
    "detail": "Read-only job in the Maintenance plugin that searches for redundant data sets stage by stage (builds store, plans, tracker/catalog/ledger, branches+worktrees, assets/baked copies, memory/docs, rest) under time/size budgets, and reports grouped findings with source of truth, confidence and suggested action. Never deletes or merges.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T13:46:06.752Z",
-   "updatedAt": "2026-11-07T13:46:06.752Z",
+   "updatedAt": "2026-11-07T13:53:11.473Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -111025,12 +111025,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:53:11.472Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:46:06.753Z",
-     "updatedAt": "2026-11-07T13:46:06.753Z"
+     "updatedAt": "2026-11-07T13:53:11.571Z"
     },
     {
      "id": "s2",
@@ -111129,7 +111129,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

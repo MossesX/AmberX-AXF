@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:48 UTC · `axhub-google` added (4 steps) (current) · backfill
 - 2026-11-07 00:48 UTC · `notes-tasks-calendar` added (5 steps) (current) · backfill
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s6 done (current) · orchestrator
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s7 done (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:51 UTC · `style-override-rule` s8 done, → complete (all) · orchestrator
 - 2026-11-07 13:51 UTC · `style-override-rule` note (all) · orchestrator
 - 2026-11-07 13:46 UTC · `maintenance-redundancy-scan` added (5 steps) (all) · earl
+- 2026-11-07 13:53 UTC · `maintenance-redundancy-scan` s1 done, → running (all) · earl
 
 ## Token passes (log)
 
