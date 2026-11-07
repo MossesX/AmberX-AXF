@@ -121,8 +121,6 @@
 
 /* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, ⋯ menus, tag dropdown, phone starts on the chat. */
 .axp-ai-assistant__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
-.axp-ai-assistant__morebtn { display: inline-flex; flex: none }
-.axp-ai-assistant__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
 .axp-ai-assistant__conv { align-items: center }
 .axp-ai-assistant__conv .axp-ai-assistant__conv-acts { display: flex; flex-direction: row; opacity: var(--fx-opacity-muted) }
 .axp-ai-assistant__conv:hover .axp-ai-assistant__conv-acts, .axp-ai-assistant__conv.is-active .axp-ai-assistant__conv-acts { opacity: 1 }

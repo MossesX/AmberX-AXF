@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
-import { MoreMenu } from './more';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -35,7 +35,7 @@ export function AgentManagerView() {
         <div><p className="fx-eyebrow">AI · agents</p><h1>Agent manager</h1><p className="fx-muted axp-agent-manager__lede" title="Build agents from personas, skills and tools, train them, and run them in workflows — each with its own memory.">Agents from personas, skills and tools, each with its own memory.</p></div>
         <div className="fx-row axp-agent-manager__acts">
           <Button tone="primary" icon="rocket" onClick={() => wizard('builder')}>Agent builder</Button>
-          <MoreMenu label="More: new skill, tool, training, export" items={[
+          <MoreMenu look="dropdown" label="More: new skill, tool, training, export" items={[
             { label: 'New agent', icon: 'user', onPick: () => wizard('agent') },
             { label: 'New skill', icon: 'star', onPick: () => wizard('skill') },
             { label: 'New tool', icon: 'zap', onPick: () => wizard('tool') },
@@ -112,7 +112,7 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
         <div className="fx-row fx-row--wrap">
           <strong className="fx-grow">{label}s ({items.length})</strong>
           <Button icon="plus" onClick={() => { setSel(''); setDraft({ ...blank }); setMsg(''); }}>New</Button>
-          <MoreMenu label={`More ways to add a ${label.toLowerCase()}`} items={[
+          <MoreMenu look="dropdown" label={`More ways to add a ${label.toLowerCase()}`} items={[
             !!wizardKind && { label: 'Wizard…', icon: 'rocket', onPick: () => rt.openDialog('agent-manager.wizard', { kind: wizardKind }) },
             lib && coll !== 'agents' && { label: describe ? 'Hide “Describe it”' : 'Describe it (AI draft)', icon: 'sparkles', onPick: () => setDescribe(!describe) },
             lib && { label: 'Import JSON…', icon: 'upload', title: 'Import an exported item (JSON)', onPick: () => importRef.current?.click() },
@@ -143,7 +143,7 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
             <CheckNote check={check} />
             <div className="fx-row fx-row--wrap">
               <Button tone="primary" icon="save" disabled={busy || check?.ok === false} onClick={() => void doSave()}>Save</Button>
-              <MoreMenu label={`More for this ${label.toLowerCase()}`} items={[
+              <MoreMenu look="dropdown" label={`More for this ${label.toLowerCase()}`} items={[
                 lib && !!draft.id && { label: 'Duplicate', icon: 'copy', onPick: () => void post<{ item: Rec }>(`c/${coll}/${draft.id}/duplicate`).then((r) => { void refresh(); open(r.item); rt.toast('Duplicated', 'success'); }, (e: Error) => setMsg(e.message)) },
                 lib && !!draft.id && { label: 'Export', icon: 'download', onPick: () => void call(`c/${coll}/${draft.id}/export`).then((b) => download(`${draft.id}.${coll.slice(0, -1)}.json`, b)) },
                 !!draft.id && { label: 'Delete', icon: 'trash', onPick: () => void doDelete() },
@@ -338,7 +338,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
                 <div className="fx-row fx-row--wrap">
                   <Button tone="primary" icon="save" disabled={check?.ok === false} onClick={() => void doSave()}>Save</Button>
                   {draft.id && <Button icon="download" onClick={() => wizard('training', draft.id)}>Train…</Button>}
-                  {draft.id && <MoreMenu label="More for this agent" items={[
+                  {draft.id && <MoreMenu look="dropdown" label="More for this agent" items={[
                     { label: 'Clone', icon: 'copy', onPick: () => void post<{ item: Agent }>(`agents/${draft.id}/clone`).then(async (r) => { await refresh(); open(r.item); }) },
                     { label: 'Export', icon: 'download', onPick: () => void call(`agents/${draft.id}/export`).then((b) => download(`${draft.id}.agent-addon.json`, b)) },
                     { label: dangerous.has(draft.id) ? 'Dangerous tools: allowed…' : 'Dangerous tools: off…', icon: 'shield', title: 'Which agents get dangerous tools (Settings → Plugins → Agent manager → Safety)', onPick: () => rt.dispatch('settings.open:agent-manager') },
@@ -551,7 +551,7 @@ function MemoryTab({ cache }: { cache: Cache }) {
           </div>
           <div className="axp-agent-manager__row">
             <span className="fx-small fx-muted fx-grow">Clear memory</span>
-            <MoreMenu label="Clear memory" icon="trash" items={[
+            <MoreMenu look="dropdown" label="Clear memory" icon="trash" items={[
               ...['episode', 'knowledge', 'fact'].map((k) => ({ label: `Clear ${k}s`, icon: 'trash', onPick: () => { if (confirm(`Forget every ${k}?`)) void post(`memory/${aid}/clear`, { kind: k }).then(load); } })),
               { label: 'Erase all', icon: 'trash', onPick: () => { if (confirm(`Erase all of ${agent?.name}'s memory?`)) void post(`memory/${aid}/clear`).then(load); } },
             ]} />

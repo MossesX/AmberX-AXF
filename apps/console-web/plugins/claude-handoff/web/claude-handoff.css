@@ -165,8 +165,6 @@
 .axp-claude-handoff__head { align-items: center }
 .axp-claude-handoff__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
 .axp-claude-handoff__acts { flex-wrap: nowrap }
-.axp-claude-handoff__morebtn { display: inline-flex; flex: none }
-.axp-claude-handoff__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
 .axp-claude-handoff__about > summary { cursor: pointer }
 .axp-claude-handoff__about[open] > summary { margin-bottom: var(--fx-dens-gap-md) }
 .axp-claude-handoff__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }

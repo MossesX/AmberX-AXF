@@ -9,7 +9,7 @@ import pricing from '@console/axf/schemas/model-pricing.json';
 import { groupPlain, itemPlain } from './plain';
 import { clearFocus, FOLDER, KEYS, useFocus, VIEW } from './focus';
 import './feature-matrix.css';
-import { MoreMenu } from './more';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 
 /*
  * Feature matrix page (feature-matrix@1). One dataset of every build's matrix, shown as a grid of expandable rows
@@ -208,7 +208,7 @@ export function MatrixView({ m, busy, act, report }: { m: fm.Matrix; busy: boole
       <div className="fx-row axp-feature-matrix__acts">
         {!adding && <Button size="sm" icon="plus" onClick={() => setAdding(blank(groupNames[groupNames.length - 1] ?? ''))}>Add item</Button>}
         <Button size="sm" icon="clock" aria-expanded={historyOpen} onClick={() => setHistoryOpen((o) => !o)}>{historyOpen ? 'Hide history' : `History (${m.history.length})`}</Button>
-        <MoreMenu label={`More for ${m.title}`} items={[
+        <MoreMenu look="dropdown" label={`More for ${m.title}`} items={[
           { label: 'Rename', icon: 'file', onPick: () => setRenaming(m.title) },
           report && { label: showReport ? 'Hide last Apply' : 'Last Apply', icon: 'list', onPick: () => setShowReport((o) => !o) },
         ]} />

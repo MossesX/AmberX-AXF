@@ -39,5 +39,3 @@
 select.fx-input.axp-feature-matrix__profile { width: auto; flex: none; }
 .axp-feature-matrix__acts { flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
 .axp-feature-matrix__totals { gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); }
-.axp-feature-matrix__morebtn { display: inline-flex; flex: none; }
-.axp-feature-matrix__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2); }

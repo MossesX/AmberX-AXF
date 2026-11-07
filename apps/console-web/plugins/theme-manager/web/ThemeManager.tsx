@@ -9,7 +9,7 @@ import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
 import { call, del, post, put, type SavedTheme } from './api';
-import { MoreMenu } from './MoreMenu';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 
 const P = 'axp-theme-manager';
 type Data = Record<string, Json>;

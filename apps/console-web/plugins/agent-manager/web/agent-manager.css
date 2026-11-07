@@ -69,8 +69,6 @@
 .axp-agent-manager__head { align-items: center }
 .axp-agent-manager__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
 .axp-agent-manager__acts { flex-wrap: nowrap; align-items: center }
-.axp-agent-manager__morebtn { display: inline-flex; flex: none }
-.axp-agent-manager__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
 .axp-agent-manager__strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axp-agent-manager__tabpick { display: none; width: 100% }
 .axp-agent-manager__flat { display: flex; flex-direction: column; border-top: var(--fx-border-w) solid var(--fx-border) }

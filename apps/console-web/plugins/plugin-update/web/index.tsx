@@ -17,7 +17,7 @@ import { PLUGINS_CHANGED } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { label, rebuildRequest, rows as toRows, summary, type CatalogItem, type Installed, type Model, type Pending, type Row } from './core';
 import { appMenu } from './menu';
-import { MoreMenu } from './MoreMenu';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 import './plugin-update.css';
 import { EmptyState } from '@console/emptyState';
 

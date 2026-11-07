@@ -10,7 +10,7 @@ import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBat
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
 import { ActivityIcon, useReportActivity } from './activity';
-import { MoreMenu } from './more';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 import { ChatSettingsDialog } from './settings';
 import { VoiceMicStandIn } from './voicemic';
 import {
@@ -365,7 +365,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
                   </button>
                 )}
                 <div className="axp-ai-assistant__conv-acts">
-                  <MoreMenu label={`Actions for ${c.title}`} items={[
+                  <MoreMenu look="dropdown" label={`Actions for ${c.title}`} items={[
                     { label: c.pinned ? 'Unpin' : 'Pin', icon: 'star', onPick: () => void client.patchConversation(c.id, { pinned: !c.pinned }).then(loadList) },
                     { label: 'Rename', icon: 'edit', onPick: () => setRenaming(c.id) },
                     { label: 'Tags', icon: 'list', onPick: () => setTagging(c.id) },
@@ -408,7 +408,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           )}
           <button type="button" className="fx-iconbtn" title="New chat" onClick={newChat}><Icon name="plus" size={16} /></button>
           <button type="button" className="fx-iconbtn" title="Chat settings" onClick={() => setSheet('settings')}><Icon name="sliders" size={16} /></button>
-          <MoreMenu label="More chat actions" items={[
+          <MoreMenu look="dropdown" label="More chat actions" items={[
             { label: 'Compare models', icon: 'layers', onPick: () => setSheet('compare') },
             !!conv && { label: 'Export Markdown', icon: 'download', onPick: () => void exportConv('md') },
             !!conv && { label: 'Export JSON', icon: 'code', onPick: () => void exportConv('json') },
