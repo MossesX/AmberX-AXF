@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T15:38:21.236Z",
+ "updatedAt": "2026-11-07T15:38:32.442Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -50040,14 +50040,14 @@
    "title": "Dev Console Android app: wrapper shell (one codebase)",
    "category": "App",
    "detail": "Brett chose the wrapper over a native rewrite (Nov 7 2026): the web Dev Console (console.amberxai.com) runs inside an Android app shell (Capacitor, like AmberX), so every console change shows on the phone at once. Shell: sign-in kept (cookies), back button, pull-to-refresh, offline screen. Native bridges: notifications for build alerts (console /api/alerts, quiet when AmberX already posts them), mic for voice, background wake (periodic alerts check), file share/download (APKs), deep links to console screens. Console UI stays asset-driven (phone layout assets). APK in CI next to amberx-debug.apk, listed under Apps. UI Review with three shell-chrome options. App: apps/console-droid. Replaces the native tab plan (Pilot is retired).",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "chat",
    "pendingId": "console-android-app-tabs",
-   "branch": "",
+   "branch": "claude/console-android-wrapper",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-11-07T15:38:20.289Z",
+   "updatedAt": "2026-11-07T15:38:25.087Z",
    "builtAt": "2026-11-07T15:38:20.289Z",
    "notes": [
     {
@@ -50069,6 +50069,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-wrapper--gina, own login copy)",
      "at": "2026-11-07T15:12:07.428Z"
+    },
+    {
+     "text": "Built Nov 7 2026 on branch claude/console-android-wrapper (3 commits, not pushed per brief). apps/console-droid + plugin android-app + CI job console-droid. UI Review r-20261107-89356ccf (3 offline-card options). Android Java beyond the pure rules first compiles in CI. Report _claude/builds/reports/console-android-app-tabs.md.",
+     "at": "2026-11-07T15:38:21.042Z"
     }
    ],
    "approvals": [],

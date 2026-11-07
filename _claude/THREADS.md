@@ -748,9 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 02:18 UTC · `ui-asset-designer` s5 done (current) · orchestrator
-- 2026-11-07 02:19 UTC · `ui-asset-designer` PR #376 (current) · builds-live
-- 2026-11-07 02:19 UTC · `ui-asset-designer` s6 done (current) · orchestrator
 - 2026-11-07 02:52 UTC · `icon-browser-manager` added (10 steps) (current) · orchestrator
 - 2026-11-07 02:52 UTC · `icon-browser-manager` → running (current) · orchestrator
 - 2026-11-07 02:52 UTC · `icon-browser-manager` branch claude/icon-browser-manager (current) · orchestrator
@@ -1148,6 +1145,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 15:34 UTC · `console-android-app-tabs` s5 done (all) · orchestrator
 - 2026-11-07 15:34 UTC · `console-android-app-tabs` s6 done (all) · orchestrator
 - 2026-11-07 15:38 UTC · `console-android-app-tabs` s7 done, → complete (all) · orchestrator
+- 2026-11-07 15:38 UTC · `console-android-app-tabs` note (all) · orchestrator
+- 2026-11-07 15:38 UTC · `console-android-app-tabs` branch claude/console-android-wrapper (all) · builds-live
+- 2026-11-07 15:38 UTC · `console-android-app-tabs` → built (all) · orchestrator
 
 ## Token passes (log)
 
