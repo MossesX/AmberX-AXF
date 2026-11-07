@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1410,
- "updatedAt": "2026-11-07T21:33:55.462Z",
+ "rev": 1411,
+ "updatedAt": "2026-11-07T21:34:09.181Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107022,7 +107022,7 @@
    "branch": "claude/glossary-index-demos-r2",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T21:33:54.343Z",
+   "updatedAt": "2026-11-07T21:33:55.198Z",
    "builtAt": "",
    "notes": [
     {
@@ -107048,6 +107048,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-07T21:33:54.343Z"
+    },
+    {
+     "text": "s2 done (Fable): demonstration@1, book@1, clip@1, docs@1 in framework/core/engines/demo-rules.mjs (validators in core + build engine, fixture spec/fixtures/demo.json, check-demo.mts 243 checks, starters, schemas, PORTING gap); Demonstration Designer view + player window + Generate demonstration on every glossary entry; demos.mjs store/CLI + server routes + 14 commands.",
+     "at": "2026-11-07T21:33:55.198Z"
     }
    ],
    "approvals": [
@@ -107218,7 +107222,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
