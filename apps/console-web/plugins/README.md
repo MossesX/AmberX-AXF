@@ -182,6 +182,10 @@ paths string literals so they can be read. `noReads: "<why>"` only when the plug
 lifecycle check and CI fail a plugin whose route or action can't be exposed, whose declaration names something gone, that
 skips without a reason, has no reads, or has no block: `node framework/cli/plugin-commands.mjs check [folder]`.
 
+## Settings sections (Nov 7 2026) — every setting sits in a collapsible section
+
+Every entry in `settings` and `settingsPanels` names its `section` (`general`, `look`, `behaviour`, `alerts`, `voice`, `ai`, `access`, `connections`, `data`, `status`, `tools`, `advanced`, `plugin`). The lifecycle panel is `plugin`. `<Section>` and `<Container title>` inside a panel fold by themselves. `node framework/cli/check-settings-sections.mjs` fails CI on an untagged one. Details: `framework/libs/settings/README.md`.
+
 ## Menus and UI editors
 
 - **Menu links are contributions, not asset edits:** `contextMenu: [{ id, target: 'default', items }]` on the `AxfWebLibrary` adds items to a context-menu target (`default` = right-click / long-press anywhere). They leave with the plugin (disabled or removed), so no asset ever names a plugin.

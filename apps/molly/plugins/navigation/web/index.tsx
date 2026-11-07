@@ -67,7 +67,7 @@ export const plugin: AxfWebLibrary = {
   dialogs: { [DIALOG]: { title: 'Navigation settings', icon: 'menu', render: () => <NavSettingsDialog /> } },
   // Settings → Plugins → Navigation (a sub-tab of Plugins, like every plugin's), one panel per group
   settingsTabs: [{ id: TAB, label: 'Navigation', icon: 'menu', order: 35, parent: 'plugins', description: 'The navigation menu: sub menus, look, animation and behaviour.' }],
-  settingsPanels: NAV_STYLE_GROUP_IDS.map((g, i) => ({ id: `navigation.${g}`, tab: TAB, title: NAV_STYLE_GROUP_TITLES[g], icon: NAV_STYLE_GROUP_ICONS[g], order: 10 + i * 10, render: () => <GroupPanel group={g} /> })),
+  settingsPanels: NAV_STYLE_GROUP_IDS.map((g, i) => ({ id: `navigation.${g}`, section: 'look', tab: TAB, title: NAV_STYLE_GROUP_TITLES[g], icon: NAV_STYLE_GROUP_ICONS[g], order: 10 + i * 10, render: () => <GroupPanel group={g} /> })),
   appMenu: [
     { id: 'navigation.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 25, items: [
       { id: 'navigation.collapse', label: 'Collapse navigation', icon: 'menu', action: 'navigation.collapse', checked: `setting:${NAV_COLLAPSED_KEY}` },

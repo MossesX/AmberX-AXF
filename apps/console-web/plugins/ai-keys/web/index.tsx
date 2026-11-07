@@ -189,7 +189,7 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: 'ai-keys', label: 'AI keys', icon: 'key', order: 7, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'ai-keys.open', tab: 'ai-keys', title: 'AI keys', icon: 'key', order: 5, render: () => <OpenPanel /> },
-    { id: 'ai-keys.lifecycle', tab: 'ai-keys', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'ai-keys.open', section: 'general', tab: 'ai-keys', title: 'AI keys', icon: 'key', order: 5, render: () => <OpenPanel /> },
+    { id: 'ai-keys.lifecycle', section: 'plugin', tab: 'ai-keys', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

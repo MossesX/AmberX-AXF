@@ -46,6 +46,8 @@ export interface SettingsGroup {
   order?: number;
   description?: string;
   tab?: string;
+  /** the section it belongs to: a SETTINGS_SECTIONS id (core/engines/settingsui.ts) or one the settings asset adds */
+  section?: string;
   settings: SettingSpec[];
 }
 
@@ -73,6 +75,8 @@ export interface SettingsPanel {
   title: string;
   icon?: string;
   order?: number;
+  /** the section it belongs to, same as SettingsGroup.section */
+  section?: string;
   module?: string;
   render: () => unknown;
 }

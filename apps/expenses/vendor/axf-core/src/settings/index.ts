@@ -35,3 +35,5 @@ export {
 export type { SettingsGate } from "./gates";
 
 export { SettingsDialog } from "./SettingsDialog";
+
+export { SettingsFold, SettingsFoldTools, useSettingsFolds, type SettingsFolds } from "./SettingsFold";

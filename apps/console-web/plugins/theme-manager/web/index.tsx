@@ -47,7 +47,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }] },
   settingsTabs: [{ id: 'theme-manager', label: 'Themes', icon: 'palette', parent: 'plugins', order: 44, description: 'Roll colour, style and layout themes (or any themeable part), pick which tokens change, save rolls as assets.' }],
   settingsPanels: [
-    { id: 'theme-manager.main', tab: 'theme-manager', title: 'Theme manager', icon: 'palette', order: 10, render: () => <ThemeManager /> },
-    { id: 'theme-manager.lifecycle', tab: 'theme-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'theme-manager.main', section: 'general', tab: 'theme-manager', title: 'Theme manager', icon: 'palette', order: 10, render: () => <ThemeManager /> },
+    { id: 'theme-manager.lifecycle', section: 'plugin', tab: 'theme-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

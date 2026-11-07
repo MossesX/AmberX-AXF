@@ -265,14 +265,14 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'whats-shipped', label: "What's new", icon: 'sparkles', parent: 'plugins', order: 48, description: 'The banner ticker of features merged to main.' }],
   settings: [{
-    id: 'whats-shipped.look', label: 'On the banner', icon: 'eye', tab: 'whats-shipped', order: 5,
+    id: 'whats-shipped.look', section: 'look', label: 'On the banner', icon: 'eye', tab: 'whats-shipped', order: 5,
     settings: [
       { key: KEYS.show, label: "Show What's new on the banner", kind: 'toggle', default: true, scope: 'device' },
       { key: KEYS.ticker, label: 'Step through the unread titles', kind: 'toggle', default: true, scope: 'device', description: 'Off: the banner shows only the newest one.' },
     ],
   }],
   settingsPanels: [
-    { id: 'whats-shipped.filter', tab: 'whats-shipped', title: 'What it shows', icon: 'search', order: 10, render: () => <FilterPanel /> },
-    { id: 'whats-shipped.lifecycle', tab: 'whats-shipped', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'whats-shipped.filter', section: 'general', tab: 'whats-shipped', title: 'What it shows', icon: 'search', order: 10, render: () => <FilterPanel /> },
+    { id: 'whats-shipped.lifecycle', section: 'plugin', tab: 'whats-shipped', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

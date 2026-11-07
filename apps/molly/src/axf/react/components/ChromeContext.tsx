@@ -30,6 +30,7 @@ import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Segmented, Slider } from './Controls';
 import { ChoiceGrid, Note, Section, SelectField, Switch, TextField } from './Forms';
+import { FoldScope } from './FoldPanel';
 import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
@@ -296,9 +297,10 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
   const body = (id: string): ReactNode => {
     if (id === 'look' || id === 'behaviour') {
       const fs = fields(id);
+      const rows = fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>;
       return (
         <div className="fx-stack">
-          {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
+          {ui.layout === 'list' || !fs.length ? rows : <Section title={tabs.find((t) => t.id === id)?.label ?? id}>{rows}</Section>}
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
           {id === 'behaviour' && type === 'toolbar' && <Note tone="info">Tap-to-confirm on touch and this toolbar's own override live in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
@@ -321,14 +323,16 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
   );
   const search = ui.search ? <TextField label="Find a setting" value={query} onChange={setQuery} placeholder="style, position, badges…" /> : null;
   if (!res) return <div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
-  if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
+  if (ui.layout === 'list') return <FoldScope storageKey={`chrome-settings:${type}`}><div className="fx-stack fx-stack--lg">{header}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div></FoldScope>;
   return (
+    <FoldScope storageKey={`chrome-settings:${type}`}>
     <div className="fx-stack">
       {header}{search}
       <TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow} asset={ui.layout === 'tabs-side' ? 'side-dock' : undefined}>
         <div className="fx-stack" style={{ paddingBlockStart: 'var(--fx-dens-gap-md)' }}>{body(shownTab)}</div>
       </TabGroup>
     </div>
+    </FoldScope>
   );
 }
 

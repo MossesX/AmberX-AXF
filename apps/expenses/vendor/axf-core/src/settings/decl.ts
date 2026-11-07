@@ -54,6 +54,8 @@ export interface SettingRow {
   readonly hint: string;
   readonly kind: SettingKind;
   readonly defaultValue: SettingValue;
+  /** The collapsible section this row sits in (its title). Unset = General. */
+  readonly section?: string;
   /** `number` only. Both required when either appears — an unbounded dial is
    *  a typo amplifier, not a freedom. */
   readonly min?: number;

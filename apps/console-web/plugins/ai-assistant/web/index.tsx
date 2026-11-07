@@ -67,19 +67,19 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', view: 'ai-assistant' }] },
   settingsTabs: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', order: 30, description: 'Providers, defaults, personality, prompts and usage for the AI assistant. Keys stay on the console server.' }],
   settings: [
-    { id: 'ai-assistant.titlebar', label: 'Title bar', icon: 'shield', tab: 'ai-assistant', order: 6, settings: [
+    { id: 'ai-assistant.titlebar', section: 'look', label: 'Title bar', icon: 'shield', tab: 'ai-assistant', order: 6, settings: [
       { key: APPROVALS_BADGE_KEY, label: 'Show axHub approvals in the chat title bar', kind: 'toggle', default: true, description: 'A count while axHub has calls waiting (nothing when none). Click it to Approve / Decline on the hub page, or Deny a held command before its countdown ends.' },
     ] },
   ],
   settingsPanels: [
-    { id: 'ai-assistant.quick', tab: 'ai-assistant', title: 'Open the assistant', icon: 'sparkles', order: 5, render: () => <QuickOpen /> },
-    { id: 'ai-assistant.wizard', tab: 'ai-assistant', title: 'Setup wizard', icon: 'rocket', order: 10, render: () => <WizardIntro /> },
-    { id: 'ai-assistant.providers', tab: 'ai-assistant', title: 'Providers', icon: 'cloud', order: 20, render: () => <ProvidersPanel /> },
-    { id: 'ai-assistant.behavior', tab: 'ai-assistant', title: 'Behaviour & defaults', icon: 'sliders', order: 30, render: () => <BehaviorPanel /> },
-    { id: 'ai-assistant.prompts', tab: 'ai-assistant', title: 'Prompt library', icon: 'list', order: 40, render: () => <PromptsPanel /> },
-    { id: 'ai-assistant.sessions', tab: 'ai-assistant', title: 'Live sessions', icon: 'cloud', order: 45, render: () => <SessionsPanel /> },
-    { id: 'ai-assistant.usage', tab: 'ai-assistant', title: 'Usage', icon: 'chart', order: 50, render: () => <UsagePanel /> },
-    { id: 'ai-assistant.lifecycle', tab: 'ai-assistant', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'ai-assistant.quick', section: 'general', tab: 'ai-assistant', title: 'Open the assistant', icon: 'sparkles', order: 5, render: () => <QuickOpen /> },
+    { id: 'ai-assistant.wizard', section: 'ai', tab: 'ai-assistant', title: 'Setup wizard', icon: 'rocket', order: 10, render: () => <WizardIntro /> },
+    { id: 'ai-assistant.providers', section: 'ai', tab: 'ai-assistant', title: 'Providers', icon: 'cloud', order: 20, render: () => <ProvidersPanel /> },
+    { id: 'ai-assistant.behavior', section: 'behaviour', tab: 'ai-assistant', title: 'Behaviour & defaults', icon: 'sliders', order: 30, render: () => <BehaviorPanel /> },
+    { id: 'ai-assistant.prompts', section: 'ai', tab: 'ai-assistant', title: 'Prompt library', icon: 'list', order: 40, render: () => <PromptsPanel /> },
+    { id: 'ai-assistant.sessions', section: 'status', tab: 'ai-assistant', title: 'Live sessions', icon: 'cloud', order: 45, render: () => <SessionsPanel /> },
+    { id: 'ai-assistant.usage', section: 'status', tab: 'ai-assistant', title: 'Usage', icon: 'chart', order: 50, render: () => <UsagePanel /> },
+    { id: 'ai-assistant.lifecycle', section: 'plugin', tab: 'ai-assistant', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
 

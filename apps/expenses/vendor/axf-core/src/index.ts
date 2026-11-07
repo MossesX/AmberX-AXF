@@ -269,6 +269,9 @@ export {
   // design: hiding a row is not a security boundary.
   SettingsGateRegistry,
   settingsGates,
+  SettingsFold,
+  SettingsFoldTools,
+  useSettingsFolds,
   registerSettingsGate,
   useSettingsGates
 } from "./settings";

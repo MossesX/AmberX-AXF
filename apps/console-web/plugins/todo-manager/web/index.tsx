@@ -50,7 +50,7 @@ export const plugin: AxfWebLibrary = {
   }],
   settingsTabs: [{ id: 'todo-manager', label: 'Todo manager', icon: 'list', order: 90, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'todo-manager.types', tab: 'todo-manager', title: 'Kinds of entries', icon: 'sliders', order: 10, render: () => <TypesPanel /> },
-    { id: 'todo-manager.lifecycle', tab: 'todo-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'todo-manager.types', section: 'general', tab: 'todo-manager', title: 'Kinds of entries', icon: 'sliders', order: 10, render: () => <TypesPanel /> },
+    { id: 'todo-manager.lifecycle', section: 'plugin', tab: 'todo-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

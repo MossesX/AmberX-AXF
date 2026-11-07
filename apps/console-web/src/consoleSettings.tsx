@@ -93,8 +93,8 @@ export const consoleSettings: AxfWebLibrary = {
   label: 'Console settings',
   version: '0.1.0',
   settingsPanels: [
-    { id: 'console.token', tab: 'account', title: 'Console token', icon: 'lock', order: 30, render: () => <TokenPanel /> },
-    { id: 'console.backend', tab: 'connections', title: 'Console backend', icon: 'terminal', order: 10, render: () => <BackendPanel /> },
-    { id: 'console.plugins', tab: 'plugins', title: 'Console plugins', icon: 'package', order: 10, render: () => <PluginsPanel /> },
+    { id: 'console.token', section: 'access', tab: 'account', title: 'Console token', icon: 'lock', order: 30, render: () => <TokenPanel /> },
+    { id: 'console.backend', section: 'connections', tab: 'connections', title: 'Console backend', icon: 'terminal', order: 10, render: () => <BackendPanel /> },
+    { id: 'console.plugins', section: 'general', tab: 'plugins', title: 'Console plugins', icon: 'package', order: 10, render: () => <PluginsPanel /> },
   ],
 };

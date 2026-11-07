@@ -178,7 +178,7 @@ export const library: AxfWebLibrary = {
   nav: { label: 'Work', items: [{ id: 'web', label: 'Web', icon: 'monitor', view: 'web' }] },
   settingsTabs: [{ id: 'web', label: 'Web', icon: 'monitor', order: 60, parent: 'plugins' }],
   settings: [{
-    id: 'amberx.web', label: 'Web', icon: 'monitor', tab: 'web', settings: [
+    id: 'amberx.web', section: 'general', label: 'Web', icon: 'monitor', tab: 'web', settings: [
       { key: K.home, label: 'Open on start', kind: 'text', default: '', description: 'An address to open in a tab when AmberX starts (empty = none).' },
     ],
   }],

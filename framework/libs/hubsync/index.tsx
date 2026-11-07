@@ -118,9 +118,9 @@ export const hubSyncLibrary: AxfWebLibrary = {
   provides: ['axf.hubsync'],
   settingsTabs: [{ id: 'hubsync', label: 'axHub sync', icon: 'cloud', parent: 'plugins', order: 15, description: 'Keep this app\'s look, settings and data on axHub so every app and device matches.' }],
   settingsPanels: [
-    { id: 'hubsync.status', tab: 'hubsync', title: 'Now', icon: 'activity', order: 5, render: () => <StatusPanel /> },
-    { id: 'hubsync.connection', tab: 'hubsync', title: 'Connect to axHub', icon: 'cloud', order: 10, render: () => <ConnectionPanel /> },
-    { id: 'hubsync.what', tab: 'hubsync', title: 'What syncs', icon: 'sliders', order: 20, render: () => <WhatPanel /> },
+    { id: 'hubsync.status', section: 'status', tab: 'hubsync', title: 'Now', icon: 'activity', order: 5, render: () => <StatusPanel /> },
+    { id: 'hubsync.connection', section: 'connections', tab: 'hubsync', title: 'Connect to axHub', icon: 'cloud', order: 10, render: () => <ConnectionPanel /> },
+    { id: 'hubsync.what', section: 'connections', tab: 'hubsync', title: 'What syncs', icon: 'sliders', order: 20, render: () => <WhatPanel /> },
   ],
   register(rt) {
     const m = rt.manifest as { libraries?: Record<string, unknown> };

@@ -159,9 +159,9 @@ export const plugin: AxfWebLibrary = {
   slots: { [FRAME_BANNERS_SLOT]: [{ id: 'molly-banners.strip', order: 0, render: () => <Strip /> }] },
   settingsTabs: [{ id: TAB, label: 'Banners', icon: 'bell', order: 30, parent: 'plugins', description: 'The Dev Console’s live banners at the top of Molly: show them, and pick which.' }],
   settingsPanels: [
-    { id: 'molly-banners.show', tab: TAB, title: 'Banner strip', icon: 'bell', order: 10, render: () => <ShowPanel /> },
-    { id: 'molly-banners.each', tab: TAB, title: 'Each banner', icon: 'eye', order: 20, render: () => <EachPanel /> },
-    { id: 'molly-banners.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
+    { id: 'molly-banners.show', section: 'look', tab: TAB, title: 'Banner strip', icon: 'bell', order: 10, render: () => <ShowPanel /> },
+    { id: 'molly-banners.each', section: 'general', tab: TAB, title: 'Each banner', icon: 'eye', order: 20, render: () => <EachPanel /> },
+    { id: 'molly-banners.lifecycle', section: 'plugin', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
   ],
   appMenu: [
     { id: 'molly-banners.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 30, items: [

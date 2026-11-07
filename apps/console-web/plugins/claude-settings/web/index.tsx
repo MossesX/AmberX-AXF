@@ -196,6 +196,9 @@ const GROUP_PANELS: { id: string; title: string; icon: string }[] = [
   { id: 'memory', title: 'Memory and notes', icon: 'file' },
 ];
 
+/** Which section each group sits in (build settings-sections-everywhere). */
+const GROUP_SECTION: Record<string, string> = { 'no-wait': 'access', follow: 'behaviour', builds: 'general', verification: 'behaviour', talking: 'voice', notifications: 'alerts', memory: 'data' };
+
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.claude-settings',
   label: 'Claude',
@@ -210,7 +213,7 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> }],
   settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, talking, notifications, memory.' }],
   settingsPanels: [
-    ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),
-    { id: 'claude-settings.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, section: GROUP_SECTION[g.id] ?? 'general', tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),
+    { id: 'claude-settings.lifecycle', section: 'plugin', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

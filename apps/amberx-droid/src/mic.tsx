@@ -89,7 +89,7 @@ export const micLibrary: AxfWebLibrary = {
   id: MIC_ORIGIN,
   label: 'Mic off',
   version: '0.1.0',
-  settingsPanels: [{ id: 'amberx.mic.panel', tab: 'sound', title: 'Mic off', icon: 'mic', order: -10, render: () => <MicSwitch /> }],
+  settingsPanels: [{ id: 'amberx.mic.panel', section: 'voice', tab: 'sound', title: 'Mic off', icon: 'mic', order: -10, render: () => <MicSwitch /> }],
   appMenu: [{ id: 'amberx.mic', menu: 'axhub', items: [{ id: 'mic.off', label: 'Mic off (stop all listening)', icon: 'mic', action: MIC_ACTIONS.toggle, checked: `counter:${MIC_OFF}` }] }],
   help: {
     entries: [

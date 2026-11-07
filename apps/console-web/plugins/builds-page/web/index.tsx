@@ -55,14 +55,14 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: 'builds', label: 'Builds', icon: 'list', view: 'builds' }] }, // literal ids: scripts/menu-reach.mts reads them (= VIEW)
   settingsTabs: [{ id: FOLDER, label: 'Builds', icon: 'list', order: 88, parent: 'plugins', description: 'The one Builds page: views, selection, the banner number.' }],
   settings: [{
-    id: 'builds.look', label: 'Builds page', icon: 'list', tab: FOLDER, order: 5,
+    id: 'builds.look', section: 'look', label: 'Builds page', icon: 'list', tab: FOLDER, order: 5,
     settings: [
       { key: KEYS.banner, label: 'Show the build profile\'s percentage on the banner', kind: 'toggle', default: true, scope: 'device' },
       { key: KEYS.select, label: 'Steps view: also show a selection control on every row', kind: 'choice', default: 'off', options: [{ value: 'off', label: 'No (Ctrl+click / long-press)' }, { value: 'checkboxes', label: 'Checkboxes' }, { value: 'switches', label: 'Switches' }] },
     ],
   }],
   settingsPanels: [
-    { id: 'builds.store', tab: FOLDER, title: 'Builds store', icon: 'box', order: 10, render: () => <StorePanel /> },
-    { id: 'builds.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'builds.store', section: 'data', tab: FOLDER, title: 'Builds store', icon: 'box', order: 10, render: () => <StorePanel /> },
+    { id: 'builds.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

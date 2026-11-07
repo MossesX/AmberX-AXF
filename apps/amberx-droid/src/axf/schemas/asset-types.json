@@ -1130,7 +1130,9 @@
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
         "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
         "levelOf": "tab, group, panel or setting id → its level",
-        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)"
+        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)",
+        "sections": "section overrides and new sections: [{ id, title?, icon?, order?, collapsed?, tab?, members?: [group or panel ids] }]; ids of the standard set (engines/settingsui.ts SETTINGS_SECTIONS) override it, others add one. Fold state is per device, never here",
+        "sectionTools": "false = no Expand all / Collapse all bar over a tab's sections (default true)"
       },
       "required": [
         "layout",

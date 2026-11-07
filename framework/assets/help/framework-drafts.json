@@ -264,6 +264,20 @@
         "text": "Opens the banner settings.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "expand-all",
+        "title": "Expand all",
+        "text": "Opens every section on this screen. What you open or close is remembered on this device.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "collapse-all",
+        "title": "Collapse all",
+        "text": "Folds every section down to its heading, so you can see the outline. Remembered on this device.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

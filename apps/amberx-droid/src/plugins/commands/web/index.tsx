@@ -496,7 +496,7 @@ export const library: AxfWebLibrary = {
   dialogs: { [DIALOG]: { title: 'Voice command center', icon: 'mic', render: (p) => <CommandCenter start={str(p.tab)} /> } },
   settingsTabs: [{ id: 'commands', label: 'Command center', icon: 'mic', order: 22, parent: 'plugins', description: 'Notes, tasks, developer and AI-snippet voice commands, chains and wizards.' }],
   settings: [
-    { id: 'amberx.commands', label: 'Listening', icon: 'mic', tab: 'commands', order: 10, settings: [
+    { id: 'amberx.commands', section: 'general', label: 'Listening', icon: 'mic', tab: 'commands', order: 10, settings: [
       { key: K.listen, label: 'Use the command center for what you say', kind: 'toggle', default: true },
       { key: K.sure, label: 'How sure before a command beats a note sentence (10 = one word, 20 = two)', kind: 'number', default: 20, min: 0, max: 60, step: 5 },
     ] },

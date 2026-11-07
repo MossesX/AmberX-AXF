@@ -29,7 +29,7 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'approvals', label: 'Terminal', icon: 'terminal', order: 20, parent: 'plugins' }],
   settings: [
     {
-      id: 'amberx.approvals.terminal', label: 'Terminal', icon: 'terminal', tab: 'approvals', order: 2,
+      id: 'amberx.approvals.terminal', section: 'behaviour', label: 'Terminal', icon: 'terminal', tab: 'approvals', order: 2,
       description: 'Notices, the alarm and Deny / Approve / Shelve are in Settings → Plugins → Approvals banner.',
       settings: [
         { key: OPEN_TERMINAL, label: 'Open a terminal tab when a timer starts', kind: 'toggle', default: false, description: 'The tab shows the command, the countdown, Deny / Approve / Shelve, then the output when it runs.' },

@@ -632,24 +632,24 @@ export function createAshesLibrary(opts: AshesOptions = {}): AxfWebLibrary {
     appMenu: [{ id: 'ashes.menu', menu: 'view', menuLabel: 'View', items: [{ id: 'ashes', label: 'AshesUI', icon: 'eye', action: 'ashes.toggle', checked: `setting:${KEY.on}` }, { id: 'ashes-inspector', label: 'AshesUI inspector', icon: 'search', action: 'ashes.inspect' }] }],
     settingsTabs: [{ id: 'ashes', label: 'AshesUI', icon: 'eye', order: 7, parent: 'plugins' }],
     settings: [
-      { id: 'ashes.tooltip', label: 'Tooltip', icon: 'info', tab: 'ashes', order: 10, settings: [
+      { id: 'ashes.tooltip', section: 'look', label: 'Tooltip', icon: 'info', tab: 'ashes', order: 10, settings: [
         { key: KEY.on, label: 'AshesUI on', kind: 'toggle', default: false },
         { key: KEY.fields, label: 'Show in the tooltip', kind: 'multi_choice', default: [...TOOLTIP_FIELDS], options: TOOLTIP_FIELDS.map((f) => ({ value: f, label: f[0]!.toUpperCase() + f.slice(1) })) },
         { key: KEY.offset, label: 'Distance from the pointer', kind: 'slider', default: 16, min: 4, max: 48, step: 2 },
         { key: KEY.delay, label: 'Wait before updating (ms)', kind: 'slider', default: 0, min: 0, max: 400, step: 20 },
         { key: KEY.touch, label: 'Follow touches too (phones)', kind: 'toggle', default: true },
       ] },
-      { id: 'ashes.highlight', label: 'Highlight', icon: 'layers', tab: 'ashes', order: 20, settings: [
+      { id: 'ashes.highlight', section: 'look', label: 'Highlight', icon: 'layers', tab: 'ashes', order: 20, settings: [
         { key: KEY.box, label: 'Outline the element', kind: 'toggle', default: true },
         { key: KEY.boxModel, label: 'Shade margin and padding', kind: 'toggle', default: true },
       ] },
-      { id: 'ashes.inspector', label: 'Inspector', icon: 'search', tab: 'ashes', order: 30, settings: [
+      { id: 'ashes.inspector', section: 'advanced', label: 'Inspector', icon: 'search', tab: 'ashes', order: 30, settings: [
         { key: KEY.maxNodes, label: 'Most elements in the tree', kind: 'number', default: 3000, min: 200, max: 20000, step: 100 },
         { key: KEY.hidden, label: 'Include elements off screen', kind: 'toggle', default: false },
         { key: KEY.tokens, label: 'Read theme tokens', kind: 'toggle', default: true },
       ] },
     ],
-    settingsPanels: [{ id: 'ashes.overview', tab: 'ashes', title: 'AshesUI', icon: 'eye', order: 5, render: () => <OverviewPanel /> }],
+    settingsPanels: [{ id: 'ashes.overview', section: 'general', tab: 'ashes', title: 'AshesUI', icon: 'eye', order: 5, render: () => <OverviewPanel /> }],
   };
 }
 

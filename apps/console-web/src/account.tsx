@@ -163,7 +163,7 @@ export const accountLibrary: AxfWebLibrary = {
   label: 'Accounts',
   version: '1.0.0',
   settingsPanels: [
-    { id: 'console.account.me', tab: 'account', title: 'Your account', icon: 'user', order: 1, render: () => <AccountPanel /> },
-    { id: 'console.account.manage', tab: 'account', title: 'Account management', icon: 'shield', order: 2, render: () => <ManagementPanel /> },
+    { id: 'console.account.me', section: 'general', tab: 'account', title: 'Your account', icon: 'user', order: 1, render: () => <AccountPanel /> },
+    { id: 'console.account.manage', section: 'general', tab: 'account', title: 'Account management', icon: 'shield', order: 2, render: () => <ManagementPanel /> },
   ],
 };

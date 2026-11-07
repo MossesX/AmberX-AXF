@@ -161,13 +161,13 @@ export const soundLibrary: AxfWebLibrary = {
   settingsTabs: [{ id: 'sound', label: 'Sound and microphone', icon: 'bell', order: 25 }],
   settings: [
     {
-      id: 'amberx.sound', label: 'Sound', icon: 'bell', tab: 'sound', order: 10, settings: [
+      id: 'amberx.sound', section: 'voice', label: 'Sound', icon: 'bell', tab: 'sound', order: 10, settings: [
         { key: K.quiet, label: 'Quiet', kind: 'toggle', default: false, description: 'No speech, tones or alarms on any device until it is switched off. Notices still show, silently.' },
       ],
     },
   ],
   settingsPanels: [
-    { id: 'amberx.sound.panel', tab: 'sound', title: 'Who speaks, rings and listens', icon: 'mic', order: 0, render: () => (rtRef ? <SoundPanel rt={rtRef} /> : null) },
+    { id: 'amberx.sound.panel', section: 'voice', tab: 'sound', title: 'Who speaks, rings and listens', icon: 'mic', order: 0, render: () => (rtRef ? <SoundPanel rt={rtRef} /> : null) },
   ],
   appMenu: [{ id: 'amberx.sound', menu: 'axhub', items: [{ id: 'sound.quiet', label: 'Quiet (stop all sound)', icon: 'bell', action: 'amberx.quiet.toggle' }] }],
   register(rt) {

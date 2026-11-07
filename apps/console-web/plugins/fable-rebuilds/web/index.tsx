@@ -73,7 +73,7 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'fable-rebuilds', label: 'Fable rebuilds', icon: 'sparkles', parent: 'plugins', order: 44, description: 'Builds parked for Fable: what they replace, briefs, reports and screenshots.' }],
   settingsPanels: [
-    { id: 'fable-rebuilds.about', tab: 'fable-rebuilds', title: 'Fable rebuilds', icon: 'sparkles', order: 10, render: () => <p className="fx-small" style={{ margin: 0 }}>Open it from the nav (Builds → Fable rebuilds), the default context menu, a Plugin Manager row, a Plan feature or a Pending builds row. Parking a rebuild adds a Fable item to the pending list.</p> },
-    { id: 'fable-rebuilds.lifecycle', tab: 'fable-rebuilds', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'fable-rebuilds.about', section: 'general', tab: 'fable-rebuilds', title: 'Fable rebuilds', icon: 'sparkles', order: 10, render: () => <p className="fx-small" style={{ margin: 0 }}>Open it from the nav (Builds → Fable rebuilds), the default context menu, a Plugin Manager row, a Plan feature or a Pending builds row. Parking a rebuild adds a Fable item to the pending list.</p> },
+    { id: 'fable-rebuilds.lifecycle', section: 'plugin', tab: 'fable-rebuilds', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

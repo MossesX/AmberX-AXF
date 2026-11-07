@@ -70,6 +70,6 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: lib.settingsTabs?.map((t) => ({ ...t, parent: 'plugins' })),
   settingsPanels: [
     ...(lib.settingsPanels ?? []),
-    { id: 'mcp-client.lifecycle', tab: 'mcp', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'mcp-client.lifecycle', section: 'plugin', tab: 'mcp', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

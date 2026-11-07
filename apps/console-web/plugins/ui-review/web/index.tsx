@@ -39,7 +39,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
   settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Every UI a build makes, waiting for your approval.' }],
   settings: [{
-    id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
+    id: 'ui-review.prefs', section: 'general', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.view, label: 'View', kind: 'choice', default: 'grid', options: VIEWS.map((v) => ({ value: v.id, label: v.label })) },
       { key: KEYS.sort, label: 'Order', kind: 'choice', default: 'waiting', options: core.SORTS.map((s) => ({ value: s.id, label: s.label })) },
@@ -49,6 +49,6 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
-    { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'ui-review.look', section: 'look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+    { id: 'ui-review.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

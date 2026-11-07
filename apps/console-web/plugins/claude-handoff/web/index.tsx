@@ -63,7 +63,7 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'claude-handoff', label: 'Claude handoff reminder', icon: 'rocket', settingsTab: 'claude-handoff', order: 4.9, render: () => <HandoffBanner /> }],
   settingsTabs: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', parent: 'plugins', order: 46, description: 'The handoff kit for a new Claude account and its reminder.' }],
   settingsPanels: [
-    { id: 'claude-handoff.prefs', tab: 'claude-handoff', title: 'Kit and reminder', icon: 'rocket', order: 10, render: () => <HandoffSettings /> },
-    { id: 'claude-handoff.lifecycle', tab: 'claude-handoff', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'claude-handoff.prefs', section: 'general', tab: 'claude-handoff', title: 'Kit and reminder', icon: 'rocket', order: 10, render: () => <HandoffSettings /> },
+    { id: 'claude-handoff.lifecycle', section: 'plugin', tab: 'claude-handoff', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

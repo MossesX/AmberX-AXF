@@ -229,7 +229,7 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: 'build-profiles', label: 'Build profiles', icon: 'layers', order: 7, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'build-profiles.main', tab: 'build-profiles', title: 'Build profiles', icon: 'layers', order: 5, render: () => <SettingsPanel /> },
-    { id: 'build-profiles.lifecycle', tab: 'build-profiles', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'build-profiles.main', section: 'general', tab: 'build-profiles', title: 'Build profiles', icon: 'layers', order: 5, render: () => <SettingsPanel /> },
+    { id: 'build-profiles.lifecycle', section: 'plugin', tab: 'build-profiles', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

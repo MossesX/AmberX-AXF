@@ -14,6 +14,6 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   settingsPanels: [
     ...(hubSyncLibrary.settingsPanels ?? []),
-    { id: 'hubsync.lifecycle', tab: 'hubsync', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder="hub-sync" /> },
+    { id: 'hubsync.lifecycle', section: 'plugin', tab: 'hubsync', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder="hub-sync" /> },
   ],
 };

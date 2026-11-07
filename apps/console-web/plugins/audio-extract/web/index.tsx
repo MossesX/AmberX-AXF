@@ -341,7 +341,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'audio-extract', label: 'Audio Extract', icon: 'download', order: 40, parent: 'plugins', description: 'Format, where files go, watching for new screen recordings, and the screen recorder.' }],
   settings: [
     {
-      id: 'audio-extract.extract', label: 'Extract', icon: 'download', tab: 'audio-extract', settings: [
+      id: 'audio-extract.extract', section: 'general', label: 'Extract', icon: 'download', tab: 'audio-extract', settings: [
         { key: K.format, label: 'Format', kind: 'choice', default: 'm4a', options: FORMAT_OPTIONS, description: 'M4A copies the original AAC audio out with no re-encode. WAV decodes it. No MP3: Android has no MP3 encoder built in.' },
         { key: K.folder, label: 'Output folder (inside Music)', kind: 'text', default: 'AmberX Audio' },
         { key: K.watch, label: 'Watch for new screen recordings', kind: 'toggle', default: false, description: 'While AmberX runs, a new video in Movies or DCIM → Screen recordings shows a “New screen recording: extract audio?” card.' },
@@ -350,7 +350,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'audio-extract.recorder', label: 'Screen recorder', icon: 'monitor', tab: 'audio-extract', settings: [
+      id: 'audio-extract.recorder', section: 'voice', label: 'Screen recorder', icon: 'monitor', tab: 'audio-extract', settings: [
         { key: K.resolution, label: 'Resolution', kind: 'choice', default: 'native', options: [{ value: 'native', label: 'Native' }, { value: '1080', label: '1080p' }, { value: '720', label: '720p' }] },
         { key: K.fps, label: 'Frame rate', kind: 'choice', default: '30', options: [{ value: '30', label: '30 fps' }, { value: '60', label: '60 fps' }] },
         { key: K.videoMbps, label: 'Video bitrate (Mbps)', kind: 'number', default: 8, min: 1, max: 40, step: 1 },
@@ -361,9 +361,9 @@ export const plugin: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
-    { id: 'audio-extract.folders', tab: 'audio-extract', title: 'Screen recordings folders', icon: 'folder', render: () => (controller().available() ? <Folders /> : null) },
-    { id: 'audio-extract.chip', tab: 'audio-extract', title: 'Floating chip', icon: 'monitor', render: () => <OverlayPanel /> },
-    { id: 'audio-extract.lifecycle', tab: 'audio-extract', title: 'Install & uninstall', icon: 'package', render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'audio-extract.folders', section: 'data', tab: 'audio-extract', title: 'Screen recordings folders', icon: 'folder', render: () => (controller().available() ? <Folders /> : null) },
+    { id: 'audio-extract.chip', section: 'look', tab: 'audio-extract', title: 'Floating chip', icon: 'monitor', render: () => <OverlayPanel /> },
+    { id: 'audio-extract.lifecycle', section: 'plugin', tab: 'audio-extract', title: 'Install & uninstall', icon: 'package', render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   appMenu,
   register(rt) {

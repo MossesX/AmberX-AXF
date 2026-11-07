@@ -104,30 +104,30 @@ export const library: AxfWebLibrary = {
   contextMenu: [{ id: 'amberx.companion', items: [{ id: 'companion.open', label: `Ask ${COMPANION.name}`, icon: 'sparkles', action: 'companion.open' }] }],
   settingsTabs: [{ id: 'companion', label: COMPANION.name, icon: 'sparkles', order: 12, parent: 'plugins', description: "Gizmo, your Claude companion: model, voice, how he talks, tools, chats and privacy." }],
   settings: [
-    { id: 'companion.brain', label: 'Model and personality', icon: 'sparkles', tab: 'companion', order: 1, settings: [
+    { id: 'companion.brain', section: 'ai', label: 'Model and personality', icon: 'sparkles', tab: 'companion', order: 1, settings: [
       { key: K.model, label: 'Model for new chats', kind: 'choice', default: '', options: [{ value: '', label: 'Default (Opus)' }, ...chatModels().map((m) => ({ value: m.key, label: m.label }))], description: 'Opus or Fable only (model policy): Sonnet and Haiku run as Opus. Each chat can switch in its title bar.' },
       { key: K.persona, label: 'Personality and instructions', kind: 'text', default: '', description: "Your own words added to every new chat's instructions (how Gizmo talks, what to remember about you)." },
     ] },
-    { id: 'companion.voice', label: 'Talk mode and voice', icon: 'mic', tab: 'companion', order: 10, settings: [
+    { id: 'companion.voice', section: 'voice', label: 'Talk mode and voice', icon: 'mic', tab: 'companion', order: 10, settings: [
       { key: K.speak, label: 'Speak replies in talk mode', kind: 'toggle', default: true },
       { key: K.speakAlways, label: 'Speak every reply (typed ones too)', kind: 'toggle', default: false },
       { key: K.handsFree, label: 'Talk mode keeps listening (hands-free)', kind: 'toggle', default: true, description: 'Off: talk mode waits for the push-to-talk button each turn.' },
       { key: K.interrupt, label: 'Stop talking when I talk over Gizmo', kind: 'toggle', default: true, description: 'Say "stop", "wait" or "hold on" while he talks and he stops at once.' },
       { key: K.rate, label: 'Speech speed', kind: 'slider', default: 1, min: 0.5, max: 2, step: 0.05 },
     ] },
-    { id: 'companion.tools', label: 'Tools, connectors and notifications', icon: 'zap', tab: 'companion', order: 20, settings: [
+    { id: 'companion.tools', section: 'behaviour', label: 'Tools, connectors and notifications', icon: 'zap', tab: 'companion', order: 20, settings: [
       { key: K.tools, label: 'Tools and connectors in new chats', kind: 'toggle', default: true, description: 'axHub services (GitHub, VPS, Hostinger, the console, AmberX…), the repo and the crew, with the same approvals and veto countdowns as everywhere else.' },
       { key: K.showTools, label: 'Show tool calls as cards', kind: 'toggle', default: true },
       { key: K.notify, label: 'Tell me when a reply finishes while I am elsewhere', kind: 'toggle', default: true },
     ] },
-    { id: 'companion.privacy', label: 'Chats, budget and privacy', icon: 'shield', tab: 'companion', order: 30, settings: [
+    { id: 'companion.privacy', section: 'access', label: 'Chats, budget and privacy', icon: 'shield', tab: 'companion', order: 30, settings: [
       { key: K.mirror, label: 'Keep a copy of my chats on axHub', kind: 'toggle', default: true },
       { key: K.dailyCapUsd, label: 'Daily cap (USD, 0 = none)', kind: 'number', default: 0, min: 0, max: 500, step: 1, description: "Estimated from today's assistant tokens at the model's price; sending stops at the cap." },
     ] },
   ],
   settingsPanels: [
-    { id: 'companion.voicepick', tab: 'companion', title: 'Voice', icon: 'mic', order: 15, render: () => <VoicePanel /> },
-    { id: 'companion.chats', tab: 'companion', title: 'Your chats', icon: 'file', order: 35, render: () => <ChatsPanel /> },
+    { id: 'companion.voicepick', section: 'voice', tab: 'companion', title: 'Voice', icon: 'mic', order: 15, render: () => <VoicePanel /> },
+    { id: 'companion.chats', section: 'data', tab: 'companion', title: 'Your chats', icon: 'file', order: 35, render: () => <ChatsPanel /> },
   ],
   register(rt) {
     rt.actions.register('companion.open', () => open(rt), { label: `Chat with ${COMPANION.name}` });

@@ -11,9 +11,11 @@ import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
+import { cardErrors } from './engines/card-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
+import { navStyleErrors } from './engines/navstyle-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -113,6 +115,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'dock-layout') errors.push(...dockLayoutErrors(data));
   // xlayout@1 (core/engines/xlayout.ts): apps, merge modes, IDE block, three toolbar slots
   if (raw.type === 'xlayout') errors.push(...xlayoutErrors(data));
+  // nav-style@1: ONE validator shared with control@1 and the build engine (core/engines/navstyle-rules.mjs)
+  if (raw.type === 'nav-style') errors.push(...navStyleErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
   // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)
@@ -121,6 +125,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...agentCardErrors(raw.type, data));
   // job-type@1: ONE validator shared with the build engine (core/engines/job-type-rules.mjs)
   errors.push(...jobTypeErrors(raw.type, data));
+  // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
+  errors.push(...cardErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);

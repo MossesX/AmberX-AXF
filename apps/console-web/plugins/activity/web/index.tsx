@@ -552,8 +552,8 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'activity', label: 'Activity', icon: 'refresh', settingsTab: 'activity', order: 4, render: () => <ActivityBanner /> }],
   settingsTabs: [{ id: 'activity', label: 'Activity', icon: 'refresh', order: 7, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'activity.settings', tab: 'activity', title: 'Activity banner', icon: 'refresh', order: 5, render: () => <SettingsPanel /> },
-    { id: 'activity.lifecycle', tab: 'activity', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'activity.settings', section: 'general', tab: 'activity', title: 'Activity banner', icon: 'refresh', order: 5, render: () => <SettingsPanel /> },
+    { id: 'activity.lifecycle', section: 'plugin', tab: 'activity', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
 void runtime;

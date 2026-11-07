@@ -707,7 +707,7 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'voice', label: 'Voice control', icon: 'mic', order: 20, parent: 'plugins' }],
   settings: [
     {
-      id: 'amberx.voice', label: 'Voice control', icon: 'mic', tab: 'voice', settings: [
+      id: 'amberx.voice', section: 'voice', label: 'Voice control', icon: 'mic', tab: 'voice', settings: [
         { key: K.handsFree, label: 'Listen hands-free', kind: 'toggle', default: true, description: 'Keep listening for the wake phrase on screen and in the background, without pressing Speak.' },
         { key: K.wake, label: 'Wake phrases (typed)', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated, the same list as Trigger phrases above. Say one, then the command.' },
         { key: K.mode, label: 'Hands-free mode', kind: 'choice', default: 'wake', options: [{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }], description: 'Android. Silent wake listens offline for the wake phrase (like ActiveX, no tone) and only then lets Google hear the command. Classic keeps Google listening the whole time (restarts every few seconds, which can beep).' },
@@ -716,9 +716,17 @@ export const library: AxfWebLibrary = {
         { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
         { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
         { key: K.beep, label: 'Listening tone', kind: 'choice', default: 'silence', options: [{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }], description: 'Android plays a tone each time it starts listening. Silenced mutes notification and system sounds while hands-free listens (approval alerts still get through). Still hear it? Pick "also media": music is muted too while AmberX listens, and comes back when it speaks.' },
+      ],
+    },
+    {
+      id: 'amberx.voice.recognition', section: 'voice', label: 'Recognition', icon: 'mic', tab: 'voice', settings: [
         { key: K.online, label: 'Best recognition (online)', kind: 'toggle', default: true, description: "Google's online speech model hears far better. Off = the phone's on-device model (works offline, misses more)." },
         { key: K.swears, label: 'Show swear words', kind: 'toggle', default: true, description: 'Write words as you say them instead of f***.' },
         { key: K.lang, label: 'Language', kind: 'text', default: 'en-US', description: 'For recognition and spoken replies, e.g. en-US, en-GB.' },
+      ],
+    },
+    {
+      id: 'amberx.voice.answers', section: 'behaviour', label: 'Answers and commands', icon: 'mic', tab: 'voice', settings: [
         { key: K.speak, label: 'Answer out loud', kind: 'toggle', default: true },
         { key: K.notes, label: 'Notes sentences', kind: 'toggle', default: true, description: 'Let sentences like “note in work: …” or “add a todo … by friday” go to the Notes plugin.' },
         { key: 'amberx.voice.manage', label: 'Voice commands', kind: 'link', target: 'voice-commands', description: 'Switch commands on or off, change their phrases, add your own.' },
@@ -727,7 +735,7 @@ export const library: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
-    { id: 'amberx.voice.phrases', tab: 'voice', title: 'Trigger phrases', icon: 'mic', order: 0, render: () => <PhraseListPanel /> },
+    { id: 'amberx.voice.phrases', section: 'voice', tab: 'voice', title: 'Trigger phrases', icon: 'mic', order: 0, render: () => <PhraseListPanel /> },
   ],
   contextMenu: [{ id: 'amberx.voice', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }] }],
   appMenu: [{ id: 'amberx.voice', menu: 'axhub', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }, { id: 'voice.commands', label: 'Voice commands', icon: 'sliders', action: 'voice.commands' }] }],

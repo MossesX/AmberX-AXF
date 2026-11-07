@@ -55,9 +55,9 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'basic-filter', label: 'Basic filter', icon: 'sliders', order: 7, parent: 'plugins', description: 'Sort & filter for any dataset, its toolbar, and which datasets it is attached to.' }],
   settingsPanels: [
-    { id: 'basic-filter.open', tab: 'basic-filter', title: 'Basic filter', icon: 'sliders', order: 5, render: () => <OpenPanel /> },
-    { id: 'basic-filter.toolbar', tab: 'basic-filter', title: 'Toolbar', icon: 'menu', order: 10, render: () => <ToolbarDesigner /> },
-    { id: 'basic-filter.datasets', tab: 'basic-filter', title: 'Attached datasets', icon: 'grid', order: 20, render: () => <AttachList /> },
-    { id: 'basic-filter.lifecycle', tab: 'basic-filter', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'basic-filter.open', section: 'general', tab: 'basic-filter', title: 'Basic filter', icon: 'sliders', order: 5, render: () => <OpenPanel /> },
+    { id: 'basic-filter.toolbar', section: 'look', tab: 'basic-filter', title: 'Toolbar', icon: 'menu', order: 10, render: () => <ToolbarDesigner /> },
+    { id: 'basic-filter.datasets', section: 'status', tab: 'basic-filter', title: 'Attached datasets', icon: 'grid', order: 20, render: () => <AttachList /> },
+    { id: 'basic-filter.lifecycle', section: 'plugin', tab: 'basic-filter', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

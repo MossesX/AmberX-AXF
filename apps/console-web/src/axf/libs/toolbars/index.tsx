@@ -86,14 +86,14 @@ export const toolbarsLibrary: AxfWebLibrary = {
   version: '0.1.0',
   settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Every toolbar in this app: tap-to-confirm on touch, and each toolbar’s own choice.' }],
   settings: [{
-    id: 'toolbars.tap', tab: TOOLBARS_TAB, label: 'Tap to confirm (touch)', icon: 'smartphone', order: 10,
+    id: 'toolbars.tap', section: 'behaviour', tab: TOOLBARS_TAB, label: 'Tap to confirm (touch)', icon: 'smartphone', order: 10,
     description: 'On a phone or any touch screen, the first tap on a toolbar button shows what it does and lights it up; a second tap runs it. A mouse, trackpad or pen clicks once, as usual.',
     settings: [
       { key: TAP_KEYS.enabled, label: 'Tap twice on touch', kind: 'toggle', default: true, scope: 'device' },
       { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long a button stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
     ],
   }],
-  settingsPanels: [{ id: ALL_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> }],
+  settingsPanels: [{ id: ALL_TOOLBARS_PANEL, section: 'general', tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> }],
 };
 
 export default toolbarsLibrary;

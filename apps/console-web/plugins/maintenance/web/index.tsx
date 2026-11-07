@@ -444,7 +444,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: FOLDER, label: 'Maintenance', icon: 'monitor', order: 47, parent: 'plugins' }],
   settings: [
     {
-      id: 'maintenance.nightly', label: 'Nightly auto-clean', icon: 'clock', tab: FOLDER, order: 10,
+      id: 'maintenance.nightly', section: 'general', label: 'Nightly auto-clean', icon: 'clock', tab: FOLDER, order: 10,
       description: 'Each night the console sends the safe clean-up to axHub as a held call, so it still waits for your approval there. Off by default.',
       settings: [
         { key: K.nightly, label: 'Clean up every night', kind: 'toggle', default: false, scope: 'app' },
@@ -453,7 +453,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'maintenance.alerts', label: 'Alerts', icon: 'bell', tab: FOLDER, order: 20,
+      id: 'maintenance.alerts', section: 'alerts', label: 'Alerts', icon: 'bell', tab: FOLDER, order: 20,
       description: 'Shown in the console and pushed to your phone (error and critical). One alert per level change.',
       settings: [
         num(K.diskWarnPct, 'Disk warning at (%)', 80, 50, 99, 'Bell only.'),
@@ -464,7 +464,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'maintenance.rules', label: 'What counts as old', icon: 'sliders', tab: FOLDER, order: 30,
+      id: 'maintenance.rules', section: 'behaviour', label: 'What counts as old', icon: 'sliders', tab: FOLDER, order: 30,
       settings: [
         num(K.logDays, 'Logs older than (days)', 14, 1, 365, 'Rotated logs in /var/log and old build logs.'),
         num(K.journalDays, 'Keep the system journal for (days)', 14, 1, 365, 'journalctl --vacuum-time.'),
@@ -475,7 +475,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'maintenance.profiles', label: 'Build profile clean-up', icon: 'layers', tab: FOLDER, order: 40,
+      id: 'maintenance.profiles', section: 'behaviour', label: 'Build profile clean-up', icon: 'layers', tab: FOLDER, order: 40,
       description: 'How the build profile clean-up judges items, and when it makes a preview by itself. A scheduled run only makes the preview and tells you; applying it is always your tap.',
       settings: [
         { key: K.profileMode, label: 'Mode', kind: 'choice', default: 'auto', scope: 'app', options: [{ value: 'auto', label: 'Deep (AI) when a model is set up, else Basic' }, { value: 'basic', label: 'Basic only (no AI, exact matches)' }] },
@@ -489,8 +489,8 @@ export const plugin: AxfWebLibrary = {
     [PROFILES_DIALOG]: { title: 'Clean up build profiles', icon: 'layers', searchable: false, render: (props, close) => <ProfilesDialog run={String(props.run ?? '')} close={close} /> },
   },
   settingsPanels: [
-    { id: 'maintenance.status', tab: FOLDER, title: 'Status', icon: 'monitor', order: 5, render: () => <StatusPanel /> },
-    { id: 'maintenance.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'maintenance.status', section: 'status', tab: FOLDER, title: 'Status', icon: 'monitor', order: 5, render: () => <StatusPanel /> },
+    { id: 'maintenance.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
     rt.actions.register('maintenance.profiles', async () => {

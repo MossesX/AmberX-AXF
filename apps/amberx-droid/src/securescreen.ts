@@ -49,7 +49,7 @@ export const secureScreenLibrary: AxfWebLibrary = {
   version: '0.1.0',
   settings: [
     {
-      id: 'amberx.privacy', label: 'Screen recording', icon: 'eye', tab: 'account', order: 50, settings: [
+      id: 'amberx.privacy', section: 'access', label: 'Screen recording', icon: 'eye', tab: 'account', order: 50, settings: [
         {
           key: K.hideSensitive, label: 'Hide sensitive screens from recordings', kind: 'toggle', default: false,
           description: 'Off: screenshots and screen recording (Android\'s and AmberX\'s own) work everywhere. On: only screens showing a password, key or vault field are hidden from them.',

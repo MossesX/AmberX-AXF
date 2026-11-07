@@ -105,7 +105,7 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'build-manager', label: 'Builds', icon: 'play', settingsTab: 'build-manager', order: 4.5, render: () => <BuildBanner /> }],
   settingsTabs: [{ id: 'build-manager', label: 'Build manager', icon: 'play', parent: 'plugins', order: 43, description: 'Everything still to build, live tracker and banner.' }],
   settings: [{
-    id: 'build-manager.prefs', label: 'Build manager', icon: 'play', tab: 'build-manager', order: 10,
+    id: 'build-manager.prefs', section: 'general', label: 'Build manager', icon: 'play', tab: 'build-manager', order: 10,
     settings: [
       { key: KEYS.banner, label: 'Banner while a build runs', kind: 'toggle', default: true, description: 'A compact banner at the top while something from the build list is in progress or just finished.' },
       { key: KEYS.sort, label: 'Default sort', kind: 'choice', default: 'order', options: SORTS.map((k) => ({ value: k, label: SORT_LABEL[k] })) },
@@ -113,7 +113,7 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [
-    { id: 'build-manager.about', tab: 'build-manager', title: 'About', icon: 'info', order: 5, render: () => <SettingsSummary /> },
-    { id: 'build-manager.lifecycle', tab: 'build-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'build-manager.about', section: 'plugin', tab: 'build-manager', title: 'About', icon: 'info', order: 5, render: () => <SettingsSummary /> },
+    { id: 'build-manager.lifecycle', section: 'plugin', tab: 'build-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

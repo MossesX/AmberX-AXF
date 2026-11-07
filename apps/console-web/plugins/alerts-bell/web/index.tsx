@@ -69,14 +69,14 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'alerts-bell', label: 'Alerts bell', icon: 'bell', parent: 'plugins', order: 48, description: 'The alerts bell on the banner.' }],
   settings: [{
-    id: 'alerts-bell.look', label: 'On the banner', icon: 'eye', tab: 'alerts-bell', order: 5,
+    id: 'alerts-bell.look', section: 'look', label: 'On the banner', icon: 'eye', tab: 'alerts-bell', order: 5,
     settings: [
       { key: SHOW_KEY, label: 'Show the alerts bell on the banner', kind: 'toggle', default: true, scope: 'device' },
       { key: SIDE_KEY, label: 'Side', kind: 'choice', default: 'right', scope: 'device', options: [{ value: 'right', label: 'Right' }, { value: 'left', label: 'Left' }] },
     ],
   }],
   settingsPanels: [
-    { id: 'alerts-bell.status', tab: 'alerts-bell', title: 'Alerts bell', icon: 'bell', order: 10, render: () => <StatusPanel /> },
-    { id: 'alerts-bell.lifecycle', tab: 'alerts-bell', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'alerts-bell.status', section: 'status', tab: 'alerts-bell', title: 'Alerts bell', icon: 'bell', order: 10, render: () => <StatusPanel /> },
+    { id: 'alerts-bell.lifecycle', section: 'plugin', tab: 'alerts-bell', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

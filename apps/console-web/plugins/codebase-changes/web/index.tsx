@@ -48,13 +48,13 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'codebase-changes', label: 'Codebase changes', icon: 'branch', settingsTab: 'codebase-changes', order: 4.7, render: () => <ChangesBanner /> }],
   settingsTabs: [{ id: 'codebase-changes', label: 'Codebase changes', icon: 'branch', parent: 'plugins', order: 44, description: 'The changes log, its banner and the Claude Code hook.' }],
   settings: [{
-    id: 'codebase-changes.prefs', label: 'Codebase changes', icon: 'branch', tab: 'codebase-changes', order: 10,
+    id: 'codebase-changes.prefs', section: 'general', label: 'Codebase changes', icon: 'branch', tab: 'codebase-changes', order: 10,
     settings: [
       { key: KEYS.banner, label: 'Banner on every load', kind: 'toggle', default: true, description: 'Show the Codebase changes banner while any entry isn’t closed. Off hides it in this browser only; entries stay open everywhere else.' },
     ],
   }],
   settingsPanels: [
-    { id: 'codebase-changes.about', tab: 'codebase-changes', title: 'About', icon: 'info', order: 5, render: () => <SettingsSummary /> },
-    { id: 'codebase-changes.lifecycle', tab: 'codebase-changes', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'codebase-changes.about', section: 'plugin', tab: 'codebase-changes', title: 'About', icon: 'info', order: 5, render: () => <SettingsSummary /> },
+    { id: 'codebase-changes.lifecycle', section: 'plugin', tab: 'codebase-changes', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

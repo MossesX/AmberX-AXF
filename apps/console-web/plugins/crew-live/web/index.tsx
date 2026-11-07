@@ -90,5 +90,5 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsTabs: [{ id: 'crew-live', label: 'Crew', icon: 'user', parent: 'plugins', order: 46, description: 'Who is working right now, live.' }],
-  settingsPanels: [{ id: 'crew.lifecycle', tab: 'crew-live', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'crew.lifecycle', section: 'plugin', tab: 'crew-live', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

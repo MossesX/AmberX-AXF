@@ -574,34 +574,34 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: TAB, label: 'Plugins menu', icon: 'package', order: 4, parent: 'plugins' }],
   settings: [
-    { id: 'plugins-menu.basic', label: 'Basic', icon: 'sliders', tab: TAB, order: 10, description: 'The settings browser (right-click → Plugins → Settings…).', settings: [
+    { id: 'plugins-menu.basic', section: 'general', label: 'Basic', icon: 'sliders', tab: TAB, order: 10, description: 'The settings browser (right-click → Plugins → Settings…).', settings: [
       choice(K.column, 'Plugin column width', 'regular', [['narrow', 'Narrow'], ['regular', 'Regular'], ['wide', 'Wide']]),
       toggle(K.collapsed, 'Start with the plugin column folded', false),
       choice(K.side, 'Plugin column on the', 'left', [['left', 'Left'], ['right', 'Right']]),
     ] },
-    { id: 'plugins-menu.style', label: 'Style', icon: 'palette', tab: TAB, order: 20, settings: [
+    { id: 'plugins-menu.style', section: 'look', label: 'Style', icon: 'palette', tab: TAB, order: 20, settings: [
       choice(K.density, 'Density', 'regular', [['compact', 'Compact'], ['regular', 'Regular'], ['roomy', 'Roomy']]),
       toggle(K.badges, 'Model badges in the list', true),
       toggle(K.icons, 'Icons in the list', true),
     ] },
-    { id: 'plugins-menu.switches', label: 'Switches', icon: 'check', tab: TAB, order: 30, settings: [
+    { id: 'plugins-menu.switches', section: 'behaviour', label: 'Switches', icon: 'check', tab: TAB, order: 30, settings: [
       toggle(K.showOff, 'List plugins that are switched off', true),
       toggle(K.showBare, 'List plugins without settings', true),
       toggle(K.search, 'Search box above the list', true),
       toggle(K.remember, 'Remember the last plugin picked', true),
     ] },
-    { id: 'plugins-menu.behaviour', label: 'Behaviour', icon: 'play', tab: TAB, order: 40, settings: [
+    { id: 'plugins-menu.behaviour', section: 'behaviour', label: 'Behaviour', icon: 'play', tab: TAB, order: 40, settings: [
       choice(K.onOpen, 'When it opens, show', 'last', [['last', 'The last plugin picked'], ['first', 'The first plugin'], ['self', "This browser's settings"], ['none', 'Nothing picked']]),
       choice(K.sort, 'Sort the list by', 'name', [['name', 'Name'], ['model', 'Model'], ['enabled', 'On first'], ['built', 'Newest build']]),
     ] },
-    { id: 'plugins-menu.ladder', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Theme override · Disable.', settings: [
+    { id: 'plugins-menu.ladder', section: 'look', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Theme override · Disable.', settings: [
       choice(K.disableStyle, 'The Disable item shows', 'check', [['check', 'A check mark while the plugin is off'], ['toggle', 'Disable / Enable, no check mark']]),
     ] },
   ],
   settingsPanels: [
-    { id: 'plugins-menu.open', tab: TAB, title: 'Open', icon: 'package', order: 5, render: () => <OpenPanel /> },
-    { id: 'plugins-menu.advanced', tab: TAB, title: 'Advanced: every parameter type', icon: 'code', order: 60, render: () => <AdvancedPlaceholders /> },
-    { id: 'plugins-menu.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'plugins-menu.open', section: 'general', tab: TAB, title: 'Open', icon: 'package', order: 5, render: () => <OpenPanel /> },
+    { id: 'plugins-menu.advanced', section: 'advanced', tab: TAB, title: 'Advanced: every parameter type', icon: 'code', order: 60, render: () => <AdvancedPlaceholders /> },
+    { id: 'plugins-menu.lifecycle', section: 'plugin', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
 

@@ -17,11 +17,11 @@ export const plugin: AxfWebLibrary = {
   provides: ['axf.container-access'],
   settingsTabs: [{ id: 'container-access', label: 'Container access', icon: 'box', parent: 'plugins', order: 40, description: 'Which containers on the VPS the console can reach, the protected list, change batches waiting for approval and the audit log.' }],
   settingsPanels: [
-    { id: 'container-access.status', tab: 'container-access', title: 'Connection', icon: 'zap', order: 10, render: () => <div className="axp-container-access"><StatusPanel /></div> },
-    { id: 'container-access.batches', tab: 'container-access', title: 'Changes waiting for approval', icon: 'shield', order: 20, render: () => <div className="axp-container-access"><BatchesPanel /></div> },
-    { id: 'container-access.containers', tab: 'container-access', title: 'Containers', icon: 'box', order: 30, render: () => <div className="axp-container-access"><ContainersPanel /></div> },
-    { id: 'container-access.protection', tab: 'container-access', title: 'Protected list & reach', icon: 'lock', order: 40, render: () => <div className="axp-container-access"><ProtectionPanel /></div> },
-    { id: 'container-access.audit', tab: 'container-access', title: 'Audit log', icon: 'list', order: 50, render: () => <div className="axp-container-access"><AuditPanel /></div> },
-    { id: 'container-access.lifecycle', tab: 'container-access', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'container-access.status', section: 'connections', tab: 'container-access', title: 'Connection', icon: 'zap', order: 10, render: () => <div className="axp-container-access"><StatusPanel /></div> },
+    { id: 'container-access.batches', section: 'access', tab: 'container-access', title: 'Changes waiting for approval', icon: 'shield', order: 20, render: () => <div className="axp-container-access"><BatchesPanel /></div> },
+    { id: 'container-access.containers', section: 'connections', tab: 'container-access', title: 'Containers', icon: 'box', order: 30, render: () => <div className="axp-container-access"><ContainersPanel /></div> },
+    { id: 'container-access.protection', section: 'access', tab: 'container-access', title: 'Protected list & reach', icon: 'lock', order: 40, render: () => <div className="axp-container-access"><ProtectionPanel /></div> },
+    { id: 'container-access.audit', section: 'status', tab: 'container-access', title: 'Audit log', icon: 'list', order: 50, render: () => <div className="axp-container-access"><AuditPanel /></div> },
+    { id: 'container-access.lifecycle', section: 'plugin', tab: 'container-access', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -11,6 +11,7 @@
  */
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Icon } from './Icon';
+import { FoldPanel, foldId, useFold } from './FoldPanel';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
 /* ---------------- Switch ---------------- */
@@ -300,6 +301,9 @@ export interface SectionProps {
 /** A titled block of a form or page (lighter than a Container: no card chrome). */
 export function Section({ title, aside, children, className }: SectionProps) {
   const id = useId();
+  // Inside a settings interface every titled section folds and remembers itself on this device (FoldScope).
+  const fold = useFold(foldId(title));
+  if (fold.scoped) return <FoldPanel id={foldId(title)} title={title} aside={aside} className={`fx-section ${className ?? ''}`}>{children}</FoldPanel>;
   return (
     <section className={`fx-section ${className ?? ''}`} aria-labelledby={id}>
       <header className="fx-section__head"><h3 className="fx-section__title" id={id}>{title}</h3>{aside}</header>

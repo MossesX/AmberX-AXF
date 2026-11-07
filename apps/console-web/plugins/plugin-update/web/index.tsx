@@ -211,7 +211,7 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: 'plugin-update', label: 'Plugin Update', icon: 'refresh', order: 7, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'plugin-update.about', tab: 'plugin-update', title: 'Plugin Update', icon: 'refresh', order: 5, render: () => <SettingsPanel /> },
-    { id: 'plugin-update.lifecycle', tab: 'plugin-update', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'plugin-update.about', section: 'general', tab: 'plugin-update', title: 'Plugin Update', icon: 'refresh', order: 5, render: () => <SettingsPanel /> },
+    { id: 'plugin-update.lifecycle', section: 'plugin', tab: 'plugin-update', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

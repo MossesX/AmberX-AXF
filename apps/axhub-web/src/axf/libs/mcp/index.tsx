@@ -452,7 +452,7 @@ export function createMcpLibrary(o: McpLibraryOptions = {}): AxfWebLibrary {
     views: { [MCP_VIEW]: { title: 'MCP servers', icon: 'cloud', keywords: ['mcp', 'tools', 'model context protocol', 'axhub'], render: () => <McpView host={host} store={store} perms={perms} /> } },
     nav: { label: o.navLabel ?? 'Connect', items: [{ id: MCP_VIEW, label: 'MCP servers', icon: 'cloud', view: MCP_VIEW }] },
     settingsTabs: [{ id: MCP_SETTINGS_TAB, label: 'MCP servers', icon: 'cloud', order: o.settingsOrder ?? 35, description: `MCP servers this app connects to as a client. Credentials are kept by ${host.registry.label}.` }],
-    settingsPanels: [{ id: 'mcp.servers', tab: MCP_SETTINGS_TAB, title: 'Servers', icon: 'cloud', order: 10, render: () => <ServersPanel host={host} store={store} envAuth={envAuth} perms={perms} /> }],
+    settingsPanels: [{ id: 'mcp.servers', section: 'general', tab: MCP_SETTINGS_TAB, title: 'Servers', icon: 'cloud', order: 10, render: () => <ServersPanel host={host} store={store} envAuth={envAuth} perms={perms} /> }],
   };
 }
 

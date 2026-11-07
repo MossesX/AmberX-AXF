@@ -147,7 +147,7 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'claude-badge', label: 'Claude badge', icon: 'sparkles', parent: 'plugins', order: 46, description: 'The AI connection badge on the banner.' }],
   settings: [{
-    id: 'claude-badge.icons', label: 'Badge icons', icon: 'star', tab: 'claude-badge', order: 20,
+    id: 'claude-badge.icons', section: 'look', label: 'Badge icons', icon: 'star', tab: 'claude-badge', order: 20,
     description: 'The icon the Claude badge shows in each of its three states.',
     settings: (Object.keys(STATES) as BadgeState[]).map((st) => ({
       key: STATES[st].key, label: STATES[st].setting, kind: 'choice' as const, default: STATES[st].icon, scope: 'device' as const,
@@ -155,8 +155,8 @@ export const plugin: AxfWebLibrary = {
     })),
   }],
   settingsPanels: [
-    { id: 'claude-badge.states', tab: 'claude-badge', title: 'The three states', icon: 'eye', order: 15, render: () => (runtime ? <StatesPreview rt={runtime} /> : null) },
-    { id: 'claude-badge.status', tab: 'claude-badge', title: 'AI connection', icon: 'sparkles', order: 10, render: () => (runtime ? <SettingsPanel rt={runtime} /> : null) },
-    { id: 'claude-badge.lifecycle', tab: 'claude-badge', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'claude-badge.states', section: 'look', tab: 'claude-badge', title: 'The three states', icon: 'eye', order: 15, render: () => (runtime ? <StatesPreview rt={runtime} /> : null) },
+    { id: 'claude-badge.status', section: 'status', tab: 'claude-badge', title: 'AI connection', icon: 'sparkles', order: 10, render: () => (runtime ? <SettingsPanel rt={runtime} /> : null) },
+    { id: 'claude-badge.lifecycle', section: 'plugin', tab: 'claude-badge', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

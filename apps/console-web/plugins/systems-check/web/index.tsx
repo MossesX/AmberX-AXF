@@ -66,11 +66,11 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'systems-check', label: 'Systems check', icon: 'shield', parent: 'plugins', order: 5, description: 'The systems check and What’s new banners, their AI switches, and the routine Mosses saved for running without AI.' }],
   settingsPanels: [
-    { id: 'systems-check.ai', tab: 'systems-check', title: 'AI', icon: 'sparkles', order: 10, render: () => <AiPanel /> },
-    { id: 'systems-check.routine', tab: 'systems-check', title: 'Saved AI routine', icon: 'list', order: 20, render: () => <RoutinePanel /> },
-    { id: 'systems-check.autofix', tab: 'systems-check', title: 'Fix it yourself', icon: 'hammer', order: 22, render: () => <AutoFixPanel /> },
-    { id: 'systems-check.claude', tab: 'systems-check', title: 'When a fix fails', icon: 'zap', order: 25, render: () => <ClaudePanel /> },
-    { id: 'systems-check.banners', tab: 'systems-check', title: 'Banners', icon: 'bell', order: 30, render: () => <BannersPanel /> },
-    { id: 'systems-check.lifecycle', tab: 'systems-check', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'systems-check.ai', section: 'ai', tab: 'systems-check', title: 'AI', icon: 'sparkles', order: 10, render: () => <AiPanel /> },
+    { id: 'systems-check.routine', section: 'ai', tab: 'systems-check', title: 'Saved AI routine', icon: 'list', order: 20, render: () => <RoutinePanel /> },
+    { id: 'systems-check.autofix', section: 'access', tab: 'systems-check', title: 'Fix it yourself', icon: 'hammer', order: 22, render: () => <AutoFixPanel /> },
+    { id: 'systems-check.claude', section: 'alerts', tab: 'systems-check', title: 'When a fix fails', icon: 'zap', order: 25, render: () => <ClaudePanel /> },
+    { id: 'systems-check.banners', section: 'alerts', tab: 'systems-check', title: 'Banners', icon: 'bell', order: 30, render: () => <BannersPanel /> },
+    { id: 'systems-check.lifecycle', section: 'plugin', tab: 'systems-check', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

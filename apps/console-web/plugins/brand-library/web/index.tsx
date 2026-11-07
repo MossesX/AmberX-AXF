@@ -36,7 +36,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'brand-library', label: 'Brand library', icon: 'star', view: 'brand-library' }] }, // = VIEW (literal so scripts/menu-reach.mts sees it)
   settingsTabs: [{ id: FOLDER, label: 'Brand library', icon: 'star', order: 34, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'brand-library.settings', tab: FOLDER, title: 'Brand library', icon: 'star', order: 10, render: () => <SettingsPanel /> },
-    { id: 'brand-library.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'brand-library.settings', section: 'general', tab: FOLDER, title: 'Brand library', icon: 'star', order: 10, render: () => <SettingsPanel /> },
+    { id: 'brand-library.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

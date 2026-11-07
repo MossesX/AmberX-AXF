@@ -50,8 +50,8 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: 'context-menu-designer', label: 'Context menu designer', icon: 'menu', order: 90, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'context-menu-designer.open', tab: 'context-menu-designer', title: 'Designer', icon: 'menu', order: 10, render: () => <OpenPanel /> },
-    { id: 'context-menu-designer.lifecycle', tab: 'context-menu-designer', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'context-menu-designer.open', section: 'general', tab: 'context-menu-designer', title: 'Designer', icon: 'menu', order: 10, render: () => <OpenPanel /> },
+    { id: 'context-menu-designer.lifecycle', section: 'plugin', tab: 'context-menu-designer', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
 

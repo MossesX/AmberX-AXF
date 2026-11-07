@@ -28,14 +28,14 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'push-banner', label: 'Branches not on main', icon: 'branch', workIcon: 'upload', workAnim: 'bounce', settingsTab: 'push-banner', order: 4.8, render: () => <PushBanner /> }],
   settingsTabs: [{ id: 'push-banner', label: 'Push banner', icon: 'branch', parent: 'plugins', order: 45, description: 'Branches not on main, with Open PR and Merge.' }],
   settings: [{
-    id: 'push-banner.prefs', label: 'Push banner', icon: 'branch', tab: 'push-banner', order: 10,
+    id: 'push-banner.prefs', section: 'general', label: 'Push banner', icon: 'branch', tab: 'push-banner', order: 10,
     settings: [
       { key: BANNER_KEY, label: 'Banner on every load', kind: 'toggle', default: true, description: 'Show the banner while any watched repo has a branch that isn’t on main (this browser).' },
     ],
   }],
   settingsPanels: [
-    { id: 'push-banner.queue', tab: 'push-banner', title: 'Merge queue', icon: 'branch', order: 3, render: () => <MergeQueueView /> },
-    { id: 'push-banner.branches', tab: 'push-banner', title: 'Branches', icon: 'branch', order: 5, render: () => <PushSettings /> },
-    { id: 'push-banner.lifecycle', tab: 'push-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'push-banner.queue', section: 'status', tab: 'push-banner', title: 'Merge queue', icon: 'branch', order: 3, render: () => <MergeQueueView /> },
+    { id: 'push-banner.branches', section: 'status', tab: 'push-banner', title: 'Branches', icon: 'branch', order: 5, render: () => <PushSettings /> },
+    { id: 'push-banner.lifecycle', section: 'plugin', tab: 'push-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
