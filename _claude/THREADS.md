@@ -749,8 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:50 UTC · `ui-review-notify-session-audio` → complete, merged, note (current) · builds-live
-- 2026-11-07 04:50 UTC · `claude-badge-vps` → complete, merged, note (current) · builds-live
 - 2026-11-07 04:50 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · builds-live
 - 2026-11-07 04:50 UTC · `icon-browser-manager` → pending, note (current) · builds-live
 - 2026-11-06 17:33 UTC · `memory-restructure-chunked-claude-md-store-memor` added (0 steps) (current) · pending
@@ -1149,6 +1147,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:40 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, merged, note (all) · reconciler
 - 2026-11-07 16:48 UTC · `full-api-control` s7 done (all) · orchestrator
 - 2026-11-07 16:48 UTC · `full-api-control` s8 done (all) · orchestrator
+- 2026-11-07 16:49 UTC · `settings-placement-everywhere` note (all) · orchestrator
+- 2026-11-07 16:49 UTC · `full-api-control` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T16:49:05.612Z",
+ "updatedAt": "2026-11-07T16:49:19.092Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10214,7 +10214,7 @@
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-04T20:35:35.401Z",
+   "updatedAt": "2026-11-07T16:49:06.961Z",
    "builtAt": "2026-11-04T17:18:27.648Z",
    "notes": [
     {
@@ -10236,6 +10236,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Clash with full-api-control (branch claude/full-api-control): both append control@1 targets after tokens.nav (this one console.placement; that one console.values + console.elements) and both edit check-control.mts (target count, append-only slice, the console 'never set' exception). Whichever lands second: put its targets after the other's, count 26, allow set on console.placement and console.values.",
+     "at": "2026-11-07T16:49:06.961Z"
     }
    ],
    "approvals": [
@@ -67138,9 +67142,14 @@
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:48:50.470Z",
+   "updatedAt": "2026-11-07T16:49:08.102Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash with settings-placement-everywhere (#329): both append control@1 targets after tokens.nav and edit check-control.mts. If #329 lands first: console.values + console.elements go after console.placement (indexes 24-25), count 26, and the console set exception names both console.placement and console.values; regenerate fixtures (gen-fixtures.mts).",
+     "at": "2026-11-07T16:49:08.102Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
