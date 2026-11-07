@@ -103,4 +103,80 @@ f = Path(os.environ["AXF_CLAUDE_BADGE_DIR"]) / "status.json"
 check((f.stat().st_mode & 0o777) == 0o600, "result file is private (0600)")
 plugin_services.withdraw("fake-assistant")
 check(not c.post("/p/test").json()["ok"], "assistant removed: unavailable again")
+print("VPS connection (no model call)")
+
+
+class FakeAccounts:
+    def __init__(self):
+        self.value = {"ready": True, "why": "", "checked": True, "active": "account-1", "login": {"email": "b@example.com", "plan": "max"}, "expiresAt": "2099-01-01T00:00:00.000Z"}
+        self.fail = False
+
+    def view(self):
+        if self.fail:
+            raise RuntimeError("ssh broke")
+        return self.value
+
+
+class FakeKeys:
+    at = 0
+    asked = ""
+
+    def limited_at(self, name=""):
+        self.asked = name
+        return self.at
+
+
+llm = FakeLlm()
+llm.model = "claude-opus-5-5"
+plugin_services.provide("axf.llm@1", llm, "fake-assistant")
+llm.calls.clear()
+before = f.read_text("utf-8")
+r = c.get("/p/vps").json()
+check(r["state"] == "error" and not r["reachable"] and "plugin is off" in r["error"], "no accounts service: grey, says why, not 'logged out'")
+fa, fk = FakeAccounts(), FakeKeys()
+plugin_services.provide("axf.claude-accounts@1", fa, "fake-accounts")
+plugin_services.provide("axf.ai-keys@1", fk, "fake-keys")
+r = c.get("/p/vps").json()
+check(r["ok"] and r["state"] == "ok" and r["email"] == "b@example.com" and r["plan"] == "max" and r["account"] == "account-1", "logged in: green, with who")
+check(fk.asked == "account-1", "the limit mark is asked for the active account")
+fk.at = 12345
+r = c.get("/p/vps").json()
+check(not r["ok"] and r["state"] == "no-credit" and r["reachable"] and r["limitedAt"] == 12345 and r["email"], "limit hit: amber, keeps the account")
+fk.at = 0
+fa.value = {**fa.value, "login": {}}
+r = c.get("/p/vps").json()
+check(r["state"] == "error" and r["reachable"] and "isn't logged in" in r["error"], "read fine, nobody logged in: red")
+fa.value = {**fa.value, "login": {"email": "b@example.com"}, "expiresAt": "2020-01-01T00:00:00.000Z"}
+check("expired" in c.get("/p/vps").json()["error"], "login past its expiry: red")
+fa.value = {**fa.value, "expiresAt": "not a date"}
+check(c.get("/p/vps").json()["state"] == "ok", "an unreadable expiry is not an expired login")
+fa.value = {**fa.value, "checked": False, "login": {}}
+r = c.get("/p/vps").json()
+check(r["state"] == "error" and not r["reachable"], "`claude auth status` gave nothing: can't read, not logged out")
+fa.value = {**fa.value, "ready": False, "why": "the VPS tab isn't set up"}
+r = c.get("/p/vps").json()
+check(not r["reachable"] and "VPS tab" in r["error"], "host unreachable: grey with the reason")
+fa.fail = True
+r = c.get("/p/vps").json()
+check(r["state"] == "error" and not r["reachable"] and "ssh broke" in r["error"], "a failing read says why")
+fa.fail = False
+fa.value = FakeAccounts().value
+plugin_services.withdraw("fake-keys")
+check(c.get("/p/vps").json()["state"] == "ok", "AI keys off: still reads the login")
+check(not llm.calls, "VPS checks never called a model")
+check(f.read_text("utf-8") == before, "VPS checks leave the console test's saved result alone")
+
+
+guest_app = FastAPI()
+
+
+@guest_app.middleware("http")
+async def _guest(request, call_next):
+    request.state.axf_user = types.SimpleNamespace(admin=False, name="guest")
+    return await call_next(request)
+
+
+guest_app.include_router(mod.router, prefix="/p")
+g = TestClient(guest_app).get("/p/vps").json()
+check(g["state"] == "ok" and not g["email"] and not g["plan"] and not g["account"], "a non-owner gets the state, not who it is")
 print(f"all {ok} checks passed")

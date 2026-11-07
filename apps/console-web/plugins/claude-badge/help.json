@@ -18,6 +18,18 @@
         "text": "Shows the “Claude badge” part of this screen. Part of Claude badge.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "show-on-the-banner",
+        "title": "Show on the banner",
+        "text": "Puts this badge on the banner, or takes it off. Hiding the console badge also stops its test when the console loads.",
+        "kind": "field"
+      },
+      {
+        "target": "icons-only",
+        "title": "Icons only",
+        "text": "Shows just the icon, without the word. The colour still shows the state. Each badge has its own switch.",
+        "kind": "field"
       }
     ],
     "intros": []

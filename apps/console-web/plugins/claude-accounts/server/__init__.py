@@ -4,7 +4,7 @@ A thin, temporary front on the VPS host script `claude-account` (list | save <na
 add-ons switcher replaces it. It only ever handles account names, the active marker and the email + plan the signed-in
 Claude reports: the saved logins stay on the host and nothing here reads them.
 
-  GET  accounts   { ready, why, accounts: [{name, active, email, plan}], active, login, loginChanged, pending, note }
+  GET  accounts   { ready, why, accounts: [{name, active, email, plan}], active, login, loginChanged, pending, note, checked, expiresAt }
   GET  who        { active, email, plan }
   POST use        { name }: asks to switch (one held axHub vps.run, fixed command)
   POST save       { name }: asks to save the current login under that name (same)
@@ -101,6 +101,17 @@ def parse_login(text: str) -> dict[str, str]:
     return {"email": str(v.get("email") or "")[:200], "plan": str(v.get("subscriptionType") or "")[:40]}
 
 
+def parse_status(text: str) -> dict[str, Any]:
+    """`claude auth status` → {checked, expiresAt}: did it answer at all, and when the login runs out (ISO, "" when it didn't say)."""
+    try:
+        v = json.loads(text or "")
+    except ValueError:
+        return {"checked": False, "expiresAt": ""}
+    if not isinstance(v, dict):
+        return {"checked": False, "expiresAt": ""}
+    return {"checked": True, "expiresAt": str(v.get("loginExpiresAt") or "")[:40]}
+
+
 def _read() -> dict[str, Any]:
     """The accounts on the host now (30 s cache, shared by every console and the banner chip)."""
     with _lock:
@@ -114,7 +125,7 @@ def _read() -> dict[str, Any]:
             r = svc.vps_read(READ_COMMAND, 25)
         listing, _, status = str(r.get("out") or "").partition(SEP)
         names, active, types = parse_list(listing)
-        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip())}
+        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip()), **parse_status(status.strip())}
         _cache.update(at=now, value=value)
         return value
 
@@ -147,7 +158,8 @@ def view() -> dict[str, Any]:
         seen[active] = login
     rows = [{"name": n, "active": n == active, "type": v["types"].get(n, "login"), "email": str((seen.get(n) or {}).get("email") or ""),
              "plan": str((seen.get(n) or {}).get("plan") or "")} for n in names]
-    return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE}
+    return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE,
+            "checked": v["checked"], "expiresAt": v["expiresAt"]}
 
 
 def _who(request: Request) -> str:
