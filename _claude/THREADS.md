@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
 - 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
 - 2026-11-06 02:40 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
 - 2026-11-06 02:41 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 02:14 UTC · `asset-designer` note (main-framework) · orchestrator
 - 2026-11-07 02:18 UTC · `ui-asset-designer` s5 done (current) · orchestrator
 - 2026-11-07 02:19 UTC · `ui-asset-designer` PR #376 (current) · builds-live
+- 2026-11-07 02:19 UTC · `ui-asset-designer` s6 done (current) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1218,
- "updatedAt": "2026-11-07T02:19:11.864Z",
+ "rev": 1219,
+ "updatedAt": "2026-11-07T02:19:28.371Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -102366,7 +102366,7 @@
    "branch": "claude/ui-asset-designer",
    "pr": "#376",
    "createdAt": "2026-11-07T02:11:01.038Z",
-   "updatedAt": "2026-11-07T02:19:11.008Z",
+   "updatedAt": "2026-11-07T02:19:11.599Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -102526,12 +102526,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:19:11.599Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T02:11:01.039Z",
-     "updatedAt": "2026-11-07T02:11:01.039Z"
+     "updatedAt": "2026-11-07T02:19:11.681Z"
     },
     {
      "id": "s7",
@@ -103361,7 +103361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
