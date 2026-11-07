@@ -726,7 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:57 UTC · `assistant-chat-mode` PR #361 (current) · builds-live
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` s7 done (current) · orchestrator
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` s8 done, → built (current) · orchestrator
 - 2026-11-06 19:00 UTC · `assistant-chat-mode` s7 done, s8 done, → complete (current) · foreign-write
@@ -1126,6 +1125,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:03 UTC · `merge-conflict-alerts` note (current) · foreign-write
 - 2026-11-07 05:03 UTC · `merge-conflict-alerts` → running (current) · merge-conflict-alerts
 - 2026-11-07 05:12 UTC · `skins-asset-types` s8 done (current) · foreign-write
+- 2026-11-07 05:14 UTC · `skins-asset-types` s8 done (current) · foreign-write
 
 ## Token passes (log)
 
