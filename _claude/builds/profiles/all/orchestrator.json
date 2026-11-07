@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T11:37:26.828Z",
+ "updatedAt": "2026-11-07T11:37:34.028Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -65648,20 +65648,24 @@
    "title": "Build pipeline v2: one clean pipeline (Pending → Queued → Building)",
    "category": "Builds",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/pipeline-v2",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T10:50:06.361Z",
-   "updatedAt": "2026-11-07T11:37:25.834Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:37:27.954Z",
+   "builtAt": "2026-11-07T11:37:26.588Z",
    "notes": [
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-07T11:00:37.408Z"
+    },
+    {
+     "text": "Built on claude/pipeline-v2 (committed, not pushed, per the brief). Report _claude/builds/reports/build-pipeline-v2.md. UI Review shots for the Pipeline tab go with the PR.",
+     "at": "2026-11-07T11:37:27.954Z"
     }
    ],
    "approvals": [
@@ -66005,8 +66009,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:37:26.587Z",
      "note": "",
      "uid": "st-mw6a7wfe0u1jk8"
     }

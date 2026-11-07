@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1287,
- "updatedAt": "2026-11-07T11:37:26.828Z",
+ "rev": 1288,
+ "updatedAt": "2026-11-07T11:37:34.028Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109650,20 +109650,24 @@
    "title": "Build pipeline v2: one clean pipeline (Pending → Queued → Building)",
    "category": "Builds",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/pipeline-v2",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T10:50:06.361Z",
-   "updatedAt": "2026-11-07T11:37:25.834Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:37:27.954Z",
+   "builtAt": "2026-11-07T11:37:26.588Z",
    "notes": [
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-07T11:00:37.408Z"
+    },
+    {
+     "text": "Built on claude/pipeline-v2 (committed, not pushed, per the brief). Report _claude/builds/reports/build-pipeline-v2.md. UI Review shots for the Pipeline tab go with the PR.",
+     "at": "2026-11-07T11:37:27.954Z"
     }
    ],
    "approvals": [
@@ -110065,12 +110069,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:37:26.587Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:37:26.696Z"
     }
    ],
    "profiles": [
@@ -110081,7 +110085,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
