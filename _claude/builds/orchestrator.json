@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T21:34:09.181Z",
+ "updatedAt": "2026-11-07T21:39:32.662Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -65025,7 +65025,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10ck1np"
     },
@@ -65043,7 +65043,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10drv8j"
     },
@@ -65061,7 +65061,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10evso1"
     },
@@ -65079,7 +65079,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10fh12l"
     },
@@ -65097,7 +65097,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10g4p6w"
     },
@@ -65115,7 +65115,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10hqeb4"
     },
@@ -65133,7 +65133,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10iuwf8"
     },
@@ -65151,7 +65151,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T05:46:29.207Z",
      "note": "",
      "uid": "st-mw4840y10j8k3e"
     },
@@ -66759,7 +66759,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T14:17:40.302Z",
      "note": "",
      "uid": "st-mw6hez1206ypdv"
     },
@@ -66780,7 +66780,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T14:17:40.302Z",
      "note": "",
      "uid": "st-mw6hez1207owna"
     },
@@ -66800,7 +66800,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T14:17:40.302Z",
      "note": "",
      "uid": "st-mw6hez1208281l"
     },
@@ -66821,7 +66821,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-07T14:17:40.302Z",
      "note": "",
      "uid": "st-mw6hez1209cezi"
     },
@@ -67775,6 +67775,37 @@
      "uid": "st-mw6w1e5b04jp0i"
     }
    ]
+  },
+  {
+   "id": "investor-demo-player-shell-with-login-gate-skins",
+   "title": "Investor Demo — Player shell with login gate, skins and branding",
+   "category": "",
+   "detail": "Investor demo player shell (React + TypeScript, single page). Spec: https://claude.ai/artifact/AQMctEfS7mNkdktYxsP4LP, section 0 Global Shell. Login gate with a Guest login button (no account needed) plus a normal sign-in. After login: player shell with glossary rail, scene index, narration toggle, playback speed, event ticker. All UI from live design tokens, no hard-coded styles. Skin switcher with 5 complete skins that make it look like an entirely different app. One-click enterprise branding switcher (logo, app name, colours, fonts, icons) with several fictional company brands. Live theme panel to edit tokens while running. Roadmap features carry an 'On the Roadmap' badge.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "investor-demo-player-shell-with-login-gate-skins",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T21:39:31.022Z",
+   "updatedAt": "2026-11-07T21:39:31.022Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Oh, let's build that section. Let's build the the view the viewer with um, behind a login gate uh, with a guest login.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
