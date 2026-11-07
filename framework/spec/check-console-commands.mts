@@ -146,6 +146,15 @@ const a5 = run('swap', ['*'], { input: { args: ['color-theme', 'dark'] } });
 ok(a5.ok && a5.deliver!.message.spec === 'swap:color-theme:dark', 'args join the spec');
 ok(!run('assets.reset', ['control.console.write']).ok, 'write does not cover a destructive action');
 
+/* ---- window screens (full-api-control): an action with meta.screen is a screen too ---- */
+const wcat = consoleCatalogFrom([], [{ id: 'terminal.toolbar', meta: { label: 'Terminal (new sessions first)', screen: 'terminal', effect: 'navigate' } }, { id: 'secret.open', meta: { label: 'Secret', screen: 'secret', personOnly: true } }]);
+const wscreen = wcat.items.find((i) => i.kind === 'screen' && i.id === 'terminal');
+ok(!!wscreen && wscreen.action === 'terminal.toolbar' && wscreen.label === 'Terminal', 'an action naming a screen lists it as a screen (label from the id, the action kept)');
+ok(wcat.items.some((i) => i.kind === 'action' && i.id === 'terminal.toolbar'), 'the action stays an action too');
+ok(!wcat.items.some((i) => i.id === 'secret'), 'a person-only action names no screen');
+eq(consoleResolve(wcat.items, 'screen', 'terminal').item?.id, 'terminal', '"terminal" resolves as a screen');
+eq(consoleResolve(wcat.items, 'screen', 'open the terminal').item?.id, 'terminal', 'and by words');
+
 /* ---- messages ---- */
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action', target: 'x' }).length === 1, 'open of an action refused');
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');

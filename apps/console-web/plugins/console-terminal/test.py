@@ -472,6 +472,61 @@ with c.websocket_connect("/p/nav/ws") as w:
 N._feeds = None
 check(N.feed("chat:Amber-terminal-nav")["items"][-1]["text"] == "second line", "feeds survive a restart (feeds.json)")
 
+# ---- drive a tab from the API (full-api-control, Nov 7 2026) ----
+import subprocess as _sp  # noqa: E402
+D = sys.modules["axf_console_plugins.terminal_test.drive"]
+S.RUNNER = _sp.run
+check(D.key_bytes("ctrl-c") == "\x03" and D.key_bytes("Ctrl+C") == "\x03" and D.key_bytes("^d") == "\x04" and D.key_bytes("up") == "\x1b[A"
+      and D.key_bytes("tab") == "\t" and D.key_bytes("alt-b") == "\x1bb" and D.key_bytes("f5") == "\x1b[15~" and D.key_bytes("q") == "q", "key names → bytes")
+try:
+    D.key_bytes("hyper-x")
+    check(False, "an unknown key is refused")
+except ValueError:
+    check(True, "an unknown key is refused")
+check(D.parse_target("vps")["kind"] == "vps" and D.parse_target("vps")["tmux"].startswith("axt-api-"), "vps target: a persistent API tab")
+check(D.parse_target("build:fix-x") == {"kind": "vps", "attach": "axf-fix-x"}, "build:<name> attaches to the headless run")
+check(D.parse_target("container:db") == {"kind": "container", "container": "db"}, "container:<name>")
+for bad in ("nowhere", "build:bad;name", "attach:"):
+    try:
+        D.parse_target(bad)
+        check(False, f"bad target {bad} refused")
+    except ValueError:
+        check(True, f"bad target {bad!r} refused")
+check(D.output_after(["$ echo hi", "hi", "$"], "echo hi") == "hi", "output = the lines after the typed command, without the next prompt")
+check(D.strip_ansi("\x1b[1;32mok\x1b[0m\r\n") == "ok\n", "colours stripped")
+shows: list = []
+
+
+class FakeConsole:
+    def run(self, command, grants=None, by="", audience="owner"):
+        shows.append((command, grants))
+        return {"ok": True, "delivery": {"how": "live"}}
+
+
+plugin_services.provide("console-commands@1", FakeConsole(), "console-commands")
+c.put("/p/settings", json={"typeCps": 200})
+check(c.get("/p/settings").json()["typeCps"] == 200 and c.put("/p/settings", json={"typeCps": 9999}).json()["typeCps"] == 400, "typing speed is a setting (1-400 a second)")
+t = c.post("/p/drive/open", json={"target": "console", "title": "API tab"}).json()
+check(t["id"] and t["title"] == "API tab" and t["shown"]["ok"], "drive/open opens a session and shows it in the console")
+cmd, grants = shows[-1]
+check(cmd["path"].startswith(f"terminal.show:{t['id']}:console:") and grants == ["control.console.navigate"], "the show is a navigation-only console action carrying the session")
+c.put("/p/settings", json={"typeCps": 60})
+t0 = time.time()
+r = c.post("/p/drive/type", json={"id": t["id"], "text": "echo drive-$((40+2))", "timeoutS": 10}).json()
+took = time.time() - t0
+check(r["typed"] == 20 and r["cps"] == 60 and took >= 20 / 60, "typing goes character by character at the set speed")
+check("drive-42" in r["output"] and "drive-42" in r["screen"], "the typed command's output comes back")
+k = c.post("/p/drive/keys", json={"id": t["id"], "keys": "e c h o space k e y s enter"}).json()
+check(k["sent"][-1] == "enter" and "keys" in c.get(f"/p/drive/screen?id={t['id']}").json()["screen"], "keys are sent and the screen reads back")
+check(c.post("/p/drive/keys", json={"id": t["id"], "keys": ["nope-key"]}).status_code == 400, "an unknown key sends nothing")
+check(any(x["id"] == t["id"] and x["writable"] for x in c.get("/p/drive/tabs").json()["items"]), "drive/tabs lists it as writable")
+cl = c.post("/p/drive/close", json={"id": t["id"]}).json()
+check(cl["ok"] and shows[-1][0]["path"] == f"terminal.drop:{t['id']}", "drive/close closes it and takes the tab away in the console")
+check(c.get(f"/p/drive/screen?id={t['id']}").status_code == 404, "a closed tab can't be read")
+if cl["tmux"]:
+    check(_sp.run(["tmux", "has-session", "-t", f"={cl['tmux']}"], capture_output=True).returncode != 0, "an API tab's own tmux session ends with it")
+S.RUNNER = fake_run
+
 root = os.environ["AXF_TERMINAL_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file() and p.suffix != ".pub" and p.name != "known_hosts")
       and all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_dir()), "data files and folders private (public key and known_hosts inside a private folder)")

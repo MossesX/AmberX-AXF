@@ -17,6 +17,9 @@ interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}
   GET/PUT new-session {newSession}     'When a new session starts': nothing | quiet (default) | front (terminal-no-focus)
+Drive a tab from the API (full-api-control, Nov 7 2026; drive.py): open on a target, type visibly, keys, screen, close
+  POST drive/open {target, title?, cwd?, show?} · drive/type {id, text, enter?, cps?, wait?} · drive/keys {id, keys}
+  GET  drive/screen?id=&lines= · drive/tabs        POST drive/close {id, kill?}
 Sessions nav (left rail, Nov 3 2026; nav.py):
   GET  nav                             My sessions (Brett's tmux + claude.ai feeds), Agents (headless), Connections, Recent
   GET  nav/feed?id=&since=             one chat session's mirror feed (notes + console MCP calls)
@@ -39,7 +42,7 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import health, nav, sessions, store
+from . import drive, health, nav, sessions, store
 
 router = APIRouter()
 health.ensure()
@@ -240,6 +243,59 @@ async def attach(ws: WebSocket, sid: str) -> None:
     finally:
         task.cancel()
         s.detach(loop, q)
+
+
+# ---------------------------------------------------------------- drive a tab from the API (full-api-control, Nov 7 2026)
+
+@router.post("/drive/open")
+def drive_open(body: dict[str, Any]) -> dict[str, Any]:
+    """Open a tab on a target and show it in the open console."""
+    try:
+        return drive.open_tab(body)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/drive/type")
+def drive_type(body: dict[str, Any]) -> dict[str, Any]:
+    """Type text into a tab character by character (typeCps), then Enter; returns what it printed."""
+    try:
+        return drive.type_text(body)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/drive/keys")
+def drive_keys(body: dict[str, Any]) -> dict[str, Any]:
+    """Send keys to a tab (ctrl-c, tab, arrows, enter …)."""
+    try:
+        return drive.send_keys(body)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.get("/drive/screen")
+def drive_screen(id: str, lines: int = drive.SCREEN_LINES) -> dict[str, Any]:
+    """What a tab shows now (its last lines, as text)."""
+    try:
+        return drive.read_screen(id, lines)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/drive/close")
+def drive_close(body: dict[str, Any]) -> dict[str, Any]:
+    """Close a tab (an API tab's own tmux session ends with it; kill: true ends any tab's)."""
+    try:
+        return drive.close_tab(body)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.get("/drive/tabs")
+def drive_tabs() -> dict[str, Any]:
+    """The open terminal sessions the API can type into."""
+    return drive.tabs()
 
 
 @router.get("/hub-runs")

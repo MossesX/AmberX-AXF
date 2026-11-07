@@ -35,6 +35,12 @@ export interface ActionMeta {
    * catalog, so control@1 can't resolve it, and the console client refuses it (an approval decision, for one).
    */
   personOnly?: boolean;
+  /**
+   * The screen this action opens when that screen is a window, not a page (the Terminal): the console catalog lists it
+   * under this id as a screen, so `console open <id>` works like any page. Plain data, so it survives a lazy plugin's
+   * stand-in (full-api-control, Nov 7 2026).
+   */
+  screen?: string;
 }
 
 /** The `module` of actions the framework itself registers. */

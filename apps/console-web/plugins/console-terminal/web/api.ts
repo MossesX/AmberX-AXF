@@ -22,6 +22,8 @@ export interface Open {
   readOnly?: boolean;
   /** kind 'feed': a claude.ai chat / voice session's mirror feed (chat:<session>), shown instead of a terminal. */
   feed?: string; url?: string;
+  /** A server session the API opened (drive/open): the tab attaches to it first, then lives on its tmux name. */
+  sid?: string;
 }
 /** A place a tab can connect to (GET connections). */
 export interface Connection { id: string; via: Via; container?: string; label: string; detail: string; icon: string; badge?: string | null; ready: boolean; claude: boolean; shell?: boolean; why: string; group?: string }
@@ -41,6 +43,8 @@ export interface Settings {
   persistTabs: boolean; splitDefault: 'side' | 'stacked' | 'none'; chainSpeed: 'slow' | 'normal' | 'fast' | 'instant'; showChain: boolean;
   // sessions nav (Nov 3 2026)
   sessionsNav: boolean;
+  // full-api-control (Nov 7 2026): how fast the API types into a tab (drive/type)
+  typeCps: number;
 }
 /** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
 export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }

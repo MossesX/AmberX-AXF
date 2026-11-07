@@ -16,7 +16,7 @@ export const LEVELS: Record<string, Level> = {
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
-  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple', newSession: 'simple',
+  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple', newSession: 'simple', typeCps: 'simple',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -70,6 +70,7 @@ export function BehaviourPanel() {
         <L k="tabWidth"><SelectField label="Tab width" value={s.tabWidth} options={[{ value: 'equal', label: 'Equal' }, { value: 'compact', label: 'Compact' }, { value: 'title', label: 'Fit the title' }]} onChange={(v) => save({ tabWidth: v as Settings['tabWidth'] })} /></L>
         <L k="bell"><SelectField label="Bell" value={s.bell} options={[{ value: 'visual', label: 'Flash' }, { value: 'sound', label: 'Sound' }, { value: 'none', label: 'Off' }]} onChange={(v) => save({ bell: v as Settings['bell'] })} /></L>
       </div>
+      <L k="typeCps"><Slider label="Typing speed when Amber or the API types into a tab (characters a second)" value={s.typeCps ?? 30} min={5} max={200} step={5} onChange={(v) => save({ typeCps: v }, 300)} /></L>
       <L k="scrollback"><Slider label="Scrollback (lines)" value={s.scrollback} min={500} max={100000} step={500} onChange={(v) => save({ scrollback: v }, 400)} /></L>
       <L k="closeConfirm"><Switch label="Ask before closing a running tab" checked={s.closeConfirm} onChange={(v) => save({ closeConfirm: v })} /></L>
       <L k="copyOnSelect"><Switch label="Copy on select" checked={s.copyOnSelect} onChange={(v) => save({ copyOnSelect: v })} /></L>

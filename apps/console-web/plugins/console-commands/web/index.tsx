@@ -116,7 +116,12 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
   if (errors.length) return [false, errors.join('; ')];
   switch (m.op) {
     case 'open':
-      if (m.kind === 'screen') { rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } }); return [rt.getState().view === m.target || !!rt.getState().dialog, `opened ${m.label ?? m.target}`]; }
+      if (m.kind === 'screen') {
+        // a window that names itself a screen (the Terminal): the action that opens it (meta.screen)
+        const win = rt.actions.list().find((a) => a.meta.screen === m.target && !a.meta.personOnly);
+        if (win) return [rt.dispatch(win.id), `opened ${m.label ?? m.target}`];
+        rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } }); return [rt.getState().view === m.target || !!rt.getState().dialog, `opened ${m.label ?? m.target}`];
+      }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];

@@ -13,11 +13,13 @@
   ],
   "provides": [
     "action:terminal.claude",
+    "action:terminal.drop",
     "action:terminal.jump",
     "action:terminal.mirror",
     "action:terminal.new",
     "action:terminal.open",
     "action:terminal.sessions",
+    "action:terminal.show",
     "context-menu:*",
     "dialog:terminal.connect",
     "dialog:terminal.connection",
@@ -201,6 +203,160 @@
       {
         "route": "GET /nav/ws",
         "skip": "the sessions nav's live websocket, not a command (sessions-list is the same answer)"
+      },
+      {
+        "route": "POST /drive/open",
+        "id": "open-tab",
+        "title": "Open a Terminal tab on a target",
+        "description": "Opens a terminal session on console, vps, container:<name>, build:<axf-name> (a headless build's session) or attach:<tmux>, and shows it as a tab in Brett's open console so he watches what is typed. Returns the session id the other drive commands take.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "console | vps | container:<name> | build:<axf-name> | attach:<tmux session>"
+            },
+            "title": {
+              "type": "string",
+              "description": "tab title"
+            },
+            "cwd": {
+              "type": "string",
+              "description": "absolute folder to start in"
+            },
+            "show": {
+              "type": "boolean",
+              "description": "show the tab in the open console (default true)"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        },
+        "output": "the session (id, tmux, where, title) + shown"
+      },
+      {
+        "route": "POST /drive/type",
+        "id": "type",
+        "title": "Type into a Terminal tab",
+        "description": "Types the text visibly, character by character at the Terminal's typing speed (Settings → Plugins → Terminal → Typing speed, default 30 a second), then Enter, waits until the output goes quiet and returns what it printed and the screen.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "session id from open-tab or tabs"
+            },
+            "text": {
+              "type": "string"
+            },
+            "enter": {
+              "type": "boolean",
+              "description": "press Enter after the text (default true)"
+            },
+            "cps": {
+              "type": "number",
+              "description": "characters a second for this call"
+            },
+            "wait": {
+              "type": "boolean",
+              "description": "wait for the output (default true)"
+            },
+            "timeoutS": {
+              "type": "number"
+            },
+            "quietMs": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "text"
+          ]
+        },
+        "output": "typed, output, screen, settled"
+      },
+      {
+        "route": "POST /drive/keys",
+        "id": "keys",
+        "title": "Send keys to a Terminal tab",
+        "description": "Sends named keys: enter, tab, shift-tab, esc, backspace, delete, up, down, left, right, home, end, pageup, pagedown, f1-f12, ctrl-<letter> (ctrl-c), alt-<key>, or single characters.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "keys": {
+              "description": "one name, a space-separated string, or a list",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "keys"
+          ]
+        },
+        "output": "sent + screen"
+      },
+      {
+        "route": "GET /drive/screen",
+        "id": "screen",
+        "title": "Read a Terminal tab's screen",
+        "description": "What the tab shows now, as plain text (its last lines; tmux tabs read the pane itself).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "lines": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "screen text"
+      },
+      {
+        "route": "POST /drive/close",
+        "id": "close-tab",
+        "title": "Close a Terminal tab",
+        "description": "Closes the tab in the console and its session. A tab the API opened ends its own tmux session; kill: true ends any tab's tmux session too.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "kill": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "closed"
+      },
+      {
+        "route": "GET /drive/tabs",
+        "id": "tabs",
+        "title": "List Terminal tabs the API can type into",
+        "description": "Every open terminal session (id, kind, title, tmux, where, writable) and the typing speed.",
+        "output": "items"
       }
     ]
   },

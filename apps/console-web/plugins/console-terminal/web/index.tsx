@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
-import { findHost, newTab, openFromContext } from './open';
+import { findHost, newTab, openFromContext, showApiTab, dropApiTab } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
 import { getSettings } from './api';
 import { applyProfile } from './profiles';
@@ -53,12 +53,17 @@ export const plugin: AxfWebLibrary = {
     // a headless run's own tab (the Crew, avatars' right-click "Open Terminal tab"): terminal.attach:<axf-… session>[:<title>]
     rt.actions.register('terminal.attach', ([name = '', title = '']) => { if (/^axf-[A-Za-z0-9._-]{1,64}$/.test(name)) openHeadless(rt, { name, createdAt: 0, agent: decodeURIComponent(title) }); }, { label: 'Open a headless run in a Terminal tab', params: true, searchable: false });
     // the Terminal toolbar icon (terminal-no-focus): with a count on it, open the oldest new headless session; else a terminal
-    rt.actions.register('terminal.toolbar', () => { if (!openUnseen(rt)) openFromContext(rt); }, { label: 'Terminal (new sessions first)' });
+    // screen 'terminal': "open the terminal" names it like any page (console.screens), though it is a window
+    rt.actions.register('terminal.toolbar', () => { if (!openUnseen(rt)) openFromContext(rt); }, { label: 'Terminal (new sessions first)', screen: 'terminal', effect: 'navigate' });
     rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
     // sessions nav (Nov 3 2026): mirror a session read-only, or jump in (writable; a chat opens claude.ai); args [name, where]
     rt.actions.register('terminal.mirror', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), false), { label: 'Mirror a session (read-only)', params: true });
     rt.actions.register('terminal.jump', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), true), { label: 'Jump into a session', params: true });
     rt.actions.register('terminal.sessions', () => { if (!findHost(rt)) openFromContext(rt); else rt.toast('The sessions list is on the left of the terminal window', 'info'); }, { label: 'Terminal sessions' });
+    // full-api-control (Nov 7 2026): the API opened a session (drive/open) and the console shows it here, so Brett watches
+    // every character it types; terminal.drop takes it away again when the API closes it
+    rt.actions.register('terminal.show', (args) => { showApiTab(rt, args.map((a) => decodeURIComponent(String(a ?? '')))); }, { label: 'Show a terminal tab the API opened', params: true, searchable: false, effect: 'navigate' });
+    rt.actions.register('terminal.drop', ([sid = '']) => { dropApiTab(decodeURIComponent(String(sid))); }, { label: 'Take away a terminal tab the API closed', params: true, searchable: false, effect: 'navigate' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS get a tab here, quietly by default (settings showHeadless, newSession)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);

@@ -9,7 +9,8 @@
  * a catalog built from its own search index (views, settings tabs, dialogs, actions — plugins' too), and resolving runs
  * against that, so a new plugin's screen can be opened the moment it is installed.
  *
- *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
+ *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent?, action? }], here? }
+ *            (a screen with `action` is a window the action opens, e.g. the Terminal: actions declare it with meta.screen)
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
  *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, hard?, by, at }
@@ -52,7 +53,7 @@ export function normalizeConsoleItem(raw) {
   const id = str(raw.id, 160);
   if (!id) return null;
   const out = { kind: raw.kind, id, label: str(raw.label, 160) || id };
-  for (const k of ['detail', 'icon', 'requires', 'parent', 'module']) { const v = str(raw[k], 200); if (v) out[k] = v; }
+  for (const k of ['detail', 'icon', 'requires', 'parent', 'module', 'action']) { const v = str(raw[k], 200); if (v) out[k] = v; }
   if (Array.isArray(raw.keywords)) { const kw = raw.keywords.map((x) => str(x, 80)).filter(Boolean).slice(0, 12); if (kw.length) out.keywords = kw; }
   if (['navigate', 'read', 'write', 'destructive'].includes(raw.effect)) out.effect = raw.effect;
   if (raw.params === true) out.params = true;
@@ -98,6 +99,8 @@ export function consoleCatalogFrom(entries, actions = [], extra = {}) {
   for (const a of Array.isArray(actions) ? actions : []) {
     const m = isObj(a?.meta) ? a.meta : {};
     if (!a?.id || m.stub || m.personOnly === true) continue; // personOnly: a person's tap only, never a remote caller
+    // a screen that is a window, not a page (the Terminal): the action that opens it names it (meta.screen)
+    if (typeof m.screen === 'string' && m.screen) items.push({ kind: 'screen', id: m.screen, label: m.screen.replace(/[-_.]+/g, ' ').replace(/^./, (c) => c.toUpperCase()), detail: `window (${a.id})`, keywords: [m.label || ''], action: a.id });
     items.push({ kind: 'action', id: a.id, label: m.label || a.id, detail: a.id, requires: m.requires, effect: m.effect, params: m.params === true, module: m.module });
   }
   return normalizeConsoleCatalog({ ...extra, items });

@@ -154,6 +154,12 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     if (!o.tmux && persistable(o) && settingsRef.current?.persistTabs !== false) {
       o = { ...o, tmux: tmuxName(o) }; openRef.current = o; patchSession(session.id, { open: o });
     }
+    // a tab the API opened (drive/open → terminal.show) attaches to the server's own session once; after that it
+    // re-attaches by its tmux name like any persistent tab
+    if (o.sid && !tabSessions.get(tab.id)) {
+      tabSessions.set(tab.id, o.sid);
+      const { sid: _used, ...rest } = o; o = rest; openRef.current = o; patchSession(session.id, { open: o });
+    }
     try {
       let sid = tabSessions.get(tab.id);
       if (!sid) {

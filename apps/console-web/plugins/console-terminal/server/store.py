@@ -44,7 +44,10 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                             # terminal-no-focus (Nov 4 2026): what a new headless session does to the Terminal. nothing = no
                             # tab by itself (the sessions nav still lists it), quiet = a tab in the background + a count on
                             # the Terminal toolbar icon, front = open it and bring the window to the front (the old way)
-                            "newSession": "quiet"}
+                            "newSession": "quiet",
+                            # full-api-control (Nov 7 2026): how fast the API types into a tab (characters a second), so Brett
+                            # can watch it run; Enter follows the text
+                            "typeCps": 30}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
@@ -107,7 +110,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         if "fontSizePhone" in patch:
             v = int(patch["fontSizePhone"])
             s["fontSizePhone"] = 0 if v <= 0 else max(7, min(v, 28))
-        for k, lo, hi in (("scrollback", 500, 200000), ("padding", 0, 4), ("chainTextSize", 60, 200)):
+        for k, lo, hi in (("scrollback", 500, 200000), ("padding", 0, 4), ("chainTextSize", 60, 200), ("typeCps", 1, 400)):
             if k in patch:
                 s[k] = max(lo, min(int(patch[k]), hi))
         if "lineHeight" in patch:

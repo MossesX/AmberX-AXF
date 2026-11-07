@@ -1,7 +1,8 @@
 /* Opening terminals: a new session in the open terminal window when there is one, else a new floating window. */
 import type { AxfRuntime } from '@console/axf/core';
 import type { Open } from './api';
-import { addSession, host, sessionId, titleFor, type HostSession } from './hosts';
+import { addSession, focusSession, host, removeSession, sessionId, titleFor, type HostSession } from './hosts';
+import { tabSessions } from './api';
 
 export const HOST_KIND = 'terminal-host';
 
@@ -49,4 +50,30 @@ export function openFromContext(rt: AxfRuntime, rawTarget = '', payload = '') {
     return newTab(rt, { kind: 'container', container, cwd: path });
   }
   return newTab(rt, { kind: 'console' });
+}
+
+/**
+ * `terminal.show:<sid>:<kind>:<tmux>:<where>:<target>:<title>` (full-api-control): a session the API opened on the server
+ * (drive/open) gets a tab here attached to that same session, in front, so what the API types is drawn live. A second
+ * show of the same session only brings its tab up.
+ */
+export function showApiTab(rt: AxfRuntime, [sid = '', kind = '', tmux = '', where = '', target = '', title = '']: string[]): string | null {
+  if (!/^t[0-9a-f]{6,32}$/.test(sid)) return null;
+  const have = [...tabSessions.entries()].find(([, v]) => v === sid)?.[0];
+  if (have) { focusSession(rt, have); return have; }
+  const t = title || undefined;
+  const o: Open = kind === 'container' ? { kind: 'container', container: target, title: t, sid }
+    : where === 'vps' ? (tmux.startsWith('axt-') ? { kind: 'vps', tmux, title: t, sid } : { kind: 'vps', attach: tmux || undefined, title: t, sid })
+    : { kind: 'console', ...(tmux ? { tmux } : {}), title: t, sid };
+  const id = newTab(rt, o);
+  focusSession(rt, id);
+  return id;
+}
+
+/** `terminal.drop:<sid>`: the API closed that session; its tab goes too. */
+export function dropApiTab(sid: string): void {
+  const tab = [...tabSessions.entries()].find(([, v]) => v === sid)?.[0];
+  if (!tab) return;
+  tabSessions.delete(tab);
+  removeSession(tab);
 }
