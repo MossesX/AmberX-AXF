@@ -194,7 +194,11 @@ export function SkinWhere({ locked }: { locked: boolean }) {
   const header = (
     <div className="axf-settings__row">
       <div className="axf-settings__label"><p className="fx-eyebrow">Where the skin applies</p><span className="fx-muted axf-settings__hint">Hub-wide → this app → a screen → a plugin: the nearer level wins.</span></div>
-      <div className="axf-settings__control axf-skin__action"><Segmented size="sm" label="How this section is shown" value={layout} options={LAYOUTS} onChange={(v) => rt.settings.set(SKIN_WHERE_LAYOUT_KEY, v)} /></div>
+      <div className="axf-settings__control axf-skin__action">
+        <select className="axf-settings__field" aria-label="How this section is shown" value={layout} onChange={(e) => rt.settings.set(SKIN_WHERE_LAYOUT_KEY, e.target.value)}>
+          {LAYOUTS.map((l) => <option key={l.value} value={l.value} title={l.title}>{l.label}</option>)}
+        </select>
+      </div>
     </div>
   );
   if (layout === 'dialog') {

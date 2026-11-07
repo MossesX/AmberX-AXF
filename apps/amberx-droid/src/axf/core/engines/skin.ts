@@ -199,7 +199,7 @@ export function skinCovers(skin: SkinData): { type: string; by: CoverageRow['by'
     if (r.by === 'reference' && r.via && r.via !== 'iconPack' && slots[r.via]) how.push(`via ${r.via} ${slots[r.via]}`);
     if (r.by === 'bundle') how.push('the skin itself');
     if (r.by === 'none') how.push('no look');
-    return { type: r.type, by: r.by, covered: how.length > 0, how };
+    return { type: r.type, by: r.by, covered: r.by !== 'none' && how.length > 0, how };
   });
 }
 
