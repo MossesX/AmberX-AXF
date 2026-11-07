@@ -385,6 +385,13 @@ class Control:
         cmd = {"op": "act", "target": PASS, "path": _scope({"scope": scope}), "action": action, "input": input_ or {}, "by": name, "reason": reason}
         return run(cmd, grants, by=name, approver=approver)
 
+    def pass_settings(self, patch: dict[str, Any] | None = None) -> dict[str, Any]:
+        """{ maxMinutes, timeZone }. A caller that changes them checks owner() first (Claude settings, Approvals & veto)."""
+        if patch is None:
+            return meta("pass-settings")
+        proc = subprocess.run(["node", str(CLI), "pass-settings", json.dumps(patch), "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+        return json.loads(proc.stdout)
+
     def renew_pass(self, scope: str, input_: dict[str, Any], reason: str) -> dict[str, Any]:
         """Re-grant a pass that Brett's own approval is keeping on ("until I turn it off"): only while an active pass
         for the scope exists that he approved himself (console or local), named after him as a standing renewal."""

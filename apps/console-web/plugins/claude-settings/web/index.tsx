@@ -4,17 +4,23 @@
  * saves each change there at once (owner-only settings save only from Brett's signed-in session; the server says no
  * otherwise and the message shows under the row).
  */
-import { useCallback, useEffect, useState } from 'react';
-import { Button, Container, Icon, Note, SelectField, Switch, TextField } from '@console/axf/react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Button, Container, Icon, Note, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { CHROME_INSTANCE_KEY, type AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { ApprovalsPanel } from './approvals';
+import { DEFAULT_VIEW, LABEL_DISPLAY, TAB_GROUP_ID, displayLabel, matches, normView, tabsFor, type TabIn, type ViewPrefs } from './view-core.mjs';
 import './claude-settings.css';
 
 const FOLDER = 'claude-settings';
 const VIEW = 'claude-settings';
 const POLL_MS = 15000;
+const VIEW_KEY = 'axf.claude-settings.view';
+const DEVICE_KEY = 'axf.claude-settings.device';
+const ROW_KEY = CHROME_INSTANCE_KEY('tab-group', TAB_GROUP_ID);
 
 type Value = boolean | string | number;
 interface Setting {
@@ -25,7 +31,7 @@ interface Setting {
 }
 interface Group { id: string; label: string; icon: string; description: string }
 interface NoWait { active: boolean; remainingMs: number; expiresAt?: string; include_irreversible?: boolean; text?: string }
-interface View { ok: boolean; live: boolean; store: string; groups: Group[]; settings: Setting[]; values: Record<string, Value>; noWait?: NoWait; message?: string }
+interface View { ok: boolean; live: boolean; store: string; groups: Group[]; tabs?: TabIn[]; settings: Setting[]; values: Record<string, Value>; noWait?: NoWait; message?: string }
 
 /* ---------------- data ---------------- */
 
@@ -135,16 +141,107 @@ function Status({ view, error }: { view: View | null; error: string }) {
   return view.live ? null : <Note tone="warning">Not live on axHub: this console keeps them in {view.store}. Claude sessions elsewhere won't see changes.</Note>;
 }
 
-/** One settings panel per group (the level toolbar and the settings search see them like any other panel). */
-function GroupPanel({ id }: { id: string }) {
-  const { view, error } = useClaudeSettings();
-  const group = view?.groups.find((g) => g.id === id);
+/* ---------------- views ---------------- */
+
+/** This browser's id: the name the view is saved under, so a phone and a desktop each keep their own. */
+function deviceId(rt: AxfRuntime): string {
+  const saved = rt.settings.get(DEVICE_KEY);
+  if (typeof saved === 'string' && saved) return saved;
+  const id = `d-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  rt.settings.set(DEVICE_KEY, id);
+  return id;
+}
+const deviceName = () => (window.matchMedia('(pointer: coarse)').matches ? 'Phone' : 'Computer');
+
+/** The tab row's position and labels are the row's own overrides, so its right-click settings and this are one thing. */
+function applyRow(rt: AxfRuntime, v: ViewPrefs) {
+  const cur = (rt.settings.get(ROW_KEY) ?? {}) as Record<string, unknown>;
+  const display = LABEL_DISPLAY[v.labels];
+  if (cur.position !== v.position || cur.display !== display) rt.settings.set(ROW_KEY, { ...cur, position: v.position, display } as never);
+}
+
+function useViewPrefs() {
+  const rt = useRuntime();
+  const device = useMemo(() => deviceId(rt), [rt]);
+  const [prefs, setPrefs] = useState<ViewPrefs>(() => normView(rt.settings.get(VIEW_KEY) ?? DEFAULT_VIEW));
+  const now = useRef(prefs); // what is in force, ahead of the next render: the row's onChange below compares against it
+  const push = useCallback((values: Partial<ViewPrefs>) => {
+    void pluginFetch(FOLDER, 'view', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device, name: deviceName(), values }) }).catch(() => undefined);
+  }, [device]);
+  const local = useCallback((v: ViewPrefs) => { now.current = v; setPrefs(v); rt.settings.set(VIEW_KEY, v as never); applyRow(rt, v); }, [rt]);
+  const change = useCallback((patch: Partial<ViewPrefs>) => { local(normView({ ...now.current, ...patch })); push(patch); }, [local, push]);
+  // what was saved for this device wins on load (a session may have changed it through MCP or the CLI)
+  useEffect(() => {
+    let live = true;
+    void pluginFetch(FOLDER, `view?device=${encodeURIComponent(device)}`).then((r) => r.json()).then((j: { ok?: boolean; view?: ViewPrefs & { saved?: boolean } }) => {
+      if (!live || !j.ok || !j.view) return;
+      if (j.view.saved) local(normView(j.view)); else { const v = normView(rt.settings.get(VIEW_KEY) ?? DEFAULT_VIEW); applyRow(rt, v); }
+    }).catch(() => undefined);
+    return () => { live = false; };
+  }, [device, rt, local]);
+  // the row's own right-click settings changed it: keep the view in step
+  useEffect(() => rt.settings.onChange(ROW_KEY, (raw: unknown) => {
+    const o = (raw ?? {}) as { position?: string; display?: string };
+    const p = now.current;
+    const v = normView({ ...p, position: o.position ?? p.position, labels: o.display ? displayLabel(o.display) : p.labels });
+    if (v.position === p.position && v.labels === p.labels) return;
+    local(v);
+    push({ position: v.position, labels: v.labels });
+  }), [rt, local, push]);
+  return { prefs, change, device };
+}
+
+function ViewControls({ prefs, change, device }: { prefs: ViewPrefs; change: (p: Partial<ViewPrefs>) => void; device: string }) {
+  return (
+    <Container title="View" icon="layout" collapsible defaultOpen={false}>
+      <div className="fx-stack">
+        <SelectField label="View" value={prefs.mode} options={[{ value: 'tabbed', label: 'Tabs' }, { value: 'classic', label: 'Classic (one page)' }]} onChange={(v) => change({ mode: v as ViewPrefs['mode'] })} />
+        {prefs.mode === 'tabbed' && <>
+          <SelectField label="Tabs sit on the" value={prefs.position} options={[{ value: 'top', label: 'Top' }, { value: 'bottom', label: 'Bottom' }, { value: 'left', label: 'Left' }, { value: 'right', label: 'Right' }]} onChange={(v) => change({ position: v as ViewPrefs['position'] })} />
+          <SelectField label="Tabs show" value={prefs.labels} options={[{ value: 'both', label: 'Words and icons' }, { value: 'words', label: 'Words' }, { value: 'icons', label: 'Icons' }]} onChange={(v) => change({ labels: v as ViewPrefs['labels'] })} />
+        </>}
+        <p className="axp-cs-group__desc">Saved for this device only ({device}).</p>
+      </div>
+    </Container>
+  );
+}
+
+function TabBody({ view, tab }: { view: View; tab: ReturnType<typeof tabsFor<Group>>[number] }) {
   return (
     <div className="fx-stack">
-      {id === 'no-wait' && <Status view={view} error={error} />}
-      {view && group ? <GroupBody view={view} group={group} /> : null}
+      {tab.description && <p className="axp-cs-group__desc">{tab.description}</p>}
+      {tab.groups.map((g) => (tab.groups.length > 1 ? <section key={g.id} className="fx-stack"><h3 className="axp-cs-group__title">{g.label}</h3><GroupBody view={view} group={g} /></section> : <GroupBody key={g.id} view={view} group={g} />))}
+      {tab.id === 'approvals' && <ApprovalsPanel />}
     </div>
   );
+}
+
+/** One interface, wherever it opens (the Claude page, Settings → Plugins → Claude): find, View, then the settings. */
+function ClaudeInterface({ view }: { view: View }) {
+  const { prefs, change, device } = useViewPrefs();
+  const [find, setFind] = useState('');
+  const tabs = useMemo(() => tabsFor(view.groups, view.tabs, view.settings), [view]);
+  const hits = find.trim() ? view.settings.filter((s) => matches(s, find)) : null;
+  const active = tabs.find((t) => t.id === prefs.tab) ?? tabs[0];
+  return (
+    <div className="fx-stack">
+      <TextField label="Find a setting" value={find} onChange={setFind} />
+      <ViewControls prefs={prefs} change={change} device={device} />
+      {hits ? (hits.length ? hits.map((s) => <SettingRow key={s.key} s={s} />) : <p className="axp-cs-group__desc">No setting matches.</p>)
+        : prefs.mode === 'classic' ? tabs.map((t) => <Container key={t.id} title={t.label} icon={t.icon} collapsible><TabBody view={view} tab={t} /></Container>)
+          : active ? (
+            <TabGroup id={TAB_GROUP_ID} label="Claude settings" value={active.id} onChange={(id) => change({ tab: id })} tabs={tabs.map((t) => ({ value: t.id, label: t.label, icon: t.icon, title: t.label }))}>
+              <TabBody view={view} tab={active} />
+            </TabGroup>
+          ) : null}
+    </div>
+  );
+}
+
+/** The whole interface as one settings panel: the view it draws is the one picked for this device. */
+function InterfacePanel() {
+  const { view, error } = useClaudeSettings();
+  return <div className="fx-stack"><Status view={view} error={error} />{view && <ClaudeInterface view={view} />}</div>;
 }
 
 function ClaudePage() {
@@ -160,9 +257,7 @@ function ClaudePage() {
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>
       <Status view={view} error={error} />
-      {view?.groups.filter((g) => view.settings.some((s) => s.group === g.id)).map((g) => (
-        <Container key={g.id} title={g.label} icon={g.icon}><GroupBody view={view} group={g} /></Container>
-      ))}
+      {view && <ClaudeInterface view={view} />}
     </div>
   );
 }
@@ -186,20 +281,10 @@ function NoWaitBanner() {
   );
 }
 
-const GROUP_PANELS: { id: string; title: string; icon: string }[] = [
-  { id: 'no-wait', title: 'No wait', icon: 'zap' },
-  { id: 'follow', title: 'Follow Amber', icon: 'eye' },
-  { id: 'builds', title: 'Builds', icon: 'layers' },
-  { id: 'verification', title: 'Verification', icon: 'shield' },
-  { id: 'talking', title: 'Talking', icon: 'mic' },
-  { id: 'notifications', title: 'Notifications', icon: 'bell' },
-  { id: 'memory', title: 'Memory and notes', icon: 'file' },
-];
-
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.claude-settings',
   label: 'Claude',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   register(rt) {
     rt.actions.register('claude-settings.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude settings' });
@@ -208,9 +293,9 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },
   contextMenu: [{ id: 'claude-settings.ctx', target: '*', order: 70, items: [{ id: 'claude-settings.open', label: 'Claude settings', icon: 'sparkles', action: 'claude-settings.open' }] }],
   banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> }],
-  settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, talking, notifications, memory.' }],
+  settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: approvals and veto, builds, talking, notifications, memory.' }],
   settingsPanels: [
-    ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),
+    { id: 'claude-settings.interface', tab: VIEW, title: 'Claude settings', icon: 'sparkles', order: 1, render: () => <InterfacePanel /> },
     { id: 'claude-settings.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

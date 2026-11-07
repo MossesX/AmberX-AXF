@@ -701,6 +701,8 @@ VPS). The session reads the rules and this file first, as usual.
 - **Read first:** apps/console-web/plugins/build-orchestrator (web/orchestrator-core.mjs), framework/cli/pending.mjs, framework/cli/build-queue.mjs, apps/console-web/plugins/build-manager, apps/console-web/plugins/changes-grid, orchestrator build share-search s1 (grid-attach@1). <!-- axf-plugin:build-orchestrator -->
 - **First message for the new chat (Fable):** "Start orchestrator build feature-matrix (refactor) in AmberX-AXF: Fable phase s1–s2 on branch fable/feature-matrix. Read the brief with orchestrator.mjs brief feature-matrix." <!-- axf-plugin:build-orchestrator -->
 
+- **claude-settings-tabs-veto** (Opus, Nov 7 2026): views + Approvals & veto tab built on `claude/claude-settings-tabs-veto`. To carry on: step s4 only, axHub's owner-only policy API, pinned to Fable (`framework/spec/AXHUB-POLICY-API.md`, a PR on MossesX/axHub). Until it lands the tab says the API is missing and no live policy changes. Report: `_claude/builds/reports/claude-settings-tabs-veto.md`.
+
 ## Live build log
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->

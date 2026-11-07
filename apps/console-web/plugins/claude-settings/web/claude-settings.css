@@ -9,3 +9,5 @@
 .axp-cs-row__when { color: var(--fx-muted); }
 .axp-cs-row > .fx-note { flex: 1 1 100%; }
 .axp-cs-banner { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: nowrap; white-space: nowrap; }
+.axp-cs-group__title { margin: 0; }
+.axp-cs-plan { margin: 0; padding-left: var(--fx-dens-gap-lg); max-height: 40vh; overflow: auto; }
