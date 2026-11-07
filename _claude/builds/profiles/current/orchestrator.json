@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:00:57.788Z",
+ "updatedAt": "2026-11-07T05:01:16.763Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22524,12 +22524,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T04:49:05.573Z",
+   "updatedAt": "2026-11-07T05:00:56.921Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-multi-account-headless-workers--rhonda, own login copy)",
      "at": "2026-11-07T04:49:05.573Z"
+    },
+    {
+     "text": "Hotfix on the way in: console outbox was stuck (journal at GitHub's file limit, poisoned records). PR #381 (claude/builds-journal-parts) in the merge queue.",
+     "at": "2026-11-07T05:00:56.921Z"
     }
    ],
    "approvals": [],

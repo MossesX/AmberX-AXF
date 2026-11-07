@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1223,
- "updatedAt": "2026-11-07T05:00:57.788Z",
+ "rev": 1224,
+ "updatedAt": "2026-11-07T05:01:16.763Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97784,11 +97784,11 @@
     "current"
    ],
    "order": {
-    "current": 79
+    "current": 80
    },
    "kind": "build",
    "planRef": "first-refresh-token-saved-every-time-it-s-used-v",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97956,11 +97956,11 @@
     "current"
    ],
    "order": {
-    "current": 80
+    "current": 81
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -98204,11 +98204,11 @@
     "current"
    ],
    "order": {
-    "current": 81
+    "current": 82
    },
    "kind": "build",
    "planRef": "ui-review-notify-session-audio",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -98498,11 +98498,11 @@
     "current"
    ],
    "order": {
-    "current": 82
+    "current": 83
    },
    "kind": "build",
    "planRef": "claude-badge-vps",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -98803,11 +98803,11 @@
     "current"
    ],
    "order": {
-    "current": 83
+    "current": 84
    },
    "kind": "build",
    "planRef": "notifications-control-panel",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -99773,11 +99773,11 @@
     "current"
    ],
    "order": {
-    "current": 84
+    "current": 85
    },
    "kind": "build",
    "planRef": "gizmo-rebuild-fable",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -100179,11 +100179,11 @@
     "current"
    ],
    "order": {
-    "current": 85
+    "current": 86
    },
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -100559,11 +100559,11 @@
     "current"
    ],
    "order": {
-    "current": 86
+    "current": 87
    },
    "kind": "build",
    "planRef": "badges-notify-followup",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -100763,11 +100763,11 @@
     "current"
    ],
    "order": {
-    "current": 87
+    "current": 88
    },
    "kind": "build",
    "planRef": "settings-sections-everywhere",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101233,11 +101233,11 @@
     "current"
    ],
    "order": {
-    "current": 88
+    "current": 89
    },
    "kind": "build",
    "planRef": "claude-settings-tabs-veto",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101562,11 +101562,11 @@
     "current"
    ],
    "order": {
-    "current": 89
+    "current": 90
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101755,11 +101755,11 @@
     "current"
    ],
    "order": {
-    "current": 90
+    "current": 91
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101928,11 +101928,11 @@
     "current"
    ],
    "order": {
-    "current": 91
+    "current": 92
    },
    "kind": "build",
    "planRef": "claude-accounts-edit",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -102066,11 +102066,11 @@
     "current"
    ],
    "order": {
-    "current": 92
+    "current": 93
    },
    "kind": "build",
    "planRef": "amberx-open-any-url",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -102204,11 +102204,11 @@
     "current"
    ],
    "order": {
-    "current": 93
+    "current": 94
    },
    "kind": "build",
    "planRef": "axhub-google",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -102615,11 +102615,11 @@
     "current"
    ],
    "order": {
-    "current": 94
+    "current": 95
    },
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -103668,11 +103668,11 @@
     "current"
    ],
    "order": {
-    "current": 95
+    "current": 96
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -103989,11 +103989,11 @@
     "current"
    ],
    "order": {
-    "current": 96
+    "current": 97
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104212,11 +104212,11 @@
     "current"
    ],
    "order": {
-    "current": 98
+    "current": 99
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104461,11 +104461,11 @@
     "current"
    ],
    "order": {
-    "current": 99
+    "current": 100
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104744,11 +104744,11 @@
     "current"
    ],
    "order": {
-    "current": 100
+    "current": 101
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104788,12 +104788,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T04:49:05.573Z",
+   "updatedAt": "2026-11-07T05:00:56.921Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-multi-account-headless-workers--rhonda, own login copy)",
      "at": "2026-11-07T04:49:05.573Z"
+    },
+    {
+     "text": "Hotfix on the way in: console outbox was stuck (journal at GitHub's file limit, poisoned records). PR #381 (claude/builds-journal-parts) in the merge queue.",
+     "at": "2026-11-07T05:00:56.921Z"
     }
    ],
    "approvals": [],
@@ -104926,11 +104930,11 @@
     "current"
    ],
    "order": {
-    "current": 101
+    "current": 102
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -105165,11 +105169,11 @@
     "current"
    ],
    "order": {
-    "current": 97
+    "current": 98
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105310,11 +105314,11 @@
     "current"
    ],
    "order": {
-    "current": 102
+    "current": 103
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -105436,11 +105440,11 @@
     "current"
    ],
    "order": {
-    "current": 103
+    "current": 104
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -105650,11 +105654,11 @@
     "current"
    ],
    "order": {
-    "current": 104
+    "current": 105
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -105810,11 +105814,11 @@
     "current"
    ],
    "order": {
-    "current": 105
+    "current": 106
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
