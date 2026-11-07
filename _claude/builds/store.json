@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1301,
- "updatedAt": "2026-11-07T12:58:40.890Z",
+ "rev": 1302,
+ "updatedAt": "2026-11-07T12:58:49.115Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110486,7 +110486,7 @@
    "branch": "claude/style-override-rule",
    "pr": "",
    "createdAt": "2026-11-07T12:36:39.385Z",
-   "updatedAt": "2026-11-07T12:58:39.608Z",
+   "updatedAt": "2026-11-07T12:58:41.308Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -110585,12 +110585,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:58:40.461Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T12:36:39.387Z",
-     "updatedAt": "2026-11-07T12:36:39.387Z"
+     "updatedAt": "2026-11-07T12:58:40.559Z"
     },
     {
      "id": "s5",
@@ -110607,12 +110607,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:58:41.308Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T12:36:39.387Z",
-     "updatedAt": "2026-11-07T12:36:39.387Z"
+     "updatedAt": "2026-11-07T12:58:41.424Z"
     },
     {
      "id": "s6",
@@ -110689,7 +110689,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
