@@ -726,13 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s18-17 done (current) · orchestrator
-- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s19-18 done (current) · orchestrator
-- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s20-19 done (current) · orchestrator
-- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s21-20 done (current) · orchestrator
-- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s22-21 done (current) · orchestrator
-- 2026-11-06 18:45 UTC · `assistant-chat-mode` s5 done, → running (current) · orchestrator
-- 2026-11-06 18:45 UTC · `assistant-chat-mode` s6 done (current) · orchestrator
 - 2026-11-06 18:45 UTC · `assistant-chat-mode` branch claude/assistant-chat-mode-r4 (current) · builds-live
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` PR #361 (current) · builds-live
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` s7 done (current) · orchestrator
@@ -1126,6 +1119,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:07 UTC · `multi-account-headless-workers` s2 done (current) · orchestrator
 - 2026-11-07 05:07 UTC · `multi-account-headless-workers` s4 done (current) · orchestrator
 - 2026-11-07 05:07 UTC · `multi-account-headless-workers` s2 done, s4 done (current) · foreign-write
+- 2026-11-06 18:06 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · foreign-write
+- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s15 undone, s16 undone, note (current) · foreign-write
+- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · foreign-write
+- 2026-11-07 05:03 UTC · `multi-account-headless-workers` s1 done (current) · foreign-write
+- 2026-11-07 05:03 UTC · `merge-conflict-alerts` note (current) · foreign-write
+- 2026-11-07 05:03 UTC · `merge-conflict-alerts` → running (current) · merge-conflict-alerts
 
 ## Token passes (log)
 
