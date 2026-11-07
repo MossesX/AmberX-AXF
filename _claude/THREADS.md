@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:36 UTC · `claude-settings-tabs-veto` s1 done, s2 done, s3 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-07 00:36 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · foreign-write
 - 2026-11-07 00:36 UTC · `settings-sections-everywhere` PR #372 (current) · builds-live
 - 2026-11-07 00:36 UTC · `settings-sections-everywhere` s6 done (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:10 UTC · `amber-chat-asset` s4 done (all) · orchestrator
 - 2026-11-07 13:10 UTC · `amber-chat-asset` note (all) · orchestrator
 - 2026-11-07 13:12 UTC · `amber-chat-asset` s5 done, → complete (all) · orchestrator
+- 2026-11-07 13:12 UTC · `amber-chat-asset` note (all) · orchestrator
 
 ## Token passes (log)
 

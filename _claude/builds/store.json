@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1310,
- "updatedAt": "2026-11-07T13:12:25.006Z",
+ "rev": 1311,
+ "updatedAt": "2026-11-07T13:12:33.455Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110113,12 +110113,16 @@
    "branch": "claude/amber-chat-asset",
    "pr": "",
    "createdAt": "2026-11-07T12:30:40.602Z",
-   "updatedAt": "2026-11-07T13:12:23.670Z",
+   "updatedAt": "2026-11-07T13:12:24.625Z",
    "builtAt": "2026-11-07T13:12:23.670Z",
    "notes": [
     {
      "text": "UI Review item r-20261107-2a4f80e8: three chat-view looks (amber-signature, messenger, terminal), phone + desktop, choices set amber-chat-look; the pick becomes AmberX's default chat-view.",
      "at": "2026-11-07T13:10:24.035Z"
+    },
+    {
+     "text": "Built on claude/amber-chat-asset (3a48beeb0), committed, not pushed (brief: commit, don't push). UI Review r-20261107-2a4f80e8 holds the PR until Brett picks a look. Report _claude/builds/reports/amber-chat-asset.md",
+     "at": "2026-11-07T13:12:24.625Z"
     }
    ],
    "approvals": [
@@ -110264,7 +110268,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
