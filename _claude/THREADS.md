@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 22:40 UTC · `build-own-login` added (4 steps) (current) · foreign-write
 - 2026-11-05 22:41 UTC · `ai-keys-new-format` added (3 steps) (current) · orchestrator
 - 2026-11-05 22:41 UTC · `ai-keys-new-format` s1 done, → running (current) · orchestrator
 - 2026-11-05 22:41 UTC · `ai-keys-new-format` s2 done (current) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:48 UTC · `amberx-open-any-url` added (4 steps) (current) · backfill
 - 2026-11-07 00:48 UTC · `axhub-google` added (4 steps) (current) · backfill
 - 2026-11-07 00:48 UTC · `notes-tasks-calendar` added (5 steps) (current) · backfill
+- 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s6 done (current) · orchestrator
 
 ## Token passes (log)
 
