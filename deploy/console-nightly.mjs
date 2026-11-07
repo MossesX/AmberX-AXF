@@ -61,7 +61,7 @@ const writeState = (s) => { mkdirSync(dirname(stateFile()), { recursive: true })
 async function settings() {
   // The live values (hub first); a read that fails leaves the defaults, so a broken read never cancels the deploy.
   try {
-    const m = await import(pathToFileURL(join(dir(), 'apps/console-web/plugins/claude-settings/core.mjs')).href);
+    const m = await import(pathToFileURL(join(dir(), 'apps/console-web/plugins/claude-settings/core.mjs')).href); // axf-plugin:claude-settings
     const doc = m.readDoc();
     const specs = m.loadRegistry().settings;
     const value = (key) => { const spec = specs.find((x) => x.key === key); return spec ? m.valueOf(spec, doc) : undefined; };
