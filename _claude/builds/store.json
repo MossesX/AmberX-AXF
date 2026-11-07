@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1402,
- "updatedAt": "2026-11-07T17:01:20.313Z",
+ "rev": 1403,
+ "updatedAt": "2026-11-07T17:03:09.358Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112355,8 +112355,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-07T17:00:11.176Z",
-   "updatedAt": "2026-11-07T17:01:19.405Z",
+   "updatedAt": "2026-11-07T17:03:07.813Z",
    "builtAt": "",
    "notes": [
     {
@@ -112552,7 +112553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
