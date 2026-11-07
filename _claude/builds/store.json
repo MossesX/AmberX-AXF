@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1320,
- "updatedAt": "2026-11-07T13:36:31.154Z",
+ "rev": 1321,
+ "updatedAt": "2026-11-07T13:43:44.923Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110762,15 +110762,15 @@
    "title": "Plan Studio: Blueprints",
    "category": "Plan Studio",
    "detail": "Blueprints = named packages of plans (blueprint@1), one active at a time; Plan Studio shows the active one. Blueprints section (list/create/rename/duplicate/delete/move plans, bulk), context-menu Blueprints submenu + control@1 planner.blueprints + MCP/CLI/voice switch; migration of every current plan into \"Existing\"; UI from assets; tests; UI Review with 3 options. Supersedes plan-archive.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:36:24.206Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T13:43:43.181Z",
+   "builtAt": "2026-11-07T13:43:43.181Z",
    "notes": [],
    "approvals": [
     {
@@ -110943,12 +110943,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:43:43.181Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:13:15.893Z",
-     "updatedAt": "2026-11-07T13:13:15.893Z"
+     "updatedAt": "2026-11-07T13:43:43.326Z"
     }
    ],
    "profiles": [
@@ -110959,7 +110959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
