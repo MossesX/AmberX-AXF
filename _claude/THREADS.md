@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
+| UI Review phone notifications + truthful wake + auto session recording and transcripts (`ui-review-notify-session-audio`) | built, waiting on UI Review | claude/ui-review-notify-audio | #365 | Brett approves 5 items, then the merge queue takes it; a new AmberX APK for the phone half | 2026-11-06 |
 | Fast talk: Gizmo and the console assistant answer plain chat without tools (`assistant-chat-mode`, Current, Opus; r1 and r2 hit the usage limit, r3 unpushed, r4 finished it) | built | `claude/assistant-chat-mode-r4` | see build | Report `_claude/builds/reports/assistant-chat-mode.md`. Plain talk: first word about 1 s, was about 8 s. Waiting on Brett's UI Review, then the merge queue | 2026-11-06 |
 | Every headless build keeps its own Claude login (Current `build-own-login`, Opus; Brett Nov 5 voice: "Yeah, it should be like that already."): per-build `CLAUDE_CONFIG_DIR` copy of the active saved account (`deploy/claude-login.mjs`), inherited OAuth token dropped, account recorded (log, tmux tag, event, build note), `--account` per launch, swarm runner too | built, in the merge queue | `claude/build-own-login-r2` | (see Live build log) | Report `_claude/builds/reports/build-own-login.md`. Brett: none | 2026-11-05 |
 | AI keys console-wide store (`ai-keys-console-store`, Opus; Janitor Joey): AI keys was already one store and never held a key, Brett's 5 are in `~/.claude-accounts`. Added an admin + service-token guard, a per-user store migration (no such files today), `vpsAccounts` on GET /keys, POST /active and /switch for VPS accounts (held), fixed claude-accounts dropping `[token]` / `[api key]` rows. Tokens deliberately not copied: AI keys rotates refresh tokens. Importing them is Brett's call | in progress | claude/ai-keys-console-store-2 | | merge queue, redeploy, verify | 2026-11-05 |
@@ -199,6 +200,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### UI Review notifications + session audio (`ui-review-notify-session-audio`)
+- **Asked:** AmberX notification for anything ready in UI Review; console_show must really open or fall back to a tappable notification; every session recorded and transcribed automatically.
+- **Model:** Opus. **Branch:** claude/ui-review-notify-audio, PR #365. All 6 steps built.
+- **Left:** Brett approves the 5 UI Review items; the merge queue lands it. After the merge: build and install a new AmberX APK, then try it on the phone (notification tap, overlay start, recorder prompt) and check one real 30-minute part.
+- **Read:** `_claude/builds/reports/ui-review-notify-session-audio.md`.
+- **First message:** "Check PR #365 after it lands: confirm the console image has faster-whisper, the systems check shows Session transcripts, and a real recording gets a transcript."
 ### Fast talk (`assistant-chat-mode`, Current, Opus) — branch `claude/assistant-chat-mode-r4`
 All 8 steps done on the branch. Waits on Brett's UI Review, then the merge queue lands it. Do not merge by hand. Check: the AI assistant plugin's `test.py`. After landing, measure once on the phone through AmberX, since the report's figures are from the VPS.
 

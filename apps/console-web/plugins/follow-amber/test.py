@@ -46,13 +46,23 @@ class FakeConsole:
         known = {"console.screens": {"plan studio": "Plan Studio", "builds": "Builds"}, "console.settings": {"follow amber": "Follow Amber"}, "console.actions": {"builds.open": "Open builds"}}
         if path == "offline":
             return {"ok": False, "code": "not_found", "message": "no console is open for you right now: open the Dev Console"}
+        if path == "queued":
+            return {"ok": True, "queued": True, "delivery": {"how": "queued", "id": "cq-1"}, "message": "queued, not open yet"}
+        if path == "frozen":
+            return {"ok": True, "item": {"label": "Frozen"}, "delivered": [{"client": "cc-1", "ok": False, "pending": True, "message": "sent; the console didn't answer yet"}]}
         label = known.get(target, {}).get(path.lower())
         if not label:
             return {"ok": False, "code": "not_found", "message": f"no {target} named {path}"}
         return {"ok": True, "item": {"label": label}, "delivered": [{"client": "cc-abc123", "ok": True, "message": f"opened {label}"}]}
 
 
+    def queue_for_owner(self, command: dict, grants: list[str], by: str = "") -> dict:
+        self.queued.append(command)
+        return {"id": "cq-2", "expiresAt": "later"}
+
+
 fake = FakeConsole()
+fake.queued = []
 plugin_services.provide("console-commands@1", fake, folder="console-commands")
 
 spec = importlib.util.spec_from_file_location("follow_amber_server", HERE / "server" / "__init__.py")
@@ -154,6 +164,12 @@ ROLE["user"] = None
 # ---------------------------------------------------------------- the capability (what console_show / console_follow call)
 svc = plugin_services.get("follow-amber@1")
 ok(svc is not None and svc.state()["on"] is True and svc.state()["clients"] == 1, "follow-amber@1 state")
+# never "opened" for what isn't on screen (build ui-review-notify-session-audio)
+r = fa.show("screen:queued")
+ok(r["ok"] and r["shown"] is False and r["queued"] is True and "opened" not in r["message"], f"queued: not shown, says so ({r})")
+r = fa.show("screen:frozen")
+ok(r["ok"] and r["shown"] is False and r["queued"] is True and len(fake.queued) == 1, f"a console that never answered: queued for the next one ({r})")
+
 ok(svc.show("plan studio")["shown"] is True, "follow-amber@1 show")
 c.post(f"{P}/state", json={"on": False})
 n = len(fake.calls)
