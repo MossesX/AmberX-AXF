@@ -8,3 +8,4 @@
 2026-11-07T16:36:27Z DONE step4 lock (CI api-coverage check + spec, rule in RULES.md/CLAUDE.md/brief template, decisions)
 2026-11-07T16:36:27Z START addendum API Browser
 2026-11-07T16:48:48Z API Browser plugin built (registry, 4 views, Try it, 3 looks); next: shots + UI Review
+2026-11-07T16:58:57Z DONE addendum API Browser (UI Review r-20261107-e7b50396, 3 looks); report _claude/builds/reports/full-api-control.md

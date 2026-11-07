@@ -23,7 +23,7 @@ his own click decides), REST + MCP + CLI names, the UI elements it stands for (*
 ## Views
 
 A TabGroup (`api-browser.views`) drawn on one of the plugin's three tab-group looks (`assets/tab-group/`, UI Review
-choice set `api-browser-look`: top tabs, side rail, chips; Settings → Plugins → API Browser, or right-click the switcher):
+choice set `api-browser`: top tabs, side rail, chips; Settings → Plugins → API Browser, or right-click the switcher):
 
 - **Grid** — framework DataGrid grouped by kind, sortable (what it does, policy, REST, MCP, CLI, UI count), hide columns
 - **Tree** — Dev Console › plugin / control domain / MCP area › kind › path

@@ -247,3 +247,12 @@ Every build has an Urgent / High / Normal / Low tag on every build view; tap or 
 
 **Notifications panel (Nov 6 2026, `notifications-control-panel`):** one panel (Plugins → Notifications), one registry (`notify-registry@1` + each plugin's `notify.json`), one gate in the alert hub (`axf.notify@1`). Per type on/off, channels, priority, test; master, per app, quiet hours (Claude settings `notify.quiet*`, which nothing read before). Approvals and veto are guarded. `notify.buildDone` and `notify.blocked` work now. AmberX needs a new APK only to mute approvals and veto. Report: `_claude/builds/reports/notifications-control-panel.md`. <!-- axf-plugin:notify-control -->
 - **UI Review phone notifications, truthful wake, sessions recorded and transcribed (Nov 6 2026, build `ui-review-notify-session-audio`):** one AmberX notification per UI Review group with a link to it; `console_show` and the wake no longer report a page opened unless a console really took it; each session asks the recorder and every part is transcribed locally. Report `_claude/builds/reports/ui-review-notify-session-audio.md`.
+
+## The API controls everything (Nov 7 2026, full-api-control, Opus; branch `claude/full-api-control`)
+Anything Brett can do by hand in the console has an API path. Terminal: `console-terminal` commands `open-tab` / `type`
+(visible, *Typing speed* 30/s) / `keys` / `screen` / `close-tab` / `tabs`; `console open terminal` works
+(`ActionMeta.screen`). control@1 `console.values` (every setting) and `console.elements` (anything on screen; deletes
+confirmed; `data-axf-person-only` + `rt.actions.asRemote` keep Brett's taps his); MCP `console_value|elements|press`,
+CLI `axf console value|press|toggle|fill|focus|menu`. Audit `framework/cli/api-coverage.mjs` (registry
+`apps/console-web/api-coverage.json`, 4252 elements, 0 gaps; CI fails on a gap). API Browser plugin over
+`framework/cli/api-registry.mjs` (1262 paths). Report `_claude/builds/reports/full-api-control.md`. <!-- axf-plugin:api-browser -->

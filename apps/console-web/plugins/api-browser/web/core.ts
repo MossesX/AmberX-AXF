@@ -66,7 +66,8 @@ export function sampleOf(s: Schema | undefined, depth = 0): unknown {
   if (s.default !== undefined) return s.default;
   if (Array.isArray(s.enum) && s.enum.length) return s.enum[0];
   const t = Array.isArray(s.type) ? s.type[0] : s.type;
-  if (t === 'object' || s.properties) return Object.fromEntries(Object.entries(s.properties ?? {}).filter(([k]) => (s.required ?? []).includes(k) || depth === 0).map(([k, v]) => [k, sampleOf(v, depth + 1)]));
+  // what it needs (required, and fixed values like op / target / action); optional fields stay out so their defaults apply
+  if (t === 'object' || s.properties) return Object.fromEntries(Object.entries(s.properties ?? {}).filter(([k, v]) => (s.required ?? []).includes(k) || v.const !== undefined).map(([k, v]) => [k, sampleOf(v, depth + 1)]));
   if (t === 'array') return [];
   if (t === 'number' || t === 'integer') return 0;
   if (t === 'boolean') return false;

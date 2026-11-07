@@ -27,6 +27,7 @@
     "dataDir": ".axf-console/plugins/api-browser",
     "env": ["AXF_API_BROWSER_DIR"],
     "mentions": [
+      "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },

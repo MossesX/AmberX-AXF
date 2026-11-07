@@ -1,29 +1,25 @@
 {
-  "$axf": "asset@1",
-  "type": "tab-group",
-  "id": "api-browser-chips",
-  "name": "API Browser: chips",
-  "version": "1.0.0",
-  "description": "Compact chips that wrap, with count badges (paths per view, gaps on Coverage): the quickest switcher on a phone.",
-  "author": "AmberX AXF",
-  "tags": [
-    "chips",
-    "wrap",
-    "badges",
-    "api-browser",
-    "ui-choice",
-    "choice-set:api-browser-look",
-    "choice-option:chips"
-  ],
-  "data": {
-    "style": "chips",
-    "align": "start",
-    "position": "top",
-    "density": "compact",
-    "overflow": "wrap",
-    "display": "both",
-    "divider": false,
-    "badges": true,
-    "rememberLast": true
-  }
+ "$axf": "asset@1",
+ "type": "tab-group",
+ "id": "api-browser-chips",
+ "name": "api-browser: Chips",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Compact chips that wrap, with count badges (paths per view, gaps on Coverage): the quickest switcher on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:api-browser",
+  "choice-option:chips"
+ ],
+ "data": {
+  "style": "chips",
+  "align": "start",
+  "position": "top",
+  "density": "compact",
+  "overflow": "wrap",
+  "display": "both",
+  "divider": false,
+  "badges": true,
+  "rememberLast": true
+ }
 }

@@ -31,9 +31,9 @@ t('the tree is app › area › group', () => {
   assert.equal(term?.groups[0].entries.length, 2);
   assert.ok(tr[0].areas.some((a) => a.label === 'control@1 · console'));
 });
-t('a sample body comes from the schema (control commands drop reason / by)', () => {
+t('a sample body: what is required and fixed (control commands drop reason / by, optional fields keep their defaults)', () => {
   assert.deepEqual(c.sampleBody(setVal), { op: 'set', target: 'console.values', path: '', value: '' });
-  assert.deepEqual(c.sampleBody(typeCmd), { id: '', text: '', enter: false });
+  assert.deepEqual(c.sampleBody(typeCmd), { id: '', text: '' }); // optional fields keep their defaults
 });
 t('Try it: control and plugin commands go to POST /api/control as one command', () => {
   const r1 = c.tryRequest(setVal, { op: 'set', target: 'console.values', path: 'axf.display.compact', value: true }) as c.TryRequest;

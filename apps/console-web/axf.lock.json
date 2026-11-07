@@ -758,7 +758,6 @@
     "src/axf/react/windows/DockHost.tsx": "aed2738feff1e3c9",
     "src/axf/react/windows/WindowHost.tsx": "ad18a76dc4504b47",
     "src/axf/schemas/ai-providers.json": "2e1e445fb70ba223",
-    "src/axf/schemas/api-coverage.json": "23e84bbfdd493687",
     "src/axf/schemas/app-structure.json": "b757aff49521a626",
     "src/axf/schemas/asset-types.android.json": "c31b8af1ae8fa030",
     "src/axf/schemas/asset-types.json": "285ef0a68b656035",

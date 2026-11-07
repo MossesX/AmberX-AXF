@@ -1,29 +1,25 @@
 {
-  "$axf": "asset@1",
-  "type": "tab-group",
-  "id": "api-browser-rail",
-  "name": "API Browser: side rail",
-  "version": "1.0.0",
-  "description": "A rail of pills down the left with the view switcher always in reach, like an IDE's activity bar; the list and the detail share the rest.",
-  "author": "AmberX AXF",
-  "tags": [
-    "left",
-    "vertical",
-    "pills",
-    "api-browser",
-    "ui-choice",
-    "choice-set:api-browser-look",
-    "choice-option:rail"
-  ],
-  "data": {
-    "style": "pills",
-    "align": "start",
-    "position": "left",
-    "density": "regular",
-    "overflow": "scroll",
-    "display": "both",
-    "divider": true,
-    "badges": true,
-    "rememberLast": true
-  }
+ "$axf": "asset@1",
+ "type": "tab-group",
+ "id": "api-browser-rail",
+ "name": "api-browser: Side rail",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A rail of pills down the left with the view switcher always in reach, like an IDE's activity bar; the list and the detail share the rest.",
+ "tags": [
+  "ui-choice",
+  "choice-set:api-browser",
+  "choice-option:rail"
+ ],
+ "data": {
+  "style": "pills",
+  "align": "start",
+  "position": "left",
+  "density": "regular",
+  "overflow": "scroll",
+  "display": "both",
+  "divider": true,
+  "badges": true,
+  "rememberLast": true
+ }
 }

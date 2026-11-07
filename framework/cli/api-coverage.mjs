@@ -291,10 +291,11 @@ export function build() {
   // server routes and plugin commands: the plugin-commands@1 registry (the same one REST, MCP and the CLI are made from)
   for (const p of pluginRegistry({ apps: ['console-web'] }).plugins) {
     for (const c of p.commands ?? []) {
-      const route = c.run?.route ?? (c.run?.method ? `${c.run.method} ${c.run.path ?? ''}` : '');
+      const r = c.run?.route;
+      const route = typeof r === 'string' ? r : r?.method ? `${r.method} ${r.path ?? ''}` : '';
       if (!route) continue; // actions and data reads are listed from the web sources
       const read = c.kind === 'read' || c.effect === 'read';
-      entries.push(e({ kind: 'route', id: `${p.folder}/${c.id}`, label: c.title || c.id, where: `plugin:${p.folder}`, file: `${PLUGINS_DIR}/${p.folder}/server ${typeof route === 'string' ? route : JSON.stringify(route)}`, api: `${read ? 'plugins.reads read' : 'plugins.commands run'} ${p.folder}/${c.id}`, status: 'covered' }));
+      entries.push(e({ kind: 'route', id: `${p.folder}/${c.id}`, label: c.title || c.id, where: `plugin:${p.folder}`, file: `${PLUGINS_DIR}/${p.folder}/server ${route}`, api: `${read ? 'plugins.reads read' : 'plugins.commands run'} ${p.folder}/${c.id}`, status: 'covered' }));
     }
     for (const s of p.skipped ?? []) {
       const why = String(s.why ?? s.skip ?? '');

@@ -5,7 +5,7 @@
 .axp-api-browser__split[data-detail="open"] { grid-template-columns: minmax(0, 3fr) minmax(calc(var(--fx-space) * 40), 2fr); }
 :where([data-fx-narrow], [data-fx-small], [data-fx-tiny]) .axp-api-browser__split[data-detail="open"] { grid-template-columns: minmax(0, 1fr); }
 :where([data-fx-narrow], [data-fx-small], [data-fx-tiny]) .axp-api-browser__detail { position: static; max-height: none; }
-.axp-api-browser__main { min-width: 0; }
+.axp-api-browser__main { min-width: 0; overflow-x: auto; }
 .axp-api-browser__detail { position: sticky; top: var(--fx-dens-gap-md); min-width: 0; max-height: calc(100vh - var(--fx-space) * 12); overflow: auto; }
 .axp-api-browser__title { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
 .axp-api-browser__title > * { overflow: hidden; text-overflow: ellipsis; }
@@ -15,7 +15,7 @@
 
 /* policy and coverage tags: the theme's status colours, tinted by the theme's own opacities */
 .axp-api-browser__policy, .axp-api-browser__status, .axp-api-browser__count {
-  display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); white-space: nowrap; font-size: var(--fx-type-scale-sm);
+  display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); white-space: nowrap; font-size: var(--fx-type-scale-sm);
   padding: 0 var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid currentColor;
 }
 .axp-api-browser__policy[data-policy="instant"], .axp-api-browser__status[data-status="covered"], .axp-api-browser__count[data-status="covered"] { color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }

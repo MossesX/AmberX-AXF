@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T16:48:50.601Z",
+ "updatedAt": "2026-11-07T16:59:11.386Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10214,7 +10214,7 @@
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-04T20:35:35.401Z",
+   "updatedAt": "2026-11-07T16:49:06.961Z",
    "builtAt": "2026-11-04T17:18:27.648Z",
    "notes": [
     {
@@ -10236,6 +10236,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Clash with full-api-control (branch claude/full-api-control): both append control@1 targets after tokens.nav (this one console.placement; that one console.values + console.elements) and both edit check-control.mts (target count, append-only slice, the console 'never set' exception). Whichever lands second: put its targets after the other's, count 26, allow set on console.placement and console.values.",
+     "at": "2026-11-07T16:49:06.961Z"
     }
    ],
    "approvals": [
@@ -12389,14 +12393,15 @@
    "title": "Fable review: Shipped features build hook contract",
    "category": "",
    "detail": "Shipped features s4 (the build hook contract: one framework event every build creator fires for create, status change, PR open/merge) was built on Opus by Brett's override, since the main account ran out of credits mid-build. Fable reviews it and rebuilds it where needed, along with feature-ledger@1 and deploy-log@1 (built on Fable by Gina but cut off before review/tests). Branch claude/shipped-features-r2; progress file _claude/builds/progress/shipped-features.md. Do it after the Shipped features PR lands, as a follow-up PR through the merge queue.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fable-review-shipped-features-build-hook-contrac",
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
+   "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T23:01:17.835Z",
-   "updatedAt": "2026-11-06T20:04:15.490Z",
+   "updatedAt": "2026-11-07T16:40:42.034Z",
    "builtAt": "2026-11-06T20:04:15.490Z",
    "notes": [
     {
@@ -12406,6 +12411,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #364 merged",
+     "at": "2026-11-07T16:40:42.034Z"
     }
    ],
    "approvals": [],
@@ -34788,14 +34797,15 @@
    "title": "Shipped features",
    "category": "Plugin",
    "detail": "Feature database (SQLite on the data volume) of every individual feature ever shipped from MossesX/AmberX-AXF and MossesX/axHub, split out of PRs and builds and linked to Brett's verbatim prompt; deploy log for real live dates; three-level expanding grid (View by PR / Plugin / App / Feature type / Build / Day / Repo / Flat); Live / Merged-not-deployed badges on Build manager + Codebase changes; API/MCP/CLI + voice. Planned features appear the moment a build is created (Addendum 4); later changes to a feature show as edits (Addendum 5). Foundation on Fable: feature-ledger@1, build-events@1 (one hook every build creator fires), deploy-log@1. Then Opus for the database, importer, grid, badges, commands and UI. Full brief: /root/axf-builds/shipped-features/.brief.md + takeover brief (Nov 4 2026). Taken over from the helper account (branch claude/shipped-features-acct2 never existed; fresh start).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
+   "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-07T00:47:59.495Z",
+   "updatedAt": "2026-11-07T16:40:42.034Z",
    "builtAt": "2026-11-06T20:04:31.580Z",
    "notes": [
     {
@@ -34813,6 +34823,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #364 merged",
+     "at": "2026-11-07T16:40:42.034Z"
     }
    ],
    "approvals": [],
@@ -67121,16 +67135,25 @@
    "title": "The API controls everything in the console",
    "category": "",
    "detail": "Step 1 terminal typing (open tab on target, type visibly ~30 chars/s, keys, read screen, close; 'terminal' screen id). Step 2 audit every UI element, coverage table + registry. Step 3 fill gaps through control@1 generic addressing, UI Review approve/reject/pick. Step 4 CI check + rules.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:48:50.470Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-07T16:58:59.434Z",
+   "builtAt": "2026-11-07T16:58:59.435Z",
+   "notes": [
+    {
+     "text": "Clash with settings-placement-everywhere (#329): both append control@1 targets after tokens.nav and edit check-control.mts. If #329 lands first: console.values + console.elements go after console.placement (indexes 24-25), count 26, and the console set exception names both console.placement and console.values; regenerate fixtures (gen-fixtures.mts).",
+     "at": "2026-11-07T16:49:08.102Z"
+    },
+    {
+     "text": "All 9 steps built and committed on claude/full-api-control (not pushed, per the brief). Waiting on Brett's UI Review pick r-20261107-e7b50396 (API Browser look), then push + PR. Report _claude/builds/reports/full-api-control.md.",
+     "at": "2026-11-07T16:58:59.434Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -67311,10 +67334,132 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:58:57.850Z",
      "note": "",
      "uid": "st-mw6lxnur01p48e"
+    }
+   ]
+  },
+  {
+   "id": "approve-button-fix",
+   "title": "Approve/Deny in the console do nothing: server-side owner relay",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T16:36:58.936Z",
+   "updatedAt": "2026-11-07T16:50:29.972Z",
+   "builtAt": "2026-11-07T16:50:29.973Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Bug: in the console's \"Approval waiting\" dialog (approvals-in-place, landed today on main), clicking Approve repeatedly does nothing; the dialog stays. It says \"This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.\" Brett is signed in to the console as owner (Admin). (launch brief, Nov 7 2026)",
+    "at": "2026-11-07T16:36:58.936Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server relay: decide with a server-side owner hub credential when the browser session is missing (owner-only, audited)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T16:49:50.137Z",
+     "note": "",
+     "uid": "st-mw6mlzdm06s396"
+    },
+    {
+     "id": "s2",
+     "text": "Dialog + banner: busy spinner, close on success, exact reason in place, never a dead button",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T16:49:51.410Z",
+     "note": "",
+     "uid": "st-mw6mlzdm07efux"
+    },
+    {
+     "id": "s3",
+     "text": "AmberX: same dialog check",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T16:49:52.623Z",
+     "note": "",
+     "uid": "st-mw6mlzdm0825ea"
+    },
+    {
+     "id": "s4",
+     "text": "Tests: approve, deny, expired, already decided, relay down",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T16:49:53.830Z",
+     "note": "",
+     "uid": "st-mw6mlzdm09b1yj"
+    },
+    {
+     "id": "s5",
+     "text": "UI Review (3 choices) + Shipped features + report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T16:50:29.972Z",
+     "note": "",
+     "uid": "st-mw6mlzdm0apj2g"
     }
    ]
   }

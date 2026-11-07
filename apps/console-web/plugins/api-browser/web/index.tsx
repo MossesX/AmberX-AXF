@@ -12,7 +12,7 @@ import chips from '../assets/tab-group/api-browser-chips.json';
  * API Browser (build full-api-control, addendum Nov 7 2026, Brett: "A real, polished API Browser plugin in the console
  * listing EVERY API path … from one generated registry"). The page (ui.tsx) reads the registry from the server part
  * (framework/cli/api-registry.mjs); its view switcher is drawn on one of the plugin's three tab-group looks (assets/),
- * registered into the runtime here so they are real, swappable assets (UI Review choice set api-browser-look).
+ * registered into the runtime here so they are real, swappable assets (UI Review choice set api-browser).
  */
 export const LOOK_ASSETS = [tabs, rail, chips];
 const LOOKS = [{ value: 'api-browser-tabs', label: 'Top tabs' }, { value: 'api-browser-rail', label: 'Side rail' }, { value: 'api-browser-chips', label: 'Chips' }];
