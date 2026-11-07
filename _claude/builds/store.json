@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1271,
- "updatedAt": "2026-11-07T10:53:39.317Z",
+ "rev": 1272,
+ "updatedAt": "2026-11-07T11:00:37.437Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107124,14 +107124,15 @@
    "title": "multi-account-headless-workers",
    "category": "accounts",
    "detail": "Console signs into MORE THAN ONE Claude subscription at once. The console itself uses one account (interactive). Additional accounts exist only as headless worker sessions; the orchestrator sends build jobs to them. Account manager to add/sign in/remove worker accounts, see each one's usage/limits, and route jobs (orchestrator picks which worker account runs a job, fails over when one hits its limit). Check existing account-failover / account-switch-handoff / claude-accounts work and reuse it. Orchestrator assigns models.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/multi-account-headless-workers",
    "pr": "#382",
+   "mergedAt": "2026-11-07T10:52:53Z",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T05:15:15.700Z",
+   "updatedAt": "2026-11-07T11:00:36.082Z",
    "builtAt": "2026-11-07T05:15:15.700Z",
    "notes": [
     {
@@ -107145,6 +107146,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #382 merged",
+     "at": "2026-11-07T11:00:36.082Z"
     }
    ],
    "approvals": [],
@@ -107282,7 +107287,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
