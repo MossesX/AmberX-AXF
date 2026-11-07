@@ -18,7 +18,7 @@
  * (plus the config routes the AI plugin's settings use).
  */
 import { useSyncExternalStore } from 'react';
-import { validateIntent, type Intent } from '../../notes/web/core';
+import { validateIntent, type Intent } from '@plugin/notes-tasks/web/notes/core';
 
 export interface AiStatus {
   /** checked at least once */

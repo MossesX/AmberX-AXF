@@ -15,8 +15,8 @@ import './voice.css';
 import { isNative, native, type VoiceStatus } from '../../../native';
 import { withMic } from '../../../miclease';
 import { dbText, graphPoints, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
-import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
-import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
+import { flatTree, localDay, parseIntent, type Intent } from '@plugin/notes-tasks/web/notes/core';
+import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '@plugin/notes-tasks/web/notes/store';
 import { aiReady, parseNote } from '../../ai/web/client';
 import {
   GROUPS, NOTE_EXAMPLES, TASK_EXAMPLES, actionCommands, afterWake, applyOverrides, checkMine, decide, describeIntent, fillReply,
