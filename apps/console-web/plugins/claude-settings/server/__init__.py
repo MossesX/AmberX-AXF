@@ -6,7 +6,13 @@ and the CLI share one store (the hub's /projects/_shared/_data/claude/settings.j
   GET  settings              every setting with its value, who may change it and a plain description (+ No wait state)
   GET  settings/{key}        one setting
   PUT  settings              { values: { key: value } }: owner-only settings change only from Brett's signed-in session
-  GET  registry              the open registry (groups + settings)
+  GET  registry              the open registry (groups + settings + tabs)
+  GET  view?device=          the view on one device (mode, position, labels, tab); PUT view { device, name?, values }
+  GET  views                 every device's view
+  GET  policy                axHub's live tool policy (read with the hub token) + the default rules
+  GET  policy/plan           what the default would change
+  PUT  policy                always 403: only Brett's own hub session writes it, straight to axHub (web/policy-core.mjs)
+  GET  passes                the longest pass; PUT passes { maxMinutes } from Brett's signed-in session only
 
 No wait: when Brett's own click turns it on (or changes its duration / Include irreversible while on), the server asks
 the control@1 capability (token-control) for an all-scope veto pass with the approval of this same request; off revokes
@@ -87,6 +93,73 @@ def get_all() -> JSONResponse:
 @router.get("/registry")
 def registry() -> JSONResponse:
     return answer(cli("registry"))
+
+
+@router.get("/view")
+def get_view(device: str = "") -> JSONResponse:
+    return answer(cli("view", "get", "--device", device))
+
+
+@router.put("/view")
+async def put_view(request: Request) -> JSONResponse:
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {}
+    body = body if isinstance(body, dict) else {}
+    values = body.get("values")
+    if not isinstance(values, dict) or not values:
+        return answer({"ok": False, "code": "invalid", "message": "send { device, values: { mode, position, labels, tab } }"})
+    pairs = [f"{k}={v}" for k, v in values.items()]
+    extra = ["--name", str(body["name"])] if body.get("name") else []
+    return await run_in_threadpool(lambda: answer(cli("view", "set", *pairs, "--device", str(body.get("device") or ""), "--by", "console", *extra)))
+
+
+@router.get("/views")
+def get_views() -> JSONResponse:
+    return answer(cli("view", "devices"))
+
+
+@router.get("/policy")
+def get_policy() -> JSONResponse:
+    return answer(cli("policy", "get"))
+
+
+@router.get("/policy/plan")
+def get_policy_plan() -> JSONResponse:
+    return answer(cli("policy", "plan"))
+
+
+@router.put("/policy")
+def put_policy() -> JSONResponse:
+    """The console server never writes axHub policy: it holds a bearer token, and a bearer only reads."""
+    return answer(cli("policy", "set"))
+
+
+@router.get("/passes")
+def get_passes() -> JSONResponse:
+    c = control()
+    if c is None or not hasattr(c, "pass_settings"):
+        return answer({"ok": False, "code": "unavailable", "message": "Token control is off or too old"})
+    return answer({"ok": True, **c.pass_settings()})
+
+
+@router.put("/passes")
+async def put_passes(request: Request) -> JSONResponse:
+    """The longest pass: Brett's signed-in session only."""
+    c = control()
+    if c is None or not hasattr(c, "pass_settings"):
+        return answer({"ok": False, "code": "unavailable", "message": "Token control is off or too old"})
+    if not c.owner(request):
+        return answer({"ok": False, "code": "denied", "message": "owner-only: only Brett changes it, with his own click in the console"})
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {}
+    minutes = body.get("maxMinutes") if isinstance(body, dict) else None
+    if not isinstance(minutes, int) or isinstance(minutes, bool) or not 1 <= minutes <= 240:
+        return answer({"ok": False, "code": "invalid", "message": "maxMinutes is 1-240"})
+    return await run_in_threadpool(lambda: answer({"ok": True, **c.pass_settings({"maxMinutes": minutes})}))
 
 
 @router.get("/settings/{key}")

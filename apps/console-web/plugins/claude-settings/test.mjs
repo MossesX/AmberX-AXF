@@ -88,5 +88,77 @@ ok(t.action === 'off' && t.revoke === true, 'night → off and revoke');
 ok(noWaitTick(nightOn, { active: true, remainingMs: 3e6 }, noon).action === 'none', 'daytime → stays on');
 ok(inWindow(night, '23:00', '07:00') && !inWindow(noon, '23:00', '07:00') && inWindow(noon, '11:00', '13:00') && !inWindow(noon, '12:00', '12:00'), 'night window wraps midnight');
 
+// tabs: every group lands in a tab, a new group is never lost
+const { tabsFor, normView, viewProblem, matches, deviceOk, LABEL_DISPLAY, displayLabel } = await import('./web/view-core.mjs');
+const tv = tabsFor(reg.groups, reg.tabs, reg.settings);
+ok(tv[0].id === 'approvals' && tv[0].always, 'Approvals & veto is the first tab');
+ok(tv.flatMap((x) => x.groups).length === reg.groups.length && tv.reduce((a, x) => a + x.count, 0) === reg.settings.length, 'every group and every setting is in exactly one tab');
+const tvx = tabsFor([...reg.groups, { id: 'new', label: 'New' }], reg.tabs, [...reg.settings, { group: 'new' }]);
+ok(tvx.at(-1).id === 'other' && tvx.at(-1).count === 1, 'a group no tab lists shows under Other');
+ok(tabsFor(reg.groups, reg.tabs, []).map((x) => x.id).join() === 'approvals', 'an empty tab is dropped, Approvals & veto stays');
+
+// views, per device
+ok(normView({ mode: 'x', position: 'left', labels: 'icons' }).mode === 'tabbed' && normView({ position: 'left' }).position === 'left', 'view values normalised');
+ok(viewProblem({ position: 'middle' }).includes('position') && viewProblem({ foo: 1 }).includes('foo') && viewProblem({ mode: 'classic', tab: 'builds' }) === '', 'bad view values named');
+ok(displayLabel(LABEL_DISPLAY.words) === 'words' && displayLabel(LABEL_DISPLAY.icons) === 'icons' && displayLabel(LABEL_DISPLAY.both) === 'both', 'labels map onto tab-group display and back');
+ok(deviceOk('d-1.a') && !deviceOk('') && !deviceOk('../x') && !deviceOk('__proto__/'), 'device ids checked');
+ok(matches({ label: 'Tone level', key: 'talking.tone', description: '' }, 'TONE') && !matches({ label: 'a', key: 'b', description: 'c' }, 'zz'), 'find matches label, key, description');
+ok(core.getView('phone').saved === false, 'an unsaved device gets the default');
+core.setView('phone', { position: 'left', labels: 'icons' }, { by: 't', name: 'S26' });
+core.setView('desk', { mode: 'classic' }, { by: 't' });
+ok(core.getView('phone').position === 'left' && core.getView('desk').position === 'top' && core.getView('desk').mode === 'classic', 'each device keeps its own view');
+ok(core.getView('phone').name === 'S26' && core.setView('phone', { labels: 'words' }).name === 'S26', 'the device name stays');
+ok(throwsCode(() => core.setView('phone', { mode: 'x' }), 'invalid') && throwsCode(() => core.setView('bad id', { mode: 'classic' }), 'invalid') && throwsCode(() => core.getView('__proto__/x'), 'invalid'), 'bad views refused');
+ok(core.getView('constructor').saved === false, 'a device called constructor is just a device');
+
+// policy table
+const P = await import('./web/policy-core.mjs');
+const rules = reg.policyDefaults;
+const T = { services: [
+  { namespace: 'vps', type: 'ssh', enabled: true, defaultPolicy: 'deny', tools: [
+    { name: 'run', annotations: { destructive: true }, explicit: 'veto', policy: 'veto' }, { name: 'logs', annotations: { readOnly: true }, explicit: 'veto', policy: 'veto' },
+    { name: 'check', annotations: { readOnly: true }, explicit: 'allow', policy: 'allow' }, { name: 'build_land', explicit: 'allow', policy: 'allow' }, { name: 'newtool', policy: 'deny' }] },
+  { namespace: 'github', type: 'rest', enabled: true, defaultPolicy: 'allow', policyPreset: 'recommended', tools: [
+    { name: 'repos/get', annotations: { readOnly: true }, policy: 'allow' }, { name: 'pulls/create', policy: 'veto' }, { name: 'repos/delete', annotations: { destructive: true }, policy: 'confirm' }] },
+  { namespace: 'axhub', type: 'builtin', enabled: true, defaultPolicy: 'allow', tools: [{ name: 'pass_grant', annotations: { ownerGrant: true }, policy: 'confirm' }, { name: 'switch_account', policy: 'allow' }] },
+  { namespace: 'amberx', type: 'device', enabled: true, defaultPolicy: 'confirm', tools: [{ name: 'recorder_start', annotations: { explicitApproval: true }, policy: 'confirm' }, { name: 'deny_me', explicit: 'deny', policy: 'deny' }] },
+  { namespace: 'off', type: 'rest', enabled: false, defaultPolicy: 'allow', tools: [{ name: 'x', policy: 'deny' }] },
+] };
+const plan = P.planDefaults(T, rules);
+const planned = (id) => plan.find((c) => `${c.service}.${c.tool}` === id);
+ok(!planned('vps.run'), 'vps.run stays held (destructive keeps the hub rule, and it is on the veto already)');
+ok(planned('vps.logs')?.to === 'allow', 'a read stops holding');
+ok(!planned('vps.newtool'), 'a denied shell tool stays denied: the plan never loosens the SSH default-deny');
+ok(!planned('vps.build_land'), 'fixed build tools already let through stay through (axHub decision 110)');
+ok(P.defaultFor(T.services[0], { name: 'other', policy: 'confirm' }, rules).decision === 'veto', 'any other shell tool holds: it may write to the VPS');
+ok(planned('github.pulls/create')?.to === 'allow', 'a non-VPS write stops holding');
+ok(!planned('github.repos/delete') && !planned('axhub.pass_grant') && !planned('amberx.recorder_start') && !planned('amberx.deny_me') && !planned('off.x'), 'destructive, owner grants, explicit approvals, denied and switched-off tools are left alone');
+ok(planned('axhub.switch_account')?.to === 'veto', 'an account switch holds');
+ok(P.planDefaults({ services: [{ namespace: 's', type: 'rest', enabled: true, defaultPolicy: 'deny', tools: [{ name: 'w', policy: 'deny' }] }] }, rules).length === 0, 'a service denied by default is not opened up');
+ok(P.onHoldList('x', 'y', { holdMatch: ['('] }) === '', 'a bad pattern holds nothing and does not throw');
+ok(P.groupDecision(T.services[1]) === 'mixed' && P.groupDecision({ tools: [{ policy: 'veto' }] }) === 'veto', 'a service shows one decision or Mixed');
+ok(P.groupChanges(T.services[1], 'veto').length === 3, 'a group change covers each tool');
+ok(P.counts(T).veto === 3, 'counts');
+ok(P.changesProblem([]) && P.changesProblem([{ service: 'a', tool: 'b', policy: 'maybe' }]) && P.changesProblem([{ service: 'a', tool: 'b', vetoSeconds: 5 }]) && !P.changesProblem([{ service: 'a', tool: 'b', policy: null, vetoSeconds: 60 }]), 'changes checked (decision, hold 10-1800)');
+{
+  const seen = [];
+  const fake = (status, body) => async (url, init) => { seen.push({ url, init }); return { status, ok: status < 300, json: async () => body }; };
+  const r = await P.putPolicy('https://hub', [{ service: 'a', tool: 'b', policy: 'veto' }], 'why', { fetch: fake(200, { rev: 2 }) });
+  ok(r.ok && seen[0].url === 'https://hub/auth/api/policy' && seen[0].init.method === 'PUT' && seen[0].init.credentials === 'include' && !seen[0].init.headers.Authorization, 'a write goes on the session cookie, never a token');
+  ok((await P.putPolicy('https://hub', [{ service: 'a', tool: 'b' }], 'w', { fetch: fake(404, {}) })).code === 'not_available', 'no policy API yet: said plainly');
+  ok((await P.putPolicy('https://hub', [{ service: 'a', tool: 'b' }], 'w', { fetch: fake(401, {}) })).code === 'unauthenticated', 'not signed in: said plainly');
+  ok((await P.putPolicy('https://hub', [], 'w', { fetch: fake(200, {}) })).ok === false, 'an empty change list never reaches the hub');
+  ok((await P.putPolicy('https://hub', [{ service: 'a', tool: 'b' }], 'w', { fetch: async () => { throw new Error('x'); } })).ok === false, 'a dead hub is an answer, not a crash');
+}
+{
+  const env = { AXHUB_TOKEN: 'tok', AXHUB_URL: 'https://hub.test/mcp' };
+  let auth = ''; let url = '';
+  const r = await core.readPolicy({ env, fetch: async (u, i) => { url = u; auth = i.headers.Authorization; return { status: 200, ok: true, json: async () => T }; } });
+  ok(r.available && url === 'https://hub.test/auth/api/policy' && auth === 'Bearer tok', 'the live table is read with the hub token, /mcp dropped from the address');
+  ok(!(await core.readPolicy({ env, fetch: async () => ({ status: 404, ok: false }) })).available, 'no route on the hub: not available, no stale copy');
+  ok(!(await core.readPolicy({ env, fetch: async () => { throw new Error('down'); } })).available, 'hub down: not available');
+  ok(!(await core.readPolicy({ env: { HOME: '/nonexistent' } })).available, 'no token: not available');
+}
+
 console.log(failed ? `✗ claude-settings core — ${failed}/${n} failed` : `✓ claude-settings core — ${n} checks`);
 process.exit(failed ? 1 : 0);

@@ -69,6 +69,9 @@ import tempfile  # noqa: E402
 
 ok(tools["claude_settings_get"].annotations.read_only_hint is True, "claude_settings_get reads")
 ok(tools["claude_settings_set"].annotations.read_only_hint is not True, "claude_settings_set writes")
+ok(tools["claude_policy_get"].annotations.read_only_hint is True and tools["claude_policy_plan_get"].annotations.read_only_hint is True, "the policy tools only read")
+ok("claude_policy_set" not in tools, "no MCP tool writes axHub policy")
+ok(tools["claude_view_set"].annotations.read_only_hint is not True, "claude_view_set writes")
 with tempfile.TemporaryDirectory() as tmp:
     os.environ["AXF_CLAUDE_SETTINGS_FILE"] = f"{tmp}/settings.json"
     os.environ["AXF_CLAUDE_SETTINGS_DATA"] = tmp

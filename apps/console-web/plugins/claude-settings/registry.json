@@ -1,6 +1,6 @@
 {
   "$axf": "claude-settings-registry@1",
-  "readme": "Open registry of Claude settings (Brett, Nov 3 2026). A new setting is a new entry here, or in registry.d/*.json, or in the hub's claude/registry.json: no code change. owner: true = only Brett's signed-in console click changes it; owner: \"raise\" = anyone may lower it, only Brett raises it; locked: true = nobody changes it. level = the lowest settings level it shows at (simple, basic, developer, administrator).",
+  "readme": "Open registry of Claude settings (Brett, Nov 3 2026). A new setting is a new entry here, or in registry.d/*.json, or in the hub's claude/registry.json: no code change. owner: true = only Brett's signed-in console click changes it; owner: \"raise\" = anyone may lower it, only Brett raises it; locked: true = nobody changes it. tabs = the tabbed view (a group no tab lists shows under Other). level = the lowest settings level it shows at (simple, basic, developer, administrator).",
   "groups": [
     { "id": "no-wait", "label": "No wait", "icon": "zap", "order": 10, "description": "Let Amber's held calls run at once instead of waiting on the 90 s veto. Only Brett's own click turns it on." },
     { "id": "follow", "label": "Follow Amber", "icon": "eye", "order": 20, "description": "Shared with the Follow Amber switch: one setting, read by both." },
@@ -10,6 +10,18 @@
     { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the AmberX app, and when it stays quiet." },
     { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." }
   ],
+  "tabs": [
+    { "id": "approvals", "label": "Approvals & veto", "icon": "shield", "order": 10, "always": true, "groups": ["no-wait"], "description": "What Amber may run at once, what waits on a veto and what needs Brett." },
+    { "id": "builds", "label": "Builds", "icon": "layers", "order": 20, "groups": ["builds", "verification"], "description": "How Claude starts, pays for and checks builds." },
+    { "id": "talking", "label": "Talking", "icon": "mic", "order": 30, "groups": ["talking"], "description": "How Amber talks to Brett." },
+    { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 40, "groups": ["notifications"], "description": "What gets pushed, and when it stays quiet." },
+    { "id": "session", "label": "Follow & memory", "icon": "eye", "order": 50, "groups": ["follow", "memory"], "description": "Following Amber around the console, and what sessions write down." }
+  ],
+  "policyDefaults": {
+    "readme": "Brett, Nov 6 2026: hold only VPS writes and account switches. Only used to work out the 'Apply the default' plan; Brett's click applies it. Reads run at once; destructive tools keep the hub's confirm.",
+    "hold": [{ "service": "vps", "tools": ["run"], "why": "writes to the VPS" }],
+    "holdMatch": ["(switch|change|use)[._-]?account", "account[._-]?(switch|change)"]
+  },
   "settings": [
     { "key": "noWait.enabled", "group": "no-wait", "label": "No wait", "kind": "toggle", "default": false, "owner": true, "level": "simple", "effect": "pass",
       "description": "On: every call axHub would hold for Brett's veto runs at once (a standing all-scope veto pass, created by Brett's click). Off: back to the 90 s veto, and the pass is revoked at once." },
