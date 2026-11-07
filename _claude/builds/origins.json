@@ -1124,6 +1124,18 @@
    "from": "detail",
    "addenda": []
   },
+  "dataset-bar": {
+   "said": "Data set bar plugin (Brett)\nA plugin that attaches to ANY data set (grid, list, tree, table) and is hidden by default.\n- Search, Filter and Sort are each their own registry asset (search-bar, filter-button, sort-control), reusable on their own, plus a combined 'data set bar' asset.\n- Attach: right-click any data set -> 'Attach data set bar' (or attach pieces individually), with placement top/bottom/inline/floating. Detach the same way. Also attachable from the Registry Browser, by voice, and via API/MCP/CLI.\n- Filter: per-column/field rules, saved filters. Sort: multi-key, saved. Search: field-scoped, fuzzy.\n- Per-attachment config stored locally (local-first), with Reset to default.\n- Existing top-bar search widget becomes an instance of the search-bar asset.\n- Submit at least 3 UI options to UI Review first.",
+   "at": "2026-11-07T03:28:42.687Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "design-package": {
    "said": "new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
    "at": "2026-10-27",
@@ -1640,6 +1652,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "icon-browser-manager": {
+   "said": "# Icon Browser + Icon Manager (Brett, voice)\n\n## 1. Icon Browser plugin\n- Ship a starter library: download a couple thousand icons (open-licensed sets), stored as assets.\n- Views: tree, grid, list, etc. Categorized, sortable, filterable, searchable. Tree thumbnails toggle on/off.\n- Sources (configurable, any type): FTP/SFTP (credentials + root folder), MCP, REST API, HTTP/online, local folder, Google Drive folder, Google Photos album, Dropbox, etc. Per-type config form: credentials when needed, root/path, auth. 'Online' shows a big list of known icon repositories, each with a section for what's needed to access it (API key etc.). Secrets in the secure store.\n- Packs: create icon packs by drag and drop between panes. Panes are collapsible and floatable.\n- Tab groups: open one or many selected icons into a floating tab group, a docked tab group, or a pane. 'Open new tab group' spawns docked or floating; with a selection it holds those icons, empty it shows a + to add. Drag icons from tree to groups and group to group.\n- Save a pack as an icon-pack asset.\n\n## 2. Icon Manager\n- Every UI and plugin gets an icon map (icon slots/tags -> icon). All of AmberX, Console, axHub, everything.\n- List/grid of every UI with an icon map, filterable by app. Open a map, or open a live preview of the UI and drag icons onto the preview. Save / Apply makes it permanent for that icon tag.\n- Global icon pack asset listing every icon in the whole system.\n- Inheritance: assign a pack to the whole app (root), or per UI, or per plugin. The child overrides the parent.\n- Save changes as a new pack: root/global pack, or a UI/plugin-scoped pack.\n- Icon packs are separate from design/style packs. A design pack MAY reference an icon pack but does not have to.\n- Switch packs globally; a randomize button reshuffles the whole icon set; generate cohesive packs that follow one theme/style.\n\n## Rules\n- Everything is registry assets, with API/MCP/CLI parity and voice control.\n- Settings in categorized collapsible sections.\n- Submit UI options to UI Review first (at least 3).",
+   "at": "2026-11-07T02:43:20.924Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "interface-roller": {

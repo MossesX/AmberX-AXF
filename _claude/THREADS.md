@@ -705,18 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
-- 2026-11-06 02:40 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
-- 2026-11-06 02:41 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
-- 2026-11-06 03:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 04:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 04:33 UTC · `orch-step-click` s3 done, → complete (refactor) · builds-page
 - 2026-11-06 04:33 UTC · `orch-step-click` s3 undone, → running (refactor) · builds-page
@@ -1105,6 +1093,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 02:18 UTC · `ui-asset-designer` s5 done (current) · orchestrator
 - 2026-11-07 02:19 UTC · `ui-asset-designer` PR #376 (current) · builds-live
 - 2026-11-07 02:19 UTC · `ui-asset-designer` s6 done (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` added (10 steps) (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` → running (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` branch claude/icon-browser-manager (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` note (current) · orchestrator
+- 2026-11-07 03:07 UTC · `icon-browser-manager` s1 done (current) · orchestrator
+- 2026-11-07 03:16 UTC · `icon-browser-manager` s2 done (current) · orchestrator
+- 2026-11-07 03:31 UTC · `icon-browser-manager` s3 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s4 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s5 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s6 done (current) · orchestrator
+- 2026-11-07 04:00 UTC · `icon-browser-manager` PR #377 (current) · builds-live
+- 2026-11-07 04:00 UTC · `icon-browser-manager` note (current) · orchestrator
 
 ## Token passes (log)
 
