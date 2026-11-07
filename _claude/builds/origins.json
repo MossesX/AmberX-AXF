@@ -822,6 +822,18 @@
    "from": "brief",
    "addenda": []
   },
+  "claude-settings-tabs-veto": {
+   "said": "\"The Claude settings interface is getting pretty big. We need to organize it. Give it multiple views, one of them being tabular. If you have it on the tab view, you can set where you want them to appear and how you want them to appear: on the left, on the right, on the top, and the bottom, whether you want the words or an icon.\" \"The veto and the approve are gonna be their own tab in there. Break it down and put it into tabs.\" Also: \"You don't need to run the 90-second veto thing unless you are writing stuff to the VPS.\"",
+   "at": "2026-11-07T00:13:39.002Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-account-picker": {
    "said": "I need to be able to flip them from the console.",
    "at": "2026-11-05T23:30:48.450Z",
