@@ -91,7 +91,7 @@
 }
 .axp-cal-chip.is-ghost { background: var(--axp-cal); color: var(--fx-accent-text); opacity: var(--fx-opacity-glass); pointer-events: none; }
 .axp-cal-chip.is-done .axp-cal-chip__title { text-decoration: line-through; opacity: var(--fx-opacity-muted); }
-.axp-cal-chip__time { color: var(--fx-muted); flex: none; }
+.axp-cal-chip__time { color: var(--fx-muted); flex: none; margin-right: calc(var(--fx-space) * .5); }
 .axp-cal-chip__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 
 /* month */
