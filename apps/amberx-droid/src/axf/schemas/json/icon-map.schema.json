@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/icon-map.schema.json",
+  "title": "AmberX AXF Icon map asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "icon-map"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "scope",
+        "slots"
+      ],
+      "properties": {
+        "scope": {
+          "type": "object",
+          "properties": {
+            "app": {
+              "type": "string"
+            },
+            "ui": {
+              "type": "string"
+            },
+            "plugin": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "description": "app = the root scope; ui = one screen; plugin = one plugin (the most specific). A child overrides its parent."
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "description": "slot (icon name or dotted tag) → ref: a glyph name, pack:<pack id>/<glyph>, or none"
+        },
+        "extends": {
+          "type": "string",
+          "description": "an icon-map id this one inherits from"
+        },
+        "pack": {
+          "type": "string",
+          "description": "an icon-pack id applied to the whole scope: every name the pack has is drawn from it unless a slot says otherwise"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12
+        }
+      }
+    }
+  }
+}

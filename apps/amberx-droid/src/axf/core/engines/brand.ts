@@ -118,7 +118,7 @@ export function glyphSvg(raw: unknown, name: string, size = 16, title?: string):
   const stroked = (d: string) => `<path d="${esc(d)}" fill="none" stroke="currentColor" stroke-width="${pack.stroke}" stroke-linecap="${pack.linecap}" stroke-linejoin="round"/>`;
   let main: string;
   if (!filled) main = stroked(g.d);
-  else if (g.fill) main = `<path d="${esc(g.d)}" fill="currentColor"/>`; // the glyph's author asked for a fill
+  else if (g.fill) main = `<path d="${esc(g.d)}" fill="currentColor"${g.evenodd ? ' fill-rule="evenodd"' : ''}/>`; // the glyph's author asked for a fill (even-odd when its holes need it)
   else {
     // a filled pack fills closed shapes but keeps open lines stroked (a check mark, ×, +, a search handle), else
     // they would vanish or turn into wedges (enterprise-branding s25)

@@ -58,14 +58,18 @@ export function iconChain(scope: Partial<IconScope>, registry: IconRegistryLike,
     if (typeof pick === 'string' && pick && byId[pick]) { const folded = foldIconMap(pick, byId); if (folded) out.push({ id: pick, data: folded }); }
     const pack = settings.get(ICON_PACK_KEY(key));
     if (typeof pack === 'string' && pack && registry.get('icon-pack', pack)) out.push({ id: `pack:${key}`, data: { scope: scopeFor(full, key), pack, slots: {} } });
+    // shipped maps of this scope: the app's own (scope.app = this app) before any-app maps (scope.app = ''), then by id
+    const shipped: { id: string; data: IconMapData; own: boolean }[] = [];
     for (const m of maps) {
       if (m.id === pick) continue;
       const d = normalizeIconMap(m.data);
       if (iconScopeKey(d.scope) !== key) continue;
-      if (key === 'app' && d.scope.app && full.app && d.scope.app !== full.app) continue;
+      if (d.scope.app && full.app && d.scope.app !== full.app) continue;
       const folded = foldIconMap(m.id, byId);
-      if (folded) out.push({ id: m.id, data: folded });
+      if (folded) shipped.push({ id: m.id, data: folded, own: !!d.scope.app });
     }
+    shipped.sort((a, b) => (a.own === b.own ? (a.id < b.id ? -1 : a.id > b.id ? 1 : 0) : a.own ? -1 : 1));
+    for (const s of shipped) out.push({ id: s.id, data: s.data });
   }
   return out;
 }

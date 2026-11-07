@@ -19,6 +19,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } fr
 import './plugintheme.css';
 import { Button, Checkbox, Chip, ColorField, Container, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, useEditorSync, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
+import { IconScope } from '../../react/components/Icon';
 import type { AxfRuntime } from '../../core/runtime';
 import type { ColorThemeData, StyleThemeData } from '../../core';
 import {
@@ -111,7 +112,8 @@ function apply(rt: AxfRuntime) {
 export function withPluginTheme(lib: AxfWebLibrary, meta: { id: string; name: string }): AxfWebLibrary {
   const { id, name } = meta;
   if (!validPluginId(id)) return lib;
-  const scope = (node: ReactNode) => <PluginScope id={id}>{node}</PluginScope>;
+  // the theme scope (data-axf-plugin) and the icon scope (icon-map@1: this plugin's icon map) in one wrapper
+  const scope = (node: ReactNode) => <PluginScope id={id}><IconScope plugin={id}>{node}</IconScope></PluginScope>;
   const ownTab = lib.settingsTabs?.[0]?.id;
   const tab = ownTab ?? `${id}.appearance`;
   const views = Object.fromEntries(Object.entries(lib.views ?? {}).map(([k, v]) => [k, { ...v, render: () => scope(v.render()) }]));

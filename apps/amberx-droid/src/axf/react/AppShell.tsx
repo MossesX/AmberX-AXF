@@ -18,6 +18,7 @@ import { BannerStripPage, useBannerStripFollower } from './components/BannerStri
 import { BANNER_STRIP_VIEW } from './bannerStrip';
 import { WaitingForHub } from './components/Waiting';
 import { Note } from './components/Forms';
+import { IconScope } from './components/Icon';
 import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
 import { placedParts } from './placement';
@@ -153,12 +154,12 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
-            {views[id]?.render()}
+            <IconScope ui={id}>{views[id]?.render()}</IconScope>
           </div>
         ))}
         {!keep.includes(state.view) && (
-          <div className="fx-main__inner" key={state.view}>
-            {view?.render()}
+          <div className="fx-main__inner" key={state.view} data-axf-view={state.view}>
+            <IconScope ui={state.view}>{view?.render()}</IconScope>
           </div>
         )}
       </main>

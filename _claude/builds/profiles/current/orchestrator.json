@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T03:07:56.094Z",
+ "updatedAt": "2026-11-07T03:16:04.505Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -21388,7 +21388,7 @@
    "branch": "claude/icon-browser-manager",
    "pr": "",
    "createdAt": "2026-11-07T02:52:29.111Z",
-   "updatedAt": "2026-11-07T03:07:56.001Z",
+   "updatedAt": "2026-11-07T03:16:04.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -21450,8 +21450,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T03:16:04.372Z",
      "note": "",
      "uid": "st-mw5t5o5y0c5g5r"
     },

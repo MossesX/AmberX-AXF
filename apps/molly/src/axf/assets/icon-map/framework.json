@@ -1,0 +1,16 @@
+{
+  "$axf": "asset@1",
+  "type": "icon-map",
+  "id": "framework",
+  "name": "Framework icons",
+  "version": "1.0.0",
+  "description": "The root icon map every app starts from (icon-map@1): no pack applied and no slot remapped, so every icon is the framework's own glyph (or the active branding's pack). Apps, screens and plugins add their own maps on top; a child only states what it changes.",
+  "author": "AmberX AXF",
+  "tags": ["default", "root"],
+  "data": {
+    "scope": { "app": "" },
+    "extends": "",
+    "pack": "",
+    "slots": {}
+  }
+}
