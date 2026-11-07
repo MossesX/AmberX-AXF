@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T09:05:17.023Z",
+ "updatedAt": "2026-11-07T09:40:08.547Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20833,6 +20833,10 @@
     {
      "text": "Reconciler: PR #376 names s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40 done",
      "at": "2026-11-07T04:29:36.015Z"
+    },
+    {
+     "text": "Reconciler: PR #376 names s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40 done",
+     "at": "2026-11-07T02:50:20.877Z"
     }
    ],
    "approvals": [],
@@ -21926,7 +21930,7 @@
   {
    "id": "dataset-bar",
    "title": "Data set bar plugin: search-bar, filter-button, sort-control and data-set-bar registry assets, attachable to any dataset (right-click, Registry Browser, voice, API/MCP/CLI), hidden by default, local-first per-attachment config",
-   "category": "",
+   "category": "Plugins",
    "detail": "Launched headless on Fable (AXF_MODEL=fable, agent Reel Rhonda, worktree /root/axf-builds/dataset-bar, branch claude/dataset-bar). Every step runs in this one Fable session: s1-s3 need Fable (asset types, engine, framework hooks); s4-s8 ride along in the same session rather than a second launch.",
    "status": "built",
    "hidden": false,
