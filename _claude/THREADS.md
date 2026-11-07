@@ -705,9 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 19:10 UTC · `assistant-chat-mode` → pending, note (current) · reconciler
-- 2026-11-05 20:00 UTC · `claude-account-switcher` → complete, merged, note (current) · reconciler
-- 2026-11-05 22:37 UTC · `build-own-login` added (4 steps) (current) · orchestrator
 - 2026-11-05 22:40 UTC · `build-own-login` added (4 steps) (current) · foreign-write
 - 2026-11-05 22:41 UTC · `ai-keys-new-format` added (3 steps) (current) · orchestrator
 - 2026-11-05 22:41 UTC · `ai-keys-new-format` s1 done, → running (current) · orchestrator
@@ -1105,6 +1102,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:48 UTC · `gizmo-rebuild-fable` s9 done, s9-1 done, s9-2 done, s9-3 done, s10 done, s10-1 done, s10-2 done, s10-3 done, s11 done, s11-1 done, s11-2 done, s12 done, s12-1 done, s13 done, s13-1 done, s13-2 done, s14 done, s14-1 done, s14-2 done, s14-3 done, s14-4 done, s15 done, s15-1 done, s15-2 done, s15-3 done, s15-4 done, s16 done, s16-1 done, s16-2 done, s16-3 done, s16-4 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `ui-registry-shortcuts` s7 done, s7-1 done, s7-2 done, s7-3 done, s8 done, s8-1 done, s8-2 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `badges-notify-followup` s5 done, s5-1 done, s5-2 done, s6 done, s6-1 done, s7 done, s7-1 done, s7-2 done, s7-3 done, s7-4 done (current) · orchestrator
+- 2026-11-07 00:48 UTC · `amberx-open-any-url` added (4 steps) (current) · backfill
+- 2026-11-07 00:48 UTC · `axhub-google` added (4 steps) (current) · backfill
+- 2026-11-07 00:48 UTC · `notes-tasks-calendar` added (5 steps) (current) · backfill
 
 ## Token passes (log)
 
