@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T18:27:35.994Z",
+ "updatedAt": "2026-11-07T21:00:55.631Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67694,6 +67694,62 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw6qk7ub0412oh"
+    }
+   ]
+  },
+  {
+   "id": "fix-follow-amber-highlight-console-search-ignoring-its-text",
+   "title": "Fix Follow Amber highlight + console.search ignoring its text",
+   "category": "console",
+   "detail": "Two bugs seen live Nov 7 2026 on Brett's console (client cc-vq31s2eri7lw, Plan Studio):\n1. console_show with a highlight reports 'opened Plan Studio and highlighted <text>' but nothing is highlighted, scrolled to or focused: the row stays at the top of the dataset. The tool must only report highlighted when the element was really found, scrolled into view and flashed; fuzzy-match row text in DataGrids.\n2. console_action 'console.search' with args ['auto session recording and transcripts'] opens the Search everything dialog but leaves the query empty. It must fill the box with the args and show results (and pick the first when it's an exact match).\nAlso: a split-screen action Claude can call (two screens side by side) would help; add one if cheap.\nBrett: \"Log both as one fix build. Work it out.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T21:00:54.493Z",
+   "updatedAt": "2026-11-07T21:00:54.493Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Follow Amber highlight: really find, scroll to and flash the element (DataGrid rows, fuzzy text); report shown/highlighted truthfully",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6w1e5b03ypjx"
+    },
+    {
+     "id": "s2",
+     "text": "console.search takes its args as the query and shows results; tests + check-theme/controls; screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6w1e5b04jp0i"
     }
    ]
   }
