@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s6 done (current) · orchestrator
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s7 done (current) · orchestrator
 - 2026-11-07 00:57 UTC · `build-todo-sync` → running, note (current) · orchestrator
 - 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` branch claude/plan-studio-backfill-12h, PR #373 (current) · builds-live
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:46 UTC · `maintenance-redundancy-scan` added (5 steps) (all) · earl
 - 2026-11-07 13:53 UTC · `maintenance-redundancy-scan` s1 done, → running (all) · earl
 - 2026-11-07 13:54 UTC · `maintenance-redundancy-scan` s2 done (all) · earl
+- 2026-11-07 13:57 UTC · `maintenance-redundancy-scan` s3 done (all) · earl
 
 ## Token passes (log)
 
