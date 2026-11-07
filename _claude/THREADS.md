@@ -740,7 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:15 UTC · `gizmo-voice` s1 done, → running (current) · orchestrator
 - 2026-11-06 23:15 UTC · `gizmo-voice` s2 done (current) · orchestrator
 - 2026-11-06 23:15 UTC · `gizmo-voice` note (current) · orchestrator
 - 2026-11-06 23:15 UTC · `gizmo-companion` → running, note (current) · orchestrator
@@ -1140,6 +1139,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:07 UTC · `glossary-index-demos` s1 done, → running (all) · orchestrator
 - 2026-11-07 11:07 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 11:07 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r2 (all) · builds-live
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
