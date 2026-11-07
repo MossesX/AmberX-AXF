@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1213,
- "updatedAt": "2026-11-07T01:33:38.010Z",
+ "rev": 1214,
+ "updatedAt": "2026-11-07T01:33:54.571Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91815,19 +91815,23 @@
    "title": "Approve / deny axHub approvals inside the Dev Console (no bounce to axHub)",
    "category": "Console",
    "detail": "Tapping an approval in the console opened axHub. Now: the console server relays Brett's own hub session (axhub_session cookie on .amberxai.com, wall-signed admin, same-origin tap) to axHub's decide API (session + CSRF + hub Origin), so the banner, app-menu rows, review dialog, Follow Amber pop-up and console_show approval:<id> decide in place with the result shown. Review dialog = in-console approval view (title, description, exact call, countdown, Approve/Deny, result), axHub link only secondary. Console actions approvals.approve/deny/view. AmberX notification taps open the console view.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approvals-in-place-r2",
    "pr": "#375",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T01:33:36.746Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T01:33:51.919Z",
+   "builtAt": "2026-11-07T01:33:51.091Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T14:20:16.509Z"
+    },
+    {
+     "text": "Done on claude/approvals-in-place-r2, PR 375. s1-s4 were lost and were rebuilt. Addendum 4 is per asset type, not per UI instance; see the report's known gaps.",
+     "at": "2026-11-07T01:33:51.919Z"
     }
    ],
    "approvals": [],
@@ -92006,12 +92010,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:37.546Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:37.657Z"
     },
     {
      "id": "s6-1",
@@ -92028,12 +92032,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:38.542Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:38.629Z"
     },
     {
      "id": "s6-2",
@@ -92050,12 +92054,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:39.776Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:39.897Z"
     },
     {
      "id": "s7",
@@ -92072,12 +92076,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:40.799Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:40.878Z"
     },
     {
      "id": "s7-1",
@@ -92094,12 +92098,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:41.654Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:41.730Z"
     },
     {
      "id": "s7-2",
@@ -92116,12 +92120,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:42.498Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:42.590Z"
     },
     {
      "id": "s7-3",
@@ -92138,12 +92142,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:43.308Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:43.399Z"
     },
     {
      "id": "s7-4",
@@ -92160,12 +92164,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:44.179Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:44.256Z"
     },
     {
      "id": "s8",
@@ -92182,12 +92186,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:44.957Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:45.038Z"
     },
     {
      "id": "s8-1",
@@ -92204,12 +92208,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:45.821Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:45.908Z"
     },
     {
      "id": "s8-2",
@@ -92226,12 +92230,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:46.554Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:46.638Z"
     },
     {
      "id": "s9",
@@ -92248,12 +92252,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:47.401Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:47.483Z"
     },
     {
      "id": "s9-1",
@@ -92270,12 +92274,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:48.146Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:48.221Z"
     },
     {
      "id": "s10",
@@ -92292,12 +92296,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:48.847Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:48.922Z"
     },
     {
      "id": "s10-1",
@@ -92314,12 +92318,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:49.593Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:49.669Z"
     },
     {
      "id": "s10-2",
@@ -92336,12 +92340,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:50.353Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:50.438Z"
     },
     {
      "id": "s10-3",
@@ -92358,12 +92362,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:51.090Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:26.359Z",
-     "updatedAt": "2026-11-07T00:48:26.359Z"
+     "updatedAt": "2026-11-07T01:33:51.189Z"
     }
    ],
    "profiles": [
@@ -92374,7 +92378,7 @@
    },
    "kind": "build",
    "planRef": "console-approvals-in-place",
-   "rev": 13,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -92780,14 +92784,14 @@
    "title": "Approvals: no window spam on Approve; veto only for VPS writes and account switches",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> when I click approve and the consoles pop up, I don't want it to launch a window of access. It's opening a thousand fucking windows. And also you only need to send the veto rules that ask for approval or deny if you are actually writing something to the VPS or if you are switching accounts.\n> All right, go ahead, build that shit.\n\nNotes: touches Follow Amber approval pop-up (console) and axHub tool policies (veto vs allow). Changing which calls are veto is a policy change in axHub and the shared rule 'It's a veto system'; update rules + decisions.md to match.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-07T00:30:57.756Z",
+   "updatedAt": "2026-11-07T01:33:52.633Z",
    "builtAt": "",
    "notes": [
     {
@@ -92813,12 +92817,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:52.633Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T13:08:05.610Z",
-     "updatedAt": "2026-11-06T14:30:53.585Z"
+     "updatedAt": "2026-11-07T01:33:52.713Z"
     },
     {
      "id": "s2",
@@ -92939,7 +92943,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

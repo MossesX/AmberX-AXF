@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T01:33:38.010Z",
+ "updatedAt": "2026-11-07T01:33:54.571Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13558,19 +13558,23 @@
    "title": "Approve / deny axHub approvals inside the Dev Console (no bounce to axHub)",
    "category": "Console",
    "detail": "Tapping an approval in the console opened axHub. Now: the console server relays Brett's own hub session (axhub_session cookie on .amberxai.com, wall-signed admin, same-origin tap) to axHub's decide API (session + CSRF + hub Origin), so the banner, app-menu rows, review dialog, Follow Amber pop-up and console_show approval:<id> decide in place with the result shown. Review dialog = in-console approval view (title, description, exact call, countdown, Approve/Deny, result), axHub link only secondary. Console actions approvals.approve/deny/view. AmberX notification taps open the console view.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approvals-in-place-r2",
    "pr": "#375",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T01:33:36.746Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T01:33:51.919Z",
+   "builtAt": "2026-11-07T01:33:51.091Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T14:20:16.509Z"
+    },
+    {
+     "text": "Done on claude/approvals-in-place-r2, PR 375. s1-s4 were lost and were rebuilt. Addendum 4 is per asset type, not per UI instance; see the report's known gaps.",
+     "at": "2026-11-07T01:33:51.919Z"
     }
    ],
    "approvals": [],
@@ -13727,8 +13731,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:37.546Z",
      "note": "",
      "uid": "st-mw5oq5872z7rqf"
     },
@@ -13745,8 +13749,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:38.542Z",
      "note": "",
      "uid": "st-mw5oq58730ikf1"
     },
@@ -13763,8 +13767,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:39.776Z",
      "note": "",
      "uid": "st-mw5oq58731syjz"
     },
@@ -13781,8 +13785,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:40.799Z",
      "note": "",
      "uid": "st-mw5oq58732qh6x"
     },
@@ -13799,8 +13803,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:41.654Z",
      "note": "",
      "uid": "st-mw5oq58733gxha"
     },
@@ -13817,8 +13821,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:42.498Z",
      "note": "",
      "uid": "st-mw5oq58734hp2i"
     },
@@ -13835,8 +13839,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:43.308Z",
      "note": "",
      "uid": "st-mw5oq587351ivc"
     },
@@ -13853,8 +13857,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:44.179Z",
      "note": "",
      "uid": "st-mw5oq587366z8q"
     },
@@ -13871,8 +13875,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:44.957Z",
      "note": "",
      "uid": "st-mw5oq5873735ze"
     },
@@ -13889,8 +13893,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:45.821Z",
      "note": "",
      "uid": "st-mw5oq58738hyje"
     },
@@ -13907,8 +13911,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:46.554Z",
      "note": "",
      "uid": "st-mw5oq587391hrh"
     },
@@ -13925,8 +13929,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:47.401Z",
      "note": "",
      "uid": "st-mw5oq5873aypzt"
     },
@@ -13943,8 +13947,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:48.146Z",
      "note": "",
      "uid": "st-mw5oq5873bga4p"
     },
@@ -13961,8 +13965,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:48.847Z",
      "note": "",
      "uid": "st-mw5oq5873c168s"
     },
@@ -13979,8 +13983,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:49.593Z",
      "note": "",
      "uid": "st-mw5oq5873d50sl"
     },
@@ -13997,8 +14001,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:50.353Z",
      "note": "",
      "uid": "st-mw5oq5873ezihv"
     },
@@ -14015,8 +14019,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:51.090Z",
      "note": "",
      "uid": "st-mw5oq5873f0a6l"
     }
@@ -15096,14 +15100,14 @@
    "title": "Approvals: no window spam on Approve; veto only for VPS writes and account switches",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> when I click approve and the consoles pop up, I don't want it to launch a window of access. It's opening a thousand fucking windows. And also you only need to send the veto rules that ask for approval or deny if you are actually writing something to the VPS or if you are switching accounts.\n> All right, go ahead, build that shit.\n\nNotes: touches Follow Amber approval pop-up (console) and axHub tool policies (veto vs allow). Changing which calls are veto is a policy change in axHub and the shared rule 'It's a veto system'; update rules + decisions.md to match.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-07T00:30:57.756Z",
+   "updatedAt": "2026-11-07T01:33:52.633Z",
    "builtAt": "",
    "notes": [
     {
@@ -15127,8 +15131,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:33:52.633Z",
      "note": "",
      "uid": "st-mw52nz5g1bbxbf"
     },

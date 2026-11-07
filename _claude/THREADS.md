@@ -705,25 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s1 done, → running (current) · orchestrator
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s2 done (current) · orchestrator
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s3 done (current) · orchestrator
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` branch claude/amberx-slim-queue-r2 (current) · builds-live
-- 2026-11-06 02:39 UTC · `amberx-slim-down-voice-queue` added (8 steps) (current) · foreign-write
-- 2026-11-06 02:39 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · foreign-write
-- 2026-11-06 12:14 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 12:17 UTC · `console-approvals-in-place` added (5 steps) (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s1 done, → running (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s2 done (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s3 done (current) · orchestrator
-- 2026-11-06 12:30 UTC · `console-approvals-in-place` s4 done (current) · orchestrator
-- 2026-11-06 02:27 UTC · `amberx-slim-down-voice-queue` added (0 steps) (current) · pending
-- 2026-11-06 02:28 UTC · `amberx-slim-down-voice-queue` note (current) · pending
-- 2026-11-06 02:29 UTC · `amberx-slim-down-voice-queue` note (current) · pending
-- 2026-11-06 02:30 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · pending
-- 2026-11-06 02:30 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:31 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:31 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:33 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:34 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
@@ -1105,6 +1086,25 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 01:33 UTC · `notes-tasks-calendar` s8-2 done, s8-3 done, note (current) · foreign-write
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` branch claude/approvals-in-place-r2, PR #375 (current) · builds-live
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s5 done, → running (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-3 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-4 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s8 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s8-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s8-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s9 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s9-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-1 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-2 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-3 done, → built (current) · orchestrator
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` note (current) · orchestrator
+- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s1 done, → running (current) · orchestrator
 
 ## Token passes (log)
 
