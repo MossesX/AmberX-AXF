@@ -193,6 +193,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-open-any-url": {
+   "said": "\"We need a plugin that will let AmberX open up any website I tell her to.\"\n(Context: amberx.open_url refused www.hostinger.com: \"open_url only opens Brett's own sites (amberxai.com)\".)\n\n1. amberx.open_url (axHub device service) opens any http/https URL on Brett's paired phone, not only amberxai.com. Block non-http(s) schemes (intent:, file:, javascript:). Audit-log every open.\n2. Setting in axHub (owner-only): mode = own sites only / allowlist / any site (default: any site, per Brett). Allowlist editable.\n3. AmberX app: opens external sites in the phone's default browser; own sites keep opening in AmberX.\n4. Tests, docs (decisions), PR to the merge queue. Do NOT land directly. If the AmberX APK needs a change, note it for an AmberX-AXF follow-up.\n\nOne session, lean chain.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "backfill",
+   "brief": "# Build: amberx-open-any-url\n\n## Brett said (verbatim)\n\"We need a plugin that will let AmberX open up any website I tell her to.\"\n(Context: amberx.open_url refused www.hostinger.com: \"open_url only opens Brett's own sites (amberxai.com)\".)\n\n1. amberx.open_url (axHub device service) opens any http/https URL on Brett's paired phone, not only amberxai.com. Block non-http(s) schemes (intent:, file:, javascript:). Audit-log every open.\n2. Setting in axHub (owner-only): mode = own sites only / allowlist / any site (default: any site, per Brett). Allowlist editable.\n3. AmberX app: opens external sites in the phone's default browser; own sites keep opening in AmberX.\n4. Tests, docs (decisions), PR to the merge queue. Do NOT land directly. If the AmberX APK needs a change, note it for an AmberX-AXF follow-up.\n\nOne session, lean chain.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-open-any-url-apk": {
    "said": "We need a plugin that will let AmberX open up any website I tell her to.",
    "at": "2026-11-07T00:45:42.473Z",
@@ -511,11 +523,39 @@
    "source": "voice",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: badges-notify-followup\n\n## Brett said (verbatim)\n\"Run a follow-up.\" (for requests that arrived after claude-badge-vps and notifications-control-panel finished)\n\nBase: merge branches claude/claude-badge-vps and claude/notifications-control-panel (both finished, not landed) and build on top. Read their briefs' addenda: /root/axf-builds/claude-badge-vps/.brief.md and /root/axf-builds/notifications-control-panel/.brief.md.\n\nA. Badges (one plugin):\n1. Claude, axHub, VPS and AmberX badges in ONE plugin; move existing ones in (old ones can be disabled).\n2. Per badge: show/hide, icons only or icon + label, label text, icon per state (ok/warn/error/off), banner order.\n3. VPS account usage meter (5-hour + weekly used of total, reset time) in the same plugin; reuse the existing usage-meter widget code.\n4. Configurable tap action per badge (drop-down, open screen, run command, toggle, nothing). Usage meter default tap = drop-down of every saved Claude account with credits left, reset times, active marker, status. Plain code, zero tokens, cached + refresh.\n\nB. Notifications panel:\n5. Groups (user-made, group on/off), triggers (event, conditions, thresholds, schedule), actions/commands on each notification (approve, open screen, run console command, custom per group). Editable in the panel and via REST/MCP/CLI.\n\nTests, README, report, screenshots to UI Review, ONE PR to the merge queue that supersedes the two branches. Do NOT land directly. One session, lean chain. Stay out of Gizmo and UI registry code (running builds).\n## Addendum 1 (Brett, voice) - notifications architecture\n\"Everything's gonna go through the console. It needs to exist on the console, and then that sends the thing to AmberX to do the notification. It doesn't live on AmberX. AmberX just processes commands from the console.\"\n- The notifications engine (registry, rules, groups, triggers, actions) lives on the console only.\n- AmberX is a dumb delivery end: it receives notification commands from the console (show, sound, open link, action buttons that call back to the console) and nothing else. No notification logic or rules in AmberX; any that exist there get moved to the console.\n\n## Addendum 2 (Brett, voice)\n\"Can I make it so a notification will be a vibration or an alarm or a certain sound, from the console?\"\n- Yes: per notification type/group on the console: delivery style = silent / vibrate (pattern) / sound (pick from a list, custom upload) / alarm (full-screen, repeats until dismissed). AmberX executes it (notification channels per style so Android honours it). Test button per type.\n\n## Addendum 3 (Brett, voice) - bring to front\n\"When something is sent over from the console, AmberX opens it up and brings it to the front of my phone. If I say 'open up the console UI Review and bring this project into focus', it brings that right up to the front.\"\n- Console command -> AmberX: bring AmberX to the foreground on the phone (Android full-screen intent / overlay permission as needed) and open the target directly: a screen, a UI Review group, a specific item scrolled into focus.\n- New UI Review items auto-open this way (setting to turn off; notification is the fallback).\n- Works by voice through the local assistant / Gizmo: 'open UI Review and focus <project>'.\n- Builds on PR #365 (ui-review-notify-audio, truthful wake); merge its branch claude/ui-review-notify-audio first, don't rebuild it. APK change via CI.\n",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "Everything's gonna go through the console. It needs to exist on the console, and then that sends the thing to AmberX to do the notification. It doesn't live on AmberX. AmberX just processes commands from the console.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "The notifications engine (registry, rules, groups, triggers, actions) lives on the console only. AmberX is a dumb delivery end: it receives notification commands from the console (show, sound, open link, action buttons that call back to the console) and nothing else. No notification logic or rules in AmberX; any that exist there get moved to the console.",
+     "step": "s5"
+    },
+    {
+     "said": "Can I make it so a notification will be a vibration or an alarm or a certain sound, from the console?",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Yes: per notification type/group on the console: delivery style = silent / vibrate (pattern) / sound (pick from a list, custom upload) / alarm (full-screen, repeats until dismissed). AmberX executes it (notification channels per style so Android honours it). Test button per type.",
+     "step": "s6"
+    },
+    {
+     "said": "When something is sent over from the console, AmberX opens it up and brings it to the front of my phone. If I say 'open up the console UI Review and bring this project into focus', it brings that right up to the front.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Console command -> AmberX: bring AmberX to the foreground on the phone (Android full-screen intent / overlay permission as needed) and open the target directly: a screen, a UI Review group, a specific item scrolled into focus. New UI Review items auto-open this way (setting to turn off; notification is the fallback). Works by voice through the local assistant / Gizmo: 'open UI Review and focus <project>'. Builds on PR #365 (ui-review-notify-audio, truthful wake); merge its branch claude/ui-review-notify-audio first, don't rebuild it. APK change via CI.",
+     "step": "s7"
+    }
+   ]
   },
   "banner-fix-fallback": {
    "said": "If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.",
@@ -825,14 +865,32 @@
   "claude-badge-vps": {
    "said": "I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.",
    "at": "2026-11-06T20:18:34.992Z",
-   "source": "",
+   "source": "voice",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: claude-badge-vps\n\nBrett (voice): \"I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.\"\n\nClaude badge plugin (apps/console-web/plugins/claude-badge):\n1. Two connections, each its own badge/indicator on the banner:\n   - Console connection: the existing test (console AI via axf.llm@1).\n   - VPS connection: the Claude Code login on the VPS (which account, logged in or not, limit hit). Read it with plain code, zero tokens (e.g. the ai-keys/claude-accounts VPS status or a cheap read of /root/.claude.json email + credentials expiry); green = logged in and working, amber = limit hit / out of credits, gray/red = not logged in.\n2. Settings (Settings > Plugins > Claude badge): show/hide each one; Icons only switch per badge; pick the icon for each badge and each state (ok / no credit / error), extending the existing Badge icons picker.\n3. Covers step 18 of pending item token-usage-log-accounts-plan-studio-control (clock badge watches VPS login): note it there, don't build it twice.\n4. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nNothing gets removed. One session for the whole build, read only files you need, no full CLAUDE.md chain. Stay out of notes/tasks/todo and AmberX notification code (other builds).\n## UPDATE from Brett (replaces the scope above)\n\"I need the Claude badge, the axHub badge, the VPS badge and the AmberX badge, all in one plugin, all able to select which icon for which, and fully configurable.\"\n- One plugin holds four badges: Claude (console AI), axHub (connection/health), VPS (Claude login on the VPS), AmberX (phone app connected/last seen). Move the existing ones in; old plugins can be disabled, nothing removed.\n- Per badge: show/hide, icons only or icon + label, label text, icon per state (ok / warn / error / off), order on the banner.\n- All plain-code checks, zero tokens.\n\n## Addendum 2 (Brett, voice)\nAdd a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.\n\n## Addendum 3 (Brett, voice)\n\"When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.\"\n- Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing.\n- Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.\n",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "Add a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "step": "s5"
+    },
+    {
+     "said": "When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing. Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.",
+     "step": "s6"
+    }
+   ]
   },
   "claude-settings": {
    "said": "I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.",
@@ -852,11 +910,30 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: claude-settings-tabs-veto\n\n## Brett said (verbatim)\n\"The Claude settings interface is getting pretty big. We need to organize it. Give it multiple views, one of them being tabular. If you have it on the tab view, you can set where you want them to appear and how you want them to appear: on the left, on the right, on the top, and the bottom, whether you want the words or an icon.\" \"The veto and the approve are gonna be their own tab in there. Break it down and put it into tabs.\"\nAlso: \"You don't need to run the 90-second veto thing unless you are writing stuff to the VPS.\"\n\n1. Audit Claude settings (plugin claude-settings): list every setting, group them into sensible tabs. Report the breakdown.\n2. Views: classic (one page, collapsible sections) and tabbed. Tabbed uses the tab-group@1 asset: tab position left / right / top / bottom, labels as words / icons / both. Settings for the view saved per device. Claude settings stays a settings-interface asset.\n3. New tab 'Approvals & veto': per axHub tool (or group) choose allow / veto / confirm, veto hold length (seconds), pass durations; reads go without a hold, only VPS writes and account switches hold by default. Writes to the axHub policy through its API (owner-only). Show the current policy table live.\n4. REST/MCP/CLI for the view settings and the policy tab.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Overlap check with pending item approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc; tick its veto step if covered, note it.\n\nOne session, lean chain. Stay out of Gizmo, UI registry, badges/notifications code (other builds).\n## Addendum 1 (Brett, voice) - where the veto/approval settings live\n\"Those settings should not be part of the Claude plugin. They can be accessed by any MCP server, the API or the CLI. They can be in Claude settings, they can be in framework settings.\"\n- The approvals/veto policy settings are their own framework-level settings asset (settings-ui@1), owned by the framework, not the claude-settings plugin. Store: framework settings. Exposed on REST + MCP + CLI.\n- Mounted in two places as the same asset: Framework settings and a tab in Claude settings. One source of truth.\n\n## Addendum 2 (Brett, voice) - predicted options first\n\"Give me a bunch of options in UI Review to pick from, like ten.\"\n- BEFORE building the UI: submit 10 predicted screenshots (ui-review-predicted) of where/how Framework settings and the Approvals & veto settings sit in the main settings interface: e.g. own top-level Framework tab; a section inside General; a left-rail group; a settings home card; a gear in the banner; icon tabs top/left/right/bottom variants; a compact phone layout; a two-pane layout. Phone + desktop each.\n- Wait for Brett's pick in UI Review, then build that one. The 10 are mockups only, no code written for the losers.\n",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "Those settings should not be part of the Claude plugin. They can be accessed by any MCP server, the API or the CLI. They can be in Claude settings, they can be in framework settings.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "The approvals/veto policy settings are their own framework-level settings asset (settings-ui@1), owned by the framework, not the claude-settings plugin. Store: framework settings. Exposed on REST + MCP + CLI. Mounted in two places as the same asset: Framework settings and a tab in Claude settings. One source of truth.",
+     "step": "s7"
+    },
+    {
+     "said": "Give me a bunch of options in UI Review to pick from, like ten.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "BEFORE building the UI: submit 10 predicted screenshots (ui-review-predicted) of where/how Framework settings and the Approvals & veto settings sit in the main settings interface: e.g. own top-level Framework tab; a section inside General; a left-rail group; a settings home card; a gear in the banner; icon tabs top/left/right/bottom variants; a compact phone layout; a two-pane layout. Phone + desktop each. Wait for Brett's pick in UI Review, then build that one. The 10 are mockups only, no code written for the losers.",
+     "step": "s8"
+    }
+   ]
   },
   "console-account-picker": {
    "said": "I need to be able to flip them from the console.",
@@ -1287,11 +1364,84 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: gizmo-rebuild-fable\n\n## Brett said (verbatim)\n\"I want to use Fable on the highest possible thinking level on ultra code to rebuild Gizmo.\" \"Go ahead.\"\nAlso: \"I need more powerful controls over the background listeners for AmberX. I've had problems with the microphone... it's crashing with other apps, and sometimes it'll just do that sound over and over.\"\n\nThinking: MAX (AXF_THINKING=max / --effort max). Model Fable for every step.\n\nRebuild Gizmo (AmberX companion plugin) properly on Fable:\n1. Review the existing companion plugin + shared claude-session lib + assistant-chat-mode fast path; keep what is solid, rebuild what isn't. Report what changed and why.\n2. Talk mode works with the screen off / app backgrounded (foreground service), transcript in the chat, stop from the notification (replaces the stopped gizmo-voice run; reuse /root/axf-builds/gizmo-voice if it has useful work).\n3. Mic / background listener fixes and controls: proper Android audio focus (yield the mic to calls and other apps, resume after), no restart loop replaying the start sound (backoff, max retries, silent restarts), one owner of the mic at a time. Listener control panel in AmberX + console: list every listener, on/off, auto-pause on calls/other apps, sound on/off, retry limits, status and last error, REST/MCP/CLI.\n4. Fix the message box sitting under the bottom nav at phone width.\n5. Tests, APK via CI, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Tick pending items gizmo-voice and gizmo-companion where covered.\n\nNothing removed. One session, lean chain. Stay out of notes/tasks, badges and notification-panel code (other builds running).\n## Addendum 1 (Brett, voice)\n\"I'm thinking maybe we should take Assistant out of AmberX since we just have Gizmo... there's a lot of bloat.\"\n- Move what Gizmo needs from ai-assistant (server chat route, provider, turn router) into the companion plugin / shared claude-session lib.\n- Then remove the old Assistant plugin from AmberX (UI, nav, server part, bundle). Gizmo is the only assistant in AmberX. Console's own assistant is not affected unless it only depends on the AmberX copy; check and report.\n- Report bundle size before/after.\n\n## Addendum 2 (Brett, voice) - overrides Addendum 1's direction\n\"It should be the other way around. Gizmo should control everything; the assistant should run off of Gizmo.\"\n- Gizmo owns the chat engine: server route, provider, turn router, tools, sessions.\n- Any remaining assistant (console assistant, AmberX) becomes a thin client running on Gizmo's engine, no own copy of the logic.\n- Remove the duplicated AmberX Assistant bloat once it runs on Gizmo.\n\n## Addendum 3 (Brett, voice) - the goal\n\"Gizmo needs to be powerful, hardcore. He's got to be my full Claude client. He's gonna replace the Claude app on my phone. I'm not gonna use the Claude app no more. It's all gonna be Gizmo.\"\n- Target: full Claude app replacement on Brett's phone. Parity list to plan against: voice mode (hands-free, interrupt, screen off), chats with history/search, projects with instructions + files, memory, connectors/MCP (axHub services), web search + fetch, file/photo/camera attach, artifacts/docs, model + thinking picker, timers/alarms/calendar/location on the phone, notifications.\n- This run: write the parity plan as a pending item with ~10-min steps (what exists, what's missing, order), build the core (engine ownership, voice screen-off, mic fixes) first, and as much of the rest as fits. Remaining steps stay in the plan for the next run. Don't pad; no extras beyond the list.\n\n## Addendum 4 (Brett, voice)\n\"I don't really need chat history. I've already got the session logs in AmberX. Don't put that in Gizmo, that'd be dumb.\"\n- Drop chat history/search from the parity list. Gizmo uses AmberX's existing session logs (link to them), no second history store.\n\n## Addendum 5 (Brett, voice) - narrows Addendum 3\n\"When I say replace Claude on my phone, I mean my interface, my chat, my input interface. Just the chat part.\"\n- Scope = the chat/input experience only: talking and typing to Claude (voice mode hands-free, interrupt, screen off; text input; attachments; streaming replies; tool use through axHub/MCP; model + thinking picker).\n- Not in scope: chat history, projects, memory UI, artifacts, phone extras. Drop them from the parity plan.\n\n## Addendum 6 (Brett, voice) - orchestrator-first, no resending\n\"I don't want you sending everything every time we exchange words. I don't want to resend the whole conversation... Everything I say is gonna go to the orchestrator first. Everything from Gizmo goes through the console. No AI. Until I send it to Claude.\"\n- Gizmo input goes to the console/orchestrator first, plain code, zero tokens. Never resend the whole conversation; send Claude only what's needed.\n- Console holds Gizmo input in a sorted, manageable queue (reorder, edit, group/split into threads, delete). Nothing goes to Claude until Brett sends it (one item, a selection, or a thread).\n- Settings: Gizmo plugin carries a settings-interface ASSET (every settings interface is an asset) that attaches to the orchestrator's settings interface as its own Gizmo tab (Gizmo-orchestrator integration settings). Gizmo has hooks to open it. Gizmo's existing AmberX settings stay as they are.\n- API/MCP/CLI for the queue and settings.\n\n## Addendum 7 (Brett, voice) - searchable transcript database\n\"I want to be able to search them. I don't want them to be read as memory every time the project loads, but I do want a database created that is searchable.\"\n- Build on PR #365 (ui-review-notify-audio: session recording + transcripts); don't rebuild it.\n- One searchable database of every session transcript (full-text, plain code; optional local embeddings later): who, when, session, build, text with timestamps, link to the audio at that moment.\n- NEVER loaded into context on project start or by default. Only queried on demand.\n- Search tool for Gizmo/Claude (MCP + REST + CLI: transcripts_search, transcript_get) returning short snippets with links; search UI in the console recorder page.\n\n## Addendum 8 (Brett, voice) - make the transcript search full RAG\n\"Go ahead.\" (make it a real RAG, search by meaning)\n- Install Ollama on the VPS with a small local embedding model (e.g. nomic-embed-text, ~0.5 GB RAM, CPU only). Zero Claude tokens.\n- Index every transcript in chunks with embeddings in the background after each session (niced, one at a time); backfill existing transcripts.\n- Hybrid search: meaning (vectors) + keywords, ranked; results = short snippets with session, time and audio link.\n- Still never auto-loaded into context; only on demand through transcripts_search.\n",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "I'm thinking maybe we should take Assistant out of AmberX since we just have Gizmo... there's a lot of bloat.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Move what Gizmo needs from ai-assistant (server chat route, provider, turn router) into the companion plugin / shared claude-session lib. Then remove the old Assistant plugin from AmberX (UI, nav, server part, bundle). Gizmo is the only assistant in AmberX. Console's own assistant is not affected unless it only depends on the AmberX copy; check and report. Report bundle size before/after.",
+     "step": "s9"
+    },
+    {
+     "said": "It should be the other way around. Gizmo should control everything; the assistant should run off of Gizmo.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Gizmo owns the chat engine: server route, provider, turn router, tools, sessions. Any remaining assistant (console assistant, AmberX) becomes a thin client running on Gizmo's engine, no own copy of the logic. Remove the duplicated AmberX Assistant bloat once it runs on Gizmo.",
+     "step": "s10"
+    },
+    {
+     "said": "Gizmo needs to be powerful, hardcore. He's got to be my full Claude client. He's gonna replace the Claude app on my phone. I'm not gonna use the Claude app no more. It's all gonna be Gizmo.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Target: full Claude app replacement on Brett's phone. Parity list to plan against: voice mode (hands-free, interrupt, screen off), chats with history/search, projects with instructions + files, memory, connectors/MCP (axHub services), web search + fetch, file/photo/camera attach, artifacts/docs, model + thinking picker, timers/alarms/calendar/location on the phone, notifications. This run: write the parity plan as a pending item with ~10-min steps (what exists, what's missing, order), build the core (engine ownership, voice screen-off, mic fixes) first, and as much of the rest as fits. Remaining steps stay in the plan for the next run. Don't pad; no extras beyond the list.",
+     "step": "s11"
+    },
+    {
+     "said": "I don't really need chat history. I've already got the session logs in AmberX. Don't put that in Gizmo, that'd be dumb.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Drop chat history/search from the parity list. Gizmo uses AmberX's existing session logs (link to them), no second history store.",
+     "step": "s12"
+    },
+    {
+     "said": "When I say replace Claude on my phone, I mean my interface, my chat, my input interface. Just the chat part.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Scope = the chat/input experience only: talking and typing to Claude (voice mode hands-free, interrupt, screen off; text input; attachments; streaming replies; tool use through axHub/MCP; model + thinking picker). Not in scope: chat history, projects, memory UI, artifacts, phone extras. Drop them from the parity plan.",
+     "step": "s13"
+    },
+    {
+     "said": "I don't want you sending everything every time we exchange words. I don't want to resend the whole conversation... Everything I say is gonna go to the orchestrator first. Everything from Gizmo goes through the console. No AI. Until I send it to Claude.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Gizmo input goes to the console/orchestrator first, plain code, zero tokens. Never resend the whole conversation; send Claude only what's needed. Console holds Gizmo input in a sorted, manageable queue (reorder, edit, group/split into threads, delete). Nothing goes to Claude until Brett sends it (one item, a selection, or a thread). Settings: Gizmo plugin carries a settings-interface ASSET (every settings interface is an asset) that attaches to the orchestrator's settings interface as its own Gizmo tab (Gizmo-orchestrator integration settings). Gizmo has hooks to open it. Gizmo's existing AmberX settings stay as they are. API/MCP/CLI for the queue and settings.",
+     "step": "s14"
+    },
+    {
+     "said": "I want to be able to search them. I don't want them to be read as memory every time the project loads, but I do want a database created that is searchable.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Build on PR #365 (ui-review-notify-audio: session recording + transcripts); don't rebuild it. One searchable database of every session transcript (full-text, plain code; optional local embeddings later): who, when, session, build, text with timestamps, link to the audio at that moment. NEVER loaded into context on project start or by default. Only queried on demand. Search tool for Gizmo/Claude (MCP + REST + CLI: transcripts_search, transcript_get) returning short snippets with links; search UI in the console recorder page.",
+     "step": "s15"
+    },
+    {
+     "said": "\"Go ahead.\" (make it a real RAG, search by meaning)",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Install Ollama on the VPS with a small local embedding model (e.g. nomic-embed-text, ~0.5 GB RAM, CPU only). Zero Claude tokens. Index every transcript in chunks with embeddings in the background after each session (niced, one at a time); backfill existing transcripts. Hybrid search: meaning (vectors) + keywords, ranked; results = short snippets with session, time and audio link. Still never auto-loaded into context; only on demand through transcripts_search.",
+     "step": "s16"
+    }
+   ]
   },
   "gizmo-terminal": {
    "said": "It's gonna need an integrated terminal window that can be visible or hidden, and it can be placed at the bottom or the top, or the left or the right. And it can be completely configured.",
@@ -1312,7 +1462,7 @@
    "session": "",
    "link": "",
    "by": "brett",
-   "brief": "",
+   "brief": "# Build: gizmo-voice (pending item gizmo-voice)\n\n## Brett said (verbatim)\n\"Voice is step 2 and goes first in line.\" Today: likes Gizmo talk mode working with the screen off; start it now.\n\nGizmo talk mode keeps working with the phone screen off / AmberX in the background.\n1. AmberX foreground service (native, allowed Android exception) keeps talk mode + speech running with the screen off.\n2. Wire companion talk.ts to the service; transcript shows in the chat; stop from the notification.\n3. Use the fast chat mode from assistant-chat-mode-r4 if merged (don't rebuild it).\n4. APK via CI, tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Tick the steps on pending item gizmo-voice.\n\nNothing removed. One session, lean chain. Stay out of notes/tasks, badges and notification code (other builds).",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -1758,11 +1908,21 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: notifications-control-panel\n\n## Brett said (verbatim)\n\"You need to have an administration panel. I need to control all the notifications. I need you to build a console control panel to enable and control all possible notifications.\"\n\nConsole plugin: one Notifications control panel.\n1. Inventory every notification source in console, AmberX, axHub (banners, alerts, approvals/veto, UI Review, builds, merge queue, CI, health checks, account/limits, Follow Amber, AmberX push). Report the list.\n2. One registry (notification types, source, channel). Every sender checks it before sending.\n3. Panel: per type on/off, channel (banner, AmberX push, sound, console pop-up), priority, quiet hours, test send; master switch; per app.\n4. REST + MCP + CLI so it can be set by voice.\n5. Coordinate with running build ui-review-notify-audio (UI Review push to AmberX): register its notification type here, don't rebuild it.\n6. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Nothing removed. One session, lean chain.\n## Addendum 1 (Brett, voice)\n\"I need groups with commands with triggers with actions.\"\n- Notification groups (user-made, any types in a group, group on/off).\n- Triggers: rules for when a notification fires (event, conditions, thresholds, schedule).\n- Actions/commands: buttons on each notification that run a command (approve, open screen, run console command); custom commands per group.\n- All editable in the panel and via REST/MCP/CLI.\n",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "I need groups with commands with triggers with actions.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Notification groups (user-made, any types in a group, group on/off). Triggers: rules for when a notification fires (event, conditions, thresholds, schedule). Actions/commands: buttons on each notification that run a command (approve, open screen, run console command); custom commands per group. All editable in the panel and via REST/MCP/CLI.",
+     "step": "s7"
+    }
+   ]
   },
   "orch-live-sync": {
    "said": "you fix it, I trust you",
@@ -2232,8 +2392,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: settings-sections-everywhere\n\n## Brett said (verbatim)\n\"All groups of settings in every settings interface as of now, everything, it's gotta be in sections. Everything's gonna be arranged in sections that are similar: certain types of settings in a section that's collapsible. Every settings interface that is in existence thus far is gonna be like that. You're gonna go through and refactor them, put everything in categories. And they're all collapsible sections.\"\n\n1. Inventory every settings interface in console, AmberX, Molly, axHub web, Expenses and every plugin. Report the list and the categories chosen for each.\n2. Framework: the settings-interface asset (settings-ui@1) gets sections: title, icon, order, collapsed-by-default, fold state remembered per device; expand/collapse all. Reuse FoldSections from notes-views.\n3. Refactor every existing settings interface into categorized collapsible sections (similar settings grouped). No setting removed or renamed.\n4. CI check: a settings interface with ungrouped settings fails.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Coordinate with claude-settings-tabs-veto (queued): its tabs sit above these sections; don't rebuild its work.\n\nOne session, lean chain. Stay out of Gizmo, UI registry, badges/notifications code (other builds).",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2578,11 +2738,30 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "backfill",
+   "brief": "# Build: ui-registry-shortcuts\n\n## Brett said (verbatim)\n\"Let's go with a UI shortcuts plugin. All the UIs need to be in a registry. Every single dialog, pop-up, settings interface, main plugin screen, every UI element has to be an asset. Every single asset in the whole app and all its plugins, from a button to a pop-up to a link to a menu to a menu entry, every thing needs to be an asset. That needs to be visible to the API.\" \"Create a registry so I can open them with my voice.\"\n\n1. Audit: list what is already an asset (chrome assets, settings-ui@1, tab-group@1, jump-menu@1, control@1 screens/dialogs, voice-command@1) and what isn't. Report the gap. Reuse existing contracts; don't duplicate control@1 or voice-command@1.\n2. One UI registry (framework contract): every screen, dialog, pop-up, settings interface, menu, menu entry, button, link across console, AmberX, Molly, axHub web, and every plugin. Stable id, kind, owner app/plugin, label, aliases, how to open it. Plugins declare theirs; a scanner fills gaps; CI check that new UI is registered.\n3. API/MCP/CLI: list, search, get, open/show/trigger any registered item.\n4. Voice: UI Shortcuts plugin opens any registered item by voice (aliases, fuzzy match), wired to voice-command@1 and Gizmo; user-defined shortcuts.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOne session, lean chain. Stay out of Gizmo, badges, notifications code (other builds running).\n## Addendum 1 (Brett, voice) - local assistant, no AI\n\"Without AI, I need an assistant that doesn't need Claude, that just knows my app. I should be able to tell it in plain English like: 'yo, make a notification to do this.'\"\n- Build a local, zero-token assistant on top of the UI registry + voice-command@1 + control@1: plain-English parsing with a grammar/intent matcher (no LLM), fuzzy matching, slots (names, times, on/off), confirmation for writes.\n- It can: open any registered UI, change any setting, run any registered command, create/edit notifications and their style (through the notifications plugin's API), queue items for Claude (Gizmo queue) when the request really needs AI.\n- Lives on the console; AmberX and Gizmo send it text/voice. 'What can I say?' lists commands. API/MCP/CLI.\n\n## Addendum 2 (Brett, voice) - local LLM fallback\n\"Yes, we're gonna do that.\" (run a small local model through Ollama)\n- The local assistant uses a small CPU model through Ollama (e.g. llama3.2:3b or qwen2.5:3b, ~4 GB RAM) ONLY as a fallback when the pattern matcher can't map the sentence: the model picks a command from the UI registry, never free-form actions. Zero Claude tokens.\n- Share the Ollama install with the Gizmo rebuild (it installs Ollama + an embedding model for transcript RAG); don't install twice. Setting to turn the model off; memory limit; unload when idle.\n",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "Without AI, I need an assistant that doesn't need Claude, that just knows my app. I should be able to tell it in plain English like: 'yo, make a notification to do this.'",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "Build a local, zero-token assistant on top of the UI registry + voice-command@1 + control@1: plain-English parsing with a grammar/intent matcher (no LLM), fuzzy matching, slots (names, times, on/off), confirmation for writes. It can: open any registered UI, change any setting, run any registered command, create/edit notifications and their style (through the notifications plugin's API), queue items for Claude (Gizmo queue) when the request really needs AI. Lives on the console; AmberX and Gizmo send it text/voice. 'What can I say?' lists commands. API/MCP/CLI.",
+     "step": "s7"
+    },
+    {
+     "said": "\"Yes, we're gonna do that.\" (run a small local model through Ollama)",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true,
+     "summary": "The local assistant uses a small CPU model through Ollama (e.g. llama3.2:3b or qwen2.5:3b, ~4 GB RAM) ONLY as a fallback when the pattern matcher can't map the sentence: the model picks a command from the UI registry, never free-form actions. Zero Claude tokens. Share the Ollama install with the Gizmo rebuild (it installs Ollama + an embedding model for transcript RAG); don't install twice. Setting to turn the model off; memory limit; unload when idle.",
+     "step": "s8"
+    }
+   ]
   },
   "ui-review": {
    "said": "rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
