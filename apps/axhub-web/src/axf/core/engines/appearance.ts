@@ -53,6 +53,11 @@ export interface AppearanceDocument {
    * an app clears its own look settings that aren't listed. Absent = an older document; nothing is cleared.
    */
   settings?: Record<string, JsonValue>;
+  /**
+   * The hub-wide skin (build skins-asset-types, Nov 2026): the `global` level of the skin chain. An app follows it only
+   * while its own look says so (`skin.inherit`, Brett: "a switch to do it, but by default they're all their own").
+   */
+  skin?: { id: string; overrides?: Record<string, string> };
   /** who saved it last (app id), when; informational */
   updatedBy?: string;
   updatedAt?: string;
@@ -120,6 +125,16 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
     }
     doc.settings = settings; // kept even when empty: an empty map still says "the hub owns the look settings"
   }
+  if (o.skin && typeof o.skin === 'object' && !Array.isArray(o.skin)) {
+    const s = o.skin as Record<string, unknown>;
+    if (typeof s.id === 'string' && ID.test(s.id)) {
+      const overrides: Record<string, string> = {};
+      if (s.overrides && typeof s.overrides === 'object' && !Array.isArray(s.overrides)) {
+        for (const [t, id] of Object.entries(s.overrides as Record<string, unknown>)) if (ID.test(t) && typeof id === 'string' && ID.test(id) && !APPEARANCE_NEVER.includes(t)) overrides[t] = id;
+      }
+      doc.skin = Object.keys(overrides).length ? { id: s.id, overrides } : { id: s.id };
+    }
+  }
   if (typeof o.updatedBy === 'string' && o.updatedBy.length <= 80) doc.updatedBy = o.updatedBy;
   if (typeof o.updatedAt === 'string' && o.updatedAt.length <= 40) doc.updatedAt = o.updatedAt;
   return doc;
@@ -166,6 +181,8 @@ export interface AppearanceChange {
   hidden?: Record<string, boolean | null>;
   palette?: AppearanceDocument['palette'];
   settings?: Record<string, unknown>;
+  /** The hub-wide skin: a pick, or null to clear it. */
+  skin?: AppearanceDocument['skin'] | null;
 }
 
 /** Fold a later change into an earlier pending one (per key, the later wins). */
@@ -177,6 +194,7 @@ export function combineAppearanceChanges(a: AppearanceChange | null, b: Appearan
   if (a.settings || b.settings) out.settings = { ...a.settings, ...b.settings };
   const spacing = b.spacing ?? a.spacing; if (spacing) out.spacing = spacing;
   const palette = b.palette ?? a.palette; if (palette) out.palette = palette;
+  if (b.skin !== undefined) out.skin = b.skin; else if (a.skin !== undefined) out.skin = a.skin;
   return out;
 }
 
@@ -195,6 +213,7 @@ export function mergeAppearance(base: AppearanceDocument | null, change: Appeara
     doc.hidden = hidden;
   }
   if (change.palette) doc.palette = change.palette;
+  if (change.skin === null) delete doc.skin; else if (change.skin) doc.skin = change.skin;
   if (change.settings) {
     const before = doc.settings;
     const settings = { ...(before ?? {}) };

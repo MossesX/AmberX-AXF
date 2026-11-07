@@ -20,6 +20,8 @@ import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
+import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
+import { SkinScope } from '../../react/components/SkinScope';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -609,6 +611,7 @@ export function AppearancePanel() {
         <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
       </div>
       <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
+      <FollowHubSwitch locked={locked} />
       {row('Style theme', 'style-theme')}
       {row('Colour theme', 'color-theme')}
       {row('Layout theme', 'layout')}
@@ -617,6 +620,7 @@ export function AppearancePanel() {
         <Switch key={t} label={assetTypeSpecs[t as AssetType]?.label ?? t} checked={!rt.slotHidden(t as AssetType)} disabled={locked} onChange={(on) => rt.setSlotHidden(t as AssetType, !on)} />
       ))}
       {row('Navigation menu', 'nav-menu')}
+      <SkinWhere locked={locked} />
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
         <div className="axf-settings__control axf-skin__action">
@@ -688,7 +692,7 @@ export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const plugin = rt.settings.getTab(id)?.plugin;
-  return plugin ? <div className="fx-plugin-scope" data-axf-plugin={plugin}><TabBody id={id} all={all} /></div> : <TabBody id={id} all={all} />;
+  return plugin ? <SkinScope kind="plugin" id={plugin} className="fx-plugin-scope"><TabBody id={id} all={all} /></SkinScope> : <TabBody id={id} all={all} />;
 }
 
 /** A settings tab on its own, in a dialog: its name, the level toolbar and its panels and groups. */
@@ -909,7 +913,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS + LEVELS_CSS;
+  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS;
   doc.head.appendChild(el);
 }
 
@@ -970,6 +974,7 @@ export const library: AxfWebLibrary = {
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
     [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
+    [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },

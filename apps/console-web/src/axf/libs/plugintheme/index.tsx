@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import './plugintheme.css';
-import { Button, Checkbox, Chip, ColorField, Container, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, useEditorSync, useRuntime } from '../../react';
+import { Button, Checkbox, Chip, ColorField, Container, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, SkinScope, useEditorSync, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import type { ColorThemeData, StyleThemeData } from '../../core';
@@ -80,9 +80,12 @@ function currentPlugin(rt: AxfRuntime): string | null {
 
 /* ---------------- scope + stylesheet ---------------- */
 
-/** A plugin UI root: no box of its own, carries the scope attribute. */
+/**
+ * A plugin UI root: no box of its own, carries the scope attribute, and is the plugin level of the skin chain
+ * (skin-coverage@1): a skin picked for this plugin in Settings → Appearance → Where draws only inside it.
+ */
 export function PluginScope({ id, children }: { id: string; children: ReactNode }) {
-  return <div className="fx-plugin-scope" {...{ [PLUGIN_ATTR]: id }}>{children}</div>;
+  return <SkinScope kind="plugin" id={id} className="fx-plugin-scope" attrs={{ [PLUGIN_ATTR]: id }}>{children}</SkinScope>;
 }
 
 function apply(rt: AxfRuntime) {

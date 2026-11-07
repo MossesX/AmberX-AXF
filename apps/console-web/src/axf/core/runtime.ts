@@ -31,7 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { backToSkin, composeLook, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinEntries, skinFromDesignPackage, snapshotLook, undoRestore, SKIN_TYPE, type AppLookDocument, type AppLookStore, type SkinData, type SkinEntry } from './engines/skin';
+import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -438,6 +438,8 @@ export class AxfRuntime {
   private lastAppearance: AppearanceDocument | null = null;
   /** The document last applied: the shared one with this app's look over it. */
   private lastEffective: AppearanceDocument | null = null;
+  /** What the app level composed last: the document, the skin's parts and which level decided (engines/skin.ts). */
+  private lastComposed: ComposedLook | null = null;
 
   /**
    * Make this a developer app: its appearance comes from the source (and goes back to it). Until the source is
@@ -536,7 +538,10 @@ export class AxfRuntime {
     this.lastAppearance = shared;
     const saved = this.ensureLook();
     const look = saved && this.lookPreview ? setUseSkin(pickSkin(saved, this.lookPreview), true) : saved;
-    const doc = look ? composeLook(shared, look, look.skin.use ? this.skinData(look.skin.id) : null) : shared;
+    // the app level of the chain: this app's own skin, or the hub-wide one while the app follows it (engines/skin.ts)
+    const composed = look ? composeLookAt(shared, look, (id) => this.skinData(id)) : null;
+    this.lastComposed = composed;
+    const doc = composed?.doc ?? shared;
     this.lastEffective = doc;
     let retired: string[] = [];
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
@@ -613,7 +618,8 @@ export class AxfRuntime {
     if (this.lookLayerOn() && store.status() === 'failed') { this.terminal.warn('appearance', "this app's look document can't be read, so this change isn't saved"); return; }
     const look = this.lookLayerOn() ? store.get() : null;
     if (look) {
-      this.saveLook(lookAfterChange(look, change, look.skin.use ? this.skinData(look.skin.id) : null));
+      const inForce = resolveLookSkin(look, globalSkinOf(this.lastAppearance), null);
+      this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null));
       // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
       if (change.palette && this.manifest.app.id === HUB_PALETTE_APP && this.appearanceRunning) this.appearanceSource?.save({ palette: change.palette });
       return;
@@ -742,6 +748,84 @@ export class AxfRuntime {
     if (!this.changeLook(undoRestore)) return false;
     this.toast('Look brought back.', 'success', 'Appearance');
     return true;
+  }
+
+  /* ---- scopes: hub-wide, this app, one UI, one plugin (skin-coverage@1, engines/skin-coverage.mjs) ---- */
+
+  /** Follow the hub-wide skin while Use skin is off (Brett: a switch, off by default). */
+  skinInherit(on: boolean): boolean {
+    if (!this.changeLook((cur) => setInheritSkin(cur, on))) return false;
+    this.terminal.ok('hot-swap', on ? 'this app follows the hub-wide skin' : 'this app keeps its own look');
+    return true;
+  }
+
+  /** The hub-wide skin the shared document carries (null = none). */
+  globalSkin(): { id: string; overrides?: Record<string, string> } | null { return globalSkinOf(this.lastAppearance); }
+
+  /**
+   * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
+   * picked there, else the app's), off (no skin inside it) or inherit (the parent decides, the default).
+   */
+  scopeSkin(key: string, use: 'on' | 'off' | 'inherit', id?: string): boolean {
+    if (!isSubScopeKey(key)) { this.toast(`"${key}" is not a UI or plugin scope.`, 'warning', 'Skin'); return false; }
+    const cur = this.appLook();
+    const pick = use === 'on' ? (id || cur?.scopes[key]?.id || cur?.skin.id || this.skinList()[0]?.id || '') : id;
+    if (use === 'on' && (!pick || !this.skinData(pick))) { this.toast(`No skin "${pick}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.changeLook((look) => setScopeSkin(look, key, use, pick))) return false;
+    this.terminal.ok('hot-swap', use === 'on' ? `skin ${pick} on for ${key}` : use === 'off' ? `no skin inside ${key}` : `${key} follows its parent`);
+    return true;
+  }
+
+  /** The skin states this app's look names for UIs and plugins. */
+  skinScopes(): ({ key: string } & SkinScopeState)[] { return scopeEntries(this.appLook()); }
+
+  /** The skin in force at a place in this app, hub-wide skin included: `{ id, overrides, from }` (from = the level that decided). */
+  skinAt(scope?: Partial<SkinScope> | null): ResolvedSkin {
+    return resolveLookSkin(this.appLook(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
+  }
+
+  /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
+  skinInForce(): ResolvedSkin { return this.lastComposed?.skin ?? { id: '', overrides: {}, from: '' }; }
+
+  /** How a skin reaches every registered asset type (skin-coverage@1), registry order. */
+  skinCoverage(): CoverageRow[] { return skinCoverage(); }
+
+  /** What one skin (or design package) sets or styles, type by type. */
+  skinCovers(id: string): { type: string; by: CoverageRow['by']; covered: boolean; how: string[] }[] {
+    const s = this.skinData(id);
+    return s ? skinCovers(s) : [];
+  }
+
+  /**
+   * A scoped view drawn under the skin in force at a UI or plugin (`key` = `ui:<id>` | `plugin:<id>`): null when that
+   * level resolves to the same skin and overrides as the app itself (nothing to scope) or the key is not a sub scope.
+   * Like `scoped()`: reads of the look come from the scope's composed document, everything else is the shared runtime.
+   */
+  skinScoped(key: string): AxfRuntime | null {
+    if (!isSubScopeKey(key)) return null;
+    const look = this.appLook();
+    if (!look) return null;
+    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
+    const app = this.skinInForce();
+    if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides)) { this.dropScope(skinScopeDomId(key)); return null; }
+    const scopeId = skinScopeDomId(key);
+    const resolve = (): ResolvedInterface => {
+      const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
+      const has = (t: string, id: string) => this.registry.has(t as AssetType, id);
+      const r = resolveAppearance(composed.doc, has);
+      const active: Record<string, string> = { ...r.slots };
+      // the same precedence applyAppearance gives the app: a loaded design package decides style and colour, a recorded override beats it
+      const pkgId = active[DESIGN_PACKAGE_TYPE] ?? this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+      const pkgAsset = pkgId ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
+      if (pkgAsset) {
+        const overrides = normalizeDesignOverrides(composed.doc.settings?.[DESIGN_OVERRIDES_KEY]);
+        const cur = { 'style-theme': active['style-theme'] ?? this.state.active['style-theme'], 'color-theme': active['color-theme'] ?? this.state.active['color-theme'] };
+        const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, cur, has);
+        for (const t of DESIGN_OVERRIDABLE) { const v = look[t]; if (v) active[t] = v; }
+      }
+      return { active, spacing: r.spacing ?? this.spacing(), hidden: r.hidden, settings: (composed.doc.settings ?? {}) as Record<string, unknown>, branding: '', design: '', missing: [], parts: composed.parts } as ResolvedInterface & { parts: ComposedLook['parts'] };
+    };
+    return this.scopedView(scopeId, `skin:${key}`, resolve, 'skin');
   }
 
   /** The palette the hub's own pages use, from this app's active colour theme. */
@@ -2476,14 +2560,23 @@ export class AxfRuntime {
    */
   scoped(scopeId: string, interfaceId: string): AxfRuntime | null {
     if (!isScopeId(scopeId) || !this.registry.has(INTERFACE_TYPE as AssetType, interfaceId)) return null;
+    return this.scopedView(scopeId, interfaceId, () => this.resolveInterface(interfaceId)!, 'interface');
+  }
+
+  /**
+   * The view behind `scoped()` (an interface) and `skinScoped()` (the skin in force at a UI or plugin): `marker` is the
+   * interface id, or `skin:<key>` for a skin scope; `resolve()` gives the look the scope draws (memoised per base state).
+   */
+  private scopedView(scopeId: string, interfaceId: string, resolve: () => ResolvedInterface, kind: 'interface' | 'skin'): AxfRuntime | null {
     const cached = this.scopes.get(scopeId);
     if (cached && (cached as unknown as { scopeInterface: string }).scopeInterface === interfaceId) return cached;
     const base = this;
+    const skinScope = kind === 'skin';
     let memo: { rev: number; r: ResolvedInterface } | null = null;
     let snap: { base: AxfState; value: AxfState } | null = null;
     const resolved = (): ResolvedInterface => {
       const rev = base.state.rev;
-      if (!memo || memo.rev !== rev) memo = { rev, r: base.resolveInterface(interfaceId)! };
+      if (!memo || memo.rev !== rev) memo = { rev, r: resolve() };
       return memo.r;
     };
     const view = Object.create(base) as AxfRuntime & { scopeId: string; scopeInterface: string };
@@ -2508,7 +2601,7 @@ export class AxfRuntime {
       // changes, or React loops (error #185) the moment a whole app shell renders inside a scope
       state: { get: () => {
         const bs = base.state;
-        if (!snap || snap.base !== bs) snap = { base: bs, value: { ...bs, active: { ...bs.active, ...resolved().active, [INTERFACE_TYPE]: interfaceId } } };
+        if (!snap || snap.base !== bs) snap = { base: bs, value: { ...bs, active: { ...bs.active, ...resolved().active, ...(skinScope ? {} : { [INTERFACE_TYPE]: interfaceId }) } } };
         return snap.value;
       }, set: () => { /* writes go through set(), which the base owns */ } },
       getState: { value: () => view.state },
@@ -2516,7 +2609,12 @@ export class AxfRuntime {
       hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
       slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
       spacing: { value: () => spacingOf(resolved().spacing) },
-      appliedInterface: { value: () => interfaceId },
+      appliedInterface: { value: () => (skinScope ? base.appliedInterface() : interfaceId) },
+      // a skin scope: its key (icon pack lookups) and the skin's parts for its sheet (customSheet reads lastComposed)
+      ...(skinScope ? {
+        scopeKey: { value: interfaceId.slice(5) },
+        lastComposed: { get: () => ({ parts: (resolved() as ResolvedInterface & { parts?: ComposedLook['parts'] }).parts ?? {} }) },
+      } : {}),
       // swaps inside a scope change the app: the palette pushed to axHub is the app's, not the scope's interface
       // (fix Oct 29 2026: the hub document carried the AmberX Signature tab's saffron palette over fresh-light)
       appearancePalette: { value: () => base.appearancePalette() },
@@ -2598,9 +2696,10 @@ export class AxfRuntime {
 
   /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
   brandGlyph(name: string): { glyph: Glyph; pack: unknown } | null {
-    const b = this.branding();
-    if (!b?.iconPack) return null;
-    const pack = this.registry.get('icon-pack' as AssetType, b.iconPack);
+    // a skin's icon pack (engines/skin.ts, axf.icons.pack.<scope>: this scope's, else the app's) beats the branding's
+    const packId = this.skinIconPack() || this.branding()?.iconPack;
+    if (!packId) return null;
+    const pack = this.registry.get('icon-pack' as AssetType, packId);
     if (!pack) return null;
     const glyph = glyphFor(pack.data, name);
     return glyph ? { glyph, pack: pack.data } : null;
@@ -2625,12 +2724,25 @@ export class AxfRuntime {
   /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
   customSheet(): string {
     if (this.appearanceLocked()) return '';
+    // the skin in force here styles every type's parts first (skin@1 `parts`); a saved customize value sits on top
+    const parts = this.lastComposed?.parts ?? {};
     const per: Record<string, CustomValues> = {};
     for (const t of customizableTypes()) {
       const id = (this.getState().active as Record<string, string | undefined>)[t];
-      per[t] = effectiveCustom(this.customSlot(t as AssetType), id);
+      const own = effectiveCustom(this.customSlot(t as AssetType), id);
+      per[t] = parts[t] ? { ...parts[t], ...own } : own;
     }
     return customizeSheet(per);
+  }
+
+  /** The icon pack a skin puts in force at this place (this scope's key, else the app's), '' = none. */
+  skinIconPack(): string {
+    const key = (this as unknown as { scopeKey?: string }).scopeKey ?? 'app';
+    for (const k of key === 'app' ? [key] : [key, 'app']) {
+      const v = this.settings.get(SKIN_ICON_PACK_KEY(k));
+      if (typeof v === 'string' && v && this.registry.has('icon-pack' as AssetType, v)) return v;
+    }
+    return '';
   }
 
   applyTo(el: HTMLElement) {
@@ -2728,6 +2840,12 @@ export class AxfRuntime {
     a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
+    // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level
+    a.register('skin.inherit', ([v]) => { this.skinInherit(v !== 'off'); }, { label: 'Follow the hub-wide skin in this app', requires: 'assets.swap', params: true });
+    a.register('skin.scope', ([kind, id, use, skinId]) => {
+      if ((kind !== 'ui' && kind !== 'plugin') || !id) { this.toast('skin.scope needs ui or plugin, an id, and on / off / inherit.', 'warning', 'Skin'); return; }
+      this.scopeSkin(`${kind}:${id}`, use === 'off' ? 'off' : use === 'inherit' ? 'inherit' : 'on', skinId || undefined);
+    }, { label: 'Skin one UI or plugin (on / off / inherit)', requires: 'assets.swap', params: true });
     // Title bar buttons of a Windows-style skin: they drive the front floating window; the app's own page can only go full screen
     const front = () => { const id = this.windows.state.focused; return id && id !== this.windows.mainWindowId ? id : ''; };
     a.register('skin.window.minimize', () => { const id = front(); if (id) this.windows.minimizeToNextCorner(id); }, { label: 'Minimize the front window', searchable: false });

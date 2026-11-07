@@ -1541,6 +1541,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 
 /* interface scopes (react/components/InterfaceScope.tsx): a subtree drawn under another interface; vars + attrs on this element */
 .fx-scope { display: contents; }
+.fx-ui-scope { display: contents; } /* a view root as a UI level of the skin chain (components/SkinScope.tsx) */
 /* inherited text properties are resolved once on <body>; a scope re-declares them so its subtree reads the scope's
    tokens (interface tabs: dark text on a dark interface otherwise) */
 [data-fx-scope] { color: var(--fx-text); font-family: var(--fx-font); font-size: var(--fx-font-size); }

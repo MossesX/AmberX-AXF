@@ -4,7 +4,7 @@
   "id": "windows",
   "name": "Windows",
   "version": "1.0.0",
-  "description": "Makes the app look like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout, and Windows-style menus, dialogs, buttons and scrollbars. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font.",
+  "description": "Makes the app look like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout, and Windows-style menus, dialogs, buttons and scrollbars, the AmberX outline icon pack, and square-cornered widgets (labels, badges, counters, avatars, progress) through its style parts. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font.",
   "author": "AmberX AXF",
   "tags": [
     "windows",
@@ -35,6 +35,43 @@
         "nav-menu": false,
         "banner": false,
         "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline",
+    "parts": {
+      "button": {
+        "radius": "sm",
+        "hover": "highlight"
+      },
+      "action-button": {
+        "radius": "sm",
+        "hover": "highlight"
+      },
+      "badge": {
+        "radius": "sm"
+      },
+      "counter": {
+        "radius": "sm",
+        "fontWeight": "600"
+      },
+      "label": {
+        "fontWeight": "400"
+      },
+      "link": {
+        "hover": "underline",
+        "textColor": "accent"
+      },
+      "avatar": {
+        "radius": "sm"
+      },
+      "progress": {
+        "radius": "none"
+      },
+      "status": {
+        "fontWeight": "400"
+      },
+      "search-bar": {
+        "radius": "sm"
       }
     }
   }
