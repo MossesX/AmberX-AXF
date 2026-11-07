@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 19:40 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
 - 2026-11-06 19:43 UTC · `notes-tasks-sync` s5 done, → complete (current) · foreign-write
 - 2026-11-06 19:43 UTC · `amberx-slim-down-voice-queue` note (current) · pending
 - 2026-11-06 19:46 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 21:58 UTC · `glossary-index-demos` s6 done, → complete (all) · orchestrator
 - 2026-11-07 21:58 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 21:59 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r3 (all) · builds-live
+- 2026-11-07 22:04 UTC · `molly-ri-court-records` removed (all) · orchestrator
 
 ## Token passes (log)
 
