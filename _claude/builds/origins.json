@@ -977,7 +977,7 @@
    "session": "",
    "link": "",
    "by": "backfill",
-   "brief": "",
+   "brief": "# Dev Console as an Android app: wrapper, one codebase (Brett, Nov 7)\n\nBrett chose the wrapper over a native rewrite: the existing web console runs inside an Android app shell, same way AmberX loads its web plugins. One codebase; every console change shows on the phone at once.\n\nReuse: orchestrator build `console-android-app-tabs` (19 steps, pending) — get its brief (`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief console-android-app-tabs`) and use what fits; ignore the archived native rewrite `console-android-native-tabs`. Reuse AmberX's Android shell/bridge pieces (apps/amberx-droid) rather than writing new ones.\n\n1. Android app shell loading the console (console.amberxai.com), with sign-in kept, back button/navigation, pull-to-refresh, offline screen.\n2. Native bridges where needed: push notifications (build start/finish/fail/land alerts), mic for voice, background wake, file share/download (APKs), deep links that open a console screen.\n3. Console UI stays asset-driven; phone layouts come from the existing three-layouts/phone assets, no hard-coded styling.\n4. APK built in CI next to amberx-debug.apk; listed under Apps in the console/axHub for install.\n5. UI Review with three options (--choices) for the shell chrome. Tests. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
    "verbatim": false,
    "from": "detail",
    "addenda": []
