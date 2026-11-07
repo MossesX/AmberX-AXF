@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1307,
- "updatedAt": "2026-11-07T13:07:37.507Z",
+ "rev": 1308,
+ "updatedAt": "2026-11-07T13:10:24.461Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110113,7 +110113,7 @@
    "branch": "claude/amber-chat-asset",
    "pr": "",
    "createdAt": "2026-11-07T12:30:40.602Z",
-   "updatedAt": "2026-11-07T13:07:36.298Z",
+   "updatedAt": "2026-11-07T13:10:22.770Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -110221,12 +110221,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:10:22.770Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T12:30:40.603Z",
-     "updatedAt": "2026-11-07T12:30:40.603Z"
+     "updatedAt": "2026-11-07T13:10:22.986Z"
     },
     {
      "id": "s5",
@@ -110259,7 +110259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

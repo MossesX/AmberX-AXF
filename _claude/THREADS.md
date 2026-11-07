@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:30 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
 - 2026-11-07 00:35 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · orchestrator
 - 2026-11-07 00:36 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · foreign-write
 - 2026-11-07 00:36 UTC · `claude-settings-tabs-veto` s1 done, s2 done, s3 done, s5 done, s6 done (current) · foreign-write
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:02 UTC · `amber-chat-asset` branch claude/amber-chat-asset (all) · builds-live
 - 2026-11-07 13:03 UTC · `style-override-rule` s6 done (all) · orchestrator
 - 2026-11-07 13:07 UTC · `amber-chat-asset` s3 done (all) · orchestrator
+- 2026-11-07 13:10 UTC · `amber-chat-asset` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
