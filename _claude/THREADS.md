@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 17:43 UTC · `token-usage-log-accounts-plan-studio-control` note (current) · pending
 - 2026-11-06 17:53 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (0 steps) (current) · pending
 - 2026-11-06 18:30 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
 - 2026-11-06 18:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:58 UTC · `full-api-control` s9 done, → complete (all) · orchestrator
 - 2026-11-07 16:58 UTC · `full-api-control` → waiting (all) · orchestrator
 - 2026-11-07 16:58 UTC · `full-api-control` → complete, note (all) · orchestrator
+- 2026-11-07 17:00 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` added (8 steps) (all) · claude-ai-voice
 
 ## Token passes (log)
 
