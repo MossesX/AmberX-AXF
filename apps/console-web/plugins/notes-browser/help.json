@@ -3,7 +3,7 @@
   "type": "help",
   "id": "notes-browser-help",
   "name": "Notes help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help mode entries for the Notes browser plugin (help@1).",
   "author": "Brett",
   "tags": [
@@ -15,7 +15,7 @@
       {
         "target": "view:notes",
         "title": "Notes",
-        "text": "Every note you asked Claude to save, in one place on the hub: handoffs, session logs, plans, install notes and saved commands. Pick one on the left to read it.",
+        "text": "Every note saved for Brett in one place: the AmberX app's notes or the hub's shared Claude files. Classic shows the notes on the left and the open note on the right; Grid shows them as rows you can sort and tap open. Long notes fold into sections.",
         "kind": "screen"
       },
       {
@@ -69,11 +69,6 @@
         "text": "Asks first, then takes the note out of the notes. The hub keeps its last text in its history."
       },
       {
-        "target": "reload-the-note",
-        "title": "Reload the note",
-        "text": "Someone else saved this note after you opened it. Reloads their version so you can redo your change on top of it."
-      },
-      {
         "target": "newest",
         "title": "Newest",
         "text": "Sorts the notes so the most recently changed come first."
@@ -102,6 +97,76 @@
         "target": "notes-browser",
         "title": "Notes settings",
         "text": "Where the notes are kept, and the plugin's install and uninstall panel."
+      },
+      {
+        "target": "reload-the-notes",
+        "title": "Reload the notes",
+        "text": "Someone else changed this note while you were editing it. Reload to get their version, then make your change again."
+      },
+      {
+        "target": "all-caps-lines-are-section-headers",
+        "title": "ALL-CAPS lines are section headers",
+        "text": "When on, a line written in capitals that starts a paragraph, like “JUST MERGED (Nov 4)”, folds like a Markdown heading."
+      },
+      {
+        "target": "start-with-sections-collapsed",
+        "title": "Start with sections collapsed",
+        "text": "Notes open with every section folded. A section you opened or closed yourself stays that way on this device."
+      },
+      {
+        "target": "action:notes-browser.view:classic",
+        "title": "Classic view",
+        "text": "The notes on the left, the open note on the right, with its sections folding."
+      },
+      {
+        "target": "action:notes-browser.view:grid",
+        "title": "Grid view",
+        "text": "The notes as rows you can sort, filter and tap open to read the whole note."
+      },
+      {
+        "target": "action:notes-browser.source:amberx",
+        "title": "AmberX notes",
+        "text": "Shows the notes from the AmberX app, the same ones on every device."
+      },
+      {
+        "target": "action:notes-browser.source:claude",
+        "title": "Claude files",
+        "text": "Shows the notes saved in the hub's shared Claude files: handoffs, plans, install notes and saved commands."
+      },
+      {
+        "target": "open-in-classic",
+        "title": "Open in Classic",
+        "text": "Switches to the Classic view with this note open."
+      },
+      {
+        "target": "close-all-rows",
+        "title": "Close all rows",
+        "text": "Folds every open row of the grid back up."
+      },
+      {
+        "target": "column:priority",
+        "title": "Priority",
+        "text": "The note's priority from AmberX (blank when it has none). Tap the header to sort by it."
+      },
+      {
+        "target": "column:due",
+        "title": "Due",
+        "text": "When the note is due, if it has a date. Tap the header to sort by it."
+      },
+      {
+        "target": "column:sections",
+        "title": "Sections",
+        "text": "How many foldable sections the note has (headings and ALL-CAPS header lines)."
+      },
+      {
+        "target": "column:length",
+        "title": "Length",
+        "text": "How long the note is, in characters."
+      },
+      {
+        "target": "star",
+        "title": "Pin",
+        "text": "Pins the note in AmberX (or unpins it), so it shows in AmberX's Pinned tab."
       }
     ],
     "intros": [

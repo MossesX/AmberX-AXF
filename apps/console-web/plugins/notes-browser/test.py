@@ -70,6 +70,9 @@ check("list folders", lst["folders"] == ["install", "plans"], lst["folders"])
 check("list titles", {n["path"]: n["title"] for n in lst["notes"]} == {"install/vps.md": "VPS install", "plans/first.md": "First plan"}, lst["notes"])
 s = c.get("/notes", params={"q": "installer sudo"}).json()["notes"]
 check("search every word + snippet", [n["path"] for n in s] == ["install/vps.md"] and "installer" in s[0]["snippet"], s)
+check("list without content by default", all("content" not in n for n in lst["notes"]), lst["notes"])
+withc = {n["path"]: n.get("content") for n in c.get("/notes", params={"content": "1"}).json()["notes"]}
+check("content=1 adds each note's text (Grid view)", withc.get("install/vps.md") == "# VPS install\n\nRun the installer with sudo.\n", withc)
 
 # conflict-safe save
 doc = c.get("/note", params={"path": "plans/first.md"}).json()
@@ -117,6 +120,46 @@ svc = plugin_services.get("axf.notes@1")
 check("axf.notes@1 provided", svc is not None and svc.available() and svc.root.endswith("_shared/_claude/notes"))
 info = svc.write("misc/from-service.md", "# From MD Studio\n", "", by="console:md-studio")
 check("capability write with its own attribution", meta()["notes/misc/from-service.md"]["updatedBy"] == "console:md-studio" and svc.read("misc/from-service.md")["version"] == info["version"])
+
+# AmberX notes through control@1 (a fake capability records what it was sent)
+check("amberx: no control@1 = unavailable, not an error", c.get("/amberx").json()["available"] is False)
+sent: list[tuple[dict, list]] = []
+
+
+class FakeControl:
+    def run(self, command, grants=None, by=""):
+        sent.append((command, grants))
+        op, target = command.get("op"), command.get("target")
+        if op == "list" and target == "amberx.items":
+            return {"$axf": "control@1", "ok": True, "op": "list", "items": [{"id": "n-1", "kind": "note", "title": "Features", "text": "JUST MERGED\n- a"}], "total": 1}
+        if op == "list" and target == "amberx.lists":
+            return {"$axf": "control@1", "ok": True, "op": "list", "items": [{"id": "inbox", "name": "Inbox", "path": "Inbox"}], "total": 1}
+        if op == "get" or command.get("path") == "missing":
+            return {"$axf": "control@1", "ok": False, "code": "not_found", "message": "no AmberX item missing"}
+        if op == "remove" and not command.get("confirm"):
+            return {"$axf": "control@1", "ok": False, "code": "confirmation_required", "message": "confirm", "confirm": "tok-1"}
+        if op == "remove":
+            return {"$axf": "control@1", "ok": True, "removed": 1}
+        return {"$axf": "control@1", "ok": True, "changed": True, "item": {"id": command.get("path")}}
+
+
+plugin_services.provide("control@1", FakeControl(), "token-control")
+a = c.get("/amberx", params={"q": "merged"}).json()
+check("amberx: notes + lists", a["available"] and a["items"][0]["id"] == "n-1" and a["lists"] == [{"id": "inbox", "name": "Inbox", "path": "Inbox"}], a)
+check("amberx: asks for notes matching q", sent[0][0]["select"] == {"limit": 500, "q": "merged", "kind": "note"} and sent[0][1] == ["*"], sent[0])
+c.get("/amberx", params={"kind": "all"})
+check("amberx: kind=all drops the kind filter", "kind" not in sent[-2][0]["select"], sent[-2])
+r = c.put("/amberx/item", params={"id": "n-1"}, json={"text": "new text", "status": "done"})
+check("amberx: save sends only title/text", r.status_code == 200 and sent[-1][0]["value"] == {"text": "new text"} and sent[-1][0]["op"] == "set", sent[-1])
+check("amberx: save with nothing is refused", c.put("/amberx/item", params={"id": "n-1"}, json={}).status_code == 400)
+r = c.post("/amberx/act", params={"id": "n-1", "action": "move"}, json={"input": {"list": "inbox"}})
+check("amberx: move", r.status_code == 200 and sent[-1][0]["action"] == "move" and sent[-1][0]["input"] == {"list": "inbox"}, sent[-1])
+check("amberx: unknown action refused", c.post("/amberx/act", params={"id": "n-1", "action": "merge"}, json={}).status_code == 400)
+check("amberx: not found = 404", c.post("/amberx/act", params={"id": "missing", "action": "pin"}, json={"input": {"on": True}}).status_code == 404)
+first = c.delete("/amberx/item", params={"id": "n-1"}).json()
+check("amberx: delete answers a confirm token first", first == {"removed": 0, "confirm": "tok-1"}, first)
+second = c.delete("/amberx/item", params={"id": "n-1", "confirm": "tok-1"}).json()
+check("amberx: delete with the token", second == {"removed": 1} and sent[-1][0]["confirm"] == "tok-1", second)
 
 # not mounted
 mod.STORE.root = TMP / "nowhere"
