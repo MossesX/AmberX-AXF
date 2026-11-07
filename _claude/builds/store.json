@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1268,
- "updatedAt": "2026-11-07T10:50:09.054Z",
+ "rev": 1269,
+ "updatedAt": "2026-11-07T10:50:22.018Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -106922,12 +106922,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T10:49:03.148Z",
+   "updatedAt": "2026-11-07T10:50:11.115Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-glossary-index-demos-r2--lenny, own login copy)",
+     "at": "2026-11-07T10:50:11.115Z"
     }
    ],
    "approvals": [],
@@ -107087,7 +107091,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
