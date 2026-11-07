@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s3 done (current) · orchestrator
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s4 done (current) · orchestrator
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s5 done (current) · orchestrator
 - 2026-11-07 00:47 UTC · `claude-accounts-edit` added (5 steps) (current) · backfill
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:32 UTC · `plan-blueprints` s1 done (all) · gina
 - 2026-11-07 13:32 UTC · `plan-blueprints` s2 done (all) · gina
 - 2026-11-07 13:32 UTC · `orchestrator-gate` branch claude/orchestrator-vps-gate (all) · orchestrator
+- 2026-11-07 13:32 UTC · `orchestrator-gate` → running (all) · orchestrator
 
 ## Token passes (log)
 

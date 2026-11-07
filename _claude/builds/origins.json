@@ -2165,6 +2165,18 @@
    "from": "detail",
    "addenda": []
   },
+  "orchestrator-gate": {
+   "said": "Orchestrator is the only door to the VPS; approval rules in orchestrator settings. Nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the orchestrator's settings, and work even when no Claude session exists.",
+   "at": "",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless build orchestrator-vps-gate",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "partial-land-ship-completed-steps-of-a-build": {
    "said": "I want to be able to select stuff that's completed, like completed steps from within a build. Just take the completed things, transfer them to their own push request, merge them on their own, and deploy immediately so I can take partially finished builds, what's completed out of them, and deploy them without the whole thing being built, unless it needs it for dependencies.",
    "at": "",
