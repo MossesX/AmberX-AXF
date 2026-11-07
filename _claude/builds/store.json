@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1335,
- "updatedAt": "2026-11-07T14:11:01.553Z",
+ "rev": 1336,
+ "updatedAt": "2026-11-07T14:11:24.661Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109305,9 +109305,14 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T12:42:28.618Z",
+   "updatedAt": "2026-11-07T14:11:23.379Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-postgres-own-container--lenny, own login copy)",
+     "at": "2026-11-07T14:11:23.379Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -109486,7 +109491,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
