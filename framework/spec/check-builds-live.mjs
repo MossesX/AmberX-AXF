@@ -28,7 +28,7 @@ const gitTry = (cwd, ...args) => spawnSync('git', args, { cwd, encoding: 'utf8',
 const envFor = (clone, extra = {}) => ({
   ...process.env, ...WHO,
   AXF_BUILDS_STORE: join(clone, STORE_REL), AXF_BUILDS_LIVE: '1', AXF_BUILDS_LIVE_GIT: clone, AXF_BUILDS_LIVE_SYNC: '1',
-  AXF_CONSOLE_ROOT: 'off', AXF_BUILD_PROFILE: 'main-framework', AXF_BUILDS_EXPORT: '0', AXF_ACTOR: `check-${clone.slice(-1)}`, ...extra,
+  AXF_CONSOLE_ROOT: 'off', AXF_BUILD_PROFILE: 'all', AXF_BUILDS_EXPORT: '0', AXF_ACTOR: `check-${clone.slice(-1)}`, ...extra,
 });
 const run = (clone, script, args, extra) => spawnSync(process.execPath, [script, ...args], { cwd: ROOT, encoding: 'utf8', env: envFor(clone, extra) });
 const runAsync = (clone, script, args) => new Promise((ok) => { const c = spawn(process.execPath, [script, ...args], { cwd: ROOT, env: envFor(clone) }); let out = ''; c.stdout.on('data', (d) => { out += d; }); c.stderr.on('data', (d) => { out += d; }); c.on('close', (code) => ok({ code, out })); });
@@ -42,10 +42,13 @@ function seed() {
   const now = '2026-11-03T10:00:00.000Z';
   const store = core.emptyStore(now);
   store.migratedAt = now;
-  for (const id of ['x', 'y']) store.builds.push(core.normBuild({ id, title: `Build ${id}`, profiles: ['main-framework'], steps: [1, 2, 3, 4].map((n) => ({ id: `s${n}`, text: `step ${n} of ${id}`, model: 'Opus' })) }, { now, seed: id }));
+  for (const id of ['x', 'y']) store.builds.push(core.normBuild({ id, title: `Build ${id}`, profiles: ['all'], steps: [1, 2, 3, 4].map((n) => ({ id: `s${n}`, text: `step ${n} of ${id}`, model: 'Opus' })) }, { now, seed: id }));
   mkdirSync(join(s, '_claude/builds/journal'), { recursive: true });
   writeFileSync(join(s, STORE_REL), `${JSON.stringify(core.compactStore(store), null, 1)}\n`);
   writeFileSync(join(s, '_claude/THREADS.md'), '# Threads\n\n## Active\n\n| Thread | State |\n|---|---|\n| a | working |\n');
+  // a retired profile's export an older checkout left on main (one profile since Nov 7 2026): the next publish takes it off
+  mkdirSync(join(s, '_claude/builds/profiles/current'), { recursive: true });
+  writeFileSync(join(s, '_claude/builds/profiles/current/orchestrator.json'), '{"$axf":"orchestrator@1","builds":[]}\n');
   writeFileSync(join(s, '.gitattributes'), '_claude/builds/store.json merge=axf-builds\n_claude/builds/journal/*.jsonl merge=axf-builds\n');
   git(s, 'add', '-A'); git(s, 'commit', '-q', '-m', 'seed'); git(s, 'push', '-q', 'origin', 'main');
   for (const c of ['a', 'b', 'c']) git(T, 'clone', '-q', join(T, 'remote.git'), c);
@@ -71,6 +74,8 @@ async function main() {
   const files = git(A, 'show', '--name-only', '--format=', 'origin/main').split('\n');
   check(files.every((f) => f.startsWith('_claude/')), `status commit touches only _claude/ (${files.join(' ')})`);
   check(files.some((f) => f.startsWith('_claude/builds/journal/')), 'status commit carries the journal line');
+  check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/current/orchestrator.json').status !== 0, 'a retired profile\'s export is taken off main by the next publish');
+  check(git(A, 'show', 'origin/main:_claude/builds/orchestrator.json').includes('"id": "x"'), 'the base profile (all) exports to the original orchestrator path');
   const live = JSON.parse(run(A, LIVE, ['status', '--json']).stdout);
   check(live.queued === 0 && live.lastOk && !live.stuck, 'outbox empty, last publish recorded');
 

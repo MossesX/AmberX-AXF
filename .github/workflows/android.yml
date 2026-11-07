@@ -23,7 +23,7 @@ permissions:
 
 # CI checks the framework's own data (catalog, plan, pending list): the base build profile, whatever profile is saved.
 env:
-  AXF_BUILD_PROFILE: main-framework
+  AXF_BUILD_PROFILE: all
 
 jobs:
   # What this change needs (framework/cli/ci-scope.mjs): path filters per job, light checks on PRs while the merge queue
@@ -74,7 +74,7 @@ jobs:
     if: ${{ needs.scope.outputs.engine == 'true' }}
     runs-on: ubuntu-latest
     env:
-      AXF_BUILD_PROFILE: main-framework   # the sweep checks the base profile's data whatever profile Brett has saved
+      AXF_BUILD_PROFILE: all   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -97,6 +97,7 @@ jobs:
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
+      - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -331,13 +332,13 @@ jobs:
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/web-report.md; else gh issue comment "$N" --body-file /tmp/web-report.md; fi
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         env:
-          AXF_BUILD_PROFILE: main-framework   # self-tests read the base profile's data whatever profile Brett has saved
+          AXF_BUILD_PROFILE: all   # self-tests read the base profile's data whatever profile Brett has saved
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
       - name: Plugin pure-part self-tests (every plugins/*/test.mts; found by glob so removing a plugin never breaks CI)
         env:
-          AXF_BUILD_PROFILE: main-framework
+          AXF_BUILD_PROFILE: all
         run: |
           for t in apps/console-web/plugins/[!_]*/test.mts; do [ -f "$t" ] || continue; echo "== $t"; node --experimental-strip-types "$t"; done
       - name: Library templates — generate every template for web + Python and compile them

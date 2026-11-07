@@ -152,7 +152,7 @@ export function makeAsk(input, doc, now = new Date().toISOString()) {
     ...input, id, app: String(input.app ?? '').trim(), plugin: input.plugin ? String(input.plugin) : null, title,
     plain: String(input.plain ?? ''), quote: String(input.quote ?? ''), askedAt: input.askedAt || now, timeApprox: input.timeApprox ? true : null,
     status: normStatus(input.status || 'pending'), model, minutes, costUsd: cost, costEstimated: input.costUsd == null || input.costUsd === '',
-    branch: String(input.branch ?? ''), pr: input.pr ? Number(input.pr) : null, profile: String(input.profile || 'main-framework'),
+    branch: String(input.branch ?? ''), pr: input.pr ? Number(input.pr) : null, profile: String(input.profile || 'all'),
     sources: Array.isArray(input.sources) ? input.sources : input.sources ? String(input.sources).split(',').map((s) => s.trim()).filter(Boolean) : [], updatedAt: now,
   };
 }

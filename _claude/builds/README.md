@@ -101,6 +101,17 @@ plan's build link, the hub registry until its next save, a live merge from older
 (`resolveProfile` / `RETIRED_PROFILES` in `framework/plan/builds-store-core.mjs`, mirrored in
 `apps/console-web/server/build_profiles.py`); creating a profile with a retired id is refused.
 
+**`main-framework` folded in too; `all` is the base (Nov 7 2026, Brett approved, build `profiles-all-finish`):** the old
+base's 189 builds joined `all` (175 moved with `fromProfile: main-framework`, 14 were in both already), so the store has
+one profile. `all` is now `BASE_PROFILE` and keeps the original paths (`_claude/builds/orchestrator.json`,
+`framework/plan/{pending,build-queue,plan}.json`, `framework/catalog/status.json`, `_claude/builds/matrices.json`) and
+the framework's catalog; `main-framework` is a retired id that reads as `all`. The old profile folders
+(`_claude/builds/profiles/*`, `framework/plan/profiles/*`) are gone from the repo and the hub, and nothing writes them
+again: exports cover registered profiles only, the builds-live publisher takes any profile export left on main off it
+(`staleProfileExports`), the batch resolver (`/opt/axf-batch/resolve.py`) drops retired-profile files from a merge, the
+manifest no longer syncs `framework/plan/profiles/`, and `profiles.mjs merge-all` prunes any leftover folder (repo + hub;
+run it once after this lands, when the deployed console no longer reads `framework/plan/profiles/all/` on the hub).
+
 ## Carry a build on
 
 ```bash

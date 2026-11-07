@@ -731,6 +731,18 @@
    "from": "",
    "addenda": []
   },
+  "build-pipeline-v2": {
+   "said": "Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD). Replace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what is redundant. Single profile all already on main. Flow: Request → orchestrator → Pending → Queued (one queue per Claude account, max 5) → Building (parallel per account, default 3). Build table states ONLY Pending, Queued, Building. Shipped features: Waiting → Building → Pending merge → Live. Headless sessions load ONLY the brief; brief check before queueing; progress file per build (START/END per step, never pauses, watcher crosses steps off, token usage per session and per step); final step updates Shipped features. Blocked flow: phone alert → Brett answers or taps Let orchestrator decide → relaunch from the blocked step. Phone notifications on session started, build finished, failed, stopped incomplete, blocked, landed. Account dies → move its builds + alert. Landing discards _claude/builds sync noise; on land Shipped features Live + alert. Decisions to _claude/memory. Acceptance suite in CI blocks landing.",
+   "at": "2026-11-07T10:30:00Z",
+   "source": "chat",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-profiles": {
    "said": "multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
    "at": "2026-10-27",
@@ -1505,7 +1517,7 @@
    "session": "",
    "link": "",
    "by": "claude-voice",
-   "brief": "",
+   "brief": "# glossary-index-demos (r2)\n\nThis build already exists in the orchestrator (profile `all`, id `glossary-index-demos`, 6 steps, none done) with its Plan Studio plan. An old folder /root/axf-builds/glossary-index-demos exists from an earlier attempt: check it for any committed work and bring it over.\n\n1. Get the full brief: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief glossary-index-demos` (and its Plan Studio plan). Follow it exactly: documentation index, glossary and walkthrough demos.\n2. If a step needs Fable (new shared asset type/contract), stop there and write `blocked: needs Fable for sN` to PROGRESS.md.\n3. Progress: append `<time> START|DONE <step>` to PROGRESS.md in this folder at each step; don't stop between steps.\n4. Last step: add it to Shipped features.\n\nShipped-product quality, no hard-coded styling. Commit, don't push.",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2384,6 +2396,18 @@
    "from": "detail",
    "addenda": []
   },
+  "postgres-console": {
+   "said": "the planner sends a request to the orchestrator to assign the building ID. The orchestrator has to assign all IDs and register them.\nwhat kind of database is this registry? Is it SQLite? Or Postgres.\nSQLite is too small. This project's too big.\nI'm thinking MongoDB or Postgres.\ncan we make Postgres run on the console?\nBundle the Postgres into the console's container.\nAnd make it queryable from the console.\ndon't run that. Put that in the planner for Molly and park it.",
+   "at": "2026-11-06T13:41:20.323Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Amber (claude.ai voice)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "postponed-gestures": {
    "said": "add draggable from anywhere to postponed gesture list",
    "at": "2026-10-28",
@@ -2440,6 +2464,18 @@
    "link": "",
    "by": "backfill",
    "brief": "# Build: profile-manager (Current profile)\n\nBrett, Nov 3 2026 (voice): a plugin to manage build profiles: view, browse, create, edit, delete, everything. Assigned agent: **Landin' Lenny** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in the **current** profile (id `profile-manager`) + banner entry. (Profile `current` was just created; if it's missing, create it: `node framework/cli/profiles.mjs create \"Current\" --id current --select`.)\n\n## Build on what exists - don't duplicate\nThe console already has the **Build profiles** plugin (`build-profiles`: dialog + settings tab, banner chip, switch/create/rename/remove) over `framework/cli/profiles.mjs` (build-profiles@1) and the builds store. Grow THAT plugin into a full manager page (rename the plugin title to 'Build profiles' manager if needed; keep its id, data and every existing feature).\n\n## Features\n- **Browse:** framework grid of every profile (collapsible rows): name, id, active star, description, counts (builds running / pending / complete / archived, pending items, queue steps), cost spent + cost left, last activity, created; sort/search/filter. Expand a row: its builds (with agent avatars once crew-live lands), pending list, queue, plan summary, files (`profiles.mjs where`).\n- **View** a profile page: all its builds and steps, timeline, totals, links to Builds page views filtered to it.\n- **Create** (name, id, description, copy from another profile, catalog on/off, make active), **Edit** (name, description, catalog, colour/icon for the banner chip), **Switch** (one tap; banner chip + context menu), **Duplicate**, **Merge** two profiles, **Move builds** between profiles (multi-select, drag rows onto a profile), **Archive / hide**, **Delete** = take off the list (data kept, restorable) with confirm; a separate 'Delete data too' that is owner-only and irreversible-confirm. Base profile and active profile can't be deleted.\n- **Cleanup helper:** flag archived builds that are actually complete (reconciler) - e.g. angel, big-dog, breakroom, refactor - with a one-tap fix.\n- Context-menu hooks everywhere: 'Build profiles...' and 'Move to profile' on any build row.\n- Commands declared once -> REST + MCP + CLI (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore) so Amber can manage profiles by voice (reads ALLOW policy, changes veto, data delete confirm).\n- Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/profile-manager.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+   "verbatim": false,
+   "from": "brief",
+   "addenda": []
+  },
+  "profiles-all-finish": {
+   "said": "Brett approved both open questions from merge-profiles-one:\n1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes).\n2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree).",
+   "at": "",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "profiles-all-finish",
+   "brief": "",
    "verbatim": false,
    "from": "brief",
    "addenda": []

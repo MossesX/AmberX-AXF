@@ -218,6 +218,9 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
     for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
+    // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
+    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten.
+    for (const rel of staleProfileExports(base, files)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
@@ -243,10 +246,15 @@ function journalSizes(rev) {
   for (const l of git(['ls-tree', '-l', rev, `${JOURNAL_REL}/`]).out.split('\n')) { const m = /\s(\d+)\t.*\/([^/]+)\.jsonl$/.exec(l); if (m) out[m[2]] = Number(m[1]); }
   return out;
 }
+/** Orchestrator exports on `rev` under _claude/builds/profiles/ that no registered profile writes (null = remove). */
+export function staleProfileExports(rev, files) {
+  return git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles']).out.split('\n')
+    .filter((rel) => rel.endsWith('/orchestrator.json') && !(rel in files));
+}
 function allFiles(rev, files) {
   const out = { ...files };
   const ls = git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles', '_claude/builds/orchestrator.json']).out.split('\n').filter((x) => x.endsWith('orchestrator.json'));
-  for (const rel of ls) if (!(rel in out)) out[rel] = show(rev, rel) ?? '';
+  for (const rel of ls) if (!(rel in out) || out[rel] === null) out[rel] = show(rev, rel) ?? '';
   return out;
 }
 function message(entries, taken) {
@@ -261,6 +269,7 @@ function commitOnto(base, files, msg) {
   try {
     let r = git(['read-tree', base], { envx }); if (r.code) return { ok: false, error: `read-tree: ${r.err}` };
     for (const [rel, text] of files) {
+      if (text === null) { r = git(['update-index', '--force-remove', '--', rel], { envx }); if (r.code) return { ok: false, error: `update-index: ${r.err}` }; continue; } // a file taken off main
       const h = git(['hash-object', '-w', '--stdin'], { input: text }); if (h.code) return { ok: false, error: `hash-object: ${h.err}` };
       r = git(['update-index', '--add', '--cacheinfo', `100644,${h.out},${rel}`], { envx }); if (r.code) return { ok: false, error: `update-index: ${r.err}` };
     }

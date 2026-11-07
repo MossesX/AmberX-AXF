@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-accounts",
   "name": "Claude accounts",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Temporary Claude account switcher: lists the logins saved on the VPS, switches between them and saves the current one through the host's claude-account script. Shows names, the active marker and email + plan only, never a credential. Every switch or save is one held axHub call. Running builds keep their account; new launches use the active one.",
+  "description": "Claude accounts on the VPS: lists the saved logins, switches the console's account and saves the current login through the host's claude-account script, and runs worker accounts: subscriptions that only run headless jobs, signed in side by side, with limit, jobs and cost per account. Never shows a credential. Every switch, save, sign-in or removal is one held axHub call. Running builds keep their account; new jobs go to the least busy worker, else the active account.",
   "targets": ["axf-console"],
   "provides": [
     "view:claude-accounts",
@@ -27,6 +27,9 @@
       { "route": "GET /accounts", "id": "list", "title": "List Claude accounts", "description": "The Claude logins and API keys saved on the VPS: name, type, which is active, email and plan. Never a credential.", "readOnly": true },
       { "route": "GET /who", "id": "who", "title": "Active Claude account", "description": "Which saved Claude account new launches use.", "readOnly": true },
       { "route": "POST /use", "id": "use", "title": "Switch Claude account", "description": "Switch Claude on the VPS to a saved account (voice: 'switch Claude to account 2'; name 'account 2' works). Sends one held axHub call: Brett approves or denies it. Running builds keep their account; new launches use the active one.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "saved account name, 1 to 32 lower-case letters, digits or dashes" } }, "required": ["name"] } },
+      { "route": "POST /role", "id": "role", "title": "Make a Claude account a worker", "description": "Mark a saved account as a worker (only runs headless jobs, never the console's account) or take it back. API keys and the active account can't be workers.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "saved account name" }, "role": { "type": "string", "enum": ["worker", "saved"], "description": "worker, or saved to take it back" } }, "required": ["name", "role"] } },
+      { "route": "POST /signin", "id": "signin", "title": "Sign a Claude account in", "description": "Start the sign-in for a new or expired account in its own folder, so the active login isn't touched. Sends one held axHub call; the sign-in then opens in the Terminal for Brett to finish.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "account name, 1 to 32 lower-case letters, digits or dashes" } }, "required": ["name"] } },
+      { "route": "POST /remove", "id": "remove", "title": "Remove a saved Claude account", "description": "Set a saved account aside: its folder moves to .removed on the VPS, nothing is deleted. Refused for the active account or one running a job. Sends one held axHub call.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "saved account name" } }, "required": ["name"] } },
       { "route": "POST /save", "id": "save", "title": "Save the current Claude login", "description": "Save the login Claude is signed in with on the VPS under a name. Sends one held axHub call: Brett approves or denies it.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "name to save it as, 1 to 32 lower-case letters, digits or dashes" } }, "required": ["name"] } }
     ]
   },
@@ -37,7 +40,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/claude-accounts",
     "env": ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"],
-    "mentions": ["deploy/claude-login.mjs"],
+    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "deploy/claude-login.mjs", "deploy/claude-workers.mjs", "deploy/claude-workers.test.mjs", "deploy/claude-headless.sh"],
     "keeps": [
       "/root/.claude-accounts and /usr/local/bin/claude-account on the VPS host: the saved logins and the script belong to the host, not to this plugin"
     ]
