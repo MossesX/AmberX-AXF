@@ -16,7 +16,8 @@
       "description": "string",
       "author": "string",
       "tags": "string[]",
-      "roll": "boolean — whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this."
+      "roll": "boolean — whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this.",
+      "designed": "designed@1 (core/engines/designer-rules.mjs) — the manifest of an asset made in a UI asset designer: { uid (the identifier, never changes), ref <type>/<id>, type, id, name, version, addon, designer: designer@1, app?, by?, createdAt, updatedAt, revision, origin? { said, source, at }, registry { kind, id: <kind>:<type>/<id>, aliases }, extras?, hash (of data) }. Validated when present; a hand-written asset has none."
     }
   },
   "types": {
@@ -269,7 +270,8 @@
         "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
         "groups[].max": "number 1–24, default 8 — cap on provider buttons",
         "groups[].label": "string — group name for screen readers",
-        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
+        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)",
+        "groups[].items[].embed": "string — id of an embed asset (embed-asset@1) the button opens or shows in place; written by the Toolbar designer when an embed is dropped on it (the Embed add-on renders it; until then the item behaves as its action says)"
       },
       "hideable": true,
       "widgets": {
@@ -1124,7 +1126,7 @@
       "icon": "settings",
       "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
       "optional_fields": {
-        "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
+        "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs); designer@1: `designer` = the UI asset designer host's settings interface (id designer), `designer:<addon>` = a designer add-on's (id designer-<addon>, extends designer; core/engines/designer-rules.mjs)",
         "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
         "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)",
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
@@ -1647,6 +1649,111 @@
         "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
       },
       "optional": true
+    },
+    "designer": {
+      "label": "Designer interface",
+      "group": "System",
+      "icon": "edit",
+      "shared": false,
+      "description": "The UI asset designer's own interface as an asset (designer@1, rules core/engines/designer-rules.mjs): how a designer screen is laid out and behaves — canvas (free map / flow / both, grid step, snap, zoom range, rulers, guides), panels (asset library, layers tree, inspector, preview, help, history: left / right / bottom / floating / hidden), preview (inline / floating / docked, desktop / phone / both, live / on save), info (tooltips, hover cards, side panel, help text, spoken), context-menu sections (preview, insert, arrange, clipboard, help), history (undo steps, quick-edit merging), output (where designed assets are saved, id prefix, UI registry registration, version bump), voice, autosave. `default` is the shared interface; every designer add-on (app-menu, nav-menu, toolbar, banner, embed, widget) has its own copy named after it that `extends` the default (inherit@1) until edited. Console-only (not shared, never rolled). Not drawn: it carries no colours or sizes.",
+      "required": [],
+      "enums": {
+        "canvas.mode": [
+          "free",
+          "flow",
+          "both"
+        ],
+        "preview.mode": [
+          "inline",
+          "floating",
+          "docked"
+        ],
+        "preview.device": [
+          "desktop",
+          "phone",
+          "both"
+        ],
+        "preview.refresh": [
+          "live",
+          "on-save"
+        ],
+        "output.to": [
+          "app",
+          "framework",
+          "hub"
+        ],
+        "output.version": [
+          "patch",
+          "minor",
+          "keep"
+        ]
+      },
+      "nested": {},
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "for": "the add-on id this interface is for (app-menu | nav-menu | toolbar | banner | embed | widget | …) or host",
+        "extends": "inherit@1: id of the designer asset this one extends; fields it does not set come from that one",
+        "canvas": "{ mode: free | flow | both, grid: 2–64, snap, zoomMin: 10–100, zoomMax: 100–800, rulers, guides }",
+        "panels": "{ library | layers | inspector | preview | help | history: left | right | bottom | float | hidden }",
+        "preview": "{ mode: inline | floating | docked, device: desktop | phone | both, refresh: live | on-save }",
+        "info": "{ tooltip, hoverCard, sidePanel, helpText, say: booleans } — the ways an asset informs you (asset-context@1)",
+        "context": "{ preview, insert, arrange, clipboard, help: booleans } — the sections of the designer context menu",
+        "history": "{ limit: 10–500, coalesceMs: 0–2000 }",
+        "output": "{ to: app | framework | hub, idPrefix, register: boolean (UI registry), version: patch | minor | keep }",
+        "voice": "boolean — voice control on",
+        "autosave": "boolean"
+      }
+    },
+    "embed": {
+      "label": "Embed",
+      "group": "Widgets",
+      "icon": "box",
+      "description": "embed-asset@1 (rules core/engines/designer-rules.mjs): an asset that shows another piece of UI inside a host — a registered UI (ui-registry@1 id), a plugin view, a command, an https page or another asset — on a toolbar, in a tab group, in a grid row that expands, on a banner, in any region or a dialog. Carries a link to a JSON manifest with the configuration, size (auto or px), the hosts it may go in, load (live / lazy / snapshot), sandbox (a web page is always sandboxed: no console token, no host storage), expand (inline / side / popout), whether the host passes its data (a grid row) and whether state is remembered. Made in the Embed designer (designer@1); hosts attach one by picking it from the library. Not embed@1 (core/engines/embed.ts), which marks an app running inside another app. Shared: every app ships the starters. Never rolled.",
+      "required": [
+        "target"
+      ],
+      "enums": {
+        "load": [
+          "live",
+          "lazy",
+          "snapshot"
+        ],
+        "expand": [
+          "inline",
+          "side",
+          "popout"
+        ]
+      },
+      "nested": {
+        "target": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "target.kind": "ui | plugin | command | url | asset",
+        "target.id": "the ui-registry@1 id (<kind>:<key>), <plugin folder>[/<view>], an action spec, or an asset ref <type>/<id> (every kind but url)",
+        "target.url": "an https:// address (kind url)",
+        "target.params": "object passed to the embedded UI",
+        "manifest": "string — a link to a JSON manifest with the configuration (https:// or a .json path)",
+        "label": "string, up to 80",
+        "icon": "icon name (default box)",
+        "size": "{ width, height: 'auto' | px, minHeight?, maxHeight? }",
+        "hosts": "toolbar | tab-group | grid-row | banner | region | dialog (default: all)",
+        "load": "live (default) | lazy | snapshot",
+        "sandbox": "boolean (default true for a url, which is always sandboxed)",
+        "expand": "inline (default) | side | popout",
+        "passData": "boolean — a grid row passes its data as params (default false)",
+        "remember": "boolean — remember open / closed and size (default true)"
+      }
     },
     "uac-policy": {
       "label": "User account control",

@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "embed",
+  "id": "plan-studio-panel",
+  "name": "Plan Studio panel",
+  "version": "1.0.0",
+  "description": "Plan Studio shown inside a host: a tab in any tab group, an expanded grid row or a dialog (embed-asset@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "embed",
+    "starter"
+  ],
+  "data": {
+    "target": {
+      "kind": "ui",
+      "id": "screen:plan-studio"
+    },
+    "label": "Plan Studio",
+    "icon": "list",
+    "size": {
+      "width": "auto",
+      "height": 480,
+      "minHeight": 240
+    },
+    "hosts": [
+      "tab-group",
+      "grid-row",
+      "region",
+      "dialog"
+    ],
+    "load": "lazy",
+    "sandbox": false,
+    "expand": "inline",
+    "passData": true,
+    "remember": true
+  }
+}

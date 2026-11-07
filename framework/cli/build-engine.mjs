@@ -12,6 +12,7 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { DESIGNER_TYPE, EMBED_TYPE, designedErrors, designerErrors, designerSchemaProperties, designerSettingsErrors } from '../core/engines/designer-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
@@ -177,6 +178,10 @@ export function validateAsset(raw) {
   errors.push(...jobTypeErrors(raw.type, raw.data));
   // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, raw.data));
+  // designer@1: designer interface + embed types, a designer's settings interface, the designed@1 manifest: ONE validator shared with core (core/engines/designer-rules.mjs)
+  errors.push(...designerErrors(raw.type, raw.data));
+  if (raw.type === 'settings') errors.push(...designerSettingsErrors(raw));
+  if (raw.designed !== undefined) errors.push(...designedErrors(raw.designed, raw));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
@@ -808,6 +813,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
+    if (type === DESIGNER_TYPE || type === EMBED_TYPE) Object.assign(props, designerSchemaProperties(type));
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),

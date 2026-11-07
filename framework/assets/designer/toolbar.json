@@ -1,0 +1,65 @@
+{
+  "$axf": "asset@1",
+  "type": "designer",
+  "id": "toolbar",
+  "name": "Toolbar designer interface",
+  "version": "1.0.0",
+  "description": "The toolbar designer's own copy of the shared designer interface (default): canvas, panels, preview, info, context menu, history, output and voice. It follows the default until edited (designer@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "designer",
+    "toolbar"
+  ],
+  "data": {
+    "for": "toolbar",
+    "canvas": {
+      "mode": "both",
+      "grid": 8,
+      "snap": true,
+      "zoomMin": 25,
+      "zoomMax": 400,
+      "rulers": false,
+      "guides": true
+    },
+    "panels": {
+      "library": "left",
+      "layers": "left",
+      "inspector": "right",
+      "preview": "bottom",
+      "help": "right",
+      "history": "hidden"
+    },
+    "preview": {
+      "mode": "docked",
+      "device": "both",
+      "refresh": "live"
+    },
+    "info": {
+      "tooltip": true,
+      "hoverCard": true,
+      "sidePanel": true,
+      "helpText": true,
+      "say": false
+    },
+    "context": {
+      "preview": true,
+      "insert": true,
+      "arrange": true,
+      "clipboard": true,
+      "help": true
+    },
+    "history": {
+      "limit": 100,
+      "coalesceMs": 400
+    },
+    "output": {
+      "to": "app",
+      "idPrefix": "",
+      "register": true,
+      "version": "patch"
+    },
+    "voice": true,
+    "autosave": true,
+    "extends": "default"
+  }
+}

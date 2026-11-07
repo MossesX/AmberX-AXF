@@ -1,0 +1,4736 @@
+{
+  "contract": "designer@1",
+  "manifest": {
+    "id": "ai.amberx.axf.console.my-designer",
+    "provides": [
+      "view:my-designer",
+      "service:axf.designer-addon@1",
+      "designer:toolbar",
+      "designer:tabs",
+      "designer:Bad Id"
+    ],
+    "designer": [
+      {
+        "id": "tabs",
+        "label": "Tab group designer",
+        "types": [
+          "tab-group"
+        ],
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "undo",
+          "nope"
+        ],
+        "drops": [
+          "palette",
+          "text",
+          "junk"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "position",
+              "label": "Position",
+              "kind": "choice",
+              "options": [
+                "top",
+                "bottom"
+              ],
+              "default": "top"
+            },
+            {
+              "key": "Bad Key",
+              "kind": "text"
+            }
+          ]
+        },
+        "voice": [
+          "make a tab group called {name}"
+        ],
+        "version": "0.2.0",
+        "extra": true
+      },
+      {
+        "id": "no-types"
+      },
+      "not an object"
+    ]
+  },
+  "badAddon": {
+    "$axf": "designer-addon@2",
+    "id": "Bad Id",
+    "types": [
+      "toolbar",
+      "Nope Type"
+    ],
+    "plugin": "not a plugin id",
+    "capabilities": [
+      "canvas",
+      "teleport"
+    ],
+    "drops": [
+      "node",
+      "rocks"
+    ],
+    "manifest": {
+      "fields": "no"
+    },
+    "settings": "Bad",
+    "interface": "x"
+  },
+  "designerPartial": {
+    "canvas": {
+      "mode": "flow",
+      "grid": 999,
+      "snap": "yes",
+      "zoomMax": 300
+    },
+    "panels": {
+      "library": "right",
+      "preview": "nowhere"
+    },
+    "preview": {
+      "device": "phone"
+    },
+    "info": {
+      "say": true
+    },
+    "history": {
+      "limit": 5
+    },
+    "output": {
+      "to": "hub",
+      "idPrefix": "cw-",
+      "register": false
+    },
+    "voice": false,
+    "autosave": "maybe",
+    "unknown": 1,
+    "for": "toolbar",
+    "extends": "default"
+  },
+  "embeds": [
+    {
+      "target": {
+        "kind": "ui",
+        "id": "screen:plan-studio",
+        "params": {
+          "tab": "board"
+        }
+      },
+      "label": "Plan Studio",
+      "icon": "list",
+      "size": {
+        "width": "auto",
+        "height": 480,
+        "minHeight": 200
+      },
+      "hosts": [
+        "tab-group",
+        "grid-row"
+      ],
+      "load": "lazy",
+      "expand": "side",
+      "passData": true
+    },
+    {
+      "target": {
+        "kind": "url",
+        "url": "https://example.com/widget"
+      },
+      "sandbox": false,
+      "size": {
+        "width": 320,
+        "height": 9999
+      },
+      "hosts": [
+        "toolbar",
+        "nowhere"
+      ],
+      "load": "sometimes"
+    },
+    {
+      "target": {
+        "kind": "plugin",
+        "id": "build-orchestrator/build"
+      },
+      "manifest": "./embeds/build.json",
+      "remember": false
+    },
+    {
+      "target": {
+        "kind": "command",
+        "id": "console.open:builds"
+      },
+      "manifest": "javascript:alert(1)"
+    },
+    {
+      "target": {
+        "kind": "asset",
+        "id": "toolbar/standard-icons"
+      }
+    },
+    {
+      "target": {
+        "kind": "ui",
+        "id": "not a ui id"
+      }
+    },
+    {
+      "target": {
+        "kind": "url",
+        "url": "http://insecure.example"
+      }
+    },
+    {
+      "label": "no target"
+    },
+    {
+      "target": {
+        "kind": "asset",
+        "id": "Toolbar"
+      },
+      "expand": "sideways",
+      "passData": "yes"
+    }
+  ],
+  "badManifest": {
+    "$axf": "designed@0",
+    "uid": "nope",
+    "ref": "toolbar",
+    "type": "banner",
+    "addon": "Bad Id",
+    "designer": "designer@2",
+    "createdAt": "yesterday",
+    "updatedAt": 5,
+    "revision": 0,
+    "registry": {
+      "kind": "toolbar",
+      "id": "wrong"
+    },
+    "hash": "xyz",
+    "extras": [],
+    "origin": "said"
+  },
+  "drops": [
+    {
+      "types": {
+        "text/plain": "plan.new"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"palette\",\"node\":\"item\",\"props\":{\"label\":\"New\",\"icon\":\"plus\",\"action\":\"file.new\"}}"
+      },
+      "target": {
+        "node": "group",
+        "position": "before"
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"palette\",\"node\":\"group\"}"
+      },
+      "target": {
+        "node": "root",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "text/plain": "clock/digital-12h"
+      },
+      "target": {
+        "canvas": {
+          "x": 101,
+          "y": 53
+        }
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"asset\",\"ref\":\"embed/docs-page\",\"label\":\"Docs\"}"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"asset\",\"ref\":\"color-theme/fresh-light\"}"
+      },
+      "target": {
+        "node": "group",
+        "position": "after"
+      }
+    },
+    {
+      "types": {
+        "text/uri-list": "# comment\r\nhttps://example.com/page"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/json": "{\"kind\":\"build\",\"id\":\"x1\",\"title\":\"Build x1\",\"icon\":\"hammer\"}"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/json": "{\"action\":\"plan.delete\",\"label\":\"Delete plan\"}"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"hook\",\"hook\":{\"id\":\"pr:12\",\"label\":\"PR 12\",\"action\":\"pr.open:12\"}}"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "text/plain": "hello world"
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "text/plain": "Tools"
+      },
+      "target": {
+        "node": "root",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"text\",\"text\":\"Typed\"}"
+      },
+      "target": {
+        "node": "group",
+        "position": "after"
+      }
+    },
+    {
+      "types": {},
+      "files": [
+        {
+          "name": "embed.json",
+          "type": "application/json"
+        }
+      ],
+      "target": {
+        "node": "root",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "text/plain": ""
+      },
+      "target": {
+        "node": "group",
+        "position": "inside"
+      }
+    },
+    {
+      "types": {
+        "application/x-axf-designer": "{\"kind\":\"node\",\"ids\":[\"n2\",\"n2\"]}"
+      },
+      "target": {
+        "node": "root",
+        "position": "inside"
+      }
+    }
+  ],
+  "expected": {
+    "addons": [
+      {
+        "$axf": "designer-addon@1",
+        "version": "1.0.0",
+        "standalone": true,
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "multi-select",
+          "undo",
+          "map",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "id": "app-menu",
+        "label": "App menu designer",
+        "icon": "menu",
+        "types": [
+          "app-menu"
+        ],
+        "plugin": "ai.amberx.axf.console.app-menu-designer",
+        "folder": "app-menu-designer",
+        "view": "app-menu-designer",
+        "settings": "designer-app-menu",
+        "interface": "app-menu",
+        "drops": [
+          "node",
+          "palette",
+          "action",
+          "hook",
+          "text",
+          "embed"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "window",
+              "label": "Window",
+              "kind": "text"
+            }
+          ]
+        },
+        "voice": [
+          "make a app menu called {name}",
+          "open the app menu designer",
+          "edit {asset} in the app menu designer"
+        ]
+      },
+      {
+        "$axf": "designer-addon@1",
+        "version": "1.0.0",
+        "standalone": true,
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "multi-select",
+          "undo",
+          "map",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "id": "nav-menu",
+        "label": "Nav menu designer",
+        "icon": "list",
+        "types": [
+          "nav-menu"
+        ],
+        "plugin": "ai.amberx.axf.console.nav-menu-designer",
+        "folder": "nav-menu-designer",
+        "view": "nav-menu-designer",
+        "settings": "designer-nav-menu",
+        "interface": "nav-menu",
+        "drops": [
+          "node",
+          "palette",
+          "action",
+          "hook",
+          "text"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "navStyle",
+              "label": "Sub-menu style asset",
+              "kind": "asset",
+              "options": [
+                "nav-style"
+              ]
+            }
+          ]
+        },
+        "voice": [
+          "make a nav menu called {name}",
+          "open the nav menu designer",
+          "edit {asset} in the nav menu designer"
+        ]
+      },
+      {
+        "$axf": "designer-addon@1",
+        "version": "1.0.0",
+        "standalone": true,
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "multi-select",
+          "undo",
+          "map",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "id": "toolbar",
+        "label": "Toolbar designer",
+        "icon": "sliders",
+        "types": [
+          "toolbar"
+        ],
+        "plugin": "ai.amberx.axf.console.toolbar-designer",
+        "folder": "toolbar-designer",
+        "view": "toolbar-designer",
+        "settings": "designer-toolbar",
+        "interface": "toolbar",
+        "drops": [
+          "node",
+          "palette",
+          "asset",
+          "action",
+          "hook",
+          "embed",
+          "text"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "placement",
+              "label": "Placement",
+              "kind": "choice",
+              "options": [
+                "top",
+                "bottom",
+                "left",
+                "right",
+                "floating"
+              ]
+            },
+            {
+              "key": "window",
+              "label": "Window",
+              "kind": "text"
+            }
+          ]
+        },
+        "voice": [
+          "make a toolbar called {name}",
+          "open the toolbar designer",
+          "edit {asset} in the toolbar designer"
+        ]
+      },
+      {
+        "$axf": "designer-addon@1",
+        "version": "1.0.0",
+        "standalone": true,
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "multi-select",
+          "undo",
+          "map",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "id": "banner",
+        "label": "Banner designer",
+        "icon": "menu",
+        "types": [
+          "banner"
+        ],
+        "plugin": "ai.amberx.axf.console.banner-designer",
+        "folder": "banner-designer",
+        "view": "banner-designer",
+        "settings": "designer-banner",
+        "interface": "banner",
+        "drops": [
+          "node",
+          "palette",
+          "asset",
+          "embed"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "formFactor",
+              "label": "Form factor",
+              "kind": "choice",
+              "options": [
+                "desktop",
+                "phone",
+                "both"
+              ]
+            }
+          ]
+        },
+        "voice": [
+          "make a banner called {name}",
+          "open the banner designer",
+          "edit {asset} in the banner designer"
+        ]
+      },
+      {
+        "$axf": "designer-addon@1",
+        "version": "1.0.0",
+        "standalone": true,
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "undo",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "id": "embed",
+        "label": "Embed designer",
+        "icon": "box",
+        "types": [
+          "embed"
+        ],
+        "plugin": "ai.amberx.axf.console.embed-designer",
+        "folder": "embed-designer",
+        "view": "embed-designer",
+        "settings": "designer-embed",
+        "interface": "embed",
+        "drops": [
+          "asset",
+          "action",
+          "text",
+          "file"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "hosts",
+              "label": "Hosts",
+              "kind": "list"
+            },
+            {
+              "key": "sandbox",
+              "label": "Sandboxed",
+              "kind": "toggle"
+            }
+          ]
+        },
+        "voice": [
+          "make an embed of {ui}",
+          "put {ui} in the {host}",
+          "open the embed designer"
+        ]
+      },
+      {
+        "$axf": "designer-addon@1",
+        "version": "1.0.0",
+        "standalone": true,
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "undo",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "id": "widget",
+        "label": "Widget designer",
+        "icon": "layers",
+        "types": [
+          "clock",
+          "search-bar",
+          "action-button",
+          "logo",
+          "label",
+          "status",
+          "counter",
+          "progress",
+          "avatar",
+          "link",
+          "theme-switch",
+          "spacer",
+          "divider"
+        ],
+        "plugin": "ai.amberx.axf.console.widget-designer",
+        "folder": "widget-designer",
+        "view": "widget-designer",
+        "settings": "designer-widget",
+        "interface": "widget",
+        "drops": [
+          "asset",
+          "action",
+          "text"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "tone",
+              "label": "Tone",
+              "kind": "choice",
+              "options": [
+                "neutral",
+                "accent",
+                "success",
+                "warning",
+                "danger"
+              ]
+            }
+          ]
+        },
+        "voice": [
+          "make a {type} widget called {name}",
+          "open the widget designer"
+        ]
+      }
+    ],
+    "fromManifest": [
+      {
+        "$axf": "designer-addon@1",
+        "id": "tabs",
+        "label": "Tab group designer",
+        "icon": "layers",
+        "types": [
+          "tab-group"
+        ],
+        "plugin": "ai.amberx.axf.console.my-designer",
+        "folder": "my-designer",
+        "view": "tabs-designer",
+        "settings": "designer-tabs",
+        "interface": "tabs",
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "undo"
+        ],
+        "drops": [
+          "palette",
+          "text"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "position",
+              "label": "Position",
+              "kind": "choice",
+              "options": [
+                "top",
+                "bottom"
+              ],
+              "default": "top"
+            }
+          ]
+        },
+        "voice": [
+          "make a tab group called {name}"
+        ],
+        "standalone": true,
+        "version": "0.2.0"
+      },
+      {
+        "$axf": "designer-addon@1",
+        "id": "toolbar",
+        "label": "Toolbar designer",
+        "icon": "sliders",
+        "types": [
+          "toolbar"
+        ],
+        "plugin": "ai.amberx.axf.console.my-designer",
+        "folder": "my-designer",
+        "view": "toolbar-designer",
+        "settings": "designer-toolbar",
+        "interface": "toolbar",
+        "capabilities": [
+          "canvas",
+          "tree",
+          "preview",
+          "context-menu",
+          "drag-drop",
+          "multi-select",
+          "undo",
+          "map",
+          "voice",
+          "api",
+          "standalone",
+          "embedded"
+        ],
+        "drops": [
+          "node",
+          "palette",
+          "asset",
+          "action",
+          "hook",
+          "embed",
+          "text"
+        ],
+        "manifest": {
+          "fields": [
+            {
+              "key": "placement",
+              "label": "Placement",
+              "kind": "choice",
+              "options": [
+                "top",
+                "bottom",
+                "left",
+                "right",
+                "floating"
+              ]
+            },
+            {
+              "key": "window",
+              "label": "Window",
+              "kind": "text"
+            }
+          ]
+        },
+        "voice": [
+          "make a toolbar called {name}",
+          "open the toolbar designer",
+          "edit {asset} in the toolbar designer"
+        ],
+        "standalone": true,
+        "version": "1.0.0"
+      }
+    ],
+    "badAddonErrors": [
+      "$axf must be designer-addon@1",
+      "types: not an asset type name \"Nope Type\"",
+      "plugin: a plugin id like ai.amberx.axf.console.toolbar-designer",
+      "capabilities: unknown \"teleport\" (canvas, tree, preview, context-menu, drag-drop, multi-select, undo, map, voice, api, standalone, embedded)",
+      "drops: unknown \"rocks\" (node, palette, asset, action, hook, embed, text, file)",
+      "manifest: { fields: [{ key, label, kind, options?, required?, default? }] }",
+      "settings: a settings asset id",
+      "interface: a designer asset id"
+    ],
+    "merged": [
+      {
+        "id": "app-menu",
+        "label": "App menu designer",
+        "plugin": "ai.amberx.axf.console.app-menu-designer",
+        "types": [
+          "app-menu"
+        ]
+      },
+      {
+        "id": "nav-menu",
+        "label": "Nav menu designer",
+        "plugin": "ai.amberx.axf.console.nav-menu-designer",
+        "types": [
+          "nav-menu"
+        ]
+      },
+      {
+        "id": "toolbar",
+        "label": "My toolbar designer",
+        "plugin": "ai.amberx.axf.console.my-toolbar",
+        "types": [
+          "toolbar"
+        ]
+      },
+      {
+        "id": "banner",
+        "label": "Banner designer",
+        "plugin": "ai.amberx.axf.console.banner-designer",
+        "types": [
+          "banner"
+        ]
+      },
+      {
+        "id": "embed",
+        "label": "Embed designer",
+        "plugin": "ai.amberx.axf.console.embed-designer",
+        "types": [
+          "embed"
+        ]
+      },
+      {
+        "id": "widget",
+        "label": "Widget designer",
+        "plugin": "ai.amberx.axf.console.widget-designer",
+        "types": [
+          "clock",
+          "search-bar",
+          "action-button",
+          "logo",
+          "label",
+          "status",
+          "counter",
+          "progress",
+          "avatar",
+          "link",
+          "theme-switch",
+          "spacer",
+          "divider"
+        ]
+      },
+      {
+        "id": "tabs",
+        "label": "Tab group designer",
+        "plugin": "ai.amberx.axf.console.tabs-designer",
+        "types": [
+          "tab-group"
+        ]
+      }
+    ],
+    "choices": [
+      {
+        "id": "app-menu",
+        "label": "App menu designer",
+        "icon": "menu",
+        "types": [
+          "app-menu"
+        ],
+        "plugin": "ai.amberx.axf.console.app-menu-designer",
+        "installed": false,
+        "view": "app-menu-designer",
+        "settings": "designer-app-menu",
+        "interface": "app-menu"
+      },
+      {
+        "id": "nav-menu",
+        "label": "Nav menu designer",
+        "icon": "list",
+        "types": [
+          "nav-menu"
+        ],
+        "plugin": "ai.amberx.axf.console.nav-menu-designer",
+        "installed": false,
+        "view": "nav-menu-designer",
+        "settings": "designer-nav-menu",
+        "interface": "nav-menu"
+      },
+      {
+        "id": "toolbar",
+        "label": "Toolbar designer",
+        "icon": "sliders",
+        "types": [
+          "toolbar"
+        ],
+        "plugin": "ai.amberx.axf.console.toolbar-designer",
+        "installed": true,
+        "view": "toolbar-designer",
+        "settings": "designer-toolbar",
+        "interface": "toolbar"
+      },
+      {
+        "id": "banner",
+        "label": "Banner designer",
+        "icon": "menu",
+        "types": [
+          "banner"
+        ],
+        "plugin": "ai.amberx.axf.console.banner-designer",
+        "installed": false,
+        "view": "banner-designer",
+        "settings": "designer-banner",
+        "interface": "banner"
+      },
+      {
+        "id": "embed",
+        "label": "Embed designer",
+        "icon": "box",
+        "types": [
+          "embed"
+        ],
+        "plugin": "ai.amberx.axf.console.embed-designer",
+        "installed": false,
+        "view": "embed-designer",
+        "settings": "designer-embed",
+        "interface": "embed"
+      },
+      {
+        "id": "widget",
+        "label": "Widget designer",
+        "icon": "layers",
+        "types": [
+          "clock",
+          "search-bar",
+          "action-button",
+          "logo",
+          "label",
+          "status",
+          "counter",
+          "progress",
+          "avatar",
+          "link",
+          "theme-switch",
+          "spacer",
+          "divider"
+        ],
+        "plugin": "ai.amberx.axf.console.widget-designer",
+        "installed": false,
+        "view": "widget-designer",
+        "settings": "designer-widget",
+        "interface": "widget"
+      }
+    ],
+    "provides": [
+      [
+        "service:axf.designer-addon@1",
+        "designer:app-menu",
+        "view:app-menu-designer",
+        "settings-tab:app-menu-designer"
+      ],
+      [
+        "service:axf.designer-addon@1",
+        "designer:nav-menu",
+        "view:nav-menu-designer",
+        "settings-tab:nav-menu-designer"
+      ],
+      [
+        "service:axf.designer-addon@1",
+        "designer:toolbar",
+        "view:toolbar-designer",
+        "settings-tab:toolbar-designer"
+      ],
+      [
+        "service:axf.designer-addon@1",
+        "designer:banner",
+        "view:banner-designer",
+        "settings-tab:banner-designer"
+      ],
+      [
+        "service:axf.designer-addon@1",
+        "designer:embed",
+        "view:embed-designer",
+        "settings-tab:embed-designer"
+      ],
+      [
+        "service:axf.designer-addon@1",
+        "designer:widget",
+        "view:widget-designer",
+        "settings-tab:widget-designer"
+      ]
+    ],
+    "fields": [
+      {
+        "key": "canvas.mode",
+        "label": "Canvas",
+        "kind": "choice",
+        "group": "canvas",
+        "level": "simple",
+        "options": [
+          "free",
+          "flow",
+          "both"
+        ],
+        "labels": {
+          "free": "Free map",
+          "flow": "Flow",
+          "both": "Both"
+        },
+        "default": "both"
+      },
+      {
+        "key": "canvas.grid",
+        "label": "Grid step",
+        "kind": "number",
+        "group": "canvas",
+        "level": "basic",
+        "min": 2,
+        "max": 64,
+        "default": 8
+      },
+      {
+        "key": "canvas.snap",
+        "label": "Snap to grid",
+        "kind": "toggle",
+        "group": "canvas",
+        "level": "simple",
+        "default": true
+      },
+      {
+        "key": "canvas.zoomMin",
+        "label": "Smallest zoom (%)",
+        "kind": "number",
+        "group": "canvas",
+        "level": "developer",
+        "min": 10,
+        "max": 100,
+        "default": 25
+      },
+      {
+        "key": "canvas.zoomMax",
+        "label": "Largest zoom (%)",
+        "kind": "number",
+        "group": "canvas",
+        "level": "developer",
+        "min": 100,
+        "max": 800,
+        "default": 400
+      },
+      {
+        "key": "canvas.rulers",
+        "label": "Rulers",
+        "kind": "toggle",
+        "group": "canvas",
+        "level": "basic",
+        "default": false
+      },
+      {
+        "key": "canvas.guides",
+        "label": "Alignment guides",
+        "kind": "toggle",
+        "group": "canvas",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "panels.library",
+        "label": "Asset library panel",
+        "kind": "choice",
+        "group": "panels",
+        "level": "simple",
+        "options": [
+          "left",
+          "right",
+          "bottom",
+          "float",
+          "hidden"
+        ],
+        "default": "left"
+      },
+      {
+        "key": "panels.layers",
+        "label": "Layers / tree panel",
+        "kind": "choice",
+        "group": "panels",
+        "level": "simple",
+        "options": [
+          "left",
+          "right",
+          "bottom",
+          "float",
+          "hidden"
+        ],
+        "default": "left"
+      },
+      {
+        "key": "panels.inspector",
+        "label": "Inspector panel",
+        "kind": "choice",
+        "group": "panels",
+        "level": "simple",
+        "options": [
+          "left",
+          "right",
+          "bottom",
+          "float",
+          "hidden"
+        ],
+        "default": "right"
+      },
+      {
+        "key": "panels.preview",
+        "label": "Preview panel",
+        "kind": "choice",
+        "group": "panels",
+        "level": "simple",
+        "options": [
+          "left",
+          "right",
+          "bottom",
+          "float",
+          "hidden"
+        ],
+        "default": "bottom"
+      },
+      {
+        "key": "panels.help",
+        "label": "Help panel",
+        "kind": "choice",
+        "group": "panels",
+        "level": "basic",
+        "options": [
+          "left",
+          "right",
+          "bottom",
+          "float",
+          "hidden"
+        ],
+        "default": "right"
+      },
+      {
+        "key": "panels.history",
+        "label": "History panel",
+        "kind": "choice",
+        "group": "panels",
+        "level": "basic",
+        "options": [
+          "left",
+          "right",
+          "bottom",
+          "float",
+          "hidden"
+        ],
+        "default": "hidden"
+      },
+      {
+        "key": "preview.mode",
+        "label": "Preview",
+        "kind": "choice",
+        "group": "preview",
+        "level": "simple",
+        "options": [
+          "inline",
+          "floating",
+          "docked"
+        ],
+        "default": "docked"
+      },
+      {
+        "key": "preview.device",
+        "label": "Preview device",
+        "kind": "choice",
+        "group": "preview",
+        "level": "simple",
+        "options": [
+          "desktop",
+          "phone",
+          "both"
+        ],
+        "default": "both"
+      },
+      {
+        "key": "preview.refresh",
+        "label": "Preview refresh",
+        "kind": "choice",
+        "group": "preview",
+        "level": "basic",
+        "options": [
+          "live",
+          "on-save"
+        ],
+        "labels": {
+          "live": "Live",
+          "on-save": "On save"
+        },
+        "default": "live"
+      },
+      {
+        "key": "info.tooltip",
+        "label": "Tooltips",
+        "kind": "toggle",
+        "group": "info",
+        "level": "simple",
+        "default": true
+      },
+      {
+        "key": "info.hoverCard",
+        "label": "Hover cards",
+        "kind": "toggle",
+        "group": "info",
+        "level": "simple",
+        "default": true
+      },
+      {
+        "key": "info.sidePanel",
+        "label": "Side panel details",
+        "kind": "toggle",
+        "group": "info",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "info.helpText",
+        "label": "Help text",
+        "kind": "toggle",
+        "group": "info",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "info.say",
+        "label": "Spoken descriptions",
+        "kind": "toggle",
+        "group": "info",
+        "level": "basic",
+        "default": false
+      },
+      {
+        "key": "context.preview",
+        "label": "Preview in the context menu",
+        "kind": "toggle",
+        "group": "context",
+        "level": "simple",
+        "default": true
+      },
+      {
+        "key": "context.insert",
+        "label": "Insert menu",
+        "kind": "toggle",
+        "group": "context",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "context.arrange",
+        "label": "Arrange menu",
+        "kind": "toggle",
+        "group": "context",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "context.clipboard",
+        "label": "Cut / copy / paste",
+        "kind": "toggle",
+        "group": "context",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "context.help",
+        "label": "Help entry",
+        "kind": "toggle",
+        "group": "context",
+        "level": "basic",
+        "default": true
+      },
+      {
+        "key": "history.limit",
+        "label": "Undo steps",
+        "kind": "number",
+        "group": "history",
+        "level": "basic",
+        "min": 10,
+        "max": 500,
+        "default": 100
+      },
+      {
+        "key": "history.coalesceMs",
+        "label": "Merge quick edits (ms)",
+        "kind": "number",
+        "group": "history",
+        "level": "developer",
+        "min": 0,
+        "max": 2000,
+        "default": 400
+      },
+      {
+        "key": "output.to",
+        "label": "Save designed assets to",
+        "kind": "choice",
+        "group": "output",
+        "level": "developer",
+        "options": [
+          "app",
+          "framework",
+          "hub"
+        ],
+        "labels": {
+          "app": "The app's assets",
+          "framework": "Framework assets",
+          "hub": "axHub shared data"
+        },
+        "default": "app"
+      },
+      {
+        "key": "output.idPrefix",
+        "label": "Id prefix",
+        "kind": "text",
+        "group": "output",
+        "level": "developer",
+        "default": ""
+      },
+      {
+        "key": "output.register",
+        "label": "Register in the UI registry",
+        "kind": "toggle",
+        "group": "output",
+        "level": "developer",
+        "default": true
+      },
+      {
+        "key": "output.version",
+        "label": "Version on save",
+        "kind": "choice",
+        "group": "output",
+        "level": "developer",
+        "options": [
+          "patch",
+          "minor",
+          "keep"
+        ],
+        "default": "patch"
+      },
+      {
+        "key": "voice",
+        "label": "Voice control",
+        "kind": "toggle",
+        "group": "voice",
+        "level": "simple",
+        "default": true
+      },
+      {
+        "key": "autosave",
+        "label": "Autosave",
+        "kind": "toggle",
+        "group": "autosave",
+        "level": "simple",
+        "default": true
+      }
+    ],
+    "default": {
+      "canvas": {
+        "mode": "both",
+        "grid": 8,
+        "snap": true,
+        "zoomMin": 25,
+        "zoomMax": 400,
+        "rulers": false,
+        "guides": true
+      },
+      "panels": {
+        "library": "left",
+        "layers": "left",
+        "inspector": "right",
+        "preview": "bottom",
+        "help": "right",
+        "history": "hidden"
+      },
+      "preview": {
+        "mode": "docked",
+        "device": "both",
+        "refresh": "live"
+      },
+      "info": {
+        "tooltip": true,
+        "hoverCard": true,
+        "sidePanel": true,
+        "helpText": true,
+        "say": false
+      },
+      "context": {
+        "preview": true,
+        "insert": true,
+        "arrange": true,
+        "clipboard": true,
+        "help": true
+      },
+      "history": {
+        "limit": 100,
+        "coalesceMs": 400
+      },
+      "output": {
+        "to": "app",
+        "idPrefix": "",
+        "register": true,
+        "version": "patch"
+      },
+      "voice": true,
+      "autosave": true
+    },
+    "normalizedDesigner": {
+      "canvas": {
+        "mode": "flow",
+        "grid": 8,
+        "snap": true,
+        "zoomMin": 25,
+        "zoomMax": 300,
+        "rulers": false,
+        "guides": true
+      },
+      "panels": {
+        "library": "right",
+        "layers": "left",
+        "inspector": "right",
+        "preview": "bottom",
+        "help": "right",
+        "history": "hidden"
+      },
+      "preview": {
+        "mode": "docked",
+        "device": "phone",
+        "refresh": "live"
+      },
+      "info": {
+        "tooltip": true,
+        "hoverCard": true,
+        "sidePanel": true,
+        "helpText": true,
+        "say": true
+      },
+      "context": {
+        "preview": true,
+        "insert": true,
+        "arrange": true,
+        "clipboard": true,
+        "help": true
+      },
+      "history": {
+        "limit": 100,
+        "coalesceMs": 400
+      },
+      "output": {
+        "to": "hub",
+        "idPrefix": "cw-",
+        "register": false,
+        "version": "patch"
+      },
+      "voice": false,
+      "autosave": true,
+      "for": "toolbar",
+      "extends": "default"
+    },
+    "designerErrors": [
+      "data.canvas.grid: a number 2–64",
+      "data.canvas.snap: true or false",
+      "data.panels.preview: one of left, right, bottom, float, hidden",
+      "data.history.limit: a number 10–500",
+      "data.autosave: true or false"
+    ],
+    "chain": {
+      "copy": {
+        "canvas": {
+          "mode": "both",
+          "grid": 8,
+          "snap": true,
+          "zoomMin": 25,
+          "zoomMax": 400,
+          "rulers": false,
+          "guides": true
+        },
+        "panels": {
+          "library": "left",
+          "layers": "left",
+          "inspector": "right",
+          "preview": "bottom",
+          "help": "right",
+          "history": "hidden"
+        },
+        "preview": {
+          "mode": "docked",
+          "device": "both",
+          "refresh": "live"
+        },
+        "info": {
+          "tooltip": true,
+          "hoverCard": true,
+          "sidePanel": true,
+          "helpText": true,
+          "say": false
+        },
+        "context": {
+          "preview": true,
+          "insert": true,
+          "arrange": true,
+          "clipboard": true,
+          "help": true
+        },
+        "history": {
+          "limit": 100,
+          "coalesceMs": 400
+        },
+        "output": {
+          "to": "app",
+          "idPrefix": "",
+          "register": true,
+          "version": "patch"
+        },
+        "voice": true,
+        "autosave": true,
+        "for": "toolbar"
+      },
+      "edited": {
+        "canvas": {
+          "mode": "both",
+          "grid": 16,
+          "snap": true,
+          "zoomMin": 25,
+          "zoomMax": 400,
+          "rulers": false,
+          "guides": true
+        },
+        "panels": {
+          "library": "left",
+          "layers": "left",
+          "inspector": "right",
+          "preview": "float",
+          "help": "right",
+          "history": "hidden"
+        },
+        "preview": {
+          "mode": "docked",
+          "device": "both",
+          "refresh": "live"
+        },
+        "info": {
+          "tooltip": true,
+          "hoverCard": true,
+          "sidePanel": true,
+          "helpText": true,
+          "say": false
+        },
+        "context": {
+          "preview": true,
+          "insert": true,
+          "arrange": true,
+          "clipboard": true,
+          "help": true
+        },
+        "history": {
+          "limit": 100,
+          "coalesceMs": 400
+        },
+        "output": {
+          "to": "app",
+          "idPrefix": "",
+          "register": true,
+          "version": "patch"
+        },
+        "voice": true,
+        "autosave": true,
+        "for": "toolbar"
+      }
+    },
+    "picks": {
+      "own": "toolbar",
+      "fallback": "default",
+      "none": null
+    },
+    "settingsErrors": {
+      "ok": [],
+      "host": [],
+      "badFor": [
+        "data.for: designer or designer:<addon id>",
+        "id: a settings interface for designer:X Y is named designer-X Y",
+        "data.extends: an add-on's settings interface extends designer"
+      ],
+      "badId": [
+        "id: a settings interface for designer:toolbar is named designer-toolbar"
+      ],
+      "badExtends": [
+        "data.extends: an add-on's settings interface extends designer"
+      ],
+      "chrome": []
+    },
+    "plan": {
+      "plan": [
+        {
+          "addon": "app-menu",
+          "interfaceId": "app-menu",
+          "settingsId": "designer-app-menu"
+        },
+        {
+          "addon": "nav-menu",
+          "interfaceId": "nav-menu",
+          "settingsId": "designer-nav-menu"
+        },
+        {
+          "addon": "toolbar",
+          "interfaceId": "toolbar",
+          "settingsId": "designer-toolbar"
+        },
+        {
+          "addon": "banner",
+          "interfaceId": "banner",
+          "settingsId": "designer-banner"
+        },
+        {
+          "addon": "embed",
+          "interfaceId": "embed",
+          "settingsId": "designer-embed"
+        },
+        {
+          "addon": "widget",
+          "interfaceId": "widget",
+          "settingsId": "designer-widget"
+        }
+      ],
+      "missing": [
+        "designer/app-menu",
+        "settings/designer-app-menu",
+        "designer/nav-menu",
+        "settings/designer-nav-menu",
+        "designer/toolbar",
+        "designer/banner",
+        "settings/designer-banner",
+        "designer/embed",
+        "settings/designer-embed",
+        "designer/widget",
+        "settings/designer-widget"
+      ]
+    },
+    "embeds": [
+      {
+        "target": {
+          "kind": "ui",
+          "id": "screen:plan-studio",
+          "params": {
+            "tab": "board"
+          }
+        },
+        "label": "Plan Studio",
+        "icon": "list",
+        "size": {
+          "width": "auto",
+          "height": 480,
+          "minHeight": 200
+        },
+        "hosts": [
+          "tab-group",
+          "grid-row"
+        ],
+        "load": "lazy",
+        "sandbox": false,
+        "expand": "side",
+        "passData": true,
+        "remember": true
+      },
+      {
+        "target": {
+          "kind": "url",
+          "url": "https://example.com/widget"
+        },
+        "label": "https://example.com/widget",
+        "icon": "box",
+        "size": {
+          "width": 320,
+          "height": "auto"
+        },
+        "hosts": [
+          "toolbar"
+        ],
+        "load": "live",
+        "sandbox": true,
+        "expand": "inline",
+        "passData": false,
+        "remember": true
+      },
+      {
+        "target": {
+          "kind": "plugin",
+          "id": "build-orchestrator/build"
+        },
+        "label": "build-orchestrator/build",
+        "icon": "box",
+        "manifest": "./embeds/build.json",
+        "size": {
+          "width": "auto",
+          "height": "auto"
+        },
+        "hosts": [
+          "toolbar",
+          "tab-group",
+          "grid-row",
+          "banner",
+          "region",
+          "dialog"
+        ],
+        "load": "live",
+        "sandbox": false,
+        "expand": "inline",
+        "passData": false,
+        "remember": false
+      },
+      {
+        "target": {
+          "kind": "command",
+          "id": "console.open:builds"
+        },
+        "label": "console.open:builds",
+        "icon": "box",
+        "size": {
+          "width": "auto",
+          "height": "auto"
+        },
+        "hosts": [
+          "toolbar",
+          "tab-group",
+          "grid-row",
+          "banner",
+          "region",
+          "dialog"
+        ],
+        "load": "live",
+        "sandbox": false,
+        "expand": "inline",
+        "passData": false,
+        "remember": true
+      },
+      {
+        "target": {
+          "kind": "asset",
+          "id": "toolbar/standard-icons"
+        },
+        "label": "toolbar/standard-icons",
+        "icon": "box",
+        "size": {
+          "width": "auto",
+          "height": "auto"
+        },
+        "hosts": [
+          "toolbar",
+          "tab-group",
+          "grid-row",
+          "banner",
+          "region",
+          "dialog"
+        ],
+        "load": "live",
+        "sandbox": false,
+        "expand": "inline",
+        "passData": false,
+        "remember": true
+      },
+      {
+        "target": {
+          "kind": "ui",
+          "id": "not a ui id"
+        },
+        "label": "not a ui id",
+        "icon": "box",
+        "size": {
+          "width": "auto",
+          "height": "auto"
+        },
+        "hosts": [
+          "toolbar",
+          "tab-group",
+          "grid-row",
+          "banner",
+          "region",
+          "dialog"
+        ],
+        "load": "live",
+        "sandbox": false,
+        "expand": "inline",
+        "passData": false,
+        "remember": true
+      },
+      null,
+      null,
+      {
+        "target": {
+          "kind": "asset",
+          "id": "Toolbar"
+        },
+        "label": "Toolbar",
+        "icon": "box",
+        "size": {
+          "width": "auto",
+          "height": "auto"
+        },
+        "hosts": [
+          "toolbar",
+          "tab-group",
+          "grid-row",
+          "banner",
+          "region",
+          "dialog"
+        ],
+        "load": "live",
+        "sandbox": false,
+        "expand": "inline",
+        "passData": false,
+        "remember": true
+      }
+    ],
+    "embedErrors": [
+      [],
+      [
+        "data.size.height: auto or a number 0–4096",
+        "data.hosts: unknown host \"nowhere\" (toolbar, tab-group, grid-row, banner, region, dialog)",
+        "data.load: live | lazy | snapshot",
+        "data.sandbox: a web page is always sandboxed"
+      ],
+      [],
+      [
+        "data.manifest: an https:// address or a .json path"
+      ],
+      [],
+      [
+        "data.target.id: a ui-registry@1 id like screen:plan-studio"
+      ],
+      [
+        "data.target.url: an https:// address (no other scheme)"
+      ],
+      [
+        "data.target: { kind: ui | plugin | command | url | asset, id? | url?, params? }"
+      ],
+      [
+        "data.target.id: an asset ref <type>/<id>",
+        "data.expand: inline | side | popout",
+        "data.passData: true or false"
+      ]
+    ],
+    "schemaProps": {
+      "designer": {
+        "for": {
+          "type": "string"
+        },
+        "extends": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+        },
+        "canvas": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "free",
+                "flow",
+                "both"
+              ],
+              "default": "both",
+              "description": "Canvas"
+            },
+            "grid": {
+              "type": "number",
+              "minimum": 2,
+              "maximum": 64,
+              "default": 8,
+              "description": "Grid step"
+            },
+            "snap": {
+              "type": "boolean",
+              "default": true,
+              "description": "Snap to grid"
+            },
+            "zoomMin": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 100,
+              "default": 25,
+              "description": "Smallest zoom (%)"
+            },
+            "zoomMax": {
+              "type": "number",
+              "minimum": 100,
+              "maximum": 800,
+              "default": 400,
+              "description": "Largest zoom (%)"
+            },
+            "rulers": {
+              "type": "boolean",
+              "default": false,
+              "description": "Rulers"
+            },
+            "guides": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alignment guides"
+            }
+          }
+        },
+        "panels": {
+          "type": "object",
+          "properties": {
+            "library": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "left",
+              "description": "Asset library panel"
+            },
+            "layers": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "left",
+              "description": "Layers / tree panel"
+            },
+            "inspector": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "right",
+              "description": "Inspector panel"
+            },
+            "preview": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "bottom",
+              "description": "Preview panel"
+            },
+            "help": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "right",
+              "description": "Help panel"
+            },
+            "history": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "hidden",
+              "description": "History panel"
+            }
+          }
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "inline",
+                "floating",
+                "docked"
+              ],
+              "default": "docked",
+              "description": "Preview"
+            },
+            "device": {
+              "enum": [
+                "desktop",
+                "phone",
+                "both"
+              ],
+              "default": "both",
+              "description": "Preview device"
+            },
+            "refresh": {
+              "enum": [
+                "live",
+                "on-save"
+              ],
+              "default": "live",
+              "description": "Preview refresh"
+            }
+          }
+        },
+        "info": {
+          "type": "object",
+          "properties": {
+            "tooltip": {
+              "type": "boolean",
+              "default": true,
+              "description": "Tooltips"
+            },
+            "hoverCard": {
+              "type": "boolean",
+              "default": true,
+              "description": "Hover cards"
+            },
+            "sidePanel": {
+              "type": "boolean",
+              "default": true,
+              "description": "Side panel details"
+            },
+            "helpText": {
+              "type": "boolean",
+              "default": true,
+              "description": "Help text"
+            },
+            "say": {
+              "type": "boolean",
+              "default": false,
+              "description": "Spoken descriptions"
+            }
+          }
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "preview": {
+              "type": "boolean",
+              "default": true,
+              "description": "Preview in the context menu"
+            },
+            "insert": {
+              "type": "boolean",
+              "default": true,
+              "description": "Insert menu"
+            },
+            "arrange": {
+              "type": "boolean",
+              "default": true,
+              "description": "Arrange menu"
+            },
+            "clipboard": {
+              "type": "boolean",
+              "default": true,
+              "description": "Cut / copy / paste"
+            },
+            "help": {
+              "type": "boolean",
+              "default": true,
+              "description": "Help entry"
+            }
+          }
+        },
+        "history": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 500,
+              "default": 100,
+              "description": "Undo steps"
+            },
+            "coalesceMs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2000,
+              "default": 400,
+              "description": "Merge quick edits (ms)"
+            }
+          }
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "enum": [
+                "app",
+                "framework",
+                "hub"
+              ],
+              "default": "app",
+              "description": "Save designed assets to"
+            },
+            "idPrefix": {
+              "type": "string",
+              "maxLength": 80,
+              "default": "",
+              "description": "Id prefix"
+            },
+            "register": {
+              "type": "boolean",
+              "default": true,
+              "description": "Register in the UI registry"
+            },
+            "version": {
+              "enum": [
+                "patch",
+                "minor",
+                "keep"
+              ],
+              "default": "patch",
+              "description": "Version on save"
+            }
+          }
+        },
+        "voice": {
+          "type": "boolean",
+          "default": true,
+          "description": "Voice control"
+        },
+        "autosave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Autosave"
+        }
+      },
+      "embed": {
+        "target": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "ui",
+                "plugin",
+                "command",
+                "url",
+                "asset"
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "pattern": "^https://"
+            },
+            "params": {
+              "type": "object"
+            }
+          }
+        },
+        "manifest": {
+          "type": "string",
+          "description": "a link to a JSON manifest with the configuration (https:// or a .json path)"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "icon": {
+          "type": "string"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            },
+            "height": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            },
+            "minHeight": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            },
+            "maxHeight": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            }
+          }
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "toolbar",
+              "tab-group",
+              "grid-row",
+              "banner",
+              "region",
+              "dialog"
+            ]
+          }
+        },
+        "load": {
+          "enum": [
+            "live",
+            "lazy",
+            "snapshot"
+          ]
+        },
+        "expand": {
+          "enum": [
+            "inline",
+            "side",
+            "popout"
+          ]
+        },
+        "sandbox": {
+          "type": "boolean"
+        },
+        "passData": {
+          "type": "boolean"
+        },
+        "remember": {
+          "type": "boolean"
+        }
+      }
+    },
+    "manifest1": {
+      "$axf": "designed@1",
+      "uid": "dz-fixed01",
+      "ref": "toolbar/my-bar",
+      "type": "toolbar",
+      "id": "my-bar",
+      "name": "My bar",
+      "version": "1.0.0",
+      "addon": "toolbar",
+      "designer": "designer@1",
+      "createdAt": "2026-11-07T10:00:00.000Z",
+      "updatedAt": "2026-11-07T10:00:00.000Z",
+      "revision": 1,
+      "registry": {
+        "kind": "toolbar",
+        "id": "toolbar:toolbar/my-bar",
+        "aliases": [
+          "my-bar"
+        ]
+      },
+      "hash": "9bcf3baf",
+      "app": "axf-console-web",
+      "by": "Brett",
+      "origin": {
+        "said": "make me a toolbar",
+        "source": "voice"
+      },
+      "extras": {
+        "placement": "top"
+      }
+    },
+    "manifest2": {
+      "$axf": "designed@1",
+      "uid": "dz-fixed01",
+      "ref": "toolbar/my-bar",
+      "type": "toolbar",
+      "id": "my-bar",
+      "name": "My bar",
+      "version": "1.1.0",
+      "addon": "toolbar",
+      "designer": "designer@1",
+      "createdAt": "2026-11-07T10:00:00.000Z",
+      "updatedAt": "2026-11-07T11:00:00.000Z",
+      "revision": 2,
+      "registry": {
+        "kind": "toolbar",
+        "id": "toolbar:toolbar/my-bar",
+        "aliases": [
+          "my-bar"
+        ]
+      },
+      "hash": "b41d40ea",
+      "origin": {
+        "said": "make me a toolbar",
+        "source": "voice"
+      }
+    },
+    "manifestErrors": {
+      "ok": [],
+      "wrongAsset": [
+        "designed.ref: toolbar/my-bar is not this asset (toolbar/standard-icons)"
+      ],
+      "changed": [
+        "designed.hash: the asset data changed since it was designed (save it through its designer)"
+      ],
+      "bad": [
+        "designed.$axf must be designed@1",
+        "designed.uid: dz-<base36> (the identifier never changes)",
+        "designed.ref: <type>/<id>",
+        "designed.addon: the add-on id (a slug)",
+        "designed.designer must be designer@1",
+        "designed.createdAt: an ISO time",
+        "designed.updatedAt: an ISO time",
+        "designed.revision: an integer from 1",
+        "designed.registry: { kind, id: <kind>:<type>/<id>, aliases }",
+        "designed.hash: 8 hex digits",
+        "designed.extras: an object",
+        "designed.origin: { said?, source?, at? }"
+      ]
+    },
+    "registryItem": {
+      "id": "toolbar:toolbar/my-bar",
+      "kind": "toolbar",
+      "label": "My bar",
+      "aliases": [
+        "my-bar",
+        "My bar toolbar"
+      ],
+      "owner": "plugin:ui-asset-designer",
+      "source": "declared",
+      "open": {
+        "via": "action",
+        "action": "designer.open:toolbar/my-bar"
+      },
+      "detail": "Toolbar designed with the toolbar designer (revision 1)",
+      "icon": "sliders",
+      "keywords": [
+        "toolbar",
+        "designed",
+        "toolbar"
+      ],
+      "effect": "navigate",
+      "app": "axf-console-web"
+    },
+    "library": {
+      "entry": {
+        "uid": "dz-fixed01",
+        "ref": "toolbar/my-bar",
+        "type": "toolbar",
+        "id": "my-bar",
+        "name": "My bar",
+        "addon": "toolbar",
+        "revision": 1,
+        "updatedAt": "2026-11-07T10:00:00.000Z",
+        "app": "axf-console-web",
+        "path": "src/assets/toolbar/my-bar.json"
+      },
+      "app": "apps/console-web/src/assets/toolbar/my-bar.json",
+      "framework": "framework/assets/toolbar/my-bar.json",
+      "hub": "_data/assets/toolbar/my-bar.json"
+    },
+    "libraryIndex": {
+      "$axf": "designer-library@1",
+      "items": [
+        {
+          "uid": "dz-fixed01",
+          "ref": "toolbar/renamed",
+          "type": "toolbar",
+          "id": "renamed",
+          "name": "My bar",
+          "addon": "toolbar",
+          "revision": 2,
+          "updatedAt": "2026-11-07T11:00:00.000Z",
+          "path": "src/assets/toolbar/renamed.json"
+        }
+      ]
+    },
+    "ids": {
+      "bad": [
+        "id must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "id must start with my-"
+      ],
+      "builtin": [
+        "standard-icons is a built-in asset: pick another id (built-ins are never overwritten)"
+      ],
+      "exists": [
+        "my-bar exists already: pick another id or open that one"
+      ],
+      "ok": [],
+      "suggest": [
+        "my-bar-3",
+        "asset",
+        "cw-builds"
+      ]
+    },
+    "summaries": [
+      {
+        "ref": "toolbar/standard-icons",
+        "summary": "12 buttons in 3 groups, search"
+      },
+      {
+        "ref": "banner/amberx-thin",
+        "summary": "3 attached, 24px flat"
+      },
+      {
+        "ref": "nav-menu/sidebar-list",
+        "summary": "5 items in 2 sections, list"
+      },
+      {
+        "ref": "app-menu/standard-desktop",
+        "summary": "4 menus, 23 items"
+      },
+      {
+        "ref": "context-menu/compact-classic",
+        "summary": "3 targets, 15 items, compact"
+      },
+      {
+        "ref": "tab-group/underline",
+        "summary": "underline tabs, top"
+      },
+      {
+        "ref": "clock/digital-12h",
+        "summary": "clock"
+      },
+      {
+        "ref": "embed/docs-page",
+        "summary": "url: https://axf.amberxai.com/"
+      },
+      {
+        "ref": "dialog/centered-modal",
+        "summary": "modal dialog"
+      }
+    ],
+    "info": {
+      "tooltip": "Toolbar · My bar · 12 buttons in 3 groups, search",
+      "hover-card": {
+        "title": "My bar",
+        "subtitle": "Toolbar · toolbar/my-bar",
+        "lines": [
+          "12 buttons in 3 groups, search",
+          "Designed with the toolbar designer · revision 1",
+          "Icon-only file, edit and view groups with a search box."
+        ],
+        "preview": "toolbar/my-bar"
+      },
+      "side-panel": {
+        "title": "My bar",
+        "sections": [
+          {
+            "label": "Identity",
+            "rows": [
+              [
+                "Type",
+                "Toolbar"
+              ],
+              [
+                "Id",
+                "my-bar"
+              ],
+              [
+                "Ref",
+                "toolbar/my-bar"
+              ],
+              [
+                "Version",
+                "1.0.0"
+              ],
+              [
+                "Identifier",
+                "dz-fixed01"
+              ]
+            ]
+          },
+          {
+            "label": "Contents",
+            "rows": [
+              [
+                "Summary",
+                "12 buttons in 3 groups, search"
+              ],
+              [
+                "Description",
+                "Icon-only file, edit and view groups with a search box."
+              ]
+            ]
+          },
+          {
+            "label": "Designed",
+            "rows": [
+              [
+                "Designer",
+                "toolbar designer"
+              ],
+              [
+                "Revision",
+                "1"
+              ],
+              [
+                "Created",
+                "2026-11-07T10:00:00.000Z"
+              ],
+              [
+                "Updated",
+                "2026-11-07T10:00:00.000Z"
+              ],
+              [
+                "By",
+                "Brett"
+              ],
+              [
+                "Brett said",
+                "make me a toolbar"
+              ],
+              [
+                "Registered as",
+                "toolbar:toolbar/my-bar"
+              ]
+            ]
+          },
+          {
+            "label": "Where it is used",
+            "rows": [
+              [
+                "1",
+                "Dev Console › main toolbar"
+              ]
+            ]
+          }
+        ]
+      },
+      "help-text": {
+        "id": "asset:toolbar/my-bar",
+        "kind": "control",
+        "title": "My bar",
+        "text": "Toolbar: 12 buttons in 3 groups, search. Right-click it for a preview, its settings and its designer.",
+        "more": "Icon-only file, edit and view groups with a search box. Designed with the toolbar designer, revision 1. Used in: Dev Console › main toolbar."
+      },
+      "say": "My bar is a toolbar with 12 buttons in 3 groups, search, designed with the toolbar designer."
+    },
+    "infoBuiltin": {
+      "title": "Standard Icons",
+      "subtitle": "Toolbar · toolbar/standard-icons",
+      "lines": [
+        "12 buttons in 3 groups, search",
+        "Built in",
+        "Icon-only file, edit and view groups with a search box."
+      ],
+      "preview": "toolbar/standard-icons"
+    },
+    "contextDesigned": [
+      {
+        "id": "asset-head",
+        "label": "Toolbar: My bar",
+        "icon": "sliders",
+        "action": "asset.about:toolbar/my-bar",
+        "tip": "Toolbar · My bar · 12 buttons in 3 groups, search"
+      },
+      {
+        "id": "asset-preview",
+        "label": "Preview",
+        "icon": "eye",
+        "action": "asset.preview:toolbar/my-bar",
+        "preview": "toolbar/my-bar",
+        "tip": "Hover for a live miniature; tap to open it in a floating preview"
+      },
+      {
+        "id": "asset-about",
+        "label": "About…",
+        "icon": "info",
+        "action": "asset.about:toolbar/my-bar",
+        "tip": "Identity, contents, who designed it and where it is used"
+      },
+      {
+        "id": "asset-help",
+        "label": "Help",
+        "icon": "help",
+        "action": "help.explain:asset:toolbar/my-bar"
+      },
+      {
+        "id": "asset-edit",
+        "label": "Edit in Toolbar designer…",
+        "icon": "edit",
+        "action": "designer.open:toolbar/my-bar",
+        "tip": "Open My bar in the toolbar designer"
+      },
+      {
+        "id": "asset-change",
+        "label": "Change toolbar…",
+        "icon": "layers",
+        "action": "chrome.pick:toolbar"
+      },
+      {
+        "id": "asset-copy-id",
+        "label": "Copy id",
+        "icon": "copy",
+        "action": "asset.copyId:toolbar/my-bar",
+        "tip": "toolbar/my-bar"
+      },
+      {
+        "id": "asset-usage",
+        "label": "Where it is used",
+        "icon": "search",
+        "action": "asset.usage:toolbar/my-bar",
+        "tip": "Dev Console › main toolbar"
+      },
+      {
+        "id": "asset-sep",
+        "separator": true
+      }
+    ],
+    "contextChrome": [
+      {
+        "id": "asset-head",
+        "label": "Toolbar: Standard Icons",
+        "icon": "sliders",
+        "action": "asset.about:toolbar/standard-icons",
+        "tip": "Toolbar · Standard Icons · 12 buttons in 3 groups, search"
+      },
+      {
+        "id": "asset-about",
+        "label": "About…",
+        "icon": "info",
+        "action": "asset.about:toolbar/standard-icons",
+        "tip": "Identity, contents, who designed it and where it is used"
+      },
+      {
+        "id": "asset-copy-id",
+        "label": "Copy id",
+        "icon": "copy",
+        "action": "asset.copyId:toolbar/standard-icons",
+        "tip": "toolbar/standard-icons"
+      },
+      {
+        "id": "asset-usage",
+        "label": "Where it is used",
+        "icon": "search",
+        "action": "asset.usage:toolbar/standard-icons",
+        "tip": "Not placed anywhere yet"
+      },
+      {
+        "id": "asset-sep",
+        "separator": true
+      }
+    ],
+    "families": {
+      "toolbar": {
+        "family": "toolbar",
+        "kinds": [
+          "group",
+          "item",
+          "widget"
+        ],
+        "accepts": {
+          "group": [
+            "item"
+          ],
+          "item": [],
+          "widget": [],
+          "root": [
+            "group",
+            "widget"
+          ]
+        },
+        "props": {
+          "group": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text"
+            },
+            {
+              "key": "provider",
+              "label": "Live list",
+              "kind": "text"
+            },
+            {
+              "key": "max",
+              "label": "Max live buttons",
+              "kind": "number",
+              "min": 1,
+              "max": 24
+            }
+          ],
+          "item": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "icon",
+              "label": "Icon",
+              "kind": "icon",
+              "required": true
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "action",
+              "label": "Action",
+              "kind": "action",
+              "required": true
+            },
+            {
+              "key": "requires",
+              "label": "Needs permission",
+              "kind": "text"
+            },
+            {
+              "key": "badge",
+              "label": "Badge counter",
+              "kind": "binding"
+            },
+            {
+              "key": "checked",
+              "label": "Pressed when",
+              "kind": "binding"
+            },
+            {
+              "key": "embed",
+              "label": "Embed asset",
+              "kind": "asset",
+              "options": [
+                "embed"
+              ]
+            }
+          ],
+          "widget": [
+            {
+              "key": "type",
+              "label": "Widget type",
+              "kind": "choice",
+              "required": true,
+              "options": [
+                "clock",
+                "search-bar",
+                "action-button",
+                "logo",
+                "label",
+                "status",
+                "counter",
+                "progress",
+                "avatar",
+                "link",
+                "theme-switch",
+                "spacer",
+                "divider",
+                "embed"
+              ]
+            },
+            {
+              "key": "id",
+              "label": "Asset id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "at",
+              "label": "Side",
+              "kind": "choice",
+              "required": true,
+              "options": [
+                "start",
+                "end"
+              ]
+            },
+            {
+              "key": "order",
+              "label": "Order",
+              "kind": "number"
+            }
+          ]
+        },
+        "labels": {
+          "group": "Group",
+          "item": "Button",
+          "widget": "Widget"
+        },
+        "palette": [
+          {
+            "node": "group",
+            "label": "Group",
+            "payload": "{\"kind\":\"palette\",\"node\":\"group\"}"
+          },
+          {
+            "node": "widget",
+            "label": "Widget",
+            "payload": "{\"kind\":\"palette\",\"node\":\"widget\"}"
+          }
+        ]
+      },
+      "banner": {
+        "family": "banner",
+        "kinds": [
+          "attach"
+        ],
+        "accepts": {
+          "attach": [],
+          "root": [
+            "attach"
+          ]
+        },
+        "props": {
+          "attach": [
+            {
+              "key": "type",
+              "label": "Asset type",
+              "kind": "choice",
+              "required": true,
+              "options": [
+                "clock",
+                "search-bar",
+                "action-button",
+                "logo",
+                "label",
+                "status",
+                "counter",
+                "progress",
+                "avatar",
+                "link",
+                "theme-switch",
+                "spacer",
+                "divider",
+                "badge",
+                "embed"
+              ]
+            },
+            {
+              "key": "id",
+              "label": "Asset id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "at",
+              "label": "Side",
+              "kind": "choice",
+              "required": true,
+              "options": [
+                "left",
+                "center",
+                "right"
+              ]
+            },
+            {
+              "key": "order",
+              "label": "Order",
+              "kind": "number"
+            }
+          ]
+        },
+        "labels": {
+          "attach": "Attachment"
+        },
+        "palette": [
+          {
+            "node": "attach",
+            "label": "Attachment",
+            "payload": "{\"kind\":\"palette\",\"node\":\"attach\"}"
+          }
+        ]
+      },
+      "nav-menu": {
+        "family": "nav",
+        "kinds": [
+          "section",
+          "item"
+        ],
+        "accepts": {
+          "section": [
+            "item"
+          ],
+          "item": [
+            "item"
+          ],
+          "root": [
+            "section"
+          ]
+        },
+        "props": {
+          "section": [
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text"
+            }
+          ],
+          "item": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "icon",
+              "label": "Icon",
+              "kind": "icon",
+              "required": true
+            },
+            {
+              "key": "view",
+              "label": "Opens view",
+              "kind": "view",
+              "required": true
+            },
+            {
+              "key": "badge",
+              "label": "Badge counter",
+              "kind": "binding"
+            },
+            {
+              "key": "requires",
+              "label": "Needs permission",
+              "kind": "text"
+            }
+          ]
+        },
+        "labels": {
+          "section": "Section",
+          "item": "Item"
+        },
+        "palette": [
+          {
+            "node": "section",
+            "label": "Section",
+            "payload": "{\"kind\":\"palette\",\"node\":\"section\"}"
+          }
+        ]
+      },
+      "app-menu": {
+        "family": "appmenu",
+        "kinds": [
+          "menu",
+          "item",
+          "separator"
+        ],
+        "accepts": {
+          "menu": [
+            "item",
+            "separator"
+          ],
+          "item": [
+            "item",
+            "separator"
+          ],
+          "separator": [],
+          "root": [
+            "menu"
+          ]
+        },
+        "props": {
+          "menu": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "order",
+              "label": "Order",
+              "kind": "number"
+            }
+          ],
+          "item": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text"
+            },
+            {
+              "key": "icon",
+              "label": "Icon",
+              "kind": "icon"
+            },
+            {
+              "key": "action",
+              "label": "Action",
+              "kind": "action"
+            },
+            {
+              "key": "shortcut",
+              "label": "Shortcut",
+              "kind": "shortcut"
+            },
+            {
+              "key": "requires",
+              "label": "Needs permission",
+              "kind": "text"
+            },
+            {
+              "key": "provider",
+              "label": "Live list",
+              "kind": "text"
+            },
+            {
+              "key": "badge",
+              "label": "Badge counter",
+              "kind": "binding"
+            },
+            {
+              "key": "checked",
+              "label": "Check mark",
+              "kind": "binding"
+            },
+            {
+              "key": "order",
+              "label": "Order",
+              "kind": "number"
+            },
+            {
+              "key": "before",
+              "label": "Before",
+              "kind": "text"
+            },
+            {
+              "key": "after",
+              "label": "After",
+              "kind": "text"
+            }
+          ],
+          "separator": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "spacer",
+              "label": "Gap instead of a rule",
+              "kind": "toggle"
+            }
+          ]
+        },
+        "labels": {
+          "menu": "Menu",
+          "item": "Item",
+          "separator": "Separator"
+        },
+        "palette": [
+          {
+            "node": "menu",
+            "label": "Menu",
+            "payload": "{\"kind\":\"palette\",\"node\":\"menu\"}"
+          }
+        ]
+      },
+      "context-menu": {
+        "family": "ctxmenu",
+        "kinds": [
+          "target",
+          "item",
+          "separator"
+        ],
+        "accepts": {
+          "target": [
+            "item",
+            "separator"
+          ],
+          "item": [
+            "item",
+            "separator"
+          ],
+          "separator": [],
+          "root": [
+            "target"
+          ]
+        },
+        "props": {
+          "target": [
+            {
+              "key": "name",
+              "label": "Target name",
+              "kind": "text",
+              "required": true
+            }
+          ],
+          "item": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "kind": "text"
+            },
+            {
+              "key": "icon",
+              "label": "Icon",
+              "kind": "icon"
+            },
+            {
+              "key": "action",
+              "label": "Action",
+              "kind": "action"
+            },
+            {
+              "key": "shortcut",
+              "label": "Shortcut",
+              "kind": "shortcut"
+            },
+            {
+              "key": "requires",
+              "label": "Needs permission",
+              "kind": "text"
+            },
+            {
+              "key": "provider",
+              "label": "Live list",
+              "kind": "text"
+            },
+            {
+              "key": "badge",
+              "label": "Badge counter",
+              "kind": "binding"
+            },
+            {
+              "key": "checked",
+              "label": "Check mark",
+              "kind": "binding"
+            },
+            {
+              "key": "order",
+              "label": "Order",
+              "kind": "number"
+            },
+            {
+              "key": "before",
+              "label": "Before",
+              "kind": "text"
+            },
+            {
+              "key": "after",
+              "label": "After",
+              "kind": "text"
+            }
+          ],
+          "separator": [
+            {
+              "key": "id",
+              "label": "Id",
+              "kind": "text",
+              "required": true
+            },
+            {
+              "key": "spacer",
+              "label": "Gap instead of a rule",
+              "kind": "toggle"
+            }
+          ]
+        },
+        "labels": {
+          "target": "Target",
+          "item": "Item",
+          "separator": "Separator"
+        },
+        "palette": [
+          {
+            "node": "target",
+            "label": "Target",
+            "payload": "{\"kind\":\"palette\",\"node\":\"target\"}"
+          }
+        ]
+      }
+    },
+    "toolbarDoc": {
+      "$axf": "designer-doc@1",
+      "type": "toolbar",
+      "id": "standard-icons",
+      "name": "Standard Icons",
+      "addon": "toolbar",
+      "root": "root",
+      "nodes": {
+        "root": {
+          "id": "root",
+          "kind": "root",
+          "parent": null,
+          "children": [
+            "n1",
+            "n5",
+            "n11"
+          ],
+          "props": {}
+        },
+        "n1": {
+          "id": "n1",
+          "kind": "group",
+          "parent": "root",
+          "children": [
+            "n2",
+            "n3",
+            "n4"
+          ],
+          "props": {
+            "id": "file"
+          }
+        },
+        "n2": {
+          "id": "n2",
+          "kind": "item",
+          "parent": "n1",
+          "children": [],
+          "props": {
+            "id": "new",
+            "icon": "plus",
+            "label": "New file",
+            "action": "file.new"
+          }
+        },
+        "n3": {
+          "id": "n3",
+          "kind": "item",
+          "parent": "n1",
+          "children": [],
+          "props": {
+            "id": "open",
+            "icon": "folder",
+            "label": "Open",
+            "action": "file.open"
+          }
+        },
+        "n4": {
+          "id": "n4",
+          "kind": "item",
+          "parent": "n1",
+          "children": [],
+          "props": {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "action": "file.save",
+            "requires": "files.write"
+          }
+        },
+        "n5": {
+          "id": "n5",
+          "kind": "group",
+          "parent": "root",
+          "children": [
+            "n6",
+            "n7",
+            "n8",
+            "n9",
+            "n10"
+          ],
+          "props": {
+            "id": "edit"
+          }
+        },
+        "n6": {
+          "id": "n6",
+          "kind": "item",
+          "parent": "n5",
+          "children": [],
+          "props": {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "edit.undo"
+          }
+        },
+        "n7": {
+          "id": "n7",
+          "kind": "item",
+          "parent": "n5",
+          "children": [],
+          "props": {
+            "id": "redo",
+            "icon": "redo",
+            "label": "Redo",
+            "action": "edit.redo"
+          }
+        },
+        "n8": {
+          "id": "n8",
+          "kind": "item",
+          "parent": "n5",
+          "children": [],
+          "props": {
+            "id": "cut",
+            "icon": "cut",
+            "label": "Cut",
+            "action": "edit.cut"
+          }
+        },
+        "n9": {
+          "id": "n9",
+          "kind": "item",
+          "parent": "n5",
+          "children": [],
+          "props": {
+            "id": "copy",
+            "icon": "copy",
+            "label": "Copy",
+            "action": "edit.copy"
+          }
+        },
+        "n10": {
+          "id": "n10",
+          "kind": "item",
+          "parent": "n5",
+          "children": [],
+          "props": {
+            "id": "paste",
+            "icon": "paste",
+            "label": "Paste",
+            "action": "edit.paste"
+          }
+        },
+        "n11": {
+          "id": "n11",
+          "kind": "group",
+          "parent": "root",
+          "children": [
+            "n12",
+            "n13",
+            "n14",
+            "n15"
+          ],
+          "props": {
+            "id": "view"
+          }
+        },
+        "n12": {
+          "id": "n12",
+          "kind": "item",
+          "parent": "n11",
+          "children": [],
+          "props": {
+            "id": "color",
+            "icon": "palette",
+            "label": "Next color theme",
+            "action": "swap:color-theme:next"
+          }
+        },
+        "n13": {
+          "id": "n13",
+          "kind": "item",
+          "parent": "n11",
+          "children": [],
+          "props": {
+            "id": "style",
+            "icon": "type",
+            "label": "Next style theme",
+            "action": "swap:style-theme:next"
+          }
+        },
+        "n14": {
+          "id": "n14",
+          "kind": "item",
+          "parent": "n11",
+          "children": [],
+          "props": {
+            "id": "layout",
+            "icon": "layout",
+            "label": "Next layout",
+            "action": "swap:layout:next"
+          }
+        },
+        "n15": {
+          "id": "n15",
+          "kind": "item",
+          "parent": "n11",
+          "children": [],
+          "props": {
+            "id": "random",
+            "icon": "shuffle",
+            "label": "Randomize",
+            "action": "assets.random"
+          }
+        }
+      },
+      "data": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true
+      },
+      "canvas": {},
+      "selection": [],
+      "meta": {
+        "nextId": 16,
+        "revision": 0,
+        "keyOrder": [
+          "variant",
+          "align",
+          "showSearch",
+          "groups"
+        ]
+      }
+    },
+    "autoLayout": {
+      "n1": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 144
+      },
+      "n5": {
+        "x": 176,
+        "y": 0,
+        "w": 160,
+        "h": 168
+      },
+      "n11": {
+        "x": 352,
+        "y": 0,
+        "w": 160,
+        "h": 144
+      }
+    },
+    "canvasOps": {
+      "placed": {
+        "x": 32,
+        "y": 0,
+        "w": 160,
+        "h": 144
+      },
+      "aligned": [
+        32,
+        32,
+        32
+      ],
+      "distributed": [
+        264,
+        24,
+        504
+      ],
+      "bounds": {
+        "x": 24,
+        "y": 0,
+        "w": 640,
+        "h": 168
+      }
+    },
+    "parsedDrops": [
+      {
+        "in": {
+          "types": {
+            "text/plain": "plan.new"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "action",
+          "action": "plan.new"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"palette\",\"node\":\"item\",\"props\":{\"label\":\"New\",\"icon\":\"plus\",\"action\":\"file.new\"}}"
+          },
+          "target": {
+            "node": "group",
+            "position": "before"
+          }
+        },
+        "out": {
+          "kind": "palette",
+          "node": "item",
+          "props": {
+            "label": "New",
+            "icon": "plus",
+            "action": "file.new"
+          }
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"palette\",\"node\":\"group\"}"
+          },
+          "target": {
+            "node": "root",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "palette",
+          "node": "group"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "text/plain": "clock/digital-12h"
+          },
+          "target": {
+            "canvas": {
+              "x": 101,
+              "y": 53
+            }
+          }
+        },
+        "out": {
+          "kind": "asset",
+          "ref": "clock/digital-12h"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"asset\",\"ref\":\"embed/docs-page\",\"label\":\"Docs\"}"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "asset",
+          "ref": "embed/docs-page",
+          "label": "Docs"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"asset\",\"ref\":\"color-theme/fresh-light\"}"
+          },
+          "target": {
+            "node": "group",
+            "position": "after"
+          }
+        },
+        "out": {
+          "kind": "asset",
+          "ref": "color-theme/fresh-light"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "text/uri-list": "# comment\r\nhttps://example.com/page"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "embed",
+          "target": {
+            "kind": "url",
+            "url": "https://example.com/page"
+          }
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/json": "{\"kind\":\"build\",\"id\":\"x1\",\"title\":\"Build x1\",\"icon\":\"hammer\"}"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "hook",
+          "hook": {
+            "id": "build:x1",
+            "label": "Build x1",
+            "icon": "hammer",
+            "action": "row.open:build:x1"
+          }
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/json": "{\"action\":\"plan.delete\",\"label\":\"Delete plan\"}"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "action",
+          "action": "plan.delete",
+          "label": "Delete plan"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"hook\",\"hook\":{\"id\":\"pr:12\",\"label\":\"PR 12\",\"action\":\"pr.open:12\"}}"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "hook",
+          "hook": {
+            "id": "pr:12",
+            "label": "PR 12",
+            "icon": "",
+            "action": "pr.open:12"
+          }
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "text/plain": "hello world"
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "text",
+          "text": "hello world"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "text/plain": "Tools"
+          },
+          "target": {
+            "node": "root",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "text",
+          "text": "Tools"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"text\",\"text\":\"Typed\"}"
+          },
+          "target": {
+            "node": "group",
+            "position": "after"
+          }
+        },
+        "out": {
+          "kind": "text",
+          "text": "Typed"
+        }
+      },
+      {
+        "in": {
+          "types": {},
+          "files": [
+            {
+              "name": "embed.json",
+              "type": "application/json"
+            }
+          ],
+          "target": {
+            "node": "root",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "file",
+          "name": "embed.json",
+          "type": "application/json"
+        }
+      },
+      {
+        "in": {
+          "types": {
+            "text/plain": ""
+          },
+          "target": {
+            "node": "group",
+            "position": "inside"
+          }
+        },
+        "out": null
+      },
+      {
+        "in": {
+          "types": {
+            "application/x-axf-designer": "{\"kind\":\"node\",\"ids\":[\"n2\",\"n2\"]}"
+          },
+          "target": {
+            "node": "root",
+            "position": "inside"
+          }
+        },
+        "out": {
+          "kind": "node",
+          "ids": [
+            "n2",
+            "n2"
+          ]
+        }
+      }
+    ],
+    "drops": [
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "new-2",
+            "label": "new",
+            "icon": "zap",
+            "action": "plan.new"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": false,
+          "reason": "nothing here takes a palette"
+        },
+        "node": null
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "root",
+          "index": -1,
+          "as": "group"
+        },
+        "node": {
+          "kind": "group",
+          "props": {
+            "id": "group"
+          },
+          "canvas": null,
+          "parent": "root"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "root",
+          "index": -1,
+          "as": "widget"
+        },
+        "node": {
+          "kind": "widget",
+          "props": {
+            "id": "digital-12h",
+            "type": "clock",
+            "at": "end"
+          },
+          "canvas": {
+            "x": 104,
+            "y": 56,
+            "w": 160,
+            "h": 48
+          },
+          "parent": "root"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "docs",
+            "label": "Docs",
+            "icon": "box",
+            "action": "embed.open:docs-page",
+            "embed": "docs-page"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": false,
+          "reason": "nothing here takes a asset"
+        },
+        "node": null
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "embed",
+            "label": "Embed",
+            "icon": "box",
+            "action": "embed.url:https://example.com/page"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "build-x1",
+            "label": "Build x1",
+            "icon": "hammer",
+            "action": "row.open:build:x1",
+            "hook": "build:x1"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "delete-plan",
+            "label": "Delete plan",
+            "icon": "zap",
+            "action": "plan.delete"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "pr-12",
+            "label": "PR 12",
+            "icon": "link",
+            "action": "pr.open:12",
+            "hook": "pr:12"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "n1",
+          "index": -1,
+          "as": "item"
+        },
+        "node": {
+          "kind": "item",
+          "props": {
+            "id": "hello-world",
+            "label": "hello world",
+            "icon": "type"
+          },
+          "canvas": null,
+          "parent": "group"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "root",
+          "index": -1,
+          "as": "group"
+        },
+        "node": {
+          "kind": "group",
+          "props": {
+            "id": "tools",
+            "label": "Tools"
+          },
+          "canvas": null,
+          "parent": "root"
+        }
+      },
+      {
+        "can": {
+          "ok": true,
+          "parent": "root",
+          "index": 1,
+          "as": "group"
+        },
+        "node": {
+          "kind": "group",
+          "props": {
+            "id": "typed",
+            "label": "Typed"
+          },
+          "canvas": null,
+          "parent": "root"
+        }
+      },
+      {
+        "can": {
+          "ok": false,
+          "reason": "Toolbar designer does not take a file drop"
+        },
+        "node": null
+      },
+      {
+        "can": {
+          "ok": false,
+          "reason": "nothing to drop"
+        },
+        "node": null
+      },
+      {
+        "can": {
+          "ok": false,
+          "reason": "a root does not take a item"
+        },
+        "node": null
+      }
+    ],
+    "contextMenus": {
+      "node": [
+        {
+          "id": "edit",
+          "label": "Edit 2 buttons…",
+          "icon": "edit",
+          "action": "designer.properties",
+          "tip": "Open the inspector on the selection"
+        },
+        {
+          "id": "insert-before",
+          "label": "Insert before ▸",
+          "icon": "plus",
+          "items": [
+            {
+              "id": "insert-before-item",
+              "label": "Button",
+              "action": "designer.insert:item:before"
+            }
+          ]
+        },
+        {
+          "id": "insert-after",
+          "label": "Insert after ▸",
+          "icon": "plus",
+          "items": [
+            {
+              "id": "insert-after-item",
+              "label": "Button",
+              "action": "designer.insert:item:after"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "scissors",
+          "action": "designer.cut",
+          "tip": "Ctrl+X"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "designer.copy",
+          "tip": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "clipboard",
+          "action": "designer.paste:after",
+          "tip": "Ctrl+V"
+        },
+        {
+          "id": "duplicate",
+          "label": "Duplicate",
+          "icon": "copy",
+          "action": "designer.duplicate",
+          "tip": "Ctrl+D"
+        },
+        {
+          "id": "delete",
+          "label": "Delete 2",
+          "icon": "trash",
+          "action": "designer.delete",
+          "tip": "Delete"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "arrange",
+          "label": "Arrange ▸",
+          "icon": "move",
+          "items": [
+            {
+              "id": "forward",
+              "label": "Bring forward",
+              "action": "designer.forward",
+              "tip": "Ctrl+]"
+            },
+            {
+              "id": "backward",
+              "label": "Send backward",
+              "action": "designer.backward",
+              "tip": "Ctrl+["
+            },
+            {
+              "id": "a-sep",
+              "separator": true
+            },
+            {
+              "id": "align-left",
+              "label": "Align left",
+              "action": "designer.align:left"
+            },
+            {
+              "id": "align-center",
+              "label": "Align center",
+              "action": "designer.align:center"
+            },
+            {
+              "id": "align-right",
+              "label": "Align right",
+              "action": "designer.align:right"
+            },
+            {
+              "id": "align-top",
+              "label": "Align top",
+              "action": "designer.align:top"
+            },
+            {
+              "id": "align-middle",
+              "label": "Align middle",
+              "action": "designer.align:middle"
+            },
+            {
+              "id": "align-bottom",
+              "label": "Align bottom",
+              "action": "designer.align:bottom"
+            },
+            {
+              "id": "d-sep",
+              "separator": true
+            },
+            {
+              "id": "dist-x",
+              "label": "Distribute horizontally",
+              "action": "designer.distribute:x"
+            },
+            {
+              "id": "dist-y",
+              "label": "Distribute vertically",
+              "action": "designer.distribute:y"
+            }
+          ]
+        },
+        {
+          "id": "lock",
+          "label": "Lock",
+          "icon": "lock",
+          "action": "designer.lock",
+          "tip": "Ctrl+L"
+        },
+        {
+          "id": "hide",
+          "label": "Hide",
+          "icon": "eye",
+          "action": "designer.hide",
+          "tip": "Hidden parts are left out of the saved asset"
+        },
+        {
+          "id": "s3",
+          "separator": true
+        },
+        {
+          "id": "select",
+          "label": "Select ▸",
+          "icon": "check-square",
+          "items": [
+            {
+              "id": "select-all",
+              "label": "All",
+              "action": "designer.selectAll",
+              "tip": "Ctrl+A"
+            },
+            {
+              "id": "select-kind",
+              "label": "All buttons",
+              "action": "designer.selectKind:item"
+            }
+          ]
+        },
+        {
+          "id": "s4",
+          "separator": true
+        },
+        {
+          "id": "undo",
+          "label": "Undo Align",
+          "icon": "undo",
+          "action": "designer.undo",
+          "tip": "Ctrl+Z"
+        },
+        {
+          "id": "redo",
+          "label": "Redo",
+          "icon": "redo",
+          "action": "designer.redo",
+          "tip": "Ctrl+Shift+Z",
+          "disabled": true
+        },
+        {
+          "id": "preview",
+          "label": "Preview",
+          "icon": "eye",
+          "action": "designer.preview",
+          "tip": "Ctrl+P",
+          "preview": "toolbar/standard-icons"
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "icon": "help",
+          "action": "help.explain:designer:toolbar/item"
+        }
+      ],
+      "canvas": [
+        {
+          "id": "paste",
+          "label": "Paste here",
+          "icon": "clipboard",
+          "action": "designer.paste:here",
+          "tip": "Nothing copied yet",
+          "disabled": true
+        },
+        {
+          "id": "insert-inside",
+          "label": "Insert ▸",
+          "icon": "plus",
+          "items": [
+            {
+              "id": "insert-inside-group",
+              "label": "Group",
+              "action": "designer.insert:group:inside"
+            },
+            {
+              "id": "insert-inside-widget",
+              "label": "Widget",
+              "action": "designer.insert:widget:inside"
+            }
+          ]
+        },
+        {
+          "id": "select-all",
+          "label": "Select all",
+          "icon": "check-square",
+          "action": "designer.selectAll",
+          "tip": "Ctrl+A"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "auto-layout",
+          "label": "Auto layout",
+          "icon": "grid",
+          "action": "designer.autoLayout",
+          "tip": "Lay every part out on the map"
+        },
+        {
+          "id": "snap",
+          "label": "Snap to grid",
+          "icon": "magnet",
+          "action": "designer.snap",
+          "checked": "setting:axf.designer.canvas.snap"
+        },
+        {
+          "id": "grid",
+          "label": "Show grid",
+          "icon": "grid",
+          "action": "designer.grid",
+          "checked": "setting:axf.designer.canvas.grid"
+        },
+        {
+          "id": "zoom",
+          "label": "Zoom ▸",
+          "icon": "zoom-in",
+          "items": [
+            {
+              "id": "zoom-fit",
+              "label": "Fit",
+              "action": "designer.zoom:fit",
+              "tip": "Ctrl+0"
+            },
+            {
+              "id": "zoom-100",
+              "label": "100%",
+              "action": "designer.zoom:100"
+            },
+            {
+              "id": "zoom-in",
+              "label": "Zoom in",
+              "action": "designer.zoom:in",
+              "tip": "Ctrl+="
+            },
+            {
+              "id": "zoom-out",
+              "label": "Zoom out",
+              "action": "designer.zoom:out",
+              "tip": "Ctrl+-"
+            }
+          ]
+        },
+        {
+          "id": "s4",
+          "separator": true
+        },
+        {
+          "id": "undo",
+          "label": "Undo",
+          "icon": "undo",
+          "action": "designer.undo",
+          "tip": "Ctrl+Z",
+          "disabled": true
+        },
+        {
+          "id": "redo",
+          "label": "Redo",
+          "icon": "redo",
+          "action": "designer.redo",
+          "tip": "Ctrl+Shift+Z",
+          "disabled": true
+        },
+        {
+          "id": "preview",
+          "label": "Preview",
+          "icon": "eye",
+          "action": "designer.preview",
+          "tip": "Ctrl+P",
+          "preview": "toolbar/standard-icons"
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "icon": "help",
+          "action": "help.explain:designer:toolbar"
+        }
+      ],
+      "locked": [
+        {
+          "id": "edit",
+          "label": "Edit group…",
+          "icon": "edit",
+          "action": "designer.properties",
+          "tip": "Open the inspector on the selection"
+        },
+        {
+          "id": "rename",
+          "label": "Rename",
+          "icon": "type",
+          "action": "designer.rename",
+          "tip": "F2"
+        },
+        {
+          "id": "insert-before",
+          "label": "Insert before ▸",
+          "icon": "plus",
+          "items": [
+            {
+              "id": "insert-before-group",
+              "label": "Group",
+              "action": "designer.insert:group:before"
+            },
+            {
+              "id": "insert-before-widget",
+              "label": "Widget",
+              "action": "designer.insert:widget:before"
+            }
+          ]
+        },
+        {
+          "id": "insert-after",
+          "label": "Insert after ▸",
+          "icon": "plus",
+          "items": [
+            {
+              "id": "insert-after-group",
+              "label": "Group",
+              "action": "designer.insert:group:after"
+            },
+            {
+              "id": "insert-after-widget",
+              "label": "Widget",
+              "action": "designer.insert:widget:after"
+            }
+          ]
+        },
+        {
+          "id": "insert-inside",
+          "label": "Insert inside ▸",
+          "icon": "plus",
+          "items": [
+            {
+              "id": "insert-inside-item",
+              "label": "Button",
+              "action": "designer.insert:item:inside"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "scissors",
+          "action": "designer.cut",
+          "tip": "Ctrl+X"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "designer.copy",
+          "tip": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "clipboard",
+          "action": "designer.paste:after",
+          "tip": "Nothing copied yet",
+          "disabled": true
+        },
+        {
+          "id": "duplicate",
+          "label": "Duplicate",
+          "icon": "copy",
+          "action": "designer.duplicate",
+          "tip": "Ctrl+D"
+        },
+        {
+          "id": "delete",
+          "label": "Delete",
+          "icon": "trash",
+          "action": "designer.delete",
+          "tip": "Delete"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "arrange",
+          "label": "Arrange ▸",
+          "icon": "move",
+          "items": [
+            {
+              "id": "forward",
+              "label": "Bring forward",
+              "action": "designer.forward",
+              "tip": "Ctrl+]"
+            },
+            {
+              "id": "backward",
+              "label": "Send backward",
+              "action": "designer.backward",
+              "tip": "Ctrl+["
+            }
+          ]
+        },
+        {
+          "id": "lock",
+          "label": "Unlock",
+          "icon": "lock",
+          "action": "designer.unlock",
+          "tip": "Ctrl+L"
+        },
+        {
+          "id": "hide",
+          "label": "Hide",
+          "icon": "eye",
+          "action": "designer.hide",
+          "tip": "Hidden parts are left out of the saved asset"
+        },
+        {
+          "id": "s3",
+          "separator": true
+        },
+        {
+          "id": "select",
+          "label": "Select ▸",
+          "icon": "check-square",
+          "items": [
+            {
+              "id": "select-all",
+              "label": "All",
+              "action": "designer.selectAll",
+              "tip": "Ctrl+A"
+            },
+            {
+              "id": "select-kind",
+              "label": "All groups",
+              "action": "designer.selectKind:group"
+            },
+            {
+              "id": "select-children",
+              "label": "Children",
+              "action": "designer.selectChildren:n1"
+            }
+          ]
+        },
+        {
+          "id": "s4",
+          "separator": true
+        },
+        {
+          "id": "undo",
+          "label": "Undo",
+          "icon": "undo",
+          "action": "designer.undo",
+          "tip": "Ctrl+Z",
+          "disabled": true
+        },
+        {
+          "id": "redo",
+          "label": "Redo",
+          "icon": "redo",
+          "action": "designer.redo",
+          "tip": "Ctrl+Shift+Z",
+          "disabled": true
+        },
+        {
+          "id": "preview",
+          "label": "Preview",
+          "icon": "eye",
+          "action": "designer.preview",
+          "tip": "Ctrl+P",
+          "preview": "toolbar/standard-icons"
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "icon": "help",
+          "action": "help.explain:designer:toolbar/group"
+        }
+      ],
+      "flow": [
+        {
+          "id": "select-all",
+          "label": "Select all",
+          "icon": "check-square",
+          "action": "designer.selectAll",
+          "tip": "Ctrl+A"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "zoom",
+          "label": "Zoom ▸",
+          "icon": "zoom-in",
+          "items": [
+            {
+              "id": "zoom-fit",
+              "label": "Fit",
+              "action": "designer.zoom:fit",
+              "tip": "Ctrl+0"
+            },
+            {
+              "id": "zoom-100",
+              "label": "100%",
+              "action": "designer.zoom:100"
+            },
+            {
+              "id": "zoom-in",
+              "label": "Zoom in",
+              "action": "designer.zoom:in",
+              "tip": "Ctrl+="
+            },
+            {
+              "id": "zoom-out",
+              "label": "Zoom out",
+              "action": "designer.zoom:out",
+              "tip": "Ctrl+-"
+            }
+          ]
+        },
+        {
+          "id": "s4",
+          "separator": true
+        },
+        {
+          "id": "undo",
+          "label": "Undo",
+          "icon": "undo",
+          "action": "designer.undo",
+          "tip": "Ctrl+Z",
+          "disabled": true
+        },
+        {
+          "id": "redo",
+          "label": "Redo",
+          "icon": "redo",
+          "action": "designer.redo",
+          "tip": "Ctrl+Shift+Z",
+          "disabled": true
+        },
+        {
+          "id": "preview",
+          "label": "Preview",
+          "icon": "eye",
+          "action": "designer.preview",
+          "tip": "Ctrl+P",
+          "preview": "toolbar/standard-icons"
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "icon": "help",
+          "action": "help.explain:designer:toolbar"
+        }
+      ]
+    },
+    "keys": {
+      "keys": {
+        "ctrl+z": "designer.undo",
+        "ctrl+shift+z": "designer.redo",
+        "ctrl+y": "designer.redo",
+        "delete": "designer.delete",
+        "backspace": "designer.delete",
+        "ctrl+d": "designer.duplicate",
+        "ctrl+a": "designer.selectAll",
+        "ctrl+g": "designer.group",
+        "ctrl+shift+g": "designer.ungroup",
+        "ctrl+c": "designer.copy",
+        "ctrl+x": "designer.cut",
+        "ctrl+v": "designer.paste",
+        "escape": "designer.clear",
+        "enter": "designer.edit",
+        "f2": "designer.rename",
+        "arrowleft": "designer.nudge:-1:0",
+        "arrowright": "designer.nudge:1:0",
+        "arrowup": "designer.nudge:0:-1",
+        "arrowdown": "designer.nudge:0:1",
+        "shift+arrowleft": "designer.nudge:-10:0",
+        "shift+arrowright": "designer.nudge:10:0",
+        "shift+arrowup": "designer.nudge:0:-10",
+        "shift+arrowdown": "designer.nudge:0:10",
+        "ctrl+]": "designer.forward",
+        "ctrl+[": "designer.backward",
+        "ctrl+l": "designer.lock",
+        "ctrl+h": "designer.hide",
+        "ctrl+=": "designer.zoom:in",
+        "ctrl+-": "designer.zoom:out",
+        "ctrl+0": "designer.zoom:fit",
+        "ctrl+s": "designer.save",
+        "ctrl+p": "designer.preview"
+      },
+      "verbs": [
+        "align",
+        "autoLayout",
+        "backward",
+        "clear",
+        "copy",
+        "cut",
+        "delete",
+        "distribute",
+        "duplicate",
+        "edit",
+        "forward",
+        "grid",
+        "group",
+        "help",
+        "hide",
+        "insert",
+        "lock",
+        "new",
+        "nudge",
+        "open",
+        "paste",
+        "preview",
+        "properties",
+        "publish",
+        "redo",
+        "rename",
+        "save",
+        "selectAll",
+        "selectChildren",
+        "selectKind",
+        "show",
+        "snap",
+        "undo",
+        "ungroup",
+        "unlock",
+        "wrap",
+        "zoom"
+      ]
+    }
+  }
+}

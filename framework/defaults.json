@@ -39,5 +39,6 @@
   "sizing": "compact",
   "agent-card": "corporate-badge",
   "help": "framework",
+  "designer": "default",
   "uac-policy": "standard"
 }

@@ -49,6 +49,8 @@
     "job-type": false,
     "card": false,
     "help": false,
+    "designer": false,
+    "embed": false,
     "uac-policy": false
   },
   "cases": {

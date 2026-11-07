@@ -47,7 +47,9 @@
     "sizing",
     "agent-card",
     "job-type",
-    "card"
+    "card",
+    "designer",
+    "embed"
   ],
   "parsed": {
     "full": {

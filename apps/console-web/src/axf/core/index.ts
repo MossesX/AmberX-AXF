@@ -27,6 +27,10 @@ export * from './engines/chrome-settings-rules.mjs';
 export * from './engines/scale';
 export * from './engines/agent-card-rules.mjs';
 export * from './engines/job-type-rules.mjs';
+// designer@1 (UI asset designer host + add-ons, designed@1 manifests, embed-asset@1, asset-context@1) and its document model as one namespace
+export * from './engines/designer-rules.mjs';
+export * as designerDoc from './engines/designer-doc.mjs';
+export type { DesignerDoc, DesignerNode, DesignerHistory, DropPayload, DropTarget, DropCheck, CanvasRect } from './engines/designer-doc.mjs';
 // card@1 + home-layout@1 as one namespace (its names would clash with agent-card's and layout's); import the engine directly for single names.
 export * as cardRules from './engines/card-rules.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';

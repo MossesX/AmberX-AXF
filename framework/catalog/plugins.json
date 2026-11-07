@@ -6,7 +6,7 @@
       "id": "ai.amberx.axf.console.asset-designer",
       "name": "Asset Designer (no-code)",
       "target": "axf-console",
-      "description": "No-code designer for nav menus, drawers, app and context menus, toolbars, layouts, style packs and colour themes.",
+      "description": "No-code designer for drawers, layouts, style packs and colour themes (menus and toolbars moved to the UI asset designer and its add-ons, build ui-asset-designer, Nov 7 2026).",
       "plan": "x.assets.designer",
       "pending": "asset-designer",
       "model": "fable"
@@ -32,6 +32,69 @@
       "name": "axHub adapter for AXF",
       "target": "axhub",
       "description": "axHub-side plugin (axhub-adapter-axf) that plugs AXF apps into axHub; lives in this repo.",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.ui-asset-designer",
+      "name": "UI asset designer",
+      "target": "axf-console",
+      "description": "Host plugin (designer@1): creates UI assets with their designed@1 manifest and identifier, registers them in the asset library and the UI registry, and inherits every installed designer add-on (app menu, nav menu, toolbar, banner, embed, widget) with a shared canvas, context menu, drag and drop, undo and live preview.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.app-menu-designer",
+      "name": "App menu designer",
+      "target": "axf-console",
+      "description": "Standalone designer add-on for app-menu assets: menus, items, separators, submenus, live lists; works alone and inside the UI asset designer.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.nav-menu-designer",
+      "name": "Nav menu designer",
+      "target": "axf-console",
+      "description": "Standalone designer add-on for nav-menu assets: sections, items, sub menus, nav-style; works alone and inside the UI asset designer.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.toolbar-designer",
+      "name": "Toolbar designer",
+      "target": "axf-console",
+      "description": "Standalone designer add-on for toolbar assets: groups, buttons, live lists, widgets, dropped hooks and embeds, placement; works alone and inside the UI asset designer.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.banner-designer",
+      "name": "Banner designer",
+      "target": "axf-console",
+      "description": "Standalone designer add-on for banner assets: attachments per side, widgets, badges, embeds, height and surface; works alone and inside the UI asset designer.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.embed-designer",
+      "name": "Embed designer",
+      "target": "axf-console",
+      "description": "Standalone designer add-on for embed assets (embed-asset@1): target picked from the UI registry tree, manifest link, size, hosts, sandbox; works alone and inside the UI asset designer.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.console.widget-designer",
+      "name": "Widget designer",
+      "target": "axf-console",
+      "description": "Standalone designer add-on for every widget type (clock, search bar, logo, label, status, counter, progress, avatar, link, theme switch, spacer, divider): fields from the asset type, live preview; works alone and inside the UI asset designer.",
+      "plan": "x.assets.designer",
+      "pending": "ui-asset-designer",
       "model": "opus"
     }
   ]
