@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1321,
- "updatedAt": "2026-11-07T13:43:44.923Z",
+ "rev": 1322,
+ "updatedAt": "2026-11-07T13:43:53.918Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110769,9 +110769,14 @@
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:43:43.181Z",
+   "updatedAt": "2026-11-07T13:43:45.767Z",
    "builtAt": "2026-11-07T13:43:43.181Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Built on claude/plan-blueprints (committed, not pushed). UI Review r-20261107-9e6acb75 waits for Brett's pick (tab / rail / bar). Hub migrated: 58 plans in blueprint Existing, archived stamps from plan-archive removed. Report _claude/builds/reports/plan-blueprints.md",
+     "at": "2026-11-07T13:43:45.767Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -110959,7 +110964,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

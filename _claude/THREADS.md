@@ -748,8 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:47 UTC · `ui-review-notify-session-audio` s7 done, s7-1 done (current) · orchestrator
-- 2026-11-07 00:47 UTC · `shipped-features-r2` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s11-1 done, s12 done, s12-1 done, s13 done, s13-1 done, s14 done, s14-1 done, s15 done, s15-1 done, s16 done, s16-1 done (angel) · orchestrator
 - 2026-11-07 00:48 UTC · `claude-badge-vps` s5 done, s5-1 done, s6 done, s6-1 done, s6-2 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `notifications-control-panel` s7 done, s7-1 done, s7-2 done, s7-3 done, s7-4 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `gizmo-rebuild-fable` s9 done, s9-1 done, s9-2 done, s9-3 done, s10 done, s10-1 done, s10-2 done, s10-3 done, s11 done, s11-1 done, s11-2 done, s12 done, s12-1 done, s13 done, s13-1 done, s13-2 done, s14 done, s14-1 done, s14-2 done, s14-3 done, s14-4 done, s15 done, s15-1 done, s15-2 done, s15-3 done, s15-4 done, s16 done, s16-1 done, s16-2 done, s16-3 done, s16-4 done (current) · orchestrator
@@ -1148,6 +1146,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:36 UTC · `plan-blueprints` s5 done (all) · gina
 - 2026-11-07 13:36 UTC · `plan-blueprints` s6 done (all) · gina
 - 2026-11-07 13:43 UTC · `plan-blueprints` s7 done, → complete (all) · gina
+- 2026-11-07 13:43 UTC · `plan-blueprints` → built (all) · gina
+- 2026-11-07 13:43 UTC · `plan-blueprints` → complete, note (all) · gina
 
 ## Token passes (log)
 

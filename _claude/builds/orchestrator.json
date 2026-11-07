@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T13:43:44.923Z",
+ "updatedAt": "2026-11-07T13:43:53.918Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66551,9 +66551,14 @@
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:43:43.181Z",
+   "updatedAt": "2026-11-07T13:43:45.767Z",
    "builtAt": "2026-11-07T13:43:43.181Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Built on claude/plan-blueprints (committed, not pushed). UI Review r-20261107-9e6acb75 waits for Brett's pick (tab / rail / bar). Hub migrated: 58 plans in blueprint Existing, archived stamps from plan-archive removed. Report _claude/builds/reports/plan-blueprints.md",
+     "at": "2026-11-07T13:43:45.767Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
