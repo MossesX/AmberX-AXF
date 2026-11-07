@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T12:46:50.890Z",
+ "updatedAt": "2026-11-07T12:46:58.743Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66026,14 +66026,14 @@
    "title": "Plan Studio: Archive folder",
    "category": "Plan Studio",
    "detail": "Archive section in Plan Studio; archive/unarchive on planner.plans (UI row menu + bulk, control@1, MCP/CLI/voice); optional plan@1 archived field; move every plan existing at build start into Archive (not New Hire); tests; UI Review with 3 options.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plan-archive",
    "pr": "",
    "createdAt": "2026-11-07T12:28:04.815Z",
-   "updatedAt": "2026-11-07T12:46:49.968Z",
+   "updatedAt": "2026-11-07T12:46:54.629Z",
    "builtAt": "2026-11-07T12:45:51.113Z",
    "notes": [],
    "approvals": [

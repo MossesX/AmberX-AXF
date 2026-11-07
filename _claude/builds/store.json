@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1299,
- "updatedAt": "2026-11-07T12:46:50.890Z",
+ "rev": 1300,
+ "updatedAt": "2026-11-07T12:46:58.743Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110266,14 +110266,14 @@
    "title": "Plan Studio: Archive folder",
    "category": "Plan Studio",
    "detail": "Archive section in Plan Studio; archive/unarchive on planner.plans (UI row menu + bulk, control@1, MCP/CLI/voice); optional plan@1 archived field; move every plan existing at build start into Archive (not New Hire); tests; UI Review with 3 options.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plan-archive",
    "pr": "",
    "createdAt": "2026-11-07T12:28:04.815Z",
-   "updatedAt": "2026-11-07T12:46:49.968Z",
+   "updatedAt": "2026-11-07T12:46:54.629Z",
    "builtAt": "2026-11-07T12:45:51.113Z",
    "notes": [],
    "approvals": [
@@ -110463,7 +110463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
