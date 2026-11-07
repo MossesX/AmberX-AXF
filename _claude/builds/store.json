@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1405,
- "updatedAt": "2026-11-07T17:11:56.274Z",
+ "rev": 1406,
+ "updatedAt": "2026-11-07T17:15:39.881Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112357,7 +112357,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T17:00:11.176Z",
-   "updatedAt": "2026-11-07T17:11:46.104Z",
+   "updatedAt": "2026-11-07T17:15:39.108Z",
    "builtAt": "",
    "notes": [
     {
@@ -112367,6 +112367,10 @@
     {
      "text": "PREVIEWS FIRST. Each of the 8 steps now only produces a preview (static mockup screens of what Patches / AmberX would closely look like in that style) and posts it to UI Review. Do NOT build any real app code. Stop after all 8 previews and wait for Brett to pick one in UI Review; only the picked concept gets fully built. Note: patches.amberxai.com (the Patches app) was deleted; the picked concept becomes its from-scratch rebuild. Brett: \"before you go crazy building, I need some previews in the UI review. Okay, what it closely might look like.\"",
      "at": "2026-11-07T17:11:45.170Z"
+    },
+    {
+     "text": "ARCHITECTURE for the real build (after Brett picks a preview): compile Patches, AmberX, the Dev Console and axHub controls into ONE app with one look and one login. Front end: a game-launcher style home hub with a tile per module (AmberX, Console, Builds, UI Review, etc.) plus a sidebar to jump between them. Modular and stable: each module is its own service/container on the VPS with axHub as the gateway, so one module can crash, restart or be rebuilt without taking down the rest. Every module gets a health check and auto-restart; code for each module lives in its own folder on GitHub with nightly backups so nothing is lost again. MODELS: the orchestrator picks the model for every step; ignore the Opus set on the steps. Brett: \"I want to do all those things but yeah the orchestrator is supposed to pick the model\"",
+     "at": "2026-11-07T17:15:39.108Z"
     }
    ],
    "approvals": [],
@@ -112557,7 +112561,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
