@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1380,
- "updatedAt": "2026-11-07T15:38:32.442Z",
+ "rev": 1381,
+ "updatedAt": "2026-11-07T15:40:34.677Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109374,7 +109374,7 @@
    "title": "Postgres for the console: orchestrator ID registry + all build data",
    "category": "Framework > Database",
    "detail": "Parked for Molly. Replace JSON builds/plans files with Postgres bundled in the console container; orchestrator assigns and registers every ID; queryable from the console. Supersedes the SQLite idea in 'Build data on a real database'.\n\nFrom Plan Studio plan postgres-for-the-console-orchestrator-id-registr-anyx (parked for Molly; not to be run until Brett says so).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -109382,7 +109382,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T15:13:44.175Z",
+   "updatedAt": "2026-11-07T15:40:32.957Z",
    "builtAt": "",
    "notes": [
     {
@@ -109392,6 +109392,10 @@
     {
      "text": "s6 query screen: the read-only query exists as CLI (axf-db.mjs query), REST (GET /api/plugins/build-orchestrator/db/query, /db/status) and MCP through plugin-commands; the console SCREEN (saved queries, grid) is UI and needs a UI Review submission with 3 options, left for a UI build. Report _claude/builds/reports/postgres-console.md",
      "at": "2026-11-07T15:13:44.175Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T15:40:32.957Z"
     }
    ],
    "approvals": [
@@ -109581,7 +109585,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
