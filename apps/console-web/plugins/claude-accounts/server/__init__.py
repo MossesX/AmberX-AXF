@@ -8,6 +8,9 @@ Claude reports: the saved logins stay on the host and nothing here reads them.
   GET  who        { active, email, plan }
   POST use        { name }: asks to switch (one held axHub vps.run, fixed command)
   POST save       { name }: asks to save the current login under that name (same)
+  POST role       { name, role: worker | saved }: a worker only runs headless jobs and is never made active
+  POST signin     { name }: asks to sign that account in, in its own folder, in a tmux session (held)
+  POST remove     { name }: asks to set a saved account aside; it is moved, never deleted (held)
 
 Capability axf.claude-accounts@1 gives other plugins the same view and the same held switch (AI keys lists these accounts
 beside its own keys); it hands out names, types, emails and plans, never a credential.
@@ -37,7 +40,11 @@ ROOT = Path(__file__).resolve().parents[5]  # the repo root
 SCRIPT = "/usr/local/bin/claude-account"
 NAME = re.compile(r"[a-z0-9-]{1,32}")
 SEP = "---axf-accounts---"
-READ_COMMAND = f'export PATH="$HOME/.local/bin:$PATH"; {SCRIPT} list; echo {SEP}; timeout 15 claude auth status 2>/dev/null || true'
+WORKERS_CLI = "/opt/axf/deploy/claude-workers.mjs"
+SEP2 = "---axf-workers---"
+READ_COMMAND = (f'export PATH="$HOME/.local/bin:$PATH"; {SCRIPT} list; echo {SEP}; timeout 15 claude auth status 2>/dev/null || true; '
+                f'echo {SEP2}; timeout 8 node {WORKERS_CLI} status --json 2>/dev/null || true')
+COMMANDS = {"use": SCRIPT, "save": SCRIPT, "signin": f"node {WORKERS_CLI}", "remove": f"node {WORKERS_CLI}"}
 READ_TTL_S = 30.0
 PENDING_TTL_S = 180.0  # the 90 s veto countdown and some room; a call he denied clears by itself after this
 LIST_LINE = re.compile(r"^(\*)?\s*([a-z0-9-]{1,32})(?: \[(token|api key)\])?(?: \(active\))?$")
@@ -67,6 +74,41 @@ def _remember(name: str, login: dict[str, str]) -> None:
         return
     _data().mkdir(parents=True, exist_ok=True)
     (_data() / "seen.json").write_text(json.dumps({**seen, name: login}, indent=1))
+
+
+def workers() -> list[str]:
+    """The accounts marked as workers (claude-workers@1), in order."""
+    try:
+        v = json.loads((_data() / "workers.json").read_text())
+        rows = v.get("workers") if isinstance(v, dict) else None
+    except (OSError, ValueError):
+        rows = None
+    return [n for n in rows if isinstance(n, str) and NAME.fullmatch(n)] if isinstance(rows, list) else []
+
+
+def _save_workers(names: list[str]) -> None:
+    _data().mkdir(parents=True, exist_ok=True)
+    (_data() / "workers.json").write_text(json.dumps({"$axf": "claude-workers@1", "workers": names}, indent=1))
+
+
+def parse_workers(text: str) -> dict[str, dict[str, Any]]:
+    """`claude-workers.mjs status --json` → name → what the host knows: limit, running jobs, runs, cost. Nothing else passes."""
+    try:
+        v = json.loads(text or "{}")
+    except ValueError:
+        return {}
+    rows = v.get("accounts") if isinstance(v, dict) else None
+    out: dict[str, dict[str, Any]] = {}
+    for a in rows if isinstance(rows, list) else []:
+        if not isinstance(a, dict) or not isinstance(a.get("name"), str):
+            continue
+        lim = a.get("limited") if isinstance(a.get("limited"), dict) else None
+        out[a["name"]] = {"limited": {k: str(lim.get(k) or "")[:40] for k in ("until", "kind", "reason")} if lim else None,
+                          "running": [str(s)[:80] for s in a.get("running") or []][:20], "runsToday": int(a.get("runsToday") or 0),
+                          "costToday": float(a.get("costToday") or 0), "costWeek": float(a.get("costWeek") or 0),
+                          "email": str(a.get("email") or "")[:200], "plan": str(a.get("plan") or "")[:40],
+                          "recent": [{k: r.get(k) for k in ("session", "name", "agent", "model", "at", "end", "exit", "costUsd")} for r in (a.get("recent") or [])[:5] if isinstance(r, dict)]}
+    return out
 
 
 def clean_name(raw: Any) -> str:
@@ -123,9 +165,10 @@ def _read() -> dict[str, Any]:
             r: dict[str, Any] = {"ready": False, "out": "", "why": "The Terminal plugin is off or too old, so the console can't reach the VPS host."}
         else:
             r = svc.vps_read(READ_COMMAND, 25)
-        listing, _, status = str(r.get("out") or "").partition(SEP)
+        listing, _, rest = str(r.get("out") or "").partition(SEP)
+        status, _, hosted = rest.partition(SEP2)
         names, active, types = parse_list(listing)
-        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip()), **parse_status(status.strip())}
+        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip()), **parse_status(status.strip()), "host": parse_workers(hosted.strip())}
         _cache.update(at=now, value=value)
         return value
 
@@ -156,8 +199,16 @@ def view() -> dict[str, Any]:
     if active and login.get("email") and not changed:
         _remember(active, login)
         seen[active] = login
-    rows = [{"name": n, "active": n == active, "type": v["types"].get(n, "login"), "email": str((seen.get(n) or {}).get("email") or ""),
-             "plan": str((seen.get(n) or {}).get("plan") or "")} for n in names]
+    marked = workers()
+    idle = {"limited": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": []}
+
+    def row(n: str) -> dict[str, Any]:
+        host = v["host"].get(n, {})
+        return {"name": n, "active": n == active, "type": v["types"].get(n, "login"), "email": str((seen.get(n) or {}).get("email") or host.get("email") or ""),
+                "plan": str((seen.get(n) or {}).get("plan") or host.get("plan") or ""), "role": "interactive" if n == active else "worker" if n in marked else "saved",
+                **{k: host.get(k, d) for k, d in idle.items()}}
+
+    rows = [row(n) for n in names]
     return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE,
             "checked": v["checked"], "expiresAt": v["expiresAt"]}
 
@@ -197,6 +248,16 @@ def ask(op: str, name: str, by: str) -> dict[str, Any]:
     v = view()
     if v["ready"] and op == "use" and name not in [a["name"] for a in v["accounts"]]:
         raise HTTPException(404, f"No saved account called {name}.")
+    row = next((a for a in v["accounts"] if a["name"] == name), None)
+    if op == "use" and row and row["role"] == "worker":
+        raise HTTPException(409, f"{name} is a worker: it only runs headless jobs. Stop it being a worker first.")
+    if op == "remove":
+        if not row:
+            raise HTTPException(404, f"No saved account called {name}.")
+        if row["active"]:
+            raise HTTPException(409, f"{name} is the console's account: switch to another one first.")
+        if row["running"]:
+            raise HTTPException(409, f"{name} is running {len(row['running'])} job(s): wait for them to finish.")
     if op == "use" and name == v["active"]:
         return {"ok": True, "state": "done", "name": name, "message": f"{name} is already the active account.", "note": NOTE}
     if op == "use" and v["loginChanged"]:
@@ -212,9 +273,10 @@ def ask(op: str, name: str, by: str) -> dict[str, Any]:
     ready, why = svc.ready()
     if not ready:
         raise HTTPException(503, f"Vinny can't reach axHub: {why}")
-    what = f"Switch Claude on the VPS to {name}" if op == "use" else f"Save the current Claude login as {name}"
+    what = {"use": f"Switch Claude on the VPS to {name}", "save": f"Save the current Claude login as {name}",
+            "signin": f"Start the Claude sign-in for {name}", "remove": f"Set the saved Claude account {name} aside"}[op]
     try:
-        r = svc.call("vps.run", {"command": f"{SCRIPT} {op} {name}", "timeout_seconds": 30}, reason=f"{what} (asked by {by})"[:200])
+        r = svc.call("vps.run", {"command": f"{COMMANDS[op]} {op} {name}", "timeout_seconds": 30}, reason=f"{what} (asked by {by})"[:200])
     except Exception as e:  # noqa: BLE001 — say what went wrong, plainly
         raise HTTPException(502, f"axHub didn't take it: {str(e)[:200]}") from None
     o = outcome(r)
@@ -254,6 +316,63 @@ async def save(request: Request) -> dict[str, Any]:
     return await run_in_threadpool(ask, "save", name, by)
 
 
+@router.post("/role")
+async def role(request: Request) -> dict[str, Any]:
+    _who(request)
+    try:
+        b = await request.json()
+    except ValueError:
+        b = {}
+    b = b if isinstance(b, dict) else {}
+    name, want = clean_name(b.get("name")), b.get("role")
+    if want not in ("worker", "saved"):
+        raise HTTPException(400, "role is worker or saved.")
+    v = await run_in_threadpool(view)
+    row = next((a for a in v["accounts"] if a["name"] == name), None)
+    if want == "worker":
+        if not row:
+            raise HTTPException(404, f"No saved account called {name}.")
+        if row["active"]:
+            raise HTTPException(409, f"{name} is the console's account: switch to another one first.")
+        if row["type"] == "api-key":
+            raise HTTPException(409, "An API key bills per token, so it can't be a worker.")
+    with _lock:
+        names = [n for n in workers() if n != name]
+        _save_workers(names + [name] if want == "worker" else names)
+    _forget_read()
+    return {"ok": True, "name": name, "role": want, "message": f"{name} now runs headless jobs only." if want == "worker" else f"{name} no longer takes headless jobs."}
+
+
+@router.post("/signin")
+async def signin(request: Request) -> dict[str, Any]:
+    by = _who(request)
+    name = await _name(request)
+    return await run_in_threadpool(ask, "signin", name, by)
+
+
+@router.post("/remove")
+async def remove(request: Request) -> dict[str, Any]:
+    by = _who(request)
+    name = await _name(request)
+    return await run_in_threadpool(ask, "remove", name, by)
+
+
+def worker_health() -> dict[str, Any]:
+    """Systems check: a job needs a worker that can run. Quiet while no worker is set up."""
+    marked = workers()
+    if not marked:
+        return {"status": "ok", "summary": "No worker accounts set up."}
+    v = view()
+    if not v["ready"]:
+        return {"status": "unknown", "summary": v["why"] or "Can't read the VPS host.", "unreachable": True}
+    rows = [a for a in v["accounts"] if a["name"] in marked]
+    free = [a for a in rows if not a["limited"]]
+    if free:
+        return {"status": "ok", "summary": f"{len(free)} of {len(marked)} worker accounts can take jobs."}
+    ends = sorted(a["limited"]["until"] for a in rows if a["limited"])
+    return {"status": "error", "summary": f"No worker account can take jobs{f' until {ends[0]}' if ends else ''}: new builds run on the console's account."}
+
+
 class AccountsService:
     """axf.claude-accounts@1: the accounts on the VPS (no credentials) and the one held switch."""
 
@@ -265,3 +384,18 @@ class AccountsService:
 
 
 plugin_services.provide("axf.claude-accounts@1", AccountsService(), FOLDER)
+
+
+def _register_health(tries: int = 12) -> None:
+    svc = plugin_services.get("axf.health@1")
+    if svc is not None:
+        svc.register({"id": "claude-workers", "label": "Claude worker accounts", "run": worker_health, "severity": "warn", "service": "claude", "order": 62,
+                      "breaks": "New headless builds run on the console's own account until a worker can take them.",
+                      "instructions": ["Builds → Claude accounts shows when each worker comes back. Sign a worker in again there if its login failed."]}, owner=FOLDER)
+    elif tries > 0:  # plugins load in any order
+        timer = threading.Timer(5.0, _register_health, args=(tries - 1,))
+        timer.daemon = True
+        timer.start()
+
+
+_register_health()
