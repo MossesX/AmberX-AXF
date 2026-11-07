@@ -201,6 +201,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Badges + notification rules (`badges-notify-followup`, Current, Opus) — branch `claude/badges-notify-followup`, supersedes PR 366 and PR 367
+Asked: "Run a follow-up." (requests that arrived after claude-badge-vps and notifications-control-panel finished). State: built, waiting in UI Review, then the merge queue takes it. Left: Brett's UI Review click. Report: `_claude/builds/reports/badges-notify-followup.md`. First message to carry on: "Pick up badges-notify-followup: read its report, check the PR's CI and UI Review, fix what is red." <!-- axf-plugin:claude-badge --> <!-- axf-plugin:notify-control -->
 ### UI Review notifications + session audio (`ui-review-notify-session-audio`)
 - **Asked:** AmberX notification for anything ready in UI Review; console_show must really open or fall back to a tappable notification; every session recorded and transcribed automatically.
 - **Model:** Opus. **Branch:** claude/ui-review-notify-audio, PR #365. All 6 steps built.
