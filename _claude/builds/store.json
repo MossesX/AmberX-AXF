@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1344,
- "updatedAt": "2026-11-07T14:27:27.780Z",
+ "rev": 1345,
+ "updatedAt": "2026-11-07T14:27:34.845Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111508,6 +111508,48 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-07T14:21:02.463Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "slotstest-2208251-a",
+   "title": "slotstest-2208251-a",
+   "category": "",
+   "detail": "hi",
+   "status": "pending",
+   "hidden": false,
+   "source": "launcher",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T14:27:31.162Z",
+   "updatedAt": "2026-11-07T14:27:31.346Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Parked by the launcher: a headless launch (slotstest-2208251-a) carried no orchestrator build id, so it was refused and kept here. Plan its steps and launch it from the orchestrator.",
+     "at": "2026-11-07T14:27:31.162Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
