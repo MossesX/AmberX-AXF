@@ -705,8 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:33 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:34 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
@@ -1105,6 +1103,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-3 done, → built (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` note (current) · orchestrator
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s1 done, → running (current) · orchestrator
+- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s4-3 done, → running (current) · orchestrator
+- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
 
 ## Token passes (log)
 
