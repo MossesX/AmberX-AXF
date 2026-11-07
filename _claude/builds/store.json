@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1404,
- "updatedAt": "2026-11-07T17:11:46.060Z",
+ "rev": 1405,
+ "updatedAt": "2026-11-07T17:11:56.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112346,7 +112346,7 @@
   },
   {
    "id": "amberx-full-ui-redesign-8-game-style-concepts-for-ui-review",
-   "title": "AmberX full UI redesign — 8 game-style concepts for UI Review",
+   "title": "Patches/AmberX redesign: 8 game-style PREVIEWS for UI Review (no build until pick)",
    "category": "ui",
    "detail": "Rebuild the entire AmberX UI (app and console) from scratch, ignoring the current look. Overall direction: make it look really good, like a polished Windows PC game UI — game-launcher / game-menu feel, rich depth, glow, motion, HUD-style panels, bold typography. Produce 8 distinct concepts within that game direction, each with its own style, colour theme and layout (e.g. sci-fi HUD, fantasy RPG menu, cyberpunk neon, racing/sports dashboard, tactical military, sleek AAA launcher, retro arcade, space strategy), and post each to UI Review so Brett can pick one. Reference: the Gizmo chat restyle from October. Brett's words: \"The entirety of, of AmberX. Rewrite, rebuild the whole thing. Use its own style, its own design, its own color theme, its own layout. Just build that shit from scratch. Give me a whole shitload of fucking UI reviews to pick from, man.\" and \"Make it look good, give it a really good, like a Windows game.\"",
    "status": "pending",
@@ -112357,7 +112357,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T17:00:11.176Z",
-   "updatedAt": "2026-11-07T17:11:45.170Z",
+   "updatedAt": "2026-11-07T17:11:46.104Z",
    "builtAt": "",
    "notes": [
     {
@@ -112557,7 +112557,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
