@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T11:09:14.027Z",
+ "updatedAt": "2026-11-07T11:17:35.528Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7202,15 +7202,15 @@
    "title": "Gizmo voice: talk mode that works with the screen off",
    "category": "AmberX",
    "detail": "Addendum 2 of gizmo-companion. Push-to-talk, hands-free, interrupt-to-stop, voice + speed picker and streamed spoken replies already shipped in PR #296 (companion talk.ts). Left: keep talk mode alive with the screen off / app in the background (AmberX foreground service, native: allowed Android exception), transcript in the chat checked on the phone, end-to-end phone test. Base: main after #296.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-07T00:48:07.302Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:17:33.433Z",
+   "builtAt": "2026-11-07T11:17:33.434Z",
    "notes": [
     {
      "text": "s1 + s2 built by gizmo-rebuild-fable (Fable, branch claude/gizmo-rebuild-fable): TalkService foreground microphone service, companion talk.ts on it, transcript in the chat, Stop from the notification. s3: the APK comes from CI on that PR; the phone test of hands-free + interrupt is Brett's once it is installed.",
@@ -7293,8 +7293,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:33.433Z",
      "note": "",
      "uid": "st-mw27stnk03n2rf"
     }
@@ -64994,15 +64994,15 @@
    "title": "AmberX: stop the Note saved to Inbox echo loop",
    "category": "AmberX",
    "detail": "The mic hears the app speak Note saved to Inbox and the notes parser (apps/amberx-droid/src/plugins/notes/web/core.ts:615, any sentence starting with note = add note) saves it again. Fix: parser ignores the app own reply lines (Note/Task/Todo saved to ...), speechgate.ts echo guard matches near copies of what was just spoken, regression test replays the loop.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-05T01:38:10.037Z",
-   "updatedAt": "2026-11-05T01:38:10.037Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T11:17:32.753Z",
+   "builtAt": "2026-11-07T11:17:32.753Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
@@ -65039,8 +65039,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:31.253Z",
      "note": "",
      "uid": "st-mw2vme6104bin9"
     },
@@ -65059,8 +65059,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:31.984Z",
      "note": "",
      "uid": "st-mw2vme610514qv"
     },
@@ -65077,8 +65077,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:17:32.753Z",
      "note": "",
      "uid": "st-mw2vme610605xb"
     }

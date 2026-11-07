@@ -740,10 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` s8 done, → built (current) · orchestrator
-- 2026-11-06 23:31 UTC · `gizmo-companion` → complete, note (current) · foreign-write
-- 2026-11-06 23:31 UTC · `gizmo-voice` s1 done, s2 done, note (current) · foreign-write
-- 2026-11-06 23:31 UTC · `gizmo-rebuild-fable` s6 done, s7 done, s8 done, → complete (current) · foreign-write
 - 2026-11-06 23:31 UTC · `ui-registry-shortcuts` s4 done (current) · orchestrator
 - 2026-11-06 23:31 UTC · `ui-registry-shortcuts` s5 done (current) · orchestrator
 - 2026-11-06 23:32 UTC · `ui-registry-shortcuts` PR #369 (current) · builds-live
@@ -1140,6 +1136,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s9 done (all) · orchestrator
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s10 done (all) · orchestrator
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s11 done (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s1 done, → running (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s2 done (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s3 done, → complete (all) · orchestrator
+- 2026-11-07 11:17 UTC · `gizmo-voice` s3 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 
