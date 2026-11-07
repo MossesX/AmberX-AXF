@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1318,
- "updatedAt": "2026-11-07T13:32:53.365Z",
+ "rev": 1319,
+ "updatedAt": "2026-11-07T13:36:22.372Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110769,10 +110769,19 @@
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:32:10.939Z",
+   "updatedAt": "2026-11-07T13:36:21.254Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T13:36:21.254Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Plan Studio: Blueprints (Brett, Nov 7)\n\nFIRST: the queued build plan-archive (queue id hl-mw6dmjiy-7w) is SUPERSEDED by this one. Remove it from the headless launch queue before it starts (or, if it already started, stop it with tmux kill axf-plan-archive-* and discard its branch). Note it in PROGRESS.md.\n\n## What a Blueprint is\nA named package of plans in Plan Studio, like build profiles but for plans. Only one blueprint is active at a time; Plan Studio shows only the active blueprint's plans. Plans keep their exact structure (steps, sub-items, status, build links) inside a blueprint.\n\n## Do\n1. Contract (Fable): blueprint@1 (id, name, description, created, plans). Plans gain an optional `blueprint` field (backward compatible). Store alongside plans; orchestrator/build links unaffected.\n2. Plan Studio gets a **Blueprints** section: list, create (name), rename, duplicate, delete (with confirm; plans move, never lost), move plans between blueprints (bulk select).\n3. **Context menu**: Plan Studio's context menu gets a **Blueprints** submenu listing every blueprint; selecting one switches the active blueprint. Same switch available via control@1 (planner.blueprints list/add/act switch), MCP, CLI and voice (\"switch blueprint to X\").\n4. Migration: create blueprint **\"Existing\"** (or similar) and move ALL current plans into it, structure untouched. Plan named \"New Hire\" (if present) goes in a new blueprint \"New Hire\".\n5. UI from assets, no hard-coded styling; settings in place. UI Review: three options (--choices) for the Blueprints section + submenu.\n6. Tests: migration keeps every plan identical, switch filters correctly, move between blueprints, links intact. Add to Shipped features.",
@@ -110846,12 +110855,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:36:21.254Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:13:15.893Z",
-     "updatedAt": "2026-11-07T13:13:15.893Z"
+     "updatedAt": "2026-11-07T13:36:21.362Z"
     },
     {
      "id": "s4",
@@ -110950,7 +110959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
