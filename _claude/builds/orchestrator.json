@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T12:35:35.900Z",
+ "updatedAt": "2026-11-07T12:35:43.905Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66026,17 +66026,26 @@
    "title": "Plan Studio: Archive folder",
    "category": "Plan Studio",
    "detail": "Archive section in Plan Studio; archive/unarchive on planner.plans (UI row menu + bulk, control@1, MCP/CLI/voice); optional plan@1 archived field; move every plan existing at build start into Archive (not New Hire); tests; UI Review with 3 options.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T12:28:04.815Z",
-   "updatedAt": "2026-11-07T12:28:04.815Z",
+   "updatedAt": "2026-11-07T12:35:39.601Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T12:35:36.273Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Plan Studio: Archive folder (Brett, Nov 7)\n\n1. Add a separate **Archive** folder/section in Plan Studio. Archived plans are hidden from the normal lists, shown only in Archive, never deleted.\n2. Actions: `archive` and `unarchive` (restore) on planner.plans — in the UI (row menu + bulk select), control@1 (`control_act planner.plans archive|unarchive`), MCP/CLI/voice. Restore puts the plan back exactly as it was (status, steps, links, build link).\n3. Move EVERY existing plan (all ~58 at time of writing) into Archive. Do NOT archive the plan named \"New Hire\" if it exists, nor anything created after this build starts. Linked builds keep their links.\n4. Archive state stored in plan@1 (optional field, backward compatible); UI from assets, no hard-coded styling. UI Review: submit the Archive view with three options (--choices).\n5. Tests: archive/unarchive round-trip, bulk move, hidden from default lists, restore exact. Add to Shipped features.",
@@ -66064,8 +66073,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:35:35.464Z",
      "note": "",
      "uid": "st-mw6dpw3508ix0w"
     },
@@ -66082,8 +66091,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:35:36.273Z",
      "note": "",
      "uid": "st-mw6dpw3509khwu"
     },
@@ -66100,8 +66109,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:35:37.152Z",
      "note": "",
      "uid": "st-mw6dpw350aa7qy"
     },
@@ -66118,8 +66127,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:35:37.956Z",
      "note": "",
      "uid": "st-mw6dpw350bxeii"
     },
@@ -66136,8 +66145,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:35:38.756Z",
      "note": "",
      "uid": "st-mw6dpw350ct92g"
     },
@@ -66154,8 +66163,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T12:35:39.601Z",
      "note": "",
      "uid": "st-mw6dpw350dw1wt"
     },

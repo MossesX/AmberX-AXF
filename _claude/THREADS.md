@@ -748,12 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:57 UTC · `badges-notify-followup` s4 done, → built (current) · orchestrator
-- 2026-11-07 00:10 UTC · `gizmo-voice` note (current) · foreign-write
-- 2026-11-07 00:10 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
-- 2026-11-07 00:10 UTC · `ui-registry-shortcuts` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
-- 2026-11-07 00:10 UTC · `badges-notify-followup` added (4 steps) (current) · foreign-write
-- 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · orchestrator
 - 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · foreign-write
 - 2026-11-07 00:13 UTC · `claude-settings-tabs-veto` added (6 steps) (current) · orchestrator
 - 2026-11-07 00:13 UTC · `claude-settings-tabs-veto` branch claude/claude-settings-tabs-veto (current) · builds-live
@@ -1148,6 +1142,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 12:10 UTC · `console-approvals-in-place` → complete, merged, note (all) · reconciler
 - 2026-11-07 12:30 UTC · `amber-chat-asset` added (5 steps) (all) · orchestrator
 - 2026-11-07 12:28 UTC · `plan-archive` added (7 steps) (all) · paulie
+- 2026-11-07 12:35 UTC · `plan-archive` s1 done, → running (all) · paulie
+- 2026-11-07 12:35 UTC · `plan-archive` s2 done (all) · paulie
+- 2026-11-07 12:35 UTC · `plan-archive` s3 done (all) · paulie
+- 2026-11-07 12:35 UTC · `plan-archive` s4 done (all) · paulie
+- 2026-11-07 12:35 UTC · `plan-archive` s5 done (all) · paulie
+- 2026-11-07 12:35 UTC · `plan-archive` s6 done (all) · paulie
 
 ## Token passes (log)
 
