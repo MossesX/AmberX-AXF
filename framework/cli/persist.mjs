@@ -31,7 +31,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
+import { BASE_PROFILE, MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '..', '..');
@@ -92,15 +92,16 @@ export function baseDataPath(rel) {
  * A build profile is one complete set of work data: pending builds, plan + media, build queue, catalog status,
  * tracker, and the Build orchestrator's tracker. Brett picks one (console → Build profiles, or
  * `node framework/cli/profiles.mjs select <id>`); every CLI, the console server and the plugins then read and write
- * that profile's copy. The base profile ("main-framework") keeps the original paths, so nothing moved when profiles
- * arrived; every other profile lives under framework/plan/profiles/<id>/<same path>.
+ * that profile's copy. The base profile keeps the original paths, so nothing moved when profiles arrived; every other
+ * profile lives under framework/plan/profiles/<id>/<same path>. Since Nov 7 2026 the base is `all` (every other
+ * profile, the old base `main-framework` included, was folded into it; builds-store-core.mjs RETIRED_PROFILES).
  *
  * Registry: framework/plan/profiles.json (shared data, on the hub), never profiled itself. Per-session override:
  * AXF_BUILD_PROFILE=<id> (a session working on one profile while the console shows another).
  */
 export const PROFILES_REL = 'framework/plan/profiles.json';
 export const PROFILES_DIR_REL = 'framework/plan/profiles/';
-export const BASE_PROFILE = 'main-framework';
+export { BASE_PROFILE };
 /** Shared data a profile owns (paths relative to the repo root; folders end with '/'). Open list: add here. */
 export const PROFILED = [
   'framework/plan/pending.json',
@@ -119,16 +120,17 @@ export const ORCHESTRATOR_REL = '_claude/builds/orchestrator.json';
 export const PROFILE_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
 /**
- * One work profile (Brett, Nov 7 2026): every build profile but the base was merged into `all`. A registry that still
- * lists the retired ones (the hub copy until its next save) is read with them folded into `all`, and a retired id
- * anywhere (AXF_BUILD_PROFILE, a saved pick, a plan's build link) means `all` (builds-store-core.mjs resolveProfile).
+ * One work profile (Brett, Nov 7 2026): every build profile was merged into `all`, the base (the old base
+ * `main-framework` too). A registry that still lists the retired ones (an older hub copy) is read with them folded
+ * into `all`, and a retired id anywhere (AXF_BUILD_PROFILE, a saved pick, a plan's build link) means `all`
+ * (builds-store-core.mjs resolveProfile). `all` takes the framework's sources (catalog), as the old base did.
  */
 export const MERGED_PROFILE_ENTRY = {
   id: MERGED_PROFILE,
   name: 'All builds',
-  description: 'Every build in one profile (Brett, Nov 7 2026): Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.',
+  description: 'Every build in one profile (Brett, Nov 7 2026): Main framework, Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.',
   createdAt: '2026-11-07T00:00:00.000Z',
-  catalog: false,
+  catalog: true,
 };
 
 export function readProfiles() {
@@ -137,9 +139,8 @@ export function readProfiles() {
   try { reg = JSON.parse(readFileSync(f, 'utf8')); } catch { /* missing or damaged → defaults */ }
   const listed = Array.isArray(reg?.profiles) ? reg.profiles.filter((p) => p && PROFILE_ID.test(p.id)) : [];
   const list = listed.filter((p) => !RETIRED_PROFILES.includes(p.id));
-  if (listed.length !== list.length && !list.some((p) => p.id === MERGED_PROFILE)) list.push({ ...MERGED_PROFILE_ENTRY, updatedAt: MERGED_PROFILE_ENTRY.createdAt });
-  if (!list.some((p) => p.id === BASE_PROFILE)) list.unshift({ id: BASE_PROFILE, name: 'Main framework', base: true });
-  for (const p of list) p.base = p.id === BASE_PROFILE;
+  if (!list.some((p) => p.id === BASE_PROFILE)) list.unshift({ ...MERGED_PROFILE_ENTRY, updatedAt: MERGED_PROFILE_ENTRY.createdAt });
+  for (const p of list) { p.base = p.id === BASE_PROFILE; if (p.base) p.catalog = true; }
   const saved = resolveProfile(reg?.active);
   const active = list.some((p) => p.id === saved) ? saved : BASE_PROFILE;
   return { $axf: 'build-profiles@1', updatedAt: reg?.updatedAt ?? '', active, profiles: list };

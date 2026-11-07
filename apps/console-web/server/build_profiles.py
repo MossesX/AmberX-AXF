@@ -16,7 +16,6 @@ from typing import Any, Callable
 
 PROFILES_REL = "framework/plan/profiles.json"
 PROFILES_DIR_REL = "framework/plan/profiles/"
-BASE_PROFILE = "main-framework"
 PROFILED = (
     "framework/plan/pending.json",
     "framework/plan/plan.json",
@@ -27,16 +26,18 @@ PROFILED = (
 # The framework feature tracker is shared by every profile; profiles reference it and never hold a copy.
 TRACKER_REL = "tracker.json"
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
-# One work profile (Brett, Nov 7 2026): these were merged into `all`; a retired id anywhere means `all`. Mirrors
-# MERGED_PROFILE / RETIRED_PROFILES in framework/plan/builds-store-core.mjs and readProfiles() in persist.mjs.
+# One work profile (Brett, Nov 7 2026): these were merged into `all`, the base (the old base `main-framework` too); a
+# retired id anywhere means `all`. Mirrors MERGED_PROFILE / BASE_PROFILE / RETIRED_PROFILES in
+# framework/plan/builds-store-core.mjs and readProfiles() in persist.mjs.
 MERGED_PROFILE = "all"
-RETIRED_PROFILES = ("current", "urgent", "angel", "big-dog", "breakroom", "refactor")
+BASE_PROFILE = MERGED_PROFILE
+RETIRED_PROFILES = ("current", "urgent", "angel", "big-dog", "breakroom", "refactor", "main-framework")
 MERGED_PROFILE_ENTRY = {
     "id": MERGED_PROFILE,
     "name": "All builds",
-    "description": "Every build in one profile (Brett, Nov 7 2026): Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.",
+    "description": "Every build in one profile (Brett, Nov 7 2026): Main framework, Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.",
     "createdAt": "2026-11-07T00:00:00.000Z",
-    "catalog": False,
+    "catalog": True,
 }
 
 
@@ -63,12 +64,12 @@ class BuildProfiles:
             reg = {}
         listed = [p for p in (reg.get("profiles") if isinstance(reg, dict) else None) or [] if isinstance(p, dict) and PROFILE_ID.match(str(p.get("id", "")))]
         items = [p for p in listed if p["id"] not in RETIRED_PROFILES]
-        if len(items) != len(listed) and not any(p["id"] == MERGED_PROFILE for p in items):
-            items.append({**MERGED_PROFILE_ENTRY, "updatedAt": MERGED_PROFILE_ENTRY["createdAt"]})
         if not any(p["id"] == BASE_PROFILE for p in items):
-            items.insert(0, {"id": BASE_PROFILE, "name": "Main framework"})
+            items.insert(0, {**MERGED_PROFILE_ENTRY, "updatedAt": MERGED_PROFILE_ENTRY["createdAt"]})
         for p in items:
             p["base"] = p["id"] == BASE_PROFILE
+            if p["base"]:
+                p["catalog"] = True
         active = resolve_profile(reg.get("active") if isinstance(reg, dict) else None)
         if not any(p["id"] == active for p in items):
             active = BASE_PROFILE

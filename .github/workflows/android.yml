@@ -23,7 +23,7 @@ permissions:
 
 # CI checks the framework's own data (catalog, plan, pending list): the base build profile, whatever profile is saved.
 env:
-  AXF_BUILD_PROFILE: main-framework
+  AXF_BUILD_PROFILE: all
 
 jobs:
   # What this change needs (framework/cli/ci-scope.mjs): path filters per job, light checks on PRs while the merge queue
@@ -74,7 +74,7 @@ jobs:
     if: ${{ needs.scope.outputs.engine == 'true' }}
     runs-on: ubuntu-latest
     env:
-      AXF_BUILD_PROFILE: main-framework   # the sweep checks the base profile's data whatever profile Brett has saved
+      AXF_BUILD_PROFILE: all   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -331,13 +331,13 @@ jobs:
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/web-report.md; else gh issue comment "$N" --body-file /tmp/web-report.md; fi
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         env:
-          AXF_BUILD_PROFILE: main-framework   # self-tests read the base profile's data whatever profile Brett has saved
+          AXF_BUILD_PROFILE: all   # self-tests read the base profile's data whatever profile Brett has saved
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
       - name: Plugin pure-part self-tests (every plugins/*/test.mts; found by glob so removing a plugin never breaks CI)
         env:
-          AXF_BUILD_PROFILE: main-framework
+          AXF_BUILD_PROFILE: all
         run: |
           for t in apps/console-web/plugins/[!_]*/test.mts; do [ -f "$t" ] || continue; echo "== $t"; node --experimental-strip-types "$t"; done
       - name: Library templates — generate every template for web + Python and compile them
