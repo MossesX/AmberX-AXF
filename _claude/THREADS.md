@@ -748,8 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10 done (current) · orchestrator
-- 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-1 done (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-2 done (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s10-3 done, → built (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` note (current) · orchestrator
@@ -1148,6 +1146,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 15:11 UTC · `blueprint-notes-tasks` → built (all) · orchestrator
 - 2026-11-07 15:12 UTC · `console-android-app-tabs` note (all) · orchestrator
 - 2026-11-07 15:13 UTC · `postgres-console` s5 done (all) · orchestrator
+- 2026-11-07 15:13 UTC · `postgres-console` s7 done (all) · orchestrator
+- 2026-11-07 15:13 UTC · `postgres-console` note (all) · orchestrator
 
 ## Token passes (log)
 

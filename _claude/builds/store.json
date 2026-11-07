@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1370,
- "updatedAt": "2026-11-07T15:13:42.446Z",
+ "rev": 1371,
+ "updatedAt": "2026-11-07T15:13:56.453Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109309,12 +109309,16 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T15:13:41.014Z",
+   "updatedAt": "2026-11-07T15:13:44.175Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-postgres-own-container--lenny, own login copy)",
      "at": "2026-11-07T14:11:23.379Z"
+    },
+    {
+     "text": "s6 query screen: the read-only query exists as CLI (axf-db.mjs query), REST (GET /api/plugins/build-orchestrator/db/query, /db/status) and MCP through plugin-commands; the console SCREEN (saved queries, grid) is UI and needs a UI Review submission with 3 options, left for a UI build. Report _claude/builds/reports/postgres-console.md",
+     "at": "2026-11-07T15:13:44.175Z"
     }
    ],
    "approvals": [
@@ -109488,12 +109492,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T15:13:42.131Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:22:04.647Z",
-     "updatedAt": "2026-11-07T10:22:04.647Z"
+     "updatedAt": "2026-11-07T15:13:42.302Z"
     }
    ],
    "profiles": [
@@ -109504,7 +109508,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
