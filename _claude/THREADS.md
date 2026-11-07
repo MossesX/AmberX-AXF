@@ -748,10 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
-- 2026-11-07 02:11 UTC · `ui-asset-designer` added (40 steps) (current) · orchestrator
-- 2026-11-07 02:13 UTC · `ui-asset-designer` s1 done, → running (current) · orchestrator
-- 2026-11-07 02:13 UTC · `ui-asset-designer` s2 done (current) · orchestrator
 - 2026-11-07 02:13 UTC · `ui-asset-designer` s3 done (current) · orchestrator
 - 2026-11-07 02:13 UTC · `ui-asset-designer` s4 done (current) · orchestrator
 - 2026-11-07 02:14 UTC · `asset-designer` note (main-framework) · orchestrator
@@ -1148,6 +1144,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 15:22 UTC · `orchestrator-gate` → built (all) · orchestrator
 - 2026-11-07 15:14 UTC · `console-android-app-tabs` note (all) · orchestrator
 - 2026-11-07 15:14 UTC · `console-android-app-tabs` → running (all) · orchestrator
+- 2026-11-07 15:29 UTC · `console-android-app-tabs` s1 done (all) · orchestrator
+- 2026-11-07 15:29 UTC · `console-android-app-tabs` s2 done (all) · orchestrator
+- 2026-11-07 15:29 UTC · `console-android-app-tabs` s3 done (all) · orchestrator
+- 2026-11-07 15:29 UTC · `console-android-app-tabs` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
