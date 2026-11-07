@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 11:08 UTC · `handoff-2-addenda-r2` added (8 steps) (current) · foreign-write
 - 2026-11-05 11:08 UTC · `three-layouts-per-screen` s1 done (angel) · orchestrator
 - 2026-11-05 11:08 UTC · `three-layouts-per-screen` s2 done (angel) · orchestrator
 - 2026-11-05 11:08 UTC · `three-layouts-per-screen` s3 done (angel) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:36 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · foreign-write
 - 2026-11-07 00:36 UTC · `settings-sections-everywhere` PR #372 (current) · builds-live
 - 2026-11-07 00:36 UTC · `settings-sections-everywhere` s6 done (current) · orchestrator
+- 2026-11-07 00:37 UTC · `settings-sections-everywhere` s7 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
