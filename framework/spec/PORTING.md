@@ -129,3 +129,11 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 ## Deferred: build priority (Nov 5 2026)
 
 `framework/core/build-priority.mjs` and `framework/react/components/PriorityTag.tsx` have no Kotlin twin. Android work is on hold; builds show only in the web console today. A port needs the same levels (P0-P3), the same read-time default and the same `waitingOn` rows.
+
+## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
+
+Web only (Android on hold), Kotlin twins when the Android side resumes:
+- `ActionMeta.personOnly`: left out of the console catalog, refused by the client; a remote command can never run it.
+- `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
+- `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
+

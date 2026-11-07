@@ -5,6 +5,7 @@
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { pluginApi } from '@console/plugins';
 import * as core from './review-core.mjs';
 import { GROUPS as SHOT_GROUPS } from './shots-core.mjs';
 import { appMenu } from './menu';
@@ -13,15 +14,22 @@ import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
 import { LookApprovalPanel } from './look-settings';
 import { UiReviewPage } from './ui';
+import { ASK_DIALOG, AskClient, AskDialog, ChoicesPanel } from './choices';
 
 const KEYWORDS = ['ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
 
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'UI Review',
-  version: '0.3.0',
+  version: '0.4.0',
   appMenu,
   register(rt) {
+    // every option a build shipped joins the asset library, picked or not (ui-choices@1)
+    void pluginApi(FOLDER, 'UI Review').call<{ assets: (Parameters<typeof rt.registry.register>[0] & { picked?: boolean; tags?: string[] })[] }>('choices/assets').then((r) => {
+      for (const { picked, ...a } of r.assets) {
+        try { rt.registry.register({ ...a, tags: [...(a.tags ?? []), ...(picked ? ['ui-choice-picked'] : [])] }, 'app', ID); } catch { /* an option that isn't valid yet stays in its folder */ }
+      }
+    }, () => undefined);
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
@@ -36,6 +44,8 @@ export const plugin: AxfWebLibrary = {
     [MOCKUP_VIEW]: { title: 'Predicted look', icon: 'eye', keywords: ['predicted', 'mockup', 'look', 'preview'], render: () => <MockupPage /> },
     [PACKS_VIEW]: { title: 'Design packs', icon: 'palette', keywords: ['design', 'packs', 'look', 'theme', 'refactor', 'pick'], render: () => <UiReviewPage section={core.DESIGN_KIND} /> },
   },
+  slots: { 'app.frame.cover': [{ id: 'ui-review.ask', order: 97, render: () => <AskClient /> }] },
+  dialogs: { [ASK_DIALOG]: { title: 'How many options?', icon: 'layers', render: (p) => <AskDialog ask={p.ask as Parameters<typeof AskDialog>[0]['ask']} /> } },
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
   settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Every UI a build makes, waiting for your approval.' }],
   settings: [{
@@ -50,5 +60,6 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+    { id: 'ui-review.choices', tab: FOLDER, title: 'Choices', icon: 'layers', order: 15, render: () => <ChoicesPanel /> },
     { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

@@ -16,3 +16,12 @@ Your paraphrase, the plan, the steps (s1 …), checks.
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:
 > node framework/cli/build-origin.mjs addendum <build-id> --said "…" --source voice
+
+## UI Review (when the build changes UI)
+
+Ship at least 3 options (the setting may ask for more), each a predicted look and an asset of its type:
+`review.mjs submit --choices <file.json> --console`. With the ask setting on, run `review.mjs ask-options --build <id>
+--wait --console` first and make that many. Every option is written to `plugins/<owner>/assets/<type>/` and ships in
+the PR, picked or not. Wait for Brett's pick (`review.mjs decision <id> --console`), then build every view he picked,
+the first as the default. One option only with a real reason: `--single-option "<why>"`.
+

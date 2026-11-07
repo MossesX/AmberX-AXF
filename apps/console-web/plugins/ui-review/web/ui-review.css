@@ -173,3 +173,15 @@
 .axp-ui-mock__table th, .axp-ui-mock__table td { text-align: left; padding: var(--fx-dens-gap-lg) calc(var(--fx-space) / 2); border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .axp-ui-mock__dialog { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); max-width: calc(var(--fx-font-size) * 30); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-shadow-lg); }
 .axp-ui-mock__dhead { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); }
+
+/* Sortable columns + the Date column */
+.axp-ui-review__heads { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xl); padding: calc(var(--fx-space) / 2) var(--fx-dens-gap-xl); }
+.axp-ui-review__head { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 2); }
+.axp-ui-review__head.is-on { font-weight: bold; }
+.axp-ui-review__date { flex: none; white-space: nowrap; }
+
+/* Choices: the options side by side, one column on a phone */
+.axp-ui-review__options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-font-size) * 20)), 1fr)); gap: var(--fx-dens-gap-xl); }
+.axp-ui-review__option { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); min-width: 0; padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-ui-review__option.is-sel { border-color: var(--fx-accent); }
+.axp-ui-review__rank { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); }

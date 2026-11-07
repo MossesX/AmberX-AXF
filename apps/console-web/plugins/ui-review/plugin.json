@@ -48,6 +48,15 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
+      { "route": "GET /choices/settings", "id": "choices-settings", "title": "How many options a build ships, and whether Brett is asked first", "readOnly": true },
+      { "route": "PUT /choices/settings", "id": "choices-settings-set", "title": "Change the choices settings", "input": { "type": "object", "properties": { "minOptions": { "type": "integer", "minimum": 3 }, "askOptions": { "type": "boolean" }, "askTimeoutMin": { "type": "integer", "minimum": 1 } }, "additionalProperties": false } },
+      { "route": "POST /choices/choose", "id": "choices-choose", "title": "Brett's pick for an item's options, in priority order (only what he said)", "input": { "type": "object", "properties": { "id": { "type": "string" }, "chosen": { "type": "array", "items": { "type": "string" } }, "comment": { "type": "string" } }, "required": ["id", "chosen"], "additionalProperties": false } },
+      { "route": "GET /choices/decision", "id": "choices-decision", "title": "Read Brett's pick for an item", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "GET /choices/assets", "id": "choices-assets", "title": "Every option asset saved, picked or not", "readOnly": true, "input": { "type": "object", "properties": { "type": { "type": "string", "description": "an asset type (default all)" } }, "additionalProperties": false } },
+      { "route": "POST /choices/ask", "id": "choices-ask", "title": "A build asks Brett how many options to make", "input": { "type": "object", "properties": { "build": { "type": "string" }, "title": { "type": "string" } }, "additionalProperties": false } },
+      { "route": "GET /choices/asks", "id": "choices-asks", "title": "Questions waiting for Brett's answer", "readOnly": true },
+      { "route": "GET /choices/ask", "id": "choices-ask-read", "title": "Read one question's answer (the default once the wait runs out)", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "POST /choices/answer", "id": "choices-answer", "title": "Brett's answer: how many options", "input": { "type": "object", "properties": { "id": { "type": "string" }, "count": { "type": "integer", "minimum": 3 } }, "required": ["id", "count"], "additionalProperties": false } },
       {
         "id": "predicted",
         "route": "GET /predicted",

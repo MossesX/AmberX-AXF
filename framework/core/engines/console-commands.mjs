@@ -209,6 +209,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 /** The message an open console receives. */
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
+  if (fields.hard === true) m.hard = true;
   for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
