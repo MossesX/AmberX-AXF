@@ -1498,6 +1498,18 @@
    "from": "",
    "addenda": []
   },
+  "glossary-index-demos": {
+   "said": "the demonstration designer is gonna work off of the walkthrough. ... we're going to create a glossary in an index. Of every single motherfucking feature element setting every motherfucking thing you can dream of ... I need an index, a glossary, as if it's indexing an encyclopedia. And so then I'm ... I want to be able to generate a demonstration. ... really need to be able to create chapters. I want to be able to, like, say, write my own book with it. ... when you build a book, you'll be able to check off whether you want uh, documentation and what type and how extensive ... interactive HTML, TypeScript documentation ... In the future, anything built, the orchestrator will update this catalog ... every time we generate a clip ... it needs to automatically attach a shitload of keywords to it. And um, it needs to itself to be to be an asset going to a registry",
+   "at": "",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "claude-voice",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "grid-column-hiding": {
    "said": "Every grid needs to be able to hide columns. If you right-click on the column, you can select which ones to hide. And every grid, framework wide.",
    "at": "2026-11-04T19:59:59.405Z",
@@ -1762,6 +1774,18 @@
    "from": "detail",
    "addenda": []
   },
+  "library-harvest": {
+   "said": "So, um, on that installable plugins deal, um, we need to harvest libraries out of out of our product, out of our code. We need to harvest as many fucking libraries as possible for reusable code. ... when we're building an app and we want to in, import a library ... it will launch a configuration you know, dialog ... using no code, tell it what to do. We can connect it to data sets or whatever, all through a wizard. ... The goal here is to be able to whip up sophisticated apps by voice in five minutes. ... It's not gonna be any building required, just assembly.",
+   "at": "",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "claude-voice",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "live-key-checks": {
    "said": "the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
    "at": "2026-10-30",
@@ -1798,6 +1822,18 @@
    "from": "brief",
    "addenda": []
   },
+  "memory-restructure-chunked-claude-md-store-memor": {
+   "said": "Put it in a build. Send it to the org.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "menu-scroll": {
    "said": "The application menus need to be scrollable when they reach beyond the screen.",
    "at": "2026-11-03",
@@ -1808,6 +1844,18 @@
    "brief": "# Build: menu-scroll (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they reach beyond the screen.\" Assigned agent: **Janitor Joey** (book on his agent-swarm card; set AXF_AGENT=janitor-joey if supported, else record in report + store note). Register in Urgent (id `menu-scroll`) + banner entry.\n\n## Fix (framework level, so every app and plugin gets it)\n- Application menu bar dropdowns, their submenus, and also context menus / overflow (⋯) menus: when a menu is taller than the space left in the viewport, cap its height to the available space (respect safe-area insets, the banner/toolbars, and the on-screen keyboard; use visualViewport on mobile) and make it scroll vertically inside.\n- Smooth touch scrolling on phones (overscroll contained so the page behind doesn't scroll), wheel + keyboard arrow navigation scrolls the highlighted item into view, subtle top/bottom fade or chevron hints when there's more.\n- Positioning: flip up / shift to stay on screen before falling back to scroll; submenus that would go off the right edge open to the left; on compact width they stay inside the screen.\n- Max height + hint style come from tokens/assets (menu asset or component-sizing), no hard-coded sizes (check-theme must pass).\n- Apply in the framework menu components (web reference + axf.css) so console, axHub web, AmberX (Capacitor) and every plugin inherit it; Compose twin recorded in PORTING.md unless trivial.\n- Tests (overflow cases: long menu at bottom of a short phone screen, nested submenu at the edge, keyboard open), before/after screenshots at 412 px and 1280 px, UI Review item, report `_claude/builds/reports/menu-scroll.md`, THREADS, PR, steps through the store. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "merge-conflict-alerts": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "merge-conflict-alerts",
+   "brief": "# merge-conflict-alerts\nOrchestrator build ID: merge-conflict-alerts (profile current, 5 steps). Use that record: follow its steps and models, tick steps as you finish, record session and cost on it.\n\nURGENT FIRST (step s1): fix PR #370 (branch claude/badges-notify-followup, badges + usage meter). GitHub refuses to merge it: 'Pull Request has merge conflicts'. Merge origin/main into the branch, resolve conflicts keeping both sides' intent, re-run the checks, push, and get it landed through the merge queue (Brett already approved its UI Review items). Report what conflicted.\n\nThen steps s2-s5: detect conflicts on every open PR; alert Brett with an approval (AmberX push AND console) with 'Fix conflicts now'; a persistent item on the fixed banner until resolved; approving launches an orchestrator conflict-fix job and re-queues the PR.",
+   "verbatim": false,
+   "from": "",
    "addenda": []
   },
   "merge-queue": {
@@ -1907,6 +1955,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "multi-account-headless-workers": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "multi-account-headless-workers",
+   "brief": "# multi-account-headless-workers\nThis build is ALREADY registered in the Build orchestrator as `multi-account-headless-workers` (profile current, 5 steps). Use that record: follow its steps and the model the orchestrator set for each step, tick steps there as you finish them, and record session and cost on it.\n\nGoal (Brett): the console signs into more than one Claude subscription at once. The console itself uses one account. The other accounts exist only as headless worker sessions, and the orchestrator sends build jobs to them.\n1. Audit existing account-failover, account-switch-handoff and claude-accounts code and reuse it.\n2. Console holds multiple signed-in subscriptions: one interactive, others headless-only.\n3. Account manager UI: add, sign in and remove worker accounts; usage and limits per account.\n4. Orchestrator routes jobs to worker accounts and fails over when one hits its limit.\n5. Recording, cost and session booking per worker account.",
+   "verbatim": false,
+   "from": "",
    "addenda": []
   },
   "notes-tasks-calendar": {
@@ -2212,6 +2272,13 @@
    "verbatim": true,
    "from": "",
    "addenda": [
+    {
+     "said": "\"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.\"\n- Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable.\n- All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens.\n- Backfill today's addenda the same way.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true
+    },
     {
      "said": "Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.",
      "at": "",
@@ -2551,6 +2618,26 @@
    "verbatim": true,
    "from": "",
    "addenda": []
+  },
+  "skins-asset-types": {
+   "said": "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types? ... Added into skins.",
+   "at": "",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "claude-voice",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "Upgrade the skins system so it styles EVERY asset type now in the registry, not just the original kinds. Cover the new types: embeddable widget, icon pack, composite assets (button = box + text, nav = container + items), data set bar (search/filter/sort), embed, and every element down to text blocks/labels. Skins apply at any scope: global/app/UI/plugin, with child-overrides-parent inheritance (same model as design/icon packs). A skin is a design pack; it MAY reference an icon pack but doesn't have to. Pull the full asset-type list from the registry dynamically so new types are covered automatically going forward (no hardcoded list); add a CI check that fails if a registered asset type has no skin coverage. Voice + API/MCP/CLI parity. Submit at least 3 UI options to UI Review first.",
+     "at": "",
+     "source": "console",
+     "by": "gina",
+     "verbatim": true
+    }
+   ]
   },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
