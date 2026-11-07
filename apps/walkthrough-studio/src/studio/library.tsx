@@ -30,5 +30,5 @@ export const studioLibrary: AxfWebLibrary = {
   label: 'Walkthrough Studio',
   version: '0.1.0',
   settingsTabs: [{ id: 'walkthrough-studio', label: 'Walkthrough Studio', icon: 'monitor', order: 10, parent: 'plugins', description: 'Where projects are kept, the workspace layout and the toolbars.' }],
-  settingsPanels: [{ id: 'walkthrough-studio.main', tab: 'walkthrough-studio', title: 'Studio', icon: 'monitor', render: () => <StudioSettings /> }],
+  settingsPanels: [{ id: 'walkthrough-studio.main', section: 'general', tab: 'walkthrough-studio', title: 'Studio', icon: 'monitor', render: () => <StudioSettings /> }],
 };

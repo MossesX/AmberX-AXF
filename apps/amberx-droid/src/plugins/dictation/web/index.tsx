@@ -272,7 +272,7 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'dictation', label: 'Dictation', icon: 'mic', order: 22, parent: 'plugins' }],
   settings: [
     {
-      id: 'amberx.dictation', label: 'Dictation', icon: 'mic', tab: 'dictation', settings: [
+      id: 'amberx.dictation', section: 'general', label: 'Dictation', icon: 'mic', tab: 'dictation', settings: [
         { key: K.stop, label: 'Stop phrases', kind: 'text', default: DEFAULT_STOP.join(', '), description: 'Comma separated. Saying one ends the dictation; it and anything after it are cut out.' },
         { key: K.start, label: 'Start phrases', kind: 'text', default: DEFAULT_START.join(', '), description: 'Comma separated. Said to Voice control (also right after the wake phrase), they start a dictation. The language is Voice control’s.' },
         { key: K.max, label: 'Longest dictation (minutes)', kind: 'number', default: 5, min: 0.5, max: 30, step: 0.5 },

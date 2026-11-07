@@ -204,16 +204,16 @@ export const plugin: AxfWebLibrary = {
   tabs: { [KIND]: () => <GuideWindow /> },
   settingsTabs: [{ id: 'molly-guide', label: 'Molly guide', icon: 'sparkles', order: 60, parent: 'plugins', description: 'Narrated walkthroughs from Molly in a floating window.' }],
   settings: [
-    { id: 'molly-guide.main', label: 'Walkthroughs', icon: 'sparkles', tab: 'molly-guide', order: 10, settings: [
+    { id: 'molly-guide.main', section: 'general', label: 'Walkthroughs', icon: 'sparkles', tab: 'molly-guide', order: 10, settings: [
       { key: K.speak, label: 'Read each step out loud', kind: 'toggle', default: true },
       { key: K.run, label: 'Move the console to each step (run its action)', kind: 'toggle', default: true },
       { key: K.auto, label: 'Open walkthroughs Molly makes from AmberX by themselves', kind: 'toggle', default: true },
     ] },
   ],
   settingsPanels: [
-    { id: 'molly-guide.try', tab: 'molly-guide', title: 'Try it', icon: 'play', order: 20, render: () => <TryPanel /> },
-    { id: 'molly-guide.amberx-video', tab: 'molly-guide', title: 'AmberX walkthrough video', icon: 'refresh', order: 30, render: () => <RerecordPanel /> },
-    { id: 'molly-guide.lifecycle', tab: 'molly-guide', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'molly-guide.try', section: 'tools', tab: 'molly-guide', title: 'Try it', icon: 'play', order: 20, render: () => <TryPanel /> },
+    { id: 'molly-guide.amberx-video', section: 'tools', tab: 'molly-guide', title: 'AmberX walkthrough video', icon: 'refresh', order: 30, render: () => <RerecordPanel /> },
+    { id: 'molly-guide.lifecycle', section: 'plugin', tab: 'molly-guide', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
     runtime = rt;

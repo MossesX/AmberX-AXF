@@ -409,7 +409,7 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: FOLDER, label: 'Follow Amber', icon: 'eye', order: 91, parent: 'plugins', description: 'The console opens what Amber talks about; approvals pop up here' }],
   settings: [{
-    id: 'follow-amber.prefs', label: 'Follow Amber', icon: 'eye', tab: FOLDER, order: 10,
+    id: 'follow-amber.prefs', section: 'general', label: 'Follow Amber', icon: 'eye', tab: FOLDER, order: 10,
     description: 'One switch for all your consoles.',
     settings: [
       { key: KEY, label: 'Follow Amber', kind: 'toggle', default: false, scope: 'device', description: 'On: what Amber mentions opens here and approvals pop up. The same value for every console.' },
@@ -417,7 +417,7 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [
-    { id: 'follow-amber.panel', tab: FOLDER, title: 'Follow Amber', icon: 'eye', order: 5, render: () => <FollowPanel /> },
-    { id: 'follow-amber.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'follow-amber.panel', section: 'general', tab: FOLDER, title: 'Follow Amber', icon: 'eye', order: 5, render: () => <FollowPanel /> },
+    { id: 'follow-amber.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

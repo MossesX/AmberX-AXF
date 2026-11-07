@@ -73,7 +73,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -109,7 +111,9 @@
           "axf.look.sliders": "simple",
           "axf.roll": "developer"
         },
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -137,7 +141,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -205,7 +211,9 @@
           "d": "administrator",
           "e": "administrator"
         },
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -291,7 +299,9 @@
             ],
             "hide": []
           }
-        }
+        },
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -315,7 +325,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -941,6 +953,353 @@
       ]
     },
     {
+      "name": "sections: overrides and new ones kept, bad ids and duplicates dropped, group section kept",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "sectionTools": false,
+        "sections": [
+          {
+            "id": "general",
+            "title": "Main",
+            "order": 5,
+            "collapsed": true
+          },
+          {
+            "id": "mine",
+            "title": "Mine",
+            "icon": "star",
+            "tab": "about",
+            "members": [
+              "axf.about",
+              "bad id"
+            ]
+          },
+          {
+            "id": "general"
+          },
+          {
+            "id": "bad id"
+          },
+          7
+        ],
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "section": "look",
+            "settings": [
+              {
+                "key": "k",
+                "label": "K",
+                "kind": "toggle"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "settings": [
+              {
+                "key": "k",
+                "label": "K",
+                "kind": "toggle"
+              }
+            ],
+            "section": "look"
+          }
+        ],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {},
+        "visible": {},
+        "sections": [
+          {
+            "id": "general",
+            "title": "Main",
+            "order": 5,
+            "collapsed": true
+          },
+          {
+            "id": "mine",
+            "title": "Mine",
+            "icon": "star",
+            "tab": "about",
+            "members": [
+              "axf.about"
+            ]
+          }
+        ],
+        "sectionTools": false
+      }
+    },
+    {
+      "name": "sections: not a list",
+      "fn": "errors",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "sections": "nope"
+      },
+      "expected": [
+        "data.sections must be a list"
+      ]
+    },
+    {
+      "name": "sections: dropped entries are reported",
+      "fn": "errors",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "sections": [
+          {
+            "id": "bad id"
+          }
+        ]
+      },
+      "expected": [
+        "data.sections: 1 section(s) dropped (bad id, duplicate or over 40)"
+      ]
+    },
+    {
+      "name": "arrange: standard order, item order, lone default section",
+      "fn": "sections",
+      "input": {
+        "ui": {},
+        "tab": "x",
+        "items": [
+          {
+            "id": "z",
+            "section": "plugin",
+            "order": 90
+          },
+          {
+            "id": "b",
+            "section": "look",
+            "order": 20
+          },
+          {
+            "id": "a",
+            "section": "look",
+            "order": 10
+          },
+          {
+            "id": "none"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "general",
+          "title": "General",
+          "icon": "settings",
+          "order": 10,
+          "collapsed": false,
+          "items": [
+            "none"
+          ]
+        },
+        {
+          "id": "look",
+          "title": "Look and layout",
+          "icon": "palette",
+          "order": 20,
+          "collapsed": false,
+          "items": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "id": "plugin",
+          "title": "Plugin",
+          "icon": "package",
+          "order": 130,
+          "collapsed": true,
+          "items": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrange: panels before groups on an order tie, keeping their own order",
+      "fn": "sections",
+      "input": {
+        "ui": {},
+        "tab": "x",
+        "items": [
+          {
+            "id": "g",
+            "section": "look",
+            "order": 10,
+            "tie": 1
+          },
+          {
+            "id": "p",
+            "section": "look",
+            "order": 10,
+            "tie": 0
+          },
+          {
+            "id": "q",
+            "section": "look",
+            "order": 10,
+            "tie": 0
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "look",
+          "title": "Look and layout",
+          "icon": "palette",
+          "order": 20,
+          "collapsed": false,
+          "items": [
+            "p",
+            "q",
+            "g"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrange: the asset retitles, reorders, folds and moves; members beat the item; an unknown id gets a word title",
+      "fn": "sections",
+      "input": {
+        "ui": {
+          "sections": [
+            {
+              "id": "look",
+              "title": "Colours",
+              "order": 200,
+              "collapsed": true
+            },
+            {
+              "id": "mine",
+              "title": "Mine",
+              "members": [
+                "moved"
+              ],
+              "order": 1
+            }
+          ]
+        },
+        "tab": "x",
+        "items": [
+          {
+            "id": "a",
+            "section": "look"
+          },
+          {
+            "id": "moved",
+            "section": "look"
+          },
+          {
+            "id": "c",
+            "section": "some-new-thing"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "mine",
+          "title": "Mine",
+          "icon": "settings",
+          "order": 1,
+          "collapsed": false,
+          "items": [
+            "moved"
+          ]
+        },
+        {
+          "id": "look",
+          "title": "Colours",
+          "icon": "palette",
+          "order": 200,
+          "collapsed": true,
+          "items": [
+            "a"
+          ]
+        },
+        {
+          "id": "some-new-thing",
+          "title": "Some new thing",
+          "icon": "settings",
+          "order": 500,
+          "collapsed": false,
+          "items": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrange: an entry for one tab beats one for every tab and stays out of the others",
+      "fn": "sections",
+      "input": {
+        "ui": {
+          "sections": [
+            {
+              "id": "look",
+              "title": "All tabs"
+            },
+            {
+              "id": "look",
+              "tab": "x",
+              "title": "Tab x"
+            },
+            {
+              "id": "mine",
+              "tab": "other",
+              "members": [
+                "a"
+              ]
+            }
+          ]
+        },
+        "tab": "x",
+        "items": [
+          {
+            "id": "a",
+            "section": "look"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "look",
+          "title": "Tab x",
+          "icon": "palette",
+          "order": 20,
+          "collapsed": false,
+          "items": [
+            "a"
+          ]
+        }
+      ]
+    },
+    {
       "name": "toolbar: a toolbar asset id is kept",
       "fn": "normalize",
       "input": {
@@ -962,7 +1321,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -999,7 +1360,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -1051,7 +1414,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {
@@ -1213,7 +1578,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": [],
+        "sectionTools": true
       }
     },
     {

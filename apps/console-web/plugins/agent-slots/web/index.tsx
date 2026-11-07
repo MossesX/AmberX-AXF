@@ -219,9 +219,9 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   settingsTabs: [{ id: FOLDER, label: 'Agent cap', icon: 'layers', order: 46, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'agent-slots.settings', tab: FOLDER, title: 'Agent cap', icon: 'layers', order: 10, render: () => <SettingsPanel /> },
-    { id: 'agent-slots.queue', tab: FOLDER, title: 'Queue', icon: 'list', order: 20, render: () => <QueuePanel /> },
-    { id: 'agent-slots.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'agent-slots.settings', section: 'general', tab: FOLDER, title: 'Agent cap', icon: 'layers', order: 10, render: () => <SettingsPanel /> },
+    { id: 'agent-slots.queue', section: 'status', tab: FOLDER, title: 'Queue', icon: 'list', order: 20, render: () => <QueuePanel /> },
+    { id: 'agent-slots.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   slots: {
     'activity.summary': [{ id: 'agent-slots.summary', render: () => <SummaryChip /> }],

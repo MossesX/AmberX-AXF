@@ -1,6 +1,7 @@
-import { useEffect, useId, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useId, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
 import { useAsset, useGate, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { foldId, useFold } from './FoldPanel';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './Brand';
 import { containerCollapsible } from '../../core';
 
@@ -145,14 +146,18 @@ export interface ContainerProps {
 export function Container({ title, icon, actions, children, className, ctx, ctxPayload, collapsible: own, defaultOpen = true }: ContainerProps) {
   const c = useAsset('container').data;
   // style-theme `wrapGroups` (build option --wrap-groups) makes every titled group collapsible.
-  const collapsible = own === true || containerCollapsible(c, useAsset('style-theme').data);
-  const [open, setOpen] = useState(defaultOpen);
+  const fromAsset = containerCollapsible(c, useAsset('style-theme').data);
+  // Inside a settings interface every titled card folds and remembers itself on this device (FoldScope).
+  const fold = useFold(own === false ? '' : foldId(title), defaultOpen);
+  const collapsible = own === true || fromAsset || fold.scoped;
+  const open = fold.open;
+  const setOpen = (next: (o: boolean) => boolean) => fold.set(next(open));
   const bodyId = useId();
   const shown = open || !collapsible;
   const brand = useBrandPlace('container', 14);
   const brandHost = brandHostProps(brand);
   return (
-    <section className={`fx-card ${className ?? ''} ${brandHost.className}`.trim()} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <section className={`fx-card ${className ?? ''} ${brandHost.className}`.trim()} {...fold.attrs} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       {title && (
         <header className="fx-card__head">
           {brand?.svg && title && <BrandMark slot="container" height={14} className="fx-card__brand" />}

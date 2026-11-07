@@ -180,7 +180,7 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: 'plugin-switches', label: 'Plugin switches', icon: 'sliders', order: 6, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'plugin-switches.open', tab: 'plugin-switches', title: 'Plugin switches', icon: 'sliders', order: 5, render: () => <OpenPanel /> },
-    { id: 'plugin-switches.lifecycle', tab: 'plugin-switches', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'plugin-switches.open', section: 'general', tab: 'plugin-switches', title: 'Plugin switches', icon: 'sliders', order: 5, render: () => <OpenPanel /> },
+    { id: 'plugin-switches.lifecycle', section: 'plugin', tab: 'plugin-switches', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

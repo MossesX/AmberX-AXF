@@ -35,7 +35,7 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'feature-assist', label: 'Feature assistant', icon: 'sparkles', parent: 'plugins', order: 43, description: 'Plain-English features for the Plan (AXF expert) and Build with Mosses.' }],
   settingsPanels: [
-    { id: 'feature-assist.status', tab: 'feature-assist', title: 'Feature assistant', icon: 'sparkles', order: 10, render: () => <div className="axp-feature-assist-settings"><StatusPanel /></div> },
-    { id: 'feature-assist.lifecycle', tab: 'feature-assist', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'feature-assist.status', section: 'general', tab: 'feature-assist', title: 'Feature assistant', icon: 'sparkles', order: 10, render: () => <div className="axp-feature-assist-settings"><StatusPanel /></div> },
+    { id: 'feature-assist.lifecycle', section: 'plugin', tab: 'feature-assist', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

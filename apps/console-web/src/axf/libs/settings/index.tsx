@@ -14,7 +14,8 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, designLookLabel, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { arrangeSettingsSections, type SettingsSectionItem, HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, designLookLabel, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { FoldPanel, FoldScope, FoldTools, useFold } from '../../react/components/FoldPanel';
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -258,13 +259,15 @@ function AssetSlotCard({ spec }: { spec: SettingSpec }) {
 }
 
 /** A flat settings section: a small heading over a hairline list (no nested cards). Collapsible ones fold from the heading. */
-function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anchor, className, children }: { title: ReactNode; icon?: string; collapsible?: boolean; defaultOpen?: boolean; anchor?: string; className?: string; children: ReactNode }) {
-  const [open, setOpen] = useState(defaultOpen);
+function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anchor, className, bare = false, frame = false, children }: { title: ReactNode; icon?: string; collapsible?: boolean; defaultOpen?: boolean; anchor?: string; className?: string; bare?: boolean; frame?: boolean; children: ReactNode }) {
+  const fold = useFold(collapsible ? anchor ?? '' : '', defaultOpen, !frame);
+  const { open } = fold;
   const shown = open || !collapsible;
+  if (bare) return <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open="true"><div className="axf-settings__gbody">{children}</div></section>;
   return (
-    <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open={shown ? 'true' : 'false'}>
+    <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open={shown ? 'true' : 'false'} {...fold.attrs}>
       {collapsible ? (
-        <button type="button" data-fx-row className="axf-settings__ghead axf-settings__gtoggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <button type="button" data-fx-row className="axf-settings__ghead axf-settings__gtoggle" aria-expanded={open} onClick={() => fold.set(!open)}>
           {icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span><Icon name="chevron-down" size={13} className={open ? '' : 'fx-rot--90'} />
         </button>
       ) : (
@@ -275,10 +278,10 @@ function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anc
   );
 }
 
-function GroupCard({ group }: { group: SettingsGroup }) {
+function GroupCard({ group, bare }: { group: SettingsGroup; bare?: boolean }) {
   if (group.id === 'axf.appearance') {
     return (
-      <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'}>
+      <FlatSection bare={bare} anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'}>
         {group.description && <p className="fx-muted axf-settings__desc">{group.description}</p>}
         <div className="axf-settings__rows">{group.settings.map((s) => s.kind === 'asset_slot' ? <AssetSlotCard key={s.key} spec={s} /> : <SettingRow key={s.key} spec={s} />)}</div>
       </FlatSection>
@@ -286,7 +289,7 @@ function GroupCard({ group }: { group: SettingsGroup }) {
   }
   const g = group as SettingsGroup & { collapsible?: boolean; collapsed?: boolean };
   return (
-    <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
+    <FlatSection bare={bare} anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
       {group.description && <p className="fx-muted axf-settings__desc">{group.description}</p>}
       <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
     </FlatSection>
@@ -648,43 +651,58 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const allPanels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
   const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at));
   const restPanels = at ? allPanels.filter((p) => !panels.includes(p)) : [];
-  const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id)} defaultOpen={!COLLAPSIBLE_PANELS.has(p.id)}><div className="axf-settings__panel">{p.render() as ReactNode}</div></FlatSection>;
-  const ordered = (ps: SettingsPanel[], gs: SettingsGroup[]) => [...ps.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: panelNode(p, 'settings') })),
-    ...gs.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
-    .sort((a, b) => a.order - b.order || a.tie - b.tie)
-    .map((x) => <Fragment key={x.key}>{x.node}</Fragment>);
+  const panelNode = (p: SettingsPanel, icon: string, bare = false) => <FlatSection bare={bare} anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={!bare && COLLAPSIBLE_PANELS.has(p.id)} defaultOpen={!COLLAPSIBLE_PANELS.has(p.id)}><div className="axf-settings__panel">{p.render() as ReactNode}</div></FlatSection>;
+  // Every group and panel sits in a categorized collapsible section (settings-ui@1 `sections`). A section holding one
+  // item takes that item's name, with the category as a tag, so nothing is titled twice.
+  const ordered = (ps: SettingsPanel[], gs: SettingsGroup[], where = '') => {
+    const list: SettingsSectionItem<{ title: string; icon?: string; node: (bare: boolean) => ReactNode }>[] = [
+      ...ps.map((p) => ({ id: p.id, section: p.section, order: p.order, tie: 0, ref: { title: p.title, icon: p.icon, node: (bare: boolean) => panelNode(p, 'settings', bare) } })),
+      ...gs.map((g) => ({ id: g.id, section: g.section, order: g.order, tie: 1, ref: { title: g.label, icon: g.icon, node: (bare: boolean) => <GroupCard group={g} bare={bare} /> } })),
+    ];
+    return arrangeSettingsSections(list, ui, id).map((s) => {
+      const lone = s.items.length === 1 ? s.items[0]?.ref : undefined;
+      return (
+        <FoldPanel key={s.id} id={`${where}${s.id}`} anchor={`settings-section:${id}:${where}${s.id}`} className="axf-settings__section-fold" title={lone?.title ?? s.title} icon={lone?.icon ?? s.icon} tag={lone ? s.title : undefined} count={lone ? undefined : s.items.length} defaultOpen={!s.collapsed}>
+          {s.items.map((x) => <Fragment key={x.id}>{x.ref.node(!!lone)}</Fragment>)}
+        </FoldPanel>
+      );
+    });
+  };
   // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
   const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
   const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
   const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), groups) : ordered(panels, groups);
   const shown = design ? (
     <>
-      {lock && panelNode(lock, 'lock')}
-      {panelNode(design, 'palette')}
+      {ordered(lock ? [lock, design] : [design], [], 'top-')}
       {items.length > 0 && <FlatSection anchor="settings-panel:axf.appearance.rest" title="Everything else" icon="sliders" collapsible defaultOpen={false} className="axf-settings__nest"><div className="axf-settings__nested">{items}</div></FlatSection>}
     </>
   ) : items;
   const empty = !panels.length && !groups.length;
+  const foldKey = `settings:${rt.assetOrNull('settings')?.id ?? 'default'}:${id}`;
+  const tools = ui.sectionTools && !empty && <FoldTools label="Settings sections" />;
   if (!at) return (
-    <>
+    <FoldScope storageKey={foldKey}>
+      {tools}
       {shown}
       {empty && <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>}
-    </>
+    </FoldScope>
   );
   // With levels: what this level has in one collapsible container, what it leaves out in another (greyed, readable, not editable).
-  const rest = ordered(restPanels, restGroups);
+  const rest = ordered(restPanels, restGroups, 'rest-');
   return (
-    <>
-      <FlatSection anchor={`settings-level:${id}:available`} title={`Available at ${SETTINGS_LEVEL_LABEL[level]}`} collapsible className="axf-settings__available axf-settings__nest">
+    <FoldScope storageKey={foldKey}>
+      {tools}
+      <FlatSection frame anchor={`settings-level:${id}:available`} title={`Available at ${SETTINGS_LEVEL_LABEL[level]}`} collapsible className="axf-settings__available axf-settings__nest">
           {empty ? <p className="fx-muted axf-settings__desc">{id === 'connections' && !rest.length ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : rest.length ? `Nothing at ${SETTINGS_LEVEL_LABEL[level]} here. Pick a higher level above, or add settings to this level with Edit levels.` : 'Nothing here yet.'}</p> : <div className="axf-settings__nested">{shown}</div>}
       </FlatSection>
       {rest.length > 0 && (
-        <FlatSection anchor={`settings-level:${id}:more`} title={`More settings (above ${SETTINGS_LEVEL_LABEL[level]})`} collapsible defaultOpen={false} className="axf-settings__rest axf-settings__nest">
+        <FlatSection frame anchor={`settings-level:${id}:more`} title={`More settings (above ${SETTINGS_LEVEL_LABEL[level]})`} collapsible defaultOpen={false} className="axf-settings__rest axf-settings__nest">
             <p className="fx-muted axf-settings__desc">Not part of {SETTINGS_LEVEL_LABEL[level]}. Pick a higher level to change them, or add them to this level with Edit levels.</p>
             <div className="axf-settings__nested axf-settings__restbody" aria-disabled="true">{rest}</div>
         </FlatSection>
       )}
-    </>
+    </FoldScope>
   );
 }
 
@@ -891,6 +909,7 @@ export const library: AxfWebLibrary = {
   settings: [
     {
       id: 'axf.display',
+      section: 'look',
       label: 'Display',
       icon: 'monitor',
       tab: 'appearance',
@@ -904,6 +923,7 @@ export const library: AxfWebLibrary = {
     {
       // Help mode (Brett, Nov 1 2026): the same switch as the ? in the menu bar, F1 and Help → Help mode; per device
       id: 'axf.help',
+      section: 'tools',
       label: 'Help mode',
       icon: 'help',
       tab: 'about',
@@ -917,12 +937,12 @@ export const library: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
-    { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
-    { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
-    { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Look', icon: 'palette', order: 0, render: () => <LookPickerPanel /> },
-    { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
-    { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
-    { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
+    { id: 'axf.account.role', section: 'access', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
+    { id: 'axf.account.profile', section: 'access', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
+    { id: DESIGN_PANEL_ID, section: 'look', tab: 'appearance', title: 'Look', icon: 'palette', order: 0, render: () => <LookPickerPanel /> },
+    { id: 'axf.plugins.libraries', section: 'general', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.banners', section: 'general', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
+    { id: 'axf.about', section: 'general', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
   ],
 };
 

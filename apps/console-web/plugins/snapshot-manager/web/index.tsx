@@ -20,10 +20,10 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'snapshots', label: 'Snapshots', icon: 'save', parent: 'plugins', order: 41, description: 'Snapshots taken before every approved change: browse, diff, restore (one-step undo), retention and the change log.' }],
   settingsPanels: [
-    { id: 'snapshots.list', tab: 'snapshots', title: 'Snapshots', icon: 'save', order: 10, render: () => <div className="axp-snapshot-manager"><SnapshotsPanel /></div> },
-    { id: 'snapshots.take', tab: 'snapshots', title: 'Take a snapshot', icon: 'plus', order: 20, render: () => <div className="axp-snapshot-manager"><TakePanel /></div> },
-    { id: 'snapshots.retention', tab: 'snapshots', title: 'Retention', icon: 'clock', order: 30, render: () => <div className="axp-snapshot-manager"><RetentionPanel /></div> },
-    { id: 'snapshots.changes', tab: 'snapshots', title: 'Change log', icon: 'list', order: 40, render: () => <div className="axp-snapshot-manager"><ChangeLogPanel /></div> },
-    { id: 'snapshots.lifecycle', tab: 'snapshots', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'snapshots.list', section: 'general', tab: 'snapshots', title: 'Snapshots', icon: 'save', order: 10, render: () => <div className="axp-snapshot-manager"><SnapshotsPanel /></div> },
+    { id: 'snapshots.take', section: 'data', tab: 'snapshots', title: 'Take a snapshot', icon: 'plus', order: 20, render: () => <div className="axp-snapshot-manager"><TakePanel /></div> },
+    { id: 'snapshots.retention', section: 'data', tab: 'snapshots', title: 'Retention', icon: 'clock', order: 30, render: () => <div className="axp-snapshot-manager"><RetentionPanel /></div> },
+    { id: 'snapshots.changes', section: 'status', tab: 'snapshots', title: 'Change log', icon: 'list', order: 40, render: () => <div className="axp-snapshot-manager"><ChangeLogPanel /></div> },
+    { id: 'snapshots.lifecycle', section: 'plugin', tab: 'snapshots', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

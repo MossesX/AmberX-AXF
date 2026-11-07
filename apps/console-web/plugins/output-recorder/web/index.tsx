@@ -195,7 +195,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'output-recorder', label: 'Audio Output Recorder', icon: 'play', order: 41, parent: 'plugins', description: 'Quality, chunk length, what the phone keeps while offline, and where recordings go on axHub.' }],
   settings: [
     {
-      id: 'output-recorder.recording', label: 'Recording', icon: 'play', tab: 'output-recorder', settings: [
+      id: 'output-recorder.recording', section: 'general', label: 'Recording', icon: 'play', tab: 'output-recorder', settings: [
         { key: K.kbps, label: 'Quality', kind: 'choice', default: String(DEFAULTS.kbps), options: KBPS.map((k) => ({ value: String(k), label: `${k} kbps${k === 32 ? ' (default)' : ''}` })), description: 'AAC. Lower keeps more hours on axHub.' },
         { key: K.channels, label: 'Channels', kind: 'choice', default: '1', options: [{ value: '1', label: 'Mono (half the size)' }, { value: '2', label: 'Stereo' }] },
         { key: K.chunkMin, label: 'Chunk length (minutes)', kind: 'number', default: DEFAULTS.chunkMin, min: 5, max: 60, step: 5 },
@@ -203,7 +203,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'output-recorder.mic', label: 'Microphone', icon: 'mic', tab: 'output-recorder', settings: [
+      id: 'output-recorder.mic', section: 'voice', label: 'Microphone', icon: 'mic', tab: 'output-recorder', settings: [
         {
           key: K.mic, label: 'Record my mic too', kind: 'toggle', default: false,
           description: 'Your mic picks up anyone in the room. Off by default. Adds your mic as a second track (left = mic, right = what the phone plays), so whole sessions have both sides. Android asks for the microphone the first time you turn this on. A start from axHub can choose for itself (its approval then says “Playback + MIC”). Stop just the mic from the recording notification. If another app holds the mic (the Claude app’s voice mode, a call), it records playback only and marks the gap.',
@@ -211,7 +211,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'output-recorder.storage', label: 'Phone and axHub', icon: 'cloud', tab: 'output-recorder', settings: [
+      id: 'output-recorder.storage', section: 'data', label: 'Phone and axHub', icon: 'cloud', tab: 'output-recorder', settings: [
         { key: K.capMb, label: 'Phone queue limit (MB)', kind: 'number', default: DEFAULTS.capMb, min: 50, max: 2000, step: 50, description: 'What the phone may hold while axHub can’t be reached.' },
         { key: K.whenFull, label: 'When the phone queue is full', kind: 'choice', default: 'stop', options: [{ value: 'stop', label: 'Stop recording (nothing lost)' }, { value: 'drop-oldest', label: 'Drop the oldest unsent chunk' }] },
         { key: K.project, label: 'axHub project', kind: 'text', default: DEFAULTS.project, description: 'Its own hub project, so recordings never fill the one notes and plans share.' },
@@ -219,8 +219,8 @@ export const plugin: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
-    { id: 'output-recorder.budget', tab: 'output-recorder', title: 'Room on axHub', icon: 'cloud', render: () => <HubBudget /> },
-    { id: 'output-recorder.lifecycle', tab: 'output-recorder', title: 'Install & uninstall', icon: 'package', render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'output-recorder.budget', section: 'data', tab: 'output-recorder', title: 'Room on axHub', icon: 'cloud', render: () => <HubBudget /> },
+    { id: 'output-recorder.lifecycle', section: 'plugin', tab: 'output-recorder', title: 'Install & uninstall', icon: 'package', render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
     const bridge = nativeBridge();

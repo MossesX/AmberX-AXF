@@ -25,12 +25,12 @@ export const plugin: AxfWebLibrary = {
   contextMenu: [{ id: 'feature-matrix.default', target: 'default', order: 92, items: [{ id: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', action: 'nav:feature-matrix' }] }],
   settingsTabs: [{ id: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', parent: 'plugins', order: 44, description: 'Every build’s keep / skip feature list, one dataset, Apply to every table.' }],
   settings: [{
-    id: 'feature-matrix.prefs', label: 'Feature matrix', icon: 'check-circle', tab: 'feature-matrix', order: 10,
+    id: 'feature-matrix.prefs', section: 'general', label: 'Feature matrix', icon: 'check-circle', tab: 'feature-matrix', order: 10,
     settings: [
       { key: KEYS.sort, label: 'Default order', kind: 'choice', default: 'updated', options: [{ value: 'updated', label: 'Last changed first' }, { value: 'added', label: 'Newest added first' }] },
       { key: KEYS.rowButton, label: 'Row button in builds grids', kind: 'toggle', default: true, description: 'A Feature matrix button on every row of the builds grids (the right-click item stays either way).' },
       { key: KEYS.history, label: 'Open the history with the matrix', kind: 'toggle', default: false },
     ],
   }],
-  settingsPanels: [{ id: 'feature-matrix.lifecycle', tab: 'feature-matrix', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'feature-matrix.lifecycle', section: 'plugin', tab: 'feature-matrix', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

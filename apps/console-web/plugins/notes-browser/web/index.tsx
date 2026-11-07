@@ -192,7 +192,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }] },
   settingsTabs: [{ id: 'notes-browser', label: 'Notes', icon: 'file', order: 90, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'notes-browser.where', tab: 'notes-browser', title: 'Where notes live', icon: 'folder', order: 10, render: () => <SettingsPanel /> },
-    { id: 'notes-browser.lifecycle', tab: 'notes-browser', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'notes-browser.where', section: 'general', tab: 'notes-browser', title: 'Where notes live', icon: 'folder', order: 10, render: () => <SettingsPanel /> },
+    { id: 'notes-browser.lifecycle', section: 'plugin', tab: 'notes-browser', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

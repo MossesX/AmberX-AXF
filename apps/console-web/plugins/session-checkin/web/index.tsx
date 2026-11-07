@@ -400,9 +400,9 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'session-checkin', label: 'Sessions', icon: 'list', view: 'session-checkin' }] },
   settingsTabs: [{ id: 'session-checkin', label: 'Session check-in', icon: 'check-circle', order: 36, description: 'The questions every new Claude Code session opens with, where they are installed, and the baseline build costs they quote.' }],
   settingsPanels: [
-    { id: 'session-checkin.status', tab: 'session-checkin', title: 'Status', icon: 'info', order: 10, render: () => <StatusPanel /> },
-    { id: 'session-checkin.install', tab: 'session-checkin', title: 'Install or change', icon: 'download', order: 20, render: () => <InstallWizard /> },
-    { id: 'session-checkin.baseline', tab: 'session-checkin', title: 'Baseline build costs', icon: 'chart', order: 30, render: () => <BaselinePanel /> },
+    { id: 'session-checkin.status', section: 'status', tab: 'session-checkin', title: 'Status', icon: 'info', order: 10, render: () => <StatusPanel /> },
+    { id: 'session-checkin.install', section: 'general', tab: 'session-checkin', title: 'Install or change', icon: 'download', order: 20, render: () => <InstallWizard /> },
+    { id: 'session-checkin.baseline', section: 'status', tab: 'session-checkin', title: 'Baseline build costs', icon: 'chart', order: 30, render: () => <BaselinePanel /> },
   ],
 };
 

@@ -221,12 +221,12 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'main-build-status', label: 'Main build status', icon: 'play', parent: 'plugins', order: 47, description: 'The CI result dot on the banner.' }],
   settings: [{
-    id: 'main-build-status.look', label: 'On the banner', icon: 'eye', tab: 'main-build-status', order: 5,
+    id: 'main-build-status.look', section: 'look', label: 'On the banner', icon: 'eye', tab: 'main-build-status', order: 5,
     settings: [{ key: SHOW_KEY, label: 'Show the build status on the banner', kind: 'toggle', default: true, scope: 'device' }],
   }],
   settingsPanels: [
-    { id: 'main-build-status.status', tab: 'main-build-status', title: 'Now', icon: 'play', order: 10, render: () => <StatusPanel /> },
-    { id: 'main-build-status.watch', tab: 'main-build-status', title: 'What it watches', icon: 'branch', order: 20, render: () => <WatchPanel /> },
-    { id: 'main-build-status.lifecycle', tab: 'main-build-status', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'main-build-status.status', section: 'status', tab: 'main-build-status', title: 'Now', icon: 'play', order: 10, render: () => <StatusPanel /> },
+    { id: 'main-build-status.watch', section: 'general', tab: 'main-build-status', title: 'What it watches', icon: 'branch', order: 20, render: () => <WatchPanel /> },
+    { id: 'main-build-status.lifecycle', section: 'plugin', tab: 'main-build-status', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

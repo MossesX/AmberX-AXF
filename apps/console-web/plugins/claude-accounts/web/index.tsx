@@ -192,8 +192,8 @@ export const plugin: AxfWebLibrary = {
   dialogs: { [DIALOG]: { title: 'Switch Claude account', icon: 'key', searchable: false, render: () => <Accounts /> } },
   settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'Which Claude login the VPS uses: list, switch, save the current login.' }],
   settingsPanels: [
-    { id: 'claude-accounts.list', tab: VIEW, title: 'Accounts', icon: 'key', order: 1, render: () => <Accounts /> },
-    { id: 'claude-accounts.add', tab: VIEW, title: 'Add an account', icon: 'plus', order: 2, render: () => <Save /> },
-    { id: 'claude-accounts.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'claude-accounts.list', section: 'general', tab: VIEW, title: 'Accounts', icon: 'key', order: 1, render: () => <Accounts /> },
+    { id: 'claude-accounts.add', section: 'connections', tab: VIEW, title: 'Add an account', icon: 'plus', order: 2, render: () => <Save /> },
+    { id: 'claude-accounts.lifecycle', section: 'plugin', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -473,12 +473,12 @@ export function createAlertsLibrary(opts: AlertsOptions = {}): AxfWebLibrary {
   // created on first install, so importing the library has no side effects
   let transport = opts.transport;
   const swUrl = opts.serviceWorkerUrl ?? '';
-  const panels: { id: string; title: string; icon: string; order: number; render: () => ReactNode }[] = [
-    { id: 'alerts.rules', title: 'Where alerts go', icon: 'sliders', order: 10, render: () => <RulesPanel /> },
-    { id: 'alerts.sources', title: 'Sources', icon: 'list', order: 20, render: () => <SourcesPanel /> },
-    { id: 'alerts.ntfy', title: 'Phone: ntfy', icon: 'smartphone', order: 30, render: () => <NtfyPanel /> },
-    { id: 'alerts.webpush', title: 'Phone: web push', icon: 'bell', order: 40, render: () => <WebPushPanel swUrl={swUrl} /> },
-    { id: 'alerts.test', title: 'Try it', icon: 'zap', order: 50, render: () => <TestPanel /> },
+  const panels: { id: string; section: string; title: string; icon: string; order: number; render: () => ReactNode }[] = [
+    { id: 'alerts.rules', section: 'alerts', title: 'Where alerts go', icon: 'sliders', order: 10, render: () => <RulesPanel /> },
+    { id: 'alerts.sources', section: 'general', title: 'Sources', icon: 'list', order: 20, render: () => <SourcesPanel /> },
+    { id: 'alerts.ntfy', section: 'connections', title: 'Phone: ntfy', icon: 'smartphone', order: 30, render: () => <NtfyPanel /> },
+    { id: 'alerts.webpush', section: 'connections', title: 'Phone: web push', icon: 'bell', order: 40, render: () => <WebPushPanel swUrl={swUrl} /> },
+    { id: 'alerts.test', section: 'tools', title: 'Try it', icon: 'zap', order: 50, render: () => <TestPanel /> },
   ];
   return {
     id: ALERTS_LIBRARY_ID,

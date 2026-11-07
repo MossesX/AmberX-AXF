@@ -203,7 +203,7 @@ export const plugin: AxfWebLibrary = {
   register: (rt) => catchReturn(rt),
   settingsTabs: [{ id: TAB, label: 'GitHub', icon: 'github', order: 15, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'github-app.setup', tab: TAB, title: 'GitHub App', icon: 'github', order: 10, render: () => <GitHubAppPanel /> },
-    { id: 'github-app.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'github-app.setup', section: 'general', tab: TAB, title: 'GitHub App', icon: 'github', order: 10, render: () => <GitHubAppPanel /> },
+    { id: 'github-app.lifecycle', section: 'plugin', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -35,7 +35,7 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: FOLDER, label: 'Claude sessions', icon: 'sparkles', order: 30, parent: 'plugins', description: "Claude's agent: who every Claude session works as, and whether you're asked each time." }],
   settingsPanels: [
-    { id: 'claude.agent', tab: FOLDER, title: 'Claude agent', icon: 'user', order: 10, render: () => <SettingsPanel /> },
-    { id: 'claude-session.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'claude.agent', section: 'general', tab: FOLDER, title: 'Claude agent', icon: 'user', order: 10, render: () => <SettingsPanel /> },
+    { id: 'claude-session.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -158,7 +158,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', view: FOLDER }] },
   settingsTabs: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', order: 93, parent: 'plugins', description: 'Every plugin\'s commands on the REST API, MCP and the CLI' }],
   settingsPanels: [
-    { id: 'plugin-commands.settings', tab: FOLDER, title: 'MCP tools and last commands', icon: 'terminal', order: 10, render: () => <SettingsPanel /> },
-    { id: 'plugin-commands.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'plugin-commands.settings', section: 'connections', tab: FOLDER, title: 'MCP tools and last commands', icon: 'terminal', order: 10, render: () => <SettingsPanel /> },
+    { id: 'plugin-commands.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

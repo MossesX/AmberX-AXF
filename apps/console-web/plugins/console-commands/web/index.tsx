@@ -294,7 +294,7 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'console-commands.client', order: 99, render: () => <ConsoleCommandsClient /> }] },
   settingsTabs: [{ id: FOLDER, label: 'Console commands', icon: 'radio', order: 92, parent: 'plugins', description: 'Let Claude sessions open screens, dialogs and settings in this console' }],
   settings: [{
-    id: 'console-commands.prefs', label: 'Console commands', icon: 'radio', tab: FOLDER, order: 10,
+    id: 'console-commands.prefs', section: 'general', label: 'Console commands', icon: 'radio', tab: FOLDER, order: 10,
     description: 'When Brett tells Amber to load a screen, his open console goes there. Opening only navigates; an action that changes data keeps its own permission.',
     settings: [
       { key: KEYS.on, label: 'Let Claude sessions move this console', kind: 'toggle', default: true, scope: 'device', description: 'Off: this console stops listening; commands go to your other open consoles.' },
@@ -302,8 +302,8 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [
-    { id: 'console-commands.wake', tab: FOLDER, title: 'When no console is open', icon: 'smartphone', order: 15, render: () => <WakePanel /> },
-    { id: 'console-commands.consoles', tab: FOLDER, title: 'Open consoles and last commands', icon: 'monitor', order: 20, render: () => <ConsolesPanel /> },
-    { id: 'console-commands.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'console-commands.wake', section: 'behaviour', tab: FOLDER, title: 'When no console is open', icon: 'smartphone', order: 15, render: () => <WakePanel /> },
+    { id: 'console-commands.consoles', section: 'status', tab: FOLDER, title: 'Open consoles and last commands', icon: 'monitor', order: 20, render: () => <ConsolesPanel /> },
+    { id: 'console-commands.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

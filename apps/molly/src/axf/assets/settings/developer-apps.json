@@ -23,6 +23,7 @@
     "groups": [
       {
         "id": "axf.dev.shared",
+        "section": "general",
         "label": "Developer options",
         "icon": "code",
         "tab": "developer",

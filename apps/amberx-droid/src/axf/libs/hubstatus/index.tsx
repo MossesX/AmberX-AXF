@@ -217,24 +217,24 @@ export const hubStatusLibrary: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'hubstatus', label: 'axHub status', icon: 'cloud', parent: 'plugins', order: 46, description: 'The axHub badge on the banner: green only while settings come live from axHub.' }],
   settings: [
-    { id: 'hubstatus.badge', label: 'The badge', icon: 'eye', tab: 'hubstatus', order: 10, settings: [
+    { id: 'hubstatus.badge', section: 'general', label: 'The badge', icon: 'eye', tab: 'hubstatus', order: 10, settings: [
       { key: K.show, label: 'Show the axHub badge on the banner', kind: 'toggle', default: true, scope: 'device', slot: 'banner' },
       { key: K.side, label: 'Side', kind: 'choice', default: 'right', options: [{ value: 'left', label: 'Left' }, { value: 'right', label: 'Right' }], scope: 'device' },
       { key: K.dot, label: 'Show the dot', kind: 'toggle', default: true },
       { key: K.liveLabel, label: 'Words while live (green)', kind: 'text', default: DEFAULT_LOOK.liveLabel },
       { key: K.notLiveLabel, label: 'Words while not live (red)', kind: 'text', default: DEFAULT_LOOK.notLiveLabel },
     ] },
-    { id: 'hubstatus.popup', label: 'When it changes', icon: 'info', tab: 'hubstatus', order: 20, settings: [
+    { id: 'hubstatus.popup', section: 'alerts', label: 'When it changes', icon: 'info', tab: 'hubstatus', order: 20, settings: [
       { key: K.popup, label: 'Pop-up note', kind: 'choice', default: 'banner', options: [{ value: 'banner', label: 'Next to the badge' }, { value: 'toast', label: 'Toast' }, { value: 'off', label: 'Off' }] },
       { key: K.popupSeconds, label: 'Seconds it stays', kind: 'number', default: 5, min: 1, max: 60, step: 1 },
     ] },
-    { id: 'hubstatus.check', label: 'Checking', icon: 'refresh', tab: 'hubstatus', order: 30, settings: [
+    { id: 'hubstatus.check', section: 'behaviour', label: 'Checking', icon: 'refresh', tab: 'hubstatus', order: 30, settings: [
       { key: K.every, label: 'Check every (seconds)', kind: 'number', default: 30, min: 10, max: 600, step: 5 },
       { key: K.hub, label: 'axHub address (used when the app has no hub of its own)', kind: 'text', default: DEFAULT_HUB },
     ] },
   ],
   settingsPanels: [
-    { id: 'hubstatus.now', tab: 'hubstatus', title: 'Now', icon: 'cloud', order: 5, render: () => <StatusCard /> },
+    { id: 'hubstatus.now', section: 'status', tab: 'hubstatus', title: 'Now', icon: 'cloud', order: 5, render: () => <StatusCard /> },
   ],
 };
 

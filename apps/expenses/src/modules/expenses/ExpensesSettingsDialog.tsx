@@ -2,14 +2,14 @@
 
 /**
  * @file The Expense Tracker's settings dialog — rebuilt after the peel
- * (owner, 2026-10-16) as a tabbed dialog over the SAME rows the decl declares
- * and core's registry persists, plus a Theme tab that is not a setting at all
+ * (owner, 2026-10-16) as a dialog of collapsible sections over the SAME rows the decl declares
+ * and core's registry persists, plus a Theme section that is not a setting at all
  * but the per-browser theme store.
  *
  * Why a module-owned dialog rather than core's `SettingsDialog`: core's is a
  * flat list of every row, right for a module with four of them and wrong for
  * one with forty. The rows are still DATA on the decl — this file adds
- * sections (`settings.ts` → `SECTIONS`), per-section reset, and the Theme tab.
+ * sections (`settings.ts` → `SECTIONS`), per-section reset, and the Theme section.
  * Core's dialog is intercepted by the module (`ExpensesModule`) so the shell's
  * gear and the header's gear open the same thing.
  */
@@ -25,14 +25,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import AiSettingsPanel from "./assistant/AiSettingsPanel";
 
-import { token } from "@axf/core";
+import { SettingsFold, SettingsFoldTools, token, useSettingsFolds } from "@axf/core";
 import type { SettingRow, SettingValue } from "@axf/core";
 
 import ThemeTab from "./ThemeTab";
@@ -78,13 +76,11 @@ function RowControl({ row, value, onChange }: { row: SettingRow; value: SettingV
 
 export default function ExpensesSettingsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const values = useExpensesSettings();
-  const [tab, setTab] = React.useState<string>(SECTIONS[0].id);
+  const folds = useSettingsFolds("expenses-settings");
 
   const set = (key: string, v: SettingValue) => expensesSettings.set(key as SettingKey, v as never);
-  const section = SECTIONS.find((s) => s.id === tab) ?? null;
 
-  const resetSection = () => {
-    if (!section) return;
+  const resetSection = (section: (typeof SECTIONS)[number]) => {
     for (const key of section.keys) set(key, DEFAULT_SETTINGS[key]);
   };
 
@@ -96,22 +92,11 @@ export default function ExpensesSettingsDialog({ open, onClose }: { open: boolea
           expenses
         </Typography>
       </DialogTitle>
-      <Tabs
-        value={tab}
-        onChange={(_, v: string) => setTab(v)}
-        variant="scrollable"
-        scrollButtons="auto"
-        sx={{ px: 2, borderBottom: `1px solid ${token("edge")}`, minHeight: 36, "& .MuiTab-root": { minHeight: 36, fontSize: 12.5, textTransform: "none", py: 0.5 } }}
-      >
-        {SECTIONS.map((s) => (
-          <Tab key={s.id} value={s.id} label={s.title} />
-        ))}
-        <Tab value="theme" label="Theme" />
-      </Tabs>
       <DialogContent sx={{ minHeight: 360 }}>
-        {tab === "theme" ? (
-          <ThemeTab />
-        ) : section ? (
+        <Stack spacing={1}>
+          <SettingsFoldTools folds={folds} />
+          {SECTIONS.map((section) => (
+            <SettingsFold key={section.id} folds={folds} id={section.id} title={section.title}>
           <Stack spacing={1.6}>
             <Typography sx={{ fontSize: 12, color: token("dim") }}>{section.blurb}</Typography>
             {section.id === "ai" && <AiSettingsPanel />}
@@ -148,15 +133,20 @@ export default function ExpensesSettingsDialog({ open, onClose }: { open: boolea
                 </Box>
               );
             })}
+            <Box>
+              <Button size="small" color="inherit" onClick={() => resetSection(section)} sx={{ color: token("dim") }}>
+                Reset this section
+              </Button>
+            </Box>
           </Stack>
-        ) : null}
+            </SettingsFold>
+          ))}
+          <SettingsFold folds={folds} id="theme" title="Theme">
+            <ThemeTab />
+          </SettingsFold>
+        </Stack>
       </DialogContent>
       <DialogActions>
-        {tab !== "theme" && (
-          <Button size="small" color="inherit" onClick={resetSection} sx={{ color: token("dim") }}>
-            Reset this section
-          </Button>
-        )}
         <Button size="small" color="inherit" onClick={() => expensesSettings.reset()} sx={{ color: token("dim") }}>
           Reset all
         </Button>

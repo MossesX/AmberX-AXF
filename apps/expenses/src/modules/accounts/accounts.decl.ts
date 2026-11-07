@@ -324,6 +324,7 @@ export const ACCOUNTS_DECL: ModuleDecl = {
     rows: [
       {
         key: "messagePollSeconds",
+        section: "Behaviour",
         label: "Message poll interval",
         hint: "Seconds between thread refreshes while the SSE presence stream is down. The stream is the primary channel; without this fallback cadence a tab that lost it never sees another message.",
         kind: "number",
@@ -334,6 +335,7 @@ export const ACCOUNTS_DECL: ModuleDecl = {
       },
       {
         key: "showOfflineMembers",
+        section: "Behaviour",
         label: "Show offline members",
         hint: "Off, the roster lists only members with a live presence connection — the only way a large directory stays usable when most of it is signed out.",
         kind: "switch",
@@ -341,6 +343,7 @@ export const ACCOUNTS_DECL: ModuleDecl = {
       },
       {
         key: "denseTables",
+        section: "Look and layout",
         label: "Dense tables",
         hint: "Tight row height in the member directory and the admin tables, so an operator can see a whole roster or permission matrix without scrolling.",
         kind: "switch",
@@ -348,6 +351,7 @@ export const ACCOUNTS_DECL: ModuleDecl = {
       },
       {
         key: "floatablePanes",
+        section: "Look and layout",
         label: "Floatable panes & toolbars (IDE style)",
         hint: "On, module panes and toolbars can be dragged out, floated, snap-mounted to an edge and flipped between horizontal and vertical, and where you put them is remembered for you. Off is the static studio, exactly — the switch gates a whole interaction mode, so there is no arrangement to keep and nothing to drag.",
         kind: "switch",
@@ -355,6 +359,7 @@ export const ACCOUNTS_DECL: ModuleDecl = {
       },
       {
         key: "editUi",
+        section: "Look and layout",
         label: "Edit UI",
         hint: "On, the app's chrome grows drag handles: the command bar and module toolbars can be moved, docked to any edge and reset from where they sit. Arranging is what this gates — an arrangement already made stays on screen for whoever made it with this off, which is why it is a mode and not a preference.",
         kind: "switch",

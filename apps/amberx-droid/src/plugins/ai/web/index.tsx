@@ -457,18 +457,18 @@ export const library: AxfWebLibrary = {
   nav: { label: 'AI', items: [{ id: 'ask', label: 'Ask my notes', icon: 'sparkles', view: 'ask' }] },
   settingsTabs: [{ id: 'ai', label: 'AI connection', icon: 'sparkles', order: 15, parent: 'plugins', description: 'The AI on the AmberX server: Claude plan or API, other providers as fallbacks.' }],
   settings: [
-    { id: 'amberx.ai.use', label: 'Use the AI', icon: 'sparkles', tab: 'ai', order: 1, settings: [
+    { id: 'amberx.ai.use', section: 'general', label: 'Use the AI', icon: 'sparkles', tab: 'ai', order: 1, settings: [
       { key: K.enabled, label: 'Use the AI in this app (notes parsing, AI snippets, Gizmo)', kind: 'toggle', default: true },
     ] },
-    { id: 'amberx.ai', label: 'On this device', icon: 'eye', tab: 'ai', order: 30, settings: [
+    { id: 'amberx.ai', section: 'ai', label: 'On this device', icon: 'eye', tab: 'ai', order: 30, settings: [
       { key: K.badge, label: 'Show the AI badge on the banner', kind: 'toggle', default: true, scope: 'device', slot: 'banner' },
       { key: K.approvals, label: 'Show axHub approvals in the assistant title bar', kind: 'toggle', default: true, description: 'A count while axHub has calls waiting. Tap: Approve in the hub view, or Deny a held command before its countdown ends.' },
       { key: K.every, label: 'Check the AI every (minutes)', kind: 'number', default: 3, min: 1, max: 60, step: 1 },
     ] },
   ],
   settingsPanels: [
-    { id: 'amberx.ai.status', tab: 'ai', title: 'Status', icon: 'sparkles', order: 5, render: () => <Panel><StatusLine /></Panel> },
-    { id: 'amberx.ai.connection', tab: 'ai', title: 'Connection', icon: 'cloud', order: 10, render: () => <ConnectionPanel /> },
+    { id: 'amberx.ai.status', section: 'status', tab: 'ai', title: 'Status', icon: 'sparkles', order: 5, render: () => <Panel><StatusLine /></Panel> },
+    { id: 'amberx.ai.connection', section: 'ai', tab: 'ai', title: 'Connection', icon: 'cloud', order: 10, render: () => <ConnectionPanel /> },
   ],
   contextMenu: [{ id: 'amberx.ai', items: [{ id: 'ai.ask', label: 'Ask my notes', icon: 'sparkles', action: 'nav:ask' }] }],
   register(rt) {

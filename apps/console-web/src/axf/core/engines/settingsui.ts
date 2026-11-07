@@ -15,6 +15,12 @@
  * it (`hide`), per interface in the asset, and per user in the saved setting SETTINGS_VISIBLE_KEY (the level editor
  * writes it), merged with `withSettingsVisible`. Additive field: assets without it are unchanged.
  *
+ * Sections (Brett, Nov 7 2026, build settings-sections-everywhere): every group and panel belongs to one categorized,
+ * collapsible section. A group or panel names its section (`section`, a SETTINGS_SECTIONS id or the interface's own);
+ * the asset's `sections` retitles, reorders or folds them and may move ids between them (`members` wins over the item's
+ * own word), so an interface rearranges its sections without touching code. Fold state is per device, never in the
+ * asset; `sectionTools` is the Expand all / Collapse all bar. Additive: assets without the fields get the standard set.
+ *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md); spec/fixtures/settings-ui.json is what it will replay.
  */
 import type { SettingKind, SettingSpec, SettingsGroup, SettingsTab, SettingValue } from '../settings';
@@ -52,7 +58,9 @@ export type SettingsLayout = 'tabs-top' | 'tabs-side' | 'list';
 export type SettingsHeader = 'full' | 'compact' | 'none';
 
 export interface SettingsUiTab { id: string; label?: string; icon?: string; order?: number; description?: string; parent?: string; hidden?: boolean }
-export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[]; level?: SettingsLevel; collapsible?: boolean; collapsed?: boolean }
+export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[]; level?: SettingsLevel; collapsible?: boolean; collapsed?: boolean; section?: string }
+/** A section override or a new section: everything but `id` is optional. `tab` limits it to one tab; `members` (group, panel ids) moves them in. */
+export interface SettingsUiSection { id: string; title?: string; icon?: string; order?: number; collapsed?: boolean; tab?: string; members?: string[] }
 
 export interface SettingsUi {
   layout: SettingsLayout;
@@ -79,6 +87,10 @@ export interface SettingsUi {
   levelOf: Record<string, SettingsLevel>;
   /** per-level visible sets on top of the rank rule (the interface's own; a user's saved sets merge over them) */
   visible: SettingsVisible;
+  /** section overrides + the interface's own sections (see SETTINGS_SECTIONS for the standard set) */
+  sections: SettingsUiSection[];
+  /** the Expand all / Collapse all bar over a tab's sections */
+  sectionTools: boolean;
 }
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
@@ -87,7 +99,7 @@ export const SETTINGS_HEADERS: readonly SettingsHeader[] = ['full', 'compact', '
 export const ASSET_SETTING_KINDS: readonly SettingKind[] = ['toggle', 'text', 'number', 'slider', 'choice', 'multi_choice', 'color', 'link', 'section'];
 export const SETTINGS_UI_LIMITS = { tabs: 40, hide: 200, groups: 40, settings: 60, options: 50, text: 200, id: 120 } as const;
 
-export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {} };
+export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {}, sections: [], sectionTools: true };
 /** The level the settings page shows (per browser, like every setting). Older saved names are migrated on read. */
 export const SETTINGS_LEVEL_KEY = 'axf.settings.level';
 /** The user's own visible sets (JSON of SettingsVisible), merged over the interface's; the level editor writes it. */
@@ -159,6 +171,20 @@ function settingOf(raw: unknown): SettingSpec | null {
   return s;
 }
 
+function sectionOf(raw: unknown): SettingsUiSection | null {
+  if (!isObj(raw)) return null;
+  const sid = id(raw.id);
+  if (!sid) return null;
+  const s: SettingsUiSection = { id: sid };
+  const title = text(raw.title); if (title) s.title = title;
+  const icon = id(raw.icon); if (icon) s.icon = icon;
+  const order = num(raw.order); if (order !== undefined) s.order = order;
+  if (typeof raw.collapsed === 'boolean') s.collapsed = raw.collapsed;
+  const tab = id(raw.tab); if (tab) s.tab = tab;
+  const members = idList(raw.members); if (members.length) s.members = members;
+  return s;
+}
+
 function groupOf(raw: unknown): SettingsUiGroup | null {
   if (!isObj(raw)) return null;
   const gid = id(raw.id), label = text(raw.label), tab = id(raw.tab);
@@ -174,6 +200,7 @@ function groupOf(raw: unknown): SettingsUiGroup | null {
   const lv = level(raw.level); if (lv) g.level = lv;
   if (raw.collapsible === true) g.collapsible = true;
   if (raw.collapsed === true) g.collapsed = true;
+  const section = id(raw.section); if (section) g.section = section;
   return g;
 }
 
@@ -195,6 +222,8 @@ export function normalizeSettingsUi(raw: unknown): SettingsUi {
     defaultLevel: level(d.defaultLevel) ?? SETTINGS_UI_DEFAULTS.defaultLevel,
     levelOf: Object.fromEntries(Object.entries(isObj(d.levelOf) ? d.levelOf : {}).filter(([k, v]) => id(k) && level(v)).slice(0, SETTINGS_UI_LIMITS.hide).map(([k, v]) => [k, level(v)!])) as Record<string, SettingsLevel>,
     visible: normalizeSettingsVisible(d.visible),
+    sections: uniqueBy((Array.isArray(d.sections) ? d.sections : []).map(sectionOf).filter((x): x is SettingsUiSection => !!x), (x) => `${x.tab ?? ''}/${x.id}`).slice(0, SETTINGS_UI_LIMITS.groups),
+    sectionTools: bool(d.sectionTools, SETTINGS_UI_DEFAULTS.sectionTools),
   };
 }
 
@@ -295,14 +324,16 @@ export function settingsUiErrors(raw: unknown): string[] {
   if (!isObj(raw)) return ['data must be an object'];
   const n = normalizeSettingsUi(raw);
   const errors: string[] = [];
-  const count = (k: 'tabs' | 'hide' | 'groups') => (Array.isArray(raw[k]) ? (raw[k] as unknown[]).length : 0);
+  const count = (k: 'tabs' | 'hide' | 'groups' | 'sections') => (Array.isArray(raw[k]) ? (raw[k] as unknown[]).length : 0);
   if ('tabs' in raw && !Array.isArray(raw.tabs)) errors.push('data.tabs must be a list');
   if ('hide' in raw && !Array.isArray(raw.hide)) errors.push('data.hide must be a list');
   if ('groups' in raw && !Array.isArray(raw.groups)) errors.push('data.groups must be a list');
+  if ('sections' in raw && !Array.isArray(raw.sections)) errors.push('data.sections must be a list');
   if ('toolbar' in raw && !n.toolbar) errors.push('data.toolbar must be a toolbar asset id');
   if (count('tabs') !== n.tabs.length) errors.push(`data.tabs: ${count('tabs') - n.tabs.length} entr${count('tabs') - n.tabs.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.tabs})`);
   if (count('hide') !== n.hide.length) errors.push(`data.hide: ${count('hide') - n.hide.length} entr${count('hide') - n.hide.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.hide})`);
   if (count('groups') !== n.groups.length) errors.push(`data.groups: ${count('groups') - n.groups.length} group(s) dropped (needs id, label, tab and at least one valid setting)`);
+  if (count('sections') !== n.sections.length) errors.push(`data.sections: ${count('sections') - n.sections.length} section(s) dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.groups})`);
   (Array.isArray(raw.groups) ? raw.groups : []).forEach((g, i) => {
     const kept = n.groups.find((x) => isObj(g) && x.id === g.id);
     const given = isObj(g) && Array.isArray(g.settings) ? g.settings.length : 0;
@@ -377,6 +408,64 @@ export function filterSettingsGroup(group: SettingsGroup, ui: SettingsUi, at?: S
 export function settingsUiGroups(ui: SettingsUi, assetId: string): SettingsGroup[] {
   const module = `asset:settings/${assetId}`;
   return ui.groups.map((g) => ({ ...g, module, settings: g.settings.map((s) => ({ ...s })) }));
+}
+
+/* ---------------- sections ---------------- */
+
+export interface SettingsSectionDef { id: string; title: string; icon: string; order: number; collapsed?: boolean }
+/**
+ * The standard categories, in page order: the same kinds of settings land in the same section in every interface.
+ * New ones go in here (or in a settings asset's `sections`); ids never change, saved fold state and tags name them.
+ */
+export const SETTINGS_SECTIONS: readonly SettingsSectionDef[] = [
+  { id: 'general', title: 'General', icon: 'settings', order: 10 },
+  { id: 'look', title: 'Look and layout', icon: 'palette', order: 20 },
+  { id: 'behaviour', title: 'Behaviour', icon: 'sliders', order: 30 },
+  { id: 'alerts', title: 'Notifications and alerts', icon: 'bell', order: 40 },
+  { id: 'voice', title: 'Voice and audio', icon: 'mic', order: 50 },
+  { id: 'ai', title: 'AI and models', icon: 'sparkles', order: 60 },
+  { id: 'access', title: 'Access and safety', icon: 'shield', order: 70 },
+  { id: 'connections', title: 'Connections', icon: 'cloud', order: 80 },
+  { id: 'data', title: 'Data and storage', icon: 'save', order: 90 },
+  { id: 'status', title: 'Status and activity', icon: 'chart', order: 100 },
+  { id: 'tools', title: 'Tools', icon: 'hammer', order: 110 },
+  { id: 'advanced', title: 'Advanced', icon: 'code', order: 120, collapsed: true },
+  { id: 'plugin', title: 'Plugin', icon: 'package', order: 130, collapsed: true },
+];
+/** Where a group or panel that names no section goes (never dropped; `check-settings-sections.mjs` fails it in CI). */
+export const SETTINGS_SECTION_DEFAULT = 'general';
+
+/** A group or panel to file: its id, its own `section`, its order, and whatever the host wants back (`ref`). */
+export interface SettingsSectionItem<T> { id: string; section?: string; order?: number; tie?: number; ref: T }
+export interface SettingsSectionView<T> { id: string; title: string; icon: string; order: number; collapsed: boolean; items: SettingsSectionItem<T>[] }
+
+const sectionWord = (sid: string): string => { const w = sid.replace(/[-_.:]+/g, ' ').trim(); return w.charAt(0).toUpperCase() + w.slice(1); };
+
+/**
+ * One tab's groups and panels → its sections, in page order, each with its items in their own order. An id the asset
+ * lists under `members` goes there, else the item's own `section`, else general. A tab-scoped asset entry beats one
+ * for every tab. Sections with nothing in them are left out.
+ */
+export function arrangeSettingsSections<T>(items: readonly SettingsSectionItem<T>[], ui: SettingsUi, tab?: string): SettingsSectionView<T>[] {
+  const here = ui.sections.filter((s) => !s.tab || s.tab === tab);
+  const entry = (sid: string) => here.find((s) => s.id === sid && s.tab) ?? here.find((s) => s.id === sid);
+  const memberOf = (itemId: string) => here.find((s) => s.tab && s.members?.includes(itemId))?.id ?? here.find((s) => s.members?.includes(itemId))?.id;
+  const out = new Map<string, SettingsSectionView<T>>();
+  items.forEach((item) => {
+    const sid = memberOf(item.id) ?? item.section ?? SETTINGS_SECTION_DEFAULT;
+    let view = out.get(sid);
+    if (!view) {
+      const std = SETTINGS_SECTIONS.find((s) => s.id === sid), own = entry(sid);
+      view = { id: sid, title: own?.title ?? std?.title ?? sectionWord(sid), icon: own?.icon ?? std?.icon ?? 'settings', order: own?.order ?? std?.order ?? 500, collapsed: own?.collapsed ?? std?.collapsed ?? false, items: [] };
+      out.set(sid, view);
+    }
+    view.items.push(item);
+  });
+  const rank = (x: SettingsSectionItem<T>) => x.order ?? 100;
+  return [...out.values()]
+    .map((v, i) => ({ v: { ...v, items: v.items.map((x, j) => ({ x, j })).sort((a, b) => rank(a.x) - rank(b.x) || (a.x.tie ?? 0) - (b.x.tie ?? 0) || a.j - b.j).map((e) => e.x) }, i }))
+    .sort((a, b) => a.v.order - b.v.order || a.i - b.i)
+    .map((e) => e.v);
 }
 
 /** Search: does a setting match the query (label, key, description, option labels; every word must hit)? */

@@ -181,10 +181,10 @@ export const plugin: AxfWebLibrary = {
   // Settings → Plugins → xLayout (a sub-tab of Plugins, like every plugin's)
   settingsTabs: [{ id: 'xlayout', label: 'xLayout', icon: 'layout', order: 40, parent: 'plugins', description: 'Molly as one app: merged menus, IDE panes, toolbars.' }],
   settingsPanels: [
-    { id: 'xlayout.ide', tab: 'xlayout', title: 'IDE mode', icon: 'layout', order: 10, render: () => <IdePanel /> },
-    { id: 'xlayout.toolbars', tab: 'xlayout', title: 'Toolbars', icon: 'hammer', order: 20, render: () => <ToolbarsPanel /> },
-    { id: 'xlayout.apps', tab: 'xlayout', title: 'One app', icon: 'external', order: 30, render: () => <AppsPanel /> },
-    { id: 'xlayout.lifecycle', tab: 'xlayout', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
+    { id: 'xlayout.ide', section: 'look', tab: 'xlayout', title: 'IDE mode', icon: 'layout', order: 10, render: () => <IdePanel /> },
+    { id: 'xlayout.toolbars', section: 'look', tab: 'xlayout', title: 'Toolbars', icon: 'hammer', order: 20, render: () => <ToolbarsPanel /> },
+    { id: 'xlayout.apps', section: 'general', tab: 'xlayout', title: 'One app', icon: 'external', order: 30, render: () => <AppsPanel /> },
+    { id: 'xlayout.lifecycle', section: 'plugin', tab: 'xlayout', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
   ],
   appMenu: [
     { id: 'xlayout.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 20, items: [

@@ -11,6 +11,7 @@ import { useAxfState, useRuntime } from '../AxfProvider';
 import type { ViewMap } from '../AppShell';
 import type { DialogMap } from './Overlays';
 import { Icon } from './Icon';
+import { revealFolds } from './FoldPanel';
 
 /* ---------------- words on pages ---------------- */
 
@@ -57,7 +58,8 @@ export function flashWhenReady(find: () => Element | null, timeoutMs = 3000): vo
     const el = find() as HTMLElement | null;
     if (el) {
       const reduce = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches || document.documentElement.hasAttribute('data-reduced-motion');
-      el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+      revealFolds(el); // a hit inside a closed settings section opens it first
+      requestAnimationFrame(() => el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }));
       el.classList.remove('fx-search-flash');
       void el.offsetWidth; // restart the animation
       el.classList.add('fx-search-flash');

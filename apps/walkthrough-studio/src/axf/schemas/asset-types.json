@@ -309,7 +309,9 @@
       "optional_fields": {
         "density": "compact | regular (default) | roomy — item padding",
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
-        "showIcons": "boolean, default true"
+        "showIcons": "boolean, default true",
+        "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
+        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
       },
       "hideable": true
     },
@@ -348,7 +350,7 @@
       "label": "Tab group",
       "group": "Navigation",
       "icon": "layers",
-      "description": "How every tab row looks: page tabs (.fx-tabs) and the tab bars of floating-window tab groups. Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen.",
+      "description": "tab-group@1: how every tab row looks and behaves — page tabs, section switchers, settings tab bars and the tab bars of window tab groups (every tab row is a tab-group asset, Brett Nov 4 2026; the framework TabGroup component draws them and gives each one the chrome context menu: Settings / Change tab style / Move). Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen. Its settings interface is the settings asset chrome-tab-group (chrome-settings@1).",
       "required": [
         "style",
         "align"
@@ -359,7 +361,8 @@
           "pills",
           "boxed",
           "segmented",
-          "plain"
+          "plain",
+          "chips"
         ],
         "align": [
           "start",
@@ -369,7 +372,9 @@
         ],
         "position": [
           "top",
-          "bottom"
+          "bottom",
+          "left",
+          "right"
         ],
         "density": [
           "compact",
@@ -378,15 +383,29 @@
         ],
         "overflow": [
           "scroll",
-          "wrap"
+          "wrap",
+          "more",
+          "dropdown"
+        ],
+        "display": [
+          "both",
+          "text",
+          "icons"
         ]
       },
       "optional_fields": {
-        "position": "top (default) | bottom — where a window tab group's bar sits",
-        "density": "compact | regular (default) | roomy — tab padding",
-        "overflow": "scroll (default) | wrap — what a row does when its tabs don't fit",
-        "showIcons": "boolean, default true",
-        "divider": "boolean, default true — the rule under the row"
+        "position": "top (default) | bottom | left | right — where the row sits against its panel (left / right = a vertical rail)",
+        "density": "compact | regular (default) | roomy — tab padding (size)",
+        "overflow": "scroll (default) | wrap | more (tabs that don't fit go under a More menu) | dropdown (one button opens the list)",
+        "display": "both (default: icons + text) | text | icons (text becomes the tooltip)",
+        "showIcons": "boolean, default true — older form of display: false = text only",
+        "divider": "boolean, default true — the rule under the row",
+        "sticky": "boolean, default false — the row stays at the top of its scrolling panel",
+        "collapsible": "boolean, default false — a fold button leaves only the active tab (per device)",
+        "closable": "boolean, default true — tabs get a close button where the host allows closing (false hides it)",
+        "reorderable": "boolean, default true — tabs can be dragged into another order where the host allows it (false turns it off)",
+        "badges": "boolean, default true — count badges on tabs",
+        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
       "optional": true
@@ -1105,11 +1124,15 @@
       "icon": "settings",
       "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
       "optional_fields": {
+        "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
+        "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
         "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)",
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
         "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
         "levelOf": "tab, group, panel or setting id → its level",
-        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)"
+        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)",
+        "sections": "section overrides and new sections: [{ id, title?, icon?, order?, collapsed?, tab?, members?: [group or panel ids] }]; ids of the standard set (engines/settingsui.ts SETTINGS_SECTIONS) override it, others add one. Fold state is per device, never here",
+        "sectionTools": "false = no Expand all / Collapse all bar over a tab's sections (default true)"
       },
       "required": [
         "layout",
@@ -1174,6 +1197,26 @@
         "asset": false
       },
       "shared": false,
+      "optional": true
+    },
+    "nav-style": {
+      "label": "Navigation style",
+      "group": "Navigation",
+      "icon": "menu",
+      "description": "How a navigation menu with sub menus looks and behaves (nav-style@1, engine core/engines/navstyle.ts, fields in navstyle-rules.mjs): colours (colour-theme token ids, never literal colours), fonts (style-theme family, typography scale step, weight), icons, density and indent, width (size, min, max, resizable, collapsible to icons), the sub-menu animation (slide, accordion, fade, push, none; duration, easing, stagger, chevron, reduced motion) and behaviour (one or many sub menus open, open on tap or hover, auto-collapse, remember, follow the active page, swipe to open on a phone), plus pinned, hidden and reordered top-level items and per-item accents. Every field has a default and theme leaves it to the stylesheet, so the standard preset draws a nav as it was. Only a nav-menu asset with navStyle: true reads it. Settings: the Navigation settings interface (framework/react/components/NavStyleSettings.tsx); control@1 target tokens.nav.",
+      "required": [],
+      "optional_fields": {
+        "colors": "{ background, text, hover, active, activeText, submenu, accent: theme | colour token }",
+        "font": "{ family: theme | body | display | mono, size: theme | 2xs | xs | sm | md | lg, weight: theme | 400..800 }",
+        "icons": "{ show: boolean, size: sm | md | lg }",
+        "layout": "{ density: theme | compact | regular | roomy, indent: 0..6 (× space) }",
+        "width": "{ size: 0 (the layout asset) | 0..480 px, min 48..320, max 160..640, resizable, collapsible }",
+        "animation": "{ kind: slide | accordion | fade | push | none, durationMs 0..1200 (0 = the theme motion), easing: theme | standard | emphasized | linear | spring | bounce, staggerMs 0..150, chevron: rotate | flip | none, reduced: system | always | never }",
+        "behavior": "{ single, openOn: tap | hover, autoCollapse, remember, followActive, swipe }",
+        "items": "{ order, hidden, pinned: comma-separated top-level item ids }",
+        "accents": "{ <item id>: colour token }"
+      },
+      "hideable": false,
       "optional": true
     },
     "behavior-theme": {
@@ -1535,6 +1578,62 @@
         "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
         "command": "a command the job runs (e.g. a re-record command), shown in the brief",
         "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      }
+    },
+    "card": {
+      "label": "Card",
+      "group": "Widgets",
+      "icon": "chart",
+      "shared": false,
+      "description": "A Home card (card@1, rules core/engines/card-rules.mjs): a data binding, not a design. It names the read it draws (any plugin read command from the plugin-commands@1 registry, served by control@1 as REST, MCP and CLI, or a read the host app provides), its args, a path into the result, an optional filter (where) and reduction, the view (auto or number, list, meter, chart, feed, table, status, plus views a host registers in the open registry), the refresh (live from the console's live feed, every N seconds, or by hand), title, icon and size. Not themed itself: every colour and size comes from the active theme through the view's tokens. Users make cards on Home (Add card, drag a read onto Home, Suggested cards) with no code and no tokens; an app's own starter cards ship as assets.",
+      "required": [
+        "source"
+      ],
+      "enums": {
+        "size": [
+          "s",
+          "m",
+          "l",
+          "wide"
+        ],
+        "chart": [
+          "line",
+          "bar",
+          "spark"
+        ],
+        "reduce": [
+          "none",
+          "count",
+          "sum",
+          "avg",
+          "min",
+          "max",
+          "first",
+          "last"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "title": "shown on the card (up to 60)",
+        "icon": "icon name",
+        "args": "the read command's input",
+        "path": "dotted path into the result; * maps over a list or object",
+        "where": "{ field: value } keeps matching items",
+        "reduce": "fold a list: count, sum, avg, min, max, first, last",
+        "fields": "{ role: field } for the view",
+        "refresh": "{ kind: live | every | manual, every: seconds, channels: [live-feed channels] }",
+        "limit": "items shown (1-200)",
+        "unit": "after a number (USD, ms)",
+        "view": "auto (picked from the data's shape) or a registered view: number, list, meter, chart, feed, table, status, panel (the host's own renderer for a host read), plus views a host registers"
       }
     },
     "help": {

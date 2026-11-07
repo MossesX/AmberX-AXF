@@ -72,17 +72,17 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsTabs: [{ id: 'plugin-manager', label: 'Plugin Manager', icon: 'package', order: 5, parent: 'plugins' }],
   settings: [{
-    id: 'plugin-manager.look', tab: 'plugin-manager', label: 'Layout and view', icon: 'layout', order: 10,
+    id: 'plugin-manager.look', section: 'look', tab: 'plugin-manager', label: 'Layout and view', icon: 'layout', order: 10,
     settings: [
       { key: KEYS.layout, label: 'Layout', kind: 'choice', default: 'studio', options: LAYOUTS.map((l) => ({ value: l.id, label: `${l.label} — ${l.note}` })) },
       { key: KEYS.view, label: 'View', kind: 'choice', default: 'grid', options: VIEWS.map((v) => ({ value: v.id, label: v.label })) },
     ],
   }],
   settingsPanels: [
-    { id: 'plugin-manager.open', tab: 'plugin-manager', title: 'Plugin Manager', icon: 'package', order: 5, render: () => <OpenPanel /> },
+    { id: 'plugin-manager.open', section: 'general', tab: 'plugin-manager', title: 'Plugin Manager', icon: 'package', order: 5, render: () => <OpenPanel /> },
     // the console's plugin lazy loader (src/pluginLoader.tsx): what loads at startup, idle, cache, per plugin, live table
-    { id: 'plugin-manager.lazy', tab: 'plugin-manager', title: 'Lazy loader', icon: 'zap', order: 20, render: () => <LazyLoaderPanel /> },
-    { id: 'plugin-manager.lifecycle', tab: 'plugin-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'plugin-manager.lazy', section: 'advanced', tab: 'plugin-manager', title: 'Lazy loader', icon: 'zap', order: 20, render: () => <LazyLoaderPanel /> },
+    { id: 'plugin-manager.lifecycle', section: 'plugin', tab: 'plugin-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
 

@@ -166,18 +166,18 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: 'agent-voice', label: 'Agent voice', icon: 'mic', order: 35, parent: 'plugins', description: 'Agent voices, the Assistant microphone, cloud voices and pronunciations. Keys stay on the server.' }],
   settings: [
-    { id: 'agent-voice.light', label: 'Live status light', icon: 'eye', tab: 'agent-voice', order: 5, settings: [
+    { id: 'agent-voice.light', section: 'look', label: 'Live status light', icon: 'eye', tab: 'agent-voice', order: 5, settings: [
       { key: K.banner, label: 'On the banner', kind: 'choice', default: 'lit', options: BANNER_MODES.map((v) => ({ value: v, label: v === 'lit' ? 'Only while a voice agent is selected' : v === 'always' ? 'Always (grey when off)' : 'Never' })) },
       { key: K.assistantLight, label: 'In the Assistant title bar', kind: 'toggle', default: true },
     ] },
   ],
   settingsPanels: [
-    { id: 'agent-voice.quick', tab: 'agent-voice', title: 'Agent voices', icon: 'mic', order: 1, render: () => <QuickPanel /> },
-    { id: 'agent-voice.mic', tab: 'agent-voice', title: 'Assistant microphone', icon: 'mic', order: 10, render: () => <MicPanel /> },
-    { id: 'agent-voice.cloud', tab: 'agent-voice', title: 'Cloud voices', icon: 'cloud', order: 20, render: () => <CloudPanel /> },
-    { id: 'agent-voice.pron', tab: 'agent-voice', title: 'Pronunciations (every agent)', icon: 'edit', order: 30, render: () => <GlobalPronunciationsPanel /> },
-    { id: 'agent-voice.io', tab: 'agent-voice', title: 'Import & export', icon: 'download', order: 40, render: () => <ImportExportPanel /> },
-    { id: 'agent-voice.lifecycle', tab: 'agent-voice', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'agent-voice.quick', section: 'general', tab: 'agent-voice', title: 'Agent voices', icon: 'mic', order: 1, render: () => <QuickPanel /> },
+    { id: 'agent-voice.mic', section: 'voice', tab: 'agent-voice', title: 'Assistant microphone', icon: 'mic', order: 10, render: () => <MicPanel /> },
+    { id: 'agent-voice.cloud', section: 'voice', tab: 'agent-voice', title: 'Cloud voices', icon: 'cloud', order: 20, render: () => <CloudPanel /> },
+    { id: 'agent-voice.pron', section: 'voice', tab: 'agent-voice', title: 'Pronunciations (every agent)', icon: 'edit', order: 30, render: () => <GlobalPronunciationsPanel /> },
+    { id: 'agent-voice.io', section: 'data', tab: 'agent-voice', title: 'Import & export', icon: 'download', order: 40, render: () => <ImportExportPanel /> },
+    { id: 'agent-voice.lifecycle', section: 'plugin', tab: 'agent-voice', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
 

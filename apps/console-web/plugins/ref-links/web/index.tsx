@@ -65,14 +65,14 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'ref-links.source', order: 98, render: () => <RefSourceClient /> }] },
   settingsTabs: [{ id: FOLDER, label: 'Reference links', icon: 'info', order: 93, parent: 'plugins', description: 'Mentions of screens, settings, plugins, builds and PRs in banner text open what they refer to' }],
   settings: [{
-    id: 'ref-links.prefs', label: 'Reference links', icon: 'info', tab: FOLDER, order: 10,
+    id: 'ref-links.prefs', section: 'general', label: 'Reference links', icon: 'info', tab: FOLDER, order: 10,
     description: 'Text in the banners that names a part of the app (a screen, a settings page, a plugin, a toolbar, a build, a PR) is a link.',
     settings: [
       { key: KEY, label: 'Link mentions in banner text', kind: 'toggle', default: true, scope: 'device', description: 'Tap = what it is, double-tap = open it, hold = more. Off: the text is plain.' },
     ],
   }],
   settingsPanels: [
-    { id: 'ref-links.try', tab: FOLDER, title: 'Try it', icon: 'edit', order: 20, render: () => <TryPanel /> },
-    { id: 'ref-links.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'ref-links.try', section: 'tools', tab: FOLDER, title: 'Try it', icon: 'edit', order: 20, render: () => <TryPanel /> },
+    { id: 'ref-links.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -97,6 +97,7 @@ export function lightCommands(files, { exists = () => false, list = () => [] } =
     'node framework/cli/check-theme.mjs',
     'node framework/cli/check-controls.mjs',
     'node framework/cli/check-toolbars.mjs',
+    'node framework/cli/check-settings-sections.mjs',
   ];
   if (s.console) {
     cmds.push('(cd apps/console-web && rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake . && npm ci --no-audit --no-fund --silent && node scripts/sync-data.mjs && npx tsc --noEmit)');

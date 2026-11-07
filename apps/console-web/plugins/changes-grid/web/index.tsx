@@ -169,5 +169,5 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Changes & features', icon: 'list', view: VIEW }] },
   contextMenu: [{ id: 'changes-grid.default', target: 'default', order: 93, items: [{ id: 'changes-grid', label: 'Changes & features grid', icon: 'list', action: 'changes-grid.open' }] }],
   settingsTabs: [{ id: 'changes-grid', label: 'Changes & features grid', icon: 'list', parent: 'plugins', order: 45, description: 'One grid of every change and feature.' }],
-  settingsPanels: [{ id: 'changes-grid.lifecycle', tab: 'changes-grid', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'changes-grid.lifecycle', section: 'plugin', tab: 'changes-grid', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

@@ -28,12 +28,12 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: 'build-breaker', label: 'Build Breaker', icon: 'hammer', view: 'build-breaker' }] },
   settingsTabs: [{ id: FOLDER, label: 'Build Breaker', icon: 'hammer', parent: 'plugins', order: 43, description: 'Everything you asked for, one line each.' }],
   settings: [{
-    id: 'build-breaker.prefs', label: 'Build Breaker', icon: 'hammer', tab: FOLDER, order: 10,
+    id: 'build-breaker.prefs', section: 'general', label: 'Build Breaker', icon: 'hammer', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.tab, label: 'Opens on', kind: 'choice', default: 'all', options: [{ value: 'all', label: 'All' }, { value: 'apps', label: 'Apps' }, { value: 'plugins', label: 'Plugins' }, { value: 'timeline', label: 'Timeline' }] },
       { key: KEYS.sort, label: 'Default order', kind: 'choice', default: 'newest', options: bb.SORTS.map((s) => ({ value: s.id, label: s.label })) },
       { key: KEYS.range, label: 'Default dates', kind: 'choice', default: 'all', options: bb.RANGES.map((r) => ({ value: r.id, label: r.id === 'all' ? 'All time' : `Last ${r.label}` })) },
     ],
   }],
-  settingsPanels: [{ id: 'build-breaker.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'build-breaker.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

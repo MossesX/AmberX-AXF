@@ -52,7 +52,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: 'plan-studio', label: 'Plan Studio', icon: 'layout', view: 'plan-studio' }] },
   settingsTabs: [{ id: FOLDER, label: 'Plan Studio', icon: 'layout', parent: 'plugins', order: 42, description: 'Plans, the Catalog, the plan AI and voice.' }],
   settings: [{
-    id: 'plan-studio.prefs', label: 'Plan Studio', icon: 'layout', tab: FOLDER, order: 10,
+    id: 'plan-studio.prefs', section: 'general', label: 'Plan Studio', icon: 'layout', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.layout, label: 'Plans open as', kind: 'choice', default: 'grid', options: [{ value: 'tree', label: 'Tree' }, { value: 'grid', label: 'Grid' }, { value: 'groups', label: 'Sub-grids' }, { value: 'board', label: 'Board' }, { value: 'roadmap', label: 'Roadmap' }, { value: 'reader', label: 'Reader' }] },
       { key: KEYS.sort, label: 'Default order', kind: 'choice', default: 'priority', options: [{ value: 'priority', label: 'Priority' }, { value: 'updated', label: 'Last changed' }, { value: 'target', label: 'Target date' }, { value: 'title', label: 'Title' }] },
@@ -64,5 +64,5 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.voiceLang, label: 'Voice language', kind: 'choice', default: 'en-US', options: [{ value: 'en-US', label: 'English (US)' }, { value: 'en-GB', label: 'English (UK)' }, { value: 'en-CA', label: 'English (Canada)' }] },
     ],
   }],
-  settingsPanels: [{ id: 'plan-studio.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'plan-studio.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

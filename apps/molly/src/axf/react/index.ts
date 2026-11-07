@@ -6,6 +6,7 @@ export { BuildOrigin, originSubtitle, originSearch, originWhen } from './compone
 export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
+export { FoldPanel, FoldScope, FoldTools, foldId, revealFolds, useFold, type Fold, type FoldPanelProps } from './components/FoldPanel';
 export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList, MenuSub, MenuScroll } from './components/MenuList';
 export { useMenuFit, fitMenuEl, menuViewBox, focusMenuItem, installMenuFit } from './components/menuFit';

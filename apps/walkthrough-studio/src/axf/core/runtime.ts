@@ -25,6 +25,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
+import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
@@ -32,6 +33,7 @@ import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageDa
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
+import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -53,6 +55,7 @@ import {
   type MenuActResult,
   type MenuItem,
   type MenuItemButton,
+  type NavItem,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -91,8 +94,32 @@ export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${ty
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
 /** Per-device fold state of a `collapsible` toolbar (same key on Android). */
 export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
+/** Per-device state of a nav that opts in to nav-style@1: collapsed to its icons, the width it was dragged to, the open sub menus (JSON id list). */
+export const NAV_COLLAPSED_KEY = 'axf.nav.collapsed';
+export const NAV_WIDTH_KEY = 'axf.nav.width';
+export const NAV_OPEN_KEY = 'axf.nav.open';
 /** Where a person put the widgets of one host (banner, toolbar, …): JSON of a HostArrangement (core/engines/widgets.ts). */
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
+/** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
+export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+
+/** One widget the banner knows about: on the bar now or not. */
+export interface BannerWidget {
+  key: string;
+  type: string;
+  id: string;
+  label: string;
+  icon?: string;
+  aliases: string[];
+  origin: string;
+  /** Is it on the host right now? A chip its plugin took down stays listed, so a choice for it can still be made. */
+  attached: boolean;
+  /** Is it being drawn on the bar right now (attached, not hidden, not hidden for being empty)? */
+  shown: boolean;
+  at: string;
+  order: number;
+  view: BannerWidgetView;
+}
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
 /**
@@ -261,6 +288,9 @@ export class AxfRuntime {
   readonly manifest: AxfManifest;
   /** The host app this one is embedded in (embed@1), or null when it runs on its own. Fixed for the page's life. */
   readonly embedded: Embed | null;
+  /** embed@1 `shown`: whether the host says this app's frame is on screen (null = it hasn't said; standalone = null). */
+  hostShown: boolean | null = null;
+  private readonly frontSubs = new Set<() => void>();
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
   private listeners = new Set<() => void>();
@@ -307,6 +337,12 @@ export class AxfRuntime {
     const out: Record<string, string> = {};
     for (const w of this.viewportLists) if (w.list.matches) out[w.attr] = '1';
     return out;
+  }
+
+  /** A string that changes whenever a settings value compileStyles reads changes: the control@1 token overrides and the nav's collapsed / width state (a render dependency for the provider). */
+  styleSettingsKey(): string {
+    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY];
+    return JSON.stringify(keys.map((k) => this.settings.get(k) ?? null));
   }
 
   /** A string that changes whenever a viewport attribute changes (a render dependency for the provider). */
@@ -599,6 +635,17 @@ export class AxfRuntime {
 
   /* ---------------- contributed navigation ---------------- */
 
+  /**
+   * The nav-style in force (nav-style@1, normalized, with the control@1 `tokens.nav` overrides written in), or null when
+   * the nav doesn't opt in (nav-menu `navStyle` is not true) or the app ships no nav-style asset.
+   */
+  navStyleData(): NavStyleData | null {
+    if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
+    const a = this.assetOrNull('nav-style' as AssetType);
+    if (!a) return null;
+    return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+  }
+
   /** Nav sections libraries and plugins added, in the order they were added. */
   get navExtras(): NavExtraSection[] {
     return [...this.navSections.values()];
@@ -874,6 +921,7 @@ export class AxfRuntime {
     else if (!this.registry.has(a.type as AssetType, a.id)) this.terminal.warn('widgets', `${key} (attached to ${host} by ${a.origin}) is not registered; it shows once it is`);
     const list = this.hostExtra.get(host) ?? [];
     this.hostExtra.set(host, [...list.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }]);
+    if (host === 'banner') this.bannerSeen.set(key, { type: a.type, id: a.id, origin: a.origin, at: a.at, order: a.order ?? 1000, hint: a.widget });
     this.set({});
     return () => this.detachFromHost(host, key);
   }
@@ -893,6 +941,8 @@ export class AxfRuntime {
       const next = list.filter((x) => x.origin !== origin);
       if (next.length !== list.length) { this.hostExtra.set(host, next); changed = true; }
     }
+    // a plugin switched off takes its widgets out of the picker too; a chip that only took itself down stays listed
+    for (const [key, w] of this.bannerSeen) if (w.origin === origin) { this.bannerSeen.delete(key); changed = true; }
     if (changed) this.set({});
   }
 
@@ -905,11 +955,94 @@ export class AxfRuntime {
   /** Remove run-time banner attachments by key (`type:id`) or by origin (a module / plugin id). */
   detachFromBanner(keyOrOrigin: string): void { this.detachFromHost('banner', keyOrOrigin); }
 
-  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
-  banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
+  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. `all` keeps the widgets the person hid. */
+  banner(opts?: { all?: boolean }): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
     const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
-    return { data: b, placed };
+    if (opts?.all) return { data: b, placed };
+    const shown = Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.bannerWidgetShown(p.key))])) as PlacedBanner;
+    return { data: b, placed: shown };
+  }
+
+  /* ---------------- banner widgets (core/engines/bannerwidgets.ts): one registry, the person's choices ---------------- */
+
+  /** Everything that ever attached itself to the banner while this page ran. */
+  /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
+  contextBannerWidget: string | null = null;
+  private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
+
+  /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */
+  bannerWidgetsKey(): string {
+    const app = this.manifest.app.id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').slice(0, 40) || 'app';
+    const g = globalThis as { matchMedia?: (q: string) => { matches: boolean } };
+    return `axf.banners.widgets.${app}.${g.matchMedia?.('(max-width: 640px)').matches ? 'phone' : 'desktop'}`;
+  }
+
+  /** The person's widget choices on this app and form factor. */
+  bannerWidgetPrefs(): BannerWidgetPrefs { return normalizeBannerWidgetPrefs(this.settings.get(this.bannerWidgetsKey())); }
+
+  private bannerWidgetHint(key: string): BannerWidgetHint | undefined {
+    const seen = this.bannerSeen.get(key);
+    if (seen?.hint) return seen.hint;
+    const own = (this.assetOrNull('banner')?.data as { attach?: HostAttachment[] } | undefined)?.attach;
+    return own?.find((a) => attachmentKey(a.type, a.id) === key)?.widget;
+  }
+
+  /** How one widget is drawn (`type:id`). */
+  bannerWidgetView(key: string): BannerWidgetView {
+    return bannerWidgetView(key.split(':')[0] ?? '', this.bannerWidgetHint(key), this.bannerWidgetPrefs()[key]);
+  }
+
+  /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
+  bannerWidgetShown(key: string): boolean {
+    const v = this.bannerWidgetView(key);
+    if (v.hidden) return false;
+    if (!v.hideWhenEmpty) return true;
+    const i = key.indexOf(':');
+    const data = (this.registry.get(key.slice(0, i) as AssetType, key.slice(i + 1)) as { data: unknown } | undefined)?.data;
+    return !bannerWidgetEmpty(key.slice(0, i), data, (c) => this.badge(c));
+  }
+
+  /** Every widget the banner has, in bar order (left, center, right), then the ones not on the bar right now. */
+  bannerWidgets(): BannerWidget[] {
+    const rows: BannerWidget[] = [];
+    const row = (key: string, type: string, id: string, origin: string, at: string, order: number, attached: boolean): BannerWidget => {
+      const asset = this.registry.get(type as AssetType, id) as { name?: string; data?: { label?: string; icon?: string } } | undefined;
+      const hint = this.bannerWidgetHint(key);
+      return {
+        key, type, id, origin, at, order, attached,
+        label: hint?.label || (type === 'clock' ? 'Clock' : asset?.name || asset?.data?.label || id),
+        ...(hint?.icon || asset?.data?.icon ? { icon: hint?.icon || asset?.data?.icon } : {}),
+        // "the clock", "the search bar": a one-of-a-kind widget also answers to its type
+        aliases: [...(hint?.aliases ?? []), ...(BANNER_FIXED_SHAPE.includes(type) ? [type.replace(/-/g, ' ')] : [])],
+        shown: attached && this.bannerWidgetShown(key),
+        view: this.bannerWidgetView(key),
+      };
+    };
+    const { placed } = this.banner({ all: true });
+    for (const side of Object.keys(placed)) for (const p of placed[side as keyof PlacedBanner]) rows.push(row(p.key, p.type, p.id, p.origin, p.at, p.order, true));
+    for (const [key, w] of this.bannerSeen) if (!rows.some((r) => r.key === key)) rows.push(row(key, w.type, w.id, w.origin, w.at, w.order, false));
+    return rows;
+  }
+
+  /** Find a widget from what someone said ("clock", "ticker") or its key. */
+  findBannerWidget(query: string): BannerWidget | null { return findBannerWidget(this.bannerWidgets(), query); }
+
+  /** Change one widget's choices; saved at once, drawn at once. A field set to null goes back to its default. */
+  setBannerWidget(key: string, patch: Record<string, unknown>): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Banner widgets'); return false; }
+    const next = patchBannerWidget(this.bannerWidgetPrefs(), key, patch);
+    if (Object.keys(next).length) this.settings.set(this.bannerWidgetsKey(), next as never); else this.settings.clear(this.bannerWidgetsKey());
+    this.terminal.ok('widgets', `banner: ${key} ${JSON.stringify(patch)}`);
+    this.set({});
+    return true;
+  }
+
+  /** Every widget choice and the arrangement back to the defaults. */
+  resetBannerWidgets(): void {
+    if (!this.canArrange()) return;
+    this.settings.clear(this.bannerWidgetsKey());
+    this.resetHostArrangement('banner');
   }
 
   /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
@@ -939,7 +1072,7 @@ export class AxfRuntime {
 
   /** Every attachment of a host where it is drawn now (banner and toolbar use their own rules; other hosts the generic one). */
   hostPlaced(host: string): Record<string, PlacedAttachment[]> {
-    if (host === 'banner') return this.banner().placed;
+    if (host === 'banner') return this.banner({ all: true }).placed;
     if (host === 'toolbar') return this.toolbarWidgets();
     const data = (this.registry.has(host as AssetType, this.state.active[host as AssetType] ?? '') ? this.assetOrNull(host as AssetType)?.data : null) as Record<string, unknown> | null;
     return placeHost(host, data ?? null, this.hostExtra.get(host) ?? [], (t, id) => this.registry.has(t as AssetType, id), true, this.hostArrangement(host));
@@ -1797,6 +1930,24 @@ export class AxfRuntime {
     return false;
   }
 
+  /**
+   * Is this app in front of the person: the page is visible and, inside a host, the host shows this app's frame (a host
+   * that never said counts as showing it). Remote commands go to the client in front (console-commands, Nov 3 2026).
+   */
+  inFront(): boolean {
+    const d = (globalThis as unknown as { document?: { visibilityState?: string } }).document;
+    if (d?.visibilityState && d.visibilityState !== 'visible') return false;
+    return !this.embedded || this.hostShown !== false;
+  }
+
+  /** Told when inFront() may have changed (the host showed or hid this frame). → unsubscribe. */
+  onFront(f: () => void): () => void { this.frontSubs.add(f); return () => { this.frontSubs.delete(f); }; }
+
+  /** Inside a host: ask it to bring this app's frame to the front (embed@1 `show`). False standalone or with no host. */
+  bringToFront(reason?: string): boolean {
+    return this.postToHost(reason ? { $axf: EMBED_MESSAGE, type: 'show', reason } : { $axf: EMBED_MESSAGE, type: 'show' });
+  }
+
   /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
   private askHost(spec: string): boolean {
     const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
@@ -1825,6 +1976,10 @@ export class AxfRuntime {
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
+      if (m?.type === 'shown' && m.on !== this.hostShown) {
+        this.hostShown = m.on;
+        for (const f of this.frontSubs) try { f(); } catch { /* a listener's own problem */ }
+      }
     };
     // the app itself in a tab shares its menu (and, chrome@1, its navigation / context menus / toolbar / widgets when the
     // host takes them); a page the host shows alone (its settings page) doesn't
@@ -1945,7 +2100,17 @@ export class AxfRuntime {
     if (this.hostTakes('app-menu')) { const m = await this.buildSharedMenus(opts); bundle.menus = m.menus; for (const [k, v] of m.run) run.set(k, v); }
     if (this.hostTakes('nav-menu')) {
       const nav = this.assetOrNull('nav-menu')?.data;
-      for (const sec of nav?.sections ?? []) {
+      // the asset's sections and the ones plugins contribute (their pages), one level: children follow their parent
+      const flat = (its: readonly NavItem[]): NavItem[] => its.flatMap((it) => [...(it.view ? [it] : []), ...flat(it.items ?? [])]);
+      const seen = new Set<string>();
+      const sections: { label?: string; items: NavItem[] }[] = [];
+      for (const sec of [...(nav?.sections ?? []), ...this.navExtras]) {
+        const items = flat(sec.items).filter((it) => !seen.has(it.view) && !!seen.add(it.view));
+        const key = sec.label?.trim().toLowerCase();
+        const same = key ? sections.find((x) => x.label?.trim().toLowerCase() === key) : undefined;
+        if (same) same.items.push(...items); else sections.push({ ...(sec.label ? { label: sec.label } : {}), items });
+      }
+      for (const sec of sections) {
         const items: ChromeNavItem[] = [];
         for (const it of sec.items) {
           const gate = this.gate(it.requires);
@@ -2072,6 +2237,10 @@ export class AxfRuntime {
     const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     parts.push(behaviorStyle(behavior, reducedMotion));
+    // nav-style@1 last (core/engines/navstyle.ts): only for a nav that opts in (nav-menu `navStyle: true`); it may set
+    // the nav width (resized or collapsed to icons), so it wins over the layout's
+    const navStyle = this.navStyleData();
+    if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
@@ -2358,6 +2527,18 @@ export class AxfRuntime {
     a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
+    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>`).
+    a.register('banner.widgets', (args) => this.openDialog(BANNER_WIDGETS_DIALOG, args.length ? { key: args.join(':') } : {}), { label: 'Banner widgets…', requires: 'assets.swap' });
+    a.register('banner.widgets.reset', () => this.resetBannerWidgets(), { label: 'Reset the banner widgets', requires: 'assets.swap' });
+    a.register('banner.widget', (args) => {
+      const what = args[args.length - 1] ?? '';
+      const w = this.findBannerWidget(args.slice(0, -1).join(':'));
+      if (!w) { this.toast(`No banner widget "${args.slice(0, -1).join(':')}"`, 'warning', 'Banner widgets'); return; }
+      if (what === 'hide' || what === 'show') this.setBannerWidget(w.key, { hidden: what === 'hide' });
+      else if ((BANNER_WIDGET_SIZES as readonly string[]).includes(what)) this.setBannerWidget(w.key, { size: what as BannerWidgetSize });
+      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
+      else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
+    }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
     // (swap:design-package:next would only move the slot, never apply the package's themes).
@@ -2425,11 +2606,22 @@ export class AxfRuntime {
     this.contextExtras.set('*:widgets', (target) => {
       const host = target && hostSpec(target) ? target : null;
       if (!host || !this.canArrange() || !Object.values(this.hostPlaced(host)).some((l) => l.length)) return [];
-      const items: import('./engines/windows').MenuEntry[] = [{ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
+      const items: import('./engines/windows').MenuEntry[] = [];
+      if (host === 'banner') {
+        items.push({ id: 'banner-widgets', label: 'Widgets…', icon: 'layers', action: 'banner.widgets' });
+        const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
+        if (hit) items.push(
+          { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
+          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
+        );
+      }
+      items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
       return items;
     });
-    this.contextExtras.set('tab-group', () => wm.groupMenu());
+    // Window tab groups (payload = a group id) get the windowing menu; every other tab row (a TabGroup component,
+    // payload = its settings id) gets only the shared chrome block (react/components/ChromeContext.tsx).
+    this.contextExtras.set('tab-group', (_t, payload) => (payload && wm.state.groups[payload] ? wm.groupMenu() : []));
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
 }

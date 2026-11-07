@@ -8,7 +8,7 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { arrangeSettingsTabs, filterSettingsGroup, mergeSettingsVisible, normalizeSettingsUi, normalizeSettingsVisible, SETTINGS_LEVELS, setSettingsVisible, settingMatches, settingsLevel, settingsUiErrors, settingsUiGroups, shownAtLevel, splitSettingsGroup, withSettingsVisible, type SettingsLevel } from '../core/engines/settingsui';
+import { arrangeSettingsTabs, filterSettingsGroup, mergeSettingsVisible, normalizeSettingsUi, normalizeSettingsVisible, SETTINGS_LEVELS, setSettingsVisible, arrangeSettingsSections, settingMatches, settingsLevel, settingsUiErrors, settingsUiGroups, shownAtLevel, splitSettingsGroup, withSettingsVisible, type SettingsLevel } from '../core/engines/settingsui';
 import { validateAsset } from '../core/validate';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -43,6 +43,13 @@ const CASES: { name: string; fn: string; input: unknown }[] = [
   { name: 'set-visible: smallest change over the asset (rank + asset sets), administrator is a no-op, clears when empty', fn: 'set', input: { ui: { levels: true, defaultLevel: 'basic', levelOf: { dev: 'developer' }, visible: { simple: { show: ['dev'] } } }, moves: [
     ['basic', ['dev', 'plain'], true], ['basic', ['plain'], false], ['basic', ['plain', 'dev'], true], ['simple', ['dev'], false], ['simple', ['dev'], true], ['administrator', ['dev'], false], ['basic', ['bad id'], true],
   ] } },
+  { name: 'sections: overrides and new ones kept, bad ids and duplicates dropped, group section kept', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, sectionTools: false, sections: [{ id: 'general', title: 'Main', order: 5, collapsed: true }, { id: 'mine', title: 'Mine', icon: 'star', tab: 'about', members: ['axf.about', 'bad id'] }, { id: 'general' }, { id: 'bad id' }, 7], groups: [{ id: 'g', label: 'G', tab: 'dev', section: 'look', settings: [{ key: 'k', label: 'K', kind: 'toggle' }] }] } },
+  { name: 'sections: not a list', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, sections: 'nope' } },
+  { name: 'sections: dropped entries are reported', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, sections: [{ id: 'bad id' }] } },
+  { name: 'arrange: standard order, item order, lone default section', fn: 'sections', input: { ui: {}, tab: 'x', items: [{ id: 'z', section: 'plugin', order: 90 }, { id: 'b', section: 'look', order: 20 }, { id: 'a', section: 'look', order: 10 }, { id: 'none' }] } },
+  { name: 'arrange: panels before groups on an order tie, keeping their own order', fn: 'sections', input: { ui: {}, tab: 'x', items: [{ id: 'g', section: 'look', order: 10, tie: 1 }, { id: 'p', section: 'look', order: 10, tie: 0 }, { id: 'q', section: 'look', order: 10, tie: 0 }] } },
+  { name: 'arrange: the asset retitles, reorders, folds and moves; members beat the item; an unknown id gets a word title', fn: 'sections', input: { ui: { sections: [{ id: 'look', title: 'Colours', order: 200, collapsed: true }, { id: 'mine', title: 'Mine', members: ['moved'], order: 1 }] }, tab: 'x', items: [{ id: 'a', section: 'look' }, { id: 'moved', section: 'look' }, { id: 'c', section: 'some-new-thing' }] } },
+  { name: 'arrange: an entry for one tab beats one for every tab and stays out of the others', fn: 'sections', input: { ui: { sections: [{ id: 'look', title: 'All tabs' }, { id: 'look', tab: 'x', title: 'Tab x' }, { id: 'mine', tab: 'other', members: ['a'] }] }, tab: 'x', items: [{ id: 'a', section: 'look' }] } },
   { name: 'toolbar: a toolbar asset id is kept', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'settings-page' } },
   { name: 'toolbar: bad id', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'bad id' } },
   { name: 'bad enums fall back', fn: 'normalize', input: { layout: 'grid', header: 7, search: 'yes', descriptions: false } },
@@ -83,6 +90,7 @@ const run: Record<string, (i: never) => unknown> = {
   match: (i) => GROUP.settings.map((s) => settingMatches(s as never, i)),
   visible: (i: { base: unknown; over: unknown }) => ({ base: normalizeSettingsVisible(i.base), over: normalizeSettingsVisible(i.over), merged: mergeSettingsVisible(normalizeSettingsVisible(i.base), normalizeSettingsVisible(i.over)), with: withSettingsVisible(normalizeSettingsUi({ levels: true, visible: i.base }), i.over).visible }),
   level: (i: { ui: unknown; stored: unknown[] }) => i.stored.map((s) => settingsLevel(normalizeSettingsUi(i.ui), s)),
+  sections: (i: { ui: unknown; tab: string; items: { id: string; section?: string; order?: number; tie?: number }[] }) => arrangeSettingsSections(i.items.map((x) => ({ ...x, ref: x.id })), normalizeSettingsUi(i.ui), i.tab).map((s) => ({ ...s, items: s.items.map((x) => x.id) })),
   shown: (i: { ui: unknown; ids: string[] }) => { const ui = normalizeSettingsUi(i.ui); return Object.fromEntries(SETTINGS_LEVELS.map((l) => [l, i.ids.map((x) => shownAtLevel(ui, x, l))])); },
   split: (i: { ui: unknown; at: (SettingsLevel | undefined)[] }) => i.at.map((at) => ({ at: at ?? null, ...splitSettingsGroup(GROUP as never, normalizeSettingsUi(i.ui), at) })),
   set: (i: { ui: unknown; moves: [SettingsLevel, string[], boolean][] }) => { const ui = normalizeSettingsUi(i.ui); let stored: unknown = null; return i.moves.map(([at, ids, on]) => { stored = JSON.stringify(setSettingsVisible(ui, stored, at, ids, on)); return JSON.parse(stored as string); }); },

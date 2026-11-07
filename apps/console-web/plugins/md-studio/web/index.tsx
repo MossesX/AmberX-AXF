@@ -105,7 +105,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: FOLDER, label: 'MD Studio', icon: 'file', order: 92, parent: 'plugins' }],
   settings: [
     {
-      id: 'md-studio.behaviour', label: 'MD Studio', icon: 'file', tab: FOLDER, order: 10, settings: [
+      id: 'md-studio.behaviour', section: 'general', label: 'MD Studio', icon: 'file', tab: FOLDER, order: 10, settings: [
         { key: K.view, label: 'View', kind: 'choice', default: 'browse', scope: 'user', options: VIEWS.map((x) => ({ value: x.id, label: x.label })), description: 'How the column, tabs and panes render.' },
         { key: K.split, label: 'Split direction for references', kind: 'choice', default: 'side', scope: 'user', options: [{ value: 'side', label: 'Vertical (side by side)' }, { value: 'stacked', label: 'Horizontal (stacked)' }], description: 'Where a referenced file opens when you click its name.' },
         { key: K.autosave, label: 'Autosave', kind: 'toggle', default: true, scope: 'user', description: 'Save editable files a moment after you stop typing (never over someone else\'s newer save).' },
@@ -115,8 +115,8 @@ export const plugin: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
-    { id: 'md-studio.where', tab: FOLDER, title: 'What it opens', icon: 'folder', order: 20, render: () => <SettingsPanel /> },
-    { id: 'md-studio.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'md-studio.where', section: 'data', tab: FOLDER, title: 'What it opens', icon: 'folder', order: 20, render: () => <SettingsPanel /> },
+    { id: 'md-studio.lifecycle', section: 'plugin', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   opens: 'main',
 };

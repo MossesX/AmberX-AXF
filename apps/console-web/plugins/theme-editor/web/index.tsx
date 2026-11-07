@@ -24,13 +24,13 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'theme-editor', label: 'Theme editor', icon: 'edit', view: 'theme-editor' }] },
   settingsTabs: [{ id: 'theme-editor', label: 'Theme editor', icon: 'edit', parent: 'plugins', order: 45, description: 'Edit colour and style themes token by token; copy, save and load them.' }],
   settings: [
-    { id: 'theme-editor.prefs', label: 'Theme editor', icon: 'edit', tab: 'theme-editor', order: 5, settings: [
+    { id: 'theme-editor.prefs', section: 'look', label: 'Theme editor', icon: 'edit', tab: 'theme-editor', order: 5, settings: [
       { key: VIEW_KEY, label: 'Starting view', kind: 'choice', default: 'tree', options: VIEWS.map((v) => ({ value: v.value, label: v.label })) },
       { key: UNSET_KEY, label: 'List tokens the theme doesn\'t set', description: 'Show every token the asset types and other themes know, even when this theme leaves it out.', kind: 'toggle', default: true },
     ] },
   ],
   settingsPanels: [
-    { id: 'theme-editor.main', tab: 'theme-editor', title: 'Theme editor', icon: 'edit', order: 10, render: () => <ThemeEditor /> },
-    { id: 'theme-editor.lifecycle', tab: 'theme-editor', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'theme-editor.main', section: 'general', tab: 'theme-editor', title: 'Theme editor', icon: 'edit', order: 10, render: () => <ThemeEditor /> },
+    { id: 'theme-editor.lifecycle', section: 'plugin', tab: 'theme-editor', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

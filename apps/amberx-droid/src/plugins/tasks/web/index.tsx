@@ -404,7 +404,7 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'tasks', label: 'Tasks', icon: 'check-circle', order: 30, parent: 'plugins' }],
   settings: [
     {
-      id: 'amberx.tasks', label: 'Tasks', icon: 'check-circle', tab: 'tasks', settings: [
+      id: 'amberx.tasks', section: 'general', label: 'Tasks', icon: 'check-circle', tab: 'tasks', settings: [
         { key: K.tab, label: 'Open on', kind: 'choice', default: 'today', options: TABS.map((t) => ({ value: t.id, label: t.label })) },
         { key: K.mode, label: 'Show as', kind: 'choice', default: 'tree', options: [{ value: 'tree', label: 'Tree' }, { value: 'grid', label: 'Grid' }] },
       ],

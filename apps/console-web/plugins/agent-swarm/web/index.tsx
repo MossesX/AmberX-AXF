@@ -37,7 +37,7 @@ export const plugin: AxfWebLibrary = {
   // the chat window's right-click menu: Color by vibe, with its check mark
   contextMenu: [{ id: 'agent-swarm.chat', target: 'agent-swarm-chat', items: [{ id: 'agent-swarm.color-by-vibe', label: 'Color by vibe', icon: 'palette', action: COLOR_BY_VIBE_ACTION, checked: `setting:${KEYS.colorByVibe}` }] }],
   settings: [{
-    id: 'agent-swarm.chat', label: 'Group chat', icon: 'palette', tab: FOLDER, order: 10,
+    id: 'agent-swarm.chat', section: 'look', label: 'Group chat', icon: 'palette', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.colorByVibe, label: 'Color by vibe', kind: 'toggle', default: false, description: 'Color every group-chat message by its vibe score: light near 1, darkest at the vibe ceiling.' },
       { key: KEYS.vibeColor, label: 'Vibe base colour', kind: 'choice', default: 'accent', options: VIBE_COLORS.map((c) => ({ value: c, label: c })), description: 'The theme colour the vibe shades are mixed from.' },
@@ -46,7 +46,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', order: 91, parent: 'plugins' }],
   settingsPanels: [
     // Desks: how many agents may work at once. Filled by whichever plugin provides the VPS-wide agent cap (slot swarm.settings.desks).
-    { id: 'agent-swarm.desks', tab: 'agent-swarm', title: 'Desks', icon: 'layers', order: 15, render: () => <Desks /> },
-    { id: 'agent-swarm.lifecycle', tab: 'agent-swarm', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'agent-swarm.desks', section: 'general', tab: 'agent-swarm', title: 'Desks', icon: 'layers', order: 15, render: () => <Desks /> },
+    { id: 'agent-swarm.lifecycle', section: 'plugin', tab: 'agent-swarm', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -19,7 +19,7 @@
  * A command:
  *   { $axf: 'control@1', op, target, path?, value?, action?, select?, confirm?, by?, reason? }
  *   op      list | get | set | reset | add | remove | act
- *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing |
+ *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
  *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
@@ -39,6 +39,7 @@
  */
 import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
+import { NAV_ACCENT_PREFIX, navFieldErrors, navStyleTokens } from './navstyle-rules.mjs';
 import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
 
 export const CONTROL_FRAME = 'control@1';
@@ -106,7 +107,7 @@ export const CONTROL_TARGETS = {
   'planner.plans': { domain: 'planner', label: 'Plan Studio plans', ops: ENTITY_OPS, paths: 'entity', fields: PLAN_FIELDS, select: { status: 'string', priority: 'string', category: 'string', tag: 'string', project: 'string', q: 'string', limit: 'number' }, acts: { park: {}, build: { profile: 'string', buildId: 'string' }, restore: { version: 'number' }, export: { format: 'enum:json,md' }, step: { step: 'string', done: 'boolean' }, comment: { text: 'string' } }, doc: 'plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.' },
   'planner.builds': { domain: 'planner', label: 'Build orchestrator builds', ops: ENTITY_OPS, paths: 'entity', fields: BUILD_FIELDS, select: { profile: 'string', status: 'string', category: 'string', q: 'string', includeHidden: 'boolean', limit: 'number' }, acts: { step: { step: 'string', done: 'boolean' }, approve: { phase: 'number' }, status: { status: 'string' }, note: { text: 'string' }, rename: { title: 'string' }, 'rename-step': { step: 'string', title: 'string' }, 'add-step': { text: 'string', model: 'enum:Fable,Opus', estimate: 'string', after: 'string' }, 'edit-step': { step: 'string', patch: 'object' }, 'skip-step': { step: 'string', why: 'string' }, 'remove-step': { step: 'string', why: 'string' }, 'move-step': { step: 'string', to: 'number' }, archive: {}, hide: {}, unhide: {} }, stepFields: STEP_FIELDS, doc: 'builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.' },
   'console.screens': { domain: 'console', label: 'Console screens', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every screen (view) the open console has, its plugins' too. path = the view id, its title or words to search for ("plan studio", "builds"); act open shows it. ${CONSOLE_DELIVERY}` },
-  'console.dialogs': { domain: 'console', label: 'Console dialogs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument). ${CONSOLE_DELIVERY}` },
+  'console.dialogs': { domain: 'console', label: 'Console dialogs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {}, close: {} }, actEffect: { open: 'navigate', close: 'navigate' }, doc: `Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path "current" = whichever dialog is open). ${CONSOLE_DELIVERY}` },
   'console.settings': { domain: 'console', label: 'Console settings tabs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, "plugins/<id>" or its title); act open shows it, input.anchor scrolls to one setting or group. ${CONSOLE_DELIVERY}` },
   'console.actions': { domain: 'console', label: 'Console actions', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments ("swap:color-theme:dark" or ["color-theme", "dark"]). ${CONSOLE_DELIVERY}` },
   'console.nav': { domain: 'console', label: 'Console navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {} }, actEffect: { back: 'navigate', home: 'navigate', close: 'navigate' }, doc: `Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). ${CONSOLE_DELIVERY}` },
@@ -114,6 +115,7 @@ export const CONTROL_TARGETS = {
   'pass.scopes': { domain: 'pass', label: 'Veto passes', ops: ['list', 'get', 'act'], paths: 'scope', scopes: PASS_SCOPE_IDS, acts: PASS_ACTS, doc: 'Timed veto passes (control-pass@1): "allow everything for the next 30 minutes". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can\'t. The pass target itself is never covered.' },
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
+  'tokens.nav': { domain: 'tokens', label: 'Navigation style tokens', asset: 'nav-style', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -169,6 +171,7 @@ export function controlPaths(target) {
         ...Object.entries(SCALE_ENUMS[type] ?? {}).map(([id, options]) => ({ id, kind: 'enum', options: [...options] })),
       ];
     }
+    case 'tokens.nav': return navStyleTokens().map((t) => ({ ...t, token: `nav-style ${t.id}` }));
     case 'console.nav': return [{ id: 'here', kind: 'location' }];
     case PASS_TARGET: return PASS_SCOPE_IDS.map((id) => ({ id, kind: 'scope', label: PASS_SCOPES[id].label, targets: [...PASS_SCOPES[id].targets], ops: [...PASS_SCOPES[id].ops] }));
     default: return null;
@@ -177,6 +180,7 @@ export function controlPaths(target) {
 
 /** Is `path` a path of a static token target? (host / entity targets: the host decides.) */
 export function controlPathKnown(target, path) {
+  if (target === 'tokens.nav' && typeof path === 'string' && path.startsWith(NAV_ACCENT_PREFIX)) return /^accents\.[a-z0-9][a-z0-9._:/-]{0,119}$/i.test(path);
   const ps = controlPaths(target);
   return ps ? ps.some((p) => p.id === path) : null;
 }
@@ -225,6 +229,7 @@ export function controlValueErrors(target, path, value) {
     case 'tokens.style': { const e = typeError('value', STYLE_FIELDS[path], value); return e ? [e] : typeof value === 'string' && value.length > 400 ? ['value is too long'] : []; }
     case 'tokens.layout': return layoutErrors('layout', { [path]: value });
     case 'tokens.typography': case 'tokens.density': case 'tokens.sizing': { const [g, f] = path.split('.'); return scaleErrors(target.slice('tokens.'.length), { [g]: { [f]: value } }); }
+    case 'tokens.nav': return navFieldErrors(path, value);
     default: return [];
   }
 }

@@ -42,6 +42,7 @@ export const ASSET_TYPES = [
   'settings',
   'dock-layout',
   'xlayout',
+  'nav-style',
   'behavior-theme',
   'design-package',
   'style-package',
@@ -55,12 +56,13 @@ export const ASSET_TYPES = [
   'sizing',
   'agent-card',
   'job-type',
+  'card',
   'help',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -338,6 +340,12 @@ export interface NavItem {
   view: string;
   badge?: string;
   requires?: string;
+  /**
+   * Children: the item opens a sub menu that slides open (nested levels allowed). `view` may be '' for a pure group;
+   * a group with a view opens its page too. Only navs whose nav-menu asset sets `navStyle: true` draw them as sub
+   * menus; any other nav shows the item as it always did.
+   */
+  items?: NavItem[];
 }
 
 export interface NavMenuData {
@@ -348,6 +356,8 @@ export interface NavMenuData {
   indicator?: 'auto' | 'bar' | 'fill' | 'none';
   /** default true */
   showIcons?: boolean;
+  /** Opt in to nav-style@1 (core/engines/navstyle.ts): sub menus that slide open, styled and timed by the nav-style asset in force. Default false. */
+  navStyle?: boolean;
 }
 
 export interface ContextMenuData {
@@ -463,14 +473,36 @@ export interface GaugeData {
 
 /** Progress meter control asset: how every progress bar looks (engines/components.ts meterStyle). */
 /** tab-group asset: how every tab row looks (page tabs + window tab bars). Engine tabGroupStyle (engines/components.ts). */
+/**
+ * tab-group@1 (Brett, Nov 4 2026, build tab-group-assets: "all tab groups are supposed to be assets"): how every tab
+ * row looks and behaves. Fields added Nov 4 2026 are all optional with the pre-existing look as their default, so
+ * every earlier asset renders unchanged. Engine: normalizeTabGroup / tabGroupStyle in engines/components.ts.
+ */
 export interface TabGroupData {
-  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain';
+  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain' | 'chips';
   align: 'start' | 'center' | 'end' | 'stretch';
-  position?: 'top' | 'bottom';
+  /** where the row sits against its panel: top (default) / bottom; left / right = a vertical rail */
+  position?: 'top' | 'bottom' | 'left' | 'right';
   density?: ChromeDensity;
-  overflow?: 'scroll' | 'wrap';
+  /** what a row does when its tabs don't fit: scroll (default) / wrap / more (the rest under a More menu) / dropdown (one button that opens the list) */
+  overflow?: 'scroll' | 'wrap' | 'more' | 'dropdown';
+  /** icons + text (both, default) / text only / icons only (text becomes the tooltip) */
+  display?: 'both' | 'text' | 'icons';
+  /** @deprecated use `display: 'text'`; kept for older assets (false = text only) */
   showIcons?: boolean;
   divider?: boolean;
+  /** the row stays at the top of its scrolling panel */
+  sticky?: boolean;
+  /** a fold button hides every tab but the active one (per device) */
+  collapsible?: boolean;
+  /** tabs show a close button where the host allows closing (default true; false hides it) */
+  closable?: boolean;
+  /** tabs can be dragged into another order where the host allows it (default true; false turns it off) */
+  reorderable?: boolean;
+  /** count badges on tabs (default true) */
+  badges?: boolean;
+  /** the row reopens on the tab it was on last time (per device) */
+  rememberLast?: boolean;
 }
 
 export interface MeterData {
@@ -583,6 +615,7 @@ export interface AssetDataMap {
   settings: SettingsData;
   'dock-layout': import('./engines/dock').DockLayoutData;
   xlayout: import('./engines/xlayout').XLayoutData;
+  'nav-style': import('./engines/navstyle-rules.mjs').NavStyleData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
   'style-package': import('./engines/stylepackage').StylePackageData;
@@ -596,6 +629,7 @@ export interface AssetDataMap {
   sizing: import('./engines/scale').SizingData;
   'agent-card': import('./engines/agent-card-rules.mjs').AgentCardData;
   'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
+  card: import('./engines/card-rules.mjs').CardData;
   help: import('./engines/help').HelpData;
   'uac-policy': UACPolicyData;
 }
@@ -604,7 +638,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

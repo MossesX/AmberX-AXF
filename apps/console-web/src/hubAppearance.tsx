@@ -91,6 +91,6 @@ export const hubAppearanceLibrary: AxfWebLibrary = {
   label: 'Look from axHub',
   version: '1.0.0',
   settingsPanels: [
-    { id: 'console.appearance.hub', tab: 'appearance', title: 'Look from axHub', icon: 'layers', order: 5, render: () => <HubLookPanel /> },
+    { id: 'console.appearance.hub', section: 'look', tab: 'appearance', title: 'Look from axHub', icon: 'layers', order: 5, render: () => <HubLookPanel /> },
   ],
 };

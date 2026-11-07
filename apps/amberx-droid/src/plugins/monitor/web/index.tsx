@@ -142,7 +142,7 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'monitor', label: 'Monitoring', icon: 'eye', order: 21, parent: 'plugins' }],
   settings: [
     {
-      id: 'amberx.monitor', label: 'Background monitoring', icon: 'eye', tab: 'monitor', settings: [
+      id: 'amberx.monitor', section: 'general', label: 'Background monitoring', icon: 'eye', tab: 'monitor', settings: [
         { key: K.on, label: 'Watch axHub in the background', kind: 'toggle', default: true, description: 'AmberX is the phone’s one source of axHub notifications (approvals, merge approvals, console alerts); the AXHub app stays quiet while it is installed.' },
         { key: K.consoleAlerts, label: 'Dev Console alerts', kind: 'toggle', default: true, description: 'Errors and warnings from console.amberxai.com (builds, CI, deploys, systems check). Tap opens the console in your browser.' },
         { key: K.interval, label: 'Check every (seconds)', kind: 'number', default: 30, min: 15, max: 300, step: 5 },
@@ -150,7 +150,7 @@ export const library: AxfWebLibrary = {
       ],
     },
     {
-      id: 'amberx.monitor.auto', label: 'Auto-approval', icon: 'shield', tab: 'monitor', order: 2,
+      id: 'amberx.monitor.auto', section: 'access', label: 'Auto-approval', icon: 'shield', tab: 'monitor', order: 2,
       description: 'Off by default. A matching approval is approved by the phone on the hub’s own form, as you.', settings: [
         { key: K.autoApproveAll, label: 'Approve everything except vps.run', kind: 'toggle', default: false },
         { key: K.autoApprove, label: 'Approve these tools', kind: 'toggle', default: false },

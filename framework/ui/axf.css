@@ -1161,6 +1161,30 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-md--compact p, .fx-md--compact ul, .fx-md--compact ol { margin: 0; }
 .fx-md--compact ul, .fx-md--compact ol { padding-left: var(--fx-dens-gap-2xl); }
 .fx-md--compact h3, .fx-md--compact h4, .fx-md--compact h5 { margin: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-root-md); }
+/* FoldSections: collapsible sections of a note or document (framework/react/components/FoldSections.tsx) */
+.fx-folds { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); overflow-wrap: anywhere; }
+.fx-folds__tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.fx-folds__summary { flex: 1; min-width: 0; color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
+.fx-fold { display: flex; flex-direction: column; border-inline-start: var(--fx-border-w) solid var(--fx-border); }
+.fx-fold.is-open { border-inline-start-color: var(--fx-accent); }
+.fx-fold__head { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); width: 100%; min-height: var(--fx-row-h); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); color: var(--fx-text); font-weight: 600; cursor: pointer; }
+.fx-fold__head:hover { background: var(--fx-surface2); }
+.fx-fold__head:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -1); }
+.fx-fold[data-level='1'] > .fx-fold__head { font-size: var(--fx-type-scale-lg); }
+.fx-fold[data-level='2'] > .fx-fold__head { font-size: var(--fx-type-scale-md); }
+.fx-fold[data-level='7'] > .fx-fold__head { font-size: var(--fx-type-scale-sm); letter-spacing: 0.04em; }
+.fx-fold__title { flex: 1; min-width: 0; }
+.fx-fold__count { flex: none; min-width: calc(var(--fx-font-size) * 1.4); padding: 0 var(--fx-dens-gap-sm); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-size: var(--fx-type-scale-xs); font-weight: 500; text-align: center; font-variant-numeric: tabular-nums; }
+.fx-fold.is-hit > .fx-fold__head .fx-fold__count { background: var(--fx-accent-soft); color: var(--fx-accent); }
+.fx-fold__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: 0 0 var(--fx-dens-gap-md) var(--fx-dens-gap-4xl); }
+.fx-fold__body .fx-md ul, .fx-fold__body .fx-md ol, .fx-folds > .fx-md ul, .fx-folds > .fx-md ol { padding-inline-start: calc(var(--fx-font-size) * 1.5); }
+::highlight(axf-fold-hit) { background-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 300%), transparent); color: var(--fx-text); }
+/* FoldPanel: the same folds over live UI (framework/react/components/FoldPanel.tsx) */
+.fx-foldpanel { min-width: 0; }
+.fx-foldpanel__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.fx-foldpanel__bar > .fx-fold__head { flex: 1; min-width: 0; width: auto; }
+.fx-foldpanel__body { min-width: 0; padding-inline-start: var(--fx-dens-gap-md); }
+.fx-foldpanel__body[hidden] { display: none; }
 .fx-errors { margin: 0; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-xl) var(--fx-dens-gap-4xl); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger); font-size: var(--fx-type-scale-sm); }
 .fx-icon { flex: none; }
 

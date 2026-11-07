@@ -127,7 +127,7 @@ export function withPluginTheme(lib: AxfWebLibrary, meta: { id: string; name: st
     ...(lib.dialogs ? { dialogs } : {}),
     ...(lib.tabs ? { tabs } : {}),
     settingsTabs,
-    settingsPanels: [...panels, { id: `${id}.theme-override`, tab, title: 'Appearance', icon: 'palette', order: 950, render: () => <PluginThemePanel id={id} name={name} /> }],
+    settingsPanels: [...panels, { id: `${id}.theme-override`, section: 'look', tab, title: 'Appearance', icon: 'palette', order: 950, render: () => <PluginThemePanel id={id} name={name} /> }],
     register(rt) {
       metas.set(id, { id, name, tab, views: Object.keys(lib.views ?? {}) });
       lib.register?.call(lib, rt);
@@ -433,7 +433,7 @@ export const pluginThemeLibrary: AxfWebLibrary = {
     rt.settings.onChange(TOOLBAR_KEY, () => toolbarButton(rt));
   },
   settings: [{
-    id: 'axf.pluginTheme', label: 'Plugin theme override', icon: 'palette', tab: 'plugins', order: 30,
+    id: 'axf.pluginTheme', section: 'look', label: 'Plugin theme override', icon: 'palette', tab: 'plugins', order: 30,
     description: 'Each plugin’s own theme override lives in its settings: Settings → Plugins → <plugin> → Appearance.',
     settings: [{ key: TOOLBAR_KEY, label: 'Theme override button on the toolbar', kind: 'toggle', default: true, description: 'Switches the override of the plugin on screen (or last right-clicked).' }],
   }],

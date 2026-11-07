@@ -29,6 +29,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import { registry } from "../registry";
+import { SettingsFold, SettingsFoldTools, useSettingsFolds } from "./SettingsFold";
 import { token } from "../theme/apply";
 import type { SettingRow, SettingValue } from "./decl";
 import { settingsGates, useSettingsGates } from "./gates";
@@ -102,6 +103,9 @@ function RowControl({
   }
 }
 
+/** Where a row that names no section sits. */
+const DEFAULT_SECTION = "General";
+
 export function SettingsDialog() {
   const openFor = React.useSyncExternalStore(
     settingsUi.subscribe,
@@ -118,6 +122,7 @@ export function SettingsDialog() {
   // becomes this person's (a sign-in, a promotion) appears without a remount
   // and one that stops being theirs leaves.
   useSettingsGates();
+  const folds = useSettingsFolds(`module-settings:${openFor ?? ""}`);
 
   if (!openFor) return null;
   // The module registry first (a module's registered title is the one the rest
@@ -129,6 +134,8 @@ export function SettingsDialog() {
   // ungated row, and a row whose gate nobody registered, both show — see
   // `gates.ts` on why the default is open.
   const rows = (store?.decl.rows ?? []).filter((row) => !row.gate || settingsGates.holds(row.gate));
+  // Every row sits in a collapsible section, in the order the rows name them.
+  const sectionTitles = [...new Set(rows.map((row) => row.section ?? DEFAULT_SECTION))];
 
   return (
     <Dialog open onClose={() => settingsUi.close()} maxWidth="sm" fullWidth aria-label={`${title} settings`}>
@@ -152,18 +159,25 @@ export function SettingsDialog() {
             No settings here are yours to change.
           </Typography>
         ) : (
-          <Stack spacing={1.5}>
-            {rows.map((row) => (
-              <Box
-                key={row.key}
-                sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "space-between" }}
-              >
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{row.label}</Typography>
-                  <Typography sx={{ fontSize: 11.5, color: token("dim") }}>{row.hint}</Typography>
-                </Box>
-                <RowControl row={row} value={values[row.key]} onChange={(v) => store.set(row.key, v)} />
-              </Box>
+          <Stack spacing={1}>
+            <SettingsFoldTools folds={folds} />
+            {sectionTitles.map((section) => (
+              <SettingsFold key={section} folds={folds} id={section} title={section}>
+                <Stack spacing={1.5}>
+                  {rows.filter((row) => (row.section ?? DEFAULT_SECTION) === section).map((row) => (
+                    <Box
+                      key={row.key}
+                      sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "space-between" }}
+                    >
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{row.label}</Typography>
+                        <Typography sx={{ fontSize: 11.5, color: token("dim") }}>{row.hint}</Typography>
+                      </Box>
+                      <RowControl row={row} value={values[row.key]} onChange={(v) => store.set(row.key, v)} />
+                    </Box>
+                  ))}
+                </Stack>
+              </SettingsFold>
             ))}
           </Stack>
         )}
