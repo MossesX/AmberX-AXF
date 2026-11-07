@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1247,
- "updatedAt": "2026-11-07T05:34:55.744Z",
+ "rev": 1248,
+ "updatedAt": "2026-11-07T05:43:05.504Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91161,19 +91161,23 @@
    "title": "Skins: one look per app, skin@1 + app-look@1, the Windows skin, Settings > Appearance as the Theme manager",
    "category": "Design",
    "detail": "skin@1 asset type + app-look@1 per-app doc on the hub (shared/settings/looks/<app>.json). A skin never changes other apps. Windows skin renders in console, AmberX web, axHub web, Molly. Earlier runs: claude/skins-r2, claude/skins-r3 (both stopped on usage limits).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skins-r4",
+   "branch": "claude/skins-asset-types",
    "pr": "",
    "createdAt": "2026-11-06T00:15:34.281Z",
-   "updatedAt": "2026-11-06T00:50:23.231Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T05:35:01.742Z",
+   "builtAt": "2026-11-07T05:34:58.589Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T00:50:23.231Z"
+    },
+    {
+     "text": "s9–s11 finished by build skins-asset-types on claude/skins-asset-types (claude/skins-r4 merged into it): CI list, shots in UI Review, docs, PORTING, rule, report, PR",
+     "at": "2026-11-07T05:34:59.628Z"
     }
    ],
    "approvals": [],
@@ -91382,12 +91386,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:56.292Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T00:15:34.282Z",
-     "updatedAt": "2026-11-06T00:15:34.282Z"
+     "updatedAt": "2026-11-07T05:34:56.377Z"
     },
     {
      "id": "s10",
@@ -91404,12 +91408,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:57.419Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T00:15:34.282Z",
-     "updatedAt": "2026-11-06T00:15:34.282Z"
+     "updatedAt": "2026-11-07T05:34:57.646Z"
     },
     {
      "id": "s11",
@@ -91426,12 +91430,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:58.589Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T00:15:34.282Z",
-     "updatedAt": "2026-11-06T00:15:34.282Z"
+     "updatedAt": "2026-11-07T05:34:58.706Z"
     }
    ],
    "profiles": [
@@ -91442,7 +91446,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -104269,11 +104273,11 @@
    "title": "skins-asset-types",
    "category": "",
    "detail": "Upgrade skins to style every registry asset type (widgets, icon packs, composites, embeds, text blocks), scoped inheritance, registry-driven coverage + CI check. Brief: /root/axf-builds/skins-asset-types/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
-   "branch": "",
+   "branch": "claude/skins-asset-types",
    "pr": "",
    "createdAt": "2026-11-07T04:02:15.774Z",
    "updatedAt": "2026-11-07T05:34:38.687Z",
@@ -104303,8 +104307,8 @@
    },
    "steps": [
     {
-     "id": "s4",
-     "uid": "st-mw5x9ckj01r8zd",
+     "id": "s1",
+     "uid": "st-mw5x61qz0d3lr4",
      "title": "",
      "text": "skin-coverage@1 engine: coverage of every registry type (slot / parts / reference / bundle / none) derived from asset-types.json, scope chain global → app → UI → plugin (child overrides parent), fixtures; registry declarations for the few types with no look",
      "model": "Fable",
@@ -104320,13 +104324,13 @@
      "done": true,
      "doneAt": "2026-11-07T05:01:52.391Z",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:02:04.877Z"
+     "rev": 3,
+     "createdAt": "2026-11-07T04:02:15.785Z",
+     "updatedAt": "2026-11-07T05:01:52.487Z"
     },
     {
-     "id": "s5",
-     "uid": "st-mw5x9ckj02zc1o",
+     "id": "s2",
+     "uid": "st-mw5x61qz0e3rm8",
      "title": "",
      "text": "skin@1 extension: parts, iconPack, per-scope skins in app-look@1 + composeLook per scope; validators (TS + build engine), schemas, gen-fixtures",
      "model": "Fable",
@@ -104342,13 +104346,13 @@
      "done": true,
      "doneAt": "2026-11-07T05:01:53.300Z",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:02:04.877Z"
+     "rev": 3,
+     "createdAt": "2026-11-07T04:02:15.785Z",
+     "updatedAt": "2026-11-07T05:01:53.403Z"
     },
     {
-     "id": "s6",
-     "uid": "st-mw5x9ckj03fd1h",
+     "id": "s3",
+     "uid": "st-mw5x61qz0fpslx",
      "title": "",
      "text": "CI: check-skin-coverage fails on a registered type with no skin coverage; android.yml; rebake; typecheck; checks",
      "model": "Fable",
@@ -104364,13 +104368,13 @@
      "done": true,
      "doneAt": "2026-11-07T05:34:36.829Z",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:34:38.904Z"
+     "rev": 3,
+     "createdAt": "2026-11-07T04:02:15.785Z",
+     "updatedAt": "2026-11-07T05:34:36.993Z"
     },
     {
-     "id": "s7",
-     "uid": "st-mw5x9ckj049dde",
+     "id": "s4",
+     "uid": "st-mw5x71pi01bn1m",
      "title": "",
      "text": "Customize targets for every drawn type (widgets, badge, label, text): composite parts box / text / icon / items",
      "model": "Fable",
@@ -104387,12 +104391,12 @@
      "doneAt": "2026-11-07T05:01:54.196Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:02:04.877Z"
+     "createdAt": "2026-11-07T04:45:31.786Z",
+     "updatedAt": "2026-11-07T05:01:54.291Z"
     },
     {
-     "id": "s8",
-     "uid": "st-mw5x9ckj05q62n",
+     "id": "s5",
+     "uid": "st-mw5x72g001f6cs",
      "title": "",
      "text": "Runtime + React: scope-aware skins on plugin roots and view roots, parts sheet, icon pack setting",
      "model": "Fable",
@@ -104409,12 +104413,12 @@
      "doneAt": "2026-11-07T05:11:59.257Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:34:09.923Z"
+     "createdAt": "2026-11-07T04:45:32.744Z",
+     "updatedAt": "2026-11-07T05:11:59.397Z"
     },
     {
-     "id": "s9",
-     "uid": "st-mw5x9ckj063xx9",
+     "id": "s6",
+     "uid": "st-mw5x731k01bclh",
      "title": "",
      "text": "Settings → Appearance: scope picker, Follow global switch, coverage list; 3 UI options to UI Review",
      "model": "Fable",
@@ -104431,12 +104435,12 @@
      "doneAt": "2026-11-07T05:34:38.687Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:34:46.280Z"
+     "createdAt": "2026-11-07T04:45:33.527Z",
+     "updatedAt": "2026-11-07T05:34:38.802Z"
     },
     {
-     "id": "s10",
-     "uid": "st-mw5x9ckj07njdk",
+     "id": "s7",
+     "uid": "st-mw5x73oa01ckix",
      "title": "",
      "text": "CLI / API / MCP / voice parity: skins.mjs scopes + coverage, theme-manager routes, console actions",
      "model": "Fable",
@@ -104453,12 +104457,12 @@
      "doneAt": "2026-11-07T05:26:51.534Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T05:34:09.923Z"
+     "createdAt": "2026-11-07T04:45:34.334Z",
+     "updatedAt": "2026-11-07T05:26:51.714Z"
     },
     {
-     "id": "s11",
-     "uid": "st-mw5x9ckj087wdw",
+     "id": "s8",
+     "uid": "st-mw5x74e101omzb",
      "title": "",
      "text": "Docs, PORTING, rules, report, THREADS, PR into the merge queue; close skins s9–s11",
      "model": "Fable",
@@ -104475,23 +104479,23 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-07T04:47:19.171Z",
-     "updatedAt": "2026-11-07T04:47:19.267Z"
+     "createdAt": "2026-11-07T04:45:35.257Z",
+     "updatedAt": "2026-11-07T04:45:35.353Z"
     }
    ],
    "profiles": [
     "current"
    ],
    "order": {
-    "current": 100
+    "current": 99
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Fable",
+    "model": "Opus",
     "status": "pending",
     "estimate": "",
     "source": "console",
@@ -104500,102 +104504,15 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw5x9ckj01r8zd": "2026-11-07T04:02:15.785Z",
-     "st-mw5x9ckj02zc1o": "2026-11-07T04:02:15.785Z",
-     "st-mw5x9ckj03fd1h": "2026-11-07T04:02:15.785Z",
-     "st-mw5x9ckj049dde": "2026-11-07T04:45:31.786Z",
-     "st-mw5x9ckj05q62n": "2026-11-07T04:45:32.744Z",
-     "st-mw5x9ckj063xx9": "2026-11-07T04:45:33.527Z",
-     "st-mw5x9ckj07njdk": "2026-11-07T04:45:34.334Z",
-     "st-mw5x9ckj087wdw": "2026-11-07T04:45:35.257Z"
+     "st-mw5x61qz0d3lr4": "2026-11-07T04:02:15.785Z",
+     "st-mw5x61qz0e3rm8": "2026-11-07T04:02:15.785Z",
+     "st-mw5x61qz0fpslx": "2026-11-07T04:02:15.785Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-07T04:45:25.537Z",
+   "defaultAt": "2026-11-07T04:44:45.222Z",
    "rearranged": false,
-   "removedSteps": [
-    {
-     "step": {
-      "id": "s1",
-      "uid": "st-mw5x6wuc0dvmw5",
-      "title": "",
-      "text": "Registry-driven asset type coverage in skins",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-07T04:02:15.785Z",
-      "updatedAt": "2026-11-07T04:45:25.537Z"
-     },
-     "at": "2026-11-07T04:47:19.171Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
-    },
-    {
-     "step": {
-      "id": "s2",
-      "uid": "st-mw5x6wuc0erzar",
-      "title": "",
-      "text": "Scoped apply with child override",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-07T04:02:15.785Z",
-      "updatedAt": "2026-11-07T04:45:25.537Z"
-     },
-     "at": "2026-11-07T04:47:19.171Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
-    },
-    {
-     "step": {
-      "id": "s3",
-      "uid": "st-mw5x6wuc0fpb08",
-      "title": "",
-      "text": "CI check for uncovered types",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-07T04:02:15.785Z",
-      "updatedAt": "2026-11-07T04:45:25.537Z"
-     },
-     "at": "2026-11-07T04:47:19.171Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
-    }
-   ],
+   "removedSteps": [],
    "legacy": [],
    "copies": []
   },

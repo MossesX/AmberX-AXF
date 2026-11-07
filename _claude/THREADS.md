@@ -726,19 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 19:38 UTC · `notes-tasks-sync` s3 done (current) · orchestrator
-- 2026-11-06 19:38 UTC · `notes-tasks-sync` s4 done (current) · orchestrator
-- 2026-11-06 19:41 UTC · `amberx-slim-down-voice-queue` → running, note (current) · orchestrator
-- 2026-11-06 19:41 UTC · `notes-views` note (current) · orchestrator
-- 2026-11-06 19:42 UTC · `notes-tasks-sync` branch claude/notes-tasks-sync, PR #363 (current) · builds-live
-- 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · builds-live
-- 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · orchestrator
-- 2026-11-06 19:49 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · orchestrator
-- 2026-11-06 19:49 UTC · `ui-review-notify-session-audio` → running (current) · orchestrator
-- 2026-11-06 19:53 UTC · `ui-review-notify-session-audio` s1 done (current) · orchestrator
-- 2026-11-06 19:53 UTC · `ui-review-notify-session-audio` s2 done (current) · orchestrator
-- 2026-11-06 19:55 UTC · `ui-review-notify-session-audio` s3 done (current) · orchestrator
-- 2026-11-06 19:59 UTC · `ui-review-notify-session-audio` s4 done (current) · orchestrator
 - 2026-11-06 20:02 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · foreign-write
 - 2026-11-06 20:02 UTC · `fable-review-shipped-features-build-hook-contrac` branch claude/shipped-features-fable, PR #364 (current) · builds-live
 - 2026-11-06 20:02 UTC · `shipped-features-r2` branch claude/shipped-features-fable, PR #364 (angel) · builds-live
@@ -1126,6 +1113,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:34 UTC · `new-app-wizard` note (current) · orchestrator
 - 2026-11-07 05:34 UTC · `merge-conflict-alerts` note (current) · merge-conflict-alerts
 - 2026-11-07 05:34 UTC · `merge-conflict-alerts` branch claude/merge-conflict-alerts (current) · builds-live
+- 2026-11-07 04:44 UTC · `skins-asset-types` branch claude/skins-asset-types (current) · builds-live
+- 2026-11-07 05:01 UTC · `skins-asset-types` s1 done, → running (current) · orchestrator
+- 2026-11-07 05:01 UTC · `skins-asset-types` s2 done (current) · orchestrator
+- 2026-11-07 05:01 UTC · `skins-asset-types` s4 done (current) · orchestrator
+- 2026-11-07 05:11 UTC · `skins-asset-types` s5 done (current) · orchestrator
+- 2026-11-07 05:26 UTC · `skins-asset-types` s7 done (current) · orchestrator
+- 2026-11-07 05:34 UTC · `skins-asset-types` s3 done (current) · orchestrator
+- 2026-11-07 05:34 UTC · `skins-asset-types` s6 done (current) · orchestrator
+- 2026-11-07 05:34 UTC · `skins` s9 done, → running (main-framework) · orchestrator
+- 2026-11-07 05:34 UTC · `skins` s10 done (main-framework) · orchestrator
+- 2026-11-07 05:34 UTC · `skins` s11 done, → complete (main-framework) · orchestrator
+- 2026-11-07 05:34 UTC · `skins` note (main-framework) · orchestrator
+- 2026-11-07 05:35 UTC · `skins` branch claude/skins-asset-types (main-framework) · builds-live
 
 ## Token passes (log)
 

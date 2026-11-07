@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:34:55.744Z",
+ "updatedAt": "2026-11-07T05:43:05.504Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22215,11 +22215,11 @@
    "title": "skins-asset-types",
    "category": "",
    "detail": "Upgrade skins to style every registry asset type (widgets, icon packs, composites, embeds, text blocks), scoped inheritance, registry-driven coverage + CI check. Brief: /root/axf-builds/skins-asset-types/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
-   "branch": "",
+   "branch": "claude/skins-asset-types",
    "pr": "",
    "createdAt": "2026-11-07T04:02:15.774Z",
    "updatedAt": "2026-11-07T05:34:38.687Z",
@@ -22249,7 +22249,7 @@
    },
    "steps": [
     {
-     "id": "s4",
+     "id": "s1",
      "text": "skin-coverage@1 engine: coverage of every registry type (slot / parts / reference / bundle / none) derived from asset-types.json, scope chain global → app → UI → plugin (child overrides parent), fixtures; registry declarations for the few types with no look",
      "model": "Fable",
      "why": "",
@@ -22264,10 +22264,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:01:52.391Z",
      "note": "",
-     "uid": "st-mw5x9ckj01r8zd"
+     "uid": "st-mw5x61qz0d3lr4"
     },
     {
-     "id": "s5",
+     "id": "s2",
      "text": "skin@1 extension: parts, iconPack, per-scope skins in app-look@1 + composeLook per scope; validators (TS + build engine), schemas, gen-fixtures",
      "model": "Fable",
      "why": "",
@@ -22282,10 +22282,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:01:53.300Z",
      "note": "",
-     "uid": "st-mw5x9ckj02zc1o"
+     "uid": "st-mw5x61qz0e3rm8"
     },
     {
-     "id": "s6",
+     "id": "s3",
      "text": "CI: check-skin-coverage fails on a registered type with no skin coverage; android.yml; rebake; typecheck; checks",
      "model": "Fable",
      "why": "",
@@ -22300,10 +22300,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:34:36.829Z",
      "note": "",
-     "uid": "st-mw5x9ckj03fd1h"
+     "uid": "st-mw5x61qz0fpslx"
     },
     {
-     "id": "s7",
+     "id": "s4",
      "text": "Customize targets for every drawn type (widgets, badge, label, text): composite parts box / text / icon / items",
      "model": "Fable",
      "why": "",
@@ -22318,10 +22318,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:01:54.196Z",
      "note": "",
-     "uid": "st-mw5x9ckj049dde"
+     "uid": "st-mw5x71pi01bn1m"
     },
     {
-     "id": "s8",
+     "id": "s5",
      "text": "Runtime + React: scope-aware skins on plugin roots and view roots, parts sheet, icon pack setting",
      "model": "Fable",
      "why": "",
@@ -22336,10 +22336,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:11:59.257Z",
      "note": "",
-     "uid": "st-mw5x9ckj05q62n"
+     "uid": "st-mw5x72g001f6cs"
     },
     {
-     "id": "s9",
+     "id": "s6",
      "text": "Settings → Appearance: scope picker, Follow global switch, coverage list; 3 UI options to UI Review",
      "model": "Fable",
      "why": "",
@@ -22354,10 +22354,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:34:38.687Z",
      "note": "",
-     "uid": "st-mw5x9ckj063xx9"
+     "uid": "st-mw5x731k01bclh"
     },
     {
-     "id": "s10",
+     "id": "s7",
      "text": "CLI / API / MCP / voice parity: skins.mjs scopes + coverage, theme-manager routes, console actions",
      "model": "Fable",
      "why": "",
@@ -22372,10 +22372,10 @@
      "done": true,
      "doneAt": "2026-11-07T05:26:51.534Z",
      "note": "",
-     "uid": "st-mw5x9ckj07njdk"
+     "uid": "st-mw5x73oa01ckix"
     },
     {
-     "id": "s11",
+     "id": "s8",
      "text": "Docs, PORTING, rules, report, THREADS, PR into the merge queue; close skins s9–s11",
      "model": "Fable",
      "why": "",
@@ -22390,7 +22390,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5x9ckj087wdw"
+     "uid": "st-mw5x74e101omzb"
     }
    ]
   },
