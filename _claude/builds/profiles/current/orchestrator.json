@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:14:18.765Z",
+ "updatedAt": "2026-11-07T05:14:39.112Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13091,7 +13091,7 @@
    "branch": "claude/console-account-picker",
    "pr": "",
    "createdAt": "2026-11-05T23:30:48.450Z",
-   "updatedAt": "2026-11-06T17:40:57.141Z",
+   "updatedAt": "2026-11-07T05:14:20.582Z",
    "builtAt": "",
    "notes": [
     {
@@ -13101,6 +13101,10 @@
     {
      "text": "OVERLAP: switching (step 16), usage meter per row (step 19) and failover (step 22) of token-usage-log-accounts-plan-studio-control overlap this build's s2-s4. Only labels/status test/UI not covered there.",
      "at": "2026-11-06T17:40:57.141Z"
+    },
+    {
+     "text": "Overlap (multi-account-headless-workers): account rows now carry role, limit and usage; s4's rotation must skip workers.",
+     "at": "2026-11-07T05:14:20.582Z"
     }
    ],
    "approvals": [],
@@ -13559,12 +13563,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-06T17:40:55.908Z",
+   "updatedAt": "2026-11-07T05:14:22.807Z",
    "builtAt": "",
    "notes": [
     {
      "text": "OVERLAP: covered by token-usage-log-accounts-plan-studio-control step 22 (auto failover, API keys last, no AI). Don't build twice.",
      "at": "2026-11-06T17:40:55.908Z"
+    },
+    {
+     "text": "Overlap (multi-account-headless-workers): an automatic switch must skip accounts marked as workers.",
+     "at": "2026-11-07T05:14:22.807Z"
     }
    ],
    "approvals": [],
@@ -14068,7 +14076,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-06T18:07:16.552Z",
+   "updatedAt": "2026-11-07T05:14:19.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -14078,6 +14086,10 @@
     {
      "text": "The 'Save the rotated refresh token' steps are built by first-refresh-token-saved-every-time-it-s-used-v (PR #359): tick them once it merges, don't rebuild them.",
      "at": "2026-11-06T18:06:12.991Z"
+    },
+    {
+     "text": "Overlap (multi-account-headless-workers): failover is built for worker accounts. Following the active account is unchanged, and any switch must skip workers.",
+     "at": "2026-11-07T05:14:19.001Z"
     }
    ],
    "approvals": [],
@@ -15279,14 +15291,14 @@
    "title": "Token usage log + accounts + Plan Studio control (small steps)",
    "category": "Builds",
    "detail": "Replaces token-usage-log-accounts-plan-studio-control. Every step sized ~10 min so work isn't lost on an account switch (Brett, voice, Nov 6 2026).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-07T00:47:50.046Z",
+   "updatedAt": "2026-11-07T05:14:24.273Z",
    "builtAt": "",
    "notes": [
     {
@@ -15320,6 +15332,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T20:00:33.040Z"
+    },
+    {
+     "text": "Overlap (multi-account-headless-workers): s36-s39 usage should fill the row in Claude accounts; failover s40-s42 must skip workers.",
+     "at": "2026-11-07T05:14:24.273Z"
     }
    ],
    "approvals": [],
@@ -20128,9 +20144,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:47:40.021Z",
-   "updatedAt": "2026-11-07T00:47:41.137Z",
+   "updatedAt": "2026-11-07T05:14:18.101Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlap (multi-account-headless-workers): Sign in on a row re-logs an account in place. The wizard Edit button and the error text are still open.",
+     "at": "2026-11-07T05:14:18.101Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
