@@ -726,16 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s24-23 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s25-24 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s26-25 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s27-26 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s28-27 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s29-28 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s30-29 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s31-30 done (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s32-31 done, → complete (current) · orchestrator
-- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` → built, branch claude/md-chain-control, PR #362 (current) · builds-live
 - 2026-11-06 19:08 UTC · `headless-session-efficiency-shared-chain-control` → built, branch claude/md-chain-control, PR #362 (current) · builds-live
 - 2026-11-06 18:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
 - 2026-11-06 18:40 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
@@ -1126,6 +1116,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:20 UTC · `molly-ri-court-records` added (4 steps) (current) · claude-voice
 - 2026-11-07 05:27 UTC · `skins-asset-types` s10 done (current) · foreign-write
 - 2026-11-07 05:30 UTC · `grindr-ai-wingman` added (5 steps) (current) · claude-voice
+- 2026-11-07 05:34 UTC · `console-account-picker` note (current) · foreign-write
+- 2026-11-07 05:34 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · foreign-write
+- 2026-11-07 05:34 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
+- 2026-11-07 05:34 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
+- 2026-11-07 05:34 UTC · `claude-accounts-edit` note (current) · foreign-write
+- 2026-11-07 05:34 UTC · `skins-asset-types` s8 done, s10 done (current) · foreign-write
+- 2026-11-07 05:34 UTC · `multi-account-headless-workers` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-07 05:34 UTC · `molly-ri-court-records` added (4 steps) (current) · foreign-write
+- 2026-11-07 05:34 UTC · `grindr-ai-wingman` added (5 steps) (current) · foreign-write
+- 2026-11-07 05:34 UTC · `new-app-wizard` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
