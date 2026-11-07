@@ -1,0 +1,21 @@
+{
+  "$axf": "fixture@1",
+  "about": "What the TS core and server/calendar_core.py must both give for the same input.",
+  "series": [
+    { "name": "one-off", "start": "2026-11-09T18:00", "repeat": null, "to": "2026-12-01", "dates": ["2026-11-09"] },
+    { "name": "one-off after range", "start": "2026-12-09T18:00", "repeat": null, "to": "2026-12-01", "dates": [] },
+    { "name": "daily every 2 with a count", "start": "2026-11-09T07:00", "repeat": { "freq": "daily", "interval": 2, "days": [], "until": "", "count": 3 }, "to": "2027-01-01", "dates": ["2026-11-09", "2026-11-11", "2026-11-13"] },
+    { "name": "weekly Mon Wed", "start": "2026-11-09T18:00", "repeat": { "freq": "weekly", "interval": 1, "days": [1, 3], "until": "", "count": 0 }, "to": "2026-11-18", "dates": ["2026-11-09", "2026-11-11", "2026-11-16", "2026-11-18"] },
+    { "name": "weekly from a Wed skips the Mon before it", "start": "2026-11-11T18:00", "repeat": { "freq": "weekly", "interval": 1, "days": [1, 3], "until": "", "count": 0 }, "to": "2026-11-16", "dates": ["2026-11-11", "2026-11-16"] },
+    { "name": "every other week until", "start": "2026-11-02T09:00", "repeat": { "freq": "weekly", "interval": 2, "days": [], "until": "2026-12-01", "count": 0 }, "to": "2027-01-01", "dates": ["2026-11-02", "2026-11-16", "2026-11-30"] },
+    { "name": "monthly on the 31st skips short months", "start": "2026-10-31T09:00", "repeat": { "freq": "monthly", "interval": 1, "days": [], "until": "", "count": 0 }, "to": "2027-04-01", "dates": ["2026-10-31", "2026-12-31", "2027-01-31", "2027-03-31"] },
+    { "name": "yearly on Feb 29 hits leap years", "start": "2028-02-29T00:00", "repeat": { "freq": "yearly", "interval": 1, "days": [], "until": "", "count": 0 }, "to": "2033-01-01", "dates": ["2028-02-29", "2032-02-29"] }
+  ],
+  "status": [
+    { "name": "no answer", "replies": [], "status": "invited" },
+    { "name": "seen only", "replies": [{ "answer": "seen", "at": "2026-11-01T10:00:00Z" }], "status": "seen" },
+    { "name": "seen after yes keeps yes", "replies": [{ "answer": "yes", "at": "2026-11-01T10:00:00Z" }, { "answer": "seen", "at": "2026-11-02T10:00:00Z" }], "status": "yes" },
+    { "name": "latest answer wins", "replies": [{ "answer": "yes", "at": "2026-11-01T10:00:00Z" }, { "answer": "no", "at": "2026-11-03T10:00:00Z" }], "status": "no" },
+    { "name": "a message with no answer changes nothing", "replies": [{ "answer": "maybe", "at": "2026-11-01T10:00:00Z" }, { "answer": "", "at": "2026-11-03T10:00:00Z" }], "status": "maybe" }
+  ]
+}

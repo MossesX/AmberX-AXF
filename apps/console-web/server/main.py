@@ -1266,6 +1266,11 @@ def load_plugins() -> None:
                     raise ImportError("server/__init__.py must export `router` (fastapi.APIRouter)")
                 app.include_router(router, prefix=f"/api/plugins/{folder.name}",
                                    dependencies=[Depends(_plugin_auth(m.get("wallUsers") is True, folder.name)), Depends(_plugin_guard(folder.name))])
+                # `public_router` = pages for people with no console login (a signed link is their only key), outside
+                # the sign-in wall (install-console.sh routes /public/ past it). Empty for almost every plugin.
+                public = getattr(module, "public_router", None)
+                if public is not None:
+                    app.include_router(public, prefix=f"/public/{folder.name}", dependencies=[Depends(_plugin_guard(folder.name))])
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console
