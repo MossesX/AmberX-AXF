@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s2 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s3 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s4 done (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 14:11 UTC · `orchestrator-dup-check` added (5 steps) (all) · orchestrator-dup-check
 - 2026-11-07 14:11 UTC · `maintenance-redundancy-scan` → complete, note (all) · orchestrator-dup-check
 - 2026-11-07 14:13 UTC · `orchestrator-gate` s3 done (all) · orchestrator
+- 2026-11-07 14:17 UTC · `orchestrator-dup-check` s5 done, → complete (all) · orchestrator-dup-check
 
 ## Token passes (log)
 

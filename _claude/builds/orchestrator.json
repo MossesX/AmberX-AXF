@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T14:13:52.432Z",
+ "updatedAt": "2026-11-07T14:17:31.866Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66857,15 +66857,15 @@
    "title": "Orchestrator: cheap redundancy check at split time",
    "category": "Builds > Orchestrator",
    "detail": "Every build the orchestrator takes (add, import) runs a cheap duplicate check before it is registered: plain code, zero AI tokens, under 2 s. Checks the build and each step against the builds store (any status), Plan Studio plans + blueprints, shipped features / merged PRs, open branches + worktrees and the asset registry (UI steps). Hits go on the build as a note with a suggested action (reuse, extend, merge into, skip step, proceed); default proceed + flag, setting to hold for Brett; phone alert on a likely duplicate, answered in the orchestrator. Findings in the shared redundancy-finding@1 format feed the Maintenance redundancy report.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orchestrator-dup-check",
    "pr": "",
    "createdAt": "2026-11-07T14:11:33.802Z",
-   "updatedAt": "2026-11-07T14:11:33.803Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T14:17:30.735Z",
+   "builtAt": "2026-11-07T14:17:30.735Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -66979,8 +66979,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:17:30.735Z",
      "note": "",
      "uid": "st-mw6hez120aekgn"
     }
