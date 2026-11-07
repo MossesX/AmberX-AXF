@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1274,
- "updatedAt": "2026-11-07T11:00:54.048Z",
+ "rev": 1275,
+ "updatedAt": "2026-11-07T11:07:12.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -106915,14 +106915,14 @@
    "title": "glossary-index-demos",
    "category": "",
    "detail": "Encyclopedia glossary + index of everything, registry-sourced; Demonstration Designer off walkthroughs; Book Builder (wizard, chapters, drag from glossary, live sandbox preview, walkthrough video); interactive HTML/TS docs option; orchestrator auto-updates catalog every build; generated clips auto-tagged registry assets. Brief: /root/axf-builds/glossary-index-demos/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "glossary-index-demos",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T10:50:11.115Z",
+   "updatedAt": "2026-11-07T11:07:07.084Z",
    "builtAt": "",
    "notes": [
     {
@@ -106964,12 +106964,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:07:07.084Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:02:18.386Z",
-     "updatedAt": "2026-11-07T04:45:25.537Z"
+     "updatedAt": "2026-11-07T11:07:07.206Z"
     },
     {
      "id": "s2",

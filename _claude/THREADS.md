@@ -740,7 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:05 UTC · `ui-registry-shortcuts` s2 done (current) · foreign-write
 - 2026-11-06 23:05 UTC · `gizmo-rebuild-fable` s6 done (current) · orchestrator
 - 2026-11-06 23:13 UTC · `gizmo-rebuild-fable` s7 done (current) · orchestrator
 - 2026-11-06 23:15 UTC · `gizmo-voice` s1 done, → running (current) · orchestrator
@@ -1140,6 +1139,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:00 UTC · `multi-account-headless-workers` → complete, merged, note (all) · reconciler
 - 2026-11-07 11:00 UTC · `build-pipeline-v2` s3 done, note (all) · orchestrator
 - 2026-11-07 11:00 UTC · `build-pipeline-v2` s4 done (all) · orchestrator
+- 2026-11-07 11:07 UTC · `glossary-index-demos` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
