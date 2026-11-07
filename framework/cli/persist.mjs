@@ -31,6 +31,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '..', '..');
@@ -117,21 +118,37 @@ export const TRACKER_REL = 'tracker.json';
 export const ORCHESTRATOR_REL = '_claude/builds/orchestrator.json';
 export const PROFILE_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
+/**
+ * One work profile (Brett, Nov 7 2026): every build profile but the base was merged into `all`. A registry that still
+ * lists the retired ones (the hub copy until its next save) is read with them folded into `all`, and a retired id
+ * anywhere (AXF_BUILD_PROFILE, a saved pick, a plan's build link) means `all` (builds-store-core.mjs resolveProfile).
+ */
+export const MERGED_PROFILE_ENTRY = {
+  id: MERGED_PROFILE,
+  name: 'All builds',
+  description: 'Every build in one profile (Brett, Nov 7 2026): Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.',
+  createdAt: '2026-11-07T00:00:00.000Z',
+  catalog: false,
+};
+
 export function readProfiles() {
   const f = baseDataPath(PROFILES_REL);
   let reg = null;
   try { reg = JSON.parse(readFileSync(f, 'utf8')); } catch { /* missing or damaged → defaults */ }
-  const list = Array.isArray(reg?.profiles) ? reg.profiles.filter((p) => p && PROFILE_ID.test(p.id)) : [];
+  const listed = Array.isArray(reg?.profiles) ? reg.profiles.filter((p) => p && PROFILE_ID.test(p.id)) : [];
+  const list = listed.filter((p) => !RETIRED_PROFILES.includes(p.id));
+  if (listed.length !== list.length && !list.some((p) => p.id === MERGED_PROFILE)) list.push({ ...MERGED_PROFILE_ENTRY, updatedAt: MERGED_PROFILE_ENTRY.createdAt });
   if (!list.some((p) => p.id === BASE_PROFILE)) list.unshift({ id: BASE_PROFILE, name: 'Main framework', base: true });
   for (const p of list) p.base = p.id === BASE_PROFILE;
-  const active = list.some((p) => p.id === reg?.active) ? reg.active : BASE_PROFILE;
+  const saved = resolveProfile(reg?.active);
+  const active = list.some((p) => p.id === saved) ? saved : BASE_PROFILE;
   return { $axf: 'build-profiles@1', updatedAt: reg?.updatedAt ?? '', active, profiles: list };
 }
 
-/** The profile in force: AXF_BUILD_PROFILE (when it names a known profile), else the saved pick. */
+/** The profile in force: AXF_BUILD_PROFILE (when it names a known profile; a retired id = `all`), else the saved pick. */
 export function activeProfile() {
   const reg = readProfiles();
-  const env = process.env.AXF_BUILD_PROFILE;
+  const env = resolveProfile(process.env.AXF_BUILD_PROFILE);
   const id = env && reg.profiles.some((p) => p.id === env) ? env : reg.active;
   return reg.profiles.find((p) => p.id === id);
 }
@@ -143,6 +160,7 @@ export function profiledEntry(rel) {
 
 /** Path of `rel` inside profile `id` (relative to the data root / repo). The base profile = `rel` itself. */
 export function profileRel(id, rel) {
+  id = resolveProfile(id);
   return id === BASE_PROFILE ? rel : `${PROFILES_DIR_REL}${id}/${rel}`;
 }
 
@@ -181,6 +199,7 @@ export function dataPath(rel) {
 
 /** The orchestrator tracker of the active profile (a repo file). */
 export function orchestratorPath(id = activeProfile().id) {
+  id = resolveProfile(id);
   return join(REPO_ROOT, id === BASE_PROFILE ? ORCHESTRATOR_REL : `_claude/builds/profiles/${id}/orchestrator.json`);
 }
 

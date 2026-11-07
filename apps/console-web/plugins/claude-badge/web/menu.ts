@@ -2,5 +2,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 
 export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
-  { id: 'claude-badge.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'claude-badge', label: 'Claude badge (AI connection)', icon: 'sparkles', action: 'settings.open:claude-badge' }] },
+  { id: 'claude-badge.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'claude-badge', label: 'Badges', icon: 'sparkles', action: 'settings.open:claude-badge' }] },
 ];

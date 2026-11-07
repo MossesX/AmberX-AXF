@@ -11,6 +11,8 @@ import * as mon from './src/plugins/monitor/web/core.ts';
 import * as notes from './src/plugins/notes/web/core.ts';
 import * as hf from './src/plugins/voice/web/handsfree.ts';
 import * as companion from './src/plugins/companion/web/core.ts';
+import * as listeners from './src/plugins/listeners/web/core.ts';
+import { LISTENERS, POLICY_DEFAULTS } from './src/axf/libs/listeners/core.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
 import { readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
@@ -1588,6 +1590,83 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/MicGuard\.set\(this, !MicGuard\.off\(this\)\)/.test(java('MicTile.java')), 'android: the tile flips Mic off');
   const rules = java('MicRules.java');
   ok(/static boolean micSource\(int source\)/.test(rules) && /source != 8/.test(rules), 'android: playback capture and the hotword detector never count as another app\'s mic');
+}
+
+/* ---------------------------------------------------------------- Listeners plugin + Gizmo talk mode (Nov 6 2026, build gizmo-rebuild-fable) */
+{
+  const { existsSync } = await import('node:fs');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
+  // the pure core of the Listeners plugin
+  const mem = new Map();
+  const store = { getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => { mem.set(k, v); } };
+  const id1 = listeners.deviceIdOf(store, true, () => 'abcd1234');
+  eq(id1, 'phone-abcd1234', 'listeners: a phone device id is made once');
+  eq(listeners.deviceIdOf(store, true, () => 'zzzz9999'), 'phone-abcd1234', 'listeners: the device id is kept');
+  eq(listeners.deviceIdOf({ getItem: () => null, setItem: () => {} }, false, () => 'q1w2e3r4'), 'browser-q1w2e3r4', 'listeners: a browser gets a browser id');
+  eq(listeners.deviceNameOf('Mozilla/5.0 (Linux; Android 16; SM-S938B) Chrome/142', true), 'AmberX on Android', 'listeners: the app names itself');
+  eq(listeners.deviceNameOf('Mozilla/5.0 (Windows NT 10.0) Chrome/142 Safari/537', false), 'Chrome on Windows', 'listeners: a browser is named by browser + OS');
+  eq(listeners.deviceNameOf('Mozilla/5.0 (Linux; Android 16) Firefox/140', false), 'Firefox on Android', 'listeners: Firefox on Android');
+  const page = listeners.pageRows({ leaseHolder: 'companion', soundOwner: true, quiet: false }, true);
+  ok(page.every((r) => r.side === 'page') && !page.some((r) => r.id === 'veto-alarm'), 'listeners: page rows on the phone leave the alarm to the native side');
+  const pageWeb = listeners.pageRows({ leaseHolder: 'dictation', soundOwner: false, quiet: true }, false);
+  ok(pageWeb.find((r) => r.id === 'dictation').state === 'on' && pageWeb.find((r) => r.id === 'dictation').holdsMic && pageWeb.find((r) => r.id === 'veto-alarm').state === 'paused', 'listeners: the mic lease holder is on and has the mic; Quiet pauses the browser alarm');
+  const native = { micOff: false, micHolder: 'talk', at: 5, listeners: [{ id: 'talk', side: 'native', state: 'on', detail: 'Listening', holdsMic: true }, { id: 'handsfree', state: 'yielded', detail: 'call', lastError: 'x' }, { id: 'odd', state: 'error', detail: 'boom' }] };
+  const get = (k) => ({ 'amberx.listeners.handsfree.retries': '3' })[k];
+  const doc = listeners.combine(native, listeners.pageRows({ leaseHolder: null, soundOwner: true, quiet: false }, true), { device: 'phone-1', name: 'AmberX on Android', side: 'native', now: 1000 }, get);
+  ok(doc.$axf === 'listener-state@1' && doc.device === 'phone-1' && doc.micHolder === 'talk' && doc.at === 1000, 'listeners: combine makes the device document');
+  const ids = doc.listeners.map((l) => l.id);
+  ok(LISTENERS.every((l) => ids.includes(l.id)) && ids.includes('odd') && ids[ids.length - 1] === 'odd', 'listeners: every known listener has a row (off when unreported), unknown ones last');
+  ok(doc.listeners.find((l) => l.id === 'handsfree').policy.retries === 3 && doc.listeners.find((l) => l.id === 'talk').policy.retries === POLICY_DEFAULTS.retries, 'listeners: rows carry the policy from the settings getter');
+  ok(doc.listeners.find((l) => l.id === 'handsfree').state === 'yielded' && doc.listeners.find((l) => l.id === 'speak').state === 'off', 'listeners: native state kept, unreported native listeners are off');
+  const groups = listeners.settingsGroups();
+  ok(groups.length === LISTENERS.length && groups.every((g) => g.tab === 'listeners' && g.settings.length >= 2), 'listeners: one declared settings group per listener (synced through axHub)');
+  ok(groups.find((g) => g.id === 'amberx.listeners.handsfree').settings.some((x) => x.key === listeners.restartKey('handsfree') && x.kind === 'text') && !groups.find((g) => g.id === 'amberx.listeners.oneshot').settings.some((x) => x.key.endsWith('.restart')), 'listeners: a native listener with its own switch declares the console restart key, the one-shot does not');
+  ok(groups.every((g) => g.settings.filter((x) => x.kind === 'choice').every((x) => typeof x.default === 'string' && x.options.every((o) => typeof o.value === 'string'))), 'listeners: choice settings use string values (the settings registry shape)');
+  eq(listeners.changedPolicies({ 'amberx.listeners.talk.sound': false, 'amberx.listeners.handsfree.on': true, 'amberx.listeners.talk.restart': '' }, { 'amberx.listeners.talk.sound': true, 'amberx.listeners.handsfree.on': true, 'amberx.listeners.talk.restart': '2026-11-06T10:00:00Z' }), ['talk'], 'listeners: changed policies by listener (a restart request is not a policy change)');
+  eq(listeners.restartRequests({ 'amberx.listeners.talk.restart': '' }, { 'amberx.listeners.talk.restart': '2026-11-06T10:00:00Z', 'amberx.listeners.handsfree.restart': '' }), ['talk'], 'listeners: a new restart time is one restart request');
+  eq(listeners.restartRequests({ 'amberx.listeners.talk.restart': 'same' }, { 'amberx.listeners.talk.restart': 'same' }), [], 'listeners: the same time again is not a restart');
+
+  // wiring: the page
+  const nat = src('native.ts');
+  ok(/talkStart\(opts: TalkOptions\)/.test(nat) && /talkPhase\(opts: \{ phase: 'listening' \| 'thinking' \| 'speaking'; line\?: string \}\)/.test(nat) && /listenersStatus\(\): Promise<ListenersStatus>/.test(nat) && /listenerSet\(opts: \{ id: string; policy: Record<string, unknown> \}\)/.test(nat), 'talk + listeners: the native API has the talk service and the listeners panel calls');
+  ok(/async talkStart\(opts\)/.test(nat) && /function webTalkTurn\(\)/.test(nat) && /restartDelay\(webTalk\.attempts\)/.test(nat), 'talk: the browser twin runs Web Speech turns with backoff');
+  ok(/if \(webTalk\.rec\) return Promise\.reject\(new Error\("Gizmo's talk mode has the microphone/.test(nat), 'talk: in a browser Speak is refused while talk mode holds the mic (one owner)');
+  const talk = readFileSync(new URL('./src/plugins/companion/web/talk.ts', import.meta.url), 'utf8');
+  ok(/native\.talkStart\(\{ lang: lang\(rt\), listenWhileSpeaking: interruptOn\(rt\)/.test(talk) && /case 'stopped':/.test(talk) && /path = 'legacy'/.test(talk), 'talk: the companion starts the service, follows its stop, and falls back to the old loop on an older APK');
+  ok(/phaseToService\('speaking', next\)/.test(talk) && /phaseToService\('thinking'\)/.test(talk) && /phaseToService\('listening'\)/.test(talk), 'talk: the page tells the service its half of every turn');
+  const chat = readFileSync(new URL('./src/plugins/companion/web/Chat.tsx', import.meta.url), 'utf8');
+  ok(/talk\.background && <p className="axp-companion__note">Talk mode keeps going with the screen off/.test(chat) && /talk\.phase === 'paused' \? talk\.paused/.test(chat), 'talk: the chat says it runs in the background and why it is paused');
+  const css = readFileSync(new URL('./src/plugins/companion/web/companion.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  ok(!/100dvh/.test(css) && /\.fx-main__inner:has\(> \.axp-companion\) \{ display: flex; flex-direction: column; height: 100%/.test(css), 'companion: the chat fills the main region, never the viewport (the message box stays above the bottom nav)');
+  const lp = readFileSync(new URL('./src/plugins/listeners/web/index.tsx', import.meta.url), 'utf8');
+  ok(/nativeSubs\.bind\('listeners'/.test(lp) && /native\.listenerSet\(\{ id, policy: policyFrom/.test(lp) && /new HubData\(\{ hub: HUB_URL, project: HUB\.project, folder: HUB\.folder/.test(lp) && /parent: 'plugins'/.test(lp), 'listeners plugin: live native status, policies pushed, device document published, settings under Plugins');
+  ok(/for \(const id of restarts\) void restartListener\(rt, id\)/.test(lp), 'listeners plugin: a console restart request restarts the listener on the phone');
+  ok(!/#[0-9a-f]{3,8}\b|\d+px/i.test(readFileSync(new URL('./src/plugins/listeners/web/listeners.css', import.meta.url), 'utf8')), 'listeners plugin: CSS uses tokens only');
+  ok(/amberx-plugin@1/.test(src('plugins/listeners/plugin.json')) && /"model": "fable"/.test(src('plugins/listeners/plugin.json')), 'listeners plugin: manifest, built with Fable');
+
+  // wiring: Android (the exception to the Android hold)
+  const ts = java('TalkService.java');
+  ok(/FOREGROUND_SERVICE_TYPE_MICROPHONE/.test(ts) && /addAction\(0, "Stop", stop\)/.test(ts) && /MicGuard\.acquire\(ListenerRules\.TALK\)/.test(ts) && /new AudioFocusGuard\(this, new Focus\(\)\)/.test(ts) && /ListenerRules\.afterEnd\(attempts/.test(ts), 'android: TalkService is a microphone foreground service with Stop, one mic owner, audio focus and backoff');
+  ok(/PAGE_TIMEOUT_MS = 20 \* 60_000/.test(ts) && /end\("AmberX's page stopped answering/.test(ts), 'android: a conversation nobody is having ends by itself');
+  const man = readFileSync(new URL('./android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
+  ok(/android:name="\.TalkService"[\s\S]*?android:foregroundServiceType="microphone"/.test(man), 'android: TalkService in the manifest as a microphone service');
+  const mg = java('MicGuard.java');
+  ok(/static synchronized boolean acquire\(String owner\)/.test(mg) && /ListenerRules\.outranks\(owner, h\)/.test(mg) && /static boolean mayOpen\(Context c, String owner\)/.test(mg) && /TalkService\.stop\(app, "Mic off was switched on\."\)/.test(mg), 'android: MicGuard arbitrates one owner by priority and Mic off stops talk mode');
+  const ws = java('WatchService.java');
+  ok(/private void classicEnded\(int error, String detail\)/.test(ws) && /ListenerRules\.afterEnd\(classicAttempts, 0, pol, fatalRecognizerError\(error\)\)/.test(ws) && /setPhase\("error", why\)/.test(ws), 'android: the classic loop backs off and gives up with the reason instead of restarting forever');
+  ok(/ListenerRules\.yieldReason\(MicGuard\.off\(this\), MicRules\.callMode\(MicGuard\.mode\(this\)\), MicGuard\.silenced\(this\),/.test(ws) && /handsFreePolicy\(\)/.test(ws), 'android: hands-free yields by its own policy (pause for calls / other apps)');
+  ok(/if \(!MicGuard\.mayOpen\(this, ListenerRules\.HANDSFREE\)\)/.test(ws) && /static void micTaken\(String from, String to\)/.test(ws) && /static void micReleased\(\)/.test(ws), 'android: hands-free waits while talk mode or Speak holds the mic and comes back when it is let go');
+  ok(/final boolean muted = !v\.optBoolean\("triggerTone", false\) \|\| oneShotAttempts > 0;/.test(ws) && /oneShotBlockedUntil/.test(ws), 'android: a forced one-shot restart is silent and a refused recognizer is not hammered');
+  ok(/&& ListenerRegistry\.allowed\(c, ListenerRules\.HANDSFREE\)/.test(ws), 'android: the Listeners "allowed" switch gates hands-free');
+  const rules = java('ListenerRules.java');
+  ok(/static long restartDelay\(int attempt, Policy p\)/.test(rules) && /static EndPlan afterEnd\(int attempts, long ranMs, Policy p, boolean fatal\)/.test(rules) && /static boolean startSound\(Policy p, String reason\)/.test(rules) && /static String micWinner\(List<String> asking\)/.test(rules), 'android: ListenerRules is the twin of framework/libs/listeners');
+  const rt = readFileSync(new URL('./android/app/src/test/java/ai/amberx/droid/ListenerRulesTest.java', import.meta.url), 'utf8');
+  ok(/"src", "axf", "libs", "listeners", "cases\.json"/.test(rt) && existsSync(new URL('./src/axf/libs/listeners/cases.json', import.meta.url)), 'android: ListenerRulesTest replays the baked cases.json');
+  const plug = java('AmberxNativePlugin.java');
+  ok(/public void talkStart\(PluginCall call\)/.test(plug) && /public void listenerSet\(PluginCall call\)/.test(plug) && /static void talkEvent\(JSONObject e\)/.test(plug) && /MicGuard\.acquire\(ListenerRules\.SPEAK\)/.test(plug), 'android: the bridge has talkStart/talkStop/talkStatus/talkPhase + listenersStatus/listenerSet, Speak takes the mic through the arbiter');
+  const reg = java('ListenerRegistry.java');
+  ok(/static ListenerRules\.Policy policy\(Context c, String id\)/.test(reg) && /static JSONObject status\(Context c\)/.test(reg) && /rows\.put\(TalkService\.row\(c, holder\)\)/.test(reg), 'android: ListenerRegistry keeps policies and reports every native listener');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

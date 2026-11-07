@@ -23,7 +23,8 @@ t('backfill: Normal, Urgent when marked, a stored value wins', () => {
   assert.equal(e({ id: 'x', title: 'Plain build' }), 'P2');
   assert.equal(e({ id: 'urgent-main-ci', title: 'CI' }), 'P0');
   assert.equal(e({ id: 'x', title: 'Hotfix: login' }), 'P0');
-  assert.equal(e({ id: 'x', title: 'x', profiles: ['urgent'] }), 'P0');
+  assert.equal(e({ id: 'x', title: 'x', profiles: ['all'], fromProfile: 'urgent', priority: 'P0' }), 'P0'); // urgency is a field, never a profile
+  assert.equal(e({ id: 'x', title: 'x', profiles: ['all'] }), 'P2');
   assert.equal(e({ id: 'x', title: 'x', detail: 'URGENT: the banner is down' }), 'P0');
   assert.equal(e({ id: 'x', title: 'x', detail: 'urgent\nfix it' }), 'P0');
   assert.equal(e({ id: 'x', title: 'x', detail: 'Not urgent, whenever.' }), 'P2');
@@ -97,7 +98,7 @@ const dir = mkdtempSync(join(tmpdir(), 'axf-priority-'));
 process.env.AXF_BUILDS_STORE = join(dir, 'store.json');
 process.env.AXF_BUILDS_LIVE = '0';
 process.env.AXF_SLOTS_DIR = join(dir, 'slots');
-writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify({ $axf: 'builds@1', rev: 1, builds: [normBuild({ id: 'banner-widgets', title: 'Banner widgets', profiles: ['current'] }), normBuild({ id: 'other', title: 'Other', profiles: ['angel'] })], meta: { queue: {}, pending: {} }, rules: {}, drafts: {} }));
+writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify({ $axf: 'builds@1', rev: 1, builds: [normBuild({ id: 'banner-widgets', title: 'Banner widgets', profiles: ['all'] }), normBuild({ id: 'other', title: 'Other', profiles: ['all'] })], meta: { queue: {}, pending: {} }, rules: {}, drafts: {} }));
 const { setPriority, gather } = await import('../cli/build-priority.mjs');
 const { loadStore, journalDir } = await import('../cli/builds-store.mjs');
 const r = setPriority(['banner widgets', 'other'], 'urgent', 'test');

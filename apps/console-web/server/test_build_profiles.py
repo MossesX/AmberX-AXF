@@ -48,10 +48,11 @@ with tempfile.TemporaryDirectory() as tmp:
     st = node("state", env=env)
     check("state ok", st.get("ok") is True, str(st))
     ids = [p["id"] for p in st["profiles"]]
-    check("main + refactor listed", "main-framework" in ids and "refactor" in ids, str(ids))
+    check("main + all listed", "main-framework" in ids and "all" in ids, str(ids))
+    check("retired profiles gone", not any(i in ids for i in bp.RETIRED_PROFILES), str(ids))
     check("python registry matches", [p["id"] for p in prof.registry()["profiles"]] == ids)
 
-    for pid in ("main-framework", "refactor"):
+    for pid in ("main-framework", "all"):
         r = node("act", json.dumps({"action": "select", "id": pid}), env=env)
         check(f"select {pid}", r.get("ok") is True, str(r))
         check(f"python sees {pid}", prof.active()["id"] == pid)
@@ -60,9 +61,23 @@ with tempfile.TemporaryDirectory() as tmp:
             py = str(prof.data_path(rel))
             check(f"{pid} {rel}", Path(n).resolve() == Path(py).resolve(), f"node={n} py={py}")
 
-    # refactor starts empty, never a copy of main
+    # all's pending list is seeded from its own repo snapshot (the merged builds), never from main's
     pend = json.loads(Path(node_path("framework/plan/pending.json", env)).read_text())
-    check("refactor pending empty", pend["items"] == [])
+    snap = json.loads((ROOT / "framework/plan/profiles/all/framework/plan/pending.json").read_text())
+    check("all pending is its own list", [i["id"] for i in pend["items"]] == [i["id"] for i in snap["items"]] and len(pend["items"]) > 0)
+
+    # a retired id means all (old briefs, AXF_BUILD_PROFILE=urgent, a hub registry not yet saved again)
+    check("retired env id resolves", node("current", env={**env, "AXF_BUILD_PROFILE": "urgent"})["profile"]["id"] == "all")
+    os.environ["AXF_BUILD_PROFILE"] = "breakroom"
+    check("python retired env id resolves", prof.active()["id"] == "all")
+    del os.environ["AXF_BUILD_PROFILE"]
+    old_reg = {"active": "current", "profiles": [{"id": "main-framework", "name": "Main"}, {"id": "current", "name": "Current"}, {"id": "angel", "name": "Angel"}]}
+    (data / "framework/plan/profiles.json").write_text(json.dumps(old_reg))
+    st_old = node("state", env=env)
+    check("old registry reads folded", [p["id"] for p in st_old["profiles"]] == ["main-framework", "all"] and st_old["active"] == "all", str(st_old))
+    check("python folds the old registry too", [p["id"] for p in prof.registry()["profiles"]] == ["main-framework", "all"] and prof.registry()["active"] == "all")
+    check("a retired id can't be created again", node("act", json.dumps({"action": "create", "name": "Urgent", "id": "urgent"}), env=env).get("ok") is False)
+    node("act", json.dumps({"action": "select", "id": "all"}), env=env)
 
     # override for one process
     env2 = {**env, "AXF_BUILD_PROFILE": "main-framework"}
@@ -73,9 +88,9 @@ with tempfile.TemporaryDirectory() as tmp:
 
     # guards
     check("base can't go", node("act", json.dumps({"action": "remove", "id": "main-framework", "confirm": "main-framework"}), env=env).get("ok") is False)
-    check("active can't go", node("act", json.dumps({"action": "remove", "id": "refactor", "confirm": "refactor"}), env=env).get("ok") is False)
+    check("active can't go", node("act", json.dumps({"action": "remove", "id": "all", "confirm": "all"}), env=env).get("ok") is False)
     check("bad id refused", node("act", json.dumps({"action": "create", "name": "x", "id": "Bad Id"}), env=env).get("ok") is False)
-    check("duplicate refused", node("act", json.dumps({"action": "create", "name": "Refactor", "id": "refactor"}), env=env).get("ok") is False)
+    check("duplicate refused", node("act", json.dumps({"action": "create", "name": "All", "id": "all"}), env=env).get("ok") is False)
     node("act", json.dumps({"action": "select", "id": "main-framework"}), env=env)
 
 print(f"build profiles: {passed} checks passed")

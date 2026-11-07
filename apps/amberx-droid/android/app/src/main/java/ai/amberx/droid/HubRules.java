@@ -287,6 +287,24 @@ final class HubRules {
         }
     }
 
+    /**
+     * The notification types the Dev Console's panel switched off for this phone (`notify.off` in its alerts reply), or
+     * null when the reply doesn't say. Null means keep the last answer: a console that can't be read never mutes anything.
+     */
+    static Set<String> mutedTypes(int status, String body) {
+        if (status != 200 || body == null) return null;
+        try {
+            JSONObject notify = new JSONObject(body).optJSONObject("notify");
+            JSONArray off = notify == null ? null : notify.optJSONArray("off");
+            if (off == null) return null;
+            Set<String> out = new HashSet<>();
+            for (int i = 0; i < off.length(); i++) out.add(off.optString(i, ""));
+            return out;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /* ---------------------------------------------------------------- auto-approval (the AXHub app's rules) */
 
     static List<String> patterns(String raw) {

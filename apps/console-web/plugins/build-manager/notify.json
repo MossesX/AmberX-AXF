@@ -1,0 +1,17 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "builds.start-approval",
+      "label": "Start build waits for you",
+      "group": "builds",
+      "app": "console",
+      "source": "Build manager",
+      "description": "Start build now is waiting for your approval on axHub.",
+      "match": {
+        "source": "build-manager"
+      },
+      "priority": "high"
+    }
+  ]
+}

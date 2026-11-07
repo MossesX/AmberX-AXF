@@ -1,5 +1,9 @@
 /* Companion (Gizmo): layout only (THEMING.md); every control is a framework control, sizes and colours are theme tokens. */
-.axp-companion { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: calc(100dvh - var(--fx-space) * 5); }
+/* The chat fills the main region it is in, never the whole viewport (Nov 6 2026: `100dvh` put the message box under
+   the phone's bottom navigation, which the main region already leaves room for). The region's inner wrapper becomes a
+   column so the chat can stretch; in a floating window the pane is the frame. */
+.fx-main__inner:has(> .axp-companion) { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.axp-companion { position: relative; display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; min-height: 0; height: auto; }
 .axp-companion--empty { align-items: center; justify-content: center; text-align: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); }
 .axp-companion__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .axp-companion__grow { flex: 1 1 auto; min-width: 0; }
