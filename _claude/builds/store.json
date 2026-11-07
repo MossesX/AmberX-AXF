@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1401,
- "updatedAt": "2026-11-07T17:00:14.162Z",
+ "rev": 1402,
+ "updatedAt": "2026-11-07T17:01:20.313Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112356,9 +112356,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T17:00:11.176Z",
-   "updatedAt": "2026-11-07T17:00:11.176Z",
+   "updatedAt": "2026-11-07T17:01:19.405Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Every concept must look and feel like a real, working desktop application, not a mockup or static screenshot: real navigation, working screens, real controls and states, using AmberX's actual features and data. Brett: \"I love the design to look like a real application, dude.\"",
+     "at": "2026-11-07T17:01:19.405Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -112547,7 +112552,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
