@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1288,
- "updatedAt": "2026-11-07T11:37:34.028Z",
+ "rev": 1289,
+ "updatedAt": "2026-11-07T12:10:25.126Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -93731,14 +93731,15 @@
    "title": "Approve / deny axHub approvals inside the Dev Console (no bounce to axHub)",
    "category": "Console",
    "detail": "Tapping an approval in the console opened axHub. Now: the console server relays Brett's own hub session (axhub_session cookie on .amberxai.com, wall-signed admin, same-origin tap) to axHub's decide API (session + CSRF + hub Origin), so the banner, app-menu rows, review dialog, Follow Amber pop-up and console_show approval:<id> decide in place with the result shown. Review dialog = in-console approval view (title, description, exact call, countdown, Approve/Deny, result), axHub link only secondary. Console actions approvals.approve/deny/view. AmberX notification taps open the console view.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approvals-in-place-r2",
    "pr": "#375",
+   "mergedAt": "2026-11-07T12:01:20Z",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T01:33:51.919Z",
+   "updatedAt": "2026-11-07T12:10:24.118Z",
    "builtAt": "2026-11-07T01:33:51.091Z",
    "notes": [
     {
@@ -93752,6 +93753,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #375 merged",
+     "at": "2026-11-07T12:10:24.118Z"
     }
    ],
    "approvals": [],
@@ -94299,7 +94304,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "console-approvals-in-place",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {

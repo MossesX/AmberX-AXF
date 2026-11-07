@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:54 UTC · `badges-notify-followup` s3 done (current) · orchestrator
 - 2026-11-06 23:56 UTC · `badges-notify-followup` branch claude/badges-notify-followup, PR #370 (current) · builds-live
 - 2026-11-06 23:57 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
 - 2026-11-06 23:57 UTC · `badges-notify-followup` s4 done, → built (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` s15 done, → complete (all) · orchestrator
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` branch claude/pipeline-v2 (all) · builds-live
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` note (all) · orchestrator
+- 2026-11-07 12:10 UTC · `console-approvals-in-place` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
