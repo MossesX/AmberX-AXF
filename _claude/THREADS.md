@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:48 UTC · `ui-registry-shortcuts` s7 done, s7-1 done, s7-2 done, s7-3 done, s8 done, s8-1 done, s8-2 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `badges-notify-followup` s5 done, s5-1 done, s5-2 done, s6 done, s6-1 done, s7 done, s7-1 done, s7-2 done, s7-3 done, s7-4 done (current) · orchestrator
 - 2026-11-07 00:48 UTC · `amberx-open-any-url` added (4 steps) (current) · backfill
 - 2026-11-07 00:48 UTC · `axhub-google` added (4 steps) (current) · backfill
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:44 UTC · `plan-blueprints` → built (all) · gina
 - 2026-11-07 13:44 UTC · `orchestrator-gate` s1 done (all) · orchestrator
 - 2026-11-07 13:50 UTC · `style-override-rule` s7 done (all) · orchestrator
+- 2026-11-07 13:51 UTC · `style-override-rule` s8 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1325,
- "updatedAt": "2026-11-07T13:50:52.859Z",
+ "rev": 1326,
+ "updatedAt": "2026-11-07T13:51:26.871Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110536,15 +110536,15 @@
    "title": "Style override rule: apps share one style (override off), every plugin and UI asset has its own override (on, seeded copy); resolution owner → app → shared; settings-asset switches; CI declaration check",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/style-override-rule",
    "pr": "",
    "createdAt": "2026-11-07T12:36:39.385Z",
-   "updatedAt": "2026-11-07T13:50:51.904Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T13:51:25.786Z",
+   "builtAt": "2026-11-07T13:51:25.786Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -110730,12 +110730,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:51:25.786Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T12:36:39.387Z",
-     "updatedAt": "2026-11-07T12:36:39.387Z"
+     "updatedAt": "2026-11-07T13:51:25.901Z"
     }
    ],
    "profiles": [
@@ -110746,7 +110746,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

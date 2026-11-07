@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T13:50:52.859Z",
+ "updatedAt": "2026-11-07T13:51:26.871Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66368,15 +66368,15 @@
    "title": "Style override rule: apps share one style (override off), every plugin and UI asset has its own override (on, seeded copy); resolution owner → app → shared; settings-asset switches; CI declaration check",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/style-override-rule",
    "pr": "",
    "createdAt": "2026-11-07T12:36:39.385Z",
-   "updatedAt": "2026-11-07T13:50:51.904Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T13:51:25.786Z",
+   "builtAt": "2026-11-07T13:51:25.786Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -66532,8 +66532,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:51:25.786Z",
      "note": "",
      "uid": "st-mw6e0x510guhbq"
     }
