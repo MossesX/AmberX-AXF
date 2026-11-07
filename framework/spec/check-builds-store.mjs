@@ -12,8 +12,9 @@ const at = '2026-10-31T10:00:00.000Z';
 const step = (id, text, extra = {}) => ({ id, text, model: 'Opus', estimate: '10 min', ...extra });
 
 // ------------------------------------------------------------------ migration: nothing lost
+// two profiles (any number work; since Nov 7 2026 the real store has one, `all`, and `side` stands for any other)
 const sources = { profiles: [
-  { id: 'main-framework', orchFile: 'o-main.json', orch: { rules: { maxStepMinutes: 30 }, builds: [
+  { id: 'side', orchFile: 'o-main.json', orch: { rules: { maxStepMinutes: 30 }, builds: [
     { id: 'shared', title: 'Shared old', status: 'pending', updatedAt: '2026-10-20T00:00:00Z', steps: [step('s1', 'old a')], notes: [{ text: 'main note', at }] },
   ] },
   pending: [
@@ -46,7 +47,7 @@ t('validateStore names every problem by path', () => {
 });
 t('the same build in two profiles = one record tagged with both, newest copy wins, the other kept', () => {
   const b = M.builds.find((x) => x.id === 'shared');
-  assert.deepEqual(b.profiles.sort(), ['all', 'main-framework']);
+  assert.deepEqual(b.profiles.sort(), ['all', 'side']);
   assert.equal(b.title, 'Shared new'); assert.equal(b.steps.length, 2);
   assert.ok(b.copies.some((x) => JSON.stringify(x.data).includes('old a')));
   assert.ok(b.notes.some((x) => x.text === 'only on pending'));
@@ -62,7 +63,7 @@ t('queue epics become epic records with their queue record; a linked pending ite
 });
 t('items only in git history come back archived, off the Pending list', () => {
   const g = M.builds.find((x) => x.id === 'gone'); assert.equal(g.status, 'archived');
-  assert.ok(!c.projectPending(M, 'main-framework').items.some((x) => x.id === 'gone'));
+  assert.ok(!c.projectPending(M, 'side').items.some((x) => x.id === 'gone'));
   assert.equal(report.recovered.length, 1);
 });
 t('an unknown orchestrator status is kept as a note', () => assert.ok(M.builds.find((x) => x.id === 'odd').notes.some((x) => x.text.includes('"queued"'))));
@@ -75,19 +76,19 @@ t('steps get stable uids (same on a re-run)', () => { const again = c.migrate(so
 
 // ------------------------------------------------------------------ projections round-trip
 t('orchestrator projection → absorb is a no-op', () => { const back = c.absorbOrchestrator(M, 'all', c.projectOrchestrator(M, 'all'), { now: at }); assert.deepEqual(c.diffStores(M, back, at), []); });
-t('pending projection → absorb is a no-op', () => { for (const p of ['main-framework', 'all']) { const back = c.absorbPending(M, p, c.projectPending(M, p), null, { now: at }); assert.deepEqual(c.diffStores(M, back, at).map((x) => x.id), [], p); } });
-t('queue projection → absorb is a no-op', () => { const q = c.projectQueue(M, 'main-framework'); assert.deepEqual(q.order, ['linked', 'x.other'].map((id) => (id === 'linked' ? 'x.epic' : id))); const back = c.absorbQueue(M, 'main-framework', q, sources.profiles[0].features, { now: at }); assert.deepEqual(c.diffStores(M, back, at).map((x) => x.id), []); });
+t('pending projection → absorb is a no-op', () => { for (const p of ['side', 'all']) { const back = c.absorbPending(M, p, c.projectPending(M, p), null, { now: at }); assert.deepEqual(c.diffStores(M, back, at).map((x) => x.id), [], p); } });
+t('queue projection → absorb is a no-op', () => { const q = c.projectQueue(M, 'side'); assert.deepEqual(q.order, ['linked', 'x.other'].map((id) => (id === 'linked' ? 'x.epic' : id))); const back = c.absorbQueue(M, 'side', q, sources.profiles[0].features, { now: at }); assert.deepEqual(c.diffStores(M, back, at).map((x) => x.id), []); });
 t('pending projection keeps the old item fields', () => {
-  const it = c.projectPending(M, 'main-framework').items.find((x) => x.id === 'p-only');
+  const it = c.projectPending(M, 'side').items.find((x) => x.id === 'p-only');
   assert.equal(it.status, 'unsafe'); assert.equal(it.estimate, '30 min'); assert.equal(it.source, 'chat'); assert.equal(it.subPrompts[1].at, ''); assert.equal(it.subPrompts[1].done, true); assert.equal(it.subPrompts[0].text, 'do x');
 });
 t('a profile with no queue gives null (the queue core creates one only when missing)', () => { const s = c.normalizeStore(JSON.parse(JSON.stringify(M))); delete s.meta.queue.all; assert.equal(c.projectQueue(s, 'all'), null); });
 t('removing a build on one profile untags it, the record stays', () => {
   const o = c.projectOrchestrator(M, 'all'); o.builds = o.builds.filter((b) => b.id !== 'shared');
   const s2 = c.absorbOrchestrator(M, 'all', o, { now: at }); const b = s2.builds.find((x) => x.id === 'shared');
-  assert.deepEqual(b.profiles, ['main-framework']); assert.equal(b.deleted, false);
-  const o2 = c.projectOrchestrator(s2, 'main-framework'); o2.builds = o2.builds.filter((x) => x.id !== 'shared');
-  const s3 = c.absorbOrchestrator(s2, 'main-framework', o2, { now: at }); assert.equal(s3.builds.find((x) => x.id === 'shared').deleted, true);
+  assert.deepEqual(b.profiles, ['side']); assert.equal(b.deleted, false);
+  const o2 = c.projectOrchestrator(s2, 'side'); o2.builds = o2.builds.filter((x) => x.id !== 'shared');
+  const s3 = c.absorbOrchestrator(s2, 'side', o2, { now: at }); assert.equal(s3.builds.find((x) => x.id === 'shared').deleted, true);
 });
 t('a foreign (old-style) file only brings in builds NEWER than the store, never reverts or removes', () => {
   const o = c.projectOrchestrator(M, 'all');
@@ -96,8 +97,8 @@ t('a foreign (old-style) file only brings in builds NEWER than the store, never 
   assert.equal(s1.builds.find((b) => b.id === 'shared').title, 'Shared new'); assert.equal(s1.builds.find((b) => b.id === 'odd').deleted, false);
   const newer = { ...o, builds: o.builds.map((b) => (b.id === 'shared' ? { ...b, title: 'From another session', updatedAt: '2027-01-01T00:00:00Z' } : b)) };
   assert.equal(c.absorbOrchestrator(M, 'all', newer, { newerOnly: true, now: at }).builds.find((b) => b.id === 'shared').title, 'From another session');
-  const p = c.projectPending(M, 'main-framework'); const staleP = { ...p, items: [] };
-  assert.deepEqual(c.diffStores(M, c.absorbPending(M, 'main-framework', staleP, null, { newerOnly: true, now: at }), at), [], 'an empty old Pending file removes nothing');
+  const p = c.projectPending(M, 'side'); const staleP = { ...p, items: [] };
+  assert.deepEqual(c.diffStores(M, c.absorbPending(M, 'side', staleP, null, { newerOnly: true, now: at }), at), [], 'an empty old Pending file removes nothing');
 });
 t('diffStores never drops a record and bumps revs', () => {
   const after = c.normalizeStore(JSON.parse(JSON.stringify(M))); after.builds = after.builds.filter((b) => b.id !== 'odd');
@@ -133,7 +134,7 @@ t('rename build + step: empty refused, id unchanged, every view shows the new ti
   assert.equal(b.id, 'shared'); assert.equal(b.title, 'Renamed build'); assert.equal(b.steps[0].title, 'Renamed step'); assert.equal(b.steps[0].uid, u1);
   assert.equal(c.projectOrchestrator(a, P).builds.find((x) => x.id === 'shared').title, 'Renamed build');
   assert.equal(c.projectPending(a, P).items.find((x) => x.id === 'shared').title, 'Renamed build');
-  assert.equal(c.projectOrchestrator(a, 'main-framework').builds.find((x) => x.id === 'shared').title, 'Renamed build', 'other profile shows it too');
+  assert.equal(c.projectOrchestrator(a, 'side').builds.find((x) => x.id === 'shared').title, 'Renamed build', 'other profile shows it too');
 });
 t('rename profile goes to the registry on Apply', () => { const r = c.applyDraft(c.addDraftOp(M, P, { op: 'rename-profile', id: P, name: 'Refactor 2' }), P); assert.deepEqual(r.profileName, { id: P, name: 'Refactor 2' }); assert.throws(() => c.addDraftOp(M, P, { op: 'rename-profile', id: P, name: '' }), /needs a name/); });
 t('divide a step into parts, then Restore default', () => {
@@ -177,10 +178,18 @@ t('progress per build and per profile', () => {
 t('a record naming a retired profile reads as `all`, keeps where it came from, urgency becomes its priority', () => {
   const b = c.normBuild({ id: 'old', title: 'Old', profiles: ['urgent'], order: { urgent: 4 } });
   assert.deepEqual([b.profiles, b.order, b.fromProfile, b.priority], [['all'], { all: 4 }, 'urgent', 'P0']);
-  const k = c.normBuild({ id: 'kept', title: 'Kept', profiles: ['main-framework', 'refactor'], order: { 'main-framework': 1, refactor: 2 }, priority: 'P3' });
-  assert.deepEqual([k.profiles, k.order, k.fromProfile, k.priority], [['main-framework', 'all'], { 'main-framework': 1, all: 2 }, 'refactor', 'P3']);
+  const k = c.normBuild({ id: 'kept', title: 'Kept', profiles: ['side', 'refactor'], order: { side: 1, refactor: 2 }, priority: 'P3' });
+  assert.deepEqual([k.profiles, k.order, k.fromProfile, k.priority], [['side', 'all'], { side: 1, all: 2 }, 'refactor', 'P3']);
   assert.equal(c.normBuild({ id: 'n', title: 'N', profiles: ['all'] }).fromProfile, undefined);
-  assert.equal(c.resolveProfile('breakroom'), 'all'); assert.equal(c.resolveProfile('main-framework'), 'main-framework');
+  assert.equal(c.resolveProfile('breakroom'), 'all'); assert.equal(c.resolveProfile('side'), 'side');
+});
+t('the old base main-framework is folded in too: `all` is the base, a main-framework record reads as `all`', () => {
+  assert.equal(c.BASE_PROFILE, 'all'); assert.equal(c.resolveProfile('main-framework'), 'all');
+  const m = c.normBuild({ id: 'm', title: 'M', profiles: ['main-framework'], order: { 'main-framework': 3 } });
+  assert.deepEqual([m.profiles, m.order, m.fromProfile, m.priority], [['all'], { all: 3 }, 'main-framework', undefined]);
+  const both = c.normBuild({ id: 'b', title: 'B', profiles: ['main-framework', 'all'], order: { 'main-framework': 3, all: 7 }, fromProfile: 'current' });
+  assert.deepEqual([both.profiles, both.order, both.fromProfile], [['all'], { all: 7 }, 'current']);
+  assert.deepEqual(c.normBuild({ id: 'd', title: 'D' }).profiles, ['all'], 'a record without profiles lands in the base');
 });
 t('mergeProfiles keeps ids, statuses and steps, orders by old profile, folds rules and queue meta', () => {
   const raw = { ...c.emptyStore(at), rules: { current: { maxStepMinutes: 25 }, angel: { maxStepMinutes: 30 } }, meta: { queue: { angel: { history: [{ at: '2', text: 'b' }] }, current: { history: [{ at: '1', text: 'a' }] } }, pending: {} },
@@ -192,9 +201,9 @@ t('mergeProfiles keeps ids, statuses and steps, orders by old profile, folds rul
       { id: 'm1', title: 'M1', status: 'pending', profiles: ['main-framework'], order: { 'main-framework': 0 }, notes: [], steps: [] },
     ] };
   const { store: s, report } = c.mergeProfiles(raw, c.RETIRED_PROFILES, c.MERGED_PROFILE, { now: at });
-  assert.equal(report.moved, 4);
-  assert.deepEqual(c.buildsOf(s, 'all').map((b) => b.id), ['c1', 'c2', 'u1', 'a1']);
-  assert.deepEqual(s.builds.map((b) => b.fromProfile ?? ''), ['angel', 'current', 'current', 'urgent', '']);
+  assert.equal(report.moved, 5);
+  assert.deepEqual(c.buildsOf(s, 'all').map((b) => b.id), ['c1', 'c2', 'u1', 'a1', 'm1']);
+  assert.deepEqual(s.builds.map((b) => b.fromProfile ?? ''), ['angel', 'current', 'current', 'urgent', 'main-framework']);
   assert.equal(s.builds.find((b) => b.id === 'u1').priority, 'P1', 'a stored priority is never overwritten');
   assert.equal(s.builds.find((b) => b.id === 'a1').steps[0].done, true);
   assert.deepEqual(Object.keys(s.rules), ['all']); assert.equal(s.rules.all.maxStepMinutes, 25);

@@ -54,15 +54,17 @@ export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', '
 /** Statuses that count as finished work (progress, Pending list). */
 export const FINISHED = ['built', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
-export const BASE_PROFILE = 'main-framework';
 /**
- * One work profile (Brett, Nov 7 2026: merge every build profile into one). The six profiles below were folded into
+ * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
  * `all`; a record that still names one of them (an older checkout, a live merge from a session on older code, a hub
  * plan's build link, `AXF_BUILD_PROFILE=urgent` in an old brief) is read as `all`, its old profile kept in
  * `fromProfile`. Urgency is a per-build `priority`, never a profile: a build from `urgent` without one reads as P0.
+ * The old base, `main-framework`, was folded in too (Brett, Nov 7 2026), so `all` is the base profile now: its files
+ * are the original paths (`_claude/builds/orchestrator.json`, `framework/plan/pending.json`, …).
  */
 export const MERGED_PROFILE = 'all';
-export const RETIRED_PROFILES = ['current', 'urgent', 'angel', 'big-dog', 'breakroom', 'refactor'];
+export const BASE_PROFILE = MERGED_PROFILE;
+export const RETIRED_PROFILES = ['current', 'urgent', 'angel', 'big-dog', 'breakroom', 'refactor', 'main-framework'];
 /** A profile id after the merge: a retired id is `all`, anything else stays. */
 export const resolveProfile = (id) => (RETIRED_PROFILES.includes(id) ? MERGED_PROFILE : id);
 

@@ -1,15 +1,9 @@
 {
  "$axf": "builds@1",
- "rev": 1257,
- "updatedAt": "2026-11-07T09:43:53.378Z",
+ "rev": 1265,
+ "updatedAt": "2026-11-07T10:29:44.846Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
-  "main-framework": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
   "all": {
    "sameSession": true,
    "subAgents": false,
@@ -19,9 +13,9 @@
  },
  "meta": {
   "queue": {
-   "main-framework": {
+   "all": {
     "dirty": true,
-    "updatedAt": "2026-10-23T11:42:15.830Z",
+    "updatedAt": "2026-10-30T18:14:44.160Z",
     "history": [
      {
       "at": "2026-10-17T16:12:45.936Z",
@@ -212,13 +206,7 @@
       "at": "2026-10-23T11:42:15.830Z",
       "by": "cli",
       "text": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view): ~3 h"
-     }
-    ]
-   },
-   "all": {
-    "dirty": false,
-    "updatedAt": "2026-10-30T18:14:44.160Z",
-    "history": [
+     },
      {
       "at": "2026-10-30T18:14:44.160Z",
       "by": "cli",
@@ -228,10 +216,6 @@
    }
   },
   "pending": {
-   "main-framework": {
-    "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
-    "updatedAt": "2026-10-30T13:19:44.824Z"
-   },
    "all": {
     "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
     "updatedAt": "2026-10-31T23:38:22.887Z"
@@ -517,11 +501,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 0,
     "all": 177
    },
    "fromProfile": "refactor",
@@ -1283,11 +1265,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 1,
     "all": 178
    },
    "fromProfile": "refactor",
@@ -1785,11 +1765,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 2,
     "all": 181
    },
    "fromProfile": "refactor",
@@ -3121,11 +3099,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 3,
     "all": 179
    },
    "fromProfile": "refactor",
@@ -4795,11 +4771,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 4,
     "all": 180
    },
    "fromProfile": "refactor",
@@ -5313,11 +5287,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 5,
     "all": 182
    },
    "fromProfile": "refactor",
@@ -5483,6 +5455,10 @@
     {
      "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
      "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -5820,14 +5796,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 6
+    "all": 230
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -5888,6 +5865,10 @@
     {
      "text": "Superseded in part by build ui-asset-designer (Current, Nov 7 2026, Fable): the menu editor (s5), toolbar editor (s6) and the generic designer shell / storage / validation gate are built from scratch there (designer@1 host + add-ons, framework/spec/DESIGNER.md). What stays here: the drawer asset type (s7, s8), layout editor (s9), colour-theme editor (s10), style-theme editor (s11); build them on the designer@1 host when picked up.",
      "at": "2026-11-07T02:14:26.562Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -6247,14 +6228,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 7
+    "all": 231
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.designer",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6391,7 +6373,12 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-10-21T04:46:12.593Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -6617,14 +6604,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 8
+    "all": 232
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.browser",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6739,20 +6727,25 @@
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/plugin-manager. Differences report: _claude/memory/docs/rebuilds/plugin-manager.md",
      "at": "2026-10-21T02:23:02.695Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 9
+    "all": 233
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.plugins.manager",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6808,6 +6801,10 @@
     {
      "text": "Nov 3 2026: Build Pilot is retired; s13 only covers the console's asset designer now.",
      "at": "2026-11-03T14:24:43.493Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -7123,14 +7120,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 10
+    "all": 234
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.templates",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7257,19 +7255,25 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-10-18T04:21:56.128Z",
    "builtAt": "2026-10-18T04:21:56.128Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 11
+    "all": 235
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.console.pending",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7323,20 +7327,25 @@
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/lib-mcp",
      "at": "2026-10-21T02:19:21.624Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 12
+    "all": 236
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.lib.mcp",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7388,19 +7397,25 @@
    "createdAt": "2026-10-18T06:06:35.214Z",
    "updatedAt": "2026-10-18T06:07:53.368Z",
    "builtAt": "2026-10-18T06:07:53.368Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 13
+    "all": 237
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7441,7 +7456,12 @@
    "createdAt": "2026-10-18T16:13:56.087Z",
    "updatedAt": "2026-10-23T11:41:00.284Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7811,14 +7831,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 14
+    "all": 238
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7880,6 +7901,10 @@
     {
      "text": "Oct 18 2026: the project-creation half is built as the console plugin project-wizard (Opus): repo/folder/new AXF app → GitHub/VPS/local homes → manifest, _claude/, Claude.ai project kit, all on claude-project. lib-clone still covers the cross-port library and cloning an install WITH its data; reuse wizard.mjs for the homes and kit.",
      "at": "2026-10-18T17:20:23.926Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -8163,14 +8188,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 15
+    "all": 239
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8236,6 +8262,10 @@
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/ai-assistant (report _claude/memory/docs/rebuilds/ai-assistant-plugin.md; self-test 111 → 137).",
      "at": "2026-10-20T22:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -8265,14 +8295,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 16
+    "all": 240
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8327,20 +8358,25 @@
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/agent-manager: agent-definition@1 framework contract (TS + Kotlin + Python, one fixture), 116 self-test checks (was 92); report _claude/memory/docs/rebuilds/agent-manager-plugin.md",
      "at": "2026-10-20T23:59:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 17
+    "all": 241
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8385,6 +8421,10 @@
     {
      "text": "Oct 22 2026: patches-plugins (Opus) adds Patches-owned plugin lists per hosted app and an auto install of missing plugins; check for overlap when this is designed.",
      "at": "2026-10-22T18:37:50.877Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -8690,14 +8730,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 18
+    "all": 242
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8760,20 +8801,25 @@
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
      "at": "2026-10-20T22:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 19
+    "all": 243
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8818,20 +8864,25 @@
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
      "at": "2026-10-20T22:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 20
+    "all": 244
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8876,6 +8927,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:20.226Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -9081,14 +9136,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 21
+    "all": 245
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9147,20 +9203,25 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:21.829Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 22
+    "all": 246
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9205,6 +9266,10 @@
     {
      "text": "Nov 3 2026: s12 (Build Pilot backend) skipped, Build Pilot is retired.",
      "at": "2026-11-03T14:24:42.740Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -9664,14 +9729,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 23
+    "all": 247
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9741,6 +9807,10 @@
     {
      "text": "Nov 3 2026: Build Pilot is retired; the Pilot tab is dropped, only the axHub tab remains in scope.",
      "at": "2026-11-03T14:24:41.067Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -10178,14 +10248,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 24
+    "all": 248
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -10254,6 +10325,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:23.528Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -11131,14 +11206,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 25
+    "all": 249
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11231,6 +11307,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:25.126Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -11448,14 +11528,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 26
+    "all": 250
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11510,6 +11591,10 @@
     {
      "text": "All 15 steps done: Build manager 0.2.0 (Live, Built, search, Start build now) is built and merged (see CLAUDE.md Status). Marked complete while fixing the estimates (Oct 23 2026).",
      "at": "2026-10-23T11:41:00.284Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -11859,14 +11944,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 27
+    "all": 251
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11935,6 +12021,10 @@
     {
      "text": "Oct 23 2026: axhub-web-console-look (Opus, branch claude/project-thread-j1ri9d, PR #30) does the web half of this harvest: catalog rules move into framework/libs/hub with an apps fixture section, web app switched. What stays for Fable: the Kotlin twin replaying that fixture and the Android Apps tab, once the Android hold lifts.",
      "at": "2026-10-23T04:11:01.776Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -12052,14 +12142,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 28
+    "all": 252
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12114,6 +12205,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:26.534Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -12265,14 +12360,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 29
+    "all": 253
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12332,6 +12428,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:27.688Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -12483,14 +12583,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 30
+    "all": 254
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12542,6 +12643,10 @@
     {
      "text": "Built on Opus, branch ccr-6621bec6-i0xrz6 (draft PR). Web only; Kotlin twins deferred in PORTING.md.",
      "at": "2026-10-22T23:25:53.960Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -12681,14 +12786,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 31
+    "all": 255
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12740,20 +12846,25 @@
     {
      "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
      "at": "2026-10-23T00:08:41.756Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 32
+    "all": 256
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12798,20 +12909,25 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
      "at": ""
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 33
+    "all": 257
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12856,6 +12972,10 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29 (commit 2a52f09)",
      "at": "2026-10-22T20:44:42.519Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -12929,14 +13049,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 34
+    "all": 258
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12985,20 +13106,25 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
      "at": "2026-10-22T21:07:43.754Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 35
+    "all": 259
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13043,6 +13169,10 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
      "at": "2026-10-22T22:37:36.833Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -13094,14 +13224,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 36
+    "all": 260
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13149,6 +13280,10 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
      "at": "2026-10-22T22:55:27.752Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -13244,14 +13379,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 37
+    "all": 261
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13301,6 +13437,10 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
      "at": "2026-10-23T00:09:00.474Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -13352,14 +13492,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 38
+    "all": 262
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13407,20 +13548,25 @@
     {
      "text": "Built on branch ccr-60c22f01-swyyzn (PR #29).",
      "at": "2026-10-23T04:06:51.531Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 39
+    "all": 263
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13461,19 +13607,25 @@
    "createdAt": "2026-10-23T00:40:17.479Z",
    "updatedAt": "2026-10-23T00:40:17.479Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 40
+    "all": 264
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13514,19 +13666,25 @@
    "createdAt": "2026-10-23T00:49:33.693Z",
    "updatedAt": "2026-10-23T00:51:52.239Z",
    "builtAt": "2026-10-23T00:51:52.239Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 41
+    "all": 265
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13567,19 +13725,25 @@
    "createdAt": "2026-10-23T01:13:32.733Z",
    "updatedAt": "2026-10-23T01:13:32.733Z",
    "builtAt": "2026-10-23T01:13:32.733Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 42
+    "all": 266
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13624,6 +13788,10 @@
     {
      "text": "Built on Opus, branch claude/framework-walkthrough-video-builder-qocfr1 (draft PR). Fable rebuild parked as walkthrough-studio-fable.",
      "at": "2026-10-22T22:32:32.272Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -13807,14 +13975,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 43
+    "all": 267
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -13868,6 +14037,10 @@
     {
      "text": "Oct 22 2026: Opus harvested the studio into lib-dnd, lib-workspace, lib-datagrid, lib-tree, lib-recorder, lib-docstore + library@1 parts (pending walkthrough-harvest). This Fable rebuild now covers reviewing those libraries and the parts contract (Fable suggested, Opus chosen), plus the Kotlin twins once the Android hold lifts.",
      "at": "2026-10-22T22:57:58.594Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -14019,14 +14192,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 44
+    "all": 268
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14078,6 +14252,10 @@
     {
      "text": "Built on Opus: AXF branch claude/framework-walkthrough-video-builder-qocfr1 (PR #31) + Build-Pilot branch claude/framework-walkthrough-video-builder-qocfr1. Fable review parked in walkthrough-studio-fable.",
      "at": "2026-10-22T23:20:51.984Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -14261,14 +14439,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 45
+    "all": 269
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14322,20 +14501,25 @@
     {
      "text": "Live at https://axhub.amberxai.com/ since Oct 23 2026 (CLAUDE.md Status: AXHub web app). Marked complete while fixing the estimates.",
      "at": "2026-10-23T11:41:00.284Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 46
+    "all": 270
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14376,19 +14560,25 @@
    "createdAt": "2026-10-23T05:32:20.790Z",
    "updatedAt": "2026-10-23T05:33:18.970Z",
    "builtAt": "2026-10-23T05:33:18.963Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 47
+    "all": 271
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14429,7 +14619,12 @@
    "createdAt": "2026-10-23T05:37:28.383Z",
    "updatedAt": "2026-10-23T05:40:04.677Z",
    "builtAt": "2026-10-23T05:40:04.677Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14501,14 +14696,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 48
+    "all": 272
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14553,7 +14749,12 @@
    "createdAt": "2026-10-23T05:43:56.671Z",
    "updatedAt": "2026-10-23T05:43:56.671Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14625,14 +14826,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 49
+    "all": 273
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14681,6 +14883,10 @@
     {
      "text": "Built on Opus: PR #41 (branch claude/project-thread-l3b0qo).",
      "at": "2026-10-23T12:30:55.337Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -14788,14 +14994,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 50
+    "all": 274
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14845,6 +15052,10 @@
     {
      "text": "Oct 24 2026: lib-hubsync (framework/libs/hubsync) builds on lib-hubstore; Voice Vault carries a Kotlin twin in app code (sync/HubSync.kt). Fold both into the cross-port contract.",
      "at": "2026-10-24T15:07:33.295Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -14962,14 +15173,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 51
+    "all": 275
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15028,6 +15240,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:29.010Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -15201,14 +15417,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 52
+    "all": 276
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15273,6 +15490,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:30.381Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -15402,14 +15623,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 53
+    "all": 277
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15460,6 +15682,10 @@
     {
      "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
      "at": "2026-10-23T14:55:49.072Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -15699,14 +15925,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 54
+    "all": 278
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15762,6 +15989,10 @@
     {
      "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
      "at": "2026-10-23T15:09:52.146Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -15923,14 +16154,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 55
+    "all": 279
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15979,7 +16211,12 @@
    "createdAt": "2026-10-23T15:12:02.179Z",
    "updatedAt": "2026-10-23T15:25:41.808Z",
    "builtAt": "2026-10-23T15:25:41.808Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16117,14 +16354,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 56
+    "all": 280
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16176,20 +16414,25 @@
     {
      "text": "Built on branch claude/project-thread-32ym2e (Opus, Oct 23 2026).",
      "at": "2026-10-23T11:45:08.570Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 57
+    "all": 281
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16230,19 +16473,25 @@
    "createdAt": "2026-10-23T17:46:25.430Z",
    "updatedAt": "2026-10-23T17:46:25.430Z",
    "builtAt": "2026-10-23T17:46:25.430Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 58
+    "all": 282
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16283,7 +16532,12 @@
    "createdAt": "2026-10-23T17:46:25.439Z",
    "updatedAt": "2026-10-23T17:46:25.439Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16355,14 +16609,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 59
+    "all": 283
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16411,6 +16666,10 @@
     {
      "text": "Built Oct 23 2026 on Opus: branch claude/project-thread-j1ri9d, PR #30. Nav + toolbar kept (Brett). Report _claude/memory/docs/rebuilds/axhub-web-console-look.md.",
      "at": "2026-10-23T04:23:17.154Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -16562,14 +16821,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 60
+    "all": 284
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16621,6 +16881,10 @@
     {
      "text": "Merged in PR #50 (45d7631). CI green: android.yml run 336, latest main run 343 ships voicevault-debug.apk + app-apks.",
      "at": "2026-10-24T11:08:03.369Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -16772,14 +17036,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 61
+    "all": 285
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16827,19 +17092,25 @@
    "createdAt": "2026-10-23T17:50:04.908Z",
    "updatedAt": "2026-10-23T17:50:04.908Z",
    "builtAt": "2026-10-23T17:50:04.908Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 62
+    "all": 286
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16880,7 +17151,12 @@
    "createdAt": "2026-10-23T17:50:04.987Z",
    "updatedAt": "2026-10-23T17:50:04.987Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16930,14 +17206,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 63
+    "all": 287
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16985,6 +17262,10 @@
     {
      "text": "Built on Opus, branch claude/project-thread-55oakl.",
      "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -17070,14 +17351,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 64
+    "all": 288
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17130,6 +17412,10 @@
     {
      "text": "Nov 3 2026: Patches is retired; s4 has no Patches settings tab group to feed.",
      "at": "2026-11-03T14:24:44.230Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -17247,14 +17533,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 65
+    "all": 289
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17305,20 +17592,25 @@
     {
      "text": "Built on Opus, branch claude/project-thread-u0oyjm (draft PR). hubstore-fable should fold lib-hubsync in.",
      "at": "2026-10-24T15:07:33.283Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 66
+    "all": 290
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17363,6 +17655,10 @@
     {
      "text": "Built on Opus, branch claude/project-thread-1nc43b (PR to follow).",
      "at": "2026-10-24T12:46:13.201Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -17436,14 +17732,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 67
+    "all": 291
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17492,6 +17789,10 @@
     {
      "text": "Built on branch claude/project-thread-g27t3y (draft PR).",
      "at": "2026-10-24T16:25:29.460Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -17587,14 +17888,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 68
+    "all": 292
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17640,7 +17942,12 @@
    "createdAt": "2026-10-24T16:25:12.368Z",
    "updatedAt": "2026-10-24T16:25:12.368Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17756,14 +18063,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 69
+    "all": 293
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17818,6 +18126,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:31.660Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -17869,14 +18181,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 70
+    "all": 294
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17924,6 +18237,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:32.915Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -17997,14 +18314,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 71
+    "all": 295
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18053,20 +18371,25 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:34.282Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 72
+    "all": 296
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18107,19 +18430,25 @@
    "createdAt": "2026-10-25T10:46:22.879Z",
    "updatedAt": "2026-10-25T14:47:07.826Z",
    "builtAt": "2026-10-25T14:47:07.826Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 73
+    "all": 297
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18160,7 +18489,12 @@
    "createdAt": "2026-10-24T17:53:56.154Z",
    "updatedAt": "2026-10-25T14:46:42.221Z",
    "builtAt": "2026-10-25T14:46:42.221Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -18298,14 +18632,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 74
+    "all": 298
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18353,19 +18688,25 @@
    "createdAt": "2026-10-25T10:22:26.878Z",
    "updatedAt": "2026-10-25T10:22:26.878Z",
    "builtAt": "2026-10-25T10:22:26.878Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 75
+    "all": 299
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18410,20 +18751,25 @@
     {
      "text": "Built on Opus in PR #65 (branch claude/project-thread-tpor29).",
      "at": "2026-10-25T10:39:16.195Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 76
+    "all": 300
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18464,19 +18810,25 @@
    "createdAt": "2026-10-25T14:46:55.696Z",
    "updatedAt": "2026-10-25T14:46:55.696Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 77
+    "all": 301
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18517,19 +18869,25 @@
    "createdAt": "2026-10-25T16:38:09.847Z",
    "updatedAt": "2026-10-25T16:38:09.847Z",
    "builtAt": "2026-10-25T16:38:09.847Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 78
+    "all": 302
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18574,6 +18932,10 @@
     {
      "text": "Built on Opus, branch claude/project-thread-a21f46 (draft PR). Android shell = exception to the Android hold (Brett, Oct 25 2026).",
      "at": "2026-10-25T16:17:42.692Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -18713,14 +19075,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 79
+    "all": 303
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18768,7 +19131,12 @@
    "createdAt": "2026-10-25T16:44:19.565Z",
    "updatedAt": "2026-10-25T16:44:19.565Z",
    "builtAt": "2026-10-25T16:44:19.565Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -18840,14 +19208,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 80
+    "all": 304
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18896,6 +19265,10 @@
     {
      "text": "Built on branch claude/project-thread-lmyb8k (PR to follow).",
      "at": "2026-10-25T20:14:56.174Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -18991,14 +19364,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 81
+    "all": 305
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19044,7 +19418,12 @@
    "createdAt": "2026-10-25T20:26:24.616Z",
    "updatedAt": "2026-10-25T20:26:24.629Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -19402,14 +19781,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 82
+    "all": 306
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19471,20 +19851,25 @@
     {
      "text": "Built on branch claude/project-thread-lmyb8k (PR #90).",
      "at": "2026-10-25T20:28:38.573Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 83
+    "all": 307
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19525,19 +19910,25 @@
    "createdAt": "2026-10-25T19:51:25.195Z",
    "updatedAt": "2026-10-25T19:51:25.195Z",
    "builtAt": "2026-10-25T19:51:25.195Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 84
+    "all": 308
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19582,6 +19973,10 @@
     {
      "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
      "at": "2026-10-24T11:26:29.018Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -19655,14 +20050,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 85
+    "all": 309
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19711,6 +20107,10 @@
     {
      "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
      "at": "2026-10-25T19:47:51.720Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -19784,14 +20184,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 86
+    "all": 310
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19840,6 +20241,10 @@
     {
      "text": "Built on Opus, PR #92 (branch claude/project-thread-c4xw4s).",
      "at": "2026-10-25T20:59:28.929Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -19957,14 +20362,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 87
+    "all": 311
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20011,7 +20417,12 @@
    "createdAt": "2026-10-25T20:59:28.940Z",
    "updatedAt": "2026-10-25T20:59:28.940Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -20105,14 +20516,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 88
+    "all": 312
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20162,6 +20574,10 @@
     {
      "text": "Built on Opus, branch claude/project-thread-24jq9j.",
      "at": "2026-10-25T19:43:10.936Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -20257,14 +20673,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 89
+    "all": 313
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20314,6 +20731,10 @@
     {
      "text": "Built (Opus): AmberX-AXF PR #100 (claude/project-thread-139zmj) + axHub PR #8 (claude/axhub-console-pages). Merge AXF first, then axHub + Coolify redeploy.",
      "at": "2026-10-26T02:14:34.638Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -20541,14 +20962,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 90
+    "all": 314
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20600,19 +21022,25 @@
    "createdAt": "2026-10-26T22:35:28.810Z",
    "updatedAt": "2026-10-26T22:35:28.810Z",
    "builtAt": "2026-10-26T22:35:28.810Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 91
+    "all": 315
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20657,6 +21085,10 @@
     {
      "text": "Built Oct 26 2026 on Opus: axHub branch claude/axhub-oauth, PR MossesX/axHub#9 (not merged). 394 tests. Then redeploy on Coolify and connect claude.ai with the client id + secret.",
      "at": "2026-10-26T12:56:04.974Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -20774,14 +21206,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 92
+    "all": 316
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20832,6 +21265,10 @@
     {
      "text": "Built Oct 26 2026 on Opus: axHub branch claude/approval-reasons (on top of #9), AXF branch claude/approval-reasons (on top of #102).",
      "at": "2026-10-26T13:28:08.552Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -20949,14 +21386,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 93
+    "all": 317
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21007,6 +21445,10 @@
     {
      "text": "Built on branch claude/no-login-questions-terminal-launches (PR to follow)",
      "at": ""
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -21102,14 +21544,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 94
+    "all": 318
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21155,19 +21598,25 @@
    "createdAt": "2026-10-26T23:13:52.182Z",
    "updatedAt": "2026-10-26T23:13:52.182Z",
    "builtAt": "2026-10-26T23:13:52.182Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 95
+    "all": 319
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21208,19 +21657,25 @@
    "createdAt": "2026-10-26T23:31:24.422Z",
    "updatedAt": "2026-10-26T23:31:24.422Z",
    "builtAt": "2026-10-26T23:31:24.422Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 96
+    "all": 320
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21261,7 +21716,12 @@
    "createdAt": "2026-10-26T23:31:24.530Z",
    "updatedAt": "2026-10-26T23:31:24.530Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -21311,14 +21771,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 97
+    "all": 321
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21362,19 +21823,25 @@
    "createdAt": "2026-10-26T23:45:55.448Z",
    "updatedAt": "2026-10-26T23:45:55.448Z",
    "builtAt": "2026-10-26T23:45:55.448Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 98
+    "all": 322
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21415,19 +21882,25 @@
    "createdAt": "2026-10-26T22:28:29.520Z",
    "updatedAt": "2026-10-26T22:28:29.520Z",
    "builtAt": "2026-10-26T22:28:29.520Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 99
+    "all": 323
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21468,7 +21941,12 @@
    "createdAt": "2026-10-26T22:28:29.624Z",
    "updatedAt": "2026-10-26T22:28:29.624Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -21518,14 +21996,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 100
+    "all": 324
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21693,11 +22172,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 101,
     "all": 214
    },
    "fromProfile": "refactor",
@@ -21977,11 +22454,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 102,
     "all": 185
    },
    "fromProfile": "refactor",
@@ -22271,11 +22746,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 103,
     "all": 215
    },
    "fromProfile": "refactor",
@@ -22472,11 +22945,9 @@
    },
    "steps": [],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 104,
     "all": 216
    },
    "fromProfile": "refactor",
@@ -22567,6 +23038,10 @@
     {
      "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
      "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -22750,14 +23225,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 105
+    "all": 325
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22846,11 +23322,9 @@
    },
    "steps": [],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 106,
     "all": 217
    },
    "fromProfile": "refactor",
@@ -22973,11 +23447,9 @@
    },
    "steps": [],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 107,
     "all": 218
    },
    "fromProfile": "refactor",
@@ -23197,11 +23669,9 @@
     }
    ],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 108,
     "all": 219
    },
    "fromProfile": "refactor",
@@ -23402,11 +23872,9 @@
    },
    "steps": [],
    "profiles": [
-    "main-framework",
     "all"
    ],
    "order": {
-    "main-framework": 109,
     "all": 220
    },
    "fromProfile": "refactor",
@@ -23498,19 +23966,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 110
+    "all": 326
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.assets",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23545,19 +24019,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 111
+    "all": 327
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engines",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23594,19 +24074,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 112
+    "all": 328
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.kernel",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23644,19 +24130,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 113
+    "all": 329
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.conformance",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23691,19 +24183,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 114
+    "all": 330
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.windows",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23740,19 +24238,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 115
+    "all": 331
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.terminal",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23789,19 +24293,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 116
+    "all": 332
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.android.modules",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23838,19 +24348,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 117
+    "all": 333
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.android.showcase",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23888,19 +24404,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 118
+    "all": 334
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.core",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23937,19 +24459,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 119
+    "all": 335
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.templates",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -23986,19 +24514,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 120
+    "all": 336
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.cli",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24033,19 +24567,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 121
+    "all": 337
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.install",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24082,19 +24622,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 122
+    "all": 338
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.libs.browser",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24132,19 +24678,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 123
+    "all": 339
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.librarytemplates",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24182,19 +24734,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 124
+    "all": 340
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.web",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24232,19 +24790,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 125
+    "all": 341
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.api",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24281,19 +24845,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 126
+    "all": 342
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.plan",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24331,19 +24901,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 127
+    "all": 343
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.panel",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24380,19 +24956,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 128
+    "all": 344
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.ci",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24427,19 +25009,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 129
+    "all": 345
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.site",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24474,19 +25062,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 130
+    "all": 346
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.demo",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24524,19 +25118,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "2026-10-17T16:21:12.015Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 131
+    "all": 347
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.build",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24574,19 +25174,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "2026-10-17T16:21:12.015Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 132
+    "all": 348
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.mcp",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24624,7 +25230,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -24806,14 +25417,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 133
+    "all": 349
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24846,19 +25458,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 134
+    "all": 350
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.console",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24891,7 +25509,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -25073,14 +25696,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 135
+    "all": 351
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.state",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25113,7 +25737,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -25273,14 +25902,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 136
+    "all": 352
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.uikits",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25313,7 +25943,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -25583,14 +26218,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 137
+    "all": 353
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.libs.core",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25623,7 +26259,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -25739,14 +26380,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 138
+    "all": 354
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.uiport",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25779,7 +26421,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -25873,14 +26520,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 139
+    "all": 355
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25913,7 +26561,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -26073,14 +26726,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 140
+    "all": 356
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.session",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26113,7 +26767,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -26493,14 +27152,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 141
+    "all": 357
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.python.port",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26533,7 +27193,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -26759,14 +27424,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 142
+    "all": 358
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.plugins",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26799,7 +27465,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -26937,14 +27608,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 143
+    "all": 359
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.work",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26977,7 +27649,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -27115,14 +27792,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 144
+    "all": 360
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.showcase.packs",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27155,7 +27833,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -27293,14 +27976,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 145
+    "all": 361
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.media",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27333,7 +28017,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -27471,14 +28160,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 146
+    "all": 362
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.location",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27511,7 +28201,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -27649,14 +28344,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 147
+    "all": 363
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.editor",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27689,7 +28385,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -27827,14 +28528,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 148
+    "all": 364
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.ai",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27867,7 +28569,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -28005,14 +28712,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 149
+    "all": 365
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.vps",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28045,7 +28753,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -28183,14 +28896,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 150
+    "all": 366
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.github",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28223,7 +28937,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -28361,14 +29080,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 151
+    "all": 367
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.notifications",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28401,7 +29121,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -28539,14 +29264,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 152
+    "all": 368
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.sensors",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28579,7 +29305,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -28717,14 +29448,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 153
+    "all": 369
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.files",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28757,7 +29489,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -28895,14 +29632,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 154
+    "all": 370
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.charts",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28935,7 +29673,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -29051,14 +29794,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 155
+    "all": 371
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.repo",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29091,7 +29835,12 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -29229,14 +29978,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 156
+    "all": 372
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.hub",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29269,19 +30019,25 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "2026-10-18T14:17:14.449Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 157
+    "all": 373
    },
+   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.projects",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -43926,6 +44682,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 5ebf7179); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -43977,14 +44737,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 158
+    "all": 374
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44037,6 +44798,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 93814cf4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -44154,14 +44919,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 159
+    "all": 375
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44213,6 +44979,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 783b599f); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -44462,14 +45232,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 160
+    "all": 376
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44527,6 +45298,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 783b599f); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -44644,14 +45419,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 161
+    "all": 377
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44703,6 +45479,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 0fce2192); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -44798,14 +45578,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 162
+    "all": 378
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44864,6 +45645,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:35.778Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -45191,14 +45976,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 163
+    "all": 379
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45263,6 +46049,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:36.456Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -45524,14 +46314,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 164
+    "all": 380
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45597,6 +46388,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:37.109Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -45660,14 +46455,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 165
+    "all": 381
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45720,6 +46516,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7bfd79a9); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -45793,14 +46593,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 166
+    "all": 382
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45854,6 +46655,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at c7fcbb07); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -45993,14 +46798,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 167
+    "all": 383
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46053,20 +46859,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 168
+    "all": 384
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46116,20 +46927,25 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:37.788Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 169
+    "all": 385
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46175,20 +46991,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 170
+    "all": 386
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46234,20 +47055,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 171
+    "all": 387
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46293,6 +47119,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -46378,14 +47208,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 172
+    "all": 388
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46439,20 +47270,25 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:38.461Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 173
+    "all": 389
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46502,6 +47338,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:39.159Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -46653,14 +47493,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 174
+    "all": 390
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46717,6 +47558,10 @@
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
      "at": "2026-11-03T14:24:39.837Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -46856,14 +47701,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 175
+    "all": 391
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46916,6 +47762,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at d8d11087); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -47231,14 +48081,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 176
+    "all": 392
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47299,20 +48150,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 177
+    "all": 393
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47358,20 +48214,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 178
+    "all": 394
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47429,20 +48290,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 179
+    "all": 395
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47488,20 +48354,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 180
+    "all": 396
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47547,20 +48418,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 181
+    "all": 397
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47610,20 +48486,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 182
+    "all": 398
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47669,20 +48550,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 183
+    "all": 399
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47728,20 +48614,25 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 184
+    "all": 400
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -49256,7 +50147,12 @@
    "createdAt": "2026-11-01T07:51:58.115Z",
    "updatedAt": "2026-11-01T07:52:02.425Z",
    "builtAt": "2026-11-01T07:52:02.425Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -49428,14 +50324,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 185
+    "all": 401
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -86948,7 +87845,12 @@
    "createdAt": "2026-11-04T19:55:55.715Z",
    "updatedAt": "2026-11-04T19:56:49.367Z",
    "builtAt": "2026-11-04T19:56:47.922Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -87032,14 +87934,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 186
+    "all": 402
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -90064,7 +90967,12 @@
    "createdAt": "2026-11-05T01:38:10.037Z",
    "updatedAt": "2026-11-05T01:38:10.037Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -90152,14 +91060,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 187
+    "all": 403
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -92124,6 +93033,10 @@
     {
      "text": "s9–s11 finished by build skins-asset-types on claude/skins-asset-types (claude/skins-r4 merged into it): CI list, shots in UI Review, docs, PORTING, rule, report, PR",
      "at": "2026-11-07T05:34:59.628Z"
+    },
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
     }
    ],
    "approvals": [],
@@ -92385,14 +93298,15 @@
     }
    ],
    "profiles": [
-    "main-framework"
+    "all"
    ],
    "order": {
-    "main-framework": 188
+    "all": 404
    },
+   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -106619,12 +107533,12 @@
     "all"
    ],
    "order": {
-    "all": 98
+    "all": 99
    },
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108150,19 +109064,23 @@
    "title": "Merge every build profile into one (all)",
    "category": "Builds",
    "detail": "Every build profile (current, urgent, angel, big-dog, breakroom, refactor) merged into one profile all; each build keeps its id, status, steps and step states and gains fromProfile; urgency is the per-build priority tag. Supersedes profile-manager.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-profiles-one",
    "pr": "",
    "createdAt": "2026-11-07T09:19:46.590Z",
-   "updatedAt": "2026-11-07T09:19:46.590Z",
+   "updatedAt": "2026-11-07T10:29:30.278Z",
    "builtAt": "2026-11-07T09:19:46.590Z",
    "notes": [
     {
      "text": "Launched headless as merge-profiles-one; the brief summarised the request (\"Owner (Brett) request: …\").",
      "at": "2026-11-07T09:19:46.590Z"
+    },
+    {
+     "text": "Follow-up profiles-all-finish (branch claude/profiles-all-finish): main-framework folded into all too, all is the base profile, old profile folders deleted in repo + hub.",
+     "at": "2026-11-07T10:29:30.278Z"
     }
    ],
    "approvals": [],
@@ -108299,12 +109217,404 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-07T09:19:46.590Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "postgres-console",
+   "title": "Postgres for the console: orchestrator ID registry + all build data",
+   "category": "Framework > Database",
+   "detail": "Parked for Molly. Replace JSON builds/plans files with Postgres bundled in the console container; orchestrator assigns and registers every ID; queryable from the console. Supersedes the SQLite idea in 'Build data on a real database'.\n\nFrom Plan Studio plan postgres-for-the-console-orchestrator-id-registr-anyx (parked for Molly; not to be run until Brett says so).",
+   "status": "pending",
+   "hidden": false,
+   "source": "plan",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P2",
+   "createdAt": "2026-11-07T10:22:04.645Z",
+   "updatedAt": "2026-11-07T10:22:04.646Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "the planner sends a request to the orchestrator to assign the building ID. The orchestrator has to assign all IDs and register them.\nwhat kind of database is this registry? Is it SQLite? Or Postgres.\nSQLite is too small. This project's too big.\nI'm thinking MongoDB or Postgres.\ncan we make Postgres run on the console?\nBundle the Postgres into the console's container.\nAnd make it queryable from the console.\ndon't run that. Put that in the planner for Molly and park it.",
+    "at": "2026-11-06T13:41:20.323Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "Amber (claude.ai voice)",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw697ux5083ai9",
+     "title": "",
+     "text": "Schema + contract: builds, steps, plans, plan steps, IDs registry, pending ids, changes, journal, queue, origins, token log",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw697ux5093rld",
+     "title": "",
+     "text": "Migration design: import every JSON file losslessly, dual-write period, rollback, JSON exports stay generated read-only for git/claude-sync",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw697ux50arzrh",
+     "title": "",
+     "text": "Bundle Postgres into the console container with data on a persistent volume (survives redeploys), backups",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw697ux50b0ii2",
+     "title": "",
+     "text": "Orchestrator is the ID registry: planner requests IDs, orchestrator assigns + registers build ID and pending ID",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw697ux50cwn9k",
+     "title": "",
+     "text": "Switch readers/writers over (Build manager, orchestrator, Plan Studio, to-do sync, Codebase changes, MCP/CLI); kill file locks, use transactions",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw697ux50d7tdu",
+     "title": "",
+     "text": "Query screen in the console (read-only queries, saved queries)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw697ux50eyxft",
+     "title": "",
+     "text": "Tests, perf check, docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:22:04.647Z",
+     "updatedAt": "2026-11-07T10:22:04.647Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 405
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-07T10:22:04.647Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "profiles-all-finish",
+   "title": "Finish the one-profile merge: main-framework into all, old folders gone",
+   "category": "Builds",
+   "detail": "Follow-up of merge-profiles-one (Brett approved both open questions). main-framework folded into all; all is the base profile; old profile folders deleted in the repo and on the hub; nothing recreates them.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/profiles-all-finish",
+   "pr": "",
+   "createdAt": "2026-11-07T10:29:28.655Z",
+   "updatedAt": "2026-11-07T10:29:44.714Z",
+   "builtAt": "2026-11-07T10:29:28.655Z",
+   "notes": [
+    {
+     "text": "s1 (BASE_PROFILE/RETIRED_PROFILES contract in builds-store-core, persist, build_profiles.py) was built on Opus: add it to the Fable review (fable-review-nov3 style) before relying on it.",
+     "at": "2026-11-07T10:29:40.337Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett approved both open questions from merge-profiles-one:\n1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes).\n2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree).",
+    "at": "",
+    "source": "console",
+    "session": "",
+    "link": "",
+    "by": "profiles-all-finish",
+    "brief": "",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw69hd8l071xj1",
+     "title": "",
+     "text": "Store core + persist + Python mirror: main-framework retired into all; all is the base profile (root export paths, catalog on)",
+     "model": "Opus",
+     "why": "profile contract change, built on Opus: Fable review wanted",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T10:35:00.000Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-07T10:29:28.655Z",
+     "updatedAt": "2026-11-07T10:29:39.429Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw69hd8l08j9n5",
+     "title": "",
+     "text": "Run the merge on the store (175 main-framework builds moved, 14 shared), regenerate root exports",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T10:35:00.000Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:29:28.655Z",
+     "updatedAt": "2026-11-07T10:29:28.655Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw69hd8l097n3r",
+     "title": "",
+     "text": "Add postgres-console (7 steps) from the Postgres Plan Studio plan",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T10:35:00.000Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:29:28.655Z",
+     "updatedAt": "2026-11-07T10:29:28.655Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw69hd8l0aqxic",
+     "title": "",
+     "text": "Delete old profile folders in repo + hub; matrices to _claude/builds/matrices.json; manifest stops syncing framework/plan/profiles/",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T10:35:00.000Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:29:28.655Z",
+     "updatedAt": "2026-11-07T10:29:28.655Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw69hd8l0bg0rt",
+     "title": "",
+     "text": "Stop recreation: builds-live publisher takes stale profile exports off main; /opt/axf-batch/resolve.py drops retired-profile files; profiles.mjs merge-all prunes folders",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T10:35:00.000Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:29:28.655Z",
+     "updatedAt": "2026-11-07T10:29:28.655Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw69hd8l0c6fmi",
+     "title": "",
+     "text": "Tests + checks updated and green",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T10:35:00.000Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T10:29:28.655Z",
+     "updatedAt": "2026-11-07T10:29:28.655Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 406
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-07T10:29:28.655Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
