@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "icon-source",
+  "id": "framework-library",
+  "name": "Framework icon library",
+  "version": "1.0.0",
+  "description": "The starter library the framework ships (icon-library@1, framework/icon-library: open-licensed icon sets converted to icon-pack assets). A local source with no credentials; the Icon Browser reads it through the console server.",
+  "author": "AmberX AXF",
+  "tags": ["default", "starter"],
+  "data": {
+    "kind": "local",
+    "label": "Framework icon library",
+    "root": "framework/icon-library",
+    "auth": { "mode": "none" },
+    "options": {},
+    "format": "icon-pack",
+    "enabled": true
+  }
+}

@@ -1,0 +1,642 @@
+{
+ "$axf": "icon-library@1",
+ "generatedAt": "2026-11-07T03:14:38.295Z",
+ "budgetBytes": 9000000,
+ "totalBytes": 4566657,
+ "sets": [
+  {
+   "id": "lucide",
+   "name": "Lucide",
+   "license": "ISC",
+   "licenseUrl": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
+   "homepage": "https://lucide.dev",
+   "npm": {
+    "name": "lucide-static",
+    "version": "1.70.0"
+   },
+   "style": "outline",
+   "grid": 24,
+   "stroke": 2,
+   "linecap": "round",
+   "count": 2029,
+   "skipped": {},
+   "packs": [
+    {
+     "id": "lucide-a-d",
+     "file": "lucide/lucide-a-d.json",
+     "count": 600,
+     "category": ""
+    },
+    {
+     "id": "lucide-d-m",
+     "file": "lucide/lucide-d-m.json",
+     "count": 600,
+     "category": ""
+    },
+    {
+     "id": "lucide-m-t",
+     "file": "lucide/lucide-m-t.json",
+     "count": 600,
+     "category": ""
+    },
+    {
+     "id": "lucide-t-z",
+     "file": "lucide/lucide-t-z.json",
+     "count": 229,
+     "category": ""
+    }
+   ],
+   "categories": {}
+  },
+  {
+   "id": "tabler",
+   "name": "Tabler Icons (outline)",
+   "license": "MIT",
+   "licenseUrl": "https://github.com/tabler/tabler-icons/blob/main/LICENSE",
+   "homepage": "https://tabler.io/icons",
+   "npm": {
+    "name": "@tabler/icons",
+    "version": "3.50.0"
+   },
+   "style": "outline",
+   "grid": 24,
+   "stroke": 2,
+   "linecap": "round",
+   "count": 5203,
+   "skipped": {},
+   "packs": [
+    {
+     "id": "tabler-animals",
+     "file": "tabler/tabler-animals.json",
+     "count": 19,
+     "category": "Animals"
+    },
+    {
+     "id": "tabler-arrows",
+     "file": "tabler/tabler-arrows.json",
+     "count": 334,
+     "category": "Arrows"
+    },
+    {
+     "id": "tabler-badges",
+     "file": "tabler/tabler-badges.json",
+     "count": 22,
+     "category": "Badges"
+    },
+    {
+     "id": "tabler-brand",
+     "file": "tabler/tabler-brand.json",
+     "count": 378,
+     "category": "Brand"
+    },
+    {
+     "id": "tabler-buildings",
+     "file": "tabler/tabler-buildings.json",
+     "count": 95,
+     "category": "Buildings"
+    },
+    {
+     "id": "tabler-charts",
+     "file": "tabler/tabler-charts.json",
+     "count": 39,
+     "category": "Charts"
+    },
+    {
+     "id": "tabler-communication",
+     "file": "tabler/tabler-communication.json",
+     "count": 121,
+     "category": "Communication"
+    },
+    {
+     "id": "tabler-computers",
+     "file": "tabler/tabler-computers.json",
+     "count": 44,
+     "category": "Computers"
+    },
+    {
+     "id": "tabler-currencies",
+     "file": "tabler/tabler-currencies.json",
+     "count": 76,
+     "category": "Currencies"
+    },
+    {
+     "id": "tabler-database",
+     "file": "tabler/tabler-database.json",
+     "count": 42,
+     "category": "Database"
+    },
+    {
+     "id": "tabler-design",
+     "file": "tabler/tabler-design.json",
+     "count": 353,
+     "category": "Design"
+    },
+    {
+     "id": "tabler-development",
+     "file": "tabler/tabler-development.json",
+     "count": 65,
+     "category": "Development"
+    },
+    {
+     "id": "tabler-devices",
+     "file": "tabler/tabler-devices.json",
+     "count": 363,
+     "category": "Devices"
+    },
+    {
+     "id": "tabler-document",
+     "file": "tabler/tabler-document.json",
+     "count": 211,
+     "category": "Document"
+    },
+    {
+     "id": "tabler-e-commerce",
+     "file": "tabler/tabler-e-commerce.json",
+     "count": 155,
+     "category": "E-commerce"
+    },
+    {
+     "id": "tabler-electrical",
+     "file": "tabler/tabler-electrical.json",
+     "count": 19,
+     "category": "Electrical"
+    },
+    {
+     "id": "tabler-extensions",
+     "file": "tabler/tabler-extensions.json",
+     "count": 13,
+     "category": "Extensions"
+    },
+    {
+     "id": "tabler-food",
+     "file": "tabler/tabler-food.json",
+     "count": 96,
+     "category": "Food"
+    },
+    {
+     "id": "tabler-games",
+     "file": "tabler/tabler-games.json",
+     "count": 48,
+     "category": "Games"
+    },
+    {
+     "id": "tabler-gender",
+     "file": "tabler/tabler-gender.json",
+     "count": 18,
+     "category": "Gender"
+    },
+    {
+     "id": "tabler-gestures",
+     "file": "tabler/tabler-gestures.json",
+     "count": 17,
+     "category": "Gestures"
+    },
+    {
+     "id": "tabler-health",
+     "file": "tabler/tabler-health.json",
+     "count": 87,
+     "category": "Health"
+    },
+    {
+     "id": "tabler-laundry",
+     "file": "tabler/tabler-laundry.json",
+     "count": 40,
+     "category": "Laundry"
+    },
+    {
+     "id": "tabler-letters",
+     "file": "tabler/tabler-letters.json",
+     "count": 214,
+     "category": "Letters"
+    },
+    {
+     "id": "tabler-logic",
+     "file": "tabler/tabler-logic.json",
+     "count": 8,
+     "category": "Logic"
+    },
+    {
+     "id": "tabler-map",
+     "file": "tabler/tabler-map.json",
+     "count": 266,
+     "category": "Map"
+    },
+    {
+     "id": "tabler-math",
+     "file": "tabler/tabler-math.json",
+     "count": 88,
+     "category": "Math"
+    },
+    {
+     "id": "tabler-media",
+     "file": "tabler/tabler-media.json",
+     "count": 161,
+     "category": "Media"
+    },
+    {
+     "id": "tabler-mood",
+     "file": "tabler/tabler-mood.json",
+     "count": 52,
+     "category": "Mood"
+    },
+    {
+     "id": "tabler-nature",
+     "file": "tabler/tabler-nature.json",
+     "count": 50,
+     "category": "Nature"
+    },
+    {
+     "id": "tabler-numbers",
+     "file": "tabler/tabler-numbers.json",
+     "count": 196,
+     "category": "Numbers"
+    },
+    {
+     "id": "tabler-photography",
+     "file": "tabler/tabler-photography.json",
+     "count": 52,
+     "category": "Photography"
+    },
+    {
+     "id": "tabler-shapes",
+     "file": "tabler/tabler-shapes.json",
+     "count": 187,
+     "category": "Shapes"
+    },
+    {
+     "id": "tabler-sport",
+     "file": "tabler/tabler-sport.json",
+     "count": 76,
+     "category": "Sport"
+    },
+    {
+     "id": "tabler-symbols",
+     "file": "tabler/tabler-symbols.json",
+     "count": 37,
+     "category": "Symbols"
+    },
+    {
+     "id": "tabler-system-1",
+     "file": "tabler/tabler-system-1.json",
+     "count": 600,
+     "category": "System"
+    },
+    {
+     "id": "tabler-system-2",
+     "file": "tabler/tabler-system-2.json",
+     "count": 184,
+     "category": "System"
+    },
+    {
+     "id": "tabler-text",
+     "file": "tabler/tabler-text.json",
+     "count": 194,
+     "category": "Text"
+    },
+    {
+     "id": "tabler-vehicles",
+     "file": "tabler/tabler-vehicles.json",
+     "count": 90,
+     "category": "Vehicles"
+    },
+    {
+     "id": "tabler-version-control",
+     "file": "tabler/tabler-version-control.json",
+     "count": 20,
+     "category": "Version control"
+    },
+    {
+     "id": "tabler-weather",
+     "file": "tabler/tabler-weather.json",
+     "count": 61,
+     "category": "Weather"
+    },
+    {
+     "id": "tabler-zodiac",
+     "file": "tabler/tabler-zodiac.json",
+     "count": 12,
+     "category": "Zodiac"
+    }
+   ],
+   "categories": {
+    "Animals": 19,
+    "Arrows": 334,
+    "Badges": 22,
+    "Brand": 378,
+    "Buildings": 95,
+    "Charts": 39,
+    "Communication": 121,
+    "Computers": 44,
+    "Currencies": 76,
+    "Database": 42,
+    "Design": 353,
+    "Development": 65,
+    "Devices": 363,
+    "Document": 211,
+    "E-commerce": 155,
+    "Electrical": 19,
+    "Extensions": 13,
+    "Food": 96,
+    "Games": 48,
+    "Gender": 18,
+    "Gestures": 17,
+    "Health": 87,
+    "Laundry": 40,
+    "Letters": 214,
+    "Logic": 8,
+    "Map": 266,
+    "Math": 88,
+    "Media": 161,
+    "Mood": 52,
+    "Nature": 50,
+    "Numbers": 196,
+    "Photography": 52,
+    "Shapes": 187,
+    "Sport": 76,
+    "Symbols": 37,
+    "System": 784,
+    "Text": 194,
+    "Vehicles": 90,
+    "Version control": 20,
+    "Weather": 61,
+    "Zodiac": 12
+   }
+  },
+  {
+   "id": "feather",
+   "name": "Feather",
+   "license": "MIT",
+   "licenseUrl": "https://github.com/feathericons/feather/blob/main/LICENSE",
+   "homepage": "https://feathericons.com",
+   "npm": {
+    "name": "feather-icons",
+    "version": "4.29.2"
+   },
+   "style": "outline",
+   "grid": 24,
+   "stroke": 2,
+   "linecap": "round",
+   "count": 287,
+   "skipped": {},
+   "packs": [
+    {
+     "id": "feather-a-z",
+     "file": "feather/feather-a-z.json",
+     "count": 287,
+     "category": ""
+    }
+   ],
+   "categories": {}
+  },
+  {
+   "id": "heroicons-outline",
+   "name": "Heroicons (outline)",
+   "license": "MIT",
+   "licenseUrl": "https://github.com/tailwindlabs/heroicons/blob/master/LICENSE",
+   "homepage": "https://heroicons.com",
+   "npm": {
+    "name": "heroicons",
+    "version": "2.2.0"
+   },
+   "style": "outline",
+   "grid": 24,
+   "stroke": 1.5,
+   "linecap": "round",
+   "count": 324,
+   "skipped": {},
+   "packs": [
+    {
+     "id": "heroicons-outline-a-x",
+     "file": "heroicons-outline/heroicons-outline-a-x.json",
+     "count": 324,
+     "category": ""
+    }
+   ],
+   "categories": {}
+  },
+  {
+   "id": "heroicons-solid",
+   "name": "Heroicons (solid)",
+   "license": "MIT",
+   "licenseUrl": "https://github.com/tailwindlabs/heroicons/blob/master/LICENSE",
+   "homepage": "https://heroicons.com",
+   "npm": {
+    "name": "heroicons",
+    "version": "2.2.0"
+   },
+   "style": "filled",
+   "grid": 24,
+   "stroke": 1.75,
+   "linecap": "round",
+   "count": 322,
+   "skipped": {
+    "too long": 2
+   },
+   "packs": [
+    {
+     "id": "heroicons-solid-a-x",
+     "file": "heroicons-solid/heroicons-solid-a-x.json",
+     "count": 322,
+     "category": ""
+    }
+   ],
+   "categories": {}
+  },
+  {
+   "id": "phosphor",
+   "name": "Phosphor (regular)",
+   "license": "MIT",
+   "licenseUrl": "https://github.com/phosphor-icons/core/blob/main/LICENSE",
+   "homepage": "https://phosphoricons.com",
+   "npm": {
+    "name": "@phosphor-icons/core",
+    "version": "2.1.1"
+   },
+   "style": "filled",
+   "grid": 24,
+   "stroke": 1.75,
+   "linecap": "round",
+   "count": 1509,
+   "skipped": {
+    "too long": 3
+   },
+   "packs": [
+    {
+     "id": "phosphor-arrows",
+     "file": "phosphor/phosphor-arrows.json",
+     "count": 125,
+     "category": "Arrows"
+    },
+    {
+     "id": "phosphor-brands",
+     "file": "phosphor/phosphor-brands.json",
+     "count": 74,
+     "category": "Brands"
+    },
+    {
+     "id": "phosphor-commerce",
+     "file": "phosphor/phosphor-commerce.json",
+     "count": 146,
+     "category": "Commerce"
+    },
+    {
+     "id": "phosphor-communications",
+     "file": "phosphor/phosphor-communications.json",
+     "count": 106,
+     "category": "Communications"
+    },
+    {
+     "id": "phosphor-design",
+     "file": "phosphor/phosphor-design.json",
+     "count": 160,
+     "category": "Design"
+    },
+    {
+     "id": "phosphor-editor",
+     "file": "phosphor/phosphor-editor.json",
+     "count": 26,
+     "category": "Editor"
+    },
+    {
+     "id": "phosphor-finances",
+     "file": "phosphor/phosphor-finances.json",
+     "count": 73,
+     "category": "Finances"
+    },
+    {
+     "id": "phosphor-games",
+     "file": "phosphor/phosphor-games.json",
+     "count": 58,
+     "category": "Games"
+    },
+    {
+     "id": "phosphor-health-and-wellness",
+     "file": "phosphor/phosphor-health-and-wellness.json",
+     "count": 36,
+     "category": "Health & Wellness"
+    },
+    {
+     "id": "phosphor-maps-and-travel",
+     "file": "phosphor/phosphor-maps-and-travel.json",
+     "count": 102,
+     "category": "Maps & Travel"
+    },
+    {
+     "id": "phosphor-media",
+     "file": "phosphor/phosphor-media.json",
+     "count": 94,
+     "category": "Media"
+    },
+    {
+     "id": "phosphor-nature",
+     "file": "phosphor/phosphor-nature.json",
+     "count": 40,
+     "category": "Nature"
+    },
+    {
+     "id": "phosphor-objects",
+     "file": "phosphor/phosphor-objects.json",
+     "count": 63,
+     "category": "Objects"
+    },
+    {
+     "id": "phosphor-office",
+     "file": "phosphor/phosphor-office.json",
+     "count": 107,
+     "category": "Office"
+    },
+    {
+     "id": "phosphor-people",
+     "file": "phosphor/phosphor-people.json",
+     "count": 49,
+     "category": "People"
+    },
+    {
+     "id": "phosphor-system",
+     "file": "phosphor/phosphor-system.json",
+     "count": 171,
+     "category": "System"
+    },
+    {
+     "id": "phosphor-technology-and-developme",
+     "file": "phosphor/phosphor-technology-and-developme.json",
+     "count": 61,
+     "category": "Technology & Development"
+    },
+    {
+     "id": "phosphor-weather",
+     "file": "phosphor/phosphor-weather.json",
+     "count": 18,
+     "category": "Weather"
+    }
+   ],
+   "categories": {
+    "Arrows": 125,
+    "Brands": 74,
+    "Commerce": 146,
+    "Communications": 106,
+    "Design": 160,
+    "Editor": 26,
+    "Finances": 73,
+    "Games": 58,
+    "Health & Wellness": 36,
+    "Maps & Travel": 102,
+    "Media": 94,
+    "Nature": 40,
+    "Objects": 63,
+    "Office": 107,
+    "People": 49,
+    "System": 171,
+    "Technology & Development": 61,
+    "Weather": 18
+   }
+  },
+  {
+   "id": "bootstrap",
+   "name": "Bootstrap Icons",
+   "license": "MIT",
+   "licenseUrl": "https://github.com/twbs/icons/blob/main/LICENSE",
+   "homepage": "https://icons.getbootstrap.com",
+   "npm": {
+    "name": "bootstrap-icons",
+    "version": "1.13.2"
+   },
+   "style": "filled",
+   "grid": 16,
+   "stroke": 1.5,
+   "linecap": "round",
+   "count": 2027,
+   "skipped": {
+    "transform": 1,
+    "too long": 9
+   },
+   "packs": [
+    {
+     "id": "bootstrap-a-c",
+     "file": "bootstrap/bootstrap-a-c.json",
+     "count": 600,
+     "category": ""
+    },
+    {
+     "id": "bootstrap-c-i",
+     "file": "bootstrap/bootstrap-c-i.json",
+     "count": 600,
+     "category": ""
+    },
+    {
+     "id": "bootstrap-i-s",
+     "file": "bootstrap/bootstrap-i-s.json",
+     "count": 600,
+     "category": ""
+    },
+    {
+     "id": "bootstrap-s-z",
+     "file": "bootstrap/bootstrap-s-z.json",
+     "count": 227,
+     "category": ""
+    }
+   ],
+   "categories": {}
+  }
+ ]
+}

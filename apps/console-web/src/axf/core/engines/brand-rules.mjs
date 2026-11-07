@@ -138,7 +138,8 @@ export function normalizeIconPack(raw) {
       const q = isObj(g) ? g : typeof g === 'string' ? { d: g } : {};
       const d = str(q.d, ICON_LIMITS.pathChars);
       if (!d || !PATH_DATA.test(d)) continue;
-      glyphs[name] = { d, fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '' };
+      // evenodd: the glyph's holes are drawn with the even-odd fill rule (solid sets such as Heroicons solid); optional, default false
+      glyphs[name] = { d, fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '', ...(q.evenodd === true ? { evenodd: true } : {}) };
     }
   }
   return {

@@ -35,6 +35,7 @@ import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PA
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
+import { ICON_MAP_KEY, ICON_PACK_KEY, ICON_SLOTS_KEY, generateCohesiveMap, iconChain, iconMapIndex, iconScopeKey, packLookup, parseIconRef, randomizeMap, resolveIcon, type IconMapLink, type IconResolution, type IconScope } from './engines/iconmap';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
@@ -355,6 +356,8 @@ export class AxfRuntime {
     if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
+    // Icon maps: a settings change reaches the state a microtask later (below); the cached icon chains must not serve the old picks meanwhile.
+    this.settings.subscribe(() => this.iconChains.clear());
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
     this.settings.onConflict = (c) => this.diagnostics.report(
       c.what === 'setting'
@@ -2446,6 +2449,121 @@ export class AxfRuntime {
     return glyph ? { glyph, pack: pack.data } : null;
   }
 
+  /* ---------------- icon maps (icon-map@1, build icon-browser-manager) ---------------- */
+
+  private iconChains = new Map<string, IconMapLink[]>();
+  private iconChainsRev = -1;
+  private readonly iconsSeen = new Map<string, Set<string>>();
+
+  /** The icon scope for a place in this app: the app id plus the UI (view) and plugin a component sits in. */
+  iconScope(scope?: Partial<IconScope> | null): IconScope {
+    return { app: this.manifest.app.id, ui: scope?.ui ?? '', plugin: scope?.plugin ?? '' };
+  }
+
+  /** The maps in force for a scope, most specific first (cached per state revision: settings and swaps bump it). */
+  iconChainFor(scope?: Partial<IconScope> | null): IconMapLink[] {
+    const s = this.iconScope(scope);
+    const key = `${s.ui}|${s.plugin}`;
+    if (this.iconChainsRev !== this.state.rev) { this.iconChains.clear(); this.iconChainsRev = this.state.rev; }
+    let chain = this.iconChains.get(key);
+    if (!chain) { chain = iconChain(s, this.registry as never, this.settings); this.iconChains.set(key, chain); }
+    return chain;
+  }
+
+  /**
+   * What an icon name draws here: a glyph of a pack (`pack` set), the framework's own glyph (`pack` empty), or nothing
+   * (`via: none`). Resolution: the plugin's map → the UI's map → the app root map → the branding's pack → the framework.
+   * Also notes the name under its scope, so the Icon Manager can list every icon this app has shown.
+   */
+  iconFor(name: string, scope?: Partial<IconScope> | null): IconResolution {
+    const s = this.iconScope(scope);
+    const k = iconScopeKey(s);
+    let seen = this.iconsSeen.get(k);
+    if (!seen) { seen = new Set(); this.iconsSeen.set(k, seen); }
+    seen.add(name);
+    return resolveIcon(name, this.iconChainFor(s), packLookup(this.registry as never, this.branding()?.iconPack ?? ''));
+  }
+
+  /** The icon-pack asset data a resolution points at (for drawing), or null. */
+  iconPackData(packId: string): unknown | null {
+    return packId ? (this.registry.get('icon-pack' as AssetType, packId)?.data ?? null) : null;
+  }
+
+  /** Icon names this app has shown, per scope key (`app`, `ui:<view>`, `plugin:<id>`), or every one when no key is given. */
+  iconsUsed(scopeKey?: string): string[] {
+    if (scopeKey) return [...(this.iconsSeen.get(scopeKey) ?? [])].sort();
+    const all = new Set<string>();
+    for (const s of this.iconsSeen.values()) for (const n of s) all.add(n);
+    return [...all].sort();
+  }
+
+  /** The scope keys this app has shown icons in so far (`app`, `ui:<view>`, `plugin:<id>`), with how many names each. */
+  iconScopes(): { key: string; count: number }[] {
+    return [...this.iconsSeen.entries()].map(([key, s]) => ({ key, count: s.size })).sort((a, b) => (a.key === 'app' ? -1 : b.key === 'app' ? 1 : a.key < b.key ? -1 : 1));
+  }
+
+  /** Every icon-map asset this app has, grouped by app (the Icon Manager's list). */
+  iconMaps() { return iconMapIndex(this.registry as never); }
+
+  /** Pin one slot in a scope (`axf.icons.slots.<scopeKey>`; ref = glyph name | pack:<id>/<glyph> | none; '' clears it). Needs assets.swap. */
+  setIconSlot(scopeKey: string, slot: string, ref: string): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    const cur = this.settings.get(ICON_SLOTS_KEY(scopeKey));
+    const slots: Record<string, string> = cur && typeof cur === 'object' && !Array.isArray(cur) ? { ...(cur as Record<string, string>) } : {};
+    if (!ref) delete slots[slot]; else { if (!parseIconRef(ref)) return false; slots[slot] = ref; }
+    this.settings.set(ICON_SLOTS_KEY(scopeKey), (Object.keys(slots).length ? slots : null) as SettingValue);
+    this.terminal.ok('icons', `${scopeKey}: ${slot} → ${ref || 'cleared'}`);
+    return true;
+  }
+
+  /** Pick the icon-map asset a scope uses ('' = none). Needs assets.swap. */
+  setIconMap(scopeKey: string, mapId: string): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    if (mapId && !this.registry.get('icon-map' as AssetType, mapId)) return false;
+    this.settings.set(ICON_MAP_KEY(scopeKey), (mapId || null) as SettingValue);
+    this.terminal.ok('icons', `${scopeKey}: map ${mapId || 'cleared'}`);
+    return true;
+  }
+
+  /** Apply an icon pack to a whole scope ('' = none). Needs assets.swap. */
+  setIconPack(scopeKey: string, packId: string): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    if (packId && !this.registry.get('icon-pack' as AssetType, packId)) return false;
+    this.settings.set(ICON_PACK_KEY(scopeKey), (packId || null) as SettingValue);
+    this.terminal.ok('icons', `${scopeKey}: pack ${packId || 'cleared'}`);
+    return true;
+  }
+
+  /** Forget every icon pick of a scope (map, pack and slot overrides). Needs assets.swap. */
+  resetIcons(scopeKey: string): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    for (const k of [ICON_MAP_KEY(scopeKey), ICON_PACK_KEY(scopeKey), ICON_SLOTS_KEY(scopeKey)]) this.settings.clear(k);
+    this.terminal.ok('icons', `${scopeKey}: reset`);
+    return true;
+  }
+
+  /** Randomize: every icon this app has shown gets a random same-meaning glyph from the packs it has (seeded). Needs assets.swap. */
+  randomizeIcons(scopeKey = 'app', seed: string = String(Date.now())): { changed: string[]; kept: string[] } | null {
+    if (this.gate('assets.swap') !== 'allow') return null;
+    const packs = this.registry.list('icon-pack' as AssetType).map((p) => p.id);
+    const r = randomizeMap(this.iconsUsed(), packs, packLookup(this.registry as never), seed);
+    this.settings.set(ICON_SLOTS_KEY(scopeKey), (Object.keys(r.data.slots).length ? r.data.slots : null) as SettingValue);
+    this.terminal.ok('icons', `${scopeKey}: randomized ${r.changed.length} icon(s) (seed ${seed})`);
+    return { changed: r.changed, kept: r.kept };
+  }
+
+  /** Generate a cohesive look: every icon this app has shown drawn from one pack (or packs of one style). Needs assets.swap. */
+  generateIcons(scopeKey: string, packIds: string | string[]): { covered: string[]; missing: string[] } | null {
+    if (this.gate('assets.swap') !== 'allow') return null;
+    const ids = (Array.isArray(packIds) ? packIds : [packIds]).filter((p) => this.registry.get('icon-pack' as AssetType, p));
+    if (!ids.length) return null;
+    const r = generateCohesiveMap(this.iconsUsed(), ids, packLookup(this.registry as never));
+    this.settings.set(ICON_SLOTS_KEY(scopeKey), (Object.keys(r.data.slots).length ? r.data.slots : null) as SettingValue);
+    this.settings.set(ICON_PACK_KEY(scopeKey), ids[0] as SettingValue);
+    this.terminal.ok('icons', `${scopeKey}: ${r.covered.length} icon(s) from ${ids.join(', ')}, ${r.missing.length} kept`);
+    return { covered: r.covered, missing: r.missing };
+  }
+
   private prefersReducedMotion(): boolean {
     return typeof globalThis.matchMedia === 'function' && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
@@ -2580,6 +2698,17 @@ export class AxfRuntime {
     a.register('noop', () => {}, { label: 'Nothing', searchable: false });
     // windowing engine
     const wm = this.windows;
+    // Icon maps (icon-map@1): voice / MCP / CLI through the actions registry. An action spec splits on ':', so in a spec
+    // the scope is written app | ui.<view> | plugin.<id> and a pack ref pack/<pack id>/<glyph>; the canonical forms
+    // (ui:<view>, pack:<id>/<glyph>) are accepted too when the handler is called directly.
+    const iconScopeArg = (s = 'app') => s.replace(/^ui\./, 'ui:').replace(/^plugin\./, 'plugin:');
+    const iconRefArg = (r = '') => r.replace(/^pack\/([a-z0-9-]+)\//, 'pack:$1/');
+    a.register('icons.set', ([scope, slot = '', ref = '']) => slot && this.setIconSlot(iconScopeArg(scope), slot, iconRefArg(ref)), { label: 'Pin an icon slot to a glyph (scope, slot, ref)', params: true });
+    a.register('icons.map', ([scope, map = '']) => this.setIconMap(iconScopeArg(scope), map), { label: 'Pick the icon map of a scope', params: true });
+    a.register('icons.pack', ([scope, pack = '']) => this.setIconPack(iconScopeArg(scope), pack), { label: 'Apply an icon pack to a scope', params: true });
+    a.register('icons.reset', ([scope]) => this.resetIcons(iconScopeArg(scope)), { label: 'Reset the icons of a scope', params: true });
+    a.register('icons.randomize', ([scope, seed]) => this.randomizeIcons(iconScopeArg(scope), seed), { label: 'Randomize every icon (same meaning, another drawing)', params: true });
+    a.register('icons.generate', ([scope, ...packs]) => this.generateIcons(iconScopeArg(scope), packs.filter(Boolean)), { label: 'Generate a cohesive icon set from one pack', params: true });
     a.register('windows.undock', ([g]) => g && wm.undock(g), { label: 'Undock tab group', params: true });
     a.register('windows.split', ([g, mode = 'vertical', r = '2', c = '2']) => g && wm.split(g, mode as import('./engines/windows').SplitMode, Number(r), Number(c)), { label: 'Split tab group', params: true });
     a.register('windows.closeGroup', ([g]) => g && wm.closeGroup(g), { label: 'Close tab group', params: true });

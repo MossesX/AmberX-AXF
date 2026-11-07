@@ -3,9 +3,23 @@
  * an icon pack (icon-pack@1) that has a glyph of that name, the pack's glyph is drawn instead, in the pack's own
  * style (stroke / fill / duotone); names the pack lacks keep the framework icon, so a partial pack is fine.
  */
-import { useSyncExternalStore } from 'react';
+import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from 'react';
 import { useOptionalRuntime } from '../AxfProvider';
 import { glyphSvg } from '../../core/engines/brand';
+
+/**
+ * Icon scope (icon-map@1, build icon-browser-manager): the UI (view id) and plugin a component sits in, so the runtime
+ * can resolve its icon names through that scope's maps (plugin → UI → app root → branding pack → framework). The
+ * AppShell provides the view, the plugin wrapper provides the plugin; a host may nest more.
+ */
+export interface IconScopeValue { ui?: string; plugin?: string }
+const IconScopeCtx = createContext<IconScopeValue>({});
+export function IconScope({ ui, plugin, children }: IconScopeValue & { children: ReactNode }) {
+  const parent = useContext(IconScopeCtx);
+  const value = useMemo(() => ({ ui: ui ?? parent.ui, plugin: plugin ?? parent.plugin }), [ui, plugin, parent.ui, parent.plugin]);
+  return <IconScopeCtx.Provider value={value}>{children}</IconScopeCtx.Provider>;
+}
+export const useIconScope = () => useContext(IconScopeCtx);
 
 const PATHS: Record<string, string> = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
@@ -94,14 +108,17 @@ const noStore = { subscribe: () => () => {}, get: () => null };
 
 export function Icon({ name, size = 16, className }: { name?: string; size?: number; className?: string }) {
   const rt = useOptionalRuntime();
+  const scope = useContext(IconScopeCtx);
   useSyncExternalStore(rt ? rt.subscribe : noStore.subscribe, rt ? rt.getState : noStore.get, rt ? rt.getState : noStore.get);
   if (!name) return null;
-  const packed = rt?.brandGlyph(name);
-  if (packed) {
-    const svg = glyphSvg(packed.pack, name, size);
+  // icon-map@1: the scope's maps decide (a pinned slot, a pack applied to the scope, the branding pack, or the framework glyph)
+  const r = rt?.iconFor(name, scope);
+  if (r?.via === 'none') return null;
+  if (r?.pack) {
+    const svg = glyphSvg(rt!.iconPackData(r.pack), r.glyph, size);
     if (svg) return <span className={`fx-icon fx-icon--pack ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
   }
-  const d = PATHS[name] ?? PATHS.box;
+  const d = PATHS[r?.glyph ?? name] ?? PATHS[name] ?? PATHS.box;
   return (
     <svg
       className={`fx-icon ${className ?? ''}`}

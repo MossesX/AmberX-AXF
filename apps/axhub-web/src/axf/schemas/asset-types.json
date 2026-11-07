@@ -1648,6 +1648,80 @@
       },
       "optional": true
     },
+    "icon-map": {
+      "label": "Icon map",
+      "group": "Brand",
+      "icon": "grid",
+      "description": "One scope's icons (icon-map@1, rules core/engines/iconmap-rules.mjs, engine core/engines/iconmap.ts): the scope (an app root, one UI / screen, or one plugin), an icon-pack applied to the whole scope, and slot → icon ref overrides. Slots are the icon names a UI asks the Icon component for (save, chevron-down; dotted tags such as nav.builds allowed); a ref is a glyph name, pack:<pack id>/<glyph>, or none. Resolution is most specific first (plugin → UI → app root → the branding's pack → the framework glyph) and a child only states what it changes. Not a slot you pick: every map whose scope matches is in force; the Icon Manager edits them, Randomize and Generate (one cohesive pack) write new ones. Settings axf.icons.* (appearance keys, so the hub look carries them to every app).",
+      "required": [
+        "scope",
+        "slots"
+      ],
+      "nested": {
+        "scope": []
+      },
+      "collection": true,
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "extends": "an icon-map id this one inherits from",
+        "pack": "an icon-pack id applied to the whole scope",
+        "slots": "{ slot: glyph name | pack:<pack id>/<glyph> | none } (up to 2000)",
+        "tags": "string[]"
+      }
+    },
+    "icon-source": {
+      "label": "Icon source",
+      "group": "Brand",
+      "icon": "cloud",
+      "description": "Where icons come from (icon-source@1, rules core/engines/iconmap-rules.mjs): kind (local folder, HTTP / online, REST API, MCP server, FTP, SFTP, Google Drive folder, Google Photos album, Dropbox folder, a known online repository; an open registry), label, root (folder / URL / id / path), auth { mode, secretRef } and kind-specific options. A source never carries a secret: passwords, tokens and API keys live in the Icon Browser's secure store and are named by auth.secretRef only (validation refuses raw secret fields). The Icon Browser reads every enabled source through the console server.",
+      "required": [
+        "kind",
+        "root"
+      ],
+      "enums": {
+        "kind": [
+          "local",
+          "http",
+          "rest",
+          "mcp",
+          "ftp",
+          "sftp",
+          "gdrive",
+          "gphotos",
+          "dropbox",
+          "repo"
+        ],
+        "format": [
+          "auto",
+          "svg",
+          "icon-pack",
+          "zip"
+        ]
+      },
+      "nested": {
+        "auth": [
+          "mode"
+        ]
+      },
+      "collection": true,
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "label": "shown in the sources list (up to 80)",
+        "auth": "{ mode: none | basic | password | key | token | apikey | oauth, secretRef: id in the secure store }",
+        "options": "kind-specific fields (host, port, user, listPath, getPath, listTool, getTool …); never a secret",
+        "format": "auto (default) | svg | icon-pack | zip",
+        "enabled": "boolean (default true)",
+        "tags": "string[]"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

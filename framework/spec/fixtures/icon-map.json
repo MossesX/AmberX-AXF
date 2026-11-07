@@ -1,0 +1,551 @@
+{
+ "$axf": "fixture@1",
+ "about": "icon-map@1 + icon-source@1 golden outputs (framework/spec/check-icon-map.mjs --write)",
+ "resolve": {
+  "slot in the root (alias to another name)": {
+   "glyph": "floppy-disk",
+   "pack": "lucide-1",
+   "via": "pack",
+   "from": "console-root"
+  },
+  "slot naming a pack glyph": {
+   "glyph": "trash",
+   "pack": "tabler-1",
+   "via": "slot",
+   "from": "console-root"
+  },
+  "pack applied to the scope": {
+   "glyph": "settings",
+   "pack": "lucide-1",
+   "via": "pack",
+   "from": "console-root"
+  },
+  "branding pack when no map covers it": {
+   "glyph": "save",
+   "pack": "amberx-outline",
+   "via": "branding",
+   "from": ""
+  },
+  "framework fallback": {
+   "glyph": "rocket",
+   "pack": "",
+   "via": "framework",
+   "from": ""
+  },
+  "none hides the icon": {
+   "glyph": "",
+   "pack": "",
+   "via": "none",
+   "from": "console-builds"
+  },
+  "child slot overrides the parent slot": {
+   "glyph": "device-floppy",
+   "pack": "tabler-1",
+   "via": "slot",
+   "from": "console-builds"
+  },
+  "child pack wins over the parent pack": {
+   "glyph": "settings",
+   "pack": "tabler-1",
+   "via": "pack",
+   "from": "console-plugin-x"
+  },
+  "plugin slot alias resolved in the plugin pack": {
+   "glyph": "house",
+   "pack": "lucide-1",
+   "via": "pack",
+   "from": "console-builds"
+  },
+  "ui map inherits the root slot through extends": {
+   "glyph": "trash",
+   "pack": "tabler-1",
+   "via": "slot",
+   "from": "console-builds"
+  },
+  "settings overrides sit above the map": {
+   "glyph": "check",
+   "pack": "lucide-1",
+   "via": "slot",
+   "from": "settings:app"
+  },
+  "a pack ref to a glyph the pack lacks keeps the glyph name": {
+   "glyph": "nope",
+   "pack": "",
+   "via": "slot",
+   "from": "m"
+  },
+  "alias loop stops": {
+   "glyph": "a",
+   "pack": "",
+   "via": "framework",
+   "from": ""
+  },
+  "a bad name resolves to none": {
+   "glyph": "",
+   "pack": "",
+   "via": "none",
+   "from": ""
+  }
+ },
+ "fold": {
+  "ui map folded with its root": {
+   "scope": {
+    "app": "console-web",
+    "ui": "builds",
+    "plugin": ""
+   },
+   "extends": "",
+   "pack": "lucide-1",
+   "slots": {
+    "save": "pack:tabler-1/device-floppy",
+    "trash": "pack:tabler-1/trash",
+    "hidden": "none"
+   },
+   "tags": []
+  },
+  "missing id": null
+ },
+ "scope": {
+  "plugin chain": [
+   "plugin:p",
+   "ui:builds",
+   "app"
+  ],
+  "ui chain": [
+   "ui:builds",
+   "app"
+  ],
+  "root chain": [
+   "app"
+  ],
+  "keys": [
+   [
+    "app",
+    "app"
+   ],
+   [
+    "ui:u",
+    "ui"
+   ],
+   [
+    "plugin:p",
+    "plugin"
+   ]
+  ]
+ },
+ "refs": {
+  "save": {
+   "kind": "name",
+   "glyph": "save",
+   "pack": ""
+  },
+  "pack:lucide-1/floppy-disk": {
+   "kind": "pack",
+   "pack": "lucide-1",
+   "glyph": "floppy-disk"
+  },
+  "none": {
+   "kind": "none",
+   "glyph": "",
+   "pack": ""
+  },
+  "pack:/x": null,
+  "pack:lucide-1/": null,
+  "Bad Name": null,
+  "(empty)": null,
+  "pack:Lucide/x": null
+ },
+ "normalize": {
+  "drops bad slots and refs, keeps order": {
+   "scope": {
+    "app": "console-web",
+    "ui": "",
+    "plugin": ""
+   },
+   "extends": "",
+   "pack": "",
+   "slots": {
+    "save": "floppy-disk",
+    "ok": "pack:tabler-1/trash",
+    "nav.builds": "hammer"
+   },
+   "tags": [
+    "a"
+   ]
+  },
+  "nothing": {
+   "scope": {
+    "app": "",
+    "ui": "",
+    "plugin": ""
+   },
+   "extends": "",
+   "pack": "",
+   "slots": {},
+   "tags": []
+  }
+ },
+ "errors": {
+  "valid map": [],
+  "bad map": [
+   "data.scope.app must be an app id (lowercase, dots, dashes) or \"\"",
+   "data.scope.other: unknown field (app, ui, plugin)",
+   "data.extends must be an icon-map id or \"\"",
+   "data.pack must be an icon-pack id or \"\"",
+   "data.slots.Bad Slot: slots are lowercase words with dashes, dotted tags allowed",
+   "data.slots.ok: a ref is a glyph name, pack:<pack id>/<glyph> or none"
+  ],
+  "no slots": [
+   "data.slots is required (an object of slot → icon ref; {} is fine)"
+  ],
+  "other type": [],
+  "valid local source": [],
+  "sftp with a raw password": [
+   "data.auth.secretRef is required when auth.mode is not none: the id of the secret in the secure store",
+   "data.auth.password: secrets never go in an asset; save it in the secure store and name it by auth.secretRef",
+   "data.options.apiKey: secrets never go in an asset; save it in the secure store and name it by auth.secretRef"
+  ],
+  "sftp missing user + secretRef": [
+   "data.auth.secretRef is required when auth.mode is not none: the id of the secret in the secure store",
+   "data.options.user is required for a SFTP source"
+  ],
+  "gdrive needs oauth": [
+   "data.auth is required: a Google Drive folder source needs oauth auth"
+  ],
+  "unknown kind + auth mode the kind lacks": [
+   "data.kind must be one of: local, http, rest, mcp, ftp, sftp, gdrive, gphotos, dropbox, repo",
+   "data.auth.secretRef is required when auth.mode is not none: the id of the secret in the secure store"
+  ],
+  "http token auth with a ref": []
+ },
+ "generate": {
+  "one pack": {
+   "data": {
+    "scope": {
+     "app": "console-web",
+     "ui": "",
+     "plugin": ""
+    },
+    "extends": "",
+    "pack": "tabler-1",
+    "slots": {
+     "check": "pack:tabler-1/check",
+     "edit": "pack:tabler-1/pencil",
+     "home": "pack:tabler-1/home",
+     "save": "pack:tabler-1/device-floppy",
+     "search": "pack:tabler-1/search",
+     "settings": "pack:tabler-1/settings",
+     "trash": "pack:tabler-1/trash",
+     "x": "pack:tabler-1/x"
+    },
+    "tags": [
+     "generated",
+     "cohesive"
+    ]
+   },
+   "covered": [
+    "check",
+    "edit",
+    "home",
+    "save",
+    "search",
+    "settings",
+    "trash",
+    "x"
+   ],
+   "missing": [
+    "hidden",
+    "rocket"
+   ]
+  },
+  "two packs of one style": {
+   "data": {
+    "scope": {
+     "app": "console-web",
+     "ui": "",
+     "plugin": ""
+    },
+    "extends": "",
+    "pack": "lucide-1",
+    "slots": {
+     "check": "pack:lucide-1/check",
+     "edit": "pack:lucide-1/pencil",
+     "home": "pack:lucide-1/home",
+     "save": "pack:lucide-1/floppy-disk",
+     "search": "pack:lucide-1/search",
+     "settings": "pack:lucide-1/settings",
+     "trash": "pack:lucide-1/trash-2",
+     "x": "pack:lucide-1/x"
+    },
+    "tags": [
+     "generated",
+     "cohesive"
+    ]
+   },
+   "covered": [
+    "check",
+    "edit",
+    "home",
+    "save",
+    "search",
+    "settings",
+    "trash",
+    "x"
+   ],
+   "missing": [
+    "hidden",
+    "rocket"
+   ]
+  }
+ },
+ "randomize": {
+  "seed axf": {
+   "data": {
+    "scope": {
+     "app": "console-web",
+     "ui": "",
+     "plugin": ""
+    },
+    "extends": "",
+    "pack": "",
+    "slots": {
+     "check": "pack:lucide-1/check",
+     "edit": "pack:tabler-1/pencil",
+     "home": "pack:tabler-1/home",
+     "save": "pack:lucide-1/floppy-disk",
+     "search": "pack:lucide-1/search",
+     "settings": "pack:lucide-1/settings",
+     "trash": "pack:tabler-1/trash",
+     "x": "pack:lucide-1/x"
+    },
+    "tags": [
+     "generated",
+     "random",
+     "seed:axf"
+    ]
+   },
+   "changed": [
+    "check",
+    "edit",
+    "home",
+    "save",
+    "search",
+    "settings",
+    "trash",
+    "x"
+   ],
+   "kept": [
+    "hidden",
+    "rocket"
+   ]
+  },
+  "seed 7": {
+   "data": {
+    "scope": {
+     "app": "console-web",
+     "ui": "",
+     "plugin": ""
+    },
+    "extends": "",
+    "pack": "",
+    "slots": {
+     "check": "pack:lucide-1/check",
+     "edit": "pack:tabler-1/pencil",
+     "home": "pack:tabler-1/home",
+     "save": "pack:tabler-1/device-floppy",
+     "search": "pack:lucide-1/search",
+     "settings": "pack:lucide-1/settings",
+     "trash": "pack:tabler-1/trash",
+     "x": "pack:lucide-1/x"
+    },
+    "tags": [
+     "generated",
+     "random",
+     "seed:7"
+    ]
+   },
+   "changed": [
+    "check",
+    "edit",
+    "home",
+    "save",
+    "search",
+    "settings",
+    "trash",
+    "x"
+   ],
+   "kept": [
+    "hidden",
+    "rocket"
+   ]
+  }
+ },
+ "all": {
+  "every icon": [
+   {
+    "name": "check",
+    "pack": "lucide-1",
+    "ref": "pack:lucide-1/check"
+   },
+   {
+    "name": "check",
+    "pack": "tabler-1",
+    "ref": "pack:tabler-1/check"
+   },
+   {
+    "name": "cog",
+    "pack": "lucide-1",
+    "ref": "pack:lucide-1/cog"
+   },
+   {
+    "name": "device-floppy",
+    "pack": "tabler-1",
+    "ref": "pack:tabler-1/device-floppy"
+   },
+   {
+    "name": "floppy-disk",
+    "pack": "lucide-1",
+    "ref": "pack:lucide-1/floppy-disk"
+   },
+   {
+    "name": "hammer",
+    "pack": "tabler-1",
+    "ref": "pack:tabler-1/hammer"
+   },
+   {
+    "name": "home",
+    "pack": "amberx-outline",
+    "ref": "pack:amberx-outline/home"
+   },
+   {
+    "name": "home",
+    "pack": "lucide-1",
+    "ref": "pack:lucide-1/home"
+   },
+   {
+    "name": "home",
+    "pack": "tabler-1",
+    "ref": "pack:tabler-1/home"
+   },
+   {
+    "name": "house",
+    "pack": "lucide-1",
+    "ref": "pack:lucide-1/house"
+   },
+   {
+    "name": "pencil",
+    "pack": "lucide-1",
+    "ref": "pack:lucide-1/pencil"
+   },
+   {
+    "name": "pencil",
+    "pack": "tabler-1",
+    "ref": "pack:tabler-1/pencil"
+   }
+  ],
+  "count": 23
+ },
+ "sources": {
+  "kinds": [
+   [
+    "local",
+    "none",
+    "root"
+   ],
+   [
+    "http",
+    "none|basic|token|apikey",
+    "root"
+   ],
+   [
+    "rest",
+    "none|basic|token|apikey",
+    "root,listPath,getPath"
+   ],
+   [
+    "mcp",
+    "none|token",
+    "root,listTool,getTool"
+   ],
+   [
+    "ftp",
+    "password",
+    "host,port,user,root"
+   ],
+   [
+    "sftp",
+    "password|key",
+    "host,port,user,root"
+   ],
+   [
+    "gdrive",
+    "oauth",
+    "root"
+   ],
+   [
+    "gphotos",
+    "oauth",
+    "root"
+   ],
+   [
+    "dropbox",
+    "oauth|token",
+    "root"
+   ],
+   [
+    "repo",
+    "none|token|apikey",
+    "root"
+   ]
+  ],
+  "normalized sftp": {
+   "kind": "sftp",
+   "label": "Box",
+   "root": "/icons",
+   "auth": {
+    "mode": "password",
+    "secretRef": "sec-2"
+   },
+   "options": {
+    "host": "h",
+    "port": 22,
+    "user": "u"
+   },
+   "format": "svg",
+   "enabled": true,
+   "tags": []
+  },
+  "normalized unknown kind": {
+   "kind": "local",
+   "label": "",
+   "root": "x",
+   "auth": {
+    "mode": "none",
+    "secretRef": ""
+   },
+   "options": {},
+   "format": "auto",
+   "enabled": true,
+   "tags": []
+  }
+ },
+ "schema": {
+  "icon-map": [
+   "scope",
+   "extends",
+   "pack",
+   "slots",
+   "tags"
+  ],
+  "icon-source": [
+   "kind",
+   "label",
+   "root",
+   "auth",
+   "options",
+   "format",
+   "enabled",
+   "tags"
+  ]
+ }
+}

@@ -19,7 +19,7 @@ export interface MarkPath { d: string; fill: string; stroke: string; strokeWidth
 export interface MarkText { value: string; weight: number; tracking: number; font: 'ui' | 'display' | 'mono'; fill: string }
 export interface MarkData { form: 'mark' | 'wordmark' | 'lockup'; brand: string; viewBox: number[]; paths: MarkPath[]; text: MarkText | null; palette: Record<string, string>; safeArea: number; minSize: number; tags: string[] }
 export interface AnimatedLogoData { mark: string; preset: string; durationMs: number; delayMs: number; loop: boolean | 'hover'; still: 'first' | 'last'; intensity: number; tags: string[] }
-export interface Glyph { d: string; fill: boolean; secondary: string }
+export interface Glyph { d: string; fill: boolean; secondary: string; evenodd?: boolean }
 export interface IconPackData { style: string; grid: number; stroke: number; linecap: 'round' | 'square' | 'butt'; fallback: 'framework' | 'none'; glyphs: Record<string, Glyph>; tags: string[] }
 export interface BrandingData { brand: { name: string; tagline: string }; marks: { mark: string; wordmark: string; lockup: string; animated: string }; iconPack: string; decorations: Record<string, string>; palette: Record<string, string>; accentFromBrand: boolean; tags: string[] }
 
