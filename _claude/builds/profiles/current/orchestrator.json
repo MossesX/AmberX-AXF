@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T09:40:08.547Z",
+ "updatedAt": "2026-11-07T09:43:53.378Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14978,6 +14978,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T20:00:33.040Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -15336,6 +15340,10 @@
     {
      "text": "Overlap (multi-account-headless-workers): s36-s39 usage should fill the row in Claude accounts; failover s40-s42 must skip workers.",
      "at": "2026-11-07T05:14:24.273Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -17015,6 +17023,10 @@
     {
      "text": "Reconciler: PR #359 merged",
      "at": "2026-11-06T19:30:20.138Z"
+    },
+    {
+     "text": "Reconciler: PR #359 merged",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],

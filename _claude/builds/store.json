@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1256,
- "updatedAt": "2026-11-07T09:40:08.547Z",
+ "rev": 1257,
+ "updatedAt": "2026-11-07T09:43:53.378Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -93993,6 +93993,10 @@
     {
      "text": "Overlap (multi-account-headless-workers): s36-s39 usage should fill the row in Claude accounts; failover s40-s42 must skip workers.",
      "at": "2026-11-07T05:14:24.273Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -96818,6 +96822,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T20:00:33.040Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -97835,6 +97843,10 @@
     {
      "text": "Reconciler: PR #359 merged",
      "at": "2026-11-06T19:30:20.138Z"
+    },
+    {
+     "text": "Reconciler: PR #359 merged",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],

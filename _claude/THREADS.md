@@ -728,9 +728,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` → running (current) · orchestrator
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` s1 done (current) · orchestrator
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` branch claude/gizmo-rebuild-fable (current) · builds-live
 - 2026-11-06 22:41 UTC · `gizmo-rebuild-fable` s2 done (current) · orchestrator
 - 2026-11-06 22:37 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 22:45 UTC · `gizmo-rebuild-fable` s2 done (current) · foreign-write
@@ -1128,6 +1125,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, PR #380 (current) · builds-live
 - 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, s8-7 done, → built (current) · orchestrator
 - 2026-11-07 04:42 UTC · `dataset-bar` note (current) · orchestrator
+- 2026-11-06 19:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
+- 2026-11-06 19:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
+- 2026-11-06 19:16 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
 
 ## Token passes (log)
 
