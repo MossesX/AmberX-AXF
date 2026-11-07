@@ -33,7 +33,7 @@ import { coverageSummary, coverageTable, partsErrors, partsTypes, skinScopeKey, 
 export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, undoRestore } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
-export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
+export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
 export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
 
 export const SKIN_TYPE = 'skin';
@@ -257,10 +257,13 @@ export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDo
   return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey), parts: skin?.parts ?? {}, skin: skin ? resolved : { ...resolved, id: '' }, scopeKey };
 }
 
-/** A local change after the runtime made it. Skin on: a slot pick overrides that part of the skin. Skin off: it is the app's own. */
+/**
+ * A local change after the runtime made it. A skin in force (Use skin on, or the hub-wide skin while the app follows
+ * it): a slot pick overrides that part of the skin. No skin: it is the app's own. `skin` is the data of the skin in force.
+ */
 export function lookAfterChange(look: AppLookDocument, change: AppearanceChange, skin: SkinData | null): AppLookDocument {
   const next: AppLookDocument = { ...look, own: { ...look.own }, skin: { ...look.skin, overrides: { ...look.skin.overrides } } };
-  const skinOn = look.skin.use && !!skin;
+  const skinOn = (look.skin.use || look.skin.inherit) && !!skin;
   const inSkin = skinOn ? skinSlots(skin!) : {};
   for (const [t, id] of Object.entries(change.slots ?? {})) {
     if (skinOn && t in inSkin) {

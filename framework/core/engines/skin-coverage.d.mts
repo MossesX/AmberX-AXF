@@ -41,6 +41,7 @@ export function skinScopeKind(key: string): SkinScopeKind;
 export function isSubScopeKey(key: unknown): key is string;
 export function skinScopeChain(scope: Partial<SkinScope> | null | undefined): string[];
 export function skinScopeOf(key: string, app?: string): SkinScope;
+export function skinScopeDomId(key: string): string;
 export function skinScopeSelector(key: string): string;
 export function resolveSkinChain(chain: readonly string[], stateOf: (key: string) => Partial<SkinScopeState> | null | undefined): ResolvedSkin;
 

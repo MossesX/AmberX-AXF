@@ -610,8 +610,8 @@
       ],
       "selectors": [
         "",
-        "[data-axf-ui=\"home\"]",
-        "[data-axf-plugin=\"notes\"]",
+        "[data-fx-scope=\"skin-ui-home\"]",
+        "[data-fx-scope=\"skin-plugin-notes\"]",
         ""
       ],
       "normalized": {

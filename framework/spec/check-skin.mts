@@ -229,8 +229,8 @@ console.log(`check-skin: ${n} checks passed`);
   eq(skinScopeChain({ app: 'app' }), ['app', 'global'], 'the app chain');
   eq([skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], ['plugin:notes', 'ui:home', 'app'], 'keys');
   eq(['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), ['global', 'app', 'ui', 'plugin'], 'kinds');
-  eq(skinScopeSelector('plugin:notes'), '[data-axf-plugin="notes"]', 'a plugin scope is drawn under its root');
-  eq(skinScopeSelector('ui:home'), '[data-axf-ui="home"]', 'a UI scope is drawn under its view root');
+  eq(skinScopeSelector('plugin:ai.amberx.notes'), '[data-fx-scope="skin-plugin-ai-amberx-notes"]', 'a plugin scope is drawn under its scope root');
+  eq(skinScopeSelector('ui:home'), '[data-fx-scope="skin-ui-home"]', 'a UI scope is drawn under its view root');
   eq(skinScopeSelector('app'), '', 'the app is the page itself');
   eq(normalizeSkinScope({ app: 'App!', ui: 'home', plugin: 'ai.amberx.notes' }), { app: '', ui: 'home', plugin: 'ai.amberx.notes' }, 'bad ids drop');
   eq(resolveSkinChain(['a', 'b', 'c'], (k) => ({ a: { use: 'inherit' }, b: { use: 'on', id: 'x', overrides: { button: 'b' } }, c: { use: 'on', id: 'y', overrides: { button: 'c', dialog: 'c' } } } as never)[k]), { id: 'x', overrides: { button: 'b' }, from: 'b' }, 'the first deciding level wins; the overrides of a parent level belong to its own skin');
@@ -285,3 +285,68 @@ console.log(`check-skin: ${n} checks passed`);
   eq(mergeAppearance(parsed, { skin: { id: 'windows' } }, 'test', 'now').skin, { id: 'windows' }, 'a pick replaces it');
 }
 console.log(`check-skin (coverage + scopes): ${n} checks passed`);
+
+/* ---- the runtime: scopes, the hub-wide skin, parts and the icon pack ---- */
+{
+  const f = boot('app-f');
+  const g = (() => {
+    const rt = new AxfRuntime({ manifest: manifest('app-g'), assets: assets as never, storageKey: 'skin-app-g' });
+    const store = new Store();
+    const src = new Source(store, { ...hubDoc, skin: { id: 'windows' } } as AppearanceDocument);
+    rt.attachAppearanceSource(src);
+    return { rt, store, src, active: () => ({ ...rt.getState().active }) as Record<string, string> };
+  })();
+  eq(g.active()['color-theme'], before['color-theme'], 'a hub-wide skin changes nothing in an app that does not follow it');
+  eq(g.rt.globalSkin(), { id: 'windows', overrides: {} }, 'the hub-wide skin is read from the shared document');
+  ok(g.rt.skinInherit(true), 'follow the hub-wide skin');
+  eq(g.active()['color-theme'], 'windows-light', 'following = the hub-wide skin is on');
+  eq(g.rt.skinInForce().from, 'global', 'the global level decided');
+  eq(g.rt.skinAt().id, 'windows', 'skinAt() agrees');
+  g.rt.swap('color-theme' as never, 'aurora-night');
+  eq(g.rt.skinOverrides(), [], "overrides while following: the app's own Use skin is off, so the dot list is empty");
+  eq(g.active()['color-theme'], 'aurora-night', 'a pick while following overrides that part');
+  eq(g.src.saved, [], 'nothing reaches the shared document');
+  ok(g.rt.skinInherit(false), 'stop following');
+  eq(g.active()['color-theme'], before['color-theme'], 'own look again');
+
+  // a plugin can switch the skin off for itself, a UI can take another skin; the rest of the app keeps its skin
+  ok(f.rt.useSkin(true, 'windows'), 'skin on');
+  eq(f.rt.skinScoped('plugin:ai.amberx.notes'), null, 'a plugin that inherits needs no scope of its own');
+  ok(f.rt.scopeSkin('plugin:ai.amberx.notes', 'off'), 'no skin inside the notes plugin');
+  const pv = f.rt.skinScoped('plugin:ai.amberx.notes');
+  ok(pv, 'the plugin gets a scoped view');
+  eq((pv!.getState().active as Record<string, string>)['color-theme'], before['color-theme'], "inside the plugin: the app's own look");
+  eq(f.active()['color-theme'], 'windows-light', 'outside it: the skin');
+  ok(pv!.scopeCss().includes('[data-fx-scope="skin-plugin-ai-amberx-notes"]'), 'its vars are scoped under its root');
+  eq(pv!.appliedInterface(), f.rt.appliedInterface(), 'a skin scope is not an interface');
+  eq(f.rt.skinScopes(), [{ key: 'plugin:ai.amberx.notes', use: 'off', id: '', overrides: {} }], 'the scopes list');
+  eq(f.rt.skinAt({ plugin: 'ai.amberx.notes' }), { id: '', overrides: {}, from: 'plugin:ai.amberx.notes' }, 'skinAt the plugin');
+  ok(f.rt.scopeSkin('ui:home', 'on', 'hub-default'), 'the home UI takes a design package as its skin');
+  const uv = f.rt.skinScoped('ui:home');
+  ok(uv && (uv.getState().active as Record<string, string>)['style-theme'] !== 'windows', 'inside home: the other skin');
+  ok(!f.rt.scopeSkin('ui:home', 'on', 'no-such-skin'), 'an unknown skin is refused for a scope');
+  ok(!f.rt.scopeSkin('nope', 'on'), 'a bad key is refused');
+  ok(f.rt.scopeSkin('ui:home', 'inherit'), 'back to inherit');
+  eq(f.rt.skinScoped('ui:home'), null, 'inheriting = no scope of its own');
+  ok(['skin.inherit', 'skin.scope'].every((id) => f.rt.actions.list().some((x) => x.id === id)), 'the scope actions are registered');
+  f.rt.dispatch('skin.scope:plugin:ai.amberx.notes:inherit');
+  ok(!f.rt.skinScopes().some((s) => s.key === 'plugin:ai.amberx.notes'), 'skin.scope:…:inherit drops an entry with nothing left to remember');
+  f.rt.dispatch('skin.scope:ui:home:on:windows');
+  eq(f.rt.skinScopes()[0]?.id, 'windows', 'skin.scope:…:on:<skin> sets it');
+  f.rt.restoreDefaultAppearance();
+  eq(f.rt.skinScopes(), [], 'Restore clears the scopes');
+
+  // parts and the icon pack ride the skin
+  ok(f.rt.useSkin(true, 'windows'), 'skin on again');
+  ok(f.rt.customSheet().includes('.fx-widget-label'), "the Windows skin's label parts are in the sheet");
+  ok(f.rt.customSheet().includes('.fx-badge') || f.rt.customSheet().includes('fx-badge'), "and its badge parts");
+  eq(f.rt.skinIconPack(), 'amberx-outline', 'the skin puts its icon pack in force');
+  ok(f.rt.brandGlyph('settings') !== null || f.rt.brandGlyph('home') !== null || f.rt.brandGlyph('search') !== null, 'icons resolve through the skin pack');
+  const covers = f.rt.skinCovers('windows');
+  ok(covers.find((c) => c.type === 'label')?.covered === true && covers.find((c) => c.type === 'icon-pack')?.covered === true, 'skinCovers: labels through parts, the icon pack by reference');
+  eq(f.rt.skinCoverage().length, Object.keys(JSON.parse(readFileSync(join(root, 'schemas/asset-types.json'), 'utf8')).types).length, 'skinCoverage lists every registered type');
+  f.rt.useSkin(false);
+  ok(!f.rt.customSheet().includes('.fx-widget-label'), 'skin off: the parts go');
+  eq(f.rt.skinIconPack(), '', 'skin off: no skin pack');
+}
+console.log(`check-skin (runtime scopes): ${n} checks passed`);

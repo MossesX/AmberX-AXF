@@ -90,12 +90,21 @@ export function skinScopeOf(key, app = '') {
   return { app, ui: '', plugin: '' };
 }
 
+/**
+ * The scope element id a UI / plugin level's skin is drawn under (`data-fx-scope`, the interface engine's scope root:
+ * ids are lower-case letters, digits, `-` and `_`, 64 at most), '' for the app and the hub (the page itself).
+ */
+export function skinScopeDomId(key) {
+  const kind = skinScopeKind(key);
+  if (kind !== 'plugin' && kind !== 'ui') return '';
+  const id = key.slice(kind.length + 1).toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+  return `skin-${kind}-${id}`.slice(0, 64);
+}
+
 /** The CSS selector a level's skin is drawn under ('' = the whole app, nothing to scope). */
 export function skinScopeSelector(key) {
-  const kind = skinScopeKind(key);
-  if (kind === 'plugin') return `[data-axf-plugin="${key.slice(7)}"]`;
-  if (kind === 'ui') return `[data-axf-ui="${key.slice(3)}"]`;
-  return '';
+  const id = skinScopeDomId(key);
+  return id ? `[data-fx-scope="${id}"]` : '';
 }
 
 /**
