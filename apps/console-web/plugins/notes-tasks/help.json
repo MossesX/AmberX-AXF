@@ -1,0 +1,311 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "notes-tasks-help",
+  "name": "Notes and tasks help",
+  "version": "0.2.0",
+  "description": "Help mode entries for the Notes and tasks plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:notes-tasks",
+    "entries": [
+      {
+        "target": "view:notes",
+        "title": "Notes",
+        "text": "Your notes, to-dos and tasks in lists. The console and AmberX show the same ones: change one here and it shows there within seconds.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:tasks",
+        "title": "Tasks",
+        "text": "Your to-dos and tasks by when they're due: Today, Upcoming, Todo, All and Done.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:calendar",
+        "title": "Calendar",
+        "text": "Your events, weekly schedules and tasks with due dates, on the console and AmberX. Drag to make, move or resize. Long-press to drag on a phone, swipe to change the date.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.event",
+        "title": "Event",
+        "text": "When, where, repeats and reminders. Guests has the invite list: who replied and what they said, and the buttons that email them.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.block",
+        "title": "Schedule block",
+        "text": "One block of a weekly schedule: its day, time and colour.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.calendar",
+        "title": "Calendar settings",
+        "text": "Name and colour. Name a Google calendar for two-way sync through axHub.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.layouts",
+        "title": "Layouts",
+        "text": "Set the calendar window's panes, or save the panes you have under a name. Saved layouts follow you to every device.",
+        "kind": "screen"
+      },
+      {
+        "target": "notes-and-tasks",
+        "title": "Notes and tasks",
+        "text": "Shows the “Notes and tasks” part of this screen. Part of Notes and tasks.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:tasks.add",
+        "title": "New task",
+        "text": "Starts a new task. Part of Notes and tasks.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:dialog:notes.lists",
+        "title": "Manage note lists",
+        "text": "Shows “Manage note lists”. Part of Notes and tasks.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:dialog:notes.export",
+        "title": "Export notes",
+        "text": "Exports notes. Keep it or share it. Part of Notes and tasks.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "what",
+        "title": "What",
+        "text": "Where you set “What”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "copy-into",
+        "title": "Copy into",
+        "text": "Where you set “Copy into”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "copy-into-a-list",
+        "title": "Copy into a list",
+        "text": "Copies into a list. Paste it wherever you need it. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "todo",
+        "title": "Todo",
+        "text": "Shows the “Todo” part of this screen. Part of Notes and tasks.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "task",
+        "title": "Task",
+        "text": "Shows the “Task” part of this screen. Part of Notes and tasks.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "due",
+        "title": "Due",
+        "text": "Where you set “Due”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-to-the-checklist",
+        "title": "Add to the checklist",
+        "text": "Where you set “Add to the checklist”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "summarize",
+        "title": "Summarize",
+        "text": "Shows “Summarize”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "new-list",
+        "title": "New list",
+        "text": "Where you set “New list”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "at-the-top",
+        "title": "At the top",
+        "text": "Shows “At the top”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "inside",
+        "title": "Inside",
+        "text": "Shows “Inside”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "move-under",
+        "title": "Move under",
+        "text": "Where you set “Move under”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "delete-it-its-items-go-to",
+        "title": "Delete it; its items go to",
+        "text": "Where you set “Delete it; its items go to”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "sign-in-to-axhub",
+        "title": "Sign in to axHub",
+        "text": "Signs in to axHub. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "move-to-list",
+        "title": "Move to list",
+        "text": "Where you set “Move to list”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "back-to-lists",
+        "title": "Back to lists",
+        "text": "Shows “Back to lists”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "all-lists",
+        "title": "All lists",
+        "text": "Shows “All lists”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "manage-lists",
+        "title": "Manage lists",
+        "text": "Shows “Manage lists”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "export-this-list",
+        "title": "Export this list",
+        "text": "Exports this list. Keep it or share it. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "in-list",
+        "title": "In list",
+        "text": "Where you set “In list”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-every-note",
+        "title": "Show every note",
+        "text": "Shows every note. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "dictate",
+        "title": "Dictate",
+        "text": "Shows “Dictate”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "view:notes.lists",
+        "title": "Manage lists",
+        "text": "Opens the Manage lists screen. The one plugin for notes, to-dos and tasks.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "view:notes.export",
+        "title": "Export notes",
+        "text": "Opens the Export notes screen. The one plugin for notes, to-dos and tasks.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "tap-open-doing-done",
+        "title": "Tap: open → doing → done",
+        "text": "Shows “Tap: open → doing → done”. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "or-pick",
+        "title": "or pick",
+        "text": "Where you set “or pick”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-changes",
+        "title": "Save changes",
+        "text": "Saves changes. Nothing is kept until you tap it. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-a-step",
+        "title": "Add a step",
+        "text": "Where you set “Add a step”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "set-due",
+        "title": "Set due",
+        "text": "Where you set “Set due”. Change it and the app uses the new value. Part of Notes and tasks.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "new-task",
+        "title": "New task",
+        "text": "Starts a new task. Part of Notes and tasks.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "view:tasks.edit",
+        "title": "Task",
+        "text": "Opens the Task screen. The one plugin for notes, to-dos and tasks.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "view:tasks.add",
+        "title": "New task",
+        "text": "Opens the New task screen. The one plugin for notes, to-dos and tasks.",
+        "kind": "screen",
+        "draft": true
+      }
+    ]
+  }
+}

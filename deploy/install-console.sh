@@ -192,6 +192,12 @@ if axf_coolify_proxy_running; then
     say "  until AXHUB_WALL_SECRET on the hub matches $WSECF, signed-in browsers still need the console token and hub users can't chat"
     WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_SECRET=$(cat "$WSECF")" -e "AXF_WALL_HUB=$WALL_HUB")
     axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
+    # /public/ is the one way past the wall: pages for people with no login, each guarded by its own signed link
+    # (a plugin's `public_router`). X-Auth-* is still stripped, so nothing there can pose as a signed-in user.
+    WALL_ARGS+=(-l "traefik.http.routers.$R-public.rule=Host(\`$DOMAIN\`) && PathPrefix(\`/public/\`)"
+      -l "traefik.http.routers.$R-public.entrypoints=https" -l "traefik.http.routers.$R-public.tls=true"
+      -l "traefik.http.routers.$R-public.tls.certresolver=letsencrypt" -l "traefik.http.routers.$R-public.priority=2000"
+      -l "traefik.http.routers.$R-public.service=$R" -l "traefik.http.routers.$R-public.middlewares=$R-strip")
     [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
   else
     touch "$DIR/.axf-console/wall-waiting"

@@ -249,9 +249,9 @@
         "kind": "screen"
       },
       {
-        "target": "view:todo-manager",
-        "title": "Todos",
-        "text": "Your to-do list.",
+        "target": "view:tasks",
+        "title": "Tasks",
+        "text": "Your to-dos and tasks, the same ones AmberX shows.",
         "kind": "screen"
       },
       {

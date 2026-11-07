@@ -37,6 +37,8 @@ from axf_server import github, http as axf_http, storage
 
 SEVERITIES = ["info", "success", "warning", "error", "critical"]
 DEFAULT_RULES: dict[str, Any] = {"channels": {"bell": {"min": "info"}, "ntfy": {"min": "error"}, "webpush": {"min": "error"}}}
+# Sources that reach a phone whatever their severity unless a rule says otherwise: a calendar reminder only in the bell is no reminder.
+PHONE_SOURCES = ("calendar",)
 LIMIT = 500
 TITLE_MAX, BODY_MAX, KEY_MAX = 200, 2000, 200
 
@@ -119,7 +121,8 @@ def channel_min(rules: dict[str, Any], channel: str, source: str) -> str:
     r = rules.get("channels", {}).get(channel)
     if not r:
         return "off"
-    return (r.get("sources") or {}).get(source, r.get("min", "off"))
+    fallback = "info" if source in PHONE_SOURCES and channel != "bell" and r.get("min", "off") != "off" else r.get("min", "off")
+    return (r.get("sources") or {}).get(source, fallback)
 
 
 def delivery_targets(alert: dict[str, Any], event: str, rules: dict[str, Any] = DEFAULT_RULES) -> list[str]:

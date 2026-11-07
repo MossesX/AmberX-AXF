@@ -8,7 +8,8 @@
  */
 import * as voice from './src/plugins/voice/web/core.ts';
 import * as mon from './src/plugins/monitor/web/core.ts';
-import * as notes from './src/plugins/notes/web/core.ts';
+const NT = '../console-web/plugins/notes-tasks'; // axf-plugin:notes-tasks
+const notes = await import(`${NT}/web/notes/core.ts`);
 import * as hf from './src/plugins/voice/web/handsfree.ts';
 import * as companion from './src/plugins/companion/web/core.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
@@ -385,8 +386,8 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
 
 // tasks plugin
 {
-  const notes = await import('./src/plugins/notes/web/core.ts');
-  const tk = await import('./src/plugins/tasks/web/core.ts');
+  const notes = await import(`${NT}/web/notes/core.ts`);
+  const tk = await import(`${NT}/web/tasks/core.ts`);
   // Tuesday 27 Oct 2026, 10:00 local
   const now = new Date(2026, 9, 27, 10, 0, 0);
   const T = now.toISOString();
@@ -492,14 +493,28 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(tk.nextStatus('open'), 'doing', 'status cycle');
   ok(tk.isTab('today') && !tk.isTab('bogus'), 'tab ids');
   // the plugin is wired
-  const pj = JSON.parse(readFileSync(new URL('./src/plugins/tasks/plugin.json', import.meta.url), 'utf8'));
-  eq([pj.$axf, pj.id, pj.name], ['amberx-plugin@1', 'ai.amberx.amberx.tasks', 'Tasks'], 'tasks plugin.json');
-  const src = readFileSync(new URL('./src/plugins/tasks/web/index.tsx', import.meta.url), 'utf8');
-  for (const a of ["'tasks.open'", "'tasks.add'", "badge: BADGE", "registerVoiceCommands(ID"]) ok(src.includes(a), `tasks plugin has ${a}`);
+  const pj = JSON.parse(readFileSync(new URL(`${NT}/plugin.json`, import.meta.url), 'utf8'));
+  eq(pj.targets, ['axf-console', 'amberx-droid'], 'one plugin, loaded by both apps');
+  const src = readFileSync(new URL(`${NT}/web/tasks/library.tsx`, import.meta.url), 'utf8');
+  for (const a of ["'tasks.open'", "'tasks.add'", "voice()?.register(ID"]) ok(src.includes(a), `tasks plugin has ${a}`);
   for (const t of ['today', 'upcoming', 'todo', 'all', 'done']) ok(src.includes(`action: 'tasks.open:${t}'`), `voice opens ${t}`);
   ok(!/<button(?![^>]*(fx-chip|fx-tab|data-fx-row))/.test(src), 'every tasks <button> is a framework chip, tab or row');
-  const css = readFileSync(new URL('./src/plugins/tasks/web/tasks.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL(`${NT}/web/tasks/tasks.css`, import.meta.url), 'utf8');
   ok(!/#[0-9a-f]{3,8}\b|rgb\(/i.test(css), 'tasks CSS has no hard-coded colours');
+}
+
+// the shared plugin's one store, and the Claude files read alongside
+{
+  const none = notes.fromVault({ available: false, notes: [] });
+  eq([none.lists.length, none.items.length], [0, 0], 'no Claude files = nothing to show');
+  const v = notes.fromVault({ notes: [
+    { path: 'plans/a.md', folder: 'plans', name: 'a.md', title: 'Plan A', updatedAt: '2026-11-01T00:00:00.000Z', updatedBy: 'x', content: '# Plan A\nbody' },
+    { path: 'top.md', folder: '', name: 'top.md', title: '', updatedAt: '', updatedBy: '', content: 'x'.repeat(30_000) },
+  ] });
+  eq(v.lists.map((l) => l.id), [notes.VAULT_ROOT, 'vf-dir-plans'], 'one root, one sub-list per folder');
+  eq(v.items.map((i) => i.list), ['vf-dir-plans', notes.VAULT_ROOT], 'files sit in their folder');
+  eq(v.items[1].text.length, 30_000, 'a long file shows whole');
+  ok(v.items.every((i) => notes.isShared(i.id)) && v.lists.every((l) => notes.isShared(l.id)), 'never written to the store');
 }
 
 // notes plugin
@@ -602,7 +617,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
 
 // voice + dictation (orchestrator s6–s8): commands manager, command vs notes sentence, dictation rules
 {
-  const notes = await import('./src/plugins/notes/web/core.ts');
+  const notes = await import(`${NT}/web/notes/core.ts`);
   const dict = await import('./src/plugins/dictation/web/core.ts');
 
   /* commands built from the codebase */
@@ -767,12 +782,13 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const { readdirSync: dir } = await import('node:fs');
   const PLUGINS = ['notes', 'tasks', 'dictation', 'voice', 'web'];
   for (const p of PLUGINS) {
-    const base = new URL(`./src/plugins/${p}/web/`, import.meta.url);
+    const shared = p === 'notes' || p === 'tasks'; // the shared Notes and tasks plugin
+    const base = new URL(shared ? `${NT}/web/${p}/` : `./src/plugins/${p}/web/`, import.meta.url);
     const files = dir(base).filter((f) => f.endsWith('.tsx'));
     const srcs = Object.fromEntries(files.map((f) => [f, readFileSync(new URL(f, base), 'utf8')]));
     const all = Object.values(srcs).join('\n');
     // every page (a view's component) opens with the page head: eyebrow, h1, one sentence
-    const index = srcs['index.tsx'];
+    const index = srcs[shared ? 'library.tsx' : 'index.tsx'];
     const views = [...index.matchAll(/render: \(\) => <([A-Z][A-Za-z]+) \/>/g)].map((m) => m[1]);
     ok(views.length > 0, `${p}: has at least one page`);
     for (const v of views) {
@@ -1148,7 +1164,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
 /* ---------------------------------------------------------------- speech gate (Oct 31 2026: the "nothing in Inbox" loop) */
 {
   const sg = await import('./src/plugins/voice/web/speechgate.ts');
-  const notes = await import('./src/plugins/notes/web/core.ts');
+  const notes = await import(`${NT}/web/notes/core.ts`);
   // A repeated empty refresh speaks nothing: read the empty Inbox, Voice notes and a missing list, search and remove
   // in an empty store, ten times a minute apart (past the repeat window, so only the empty-state rule keeps it quiet).
   const g = sg.newGate();
@@ -1299,7 +1315,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const L = await import('./src/listeners.ts');
   const sg = await import('./src/plugins/voice/web/speechgate.ts');
   const wf = await import('./src/plugins/voice/web/wakeflow.ts');
-  const notes = await import('./src/plugins/notes/web/core.ts');
+  const notes = await import(`${NT}/web/notes/core.ts`);
   const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
   const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
   const WAKE = ['hey amberx', 'okay amberx'];
