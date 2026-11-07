@@ -28,7 +28,7 @@ export const APPEARANCE_SETTING_MAX_BYTES = 4 * 1024;
  * replaced (Oct 27 2026), so a document an older build wrote with that slot loses it on read, and the next write by any
  * app drops it from the hub (one-shot clean, Nov 3 2026).
  */
-export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package'];
+export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package', 'skin'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 /** A look settings key (`axf.look`, `axf.custom.button.amber`, …); which keys count is the runtime's call. */

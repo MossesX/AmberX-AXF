@@ -36,6 +36,7 @@
     "nav-style": true,
     "behavior-theme": true,
     "design-package": false,
+    "skin": false,
     "style-package": false,
     "interface": false,
     "logo-mark": false,
@@ -85,7 +86,8 @@
           "saffron-day",
           "sage-paper",
           "sandstone",
-          "slate-steel"
+          "slate-steel",
+          "windows-light"
         ],
         "style-theme": [
           "dense-grid",
@@ -102,7 +104,8 @@
           "soft-studio",
           "soft-touch",
           "swiss",
-          "terminal-pro"
+          "terminal-pro",
+          "windows"
         ],
         "layout": [
           "axhub-console",
@@ -119,7 +122,8 @@
           "right-handed",
           "signature-dock",
           "split-review",
-          "studio-dock"
+          "studio-dock",
+          "windows-explorer"
         ],
         "app-menu": [
           "developer",
@@ -154,7 +158,8 @@
           "status-strip",
           "text-commands",
           "touch-dock",
-          "window-switcher"
+          "window-switcher",
+          "windows"
         ],
         "nav-menu": [
           "amber-signature",
@@ -253,7 +258,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "popup": [
           "amber-signature",
@@ -313,7 +319,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "slider": [
           "amber-signature",
@@ -373,7 +380,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "gauge": [
           "classic-arc",
@@ -392,7 +400,8 @@
         "banner": [
           "amberx-accent",
           "amberx-branded",
-          "amberx-thin"
+          "amberx-thin",
+          "windows-titlebar"
         ],
         "nav-style": [
           "accordion",
@@ -440,7 +449,8 @@
           "classic",
           "compact",
           "reader",
-          "standard"
+          "standard",
+          "windows"
         ],
         "density": [
           "classic",
@@ -494,7 +504,8 @@
           "saffron-day",
           "sage-paper",
           "sandstone",
-          "slate-steel"
+          "slate-steel",
+          "windows-light"
         ],
         "style-theme": [
           "dense-grid",
@@ -511,7 +522,8 @@
           "soft-studio",
           "soft-touch",
           "swiss",
-          "terminal-pro"
+          "terminal-pro",
+          "windows"
         ],
         "layout": [
           "axhub-console",
@@ -528,7 +540,8 @@
           "right-handed",
           "signature-dock",
           "split-review",
-          "studio-dock"
+          "studio-dock",
+          "windows-explorer"
         ],
         "app-menu": [
           "developer",
@@ -563,7 +576,8 @@
           "status-strip",
           "text-commands",
           "touch-dock",
-          "window-switcher"
+          "window-switcher",
+          "windows"
         ],
         "nav-menu": [
           "amber-signature",
@@ -662,7 +676,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "popup": [
           "amber-signature",
@@ -722,7 +737,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "slider": [
           "amber-signature",
@@ -782,7 +798,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "gauge": [
           "classic-arc",
@@ -801,7 +818,8 @@
         "banner": [
           "amberx-accent",
           "amberx-branded",
-          "amberx-thin"
+          "amberx-thin",
+          "windows-titlebar"
         ],
         "nav-style": [
           "accordion",
@@ -849,7 +867,8 @@
           "classic",
           "compact",
           "reader",
-          "standard"
+          "standard",
+          "windows"
         ],
         "density": [
           "classic",
@@ -906,7 +925,8 @@
           "saffron-day",
           "sage-paper",
           "sandstone",
-          "slate-steel"
+          "slate-steel",
+          "windows-light"
         ],
         "style-theme": [
           "dense-grid",
@@ -923,7 +943,8 @@
           "soft-studio",
           "soft-touch",
           "swiss",
-          "terminal-pro"
+          "terminal-pro",
+          "windows"
         ],
         "layout": [
           "axhub-console",
@@ -940,7 +961,8 @@
           "right-handed",
           "signature-dock",
           "split-review",
-          "studio-dock"
+          "studio-dock",
+          "windows-explorer"
         ],
         "app-menu": [
           "developer",
@@ -975,7 +997,8 @@
           "status-strip",
           "text-commands",
           "touch-dock",
-          "window-switcher"
+          "window-switcher",
+          "windows"
         ],
         "nav-menu": [
           "amber-signature",
@@ -1077,7 +1100,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "popup": [
           "amber-signature",
@@ -1137,7 +1161,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "slider": [
           "amber-signature",
@@ -1197,7 +1222,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "gauge": [
           "classic-arc",
@@ -1216,7 +1242,8 @@
         "banner": [
           "amberx-accent",
           "amberx-branded",
-          "amberx-thin"
+          "amberx-thin",
+          "windows-titlebar"
         ],
         "nav-style": [
           "accordion",
@@ -1264,7 +1291,8 @@
           "classic",
           "compact",
           "reader",
-          "standard"
+          "standard",
+          "windows"
         ],
         "density": [
           "classic",
@@ -1318,7 +1346,8 @@
           "saffron-day",
           "sage-paper",
           "sandstone",
-          "slate-steel"
+          "slate-steel",
+          "windows-light"
         ],
         "style-theme": [
           "dense-grid",
@@ -1335,7 +1364,8 @@
           "soft-studio",
           "soft-touch",
           "swiss",
-          "terminal-pro"
+          "terminal-pro",
+          "windows"
         ],
         "layout": [
           "axhub-console",
@@ -1352,7 +1382,8 @@
           "right-handed",
           "signature-dock",
           "split-review",
-          "studio-dock"
+          "studio-dock",
+          "windows-explorer"
         ],
         "app-menu": [
           "developer",
@@ -1387,7 +1418,8 @@
           "status-strip",
           "text-commands",
           "touch-dock",
-          "window-switcher"
+          "window-switcher",
+          "windows"
         ],
         "nav-menu": [
           "amber-signature",
@@ -1486,7 +1518,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "popup": [
           "amber-signature",
@@ -1546,7 +1579,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "slider": [
           "amber-signature",
@@ -1606,7 +1640,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "gauge": [
           "classic-arc",
@@ -1625,7 +1660,8 @@
         "banner": [
           "amberx-accent",
           "amberx-branded",
-          "amberx-thin"
+          "amberx-thin",
+          "windows-titlebar"
         ],
         "nav-style": [
           "accordion",
@@ -1673,7 +1709,8 @@
           "classic",
           "compact",
           "reader",
-          "standard"
+          "standard",
+          "windows"
         ],
         "density": [
           "classic",
@@ -1729,7 +1766,8 @@
           "saffron-day",
           "sage-paper",
           "sandstone",
-          "slate-steel"
+          "slate-steel",
+          "windows-light"
         ],
         "style-theme": [
           "dense-grid",
@@ -1746,7 +1784,8 @@
           "soft-studio",
           "soft-touch",
           "swiss",
-          "terminal-pro"
+          "terminal-pro",
+          "windows"
         ],
         "layout": [
           "axhub-console",
@@ -1763,7 +1802,8 @@
           "right-handed",
           "signature-dock",
           "split-review",
-          "studio-dock"
+          "studio-dock",
+          "windows-explorer"
         ],
         "app-menu": [
           "developer",
@@ -1867,7 +1907,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "popup": [
           "amber-signature",
@@ -1927,7 +1968,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "slider": [
           "amber-signature",
@@ -1987,7 +2029,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "gauge": [
           "classic-arc",
@@ -2006,7 +2049,8 @@
         "banner": [
           "amberx-accent",
           "amberx-branded",
-          "amberx-thin"
+          "amberx-thin",
+          "windows-titlebar"
         ],
         "nav-style": [
           "accordion",
@@ -2054,7 +2098,8 @@
           "classic",
           "compact",
           "reader",
-          "standard"
+          "standard",
+          "windows"
         ],
         "density": [
           "classic",
@@ -2108,7 +2153,8 @@
           "saffron-day",
           "sage-paper",
           "sandstone",
-          "slate-steel"
+          "slate-steel",
+          "windows-light"
         ],
         "style-theme": [
           "dense-grid",
@@ -2125,7 +2171,8 @@
           "soft-studio",
           "soft-touch",
           "swiss",
-          "terminal-pro"
+          "terminal-pro",
+          "windows"
         ],
         "layout": [
           "axhub-console",
@@ -2142,7 +2189,8 @@
           "right-handed",
           "signature-dock",
           "split-review",
-          "studio-dock"
+          "studio-dock",
+          "windows-explorer"
         ],
         "app-menu": [
           "developer",
@@ -2177,7 +2225,8 @@
           "status-strip",
           "text-commands",
           "touch-dock",
-          "window-switcher"
+          "window-switcher",
+          "windows"
         ],
         "nav-menu": [
           "amber-signature",
@@ -2276,7 +2325,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "popup": [
           "amber-signature",
@@ -2336,7 +2386,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "slider": [
           "amber-signature",
@@ -2396,7 +2447,8 @@
           "swiss-grid",
           "terminal",
           "touch-friendly",
-          "warm-craft"
+          "warm-craft",
+          "windows"
         ],
         "gauge": [
           "classic-arc",
@@ -2415,7 +2467,8 @@
         "banner": [
           "amberx-accent",
           "amberx-branded",
-          "amberx-thin"
+          "amberx-thin",
+          "windows-titlebar"
         ],
         "nav-style": [
           "accordion",
@@ -2463,7 +2516,8 @@
           "classic",
           "compact",
           "reader",
-          "standard"
+          "standard",
+          "windows"
         ],
         "density": [
           "classic",

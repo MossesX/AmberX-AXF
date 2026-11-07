@@ -3,6 +3,7 @@ import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
 import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
 import { designPackageErrors } from './engines/designpackage';
+import { skinErrors } from './engines/skin';
 import { stylePackageErrors } from './engines/stylepackage';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
@@ -108,6 +109,7 @@ export function validateAsset(raw: unknown): ValidationResult {
     for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
   if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
+  if (raw.type === 'skin') errors.push(...skinErrors(data));
   if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
   if (raw.type === 'interface') errors.push(...interfaceErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));

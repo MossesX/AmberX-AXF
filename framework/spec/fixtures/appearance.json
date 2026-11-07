@@ -561,6 +561,17 @@
       "danger": "#ef6174",
       "ok": "#3ecc89",
       "scheme": "dark"
+    },
+    "windows-light": {
+      "bg": "#f3f3f3",
+      "fg": "#1b1b1b",
+      "muted": "#5d5d5d",
+      "card": "#ffffff",
+      "line": "#e5e5e5",
+      "accent": "#0067c0",
+      "danger": "#c42b1c",
+      "ok": "#0f7b0f",
+      "scheme": "light"
     }
   },
   "retryMs": {

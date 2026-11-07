@@ -94,6 +94,7 @@
         ]
       },
       "optional_fields": {
+        "scrollbar": "'thin' — thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
         "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
       }
     },
@@ -630,7 +631,7 @@
       "label": "Banner",
       "group": "Chrome",
       "icon": "menu",
-      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
+      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo (logo.text \"{app}\" = the app's own name) and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
       "required": [
         "height",
         "surface",
@@ -1249,6 +1250,27 @@
       ],
       "optional_fields": {
         "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
+    "skin": {
+      "label": "Skin",
+      "group": "System",
+      "icon": "palette",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one app: a layout theme, a colour theme, a style theme and the assets that fill the other slots. Apps keep their own look unless Use skin is on (Settings → Appearance), and a skin only changes the app it is switched on in.",
+      "required": [
+        "layoutTheme",
+        "colorTheme",
+        "styleTheme",
+        "assets"
+      ],
+      "optional_fields": {
+        "preview": "{ caption, image }: what the picker shows",
+        "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
       },
       "roll": {
         "slot": false,

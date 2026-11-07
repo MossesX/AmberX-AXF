@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 import threading
 from pathlib import Path
 from typing import Any
@@ -157,3 +158,55 @@ def put_presets(body: dict = Body(...)):
     with _lock:
         _write(data_dir() / "presets.json", out)
     return {"presets": out}
+
+
+# ---- skins: every app's own look on the hub (framework/cli/skins.mjs is the one writer) ----
+
+SKINS_CLI = cx.ROOT / "framework" / "cli" / "skins.mjs"
+
+
+def _skins(*args: str) -> Any:
+    try:
+        proc = subprocess.run(["node", str(SKINS_CLI), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=30)
+        out = json.loads(proc.stdout or "{}")
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        raise HTTPException(status_code=502, detail=f"skins: {e}") from e
+    if not out.get("ok"):
+        raise HTTPException(status_code=400, detail=str(out.get("error") or "skins failed"))
+    return out["result"]
+
+
+@router.get("/skins")
+def skins() -> dict[str, Any]:
+    """The skins that can be used and every app's skin switch."""
+    return {"skins": _skins("list"), "apps": _skins("apps")}
+
+
+@router.post("/skins/{app}/use")
+def skin_use(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Use skin on in one app, body {skin}: 'use the Windows skin in the console'."""
+    return _skins("use", app, str(body.get("skin") or ""))
+
+
+@router.post("/skins/{app}/off")
+def skin_off(app: str) -> Any:
+    """Use skin off: back to that app's own look."""
+    return _skins("off", app)
+
+
+@router.post("/skins/{app}/back")
+def skin_back(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Drop one override, body {slot}."""
+    return _skins("back", app, str(body.get("slot") or ""))
+
+
+@router.post("/skins/{app}/restore")
+def skin_restore(app: str) -> Any:
+    """Restore an app to its default look: 'restore AmberX to default'. Keeps one undo."""
+    return _skins("restore", app)
+
+
+@router.post("/skins/{app}/undo")
+def skin_undo(app: str) -> Any:
+    """Undo the last restore of an app."""
+    return _skins("undo", app)
