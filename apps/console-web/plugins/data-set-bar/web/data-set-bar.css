@@ -20,11 +20,12 @@
 .axp-dsb__bar[data-align='spread'] .axp-dsb__settings, .axp-dsb__bar[data-align='end'] .axp-dsb__settings, .axp-dsb__bar.is-pill .axp-dsb__settings { margin-inline-start: 0; }
 .axp-dsb__settings:hover, .axp-dsb__settings:focus-visible { opacity: 1; }
 
-.axp-dsb__search { flex: 0 1 calc(var(--fx-space) * 24); min-width: calc(var(--fx-space) * 10); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); color: var(--fx-muted); }
-.axp-dsb__search--compact { flex-basis: calc(var(--fx-space) * 16); }
-.axp-dsb__search--wide { flex-basis: calc(var(--fx-space) * 36); }
-.axp-dsb__search-input { flex: 1 1 auto; min-width: 0; height: calc(var(--fx-row-h) - var(--fx-space) * 0.5); padding-top: 0; padding-bottom: 0; }
-.axp-dsb__field { flex: none; max-width: calc(var(--fx-space) * 12); height: calc(var(--fx-row-h) - var(--fx-space) * 0.5); padding-top: 0; padding-bottom: 0; }
+.axp-dsb__search { flex: 1 1 calc(var(--fx-space) * 60); min-width: calc(var(--fx-space) * 36); max-width: calc(var(--fx-space) * 96); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); color: var(--fx-muted); }
+.axp-dsb__search--compact { flex: 0 1 calc(var(--fx-space) * 44); min-width: calc(var(--fx-space) * 28); }
+.axp-dsb__search--wide { flex-basis: calc(var(--fx-space) * 90); }
+.axp-dsb__bar.is-pill .axp-dsb__search, .axp-dsb__bar.is-inline .axp-dsb__search { flex: 0 1 calc(var(--fx-space) * 48); min-width: calc(var(--fx-space) * 30); }
+.axp-dsb__search-input { flex: 1 1 calc(var(--fx-space) * 24); min-width: calc(var(--fx-space) * 20); width: auto; height: calc(var(--fx-row-h) - var(--fx-space) * 0.5); padding-top: 0; padding-bottom: 0; }
+.axp-dsb__field { flex: 0 1 auto; max-width: calc(var(--fx-space) * 34); height: calc(var(--fx-row-h) - var(--fx-space) * 0.5); padding-top: 0; padding-bottom: 0; }
 .axp-dsb__sortbtns, .axp-dsb__sortchips { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); }
 .axp-dsb__chip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); padding-inline-end: 0; }
 .axp-dsb__chipbtn { gap: var(--fx-dens-gap-2xs); }
