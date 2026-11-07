@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1227,
- "updatedAt": "2026-11-07T05:02:38.737Z",
+ "rev": 1228,
+ "updatedAt": "2026-11-07T05:02:56.017Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -104782,14 +104782,14 @@
    "title": "multi-account-headless-workers",
    "category": "accounts",
    "detail": "Console signs into MORE THAN ONE Claude subscription at once. The console itself uses one account (interactive). Additional accounts exist only as headless worker sessions; the orchestrator sends build jobs to them. Account manager to add/sign in/remove worker accounts, see each one's usage/limits, and route jobs (orchestrator picks which worker account runs a job, fails over when one hits its limit). Check existing account-failover / account-switch-handoff / claude-accounts work and reuse it. Orchestrator assigns models.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T05:00:56.921Z",
+   "updatedAt": "2026-11-07T05:02:05.484Z",
    "builtAt": "",
    "notes": [
     {
@@ -104831,12 +104831,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:02:05.484Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:45:26.037Z",
-     "updatedAt": "2026-11-07T04:45:26.037Z"
+     "updatedAt": "2026-11-07T05:02:05.673Z"
     },
     {
      "id": "s2",
@@ -104935,7 +104935,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
