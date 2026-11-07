@@ -748,8 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7-1 done, s7-2 done, s8 done, s8-1 done, note (current) · foreign-write
-- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-1 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-2 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-3 done (current) · orchestrator
 - 2026-11-07 01:33 UTC · `notes-tasks-calendar` s8-2 done, s8-3 done, note (current) · foreign-write
@@ -1148,6 +1146,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 14:29 UTC · `slotstest-2208251-a` removed (all) · orchestrator
 - 2026-11-07 14:29 UTC · `slotstest-2208251-b` removed (all) · orchestrator
 - 2026-11-07 14:36 UTC · `plan-designer` s3 done (all) · claude-plan-designer
+- 2026-11-07 14:36 UTC · `plan-designer` s4 done (all) · claude-plan-designer
+- 2026-11-07 14:36 UTC · `plan-designer` s5 done (all) · claude-plan-designer
 
 ## Token passes (log)
 
