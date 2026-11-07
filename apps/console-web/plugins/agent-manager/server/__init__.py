@@ -70,7 +70,7 @@ class AgentsService:
         if c["agent"].get("enabled", True) is False:
             return None
         out = {"id": agent_id, "name": c["agent"].get("name"), "icon": c["agent"].get("icon", "user"), "description": c["agent"].get("description", ""),
-               "system_prompt": c["system"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
+               "system_prompt": c["system"], "chatPrompt": c["chatPrompt"], "toolGroups": c["toolGroups"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
                "voice": _voice(c["agent"]), "writeMode": None, "buildMode": c.get("buildMode")}
         if c.get("writeMode"):
             cs = containers.service()
