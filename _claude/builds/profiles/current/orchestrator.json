@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:34:11.199Z",
+ "updatedAt": "2026-11-07T05:34:36.701Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -23025,12 +23025,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:56:03.670Z",
-   "updatedAt": "2026-11-07T05:03:54.685Z",
+   "updatedAt": "2026-11-07T05:34:11.217Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-merge-conflict-alerts--joey, own login copy)",
      "at": "2026-11-07T05:02:07.390Z"
+    },
+    {
+     "text": "s1: PR 370 had main merged in (head 090e55bd, no code conflicts), and console-commands/notify.json added for the unregistered wake alert that failed its queue run. GitHub reports it mergeable; NOT landed: the queue can't build its commit because the VPS disk is full. s2-s5: code committed on claude/merge-conflict-alerts (ceea56f9), no PR yet. Left: rerun the sweep (help coverage + lifecycle fixed but unproven; claude-login and the library-template step failed in Docker, cause not yet checked), shots + UI Review, open PR, tick steps.",
+     "at": "2026-11-07T05:34:10.549Z"
     }
    ],
    "approvals": [],
@@ -23507,7 +23511,7 @@
   {
    "id": "new-app-wizard",
    "title": "new-app-wizard",
-   "category": "",
+   "category": "framework",
    "detail": "A New App wizard (console screen, voice, API/MCP/CLI). It asks for: app name, quick summary, brief (what it should do), and the subdomain on amberxai.com. Then it does everything: creates a GitHub repo under MossesX, scaffolds a framework app with standard style and assets, a settings interface and a control panel, adds the Hostinger DNS record for the subdomain, sets up HTTPS and routing on the VPS behind Brett's login, registers the app in the registry, and sends the brief to the orchestrator as a build with a build ID (orchestrator makes the plan and picks models). Shows progress and a summary with links at the end. Voice controlled; every step also has an API function.",
    "status": "pending",
    "hidden": false,
@@ -23538,7 +23542,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0a1vga"
+     "uid": "st-mw5yuku306juk7"
     },
     {
      "id": "s2",
@@ -23556,7 +23560,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0boguo"
+     "uid": "st-mw5yuku307pszr"
     },
     {
      "id": "s3",
@@ -23574,7 +23578,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0ckoub"
+     "uid": "st-mw5yuku3086498"
     },
     {
      "id": "s4",
@@ -23592,10 +23596,100 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0dkt2a"
+     "uid": "st-mw5yuku309dlgd"
     },
     {
      "id": "s5",
+     "text": "Progress view, final summary with links; API/MCP/CLI parity",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5yuku30a6rwr"
+    },
+    {
+     "id": "s6-5",
+     "text": "Wizard UI and voice flow: name, summary, brief, subdomain",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5yxl6o0a1vga"
+    },
+    {
+     "id": "s7-6",
+     "text": "Create GitHub repo and scaffold a standard framework app (settings + control panel)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5yxl6o0boguo"
+    },
+    {
+     "id": "s8-7",
+     "text": "Hostinger DNS record, HTTPS and VPS routing behind Brett's login",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5yxl6o0ckoub"
+    },
+    {
+     "id": "s9-8",
+     "text": "Register app in the registry; send brief to the orchestrator as a build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5yxl6o0dkt2a"
+    },
+    {
+     "id": "s10-9",
      "text": "Progress view, final summary with links; API/MCP/CLI parity",
      "model": "Opus",
      "why": "",

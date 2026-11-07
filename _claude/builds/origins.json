@@ -1969,6 +1969,18 @@
    "from": "",
    "addenda": []
   },
+  "new-app-wizard": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "new-app-wizard",
+   "brief": "# new-app-wizard\nOrchestrator build ID: new-app-wizard (profile current). Use that record: follow its steps and the model the orchestrator set for each step, tick steps as you finish, record session and cost on it.\n\nBuild a New App wizard (console screen, voice, API/MCP/CLI). It asks for: app name, quick summary, brief, and subdomain on amberxai.com. Then it: creates a GitHub repo under MossesX; scaffolds a framework app with standard style and assets, a settings interface and a control panel; adds the Hostinger DNS record for the subdomain; sets up HTTPS and VPS routing behind Brett's login; registers the app in the registry; sends the brief to the orchestrator as a build with a build ID (orchestrator plans and picks models). Shows progress and a final summary with links. Everything voice controlled, every step has an API function.",
+   "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
   "notes-tasks-calendar": {
    "said": "\"In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We can set weekly schedules. And it's gonna be hooked up to our Gmail / Google Calendar through axHub's MCP server.\"\n\nBase: branch claude/notes-tasks-sync (PR #363, shared notes-tasks plugin); merge it first, build on it.\n1. Calendar inside the notes-tasks plugin (console + AmberX): day / week / month / agenda views; events (time, location, notes, reminders); recurring + weekly schedules; tasks with due dates show on it.\n2. Two-way sync with Google Calendar through axHub's Google service (build axhub-google, queued). Until that lands, local calendar works on its own; sync switches on when the service exists.\n3. Reminders go through the console notifications engine (AmberX only delivers).\n4. REST/MCP/CLI + voice commands (UI registry).\n5. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOne session, lean chain.",
    "at": "",
