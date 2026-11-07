@@ -740,11 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:15 UTC · `gizmo-voice` s2 done (current) · orchestrator
-- 2026-11-06 23:15 UTC · `gizmo-voice` note (current) · orchestrator
-- 2026-11-06 23:15 UTC · `gizmo-companion` → running, note (current) · orchestrator
-- 2026-11-06 23:23 UTC · `gizmo-companion` → complete, note (current) · foreign-write
-- 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` PR #368 (current) · builds-live
 - 2026-11-06 23:23 UTC · `gizmo-rebuild-fable` s8 done, → built (current) · orchestrator
 - 2026-11-06 23:31 UTC · `gizmo-companion` → complete, note (current) · foreign-write
 - 2026-11-06 23:31 UTC · `gizmo-voice` s1 done, s2 done, note (current) · foreign-write
@@ -1140,6 +1135,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:07 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 11:07 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r2 (all) · builds-live
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s5 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s6 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s8 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s9 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s10 done (all) · orchestrator
+- 2026-11-07 11:09 UTC · `build-pipeline-v2` s11 done (all) · orchestrator
 
 ## Token passes (log)
 
