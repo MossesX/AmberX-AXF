@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1295,
- "updatedAt": "2026-11-07T12:38:53.926Z",
+ "rev": 1296,
+ "updatedAt": "2026-11-07T12:42:29.833Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109271,7 +109271,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T10:22:04.646Z",
+   "updatedAt": "2026-11-07T12:42:28.618Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -109283,7 +109283,7 @@
     "session": "",
     "link": "",
     "by": "Amber (claude.ai voice)",
-    "brief": "",
+    "brief": "# Postgres: ONE true location for all data sets, in its own container (Brett, Nov 7)\n\nOrchestrator build id: `postgres-console` (profile all, 7 steps) with Plan Studio plan `postgres-for-the-console-orchestrator-id-registr-anyx` — read both (`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief postgres-console`) and follow them, with this change: Postgres runs in its OWN Docker container, not inside the console's.\n\nProblem: the same data lives in 3+ places (builds store, per-profile orchestrator files, pending list, journal, plans, tracker/catalog, feature-ledger, origins) read by different tools, constantly out of sync.\n\n1. Contract (Fable): schema for builds, steps, plans, blueprints, journal, queue, accounts/workers usage, Shipped features, origins, ID registry (orchestrator assigns every id). Migrations versioned.\n2. Own container: `axf-postgres` (official image, pinned), internal Docker network only (no public port), named data volume, healthcheck, restart policy, nightly backup + restore script, credentials in the vault/env (never in git). Compose/deploy files + docs.\n3. Importer: every existing JSON source loaded losslessly, counts/hashes verified, duplicates resolved with a report.\n4. Switch every reader/writer (orchestrator, Build manager, Builds page, Plan Studio, builds-live, merge queue, MCP/CLI, AmberX, axHub) to the DB. JSON files become generated read-only exports for git/sessions. Kill file locks.\n5. CI check: no code writes those JSON files directly anymore.\n6. Tests + perf check. Add to Shipped features.\n\nDeploying the container is a VPS write: prepare it, and leave a one-command deploy for Brett/orchestrator. Progress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -109452,7 +109452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
