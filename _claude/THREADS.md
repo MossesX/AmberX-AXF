@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:57 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
 - 2026-11-06 23:57 UTC · `badges-notify-followup` s4 done, → built (current) · orchestrator
 - 2026-11-07 00:10 UTC · `gizmo-voice` note (current) · foreign-write
 - 2026-11-07 00:10 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` note (all) · orchestrator
 - 2026-11-07 12:10 UTC · `console-approvals-in-place` → complete, merged, note (all) · reconciler
 - 2026-11-07 12:30 UTC · `amber-chat-asset` added (5 steps) (all) · orchestrator
+- 2026-11-07 12:28 UTC · `plan-archive` added (7 steps) (all) · paulie
 
 ## Token passes (log)
 

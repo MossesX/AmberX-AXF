@@ -2297,6 +2297,18 @@
    "from": "detail",
    "addenda": []
   },
+  "plan-archive": {
+   "said": "Plan Studio: Archive folder (Brett, Nov 7)\n\n1. Add a separate **Archive** folder/section in Plan Studio. Archived plans are hidden from the normal lists, shown only in Archive, never deleted.\n2. Actions: `archive` and `unarchive` (restore) on planner.plans — in the UI (row menu + bulk select), control@1 (`control_act planner.plans archive|unarchive`), MCP/CLI/voice. Restore puts the plan back exactly as it was (status, steps, links, build link).\n3. Move EVERY existing plan (all ~58 at time of writing) into Archive. Do NOT archive the plan named \"New Hire\" if it exists, nor anything created after this build starts. Linked builds keep their links.\n4. Archive state stored in plan@1 (optional field, backward compatible); UI from assets, no hard-coded styling. UI Review: submit the Archive view with three options (--choices).\n5. Tests: archive/unarchive round-trip, bulk move, hidden from default lists, restore exact. Add to Shipped features.",
+   "at": "2026-11-07T12:28:04.815Z",
+   "source": "code",
+   "session": "",
+   "link": "",
+   "by": "paulie",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "plan-studio": {
    "said": "a planning studio to store and view all plans, entered by hand, categorized; every plugin and app listed with its features checked off as have or planned. + plain-English AI command box (Oct 30 ~14:20) + AmberX voice conversation mode (Oct 30 ~14:22). Profile Angel, Opus, one session. Branch claude/plans. Web/TS/Python only; AmberX is its Capacitor web shell (allowed exception). Don't touch push-banner, approvals/veto, design-packs/ui-review, enterprise-branding, agent-voice files.",
    "at": "2026-10-30",
