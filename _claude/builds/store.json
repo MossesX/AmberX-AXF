@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1414,
- "updatedAt": "2026-11-07T21:59:03.394Z",
+ "rev": 1415,
+ "updatedAt": "2026-11-07T21:59:14.971Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108098,10 +108098,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "glossary-index-demos",
-   "branch": "claude/glossary-index-demos-r2",
+   "branch": "claude/glossary-index-demos-r3",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T21:58:53.210Z",
+   "updatedAt": "2026-11-07T21:59:09.198Z",
    "builtAt": "2026-11-07T21:58:52.269Z",
    "notes": [
     {
@@ -108313,7 +108313,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
