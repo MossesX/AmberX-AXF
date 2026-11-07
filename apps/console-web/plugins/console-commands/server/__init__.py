@@ -27,7 +27,7 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  clients · GET recent · GET queue                           the caller's open consoles · the last commands · what waits
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
-  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close   (each takes `to`)
+  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -693,6 +693,16 @@ async def run_action(request: Request) -> JSONResponse:
 async def nav(request: Request) -> JSONResponse:
     b = await _body(request)
     return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": request.url.path.rstrip("/").rsplit("/", 1)[-1], **_to(b), **_audit(b)})
+
+
+@router.post("/refresh")
+async def refresh(request: Request) -> JSONResponse:
+    """Reload the open console: soft, or hard {"hard": true} (clears its caches first). `to` as every command."""
+    b = await _body(request)
+    cmd = {"op": "act", "target": "console.nav", "path": "here", "action": "refresh", **_to(b), **_audit(b)}
+    if b.get("hard") is True:
+        cmd["input"] = {**(cmd.get("input") or {}), "hard": True}
+    return await go(request, cmd)
 
 
 @router.get("/where")

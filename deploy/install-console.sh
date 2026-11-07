@@ -230,6 +230,9 @@ axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/pu
 # Rotated Claude tokens (refresh-token-save, Nov 6 2026): the live login's renewals reach its saved copy within a minute,
 # and pairs AI keys renews reach the host's logins. Builds' own copies save back by themselves (claude-headless.sh).
 axf_cron_file axf-claude-token-save "* * * * * root T=$DIR/deploy/claude-token-save.mjs; [ -f \$T ] && flock -n /run/axf-claude-token-save.lock node \$T sweep >> /var/log/axf-claude-token-save.log 2>&1"
+# Nightly deploy (Brett, Nov 2026): this ticks every minute; deploy/console-nightly.mjs waits for the set time in New York
+# (Claude settings nightly.enabled / nightly.time) and deploys once a night when code on main changed.
+axf_cron_file axf-console-nightly "* * * * * root N=$DIR/deploy/console-nightly.mjs; [ -f \$N ] && DIR=$DIR NAME=$NAME flock -n /run/axf-console-nightly.lock node \$N run >> /var/log/axf-console-nightly.log 2>&1"
 # Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
 axf_cron_file axf-doctor "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1"
 DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true
