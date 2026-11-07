@@ -705,12 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:35 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · pending
-- 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:38 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:38 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
@@ -1105,6 +1099,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s1 done, → running (current) · orchestrator
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s4-3 done, → running (current) · orchestrator
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
+- 2026-11-07 02:11 UTC · `ui-asset-designer` added (40 steps) (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s1 done, → running (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s2 done (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s3 done (current) · orchestrator
+- 2026-11-07 02:13 UTC · `ui-asset-designer` s4 done (current) · orchestrator
+- 2026-11-07 02:14 UTC · `asset-designer` note (main-framework) · orchestrator
 
 ## Token passes (log)
 
