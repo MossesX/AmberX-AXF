@@ -749,8 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 17:40 UTC · `console-account-picker` note (current) · pending
-- 2026-11-06 17:41 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 17:43 UTC · `token-usage-log-accounts-plan-studio-control` note (current) · pending
 - 2026-11-06 17:53 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (0 steps) (current) · pending
 - 2026-11-06 18:30 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
@@ -1149,6 +1147,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:49 UTC · `approve-button-fix` s4 done (all) · orchestrator
 - 2026-11-07 16:50 UTC · `approve-button-fix` s5 done, → complete (all) · orchestrator
 - 2026-11-07 16:58 UTC · `full-api-control` s9 done, → complete (all) · orchestrator
+- 2026-11-07 16:58 UTC · `full-api-control` → waiting (all) · orchestrator
+- 2026-11-07 16:58 UTC · `full-api-control` → complete, note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1399,
- "updatedAt": "2026-11-07T16:58:59.062Z",
+ "rev": 1400,
+ "updatedAt": "2026-11-07T16:59:11.386Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111931,12 +111931,16 @@
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:58:57.850Z",
-   "builtAt": "2026-11-07T16:58:57.850Z",
+   "updatedAt": "2026-11-07T16:58:59.434Z",
+   "builtAt": "2026-11-07T16:58:59.435Z",
    "notes": [
     {
      "text": "Clash with settings-placement-everywhere (#329): both append control@1 targets after tokens.nav and edit check-control.mts. If #329 lands first: console.values + console.elements go after console.placement (indexes 24-25), count 26, and the console set exception names both console.placement and console.values; regenerate fixtures (gen-fixtures.mts).",
      "at": "2026-11-07T16:49:08.102Z"
+    },
+    {
+     "text": "All 9 steps built and committed on claude/full-api-control (not pushed, per the brief). Waiting on Brett's UI Review pick r-20261107-e7b50396 (API Browser look), then push + PR. Report _claude/builds/reports/full-api-control.md.",
+     "at": "2026-11-07T16:58:59.434Z"
     }
    ],
    "approvals": [],
@@ -112169,7 +112173,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
