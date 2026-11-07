@@ -10,8 +10,13 @@
  * APK without `talkStart` falls back to the first build's loop: one `native.listen` per turn through the mic lease.
  *
  * Interrupt-to-stop: while Gizmo talks the service keeps a turn open (when "Stop talking when I talk over Gizmo" is
- * on); anything heard that isn't Gizmo's own voice coming back (voice plugin `heardEcho`) and is a stop word
+ * on); anything heard that isn't Gizmo's own voice coming back (voice plugin `soundsLikeOwnVoice`) and is a stop word
  * (`isInterrupt`) stops speech at once, and nothing said over him is sent as a message.
+ *
+ * No echo (Nov 7 2026, build gizmo-voice-fix): every sentence Gizmo says goes into the voice plugin's speech gate
+ * (`markOwnSpeech`), the same one AmberX's own replies use, so talk mode, hands-free and the notes parser all know his
+ * voice and never take it as the next message, a command or a note (`judgeHeard` in core.ts decides). Outside talk
+ * mode his speech holds the mic, so hands-free steps aside while he talks.
  */
 import { useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
@@ -21,7 +26,8 @@ import { Subscriptions } from '../../../listeners';
 import { withMic } from '../../../miclease';
 import { isNative, native, type TalkEvent } from '../../../native';
 import { mayMakeSound } from '../../../sound';
-import { heardEcho } from '../../voice/web';
+import { markOwnSpeech, markOwnSpeechDone, soundsLikeOwnVoice, talkEcho } from '../../voice/web';
+import { judgeHeard } from './core';
 import { K } from './keys';
 
 export type TalkPhase = 'off' | 'listening' | 'thinking' | 'speaking' | 'paused';
@@ -73,11 +79,14 @@ async function speakOne(rt: AxfRuntime, text: string) {
     waiting.set(id, () => { clearTimeout(t); waiting.delete(id); res(); });
   });
   const voice = rt.settings.get(K.voice);
-  // holdMic only on the legacy path and when talking over it can't stop it: the talk service owns the mic itself,
-  // and with interrupt on the listener stays open (echo is filtered).
-  const holdMic = path !== 'service' && !interruptOn(rt);
-  await native.speak({ text, lang: lang(rt), id, rate: rate(rt), ...(typeof voice === 'string' && voice ? { voice } : {}), holdMic });
-  await done;
+  // Hands-free steps aside while Gizmo talks (holdMic), except where a listener must stay open so Brett can cut in:
+  // the talk service (it owns the mic itself) and the legacy talk loop with interrupt on (echo is filtered there).
+  const holdMic = path === null || (path === 'legacy' && !interruptOn(rt));
+  markOwnSpeech(text);
+  try {
+    await native.speak({ text, lang: lang(rt), id, rate: rate(rt), ...(typeof voice === 'string' && voice ? { voice } : {}), holdMic });
+    await done;
+  } finally { markOwnSpeechDone(); }
 }
 
 /** Tell the service our half of the turn (nothing on the legacy path or when talk mode is off). */
@@ -130,12 +139,12 @@ let send: ((text: string) => void) | null = null;
 /** A final utterance from either path: an interrupt while speaking, an echo, or the next message for Gizmo. */
 function heardFinal(rt: AxfRuntime, text: string): 'sent' | 'interrupt' | 'ignored' {
   const t = (text ?? '').trim();
-  const echo = heardEcho(t);
-  if (state.phase === 'speaking' || speaking) {
-    if (t && !echo && interruptOn(rt) && isInterrupt(t)) { stopSpeaking(); return 'interrupt'; }
-    return 'ignored';
-  }
-  if (!t || echo || state.phase !== 'listening' || !state.on) return 'ignored';
+  const v = judgeHeard({
+    text: t, listening: state.on && state.phase === 'listening', talking: state.phase === 'speaking' || speaking,
+    echo: talkEcho(t), ownWords: soundsLikeOwnVoice(t), interruptOn: interruptOn(rt), stopWord: isInterrupt(t),
+  });
+  if (v === 'interrupt') { stopSpeaking(); return 'interrupt'; }
+  if (v === 'ignore') return 'ignored';
   set({ heard: t, phase: 'thinking' });
   send?.(t);
   return 'sent';
@@ -148,7 +157,7 @@ function onTalkEvent(rt: AxfRuntime, e: TalkEvent) {
     case 'started': set({ phase: state.phase === 'off' ? 'listening' : state.phase, paused: '', stopped: '' }); break;
     case 'heard': {
       const text = e.text ?? '';
-      if (!e.final) { if (!(state.phase === 'speaking' || speaking) && !heardEcho(text)) set({ heard: text }); break; }
+      if (!e.final) { if (!(state.phase === 'speaking' || speaking) && !talkEcho(text)) set({ heard: text }); break; }
       const r = heardFinal(rt, text);
       // The service went to "thinking" on a final result; nothing sent = listen again now.
       if (r !== 'sent' && state.phase !== 'speaking' && !speaking) phaseToService('listening');
@@ -176,7 +185,7 @@ function bindHeard(rt: AxfRuntime) {
   nativeSubs.bind('heard', () => native.addListener('heard', ({ text, final }) => {
     if (!state.on || path === 'service') return;
     if (state.phase === 'speaking') { heardFinal(rt, text ?? ''); return; }
-    if (heardEcho(text ?? '')) return;
+    if (talkEcho(text ?? '')) return;
     set({ heard: text ?? '' });
     if (final && state.phase === 'listening' && rt.settings.get(K.handsFree) !== false && (text ?? '').trim()) heardFinal(rt, text);
   }));
@@ -191,7 +200,7 @@ async function listenNext(rt: AxfRuntime) {
     const { text } = await withMic('companion', () => native.listen({ lang: lang(rt), prompt: 'Talk to Gizmo…' }));
     if (!state.on) return;
     const t = (text ?? '').trim();
-    if (!t || heardEcho(t)) { if (rt.settings.get(K.handsFree) !== false) setTimeout(() => void listenNext(rt), 400); else set({ phase: 'listening' }); return; }
+    if (!t || talkEcho(t)) { if (rt.settings.get(K.handsFree) !== false) setTimeout(() => void listenNext(rt), 400); else set({ phase: 'listening' }); return; }
     set({ heard: t, phase: 'thinking' });
     send?.(t);
   } catch (e) {
@@ -206,7 +215,7 @@ export async function pushToTalk(rt: AxfRuntime, onText: (t: string) => void) {
   try {
     const { text } = await withMic('companion', () => native.listen({ lang: lang(rt), prompt: 'Talk to Gizmo…' }));
     const t = (text ?? '').trim();
-    if (t && !heardEcho(t)) onText(t);
+    if (t && !talkEcho(t)) onText(t);
   } catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'warning', 'Gizmo'); }
 }
 

@@ -1669,5 +1669,106 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/static ListenerRules\.Policy policy\(Context c, String id\)/.test(reg) && /static JSONObject status\(Context c\)/.test(reg) && /rows\.put\(TalkService\.row\(c, holder\)\)/.test(reg), 'android: ListenerRegistry keeps policies and reports every native listener');
 }
 
+/* ---------------------------------------------------------------- Gizmo voice fix + echo fix (Nov 7 2026, builds gizmo-voice / amberx-voice-echo-fix) */
+{
+  const sg = await import('./src/plugins/voice/web/speechgate.ts');
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  const { isInterrupt } = await import('./src/axf/libs/claude-session/core.ts');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
+
+  // s1: the notes parser never takes AmberX's own reply as a note
+  for (const t of ['Note saved to Inbox.', 'note saved to inbox', 'Task saved to Work.', 'Todo saved to Shopping (no list called groceries).', '3 items saved to Shopping.', 'Saved to Inbox.', 'Moved “milk” to Shopping.', 'Removed “milk”.', 'Renamed Work to Jobs.', 'Made Work › Clients.', 'Work is already there.']) {
+    ok(notes.isOwnReply(t), `own reply: "${t}" is AmberX's own notes reply`);
+    eq(notes.parseIntent(t), null, `own reply: "${t}" never parses as an intent`);
+  }
+  for (const t of ['note buy milk', 'add a todo call mom tomorrow', 'move the last note to work', 'note save money for the trip', 'remind me to water the plants', 'new note in work: fix login']) {
+    ok(!notes.isOwnReply(t) && notes.parseIntent(t) !== null, `own reply: "${t}" is still Brett's command`);
+  }
+  ok(/else if \(isOwnReply\(heard\)\) turn = \{ at, heard, did: "AmberX's own reply heard back \(ignored\)\."/.test(src('plugins/voice/web/index.tsx')), 'own reply: the voice plugin drops it before the commands and the AI notes parser');
+
+  // s3 regression: "Note saved to Inbox." replayed into the listener long after the speech gate forgot it saves nothing
+  {
+    const store = notes.emptyStore();
+    const g = sg.newGate();
+    let now = 1_000_000, saved = 0;
+    const heard = (text) => { if (sg.isEcho(g, text, now, { armed: true })) return; const i = notes.parseIntent(text); if (!i) return; const r = notes.applyIntent(store, i, { now: new Date(now).toISOString() }); saved += 1; if (sg.shouldSpeak(g, r.say, now, { change: r.changed }).speak) { sg.markSpeaking(g, r.say, now); now += sg.speechMs(r.say); sg.markDone(g, now); } };
+    heard('note buy milk');
+    for (const lag of [500, 2_000, 5_000, 16_000, 40_000, 120_000]) { now += lag; heard('note saved to inbox'); heard('Note saved to Inbox.'); }
+    eq(saved, 1, 'echo regression: one note by voice, its reply replayed 12 times (in and past the echo window) = still one note');
+    eq(Object.values(store.items).length, 1, 'echo regression: the store holds just the one note');
+  }
+
+  // s2: the speech gate in a conversation
+  {
+    const g = sg.newGate();
+    const said = ["The weather in Boston today is sunny with a high of sixty two.", "Your build is green and it's in the merge queue now."];
+    let now = 10_000;
+    for (const t of said) { sg.markSpeaking(g, t, now); now += sg.speechMs(t); sg.markDone(g, now); }
+    const talk = (t, at) => sg.isEcho(g, t, at, { like: sg.TALK_ECHO_LIKE, tail: sg.TALK_TAIL_MS });
+    ok(talk('anything at all', now + 1_000), 'talk echo: a final within the tail after Gizmo stops is his voice');
+    ok(talk("your build is green and it's in the merge q now", now + 3_000) && talk('the weather in boston today is sunny with a high of 62', now + 3_000), 'talk echo: his sentence coming back late (mis-heard) is his voice');
+    ok(!talk("what's in the merge queue", now + 3_000) && !talk('what about the weather in Boston tomorrow', now + 3_000), "talk echo: Brett's follow-up that repeats Gizmo's words is NOT an echo (the old 0.4 bar dropped it)");
+    ok(sg.isEcho(g, "what's in the merge queue", now + 3_000), 'talk echo: (the hands-free bar is unchanged)');
+    ok(!sg.isEcho(g, 'stop', now - 500, { content: true, like: sg.TALK_ECHO_LIKE }) && sg.isEcho(g, 'stop', now - 500), 'talk echo: by the words only, "stop" over Gizmo is not his voice (by the clock it would be)');
+  }
+
+  // the talk-mode judge
+  {
+    const C = await import('./src/plugins/companion/web/core.ts');
+    const base = { text: 'what is on my calendar', listening: true, talking: false, echo: false, ownWords: false, interruptOn: true, stopWord: false };
+    eq(C.judgeHeard(base), 'send', 'judge: Brett talking while Gizmo listens is sent');
+    eq(C.judgeHeard({ ...base, text: '  ' }), 'ignore', 'judge: nothing heard');
+    eq(C.judgeHeard({ ...base, echo: true }), 'ignore', 'judge: an echo is never sent');
+    eq(C.judgeHeard({ ...base, listening: false }), 'ignore', 'judge: thinking / paused / off: nothing is sent');
+    eq(C.judgeHeard({ ...base, talking: true, text: 'stop', stopWord: true, echo: true }), 'interrupt', 'judge: "stop" while Gizmo talks stops him (the clock says echo, the words say Brett)');
+    eq(C.judgeHeard({ ...base, talking: true, text: 'stop', stopWord: true, interruptOn: false }), 'ignore', 'judge: interrupt off = talking over him does nothing');
+    eq(C.judgeHeard({ ...base, talking: true, stopWord: true, ownWords: true }), 'ignore', 'judge: a stop word in his own reply coming back never stops him');
+    eq(C.judgeHeard({ ...base, talking: true }), 'ignore', 'judge: anything else said over him is not sent');
+  }
+
+  // A whole talk-mode turn, replayed: Gizmo's reply comes back through the mic at every moment; Brett then talks.
+  {
+    const C = await import('./src/plugins/companion/web/core.ts');
+    const g = sg.newGate();
+    const reply = ["Wicked pissah, the deploy went through.", "The console is back up and the merge queue is empty."];
+    let now = 50_000, sent = 0, interrupts = 0;
+    const final = (text, talking) => {
+      const v = C.judgeHeard({ text, listening: !talking, talking, echo: sg.isEcho(g, text, now, { like: sg.TALK_ECHO_LIKE, tail: sg.TALK_TAIL_MS }), ownWords: sg.isEcho(g, text, now, { content: true, like: sg.TALK_ECHO_LIKE }), interruptOn: true, stopWord: isInterrupt(text) });
+      if (v === 'send') sent += 1; if (v === 'interrupt') interrupts += 1;
+    };
+    for (const t of reply) {
+      sg.markSpeaking(g, t, now);
+      final(t.toLowerCase(), true); // the open listener hears him while he talks
+      now += sg.speechMs(t);
+      sg.markDone(g, now);
+    }
+    for (const lag of [300, 1_200]) { now += lag; final('the console is back up and the merge queue is empty', false); }
+    now += 2_000; final('the console is back up in the merge queue is empty', false);
+    eq({ sent, interrupts }, { sent: 0, interrupts: 0 }, 'talk replay: Gizmo hearing his own reply (while talking, just after, 3.5 s later mis-heard) sends nothing and never stops him');
+    now += 1_000; final("what's in the merge queue", false);
+    eq(sent, 1, "talk replay: Brett's next message (sharing Gizmo's words) is sent");
+  }
+
+  // wiring: Gizmo's voice is in the speech gate, and holds the mic outside talk mode
+  const talkSrc = src('plugins/companion/web/talk.ts');
+  ok(/markOwnSpeech\(text\);/.test(talkSrc) && /finally \{ markOwnSpeechDone\(\); \}/.test(talkSrc), 'talk: every sentence Gizmo says goes through the speech gate (hands-free + notes know his voice)');
+  ok(/const holdMic = path === null \|\| \(path === 'legacy' && !interruptOn\(rt\)\);/.test(talkSrc), 'talk: outside talk mode his speech holds the mic, so hands-free never hears him as a command');
+  ok(/judgeHeard\(\{/.test(talkSrc) && /echo: talkEcho\(t\), ownWords: soundsLikeOwnVoice\(t\)/.test(talkSrc), 'talk: finals are judged by judgeHeard with the conversation echo bar');
+
+  // Android: a focus loss only lets go for a call or another app recording (talk mode and the one-shot after a wake)
+  const ts = java('TalkService.java');
+  const ws = java('WatchService.java');
+  const fr = java('FocusRules.java');
+  ok(/static String yieldOnLoss\(boolean call, int others, ListenerRules\.Policy p\)/.test(fr) && /if \(call\) return p\.pauseOnCall \? "call" : null;/.test(fr) && /if \(others > 0\) return p\.pauseForOtherApps \? "other-app" : null;/.test(fr), 'android: FocusRules lets go only for a call or another recording');
+  ok(/private void focusCheck\(\)/.test(ts) && /FocusRules\.yieldOnLoss\(MicRules\.callMode\(MicGuard\.mode\(this\)\), MicRules\.others\(MicGuard\.foreign\(this\), ownRecognizer\(\)\)/.test(ts) && !/focusLost = true;\s*if \(ListenerRegistry\.policy\(TalkService\.this/.test(ts), "android: talk mode no longer pauses when Google's recognizer takes focus for its own turn");
+  ok(/if \(focusLost && FocusRules\.yieldOnLoss\(/.test(ts), 'android: a paused talk mode resumes once nothing really wants the mic');
+  ok(/private void oneShotFocusCheck\(\)/.test(ws) && !/focusLost = true;\s*if \(oneShot\) cancelOneShot\(\);\s*if \(handsFreePolicy/.test(ws), 'android: the command after the wake phrase is no longer cancelled by its own recognizer');
+  ok(/focus\.abandon\(\);\s*\/\/[^\n]*\n\s*focusLost = false;/.test(ws), 'android: after a one-shot hands-free is not left yielded for good');
+  ok(/else if \("speaking"\.equals\(phase\)\) SpeechTuning\.quietMode\(this,/.test(ts), "android: the interrupt listener never mutes media while Gizmo's voice plays there");
+  ok(/try \{ ServiceCompat\.startForeground\(this, ID_ONGOING, ongoing\(\), 0\); \} catch/.test(ts), 'android: a refused start still calls startForeground (no crash for a service started in the foreground)');
+  ok(readFileSync(new URL('./android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java', import.meta.url), 'utf8').includes('ourOwnRecognizerTakingFocusIsNotAReasonToStop'), 'android: FocusRulesTest covers our own recognizer, calls and other apps');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
