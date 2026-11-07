@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1302,
- "updatedAt": "2026-11-07T12:58:49.115Z",
+ "rev": 1303,
+ "updatedAt": "2026-11-07T13:02:05.182Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110106,14 +110106,14 @@
    "title": "Amber chat: one UI asset + rename Gizmo -> Amber",
    "category": "AmberX > Companion",
    "detail": "Headless build on the VPS (worktree /root/axf-builds/amber-chat-asset, branch claude/amber-chat-asset, agent Landin' Lenny). Brief: chat-view@1 asset type (schema, both validators, fixture, check) rendered by AmberX's companion Chat.tsx and usable by the console assistant; Gizmo -> Amber rename with alias table, data migration (backup + rollback), CI check; UI Review submission with 3 choices; tests + Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T12:30:40.602Z",
-   "updatedAt": "2026-11-07T12:30:40.602Z",
+   "updatedAt": "2026-11-07T13:02:03.886Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -110146,12 +110146,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:02:03.886Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T12:30:40.603Z",
-     "updatedAt": "2026-11-07T12:30:40.603Z"
+     "updatedAt": "2026-11-07T13:02:04.020Z"
     },
     {
      "id": "s2",
@@ -110246,7 +110246,7 @@
     "all"
    ],
    "order": {
-    "all": 409
+    "all": 408
    },
    "kind": "build",
    "planRef": "",
