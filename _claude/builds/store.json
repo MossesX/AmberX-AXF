@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1249,
- "updatedAt": "2026-11-07T05:46:29.623Z",
+ "rev": 1250,
+ "updatedAt": "2026-11-07T05:46:47.817Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91161,14 +91161,14 @@
    "title": "Skins: one look per app, skin@1 + app-look@1, the Windows skin, Settings > Appearance as the Theme manager",
    "category": "Design",
    "detail": "skin@1 asset type + app-look@1 per-app doc on the hub (shared/settings/looks/<app>.json). A skin never changes other apps. Windows skin renders in console, AmberX web, axHub web, Molly. Earlier runs: claude/skins-r2, claude/skins-r3 (both stopped on usage limits).",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-asset-types",
-   "pr": "",
+   "pr": "#383",
    "createdAt": "2026-11-06T00:15:34.281Z",
-   "updatedAt": "2026-11-07T05:35:01.742Z",
+   "updatedAt": "2026-11-07T05:46:29.207Z",
    "builtAt": "2026-11-07T05:34:58.589Z",
    "notes": [
     {
@@ -91446,7 +91446,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
