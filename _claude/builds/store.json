@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1365,
- "updatedAt": "2026-11-07T15:00:13.030Z",
+ "rev": 1366,
+ "updatedAt": "2026-11-07T15:09:19.144Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111623,7 +111623,7 @@
    "branch": "claude/blueprint-notes-tasks",
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-07T15:00:10.024Z",
+   "updatedAt": "2026-11-07T15:09:17.384Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -111766,12 +111766,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T15:09:17.384Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T14:45:07.895Z",
-     "updatedAt": "2026-11-07T14:45:07.895Z"
+     "updatedAt": "2026-11-07T15:09:17.499Z"
     },
     {
      "id": "s7",
@@ -111804,7 +111804,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
