@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1210,
- "updatedAt": "2026-11-07T01:32:09.205Z",
+ "rev": 1211,
+ "updatedAt": "2026-11-07T01:32:25.244Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -101916,7 +101916,7 @@
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:31:51.030Z",
+   "updatedAt": "2026-11-07T01:31:53.529Z",
    "builtAt": "",
    "notes": [
     {
@@ -102262,12 +102262,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:52.077Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T00:48:24.663Z"
+     "updatedAt": "2026-11-07T01:31:52.237Z"
     },
     {
      "id": "s8-3",
@@ -102284,12 +102284,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T01:31:53.529Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T00:48:24.663Z"
+     "updatedAt": "2026-11-07T01:31:53.643Z"
     }
    ],
    "profiles": [
@@ -102300,7 +102300,7 @@
    },
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 14,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
