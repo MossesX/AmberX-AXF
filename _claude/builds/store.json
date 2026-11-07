@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1229,
- "updatedAt": "2026-11-07T05:03:13.299Z",
+ "rev": 1230,
+ "updatedAt": "2026-11-07T05:04:15.907Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -105682,7 +105682,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:56:03.670Z",
-   "updatedAt": "2026-11-07T05:02:07.390Z",
+   "updatedAt": "2026-11-07T05:03:54.685Z",
    "builtAt": "",
    "notes": [
     {
@@ -105824,10 +105824,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-07T04:56:03.670Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw5xklb206ryul": "2026-11-07T04:56:03.675Z",
+     "st-mw5xklb20740l4": "2026-11-07T04:56:03.675Z",
+     "st-mw5xklb2080l8g": "2026-11-07T04:56:03.675Z",
+     "st-mw5xklb209xz1d": "2026-11-07T04:56:03.675Z",
+     "st-mw5xklb20aokh7": "2026-11-07T04:56:03.675Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-07T04:56:03.675Z",
    "rearranged": false,
