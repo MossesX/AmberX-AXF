@@ -12,6 +12,7 @@
   ],
   "provides": [
     "banner:push-banner",
+    "service:axf.merge-queue@1",
     "settings-tab:push-banner"
   ],
   "optional": [

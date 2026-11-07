@@ -264,7 +264,7 @@ eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": 
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
 ok(r["ok"] and r["queued"] and r["delivery"]["how"] == "queued", f"still nobody after the wait: answered queued ({r})")
-ok("queued, waiting for the console" in r["message"], "the answer says it is waiting")
+ok("queued, not open yet" in r["message"], "the answer says it is waiting, not opened")
 time.sleep(0.4)
 eq(len(WOKEN), 1, "wake off: AmberX not asked")
 ok("off" in r["delivery"]["wake"]["message"] and "off" in r["message"], f"the answer says waking is off ({r['delivery']})")
@@ -321,6 +321,40 @@ ok(molly and molly[-1]["target"] == "plan-studio", "Molly's console ran it")
 eq(client.get("/api/console/clients").json()["items"][0]["id"], "molly-0001", "the console in front is listed first")
 client.post("/api/console/hello", json={"client": "molly-0001", "host": "Bad Host!", "catalog": CATALOG})
 eq(next(c for c in client.get("/api/console/clients").json()["items"] if c["id"] == "molly-0001").get("host", ""), "", "a malformed host name is dropped")
+
+# ======================================================================== the wake never takes the phone's word for it
+import types  # noqa: E402
+sys.modules.setdefault("axf_server", types.SimpleNamespace(http=None, hub_session=None))
+wk_spec = importlib.util.spec_from_file_location("console_commands_wake", HERE / "wake.py")
+wk = importlib.util.module_from_spec(wk_spec)
+wk_spec.loader.exec_module(wk)  # type: ignore[union-attr]
+said = lambda doc, **kw: wk.outcome({"content": [{"type": "text", "text": json.dumps(doc)}], **kw})  # noqa: E731
+o = said({"url": "u", "opened": False, "notified": True, "overlay": True})
+ok(o["ok"] and not o["opened"] and o["notified"] and "tap" in o["message"].lower(), f"Android held it back: says tap the notification ({o})")
+o = said({"opened": False, "notified": True, "overlay": False})
+ok("Display over other apps" in o["message"], f"names the missing permission ({o})")
+o = said({"data": {"opened": True, "notified": True}})
+ok(o["opened"] and "started" in o["message"], f"a nested answer is read; it says started, never opened on screen ({o})")
+o = said({"opened": False, "notified": False})
+ok(not o["opened"] and not o["notified"] and "off" in o["message"], f"no notification either ({o})")
+o = said({"held": True, "job_id": "j"})
+ok(not o["ok"], "a held call is not a wake")
+o = said({"error": {"message": "device offline"}}, isError=True)
+ok(not o["ok"] and "device offline" in o["message"], "a phone error is passed on")
+
+# a wake that reached nobody leaves a tappable console alert (AmberX's watch reads it), cleared on delivery
+alerts: list[dict] = []
+resolved: list[list[str]] = []
+fake_cx = types.ModuleType("console_context")
+fake_cx.raise_alert = lambda a: alerts.append(a) or {}
+fake_cx.resolve_alerts = lambda k: resolved.append(k)
+sys.modules["console_context"] = fake_cx
+cc._fallback_alert("cq-1", "couldn't reach axHub")
+ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1"), "the fallback alert is loud and opens the waiting command")
+cc._fallback_clear()
+eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
+eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
+eq(cc._how({"picked": True, "wake": None}), "woke via AmberX", "the console that opened from the link is")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

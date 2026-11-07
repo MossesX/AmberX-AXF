@@ -53,6 +53,11 @@
 
         <!-- Reads the approvals feed when the phone sleeps or the service was killed, and brings the service back -->
         <receiver android:name=".WatchAlarm" android:exported="false" />
+        <!-- Gizmo talk mode with the screen off (Nov 6 2026): one Google utterance at a time, Stop on the notification -->
+        <service
+            android:name=".TalkService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
 
         <!-- Audio Extract's screen recorder: screen + app playback sound, never the microphone -->
         <service

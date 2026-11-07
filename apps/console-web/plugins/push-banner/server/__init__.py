@@ -203,6 +203,7 @@ class Pushes:
         # runs never change, so they are kept per commit.
         self._mem_lock = threading.Lock()
         self._mem: dict[str, Any] = {"checks": {}, "branch": {}, "full": {}, "base": {}}
+        self._stacked: dict[str, list[dict[str, Any]]] = {}
 
     # ---- config
     def config(self) -> dict[str, Any]:
@@ -434,11 +435,16 @@ class Pushes:
             out["error"] = _text(str(e))
             return out
         prs: dict[str, dict[str, Any]] = {}
+        stacked: list[dict[str, Any]] = []
         for p in pulls:
             head = p.get("head") if isinstance(p, dict) else None
             same = isinstance(head, dict) and ((head.get("repo") or {}).get("full_name") or "").lower() == repo.lower()
+            on = (p.get("base") or {}).get("ref") if isinstance(p, dict) else None
+            if same and on and on != base:  # a PR stacked on another branch: the priority tag lists it as waiting on that build
+                stacked.append({"number": p.get("number"), "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "base": _text(on), "branch": _text(head.get("ref"))})
             if same and valid_branch(head.get("ref")) and ((p.get("base") or {}).get("ref") == base):
                 prs[head["ref"]] = p
+        self._stacked[repo] = stacked
         todo = [n for n in names if valid_branch(n) and n != base and n not in ALWAYS_HIDDEN]
         sha_of = {b.get("name"): _text((b.get("commit") or {}).get("sha") if isinstance(b.get("commit"), dict) else "", 40) for b in listed}
         base_sha = sha_of.get(base, "")
@@ -1171,6 +1177,17 @@ class Pushes:
 
 
 PUSHES = Pushes()
+
+
+class MergeQueueService:
+    """axf.merge-queue@1: what other plugins may read of the merge queue. Never calls GitHub (last refresh only)."""
+    version = 1
+
+    def queue(self) -> dict[str, Any]:
+        return PUSHES.queue()
+
+    def stacked(self) -> list[dict[str, Any]]:
+        return [p for rows in PUSHES._stacked.values() for p in rows]
 CLAUDE = claudefix.Launches(lambda: PUSHES.config())
 
 
@@ -1214,6 +1231,7 @@ class ProtectionChecks:
         raise HTTPException(409, f"{repo}: still can't protect it: {_text(st.get('error'), 200) or 'GITHUB_TOKEN isn’t set'}")
 
 
+claudefix.plugin_services.provide("axf.merge-queue@1", MergeQueueService(), Path(__file__).resolve().parents[1].name)
 claudefix.plugin_services.provide("axf.syscheck.items@1:push-protection", ProtectionChecks(), "push-banner")
 
 AUTO_MERGE_EVERY_S = max(60, int(os.environ.get("AXF_PUSH_AUTOMERGE_S", "180") or 180))

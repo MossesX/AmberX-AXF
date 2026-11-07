@@ -72,7 +72,7 @@ export function mergeBuild(a, b) {
   out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
-  for (const k of ['branch', 'pr', 'mergedAt', 'category']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
+  for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
   const key = (n) => `${n.at}|${n.text}`;
@@ -127,6 +127,20 @@ export function mergeOrchestratorDocs(a, b) {
     else { const m = mergeBuild({ notes: [], ...out.builds[i] }, { notes: [], ...x }); out.builds[i] = m; }
   }
   return out;
+}
+
+/**
+ * Journal files are <YYYY-MM>.jsonl, then <YYYY-MM>-p2.jsonl, -p3… : GitHub refuses a file over 100 MiB, and one refused
+ * push stops every status commit, so a month rolls into a new part well before that. A full part is never rewritten.
+ */
+export const JOURNAL_PART_BYTES = 80 * 1024 * 1024;
+const partKey = (month, n) => (n === 1 ? month : `${month}-p${n}`);
+/** Which journal file takes `add` more bytes this month. `sizes` = { fileKey: bytes } of every journal file there. */
+export function journalPart(month, sizes, add = 0, max = JOURNAL_PART_BYTES) {
+  const parts = Object.keys(sizes).map((k) => (k === month ? 1 : k.startsWith(`${month}-p`) ? Number(k.slice(month.length + 2)) : 0)).filter((n) => Number.isInteger(n) && n > 0);
+  const last = parts.length ? Math.max(...parts) : 1;
+  const size = sizes[partKey(month, last)] ?? 0;
+  return partKey(month, size > 0 && size + add > max ? last + 1 : last);
 }
 
 /** Journal files (JSON lines, append-only): the first text as it is, then every line of the others it lacks, in order. */

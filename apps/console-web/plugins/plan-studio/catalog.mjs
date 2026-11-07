@@ -12,6 +12,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolveProfile } from '../../../../framework/plan/builds-store-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -127,7 +128,7 @@ export async function discover({ root = ROOT, seen = [], matrices = [], plans = 
   // feature matrices of builds linked to plans: the kept items are the plan's planned features on the entries it touches
   for (const p of plans) {
     if (!p.build) continue;
-    const mx = matrices.find((m) => m.ref?.kind === 'orchestrator' && m.ref.id === p.build.id && (!p.build.profile || m.profile === p.build.profile));
+    const mx = matrices.find((m) => m.ref?.kind === 'orchestrator' && m.ref.id === p.build.id && (!p.build.profile || m.profile === resolveProfile(p.build.profile)));
     if (!mx) continue;
     for (const t of p.touches) {
       const e = entries.get(t.key); if (!e) continue;
@@ -141,7 +142,7 @@ export async function discover({ root = ROOT, seen = [], matrices = [], plans = 
 /** Every profile's feature matrices (the feature-matrix plugin's files; read only). */
 export function readMatrices(root = ROOT) {
   const out = [];
-  const add = (f, profile) => { const j = readJson(f); for (const m of j?.matrices ?? []) out.push({ ...m, profile: m.profile ?? profile }); };
+  const add = (f, profile) => { const j = readJson(f); for (const m of j?.matrices ?? []) out.push({ ...m, profile: resolveProfile(m.profile ?? profile) }); };
   add(join(root, '_claude/builds/matrices.json'), 'main-framework');
   const pd = join(root, '_claude/builds/profiles');
   for (const d of existsSync(pd) ? readdirSync(pd) : []) add(join(pd, d, 'matrices.json'), d);

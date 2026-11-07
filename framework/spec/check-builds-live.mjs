@@ -201,6 +201,37 @@ async function main() {
   t = appendThreads(t, ['- one']); t = appendThreads(`${t}\n## After\nkeep\n`, ['- two', '- one']);
   check(/## Live build log[\s\S]*- one\n- two\n\n## After\nkeep/.test(t) && t.indexOf('row') < t.indexOf('## Live build log'), `threads section: ${JSON.stringify(t.slice(-80))}`);
 
+  // 11. a month rolls into a new part before GitHub's file limit; a full part is never rewritten
+  check(merge.journalPart('2026-11', {}, 10, 100) === '2026-11', 'first journal file of a month');
+  check(merge.journalPart('2026-11', { '2026-11': 95 }, 10, 100) === '2026-11-p2', 'over the cap: next part');
+  check(merge.journalPart('2026-11', { '2026-11': 95, '2026-11-p2': 5 }, 10, 100) === '2026-11-p2', 'the last part keeps filling');
+  check(merge.journalPart('2026-11', { '2026-11': 95, '2026-11-p2': 95, '2026-10': 500 }, 10, 100) === '2026-11-p3', 'parts count up, other months ignored');
+  fetchA();
+  const J = '_claude/builds/journal';
+  const fullBefore = git(A, 'ls-tree', '-r', '--name-only', 'origin/main', J).split('\n').filter(Boolean);
+  const small = { AXF_BUILDS_JOURNAL_BYTES: '1' };
+  r = run(A, ORCH, ['act', 'step', 'y', 's4', 'done'], small); check(r.status === 0, `tick with a tiny cap: ${r.stderr}`);
+  fetchA();
+  const after = git(A, 'ls-tree', '-r', '--name-only', 'origin/main', J).split('\n').filter(Boolean);
+  const part = after.find((f) => !fullBefore.includes(f));
+  check(!!part && /-p\d+\.jsonl$/.test(part), `the new line went to a new part (${part})`);
+  check(git(A, 'show', '--name-only', '--format=', 'origin/main').split('\n').filter((f) => f.startsWith(J)).length === 1, 'the commit touches only that part, full parts stay as they are');
+  const hist = JSON.parse(run(A, join(ROOT, 'framework/cli/builds-store.mjs'), ['history', 'y', '--json']).stdout || '{}').history ?? [];
+  check(hist.filter((h) => h.action === 'orchestrator:step').length >= 1, 'history still reads every part');
+
+  // 12. one bad record stays out; the rest of the batch still reaches main
+  const outbox = join(A, `${STORE_REL}.live-outbox.jsonl`);
+  const cur = mainStore().builds.find((b) => b.id === 'x');
+  const stamp = new Date(Date.now() + 60000).toISOString();
+  const poisoned = { ...cur, updatedAt: stamp, steps: [{ ...cur.steps[0] }, ...cur.steps] };
+  writeFileSync(outbox, `${JSON.stringify({ rev: 900, at: stamp, by: 'check', action: 'poison', note: '', builds: [{ id: 'x', op: 'change', rev: 99, before: null, after: poisoned }] })}\n`);
+  r = run(A, ORCH, ['act', 'step', 'y', 's3', 'done']); check(r.status === 0, `tick next to a poisoned line: ${r.stderr}`);
+  r = run(A, LIVE, ['flush']); check(r.status === 0, `flush with a bad record: ${r.stdout}${r.stderr}`);
+  fetchA();
+  check(stepsDone(mainStore(), 'y').includes('s3'), 'the good build reached main');
+  check(mainStore().builds.find((b) => b.id === 'x').steps.length === cur.steps.length, 'the bad record did not');
+  check(JSON.parse(run(A, LIVE, ['status', '--json']).stdout).skipped?.join() === 'x', 'status names what was left out');
+
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
   rmSync(T, { recursive: true, force: true });
   process.exitCode = fail ? 1 : 0;

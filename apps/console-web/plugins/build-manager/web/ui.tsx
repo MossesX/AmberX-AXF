@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WatchLiveFor } from '@console/watchLive';
-import { BuildOrigin, Button, Icon, IconButton, RefText, Slot, Switch, TabGroup, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BuildOrigin, Button, Icon, IconButton, PriorityTag, RefText, Slot, Switch, TabGroup, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
@@ -647,6 +647,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
         </span>
         {originSubtitle(row.brett) && <span className="axf-origin-sub" title={originSubtitle(row.brett, 600)}>“{originSubtitle(row.brett)}”</span>}
         <span className="axp-build-manager__chips">
+          <PriorityTag build={row.id} />
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
           {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically by ${addedByLabel(row.addedBy)}`}>auto</Badge>}
           <ModelChip model={row.model} />

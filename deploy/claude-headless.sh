@@ -39,7 +39,7 @@
 # reads and deletes at once, never on a command line (tmux -e would show them in `ps`).
 # Agent cap (agent-slots@1, Brett, Nov 1 2026): before starting, the run asks framework/cli/agent-slots.mjs for a slot
 # (max running agents, memory guard; settings hot-reloaded from the console). No slot = it joins the queue (FIFO within
-# --priority boss|urgent|normal|low, or the priority rules), prints "queued at position N (<id>) …" and a background
+# --priority boss|urgent|high|normal|low, the build's own priority tag, or the priority rules), prints "queued at position N (<id>) …" and a background
 # waiter starts it by itself when a slot frees (cancelled from the console = it never starts). Inside tmux the run binds
 # its slot, marks it finished when Claude exits (finished sessions don't count) and closes after closeFinishedAfterSec
 # (the log stays). Heavy steps go through `agent-slots.mjs heavy -- <cmd>` (the brief says so). AXF_SLOTS=off skips it.
@@ -50,11 +50,19 @@
 # finds it), the log's first line is `# agent <id> · <name>`, and the run's usage, cost and report are booked on the
 # agent's card when the sweep closes it. A run the job router launched itself (AXF_AGENT_BOOKED) is not booked twice.
 # Without the agent swarm plugin the run starts unbooked with a warning. AXF_AGENT_BOOK=off skips it (tests).
+# Own login (build-own-login, Nov 5 2026, Brett: "Yeah, it should be like that already."): the inner run snapshots a
+# Claude login into a private per-build config dir (deploy/claude-login.mjs: <folder>/.axf-claude/<session>, 0700,
+# git-ignored) and runs claude with CLAUDE_CONFIG_DIR pointed at it, an inherited CLAUDE_CODE_OAUTH_TOKEN dropped unless
+# the account has a saved token. Logging the VPS out, switching or adding accounts never touches a running build; a
+# token refresh lands in the build's copy, a watcher saves it back to the login's stores at once
+# (deploy/claude-token-save.mjs), and the copy is deleted when the session ends. Account: --account <name>
+# (or AXF_CLAUDE_ACCOUNT; default the active saved account). It is recorded in the log's `# login …` line, the tmux tag
+# @axf_login, a session-login event and a note on the orchestrator build. AXF_OWN_LOGIN=off runs on the shared login.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
-name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line=""
+name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line="" account="${AXF_CLAUDE_ACCOUNT:-}" login_line=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name) name="$2"; shift 2 ;;
@@ -66,12 +74,14 @@ while [[ $# -gt 0 ]]; do
     --queued) queued="$2"; shift 2 ;;
     --priority) priority="$2"; shift 2 ;;
     --agent) agent="$2"; shift 2 ;;
+    --account) account="$2"; shift 2 ;;
     --) shift; break ;;
     *) echo "claude-headless: unknown option $1" >&2; exit 2 ;;
   esac
 done
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
 [[ "$log" =~ ^[A-Za-z0-9._-]{1,80}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
+[[ -z "$account" || "$account" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] || { echo "claude-headless: --account is a saved account name (or active / live)" >&2; exit 2; }
 raw="${log%.log}.jsonl"
 HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
 model="${AXF_MODEL:-}"
@@ -81,9 +91,10 @@ hdir_ready() { mkdir -p "$HDIR" 2>/dev/null && { [[ -O "$HDIR" ]] && chmod 1777 
 event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (end only); one JSON line, never fails the run
   hdir_ready || return 0
   command -v node >/dev/null || return 0
-  EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" node -e '
+  EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
     const e = process.env; const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
-      surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}) };
+      surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}),
+      ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}) };
     require("fs").appendFileSync(require("path").join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
 }
 export HDIR
@@ -98,6 +109,39 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
   command -v node >/dev/null && [[ -f "$WATCH_LIVE" ]] || return 0
   node "$WATCH_LIVE" watch --session "$1" --worktree "$(pwd)" --parent "$$" > .axf-watch-live.log 2>&1 &
   echo $!
+}
+
+LOGIN_JS="$HERE/claude-login.mjs"
+TOKEN_JS="$HERE/claude-token-save.mjs"
+ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
+login_session="" login_dir="" login_account="" login_email="" login_source="" login_token=""
+own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
+  [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
+  command -v node >/dev/null && [[ -f "$LOGIN_JS" ]] || { printf 'claude-login: not available; this run uses the shared login\n' >&2; return 0; }
+  local out sh
+  out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" --sh 2>&1)"
+  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]\$" <<<"$out" | tail -1)"
+  if [[ -z "$sh" ]]; then printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; return 0; fi
+  eval "$sh"
+  [[ -d "$login_dir" && -O "$login_dir" ]] || return 0
+  export CLAUDE_CONFIG_DIR="$login_dir"
+  # shellcheck disable=SC1091
+  source "$login_dir/token.env"   # the account's saved token, else `unset CLAUDE_CODE_OAUTH_TOKEN`: the copy wins
+  # a rotated token goes back to the saved login straight away; the watcher ends with the copy or this run
+  [[ -f "$TOKEN_JS" ]] && { nohup node "$TOKEN_JS" watch --copy "$login_dir" ${inner:+--parent "$$"} >/dev/null 2>&1 & disown; }
+  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})"
+  tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
+  event session-login "$login_session"
+  local bid=""   # the orchestrator build this run belongs to: a note says which account it runs on
+  read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && \
+    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, own login copy)" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
+  return 0
+}
+release_login() {
+  [[ -n "$login_dir" && -f "$LOGIN_JS" ]] && node "$LOGIN_JS" release --dir "$(pwd)" --session "$login_session" >/dev/null 2>&1
+  [[ -n "$login_dir" && "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" ]] && unset CLAUDE_CONFIG_DIR
+  login_dir="" login_line=""; return 0
 }
 
 GATE="$HERE/../framework/cli/model-gate.mjs"
@@ -137,7 +181,7 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
   if (( look_st == 5 )); then echo "claude-headless: $look_line" >&2; echo "$look_line"; exit 3; fi
   if (( look_st == 4 )); then
     ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait --name "$2" --brief "$3" && exec bash "${@:4}"' _ "$LOOK" "$name" "$brief" \
-      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
+      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
     echo "queued for look approval in $(pwd): $look_line (starts by itself once Brett approves the look in UI Review)"
     exit 0
   fi
@@ -164,6 +208,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # install without PostToolUse left every push/pull/merge/delete/build line open as a ghost). Never blocks the run.
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
   command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
+  login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  own_login "${account:-active}"
+  [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
   prompt="$(cat "$brief")"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
@@ -183,9 +230,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
+      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
-      claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; cat; } | tee "$log"
+      claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
     fi
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
@@ -195,9 +242,11 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
     sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
     printf '%s · starting again\n\n' "$sw"
+    [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
     switches=$((switches + 1))
   done
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
+  release_login   # the build's own login copy goes with the session
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
   event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
@@ -245,9 +294,13 @@ if [[ -n "$queued" ]]; then   # the background waiter: hold until the queue hand
 elif slots_on; then
   node "$SLOTS" sweep >/dev/null 2>&1 || true   # close finished sessions first: they don't hold a slot
   slot_id="" slot_started=1 slot_pos=0 slot_reason=none
-  eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
+  # the build's priority tag (framework/cli/build-priority.mjs) sets its place in line; an explicit --priority beats it
+  slot_build=""
+  read -r tag_level slot_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$slug" --brief "$brief" 2>/dev/null) || true
+  [[ -z "$priority" && -n "${tag_level:-}" ]] && priority="$tag_level"
+  eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} ${slot_build:+--build "$slot_build"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
   if [[ -n "$slot_id" && "$slot_started" == 0 ]]; then
-    ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
+    ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"
     echo "queued at position $slot_pos ($slot_id$why) in $(pwd): starts by itself when a slot frees"
     exit 0
@@ -255,14 +308,16 @@ elif slots_on; then
   slot="$slot_id"
 fi
 if ! command -v tmux >/dev/null; then
-  nohup claude -p "$@" "$(cat "$brief")" > "$log" 2>&1 &
+  login_session="$session"; own_login "${account:-active}"
+  # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
+  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$(cat "$brief")" &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
@@ -275,7 +330,7 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
-  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
+  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 # Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
 for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do

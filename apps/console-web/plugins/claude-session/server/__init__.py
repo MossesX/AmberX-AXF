@@ -31,7 +31,7 @@ from fastapi import APIRouter, HTTPException, Request
 import console_context as cx
 import plugin_services
 
-from . import hub
+from . import hub, recording
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -170,7 +170,7 @@ def _public(s: dict[str, Any], d: dict[str, Any], roster: list[dict[str, Any]]) 
     """A session as the session itself may see it (never the ticket)."""
     return {"session": s["id"], "client": s["client"], "summary": s.get("summary", ""), "status": s["status"], "source": s.get("source", ""),
             "startedAt": s["startedAt"], "answeredAt": s.get("answeredAt", ""), "answeredBy": s.get("answeredBy", ""),
-            "asking": s["status"] == "asking", "agent": agent_card(s["agent"], d, roster)}
+            "asking": s["status"] == "asking", "agent": agent_card(s["agent"], d, roster), **({"recording": s["recording"]} if s.get("recording") else {})}
 
 
 def _session(d: dict[str, Any], sid: str) -> dict[str, Any]:
@@ -335,6 +335,21 @@ def picker() -> dict[str, Any]:
             "sessions": [_public(s, d, roster) for s in reversed(d["sessions"][-30:])]}
 
 
+def ask_recorder(s: dict[str, Any]) -> None:
+    """AmberX's recorder is asked for this session, off the request: the session never waits on the phone."""
+    if not recording.wanted(s["client"]) or (not os.environ.get("AXHUB_TOKEN") and hub.transport is hub._http):
+        return
+
+    def go() -> None:
+        rec = recording.start(s)
+        with store() as d:
+            x = next((y for y in d["sessions"] if y["id"] == s["id"]), None)
+            if x is not None:
+                x["recording"] = rec
+
+    recording.in_background(go)
+
+
 @router.post("/session-start")
 async def session_start(request: Request) -> dict[str, Any]:
     """Every Claude session calls this first: {client: voice|chat|code|headless, summary, agent? (a headless brief's named agent), session? (its own id)}.
@@ -364,7 +379,9 @@ async def session_start(request: Request) -> dict[str, Any]:
         name = agent_card(agent, d, roster)["name"]
         if s["status"] == "asking":
             raise_ask(s, name)
-        return _public(s, d, roster)
+        answer_now = _public(s, d, roster)
+    ask_recorder(s)
+    return answer_now
 
 
 @router.get("/agent")
@@ -437,6 +454,8 @@ async def book(request: Request) -> dict[str, Any]:
             s["lastSeen"] = now_iso()
             if body.get("final") is True:
                 s["status"] = "ended" if s["status"] != "asking" else s["status"]
+                ending, everyone = dict(s), [dict(x) for x in d["sessions"]]
+                recording.in_background(lambda: recording.stop(ending, everyone))
     commits = [c for c in (body.get("commits") or []) if isinstance(c, str) and SHA.match(c)][:40]
     entry = {"session": sid, "agent": agent, "summary": str(body.get("summary") or (s or {}).get("summary") or "")[:300], "commits": commits,
              "final": body.get("final") is True, "status": "failed" if body.get("status") == "failed" else "done"}

@@ -27,6 +27,22 @@ PROFILED = (
 # The framework feature tracker is shared by every profile; profiles reference it and never hold a copy.
 TRACKER_REL = "tracker.json"
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+# One work profile (Brett, Nov 7 2026): these were merged into `all`; a retired id anywhere means `all`. Mirrors
+# MERGED_PROFILE / RETIRED_PROFILES in framework/plan/builds-store-core.mjs and readProfiles() in persist.mjs.
+MERGED_PROFILE = "all"
+RETIRED_PROFILES = ("current", "urgent", "angel", "big-dog", "breakroom", "refactor")
+MERGED_PROFILE_ENTRY = {
+    "id": MERGED_PROFILE,
+    "name": "All builds",
+    "description": "Every build in one profile (Brett, Nov 7 2026): Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.",
+    "createdAt": "2026-11-07T00:00:00.000Z",
+    "catalog": False,
+}
+
+
+def resolve_profile(pid: str | None) -> str | None:
+    """A profile id after the merge: a retired id is `all`, anything else stays."""
+    return MERGED_PROFILE if pid in RETIRED_PROFILES else pid
 
 
 class BuildProfiles:
@@ -45,19 +61,22 @@ class BuildProfiles:
             reg = json.loads(self._base(PROFILES_REL).read_text("utf-8"))
         except (OSError, ValueError):
             reg = {}
-        items = [p for p in (reg.get("profiles") if isinstance(reg, dict) else None) or [] if isinstance(p, dict) and PROFILE_ID.match(str(p.get("id", "")))]
+        listed = [p for p in (reg.get("profiles") if isinstance(reg, dict) else None) or [] if isinstance(p, dict) and PROFILE_ID.match(str(p.get("id", "")))]
+        items = [p for p in listed if p["id"] not in RETIRED_PROFILES]
+        if len(items) != len(listed) and not any(p["id"] == MERGED_PROFILE for p in items):
+            items.append({**MERGED_PROFILE_ENTRY, "updatedAt": MERGED_PROFILE_ENTRY["createdAt"]})
         if not any(p["id"] == BASE_PROFILE for p in items):
             items.insert(0, {"id": BASE_PROFILE, "name": "Main framework"})
         for p in items:
             p["base"] = p["id"] == BASE_PROFILE
-        active = reg.get("active") if isinstance(reg, dict) else None
+        active = resolve_profile(reg.get("active") if isinstance(reg, dict) else None)
         if not any(p["id"] == active for p in items):
             active = BASE_PROFILE
         return {"$axf": "build-profiles@1", "active": active, "profiles": items}
 
     def active(self) -> dict[str, Any]:
         reg = self.registry()
-        env = os.environ.get("AXF_BUILD_PROFILE")
+        env = resolve_profile(os.environ.get("AXF_BUILD_PROFILE"))
         pid = env if env and any(p["id"] == env for p in reg["profiles"]) else reg["active"]
         return next(p for p in reg["profiles"] if p["id"] == pid)
 

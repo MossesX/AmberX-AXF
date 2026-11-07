@@ -69,7 +69,7 @@ function paint(rt: AxfRuntime) {
     data: { counter: COUNTER, onLabel: text, offLabel: text, onTone: p && !p.base ? 'accent' : 'muted', offTone: 'muted', dot: true, link: 'build-profiles.open' },
   }, 'app', ID);
   rt.setBadge(COUNTER, p ? 1 : 0);
-  if (rt.settings.get(SHOW_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 20, origin: ID });
+  if (rt.settings.get(SHOW_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 20, origin: ID, widget: { label: 'Build profile', size: 'compact', priority: 6, aliases: ['profile'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 

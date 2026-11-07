@@ -1,0 +1,77 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-accounts-help",
+  "name": "claude-accounts help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:claude-accounts.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-accounts",
+    "entries": [
+      {
+        "target": "action:claude-accounts.open",
+        "title": "Claude accounts settings",
+        "text": "Opens Settings → Plugins → Claude accounts.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts.switch",
+        "title": "Switch Claude account",
+        "text": "Opens the list of saved Claude accounts with a Switch button on each.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "view:claude-accounts",
+        "title": "Claude accounts",
+        "text": "Which Claude login the VPS uses. New launches use the active account; running builds keep theirs.",
+        "kind": "screen"
+      },
+      {
+        "target": "switch",
+        "title": "Switch",
+        "text": "Asks to switch Claude on the VPS to this account. It waits for your approval, then new launches use it.",
+        "kind": "button"
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Asks to save the login Claude is signed in with on the VPS under this name. It waits for your approval.",
+        "kind": "button"
+      },
+      {
+        "target": "save-current-login-as",
+        "title": "Save current login as…",
+        "text": "The name for the login. Lower-case letters, digits and dashes, up to 32.",
+        "kind": "field"
+      },
+      {
+        "target": "new-claude-code-terminal",
+        "title": "New Claude Code terminal",
+        "text": "Opens a new Claude Code tab. Pick the VPS host, then run /login to add an account.",
+        "kind": "button"
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the accounts from the VPS again.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-accounts",
+        "title": "Claude accounts",
+        "text": "Settings for which Claude login the VPS uses: list, switch, save the current login.",
+        "kind": "tab"
+      },
+      {
+        "target": "view:claude-accounts.switch",
+        "title": "Switch Claude account",
+        "text": "The saved Claude accounts with a Switch button on each. A switch waits for your approval.",
+        "kind": "screen"
+      }
+    ]
+  }
+}

@@ -4,7 +4,7 @@
  *
  * GitHub's own merge queue only works on organisation-owned repos (MossesX/AmberX-AXF belongs to a personal account),
  * so the queue is ours and works the same way:
- *   ready PRs line up (Brett's order first, then auto-land's dependency order, then oldest). The first `depth` of them
+ *   ready PRs line up (Brett's order first, then the build's priority tag, then auto-land's dependency order, then oldest). The first `depth` of them
  *   form a stack: queue/pr-<a> = main + a, queue/pr-<b> = queue/pr-<a> + b, …; CI runs once on each queue branch, on
  *   exactly the code main will have once everything ahead of it has merged. When the head's run is green it merges
  *   with no retest, and the next one's run already covered it. A red run is blamed only when everything ahead of it
@@ -67,10 +67,25 @@ export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
  * Queue order: Brett's own order (`ctl.order`, front first; Jump to front puts a PR at its start), then auto-land's
  * landing order (`rank`: PR number → index), then oldest first.
  */
-export function queueOrder(prs, ctl = {}, rank = {}) {
+/**
+ * The priority a build's PR lands with: its stored tag, else Urgent when marked urgent, else Normal. This folder runs on
+ * the host with node built-ins only, so it can't import framework/core/build-priority.mjs; the test holds the two together.
+ */
+export function buildPriority(b) {
+  if (/^P[0-3]$/.test(str(b?.priority))) return b.priority;
+  const marked = /(^|[^a-z])(urgent|hotfix)([^a-z]|$)/i.test(`${str(b?.id)} ${str(b?.title)}`)
+    || /\b(URGENT|HOTFIX)\b/.test(`${str(b?.detail, 8000)}\n${str(b?.origin?.brief, 20000)}`) || /^\s*(urgent|hotfix)\b/im.test(`${str(b?.detail, 8000)}\n${str(b?.origin?.brief, 20000)}`);
+  return marked ? 'P0' : 'P2';
+}
+const priorityRank = (p) => (/^P[0-3]$/.test(str(p)) ? Number(p[1]) : 2);
+
+export function queueOrder(prs, ctl = {}, rank = {}, stack = []) {
   const manual = (Array.isArray(ctl.order) ? ctl.order : []).filter(num);
   const pos = new Map(manual.map((n, i) => [n, i]));
-  const key = (p) => [pos.has(p.number) ? pos.get(p.number) : 1e6, rank[p.number] ?? 1e6, str(p.createdAt) || '9', p.number];
+  // Brett's manual order first; then what is already in the stack, so a new priority never throws away a run in progress
+  // (that CI is paid for); then the build's priority tag (higher lands first); then the old order
+  const inStack = new Map(stack.map((e, i) => [e.pr, i]));
+  const key = (p) => [pos.has(p.number) ? pos.get(p.number) : 1e6, inStack.has(p.number) ? inStack.get(p.number) : 1e6, priorityRank(p.priority), rank[p.number] ?? 1e6, str(p.createdAt) || '9', p.number];
   return [...prs].sort((a, b) => {
     const x = key(a); const y = key(b);
     for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] < y[i] ? -1 : 1;

@@ -155,7 +155,7 @@ for col, t in {"runs": "How many jobs it ran.", "tokens": "Tokens used.", "dolla
 e("action:ai-keys.open", "AI keys", "Your Anthropic keys: API keys and Claude subscription tokens. Every key is tested before it's saved and only the last 4 characters ever come back to the browser.")
 e("ai-keys", "AI keys", "Its settings.", kind="tab")
 e("open-ai-keys", "Open AI keys", "Opens the AI keys dialog.")
-e("api-key", "API key", "Paste an Anthropic API key (sk-ant-api…). It's tested before it's saved.", kind="field")
+e("api-key", "API key", "Paste an Anthropic API key (sk-ant-api03…, sk-ant-usr… or a newer sk-ant- format). It's checked live before it's saved: OK, invalid, or no credit.", kind="field")
 e("access-token", "Access token", "The token this connection uses. It's stored on the server, never shown again.", kind="field")
 e("refresh-token", "Refresh token", "Lets the connection get a new access token when the old one runs out.", kind="field")
 e("claude-code-credentials", "Claude Code credentials", "The login headless Claude Code uses on the VPS.")

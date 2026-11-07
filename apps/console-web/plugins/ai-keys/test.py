@@ -10,6 +10,7 @@ import json
 import os
 import sys
 import tempfile
+import threading
 import types
 from pathlib import Path
 
@@ -275,10 +276,197 @@ R5 = "sk-ant-ort01-r" + "y" * 39
 v = c.post("/p/validate", json={"step": "credentials", "credentials": json.dumps({"claudeAiOauth": {"accessToken": "sk-ant-oat01-" + "z" * 40, "refreshToken": R5, "expiresAt": mod._now() - 1}})}).json()
 check(v["ok"] and v["expired"] and R5 not in SPENT, "wizard: an expired credentials file passes the paste step without spending its refresh token")
 check(not c.post("/p/validate", json={"step": "credentials", "credentials": "{nope"}).json()["ok"], "wizard: a paste that isn't the credentials file")
+# New Anthropic key formats (Nov 5 2026): sk-ant-usr… and any later sk-ant- API format are API keys, verified live.
+USR, NEWER, BROKE = "sk-ant-usr01-" + "g" * 40, "sk-ant-qqq07-" + "h" * 40, "sk-ant-usr01-" + "i" * 40
+GOOD.update({USR, NEWER})
+_fake = mod.TESTER
+mod.TESTER = lambda kind, key: ({"ok": False, "status": "no-credit", "error": "the key works but the account has no credit"} if key == BROKE else _fake(kind, key))
+r = c.post("/p/keys", json={"key": USR, "label": "New format"})
+check(r.status_code == 200 and r.json()["key"]["kind"] == "anthropic" and USR not in r.text, "sk-ant-usr… key accepted as an API key (no more 'unknown key type'), not echoed")
+r = c.post("/p/keys", json={"key": NEWER})
+check(r.status_code == 200 and r.json()["key"]["kind"] == "anthropic", "an unknown sk-ant- prefix is accepted as an API key once the live check passes")
+r = c.post("/p/keys", json={"key": "sk-ant-usr01-" + "j" * 40})
+check(r.status_code == 400 and "wasn't saved" in r.json()["detail"], "a new-format key that fails the live check is refused")
+r = c.post("/p/keys", json={"key": BROKE}).json()
+check(r["key"]["lastTest"]["status"] == "no-credit" and not r["key"]["active"] and BROKE not in json.dumps(r), "no credit: the real key is kept (re-test after a top-up), never made active by itself")
+r = c.post("/p/keys", json={"key": "sk-ant-admin01-" + "k" * 40})
+check(r.status_code == 400 and "Admin" in r.json()["detail"], "admin key refused with a plain reason")
+r = c.post("/p/keys", json={"key": "sk-ant-ort01-" + "k" * 40})
+check(r.status_code == 400 and "refresh token" in r.json()["detail"], "a refresh token alone is refused")
+check(mod.kind_of("sk-ant-oat01-" + "c" * 40) == "claude-code", "sk-ant-oat stays a subscription login")
+v = c.post("/p/validate", json={"step": "api", "key": "sk-ant-usr01-" + "l" * 40}).json()
+check(not v["ok"] and "sk-ant-usr01-" not in json.dumps(v), "wizard: a dead new-format key stops the wizard, not echoed")
+v = c.post("/p/validate", json={"step": "api", "key": "sk-ant-oat01-" + "m" * 40}).json()
+check(not v["ok"] and "subscription" in v["error"], "wizard: a subscription token in the API step says so")
+mod.TESTER = _fake
 GOOD.add("sk-ant-api03-" + "f" * 40)
 check(c.post("/p/validate", json={"step": "api", "key": "sk-ant-api03-" + "f" * 40}).json()["ok"], "wizard: a working API key passes")
 check(not c.post("/p/validate", json={"step": "api", "key": BAD}).json()["ok"], "wizard: a dead API key stops the wizard")
 check(not c.post("/p/validate", json={"step": "nope"}).json()["ok"], "wizard: unknown step")
+# One store for the whole console (Nov 5 2026): same answer for every admin and the service token; anyone else is refused.
+sys.path.insert(0, str(REPO / "apps" / "console-web" / "server"))
+import wall  # noqa: E402
+
+gated = FastAPI()
+CALLERS = {"brett": wall.Caller("brett", "admin", via="session"), "amber": wall.Caller("amber", "admin", via="session"),
+           "service": wall.TOKEN_CALLER, "guest": wall.Caller("guest", "user", frozenset({"console.plugin.ai-keys"}), "session")}
+
+
+@gated.middleware("http")
+async def as_caller(request, call_next):
+    request.state.axf_user = CALLERS[request.headers["x-who"]]
+    return await call_next(request)
+
+
+gated.include_router(mod.router, prefix="/p")
+g = TestClient(gated)
+hdr = lambda who: {"x-who": who}  # noqa: E731
+views = [g.get("/p/keys", headers=hdr(w)).json() for w in ("brett", "amber", "service")]
+check(views[0] == views[1] == views[2] and views[0]["keys"], "console-wide: two admins and the service token see the same keys, active and VPS state")
+check("sk-ant-api03-" not in json.dumps(views[0]) and "sk-ant-oat" not in json.dumps(views[0]), "console-wide: hints only, never a key")
+for method, path, body in (("get", "/p/keys", None), ("get", "/p/vps", None), ("post", "/p/keys", {"key": A1}), ("post", "/p/active", {"id": k4}),
+                           ("post", "/p/switch", {"kind": "claude-code"}), ("post", "/p/order", {"ids": []}), ("post", "/p/vps/sync", {}), ("post", "/p/validate", {"step": "api", "key": A1})):
+    r = getattr(g, method)(path, headers=hdr("guest"), **({"json": body} if body is not None else {}))
+    check(r.status_code == 403 and "sk-ant" not in r.text, f"non-admin refused, even with the plugin granted: {method.upper()} {path}")
+want = next(k["id"] for k in views[0]["keys"] if k["kind"] == "anthropic" and not k["active"] and k["lastTest"] and k["lastTest"].get("ok"))
+r = g.post("/p/active", json={"id": want}, headers=hdr("service"))
+check(r.status_code == 200 and r.json()["active"]["anthropic"] == want, "service token: POST /active")
+check(g.get("/p/keys", headers=hdr("brett")).json()["active"]["anthropic"] == want, "console-wide: what the service token picked is what an admin sees")
+mod.CREDIT_PROBE = lambda kind, key, model: None
+was = mod._load()["active"]["claude-code"]
+r = g.post("/p/switch", json={"kind": "claude-code", "reason": "test"}, headers=hdr("service"))
+check(r.status_code == 200 and r.json()["switched"] and r.json()["switched"]["to"] != was, "service token: POST /switch")
+check(g.get("/p/keys", headers=hdr("amber")).json()["active"]["claude-code"] == r.json()["switched"]["to"], "console-wide: the switch shows for every admin")
+# Migration: per-user keyrings merge into keys.json, deduped, old files kept as .bak, no key in the log.
+ddir = Path(os.environ["AXF_AI_KEYS_DIR"])
+LOGS: list[str] = []
+_log = cx.log
+cx.log = lambda ch, text, level="info": LOGS.append(text)
+db = mod._load()
+known_id, known = next((k, v) for k, v in db["keys"].items() if v["kind"] == "anthropic")
+keep_active = dict(db["active"])
+M1, M2 = "sk-ant-oat01-" + "1" * 40, "sk-ant-ort01-" + "2" * 40
+stale = {"key": known["key"], "kind": "anthropic", "label": "old copy", "note": "only here"}
+pair = {"key": M1, "refresh": M2, "kind": "claude-code", "label": "Conrad", "email": "c@example.com", "lastTest": {"ok": True}, "expiresAt": 9, "createdAt": 5}
+(ddir / "users" / "alice").mkdir(parents=True)
+(ddir / "users" / "alice" / "keys.json").write_text(json.dumps({"keys": {known_id: stale, "p1": pair}, "active": {"claude-code": "p1"}, "order": ["p1"]}))
+(ddir / "keys-bob.json").write_text(json.dumps({"keys": {"p2": dict(pair, label="Dupe of Conrad")}, "active": {"claude-code": "p2"}}))
+(ddir / "keys-broken.json").write_text("{nope")
+before = len(mod._load()["keys"])
+m = mod.migrate_user_stores()
+db = mod._load()
+check(m["stores"] == 2 and m["added"] == 1 and m["duplicates"] == 2 and len(db["keys"]) == before + 1, "migration: two stores merged, duplicates dropped (same key or refresh token)")
+rec = next(v for v in db["keys"].values() if v.get("key") == M1)
+check(rec["label"] == "Conrad" and rec["email"] == "c@example.com" and rec["refresh"] == M2 and rec["lastTest"]["ok"], "migration: label, email, pair and last test kept")
+check(next(k for k, v in db["keys"].items() if v.get("key") == M1) in db["order"], "migration: priority kept")
+check(db["keys"][known_id]["label"] == known["label"] and db["keys"][known_id].get("note") == "only here", "migration: what's stored wins, a copy only fills gaps")
+check(db["active"] == keep_active, "migration: the active account is kept")
+check((ddir / "users" / "alice" / "keys.json.bak").exists() and (ddir / "keys-bob.json.bak").exists() and not (ddir / "keys-bob.json").exists(), "migration: old files kept as .bak")
+check((ddir / "keys-broken.json").exists() and m["skipped"] == ["keys-broken.json"], "migration: an unreadable file is left alone and named")
+check(LOGS and not any("sk-ant" in x for x in LOGS) and "1 key(s) added" in LOGS[-1], "migration: logged, no key in the log")
+check((ddir / "keys.json").stat().st_mode & 0o777 == 0o600, "migration: the store stays private")
+(ddir / "keys-broken.json").unlink()
+check(mod.migrate_user_stores()["stores"] == 0, "migration: nothing left to do on the next start")
+(ddir / "keys-carol.json").write_text(json.dumps({"keys": {"p3": dict(pair, key="sk-ant-oat01-" + "3" * 40, refresh="sk-ant-ort01-" + "4" * 40)}, "active": {"claude-code": "p3"}}))
+db = mod._load(); db["active"]["claude-code"] = ""; mod._save(db)
+mod.migrate_user_stores()
+check(mod._load()["active"]["claude-code"] == "p3", "migration: no console pick yet, the store's active account comes over")
+cx.log = _log
+# Accounts saved on the VPS: listed without credentials, reachable by API, never copied into keys.json.
+USED: list[tuple[str, str]] = []
+
+
+class FakeHost:
+    def __init__(self):
+        self.active = "account-2"
+        self.outcome = "waiting"
+
+    def view(self):
+        rows = [("account-1", "login", "a@example.com"), ("account-2", "login", "b@example.com"), ("account-3", "token", "c@example.com"),
+                ("account-4", "login", ""), ("account-5", "api-key", "")]
+        return {"accounts": [{"name": n, "type": t, "email": e, "plan": "pro" if e else "", "active": n == self.active} for n, t, e in rows]}
+
+    def use(self, name, by):
+        USED.append((name, by))
+        if self.outcome == "refused":
+            raise mod.HTTPException(409, "use account-9 is still waiting for your approval.")
+        return {"ok": True, "state": self.outcome, "name": name, "message": "failed" if self.outcome == "failed" else ""}
+
+
+host = FakeHost()
+plugin_services.provide("axf.claude-accounts@1", host, "claude-accounts")
+stored = (ddir / "keys.json").read_text()
+views = [g.get("/p/keys", headers=hdr(w)).json()["vpsAccounts"] for w in ("brett", "amber", "service")]
+check(views[0] == views[1] == views[2] and [a["label"] for a in views[0]] == [f"account-{i}" for i in range(1, 6)], "vps accounts: all five listed, the same for every admin and the service token")
+check([a["kind"] for a in views[0]] == ["claude-code"] * 4 + ["anthropic"] and views[0][1]["active"] and views[0][0]["email"] == "a@example.com", "vps accounts: kinds, active and emails")
+check(not ({"key", "refresh", "token", "hint"} & set(views[0][0])), "vps accounts: no credential field")
+r = g.post("/p/active", json={"id": "vps:account-3"}, headers=hdr("service")).json()
+check(USED == [("account-3", "console-token")] and r["vpsSwitch"]["state"] == "waiting", "vps accounts: POST /active asks for the held switch with the service token")
+check((ddir / "keys.json").read_text() == stored, "vps accounts: nothing about them lands in keys.json")
+check(g.post("/p/active", json={"id": "vps:account-3"}, headers=hdr("guest")).status_code == 403, "vps accounts: non-admin refused")
+for k in [k for k, v in mod._load()["keys"].items() if v["kind"] == "claude-code"]:
+    c.delete(f"/p/keys/{k}")
+USED.clear()
+r = g.post("/p/switch", json={"kind": "claude-code", "reason": "test"}, headers=hdr("service")).json()
+check(r["switched"]["to"] == "vps:account-3" and r["switched"]["host"] and USED == [("account-3", "console-token")], "vps accounts: no pair here, a limit hit moves to the next account on the VPS")
+check(mod._load()["hostLimited"].get("account-2") and r["account"]["email"] == "c@example.com", "vps accounts: the limited account is marked, the new one's email returned")
+check(mod.KeysService().limited_at("account-2") == mod._load()["hostLimited"]["account-2"] and mod.KeysService().limited_at("account-3") == 0, "vps accounts: limited_at answers for one account")
+db = mod._load(); kept = db["hostLimited"]["account-2"]; db["hostLimited"]["account-2"] = mod._now() - mod.HOST_LIMIT_MS - 1; mod._save(db)
+check(mod.KeysService().limited_at("account-2") == 0, "vps accounts: limited_at forgets a hit past the window")
+db = mod._load(); db["hostLimited"]["account-2"] = kept; mod._save(db)
+host.active = "account-3"
+USED.clear()
+r = g.post("/p/switch", json={"kind": "claude-code"}, headers=hdr("service")).json()
+check(USED == [("account-4", "console-token")], "vps accounts: the next hit walks on down the list")
+host.active = "account-4"
+USED.clear()
+r = g.post("/p/switch", json={"kind": "claude-code"}, headers=hdr("service")).json()
+check(USED == [("account-1", "console-token")], "vps accounts: wraps round, skips limited ones and never picks the API key")
+host.active = "account-1"
+USED.clear()
+r = g.post("/p/switch", json={"kind": "claude-code"}, headers=hdr("service")).json()
+check(r["switched"] is None and not USED, "vps accounts: every subscription limited leaves the active one alone")
+db = mod._load(); db["hostLimited"] = {}; mod._save(db)
+host.outcome = "refused"
+r = g.post("/p/switch", json={"kind": "claude-code"}, headers=hdr("service")).json()
+check(r["switched"] is None and r["tried"][0]["state"] == "error" and "still waiting" in r["tried"][0]["error"], "vps accounts: a switch the plugin refuses reports why")
+db = mod._load(); db["hostLimited"] = {}; mod._save(db)
+host.outcome = "failed"
+r = g.post("/p/switch", json={"kind": "claude-code"}, headers=hdr("service")).json()
+check(r["switched"] is None and r["tried"][0]["state"] == "failed", "vps accounts: a VPS command that failed is no switch")
+plugin_services.withdraw("claude-accounts")
+check(g.get("/p/keys", headers=hdr("service")).json()["vpsAccounts"] == [], "vps accounts: plugin off, an empty list and AI keys carries on")
+check(g.post("/p/active", json={"id": "vps:account-1"}, headers=hdr("service")).status_code == 503, "vps accounts: plugin off, a switch says why")
+# Rotated tokens reach the other side at once (token-rotation@1, deploy/claude-token-save.mjs).
+check(mod.token_hash("abc") == "ba7816bf8f01cfea414140de5dae2223", "token hash: the same value as the host's tokenHash")
+db = mod._load()
+rot_old = "sk-ant-ort01-r" + "t" * 40
+db["keys"]["rot1"] = {"label": "Rot", "kind": "claude-code", "key": "sk-ant-oat01-" + "t" * 40, "refresh": rot_old, "expiresAt": mod._now() - 1, "email": "x@example.com"}
+mod._save(db)
+results: list[bool] = []
+threads = [threading.Thread(target=lambda: results.append(mod.refresh_record("rot1"))) for _ in range(4)]
+spent_before = ROT["n"]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+check(ROT["n"] == spent_before + 1 and results.count(True) == 1 and not mod._load()["keys"]["rot1"].get("refreshError"), "four threads renewing one pair spend its token once")
+renewed = mod._load()["keys"]["rot1"]
+drop = mod.rotations_dir() / f"to-host-{mod.token_hash(rot_old)}.json"
+d = json.loads(drop.read_text())
+check(d["$axf"] == "token-rotation@1" and d["old"] == [mod.token_hash(rot_old)] and d["fresh"]["refreshToken"] == renewed["refresh"] and d["fresh"]["accessToken"] == renewed["key"], "a renewal leaves the new pair for the host at once")
+check((drop.stat().st_mode & 0o777) == 0o600 and rot_old not in drop.read_text(), "the drop file is 0600 and doesn't hold the spent token")
+drop.unlink()
+host_new = "sk-ant-ort01-r" + "u" * 40
+inbox = mod.rotations_dir() / f"to-console-{mod.token_hash(host_new)}.json"
+inbox.write_text(json.dumps({"$axf": "token-rotation@1", "old": [mod.token_hash(renewed["refresh"])], "at": 1,
+                             "fresh": {"accessToken": "sk-ant-oat01-" + "u" * 40, "refreshToken": host_new, "expiresAt": mod._now() + 8 * 3600_000}}))
+spent_before = ROT["n"]
+check(mod.refresh_record("rot1", force=True) and mod._load()["keys"]["rot1"].get("refresh") != renewed["refresh"] and renewed["refresh"] not in SPENT, "a pair the host renewed replaces the spent one before anything is refreshed")
+check(not inbox.exists(), "the host's drop file is deleted once absorbed")
+db = mod._load(); del db["keys"]["rot1"]; mod._save(db)
+for f in mod.rotations_dir().glob("*"):
+    f.unlink()
 plugin_services.withdraw("ai-keys")
 check(providers.resolve_key({"kind": "anthropic", "key": "own"}) == "own", "plugin off: the profile's own key applies")
 print(f"all {ok} checks passed")

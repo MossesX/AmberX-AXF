@@ -105,8 +105,22 @@ held: list[dict] = []
 def fake_hub(method: str, params: dict, sid):
     if method == "initialize":
         return {}, "hub-session-1"
+    if params["arguments"]["tool"].startswith("amberx."):
+        return fake_phone(params["arguments"]), sid
     held.append(params["arguments"])
     return {"content": [{"type": "text", "text": json.dumps({"held": True, "job_id": "job-42", "runsAt": "later"})}]}, sid
+
+
+phone_calls: list[dict] = []
+phone_state: dict = {"online": True, "running": False}
+
+
+def fake_phone(args: dict) -> dict:
+    phone_calls.append(args)
+    tool = args["tool"]
+    if tool == "amberx.recorder_status":
+        return {"content": [{"type": "text", "text": json.dumps(phone_state)}]}
+    return {"content": [{"type": "text", "text": json.dumps({"held": True, "job_id": "job-rec"})}]}
 
 
 mod.hub.transport = fake_hub
@@ -204,6 +218,52 @@ if CMDS.exists():
     out = subprocess.run(["node", str(CMDS), "tools", "--json"], capture_output=True, text=True, cwd=REPO).stdout
     for t in ("claude_session_start", "claude_session_agent", "claude_session_answer", "claude_session_book", "claude_session_assign"):
         ok(f'"{t}"' in out, f"MCP tool {t}")
+
+# ---- every session recorded (build ui-review-notify-session-audio)
+def recording_of(session_id: str) -> dict:
+    for _ in range(100):
+        rows = [x for x in mod.read()["sessions"] if x["id"] == session_id and x.get("recording")]
+        if rows:
+            return rows[0]["recording"]
+        time.sleep(0.02)
+    return {}
+
+
+rec = mod.recording
+starts = lambda: [a for a in phone_calls if a["tool"] == rec.START]  # noqa: E731
+time.sleep(0.2)
+phone_calls.clear()
+rec._last_ask.update(at=0.0, session="")
+s1 = c.post(f"{B}/session-start", json={"client": "voice", "summary": "Fix: the wake/word", "session": "rec-voice-1"}).json()
+got = recording_of("rec-voice-1")
+ok(got.get("state") == "asked" and got.get("group") == "rec-voice-1", f"a voice session asks the recorder ({got})")
+ok(len(starts()) == 1 and starts()[0]["arguments"]["session_name"] == "Fix the wake word", f"named after the session, cleaned ({starts()})")
+ok("mic" not in starts()[0]["arguments"], "mic is never sent: the phone's own switch decides")
+ok(starts()[0]["reason"]["title"].startswith("Record session:"), "the approval says what it is")
+c.post(f"{B}/session-start", json={"client": "chat", "summary": "Another", "session": "rec-chat-2"})
+got = recording_of("rec-chat-2")
+ok(got.get("state") == "joined" and got.get("group") == "rec-voice-1" and len(starts()) == 1, f"a second session moments later joins, no second approval ({got})")
+c.post(f"{B}/session-start", json={"client": "headless", "summary": "A build", "session": "rec-headless-3", "agent": "sully"})
+time.sleep(0.2)
+ok(not [x for x in mod.read()["sessions"] if x["id"] == "rec-headless-3" and x.get("recording")], "headless builds are never recorded")
+phone_state.update(running=True, session="Earlier", group="g-earlier")
+c.post(f"{B}/session-start", json={"client": "code", "summary": "Third", "session": "rec-code-4"})
+got = recording_of("rec-code-4")
+ok(got.get("state") == "joined" and got.get("name") == "Earlier" and got.get("group") == "g-earlier", f"already running: joins it ({got})")
+phone_state.update(running=False, online=False)
+c.post(f"{B}/session-start", json={"client": "voice", "session": "rec-offline-5"})
+got = recording_of("rec-offline-5")
+ok(got.get("state") == "phone-offline" and "isn't connected" in got.get("message", ""), f"phone offline: says so, carries on ({got})")
+ok(mod.recording.name_of({"client": "voice", "summary": ""}) == "Voice session", "no summary: named after the client")
+ok(rec.stop({"id": "a", "recording": {"state": "joined", "group": "g"}}, []) is False, "a session that only joined never stops the recorder")
+phone_calls.clear()
+ok(rec.stop({"id": "a", "recording": {"state": "asked", "group": "g"}}, [{"id": "b", "status": "set", "recording": {"state": "joined", "group": "g"}}]) is False and not phone_calls, "someone else is on it: keeps recording")
+ok(rec.stop({"id": "a", "recording": {"state": "asked", "group": "g"}}, []) is True and phone_calls[-1]["tool"] == rec.STOP, "the owner ending stops it")
+plugin_services.provide("axf.claude-settings@1", types.SimpleNamespace(get=lambda: {"settings": [{"key": "recording.autoStart", "value": False}]}), "claude-settings")
+phone_calls.clear()
+c.post(f"{B}/session-start", json={"client": "voice", "session": "rec-off-6"})
+time.sleep(0.2)
+ok(not phone_calls, "setting off: the phone is never asked")
 
 print(f"claude-session plugin: {n - failed}/{n} passed")
 sys.exit(1 if failed else 0)

@@ -74,12 +74,43 @@ node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
 ```
 
+## Own Claude login per build (since Nov 5 2026)
+
+Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):
+`deploy/claude-headless.sh` (and the agent swarm runner) snapshot the active saved account (`~/.claude-accounts`, or the
+live login) into `<build folder>/.axf-claude/<session>/` (0700, git-ignored) and run `claude` with `CLAUDE_CONFIG_DIR`
+pointed at it; an inherited `CLAUDE_CODE_OAUTH_TOKEN` is dropped unless the account has a saved token. Logging the VPS
+out, switching or adding accounts never touches a running build; its token refreshes stay in its copy, which is deleted
+when the session ends. Pick an account per launch with `--account <name>` (or `AXF_CLAUDE_ACCOUNT`); the log's
+`# login …` line, the tmux tag `@axf_login` (Terminal `login` field) and a note on the build say which one it ran on.
+`AXF_OWN_LOGIN=off` = the shared login. Test: `node deploy/claude-login.test.mjs`. Report: `reports/build-own-login.md`.
+
 ## Build profiles
 
 Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) is a field on the builds in the store. The
 registry is `framework/plan/profiles.json`; `orchestrator.mjs` works on the active profile's builds; check it with
 `node framework/cli/profiles.mjs current` (or run one command on another profile with `AXF_BUILD_PROFILE=<id>`).
 Console: banner chip / **Build profiles** dialog.
+
+**One profile for the work (Nov 7 2026, Brett: "combine every build profile into ONE new profile on main and delete the
+others"):** `current`, `urgent`, `angel`, `big-dog`, `breakroom` and `refactor` were merged into **`all`** (229 builds,
+`node framework/cli/profiles.mjs merge-all`, safe to re-run). Every build kept its id, status, steps and step states and
+gained `fromProfile` (its old profile); Urgent's builds got `priority: 'P0'`, so urgency is a per-build priority tag, never
+a profile. The base `main-framework` stays. A retired id anywhere (`AXF_BUILD_PROFILE=urgent`, an old brief, a Plan Studio
+plan's build link, the hub registry until its next save, a live merge from older code) reads as `all`
+(`resolveProfile` / `RETIRED_PROFILES` in `framework/plan/builds-store-core.mjs`, mirrored in
+`apps/console-web/server/build_profiles.py`); creating a profile with a retired id is refused.
+
+**`main-framework` folded in too; `all` is the base (Nov 7 2026, Brett approved, build `profiles-all-finish`):** the old
+base's 189 builds joined `all` (175 moved with `fromProfile: main-framework`, 14 were in both already), so the store has
+one profile. `all` is now `BASE_PROFILE` and keeps the original paths (`_claude/builds/orchestrator.json`,
+`framework/plan/{pending,build-queue,plan}.json`, `framework/catalog/status.json`, `_claude/builds/matrices.json`) and
+the framework's catalog; `main-framework` is a retired id that reads as `all`. The old profile folders
+(`_claude/builds/profiles/*`, `framework/plan/profiles/*`) are gone from the repo and the hub, and nothing writes them
+again: exports cover registered profiles only, the builds-live publisher takes any profile export left on main off it
+(`staleProfileExports`), the batch resolver (`/opt/axf-batch/resolve.py`) drops retired-profile files from a merge, the
+manifest no longer syncs `framework/plan/profiles/`, and `profiles.mjs merge-all` prunes any leftover folder (repo + hub;
+run it once after this lands, when the deployed console no longer reads `framework/plan/profiles/all/` on the hub).
 
 ## Carry a build on
 
