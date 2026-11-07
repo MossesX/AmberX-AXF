@@ -277,7 +277,7 @@ public class WatchService extends Service {
                 // Held veto calls (veto@1): their own notifications with Deny, never treated as approvals.
                 List<HubRules.Veto> vetoes = HubRules.vetoes(hub, body, System.currentTimeMillis());
                 held = vetoes.size();
-                VetoAlerts.update(this, work, vetoes);
+                VetoAlerts.update(this, work, muted.contains("amberx.veto") ? new ArrayList<>() : vetoes);
             }
         }
         int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
@@ -303,6 +303,9 @@ public class WatchService extends Service {
         if (work != null) work.removeCallbacksAndMessages(token);
     }
 
+    /** Device types the console's Notifications panel switched off; read with the console's alerts, empty until then. */
+    private Set<String> muted = new HashSet<>();
+
     private void handleNew(String hub, String cookie, HubRules.Feed feed, JSONObject auto) {
         SharedPreferences p = prefs(this);
         Set<String> seen = new HashSet<>(p.getStringSet("seen", new HashSet<>()));
@@ -313,8 +316,8 @@ public class WatchService extends Service {
             if (seen.contains(a.id)) continue;
             boolean approve = auto != null && HubRules.autoApproves(auto.optBoolean("on"), auto.optBoolean("all"), auto.optString("tools", ""), a.tool);
             if (approve && HubRules.approve(hub, a.id, cookie)) {
-                nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
-            } else {
+                if (!muted.contains("amberx.auto-approved")) nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
+            } else if (!muted.contains("amberx.approval")) {
                 soundThrough();
                 nm.notify(a.id, 0, alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
             }
@@ -335,6 +338,8 @@ public class WatchService extends Service {
         try {
             HubRules.Reply r = HubRules.get(HubRules.CONSOLE + HubRules.ALERTS_PATH, cookie);
             a = HubRules.consoleAlerts(r.status, r.body);
+            Set<String> off = HubRules.mutedTypes(r.status, r.body);
+            if (off != null) muted = off;
         } catch (Exception e) {
             return -1;
         }

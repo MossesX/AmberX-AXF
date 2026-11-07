@@ -618,7 +618,7 @@
     "src/axf/libs/README.md": "68f9104795971647",
     "src/axf/libs/alerts/alerts-sw.js": "cfdb9579eab00e35",
     "src/axf/libs/alerts/alerts.css": "966280d51557745d",
-    "src/axf/libs/alerts/index.tsx": "9818dada3c1c2b5b",
+    "src/axf/libs/alerts/index.tsx": "0e34c5d6804656d9",
     "src/axf/libs/alerts/vite-plugin.mjs": "fb723a288144289f",
     "src/axf/libs/apiclient/client.ts": "507a2b50eff72a2a",
     "src/axf/libs/apiclient/index.tsx": "cd746d64b6375f91",
