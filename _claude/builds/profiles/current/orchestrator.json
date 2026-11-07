@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:34:36.701Z",
+ "updatedAt": "2026-11-07T05:34:44.541Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22222,7 +22222,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-07T05:26:51.534Z",
+   "updatedAt": "2026-11-07T05:34:38.687Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -22297,8 +22297,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:36.829Z",
      "note": "",
      "uid": "st-mw5x9ckj03fd1h"
     },
@@ -22351,8 +22351,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T05:34:38.687Z",
      "note": "",
      "uid": "st-mw5x9ckj063xx9"
     },
@@ -23516,15 +23516,32 @@
    "status": "pending",
    "hidden": false,
    "source": "console",
-   "pendingId": "new-app-wizard",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T05:31:49.289Z",
-   "updatedAt": "2026-11-07T05:31:49.289Z",
+   "updatedAt": "2026-11-07T05:34:43.392Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-new-app-wizard--paulie, own login copy)",
+     "at": "2026-11-07T05:34:43.392Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "new-app-wizard",
+    "brief": "# new-app-wizard\nOrchestrator build ID: new-app-wizard (profile current). Use that record: follow its steps and the model the orchestrator set for each step, tick steps as you finish, record session and cost on it.\n\nBuild a New App wizard (console screen, voice, API/MCP/CLI). It asks for: app name, quick summary, brief, and subdomain on amberxai.com. Then it: creates a GitHub repo under MossesX; scaffolds a framework app with standard style and assets, a settings interface and a control panel; adds the Hostinger DNS record for the subdomain; sets up HTTPS and VPS routing behind Brett's login; registers the app in the registry; sends the brief to the orchestrator as a build with a build ID (orchestrator plans and picks models). Shows progress and a final summary with links. Everything voice controlled, every step has an API function.",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -23542,7 +23559,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yuku306juk7"
+     "uid": "st-mw5yxl6o0a1vga"
     },
     {
      "id": "s2",
@@ -23560,7 +23577,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yuku307pszr"
+     "uid": "st-mw5yxl6o0boguo"
     },
     {
      "id": "s3",
@@ -23578,7 +23595,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yuku3086498"
+     "uid": "st-mw5yxl6o0ckoub"
     },
     {
      "id": "s4",
@@ -23596,7 +23613,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yuku309dlgd"
+     "uid": "st-mw5yxl6o0dkt2a"
     },
     {
      "id": "s5",
@@ -23614,7 +23631,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yuku30a6rwr"
+     "uid": "st-mw5yxl6o0esgys"
     },
     {
      "id": "s6-5",
@@ -23632,7 +23649,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0a1vga"
+     "uid": "st-mw5yuku306juk7"
     },
     {
      "id": "s7-6",
@@ -23650,7 +23667,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0boguo"
+     "uid": "st-mw5yuku307pszr"
     },
     {
      "id": "s8-7",
@@ -23668,7 +23685,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0ckoub"
+     "uid": "st-mw5yuku3086498"
     },
     {
      "id": "s9-8",
@@ -23686,7 +23703,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0dkt2a"
+     "uid": "st-mw5yuku309dlgd"
     },
     {
      "id": "s10-9",
@@ -23704,7 +23721,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5yxl6o0esgys"
+     "uid": "st-mw5yuku30a6rwr"
     }
    ]
   }

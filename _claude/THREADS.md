@@ -726,9 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:40 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
-- 2026-11-06 18:46 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
-- 2026-11-06 19:31 UTC · `notes-tasks-sync` added (5 steps) (current) · orchestrator
 - 2026-11-06 19:31 UTC · `notes-tasks-sync` s1 done, → running (current) · orchestrator
 - 2026-11-06 19:38 UTC · `notes-tasks-sync` s2 done (current) · orchestrator
 - 2026-11-06 19:38 UTC · `notes-tasks-sync` s3 done (current) · orchestrator
@@ -1126,6 +1123,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:34 UTC · `new-app-wizard` added (5 steps) (current) · foreign-write
 - 2026-11-07 05:31 UTC · `new-app-wizard` added (5 steps) (current) · claude-voice
 - 2026-11-07 05:34 UTC · `merge-conflict-alerts` note (current) · foreign-write
+- 2026-11-07 05:34 UTC · `skins-asset-types` s6 done (current) · foreign-write
+- 2026-11-07 05:34 UTC · `skins-asset-types` s9 done (current) · foreign-write
+- 2026-11-07 05:34 UTC · `new-app-wizard` note (current) · orchestrator
 
 ## Token passes (log)
 
