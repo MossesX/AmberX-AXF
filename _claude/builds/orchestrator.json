@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T11:07:12.133Z",
+ "updatedAt": "2026-11-07T11:07:28.224Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22997,7 +22997,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T11:07:07.084Z",
+   "updatedAt": "2026-11-07T11:07:27.278Z",
    "builtAt": "",
    "notes": [
     {
@@ -23045,8 +23045,8 @@
     {
      "id": "s2",
      "text": "Demonstration Designer",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Demonstrations, books/chapters, generated docs and clips must be registry assets: new shared asset types (asset-types.json, validators, fixtures, Kotlin gap) = Fable. Do all four contracts in this step so s3, s4 and s6 can stay on Opus.",
      "phase": "",
      "group": "",
      "estimate": "",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1275,
- "updatedAt": "2026-11-07T11:07:12.133Z",
+ "rev": 1276,
+ "updatedAt": "2026-11-07T11:07:28.224Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -106922,7 +106922,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T11:07:07.084Z",
+   "updatedAt": "2026-11-07T11:07:27.278Z",
    "builtAt": "",
    "notes": [
     {
@@ -106976,8 +106976,8 @@
      "uid": "st-mw5x6wuc0hgnwj",
      "title": "",
      "text": "Demonstration Designer",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Demonstrations, books/chapters, generated docs and clips must be registry assets: new shared asset types (asset-types.json, validators, fixtures, Kotlin gap) = Fable. Do all four contracts in this step so s3, s4 and s6 can stay on Opus.",
      "phase": "",
      "group": "",
      "estimate": "",
@@ -106989,9 +106989,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:02:18.386Z",
-     "updatedAt": "2026-11-07T04:45:25.537Z"
+     "updatedAt": "2026-11-07T11:07:27.369Z"
     },
     {
      "id": "s3",
@@ -107091,7 +107091,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
