@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` → built (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` note (current) · foreign-write
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` branch claude/notes-tasks-calendar, PR #374 (current) · builds-live
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` branch claude/maintenance-redundancy-scan (all) · builds-live
 - 2026-11-07 14:11 UTC · `maintenance-redundancy-scan` → built (all) · earl
 - 2026-11-07 14:11 UTC · `postgres-console` note (all) · orchestrator
+- 2026-11-07 14:11 UTC · `orchestrator-dup-check` added (5 steps) (all) · orchestrator-dup-check
 
 ## Token passes (log)
 

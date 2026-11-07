@@ -2177,6 +2177,18 @@
    "from": "detail",
    "addenda": []
   },
+  "orchestrator-dup-check": {
+   "said": "Orchestrator: cheap redundancy check at split time (Brett, Nov 7). Every time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).",
+   "at": "2026-11-07T14:11:33.802Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless brief",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-gate": {
    "said": "Orchestrator is the only door to the VPS; approval rules in orchestrator settings. Nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the orchestrator's settings, and work even when no Claude session exists.",
    "at": "",

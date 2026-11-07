@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T14:11:24.661Z",
+ "updatedAt": "2026-11-07T14:11:35.134Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66845,6 +66845,140 @@
      "doneAt": "2026-11-07T14:10:50.074Z",
      "note": "",
      "uid": "st-mw6gi8pd0aqekz"
+    }
+   ]
+  },
+  {
+   "id": "orchestrator-dup-check",
+   "title": "Orchestrator: cheap redundancy check at split time",
+   "category": "Builds > Orchestrator",
+   "detail": "Every build the orchestrator takes (add, import) runs a cheap duplicate check before it is registered: plain code, zero AI tokens, under 2 s. Checks the build and each step against the builds store (any status), Plan Studio plans + blueprints, shipped features / merged PRs, open branches + worktrees and the asset registry (UI steps). Hits go on the build as a note with a suggested action (reuse, extend, merge into, skip step, proceed); default proceed + flag, setting to hold for Brett; phone alert on a likely duplicate, answered in the orchestrator. Findings in the shared redundancy-finding@1 format feed the Maintenance redundancy report.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/orchestrator-dup-check",
+   "pr": "",
+   "createdAt": "2026-11-07T14:11:33.802Z",
+   "updatedAt": "2026-11-07T14:11:33.803Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Orchestrator: cheap redundancy check at split time (Brett, Nov 7). Every time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).",
+    "at": "2026-11-07T14:11:33.802Z",
+    "source": "console",
+    "session": "",
+    "link": "",
+    "by": "headless brief",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Shared format redundancy-finding@1 (framework/core) + matcher dupcheck-core.mjs + gatherer/CLI dupcheck.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [
+      "framework/core/redundancy-finding.mjs",
+      "apps/console-web/plugins/build-orchestrator/dupcheck-core.mjs",
+      "apps/console-web/plugins/build-orchestrator/dupcheck.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6hez1206ypdv"
+    },
+    {
+     "id": "s2",
+     "text": "Orchestrator hook on add/import (note, hold), settings in rules.dupCheck, server routes, phone alert, capability axf.redundancy-findings@1",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/server/dupcheck.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6hez1207owna"
+    },
+    {
+     "id": "s3",
+     "text": "Console: Duplicate check strip with answer buttons, settings card in Rules + Settings > Plugins, help entries",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/dupcheck.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6hez1208281l"
+    },
+    {
+     "id": "s4",
+     "text": "Tests with today's known duplicates (skins rounds, shipped-features rounds, handoff-2 copies), server routes, notify registry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test.mts",
+      "apps/console-web/plugins/build-orchestrator/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6hez1209cezi"
+    },
+    {
+     "id": "s5",
+     "text": "Docs, Shipped features entry, UI Review options, report, THREADS, commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6hez120aekgn"
     }
    ]
   }
