@@ -40,6 +40,8 @@ export function directDeps(a) {
   if (a.type === 'style-package') for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id);
   if (a.type === 'branding') { for (const [k, id] of Object.entries(d.marks ?? {})) add(k === 'animated' ? 'animated-logo' : 'logo-mark', id); add('icon-pack', d.iconPack); }
   if (a.type === 'animated-logo') add('logo-mark', d.mark);
+  // icon-map@1: the pack it applies, the map it extends, and every pack a slot names (pack:<id>/<glyph>)
+  if (a.type === 'icon-map') { add('icon-pack', d.pack); add('icon-map', d.extends); for (const ref of Object.values(d.slots ?? {})) if (typeof ref === 'string' && ref.startsWith('pack:')) add('icon-pack', ref.slice(5).split('/')[0]); }
   if (a.type === 'toolbar') for (const w of d.widgets ?? []) add(w.type, w.id);
   if (a.type === 'banner') for (const w of d.attach ?? []) add(w.type, w.id);
   return out;

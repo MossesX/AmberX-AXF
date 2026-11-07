@@ -49,6 +49,8 @@
     "job-type": false,
     "card": false,
     "help": false,
+    "icon-map": false,
+    "icon-source": false,
     "uac-policy": false
   },
   "cases": {
