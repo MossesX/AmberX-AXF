@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1412,
- "updatedAt": "2026-11-07T21:39:32.662Z",
+ "rev": 1413,
+ "updatedAt": "2026-11-07T21:58:50.809Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108101,7 +108101,7 @@
    "branch": "claude/glossary-index-demos-r2",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T21:33:55.198Z",
+   "updatedAt": "2026-11-07T21:58:49.622Z",
    "builtAt": "",
    "notes": [
     {
@@ -108143,6 +108143,14 @@
      "via": "policy",
      "kind": "upgrade",
      "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T21:58:49.622Z",
+     "by": "auto",
+     "kind": "downgrade"
     }
    ],
    "upgradeRequests": [],
@@ -108218,12 +108226,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T21:58:49.622Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:02:18.386Z",
-     "updatedAt": "2026-11-07T04:45:25.537Z"
+     "updatedAt": "2026-11-07T21:58:49.709Z"
     },
     {
      "id": "s4",
@@ -108301,7 +108309,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
