@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1246,
- "updatedAt": "2026-11-07T05:34:50.094Z",
+ "rev": 1247,
+ "updatedAt": "2026-11-07T05:34:55.744Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -105700,7 +105700,7 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-conflict-alerts",
    "pr": "",
    "createdAt": "2026-11-07T04:56:03.670Z",
    "updatedAt": "2026-11-07T05:34:11.217Z",
@@ -105849,7 +105849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
