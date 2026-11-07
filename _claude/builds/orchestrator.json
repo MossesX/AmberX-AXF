@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T15:11:16.925Z",
+ "updatedAt": "2026-11-07T15:12:08.916Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -50043,7 +50043,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-11-07T14:50:20.425Z",
+   "updatedAt": "2026-11-07T15:12:07.428Z",
    "builtAt": "",
    "notes": [
     {
@@ -50057,6 +50057,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-wrapper--gina, own login copy)",
+     "at": "2026-11-07T15:12:07.428Z"
     }
    ],
    "approvals": [],

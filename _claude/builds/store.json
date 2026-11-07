@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1368,
- "updatedAt": "2026-11-07T15:11:16.925Z",
+ "rev": 1369,
+ "updatedAt": "2026-11-07T15:12:08.916Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -9797,7 +9797,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-11-07T14:50:20.425Z",
+   "updatedAt": "2026-11-07T15:12:07.428Z",
    "builtAt": "",
    "notes": [
     {
@@ -9811,6 +9811,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-wrapper--gina, own login copy)",
+     "at": "2026-11-07T15:12:07.428Z"
     }
    ],
    "approvals": [],
@@ -10256,7 +10260,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
