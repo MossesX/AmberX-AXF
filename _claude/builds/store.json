@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1201,
- "updatedAt": "2026-11-07T00:56:08.396Z",
+ "rev": 1202,
+ "updatedAt": "2026-11-07T00:56:25.419Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -101140,7 +101140,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:35:07.329Z",
-   "updatedAt": "2026-11-07T00:56:06.850Z",
+   "updatedAt": "2026-11-07T00:56:23.062Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -101315,12 +101315,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:56:07.999Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:56:08.077Z"
     },
     {
      "id": "s8",
@@ -101343,29 +101343,6 @@
      "rev": 1,
      "createdAt": "2026-11-07T00:35:07.330Z",
      "updatedAt": "2026-11-07T00:35:07.330Z"
-    },
-    {
-     "id": "s9",
-     "uid": "st-mw5oq68q3gg19k",
-     "title": "",
-     "text": "Addendum 1: \"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "addendum": 1,
-     "rev": 1,
-     "createdAt": "2026-11-07T00:48:27.674Z",
-     "updatedAt": "2026-11-07T00:48:27.674Z"
     },
     {
      "id": "s9-1",
@@ -101491,14 +101468,43 @@
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-07T00:35:07.330Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s9",
+      "uid": "st-mw5oq68q3gg19k",
+      "title": "",
+      "text": "Addendum 1: \"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off.",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "addendum": 1,
+      "rev": 1,
+      "createdAt": "2026-11-07T00:48:27.674Z",
+      "updatedAt": "2026-11-07T00:48:27.674Z"
+     },
+     "at": "2026-11-07T00:56:23.064Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    }
+   ],
    "legacy": [],
    "copies": []
   },
