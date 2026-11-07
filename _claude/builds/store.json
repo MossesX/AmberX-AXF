@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1372,
- "updatedAt": "2026-11-07T15:21:51.591Z",
+ "rev": 1373,
+ "updatedAt": "2026-11-07T15:22:28.314Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107754,15 +107754,15 @@
    "title": "Orchestrator is the only door to the VPS (vps-action-policy@1)",
    "category": "orchestrator",
    "detail": "HARD RULE (Brett): no build may start unless it carries a build ID issued by the Build orchestrator. Enforce it in the launcher itself, not just in docs: vps.build_start (axHub vps service) and deploy/claude-headless.sh must require an orchestrator build ID, check it exists in the orchestrator store, and REFUSE otherwise. A refused launch is not lost: its name and brief are sent to the orchestrator as a new pending build (plan made, Brett's words kept, models picked by the orchestrator) and the caller is told to launch from there. Also remove the launcher's own model choice: the model comes from the orchestrator's step plan. Add to RULES.md and CLAUDE.md, plus a CI test that a launch without an ID fails. Orchestrator assigns models.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orchestrator-vps-gate",
    "pr": "",
    "createdAt": "2026-11-07T04:55:09.050Z",
-   "updatedAt": "2026-11-07T15:21:50.550Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T15:22:27.195Z",
+   "builtAt": "2026-11-07T15:22:27.195Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -107891,12 +107891,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T15:22:27.195Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T13:32:40.150Z",
-     "updatedAt": "2026-11-07T13:32:40.248Z"
+     "updatedAt": "2026-11-07T15:22:27.318Z"
     }
    ],
    "profiles": [
@@ -107908,7 +107908,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
