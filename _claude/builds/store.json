@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1184,
- "updatedAt": "2026-11-07T00:29:14.185Z",
+ "rev": 1185,
+ "updatedAt": "2026-11-07T00:30:57.121Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -98492,9 +98492,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings-tabs-veto",
-   "pr": "",
+   "pr": "#371",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-07T00:29:01.171Z",
+   "updatedAt": "2026-11-07T00:30:55.887Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -98662,7 +98662,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
