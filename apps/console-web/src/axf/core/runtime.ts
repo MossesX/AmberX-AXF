@@ -2497,6 +2497,11 @@ export class AxfRuntime {
     return [...all].sort();
   }
 
+  /** The scope keys this app has shown icons in so far (`app`, `ui:<view>`, `plugin:<id>`), with how many names each. */
+  iconScopes(): { key: string; count: number }[] {
+    return [...this.iconsSeen.entries()].map(([key, s]) => ({ key, count: s.size })).sort((a, b) => (a.key === 'app' ? -1 : b.key === 'app' ? 1 : a.key < b.key ? -1 : 1));
+  }
+
   /** Every icon-map asset this app has, grouped by app (the Icon Manager's list). */
   iconMaps() { return iconMapIndex(this.registry as never); }
 

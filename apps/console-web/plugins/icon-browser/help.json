@@ -1,0 +1,94 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "icon-browser-help",
+  "name": "Icon browser help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Icon browser and the Icon manager: the library views, filters, selection, the pack composer, tab groups, and every control of a scope's icon map.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:icon-browser",
+    "entries": [
+      { "target": "view:icon-browser", "title": "Icon browser", "text": "Every icon the framework ships (seven open-licensed sets, about 11,700 glyphs) and every pack you add, as a tree, a grid or a list. Search, filter by set, category and style, select icons, drag them onto the pack composer, a tab group or the Icon manager.", "kind": "screen" },
+      { "target": "view:icon-manager", "title": "Icon manager", "text": "Every UI with an icon map: this app's root, each screen and each plugin, plus maps other apps ship. Pick one to see what every icon draws and where that comes from, drop icons to change them, switch packs, Randomize, Generate a cohesive set, or save the picks as a map asset.", "kind": "screen" },
+      { "target": "search-icons", "title": "Search icons", "text": "Type a word to find icons by name, tag or category. Every word must match." },
+      { "target": "set", "title": "Set", "text": "Show one icon set only (Lucide, Tabler, Feather, Heroicons, Phosphor, Bootstrap, or the packs you made)." },
+      { "target": "category", "title": "Category", "text": "Show one category of the chosen set only." },
+      { "target": "style", "title": "Style", "text": "Outline or filled icons only." },
+      { "target": "sort-by", "title": "Sort by", "text": "Order the icons by name, set, category or pack." },
+      { "target": "view", "title": "View", "text": "Tree groups icons by set and category, Grid shows tiles, List shows one row per icon with its set and category." },
+      { "target": "tile-size", "title": "Tile size", "text": "How big the grid tiles are." },
+      { "target": "thumbnails", "title": "Thumbnails", "text": "Show a few sample glyphs next to every set and category in the tree. Switch off for a plain tree." },
+      { "target": "clear-filters", "title": "Clear filters", "text": "Drop the search words and every filter." },
+      { "target": "clear-selection", "title": "Clear selection", "text": "Unselect every icon." },
+      { "target": "copy-ref", "title": "Copy ref", "text": "Copies the icon's reference (pack:<pack id>/<glyph>): the form an icon map, a voice command or the CLI uses to name it." },
+      { "target": "add-to-pack", "title": "Add to pack", "text": "Puts the icon (or every selected icon) into the pack composer's draft." },
+      { "target": "open-in-a-docked-tab-group", "title": "Open in a tab group", "text": "Opens the icon (or every selected icon) as tabs of a new tab group docked in the main window. The setting Open new tab group decides the default; the small button next to it opens the other kind." },
+      { "target": "open-in-a-floating-tab-group", "title": "Open in a floating tab group", "text": "Opens the icon (or every selected icon) as tabs of a new floating window. Drag a tab header to move it to another group or window." },
+      { "target": "open-new-tab-group", "title": "Open new tab group", "text": "Opens a new tab group with the selected icons, or an empty one with a + tab that takes drops." },
+      { "target": "float-the-library", "title": "Float the library", "text": "Opens the whole icon library in a floating window, so it stays beside the screen you are changing." },
+      { "target": "float-this-pane", "title": "Float this pane", "text": "Opens the pack composer in a floating window. It shows the same draft as the pane on the page." },
+      { "target": "pack-name", "title": "Pack name", "text": "The name of the pack you are composing; its asset id is made from it." },
+      { "target": "save-as-icon-pack", "title": "Save as icon pack", "text": "Saves the draft as an icon-pack asset in this plugin's data folder and registers it in the app, so it shows under My packs and in the Icon manager at once. One grid per pack: icons from 16-grid and 24-grid sets can't mix." },
+      { "target": "clear", "title": "Clear", "text": "Empties the pack draft." },
+      { "target": "pack-applied-to-app-root", "title": "Pack applied", "text": "Every icon name this pack has is drawn from it, in this scope and everything under it, unless a slot pin or a child scope says otherwise." },
+      { "target": "map-picked", "title": "Map picked", "text": "An icon-map asset this scope uses on top of the maps the app ships." },
+      { "target": "import-a-library-pack", "title": "Import a library pack", "text": "Brings one of the library's packs into this app's registry, so it can be applied to a scope or used by Generate." },
+      { "target": "randomize", "title": "Randomize", "text": "Every icon drawn in this scope gets another drawing of the same meaning from the packs this app has (seeded, so the same seed gives the same shuffle). Icons no pack draws stay as they are." },
+      { "target": "generate-from", "title": "Generate from", "text": "The pack a cohesive set is generated from." },
+      { "target": "generate-cohesive-set", "title": "Generate cohesive set", "text": "Every icon drawn in this scope is taken from one pack, by name or a known synonym, so the whole scope follows one style. Icons the pack has no drawing for keep their current glyph." },
+      { "target": "reset", "title": "Reset", "text": "Forgets the pack, the map and every pinned slot of this scope. The scope goes back to what its parents and the app ship." },
+      { "target": "hide", "title": "Hide", "text": "Draws nothing for this slot in this scope (ref none)." },
+      { "target": "clear-the-pin", "title": "Clear the pin", "text": "Removes the pinned icon of this slot; it resolves through the maps again." },
+      { "target": "map-name", "title": "Map name", "text": "The name of the icon-map asset the current picks are saved as." },
+      { "target": "scope", "title": "Scope", "text": "Save the picks for the whole app (root / global) or for this screen or plugin only. The child overrides the parent." },
+      { "target": "save-map", "title": "Save map", "text": "Writes the pack and the pinned slots as an icon-map asset, picks it for the scope and clears the loose pins." },
+      { "target": "open-the-browser-to-drag-icons", "title": "Open the browser", "text": "Goes to the Icon browser; drag icons from there onto the slots or the preview here." },
+      { "target": "import", "title": "Import", "text": "Imports the chosen library pack into this app." },
+      { "target": "search-every-icon", "title": "Search every icon", "text": "Find a glyph among every pack this app has by name." },
+      { "target": "show-the-listing", "title": "Show the listing", "text": "Shows every glyph of every pack this app has, as draggable chips." },
+      { "target": "hide-the-listing", "title": "Hide the listing", "text": "Folds the every-icon listing away." },
+      { "target": "open-the-icon-browser", "title": "Open the icon browser", "text": "Goes to the Icon browser page." },
+      { "target": "open-the-icon-manager", "title": "Open the icon manager", "text": "Goes to the Icon manager page." },
+      { "target": "icon-manager", "title": "Icon manager", "text": "Goes to the Icon manager page." },
+      { "target": "reset-the-app-s-icons", "title": "Reset the app's icons", "text": "Forgets every icon pick made at the app root: pack, map and pinned slots." },
+      { "target": "show-names-under-tiles", "title": "Show names under tiles", "text": "Write each icon's name under its tile in the grid." },
+      { "target": "thumbnails-in-the-tree", "title": "Thumbnails in the tree", "text": "Show sample glyphs next to sets and categories in the tree view." },
+      { "target": "pack-composer-pane", "title": "Pack composer pane", "text": "Show the pack composer beside the library." },
+      { "target": "details-pane", "title": "Details pane", "text": "Show the details of the active icon beside the library." },
+      { "target": "icon-browser", "title": "Icon browser settings", "text": "This plugin's settings, in categorized sections you can fold: the library view, default filters, panes and tab groups, and the Icon manager." },
+      { "target": "try-again", "title": "Try again", "text": "Asks the console server for the icon library again." },
+      { "target": "close-details", "title": "Close details", "text": "Hides the details pane of the active icon." },
+      { "target": "new-tab-group-opens", "title": "New tab group opens", "text": "Where Open in a tab group puts the icons by default: docked in the main window or in a floating window. The small button next to the action always offers the other kind." },
+      { "target": "reset-the-apps-icons", "title": "Reset the app's icons", "text": "Forgets every icon pick made at the app root: the pack, the map and every pinned slot. Screens and plugins keep their own picks." },
+      { "target": "icon-s", "title": "Icon count", "text": "How many icon names this scope has drawn so far; each is a slot of its icon map." },
+      { "target": "root-global", "title": "Root / global", "text": "Save the picks as the whole app's map: every screen and plugin inherits them unless it says otherwise." },
+      { "target": "open-in-a-tab-group", "title": "Open in a tab group", "text": "Opens every icon of the draft as tabs of a new tab group (docked or floating, as the setting says)." }
+    ],
+    "intros": [
+      {
+        "screen": "icon-browser",
+        "title": "Icon browser",
+        "steps": [
+          { "say": "This is the icon library: seven open-licensed sets, about 11,700 glyphs, plus the packs you make.", "target": "" },
+          { "say": "Search by name or tag, filter by set, category and style, and switch between tree, grid and list.", "target": "view" },
+          { "say": "Click an icon for its details; Ctrl or Shift selects more. Drag icons onto the pack composer or into a tab group.", "target": "add-to-pack" },
+          { "say": "Save a composed pack as an icon-pack asset, then apply it to any screen or plugin in the Icon manager.", "target": "save-as-icon-pack" }
+        ]
+      },
+      {
+        "screen": "icon-manager",
+        "title": "Icon manager",
+        "steps": [
+          { "say": "Every UI with an icon map: this app's root, each screen and each plugin, and the maps other apps ship.", "target": "" },
+          { "say": "Pick one. Its icons resolve plugin → screen → root → branding pack → framework; the child overrides the parent.", "target": "pack-applied-to-app-root" },
+          { "say": "Drop an icon from the browser onto a slot or the live preview to pin it. Apply is immediate, and the hub look carries it to every app.", "target": "randomize" },
+          { "say": "Randomize reshuffles the whole set, Generate takes everything from one pack, Save map keeps the picks as an asset.", "target": "save-map" }
+        ]
+      }
+    ]
+  }
+}

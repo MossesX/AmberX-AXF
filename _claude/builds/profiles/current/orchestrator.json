@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T03:16:04.505Z",
+ "updatedAt": "2026-11-07T03:31:17.390Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -15107,7 +15107,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-07T02:50:20.877Z",
+   "updatedAt": "2026-11-07T03:30:34.825Z",
    "builtAt": "",
    "notes": [
     {
@@ -20543,7 +20543,7 @@
    "branch": "claude/ui-asset-designer",
    "pr": "#376",
    "createdAt": "2026-11-07T02:11:01.038Z",
-   "updatedAt": "2026-11-07T02:50:20.877Z",
+   "updatedAt": "2026-11-07T03:30:34.825Z",
    "builtAt": "2026-11-07T02:50:20.877Z",
    "notes": [
     {
@@ -20707,7 +20707,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21bm2s2"
     },
@@ -20727,7 +20727,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21c0wg8"
     },
@@ -20747,7 +20747,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21d10w5"
     },
@@ -20767,7 +20767,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21ergnn"
     },
@@ -20787,7 +20787,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21fdbph"
     },
@@ -20807,7 +20807,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21gu4ch"
     },
@@ -20827,7 +20827,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21hbwn0"
     },
@@ -20848,7 +20848,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21ifh12"
     },
@@ -20868,7 +20868,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21j11xz"
     },
@@ -20889,7 +20889,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21k9usc"
     },
@@ -20910,7 +20910,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21ly9gg"
     },
@@ -20930,7 +20930,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21ml59u"
     },
@@ -20950,7 +20950,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21n6pb8"
     },
@@ -20970,7 +20970,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21o5kfd"
     },
@@ -20990,7 +20990,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21p2zjm"
     },
@@ -21010,7 +21010,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21qoxqp"
     },
@@ -21030,7 +21030,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21r39ul"
     },
@@ -21050,7 +21050,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21sv0hx"
     },
@@ -21070,7 +21070,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf21thm9a"
     },
@@ -21090,7 +21090,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf71ukmda"
     },
@@ -21110,7 +21110,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf71v26x9"
     },
@@ -21130,7 +21130,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf71wwsto"
     },
@@ -21150,7 +21150,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf71xu1ma"
     },
@@ -21170,7 +21170,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf71yzrg1"
     },
@@ -21190,7 +21190,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf71zxi62"
     },
@@ -21211,7 +21211,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf720bv4o"
     },
@@ -21231,7 +21231,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf7211tmt"
     },
@@ -21251,7 +21251,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf722itwx"
     },
@@ -21271,7 +21271,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf723yh70"
     },
@@ -21291,7 +21291,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf7240euf"
     },
@@ -21311,7 +21311,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf725xcow"
     },
@@ -21332,7 +21332,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf726dxyz"
     },
@@ -21352,7 +21352,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf727wo93"
     },
@@ -21370,7 +21370,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-07T02:50:20.877Z",
+     "doneAt": "2026-11-07T03:30:34.825Z",
      "note": "",
      "uid": "st-mw5rocf728ij0n"
     }
@@ -21388,7 +21388,7 @@
    "branch": "claude/icon-browser-manager",
    "pr": "",
    "createdAt": "2026-11-07T02:52:29.111Z",
-   "updatedAt": "2026-11-07T03:16:04.372Z",
+   "updatedAt": "2026-11-07T03:31:17.309Z",
    "builtAt": "",
    "notes": [
     {
@@ -21472,8 +21472,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T03:31:17.309Z",
      "note": "",
      "uid": "st-mw5t5o5y0dvzzq"
     },

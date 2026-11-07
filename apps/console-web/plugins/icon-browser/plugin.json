@@ -1,0 +1,45 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.icon-browser",
+  "name": "Icon Browser",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Browse every icon the framework ships (framework/icon-library: 7 open-licensed sets, 11,700 glyphs as icon-pack assets) and every pack you add, as a tree, a grid or a list: categorized, sortable, filterable, searchable, with thumbnails in the tree you can switch off. Icon sources of any kind (local folder, HTTP, REST, MCP, FTP / SFTP, Google Drive, Google Photos, Dropbox, known online repositories) with per-type forms and secrets in a private store. Compose packs by dragging icons between collapsible, floatable panes and save them as icon-pack assets; open selected icons into docked or floating tab groups. The Icon Manager: every UI and plugin has an icon map (icon-map@1); list them by app, edit a map or drop icons onto a live preview, Save / Apply, inherit root → UI → plugin, switch packs, Randomize, Generate a cohesive set. Nav → Plugins → Icon browser; settings in Settings → Plugins → Icon browser.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:icon-browser",
+    "view:icon-manager",
+    "settings-tab:icon-browser"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": { "view": "icon-browser", "label": "Icon browser", "icon": "grid" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/icon-browser",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
+    { "route": "GET /search", "id": "search", "title": "Search icons", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string" }, "set": { "type": "string" }, "category": { "type": "string" }, "style": { "type": "string" }, "limit": { "type": "integer" }, "offset": { "type": "integer" } } } },
+    { "route": "PUT /sources/{sid}", "id": "source-save", "title": "Save an icon source", "destructive": false },
+    { "route": "POST /secrets/{ref}", "id": "secret-set", "title": "Store a source secret (never read back)" },
+    { "route": "PUT /packs/{pid}", "id": "pack-save", "title": "Save an icon pack" },
+    { "route": "PUT /maps/{mid}", "id": "map-save", "title": "Save an icon map" },
+    { "route": "POST /import", "id": "import", "title": "Import a folder of SVG files as icon packs" }
+  ] },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-07" },
+  "help": "help.json",
+  "opens": "main"
+}
