@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 01:33 UTC · `console-approvals-in-place` note (current) · orchestrator
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s1 done, → running (current) · orchestrator
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` s4-3 done, → running (current) · orchestrator
 - 2026-11-07 01:33 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 15:13 UTC · `postgres-console` note (all) · orchestrator
 - 2026-11-07 15:21 UTC · `orchestrator-gate` note (all) · orchestrator
 - 2026-11-07 15:22 UTC · `orchestrator-gate` s5 done, → complete (all) · orchestrator
+- 2026-11-07 15:22 UTC · `orchestrator-gate` → built (all) · orchestrator
 
 ## Token passes (log)
 
