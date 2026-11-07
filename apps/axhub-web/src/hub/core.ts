@@ -397,6 +397,76 @@ export function passCovers(p: { service: string; tools: string[]; scope?: string
   return [p.service, tools, p.scope?.length ? `scope ${p.scope.join(', ')}` : ''].filter(Boolean).join(' · ');
 }
 
+/** What a pass covers, one plain line per part (axHub decision 114 sends `covers`; older hubs: worked out here). */
+export interface PassCoverage { services: string; tools: string; scope: string; never?: string }
+export function passCoverage(p: { all?: boolean; includeIrreversible?: boolean; service: string; tools: string[]; scope?: string[]; covers?: PassCoverage }): PassCoverage {
+  if (p.covers) return p.covers;
+  if (p.all) return { services: 'All services', tools: 'All tools', scope: 'Everything', never: p.includeIrreversible ? 'Denied tools' : 'Irreversible calls, denied tools' };
+  return {
+    services: p.service === '*' ? 'Any service' : p.service,
+    tools: p.tools.length === 1 && p.tools[0] === '*' ? 'All tools' : p.tools.join(', '),
+    scope: p.scope?.length ? `Only ${p.scope.join(', ')}` : 'Whole service',
+  };
+}
+
+/** The new-pass form's choices (axHub `GET /auth/api/passes/options`, decision 114). */
+export interface PassToolOption { name: string; description: string; policy: string; coverable: boolean; note?: string }
+export interface PassServiceOption {
+  namespace: string; label: string; description?: string; type: string; enabled: boolean;
+  narrow: boolean; why?: string; tools: PassToolOption[]; toolsKnown: boolean; scopes: { id: string; label: string }[];
+}
+export interface PassOptions {
+  everything: { label: string; description: string };
+  services: PassServiceOption[];
+  minutes: { min: number; max: number; presets: number[] };
+}
+
+/** `''` = All services; scope `'all'` = Everything, `''` = the whole service; `tools` null = All tools. */
+export interface PassForm { service: string; scope: string; tools: string[] | null; minutes: number; reason: string; includeIrreversible: boolean }
+export const PASS_EVERYTHING = 'all';
+export const PASS_WHOLE = '';
+
+/** The scopes the form offers for a service choice: Everything (all services only), the whole service, then its scopes. */
+export function passScopeChoices(o: PassOptions, service: string): { value: string; label: string }[] {
+  if (!service) {
+    const seen = new Map<string, string>();
+    for (const s of o.services) if (s.narrow) for (const sc of s.scopes) if (!seen.has(sc.id)) seen.set(sc.id, sc.label);
+    return [
+      { value: PASS_EVERYTHING, label: `${o.everything.label}: every call on every service` },
+      ...[...seen].map(([id, label]) => ({ value: id, label: `${label} (any service)` })),
+    ];
+  }
+  const svc = o.services.find((s) => s.namespace === service);
+  return [{ value: PASS_WHOLE, label: `All of ${svc?.label ?? service}` }, ...(svc?.scopes ?? []).map((sc) => ({ value: sc.id, label: sc.label }))];
+}
+
+/** The form → the grant body, or a plain-English reason it can't be sent yet. */
+export function passGrantBody(f: PassForm, o: PassOptions): { body: Record<string, unknown> } | { error: string } {
+  const reason = f.reason.trim();
+  if (!Number.isInteger(f.minutes) || f.minutes < o.minutes.min || f.minutes > o.minutes.max) return { error: `Pick how long: ${o.minutes.min} to ${o.minutes.max} minutes.` };
+  if (!f.service && f.scope === PASS_EVERYTHING) {
+    return { body: { minutes: f.minutes, reason: reason || `Everything for ${f.minutes} minutes`, ...(f.includeIrreversible ? { include_irreversible: true } : {}) } };
+  }
+  if (f.includeIrreversible) return { error: 'Irreversible calls can only go with an Everything pass. Untick it, or pick All services → Everything.' };
+  if (!reason) return { error: 'Say what the pass is for, in a few words (it shows on the pass and in the log).' };
+  if (!f.service) {
+    if (!f.scope) return { error: 'Pick a scope, or Everything.' };
+    return { body: { scope: [f.scope], minutes: f.minutes, reason } };
+  }
+  const svc = o.services.find((s) => s.namespace === f.service);
+  if (!svc) return { error: `"${f.service}" isn't connected any more. Pick another service.` };
+  if (!svc.narrow) return { error: `${svc.label} can only be covered by an Everything pass (${svc.why ?? 'it can do anything'}). Pick All services → Everything.` };
+  if (f.tools && f.tools.length === 0) return { error: 'Pick at least one tool, or tick All tools.' };
+  return { body: { service: f.service, ...(f.scope ? { scope: [f.scope] } : {}), ...(f.tools ? { tools: f.tools } : {}), minutes: f.minutes, reason } };
+}
+
+/** Tools matching a search (name or description), every word. */
+export function filterPassTools(tools: PassToolOption[], q: string): PassToolOption[] {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return tools;
+  return tools.filter((t) => { const hay = `${t.name} ${t.description}`.toLowerCase(); return words.every((w) => hay.includes(w)); });
+}
+
 /** A comma or space separated field → patterns (empty → undefined). */
 export function patternList(text: string): string[] | undefined {
   const list = text.split(/[\s,]+/).map((x) => x.trim()).filter(Boolean);
