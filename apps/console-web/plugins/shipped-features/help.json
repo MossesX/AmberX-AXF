@@ -19,17 +19,17 @@
         "kind": "screen"
       },
       {
-        "target": "Shipped features view",
+        "target": "shipped-features-view",
         "title": "View by",
         "text": "Groups the list by pull request, build, day, app, plugin, feature type or repo, or shows it flat. The counts on each group follow your filters."
       },
       {
-        "target": "Shipped features filters",
+        "target": "shipped-features-filters",
         "title": "Quick filters",
         "text": "Hide completed hides Merged, Live and Removed; Hide pending hides Planned, Queued, Building and In PR; tap status chips to show only those. Has edits and Being edited now narrow to changed features. This phone or computer remembers your choice."
       },
       {
-        "target": "Shipped features actions",
+        "target": "shipped-features-actions",
         "title": "Sync and export",
         "text": "Sync picks up new build events, merged PRs and deploys right away (it also runs by itself every couple of minutes). CSV and Markdown save the rows you see."
       },
@@ -37,6 +37,83 @@
         "target": "shipped-features",
         "title": "Shipped features settings",
         "text": "Install, uninstall or rebuild the Shipped features ledger (a SQLite file in the console's data folder)."
+      },
+      {
+        "target": "hide-completed",
+        "title": "Hide completed",
+        "text": "Turns “Hide completed” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "hide-pending",
+        "title": "Hide pending",
+        "text": "Turns “Hide pending” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "show-cancelled",
+        "title": "Show cancelled",
+        "text": "Turns “Show cancelled” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "has-edits",
+        "title": "Has edits",
+        "text": "Turns “Has edits” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "being-edited-now",
+        "title": "Being edited now",
+        "text": "Turns “Being edited now” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "edit-status",
+        "title": "Edit status",
+        "text": "Where you set “Edit status”. Change it and the app uses the new value. Part of Shipped features.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "column:type",
+        "title": "Type",
+        "text": "The “Type” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:planned",
+        "title": "Planned",
+        "text": "The “Planned” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:merged",
+        "title": "Merged",
+        "text": "The “Merged” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:live",
+        "title": "Live",
+        "text": "The “Live” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:last-edited",
+        "title": "Last edited",
+        "text": "The “Last edited” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": [
