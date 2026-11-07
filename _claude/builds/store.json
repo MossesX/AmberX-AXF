@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1204,
- "updatedAt": "2026-11-07T00:57:18.971Z",
+ "rev": 1205,
+ "updatedAt": "2026-11-07T00:57:34.506Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -101141,10 +101141,10 @@
    "hidden": false,
    "source": "headless",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/plan-studio-backfill-12h",
+   "pr": "#373",
    "createdAt": "2026-11-07T00:35:07.329Z",
-   "updatedAt": "2026-11-07T00:56:23.062Z",
+   "updatedAt": "2026-11-07T00:57:27.688Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -101341,12 +101341,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:57:27.687Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:57:27.748Z"
     },
     {
      "id": "s9-1",
@@ -101386,13 +101386,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:57:27.009Z",
      "note": "",
      "addendum": 2,
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:27.674Z",
-     "updatedAt": "2026-11-07T00:48:27.674Z"
+     "updatedAt": "2026-11-07T00:57:27.071Z"
     },
     {
      "id": "s10-1",
@@ -101409,13 +101409,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:57:25.585Z",
      "note": "",
      "parent": "s10",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:27.674Z",
-     "updatedAt": "2026-11-07T00:48:27.674Z"
+     "updatedAt": "2026-11-07T00:57:25.659Z"
     },
     {
      "id": "s10-2",
@@ -101432,13 +101432,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:57:26.292Z",
      "note": "",
      "parent": "s10",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:27.674Z",
-     "updatedAt": "2026-11-07T00:48:27.674Z"
+     "updatedAt": "2026-11-07T00:57:26.353Z"
     },
     {
      "id": "s10-3",
@@ -101455,13 +101455,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:57:27.009Z",
      "note": "",
      "parent": "s10",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:48:27.674Z",
-     "updatedAt": "2026-11-07T00:48:27.674Z"
+     "updatedAt": "2026-11-07T00:57:27.071Z"
     }
    ],
    "profiles": [
@@ -101472,7 +101472,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 15,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

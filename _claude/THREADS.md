@@ -705,11 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 22:41 UTC · `ai-keys-new-format` s2 done (current) · orchestrator
-- 2026-11-05 22:42 UTC · `ai-keys-new-format` branch claude/ai-keys-new-format-r4, PR #356 (current) · builds-live
-- 2026-11-05 22:42 UTC · `ai-keys-new-format` s3 done, → built (current) · orchestrator
-- 2026-11-05 22:43 UTC · `ai-keys-new-format` added (3 steps) (current) · foreign-write
-- 2026-11-05 22:49 UTC · `build-own-login` s1 done, → running (current) · orchestrator
 - 2026-11-05 22:49 UTC · `build-own-login` s2 done (current) · orchestrator
 - 2026-11-05 22:49 UTC · `build-own-login` s3 done (current) · orchestrator
 - 2026-11-05 22:49 UTC · `build-own-login` note (current) · orchestrator
@@ -1105,6 +1100,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s6 done (current) · orchestrator
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s7 done (current) · orchestrator
 - 2026-11-07 00:57 UTC · `build-todo-sync` → running, note (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` branch claude/plan-studio-backfill-12h, PR #373 (current) · builds-live
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s8 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10-1 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10-2 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10 done, s10-3 done (current) · orchestrator
 
 ## Token passes (log)
 
