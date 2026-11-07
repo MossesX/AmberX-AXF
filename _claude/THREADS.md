@@ -728,7 +728,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 20:04 UTC · `fable-review-shipped-features-build-hook-contrac` → built (current) · orchestrator
 - 2026-11-06 20:04 UTC · `shipped-features-r2` → built (angel) · orchestrator
 - 2026-11-06 20:04 UTC · `shipped-features-r2` note (angel) · orchestrator
 - 2026-11-06 20:07 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, note (current) · foreign-write
@@ -1128,6 +1127,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:46 UTC · `skins` → built, PR #383 (main-framework) · builds-live
 - 2026-11-07 06:00 UTC · `notifications-control-panel` → complete, merged, note (current) · reconciler
 - 2026-11-07 06:00 UTC · `badges-notify-followup` → complete, merged, note (current) · reconciler
+- 2026-11-07 06:10 UTC · `skins-asset-types` → pending, note (current) · reconciler
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T06:00:40.286Z",
+ "updatedAt": "2026-11-07T06:10:23.376Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22226,16 +22226,21 @@
    "title": "skins-asset-types",
    "category": "",
    "detail": "Upgrade skins to style every registry asset type (widgets, icon packs, composites, embeds, text blocks), scoped inheritance, registry-driven coverage + CI check. Brief: /root/axf-builds/skins-asset-types/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
    "branch": "claude/skins-asset-types",
    "pr": "#383",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-07T05:46:28.504Z",
+   "updatedAt": "2026-11-07T06:10:22.457Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T06:10:22.457Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
