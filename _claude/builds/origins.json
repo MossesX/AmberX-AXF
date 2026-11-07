@@ -731,6 +731,18 @@
    "from": "",
    "addenda": []
   },
+  "build-pipeline-v2": {
+   "said": "Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD). Replace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what is redundant. Single profile all already on main. Flow: Request → orchestrator → Pending → Queued (one queue per Claude account, max 5) → Building (parallel per account, default 3). Build table states ONLY Pending, Queued, Building. Shipped features: Waiting → Building → Pending merge → Live. Headless sessions load ONLY the brief; brief check before queueing; progress file per build (START/END per step, never pauses, watcher crosses steps off, token usage per session and per step); final step updates Shipped features. Blocked flow: phone alert → Brett answers or taps Let orchestrator decide → relaunch from the blocked step. Phone notifications on session started, build finished, failed, stopped incomplete, blocked, landed. Account dies → move its builds + alert. Landing discards _claude/builds sync noise; on land Shipped features Live + alert. Decisions to _claude/memory. Acceptance suite in CI blocks landing.",
+   "at": "2026-11-07T10:30:00Z",
+   "source": "chat",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-profiles": {
    "said": "multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
    "at": "2026-10-27",

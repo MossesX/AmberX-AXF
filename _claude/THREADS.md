@@ -736,7 +736,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 22:45 UTC · `ui-registry-shortcuts` added (6 steps) (current) · orchestrator
 - 2026-11-06 22:54 UTC · `ui-registry-shortcuts` added (6 steps) (current) · foreign-write
 - 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s3 done (current) · orchestrator
 - 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s4 done (current) · orchestrator
@@ -1136,6 +1135,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
+- 2026-11-07 10:50 UTC · `build-pipeline-v2` added (15 steps) (all) · orchestrator
 
 ## Token passes (log)
 
