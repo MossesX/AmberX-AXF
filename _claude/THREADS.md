@@ -705,11 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s3 done (angel) · orchestrator
-- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s4 done (angel) · orchestrator
-- 2026-11-05 11:11 UTC · `ui-review-alarm` → running, note (angel) · orchestrator
-- 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
-- 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
 - 2026-11-05 11:20 UTC · `three-layouts-per-screen` PR #355, note (angel) · reconciler
 - 2026-11-05 11:50 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
@@ -1105,6 +1100,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:37 UTC · `settings-sections-everywhere` s7 done, → built (current) · orchestrator
 - 2026-11-07 00:45 UTC · `settings-sections-everywhere` s6 done, s7 done, → complete (current) · foreign-write
 - 2026-11-07 00:45 UTC · `amberx-open-any-url-apk` added (2 steps) (current) · foreign-write
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s1 done, → running (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s2 done (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s3 done (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s4 done (current) · orchestrator
+- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s5 done (current) · orchestrator
 
 ## Token passes (log)
 

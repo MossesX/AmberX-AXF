@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1192,
- "updatedAt": "2026-11-07T00:45:45.554Z",
+ "rev": 1193,
+ "updatedAt": "2026-11-07T00:46:03.551Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -98683,14 +98683,14 @@
    "title": "Plan Studio backfill: every build of the last 12 hours as a live plan",
    "category": "Plans",
    "detail": "Every build started in the last 12h gets a Plan Studio plan (verbatim said, brief, addenda, steps buildId-N, ticks + status from the builds store), linked to its build and pending item. build_start / claude-headless.sh create the plan on launch. Addenda = check-off item with said, summary, sub-steps buildId-N-M, ticked by the orchestrator. Fix: sync must not reset a pending item's status or drop added steps.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:35:07.329Z",
-   "updatedAt": "2026-11-07T00:35:09.260Z",
+   "updatedAt": "2026-11-07T00:45:48.295Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -98731,12 +98731,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:45:44.888Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:45:44.978Z"
     },
     {
      "id": "s2",
@@ -98753,12 +98753,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:45:45.747Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:45:45.816Z"
     },
     {
      "id": "s3",
@@ -98775,12 +98775,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:45:46.539Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:45:46.608Z"
     },
     {
      "id": "s4",
@@ -98797,12 +98797,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:45:47.413Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:45:47.488Z"
     },
     {
      "id": "s5",
@@ -98819,12 +98819,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:45:48.295Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T00:35:07.330Z",
-     "updatedAt": "2026-11-07T00:35:07.330Z"
+     "updatedAt": "2026-11-07T00:45:48.365Z"
     },
     {
      "id": "s6",
@@ -98901,7 +98901,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
