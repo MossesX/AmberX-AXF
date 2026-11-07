@@ -726,7 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s5 done (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s6 done (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s17-16 done (current) · orchestrator
 - 2026-11-06 18:52 UTC · `headless-session-efficiency-shared-chain-control` s18-17 done (current) · orchestrator
@@ -1126,6 +1125,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:02 UTC · `multi-account-headless-workers` s1 done (current) · foreign-write
 - 2026-11-07 05:02 UTC · `merge-conflict-alerts` note (current) · orchestrator
 - 2026-11-07 05:06 UTC · `merge-conflict-alerts` note (current) · foreign-write
+- 2026-11-07 05:07 UTC · `multi-account-headless-workers` s2 done (current) · orchestrator
 
 ## Token passes (log)
 
