@@ -512,7 +512,7 @@
     "src/axf/core/build-origin.d.mts": "06f24a33582e3ff6",
     "src/axf/core/build-origin.mjs": "f2923181df39063a",
     "src/axf/core/build-priority.d.mts": "f4864780baaea162",
-    "src/axf/core/build-priority.mjs": "38865276350bf78d",
+    "src/axf/core/build-priority.mjs": "a5b76c82c4f45a8f",
     "src/axf/core/catalog.ts": "294110261dff040c",
     "src/axf/core/diagnostics.ts": "b46cda9f38e88006",
     "src/axf/core/engines/actions.ts": "947962c3da4fb06b",

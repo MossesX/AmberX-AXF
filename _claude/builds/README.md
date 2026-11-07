@@ -92,6 +92,15 @@ registry is `framework/plan/profiles.json`; `orchestrator.mjs` works on the acti
 `node framework/cli/profiles.mjs current` (or run one command on another profile with `AXF_BUILD_PROFILE=<id>`).
 Console: banner chip / **Build profiles** dialog.
 
+**One profile for the work (Nov 7 2026, Brett: "combine every build profile into ONE new profile on main and delete the
+others"):** `current`, `urgent`, `angel`, `big-dog`, `breakroom` and `refactor` were merged into **`all`** (229 builds,
+`node framework/cli/profiles.mjs merge-all`, safe to re-run). Every build kept its id, status, steps and step states and
+gained `fromProfile` (its old profile); Urgent's builds got `priority: 'P0'`, so urgency is a per-build priority tag, never
+a profile. The base `main-framework` stays. A retired id anywhere (`AXF_BUILD_PROFILE=urgent`, an old brief, a Plan Studio
+plan's build link, the hub registry until its next save, a live merge from older code) reads as `all`
+(`resolveProfile` / `RETIRED_PROFILES` in `framework/plan/builds-store-core.mjs`, mirrored in
+`apps/console-web/server/build_profiles.py`); creating a profile with a retired id is refused.
+
 ## Carry a build on
 
 ```bash

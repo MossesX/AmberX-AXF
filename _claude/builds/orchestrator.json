@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T09:05:17.023Z",
+ "updatedAt": "2026-11-07T09:19:46.854Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -47,6 +47,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
      "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -268,6 +272,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
      "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -537,6 +545,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -743,6 +755,10 @@
     {
      "text": "Reconciler: PR #166 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [
@@ -1655,6 +1671,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
      "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [
@@ -1973,6 +1993,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -12468,6 +12492,10 @@
     {
      "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -12585,6 +12613,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -12707,6 +12739,10 @@
     {
      "text": "Reconciler: branch claude/amberx-empty-shell (PR #118); PR #118; PR #118 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -12825,6 +12861,10 @@
     {
      "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -13051,6 +13091,10 @@
     {
      "text": "Reconciler: branch claude/design-packages-10 (PR #124); PR #124; PR #124 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -13100,6 +13144,10 @@
     {
      "text": "Reconciler: branch claude/build-orchestrator (PR #122); PR #122; PR #122 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -13149,6 +13197,10 @@
     {
      "text": "Reconciler: branch claude/build-profiles (PR #127); PR #127; PR #127 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],
@@ -13271,6 +13323,10 @@
     {
      "text": "Reconciler: branch claude/amberx-appearance-lock (PR #126); PR #126; PR #126 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
     }
    ],
    "approvals": [],

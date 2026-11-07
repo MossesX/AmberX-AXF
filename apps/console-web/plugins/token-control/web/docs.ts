@@ -69,10 +69,10 @@ axf plan add "Voice macros" --field category="Apps > AmberX"     # parked: "put 
 axf plan list --select status=parked
 axf plan comment <plan id> "Needs the recorder first"
 axf plan build <plan id> --field profile=main --field buildId=voice-macros   # an orchestrator build
-axf build list --profile urgent
-axf build step token-control s12 --profile urgent               # tick a step (add "undo" to untick)
-axf build note token-control "halfway" --profile urgent
-axf build approve token-control --field phase=1 --profile urgent
+axf build list --profile all
+axf build step token-control s12 --profile all               # tick a step (add "undo" to untick)
+axf build note token-control "halfway" --profile all
+axf build approve token-control --field phase=1 --profile all
 \`\`\`
 
 \`--profile\` (or \`select.profile\` / \`input.profile\`) picks the build profile; without it the active profile is used. Approving a model switch is Brett's call: only send \`approve\` when he said so.`,
