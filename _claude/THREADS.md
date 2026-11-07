@@ -34,6 +34,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
+| UI Review phone notifications + truthful wake + auto session recording and transcripts (`ui-review-notify-session-audio`) | built, waiting on UI Review | claude/ui-review-notify-audio | #365 | Brett approves 5 items, then the merge queue takes it; a new AmberX APK for the phone half | 2026-11-06 |
+| Fast talk: Gizmo and the console assistant answer plain chat without tools (`assistant-chat-mode`, Current, Opus; r1 and r2 hit the usage limit, r3 unpushed, r4 finished it) | built | `claude/assistant-chat-mode-r4` | see build | Report `_claude/builds/reports/assistant-chat-mode.md`. Plain talk: first word about 1 s, was about 8 s. Waiting on Brett's UI Review, then the merge queue | 2026-11-06 |
 | Every headless build keeps its own Claude login (Current `build-own-login`, Opus; Brett Nov 5 voice: "Yeah, it should be like that already."): per-build `CLAUDE_CONFIG_DIR` copy of the active saved account (`deploy/claude-login.mjs`), inherited OAuth token dropped, account recorded (log, tmux tag, event, build note), `--account` per launch, swarm runner too | built, in the merge queue | `claude/build-own-login-r2` | (see Live build log) | Report `_claude/builds/reports/build-own-login.md`. Brett: none | 2026-11-05 |
 | AI keys console-wide store (`ai-keys-console-store`, Opus; Janitor Joey): AI keys was already one store and never held a key, Brett's 5 are in `~/.claude-accounts`. Added an admin + service-token guard, a per-user store migration (no such files today), `vpsAccounts` on GET /keys, POST /active and /switch for VPS accounts (held), fixed claude-accounts dropping `[token]` / `[api key]` rows. Tokens deliberately not copied: AI keys rotates refresh tokens. Importing them is Brett's call | in progress | claude/ai-keys-console-store-2 | | merge queue, redeploy, verify | 2026-11-05 |
 | AI keys accept new Anthropic key formats (`ai-keys-new-format`, Opus; Brett Nov 5 voice: "Put someone else on it."): `sk-ant-usr…` and any unknown `sk-ant-` API format accepted and checked live (OK / invalid / no credit), `sk-ant-oat` stays a subscription login; shared `axf.anthropic_keys`; report `_claude/builds/reports/ai-keys-new-format.md` | built, in merge queue | claude/ai-keys-new-format-r4 | #356 | merge queue lands it | 2026-11-05 |
@@ -197,6 +199,15 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### UI Review notifications + session audio (`ui-review-notify-session-audio`)
+- **Asked:** AmberX notification for anything ready in UI Review; console_show must really open or fall back to a tappable notification; every session recorded and transcribed automatically.
+- **Model:** Opus. **Branch:** claude/ui-review-notify-audio, PR #365. All 6 steps built.
+- **Left:** Brett approves the 5 UI Review items; the merge queue lands it. After the merge: build and install a new AmberX APK, then try it on the phone (notification tap, overlay start, recorder prompt) and check one real 30-minute part.
+- **Read:** `_claude/builds/reports/ui-review-notify-session-audio.md`.
+- **First message:** "Check PR #365 after it lands: confirm the console image has faster-whisper, the systems check shows Session transcripts, and a real recording gets a transcript."
+### Fast talk (`assistant-chat-mode`, Current, Opus) — branch `claude/assistant-chat-mode-r4`
+All 8 steps done on the branch. Waits on Brett's UI Review, then the merge queue lands it. Do not merge by hand. Check: the AI assistant plugin's `test.py`. After landing, measure once on the phone through AmberX, since the report's figures are from the VPS.
 
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
@@ -705,18 +716,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:39 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
-- 2026-11-06 02:40 UTC · `partial-land-ship-completed-steps-of-a-build` added (0 steps) (current) · pending
-- 2026-11-06 02:41 UTC · `partial-land-ship-completed-steps-of-a-build` note (current) · pending
-- 2026-11-06 03:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 03:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 04:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 04:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 04:33 UTC · `orch-step-click` s3 done, → complete (refactor) · builds-page
 - 2026-11-06 04:33 UTC · `orch-step-click` s3 undone, → running (refactor) · builds-page
@@ -1105,6 +1104,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 02:18 UTC · `ui-asset-designer` s5 done (current) · orchestrator
 - 2026-11-07 02:19 UTC · `ui-asset-designer` PR #376 (current) · builds-live
 - 2026-11-07 02:19 UTC · `ui-asset-designer` s6 done (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` added (10 steps) (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` → running (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` branch claude/icon-browser-manager (current) · orchestrator
+- 2026-11-07 02:52 UTC · `icon-browser-manager` note (current) · orchestrator
+- 2026-11-07 03:07 UTC · `icon-browser-manager` s1 done (current) · orchestrator
+- 2026-11-07 03:16 UTC · `icon-browser-manager` s2 done (current) · orchestrator
+- 2026-11-07 03:31 UTC · `icon-browser-manager` s3 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s4 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s5 done (current) · orchestrator
+- 2026-11-07 03:55 UTC · `icon-browser-manager` s6 done (current) · orchestrator
+- 2026-11-07 04:00 UTC · `icon-browser-manager` PR #377 (current) · builds-live
+- 2026-11-07 04:00 UTC · `icon-browser-manager` note (current) · orchestrator
 
 ## Token passes (log)
 

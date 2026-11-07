@@ -461,5 +461,34 @@ c.put("/p/settings", json={"waitForLook": False})
 check(c.get("/p/predicted?build=other").json()["verdict"]["go"], "setting off = every build goes")
 check(stored_ok(), "stores conform after the predicted flow")
 
+# ---- phone notifications (build ui-review-notify-session-audio)
+raised: list[dict] = []
+cleared: list[list[str]] = []
+n = mod.notify
+n.cx = types.SimpleNamespace(raise_alert=lambda a: raised.append(a) or {}, resolve_alerts=lambda k: cleared.append(k), log=lambda *a, **k: None)
+item = lambda gid, st="waiting", build="": {"id": f"i-{len(build)}", "group": gid, "status": st, "build": build}  # noqa: E731
+group = {"id": "g-1", "name": "Notes check - Nov 6 8:20 PM"}
+n.ready({"items": [item("g-1", build="notes-views"), item("g-1"), item("g-2"), item("g-1", "approved")], "groups": [group]}, group)
+check(len(raised) == 1, "one alert per group")
+a = raised[-1]
+check(a["title"] == "notes-views: 2 items waiting", f"build name + count ({a['title']})")
+check(a["severity"] == "warning" and a["key"] == "ui-review:group:g-1", "loud enough for the phone, one key per group")
+check(a["link"].endswith("/?axf-review-group=g-1") and a["meta"]["label"] == "UI Review", "the tap opens this group")
+check(cleared[-1] == ["ui-review:group:g-1"], "read alerts come back: resolved first")
+n.ready({"items": [item("g-1")], "groups": [group]}, group)
+check(raised[-1]["title"].startswith("Notes check") and "1 item waiting" in raised[-1]["title"], "no build: the group's name, singular")
+before = len(raised)
+n.ready({"items": [item("g-1", "approved")], "groups": [group]}, group)
+check(len(raised) == before, "nothing waiting: no buzz")
+n.decided({"items": [item("g-1", "approved")], "groups": [group]}, ["g-1", ""])
+check(cleared[-1] == ["ui-review:group:g-1"], "all decided: the notification goes away")
+before = len(raised)
+n.decided({"items": [item("g-1")], "groups": [group]}, ["g-1"])
+check(len(raised) == before + 1 and "1 item" in raised[-1]["title"], "some left: the count updates")
+plugin_services.provide("axf.claude-settings@1", types.SimpleNamespace(get=lambda: {"settings": [{"key": "notify.uiReview", "value": False}]}), "claude-settings")
+before = len(raised)
+n.ready({"items": [item("g-1")], "groups": [group]}, group)
+check(len(raised) == before, "setting off: no notification")
+
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

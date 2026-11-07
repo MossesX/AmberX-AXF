@@ -90167,6 +90167,7 @@
    "pendingId": "",
    "branch": "claude/assistant-chat-mode-r4",
    "pr": "#361",
+   "mergedAt": "2026-11-07T04:09:27Z",
    "createdAt": "2026-11-05T18:36:01.911Z",
    "updatedAt": "2026-11-07T04:29:36.015Z",
    "builtAt": "2026-11-06T18:57:48.129Z",
@@ -90408,8 +90409,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "mergedAt": "2026-11-07T04:09:27Z"
+   "copies": []
   },
   {
    "id": "build-own-login",
@@ -98201,6 +98201,7 @@
    "pendingId": "",
    "branch": "claude/claude-badge-vps",
    "pr": "#366",
+   "mergedAt": "2026-11-07T04:24:24Z",
    "createdAt": "2026-11-06T20:18:34.992Z",
    "updatedAt": "2026-11-07T04:29:36.015Z",
    "builtAt": "2026-11-06T20:31:14.742Z",
@@ -98460,8 +98461,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "mergedAt": "2026-11-07T04:24:24Z"
+   "copies": []
   },
   {
    "id": "notifications-control-panel",

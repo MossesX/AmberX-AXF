@@ -28,6 +28,8 @@ from axf import anthropic_keys as ak
 from axf.contracts import assistant as contract
 from axf_server import storage
 
+from . import chatmode
+
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_AI_ASSISTANT_DIR", ROOT / ".axf-console" / "plugins" / "ai-assistant"))
 CONV = DATA / "conversations"
@@ -69,6 +71,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "sessionHost": "local",
     "userDailyTokens": 50000,
     "keepInterrupted": True,
+    "chatMode": deepcopy(chatmode.DEFAULTS),
     "suggestions": [
         "Explain how the theme engine compiles a color-theme asset",
         "Where are console plugins loaded, and how do I write one?",
@@ -142,6 +145,7 @@ def load_config() -> dict[str, Any]:
         cfg = {**deepcopy(DEFAULT_CONFIG), **raw}
         cfg["params"] = {**DEFAULT_CONFIG["params"], **(raw.get("params") or {})}
         cfg["tools"] = {**DEFAULT_CONFIG["tools"], **(raw.get("tools") or {})}
+        cfg["chatMode"] = chatmode.normalize(raw.get("chatMode"))
         return cfg
 
 

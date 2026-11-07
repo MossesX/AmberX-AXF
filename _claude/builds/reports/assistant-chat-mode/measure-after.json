@@ -1,0 +1,200 @@
+[
+ {
+  "label": "before",
+  "text": "hi",
+  "firstMs": 15596,
+  "ms": 18945,
+  "in": 2,
+  "out": 555,
+  "mode": {
+   "mode": "tools",
+   "reason": "tools are forced"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Yo boss, Amber here. What's good, kid?\n\nStartup threw two wicked annoying things:\n\n- **Bui"
+ },
+ {
+  "label": "before",
+  "text": "hi",
+  "firstMs": 6661,
+  "ms": 9715,
+  "in": 2,
+  "out": 479,
+  "mode": {
+   "mode": "tools",
+   "reason": "tools are forced"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Yo Brett, Amber here. What's good, kid?\n\nTwo things blew up at startup:\n\n- **Builds live i"
+ },
+ {
+  "label": "before",
+  "text": "hi",
+  "firstMs": 7977,
+  "ms": 12115,
+  "in": 2,
+  "out": 717,
+  "mode": {
+   "mode": "tools",
+   "reason": "tools are forced"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Yo boss, Amber here. Wicked quiet on your end, so what are we doin'?\n\nThe session start tu"
+ },
+ {
+  "label": "chat",
+  "text": "hi",
+  "firstMs": 1108,
+  "ms": 1248,
+  "in": 2,
+  "out": 16,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Hi Brett! What can I do for you?"
+ },
+ {
+  "label": "chat",
+  "text": "tell me a quick joke",
+  "firstMs": 1171,
+  "ms": 1315,
+  "in": 2,
+  "out": 26,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Why do programmers prefer dark mode? Because light attracts bugs."
+ },
+ {
+  "label": "chat",
+  "text": "what do you think about pizza?",
+  "firstMs": 967,
+  "ms": 1975,
+  "in": 2,
+  "out": 79,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Pizza's hard to beat, Brett: simple ingredients, endless variations, and it's somehow stil"
+ },
+ {
+  "label": "chat",
+  "text": "I had a rough day at work",
+  "firstMs": 1174,
+  "ms": 1618,
+  "in": 2,
+  "out": 57,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "I'm sorry, Brett, that sounds draining, and at least it's Friday evening now. Want to tell"
+ },
+ {
+  "label": "chat",
+  "text": "hey how's it going?",
+  "firstMs": 920,
+  "ms": 1341,
+  "in": 2,
+  "out": 34,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Going well, thanks Brett! Friday evening and all quiet on my end. What's on your mind?"
+ },
+ {
+  "label": "chat-followup",
+  "text": "my dog is called Rex",
+  "firstMs": 955,
+  "ms": 1306,
+  "in": 2,
+  "out": 28,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Rex is a great name, a proper classic dog name! What kind of dog is he?"
+ },
+ {
+  "label": "chat-followup",
+  "text": "what's my dog called?",
+  "firstMs": 958,
+  "ms": 1055,
+  "in": 2,
+  "out": 12,
+  "mode": {
+   "mode": "chat",
+   "reason": "plain talk"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "Your dog is called Rex!"
+ },
+ {
+  "label": "tools-group",
+  "text": "read the README in the repo and tell me the first heading",
+  "firstMs": 2523,
+  "ms": 2621,
+  "in": 4,
+  "out": 152,
+  "mode": {
+   "mode": "tools",
+   "reason": "asked: read",
+   "groups": [
+    "repo"
+   ]
+  },
+  "model": "claude-opus-5-5",
+  "tools": 1,
+  "reply": "The first heading in `README.md:1` is:\n\n```markdown\n# AmberX AXF \u2014 cross-platform app fram"
+ },
+ {
+  "label": "tools-forced",
+  "text": "read the README in the repo and tell me the first heading",
+  "firstMs": 8868,
+  "ms": 9695,
+  "in": 4,
+  "out": 521,
+  "mode": {
+   "mode": "tools",
+   "reason": "tools are forced"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 0,
+  "reply": "First heading in `README.md:1`, kid:\n\n```\n# AmberX AXF \u2014 cross-platform app framework (v0."
+ },
+ {
+  "label": "escalate",
+  "text": "how many plugins are installed in the console right now?",
+  "firstMs": 1748,
+  "ms": 27921,
+  "in": 10,
+  "out": 3011,
+  "mode": {
+   "mode": "tools",
+   "reason": "asked: the console"
+  },
+  "model": "claude-opus-5-5",
+  "tools": 2,
+  "reply": "I'll check how the repository records plugins and which ones the console loads.The folder "
+ }
+]

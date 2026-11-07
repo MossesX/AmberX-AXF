@@ -806,13 +806,16 @@ public class WatchService extends Service {
         return b.build();
     }
 
-    /** A console alert: tap opens the Dev Console in the browser (its own sign-in), never inside the app. */
+    /**
+     * A console alert: tap opens its link (UI Review on a group, the Dev Console by default) in the browser with its own
+     * sign-in, never inside the app. An update to one already showing (a new item count) replaces it without a second buzz.
+     */
     private Notification consoleAlert(HubRules.ConsoleAlert c) {
-        Intent view = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(HubRules.CONSOLE)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent view = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(c.link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pi = PendingIntent.getActivity(this, ("console:" + c.key).hashCode(), view, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        String label = "critical".equals(c.severity) || "error".equals(c.severity) ? "Console error" : "Console warning";
+        String label = c.label;
         return new NotificationCompat.Builder(this, CH_CONSOLE)
-            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label + ": " + c.title).setContentText(c.body)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label + ": " + c.title).setContentText(c.body).setOnlyAlertOnce(true)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(c.body))
             .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pi).setAutoCancel(true)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
