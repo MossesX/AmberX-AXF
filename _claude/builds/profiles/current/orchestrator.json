@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T01:31:16.498Z",
+ "updatedAt": "2026-11-07T01:31:33.030Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20195,10 +20195,10 @@
    "hidden": false,
    "source": "headless",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/notes-tasks-calendar",
+   "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:30:26.731Z",
+   "updatedAt": "2026-11-07T01:31:30.313Z",
    "builtAt": "",
    "notes": [
     {

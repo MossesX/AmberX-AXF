@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 22:49 UTC · `build-own-login` note (current) · orchestrator
 - 2026-11-05 22:49 UTC · `build-own-login` branch claude/build-own-login-r2, PR #357 (current) · builds-live
 - 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built, branch claude/build-own-login-r2, PR #357 (current) · builds-live
 - 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built (current) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10 done, s10-3 done (current) · orchestrator
 - 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` → built (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` note (current) · foreign-write
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` branch claude/notes-tasks-calendar, PR #374 (current) · builds-live
 
 ## Token passes (log)
 

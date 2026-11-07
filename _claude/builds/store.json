@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1207,
- "updatedAt": "2026-11-07T01:31:16.498Z",
+ "rev": 1208,
+ "updatedAt": "2026-11-07T01:31:33.030Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -101913,10 +101913,10 @@
    "hidden": false,
    "source": "headless",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/notes-tasks-calendar",
+   "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:30:26.731Z",
+   "updatedAt": "2026-11-07T01:31:30.313Z",
    "builtAt": "",
    "notes": [
     {
@@ -102300,7 +102300,7 @@
    },
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
