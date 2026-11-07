@@ -705,8 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` branch claude/amberx-approvals-fix, PR #353 (urgent) · builds-live
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s2 done (urgent) · orchestrator
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` s3 done (urgent) · orchestrator
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` s4 done (urgent) · orchestrator
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` s5 done (urgent) · orchestrator
@@ -1105,6 +1103,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:10 UTC · `badges-notify-followup` added (4 steps) (current) · foreign-write
 - 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · orchestrator
 - 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · foreign-write
+- 2026-11-07 00:13 UTC · `claude-settings-tabs-veto` added (6 steps) (current) · orchestrator
+- 2026-11-07 00:13 UTC · `claude-settings-tabs-veto` branch claude/claude-settings-tabs-veto (current) · builds-live
 
 ## Token passes (log)
 
