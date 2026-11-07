@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1217,
- "updatedAt": "2026-11-07T02:18:23.536Z",
+ "rev": 1218,
+ "updatedAt": "2026-11-07T02:19:11.864Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -102364,9 +102364,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-asset-designer",
-   "pr": "",
+   "pr": "#376",
    "createdAt": "2026-11-07T02:11:01.038Z",
-   "updatedAt": "2026-11-07T02:18:22.407Z",
+   "updatedAt": "2026-11-07T02:19:11.008Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -103361,7 +103361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
