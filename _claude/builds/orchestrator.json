@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T16:17:57.360Z",
+ "updatedAt": "2026-11-07T16:18:08.578Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67128,7 +67128,7 @@
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:17:56.811Z",
+   "updatedAt": "2026-11-07T16:18:04.263Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -67261,6 +67261,60 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw6lmsir0c3s9k"
+    },
+    {
+     "id": "s7",
+     "text": "API Browser: one generated API registry (control@1 targets, REST, MCP, CLI, plugin commands) + server route",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6lxmde01t3b4"
+    },
+    {
+     "id": "s8",
+     "text": "API Browser plugin: Grid, Tree, Cards, Coverage views + Try it panel (policy-aware)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6lxn4s014cr5"
+    },
+    {
+     "id": "s9",
+     "text": "API Browser: three looks as assets to UI Review (--choices), tests, docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw6lxnur01p48e"
     }
    ]
   }
