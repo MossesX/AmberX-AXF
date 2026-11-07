@@ -204,8 +204,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 Asked: Approve / Deny in place in the console (never bounce to axHub), UI Review approve likewise, plus addenda 1-5 (full
 words on build `console-approvals-in-place`). Model Opus. Branch `claude/approvals-in-place-r2` has all of it. Left: Brett's UI
 Review pick, then the merge queue. After deploy, the first real tap proves the relay against the live hub. Gaps are
-in the report. Checks: `python3 apps/console-web/plugins/approvals-banner/test.py`, `python3
-apps/console-web/plugins/ui-review/test.py`. First message: "Carry on approvals-in-place-r2: read its report and land it."
+in the report. Checks: the `test.py` of the approvals banner and UI Review plugins. First message: "Carry on approvals-in-place-r2: read its report and land it."
 
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).

@@ -40,6 +40,7 @@
       "AXF_UI_REVIEW_DIR"
     ],
     "mentions": [
+      "CLAUDE.md",
       "apps/console-web/plugins/README.md",
       "_claude/shared/rules/RULES.md"
     ]
