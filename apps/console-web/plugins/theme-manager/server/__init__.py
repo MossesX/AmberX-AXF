@@ -178,20 +178,67 @@ def _skins(*args: str) -> Any:
 
 @router.get("/skins")
 def skins() -> dict[str, Any]:
-    """The skins that can be used and every app's skin switch."""
-    return {"skins": _skins("list"), "apps": _skins("apps")}
+    """The skins that can be used, every app's skin switch and scopes, and the hub-wide skin."""
+    return {"skins": _skins("list"), "apps": _skins("apps"), "global": _skins("global").get("global")}
+
+
+def _scope_args(scope: str | None) -> list[str]:
+    """A ui:<id> / plugin:<id> scope as CLI arguments; the CLI refuses anything else."""
+    return ["--scope", str(scope)] if scope else []
+
+
+@router.get("/skins/coverage")
+def skin_coverage() -> Any:
+    """skin-coverage@1: how a skin reaches every registered asset type (slot / parts / reference / bundle / none)."""
+    return _skins("coverage")
+
+
+@router.get("/skins/covers/{skin}")
+def skin_covers(skin: str) -> Any:
+    """What one skin (or design package) sets or styles, type by type: 'what does the Windows skin cover?'."""
+    return _skins("covers", skin)
+
+
+@router.get("/skins/global")
+def skin_global() -> Any:
+    """The hub-wide skin (every app that follows it)."""
+    return _skins("global")
+
+
+@router.post("/skins/global")
+def skin_global_set(body: dict[str, Any] = Body(...)) -> Any:
+    """Set the hub-wide skin, body {skin} ('off' clears it): 'make Windows the hub-wide skin'."""
+    return _skins("global", str(body.get("skin") or "off"))
+
+
+@router.get("/skins/{app}/at")
+def skin_at(app: str, scope: str | None = None) -> Any:
+    """Which skin is in force in an app, or in one of its screens / plugins (scope=ui:<id> | plugin:<id>), and which level decided."""
+    return _skins("at", app, *_scope_args(scope))
+
+
+@router.post("/skins/{app}/follow")
+def skin_follow(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Follow the hub-wide skin while Use skin is off, body {on}: 'let the console follow the hub skin'."""
+    return _skins("follow", app, "on" if body.get("on", True) else "off")
+
+
+@router.post("/skins/{app}/inherit")
+def skin_inherit(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """A screen or plugin follows its parent again, body {scope: ui:<id> | plugin:<id>}."""
+    return _skins("inherit", app, str(body.get("scope") or ""))
 
 
 @router.post("/skins/{app}/use")
 def skin_use(app: str, body: dict[str, Any] = Body(...)) -> Any:
-    """Use skin on in one app, body {skin}: 'use the Windows skin in the console'."""
-    return _skins("use", app, str(body.get("skin") or ""))
+    """Use skin on in one app, body {skin, scope?}: 'use the Windows skin in the console', 'skin the notes plugin with Windows' (scope=plugin:<id> | ui:<id>)."""
+    return _skins("use", app, str(body.get("skin") or ""), *_scope_args(body.get("scope")))
 
 
 @router.post("/skins/{app}/off")
-def skin_off(app: str) -> Any:
-    """Use skin off: back to that app's own look."""
-    return _skins("off", app)
+def skin_off(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Use skin off: back to that app's own look; body {scope} = no skin inside that screen / plugin only."""
+    return _skins("off", app, *_scope_args((body or {}).get("scope")))
 
 
 @router.post("/skins/{app}/back")
