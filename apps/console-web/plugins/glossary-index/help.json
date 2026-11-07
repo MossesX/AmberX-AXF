@@ -4,7 +4,7 @@
   "id": "glossary-index-help",
   "name": "Glossary & Index help",
   "version": "0.1.0",
-  "description": "Help mode entries (help@1) for the Glossary & Index plugin: the page, its three views, the filters, the detail panel and its settings.",
+  "description": "Help mode entries (help@1) for the Glossary, Index & Demos plugin: the glossary page, its three views, the filters, the detail panel and its demonstration buttons, the Demonstration Designer, the Book Builder, the player window and the settings.",
   "author": "Brett",
   "tags": [
     "help"
@@ -77,6 +77,133 @@
         "title": "Show more",
         "text": "Draws the next page of entries; set the page size in the plugin's settings.",
         "kind": "button"
+      },
+      {
+        "target": "view:demo-designer",
+        "title": "Demonstration Designer",
+        "text": "Every demonstration and clip. Generate a demonstration from any glossary entry (no model, no tokens), edit its steps, narration, highlights and actions, play it against the live UI, chain demonstrations into tours, and keep every recorded clip as a tagged asset.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:book-builder",
+        "title": "Book Builder",
+        "text": "Write a book from the glossary: chapters of entries, demonstrations and clips, each with its minutes. Preview any item live in a floating window, play the whole book, hand it to the walkthrough recorder and generate its documentation.",
+        "kind": "screen"
+      },
+      {
+        "target": "generate-demonstration",
+        "title": "Generate demonstration",
+        "text": "Writes a narrated demonstration of this entry from its own words, where it appears, its API and its links, saves it as an asset and opens it in the Demonstration Designer. No model, no tokens.",
+        "more": "The first step moves the console to the entry and highlights it; the next steps say what it does, where it is, how to reach it from outside (REST, MCP, CLI), what it contains and what is related. Edit any of it afterwards.",
+        "kind": "button"
+      },
+      {
+        "target": "play-demonstration",
+        "title": "Play demonstration",
+        "text": "Plays this entry's demonstration in the floating player: the console moves to each step, highlights the control and reads the words out loud.",
+        "kind": "button"
+      },
+      {
+        "target": "add-to-book",
+        "title": "Add to book…",
+        "text": "Puts this entry (or demonstration, or clip) into a chapter of one of your books; pick the book and the chapter, or start a new book.",
+        "kind": "button"
+      },
+      {
+        "target": "generate-from-an-entry",
+        "title": "Generate from an entry",
+        "text": "Search the glossary and index for the thing to demonstrate; its demonstration is written and saved at once.",
+        "kind": "button"
+      },
+      {
+        "target": "blank",
+        "title": "Blank",
+        "text": "Starts an empty demonstration you write by hand: steps of say, do (a console action), target (what to highlight), a highlight label and a wait.",
+        "kind": "button"
+      },
+      {
+        "target": "only-generated",
+        "title": "Only generated",
+        "text": "Lists only demonstrations the glossary generated (not the ones written by hand).",
+        "kind": "toggle"
+      },
+      {
+        "target": "regenerate",
+        "title": "Regenerate",
+        "text": "Writes this demonstration again from its glossary entry; edits to the steps are replaced. Use it after the entry's source changed.",
+        "kind": "button"
+      },
+      {
+        "target": "record-clip",
+        "title": "Record clip…",
+        "text": "Registers the clip the recorder made of this demonstration: give it the video and its length; the clip becomes an asset tagged with everything the demonstration shows.",
+        "kind": "button"
+      },
+      {
+        "target": "register-a-clip",
+        "title": "Register a clip",
+        "text": "Registers a clip made by the recorder or anything else as a clip asset: its kind, source, video and length; the keyword set is extracted for it.",
+        "kind": "button"
+      },
+      {
+        "target": "voice-control",
+        "title": "Voice control",
+        "text": "The player listens with the browser's speech recognition: say next, back, repeat or stop. The browser asks for the microphone once.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-book",
+        "title": "New book…",
+        "text": "The book wizard: title, rough total length, minutes per chapter, how many chapters, style, the look to record in, narrator voice, the documentation to generate with it and the outputs. The chapters start empty.",
+        "kind": "button"
+      },
+      {
+        "target": "preview-book",
+        "title": "Preview book",
+        "text": "Plays the whole book in the floating player: each chapter's intro, then every item's steps, against the live UI.",
+        "kind": "button"
+      },
+      {
+        "target": "record-video",
+        "title": "Record video",
+        "text": "Hands the book to the walkthrough recorder: its walkthrough is written beside the book and the Walkthrough producer agent gets the job with the chapters as its flow.",
+        "kind": "button"
+      },
+      {
+        "target": "generate-documentation",
+        "title": "Generate documentation",
+        "text": "Writes the book's documentation at the depth, format and interactivity ticked: from one page up to interactive HTML + TypeScript with runnable API examples and live components. The files are listed in a docs asset and open from here.",
+        "kind": "button"
+      },
+      {
+        "target": "also-generate-documentation",
+        "title": "Also generate documentation",
+        "text": "On: documentation is generated alongside the book from the same sources and kept in sync. Pick how deep, the format and how interactive below.",
+        "kind": "toggle"
+      },
+      {
+        "target": "add-chapter",
+        "title": "Add chapter",
+        "text": "Adds an empty chapter at the end; rename it, give it minutes and an intro, then drag entries in.",
+        "kind": "button"
+      },
+      {
+        "target": "content",
+        "title": "Content picker",
+        "text": "Everything in the glossary and index, plus every demonstration and clip. Search, filter by kind, then drag a row into a chapter or tap Add.",
+        "kind": "control"
+      },
+      {
+        "target": "preview",
+        "title": "Preview",
+        "text": "Opens the real screen of this item in a floating window, with real data: the live sandbox. A demonstration or clip plays instead.",
+        "kind": "button"
+      },
+      {
+        "target": "glossary-index-demos",
+        "title": "Demonstration settings",
+        "text": "Whether the player reads each step out loud, moves the console to each step, advances by itself when the voice finishes, and listens for voice commands by default.",
+        "kind": "tab"
       }
     ],
     "intros": [
@@ -95,6 +222,40 @@
           {
             "say": "Switch between the A to Z Glossary, the categorized Index and the Grid with the tabs. Tap any entry to see what it does, where it appears, its API and what it links to.",
             "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "demo-designer",
+        "title": "Demonstration Designer",
+        "steps": [
+          {
+            "say": "Generate a demonstration from any glossary entry here, or start a blank one.",
+            "target": "generate-from-an-entry"
+          },
+          {
+            "say": "Pick one on the left to edit its steps, then Play it against the live UI.",
+            "target": "view:demo-designer"
+          },
+          {
+            "say": "The Clips tab keeps every recorded clip as a tagged asset."
+          }
+        ]
+      },
+      {
+        "screen": "book-builder",
+        "title": "Book Builder",
+        "steps": [
+          {
+            "say": "New book opens the wizard: length, chapters, style, documentation.",
+            "target": "new-book"
+          },
+          {
+            "say": "Drag anything from the content picker into a chapter, or tap Add.",
+            "target": "content"
+          },
+          {
+            "say": "Preview plays the whole book; Record video and Generate documentation make the outputs."
           }
         ]
       }

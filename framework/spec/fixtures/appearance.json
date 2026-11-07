@@ -47,7 +47,11 @@
     "sizing",
     "agent-card",
     "job-type",
-    "card"
+    "card",
+    "demonstration",
+    "book",
+    "clip",
+    "docs"
   ],
   "parsed": {
     "full": {

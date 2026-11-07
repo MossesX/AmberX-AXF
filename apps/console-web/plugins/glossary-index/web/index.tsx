@@ -9,41 +9,25 @@
  *  - Grid: every entry in a sortable grid grouped by kind
  * Search (every word must match), a kind filter, sort, "only undescribed" and drafts switches work in every view. The
  * detail panel shows what an entry is, what it does, where it appears, its API (REST, MCP, CLI), what it links to and
- * what links to it; links jump to that entry.
+ * what links to it; links jump to that entry. Every entry has Generate demonstration (demonstration@1, played against
+ * the live UI) and Add to book…; the Demonstration Designer (designer.tsx), the Book Builder (books.tsx) and the player
+ * (player.tsx) are the other views of this plugin.
  */
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Icon, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
-import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './glossary-index.css';
 import { KEYS, PAGE_SIZES, SORTS, VIEWS, apiGroups, byKind, byLetter, filterEntries, indexTree, plural, sortEntries, type Catalog, type Entry, type IndexNode, type SortBy, type View } from './core';
 import { appMenu } from './menu';
+import { DEMO_KEYS, FOLDER, generateDemo, loadCatalog as load, loadDemos, rebuildCatalog as rebuild, useCatalog, useDemoStore } from './demos-core';
+import { DesignerPage, openInDesigner } from './designer';
+import { ADD_TO_BOOK_DIALOG, AddToBook, BookWizard, BooksPage, WIZARD_DIALOG, openBook } from './books';
+import { PLAYER_TAB, PlayerWindow, playAsset, registerPlayer } from './player';
 
-const FOLDER = 'glossary-index';
 const ID = 'ai.amberx.axf.console.glossary-index';
-const api = pluginApi(FOLDER, 'Glossary & Index');
-
-/* ---------------- store: the catalog, loaded once per page visit ---------------- */
-
-interface State { cat: Catalog | null; error: string; loading: boolean }
-let st: State = { cat: null, error: '', loading: false };
-const subs = new Set<() => void>();
-const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
-const useCatalog = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
-
-async function load(force = false) {
-  if (st.loading || (st.cat && !force)) return;
-  set({ loading: true, error: '' });
-  try { set({ cat: await api.call<Catalog>('catalog'), loading: false }); } catch (e) { set({ error: (e as Error).message, loading: false }); }
-}
-async function rebuild(): Promise<string> {
-  const r = await api.post('rebuild', { reason: 'console' }) as { wrote?: boolean; total?: number; diff?: { added: number; changed: number; removed: number } };
-  await load(true);
-  return r.wrote ? `Rebuilt: ${plural(r.total ?? 0, 'entry', 'entries')} (+${r.diff?.added ?? 0} new, ${r.diff?.changed ?? 0} changed, ${r.diff?.removed ?? 0} gone).` : 'Already up to date.';
-}
 
 /* ---------------- small helpers ---------------- */
 
@@ -66,6 +50,16 @@ function Detail({ entry, cat, onOpen }: { entry: Entry; cat: Catalog; onOpen: (i
   const byId = useMemo(() => new Map(cat.entries.map((e) => [e.id, e])), [cat]);
   const linkedFrom = useMemo(() => cat.entries.filter((e) => e.related?.includes(entry.id)).map((e) => e.id), [cat, entry.id]);
   const [copied, setCopied] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState('');
+  const rt = useRuntime();
+  const { items } = useDemoStore();
+  useEffect(() => { void loadDemos(); }, []);
+  const isDemoKind = ['demonstration', 'book', 'clip', 'docs'].includes(entry.kind);
+  const demoId = entry.id.replace(/^[a-z-]+:/, '');
+  const existing = items.demonstration.find((d) => d.about === entry.id);
+  const bookRef = isDemoKind ? (entry.kind === 'book' || entry.kind === 'docs' ? '' : `${entry.kind}/${demoId}`) : entry.id;
+  const generate = () => { setBusy(true); setNote(''); generateDemo(entry.id, true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => setNote(e.message)).finally(() => setBusy(false)); };
   const link = (id: string) => {
     const e = byId.get(id);
     return e ? <li key={id}><button type="button" data-fx-row className="axp-glossary-index__link" onClick={() => onOpen(id)}>{e.term}</button> <KindChip kind={e.kind} kinds={cat.kinds} /></li> : null;
@@ -98,9 +92,20 @@ function Detail({ entry, cat, onOpen }: { entry: Entry; cat: Catalog; onOpen: (i
       {!!linkedFrom.length && <section><h3>Mentioned by</h3><ul className="axp-glossary-index__links">{linkedFrom.slice(0, 40).map(link)}</ul></section>}
       {!!children.length && <section><h3>Contains ({children.length})</h3><ul className="axp-glossary-index__links">{children.slice(0, 80).map(link)}</ul></section>}
       {!!entry.keywords.length && <p className="axp-glossary-index__keywords">{entry.keywords.map((k) => <Chip key={k}>{k}</Chip>)}</p>}
-      <div className="axp-glossary-index__detail-actions">
+      <div className="axp-glossary-index__detail-actions" role="toolbar" aria-label="Entry actions">
+        {isDemoKind
+          ? <>
+            {entry.kind !== 'docs' && <Button size="sm" tone="primary" icon="play" onClick={() => void playAsset(entry.kind as 'demonstration' | 'book' | 'clip', demoId)}>Play</Button>}
+            {entry.kind === 'book' && <Button size="sm" icon="edit" onClick={() => { openBook(demoId); rt.navigate('book-builder'); }}>Open in Book Builder</Button>}
+            {(entry.kind === 'demonstration' || entry.kind === 'clip') && <Button size="sm" icon="edit" onClick={() => { openInDesigner(entry.kind as 'demonstration' | 'clip', demoId); rt.navigate('demo-designer'); }}>Open in the designer</Button>}
+          </>
+          : existing
+            ? <><Button size="sm" tone="primary" icon="play" onClick={() => void playAsset('demonstration', existing.id)}>Play demonstration</Button><Button size="sm" icon="edit" onClick={() => { openInDesigner('demonstration', existing.id); rt.navigate('demo-designer'); }}>Edit demonstration</Button></>
+            : <Button size="sm" tone="primary" icon="sparkles" busy={busy} onClick={generate}>Generate demonstration</Button>}
+        {bookRef && <Button size="sm" icon="file" onClick={() => rt.openDialog(ADD_TO_BOOK_DIALOG, { ref: bookRef })}>Add to book…</Button>}
         <Button size="sm" icon="copy" onClick={() => { void navigator.clipboard?.writeText(entry.id); setCopied(true); setTimeout(() => setCopied(false), 1500); }}>{copied ? 'Copied' : 'Copy entry id'}</Button>
       </div>
+      {note && <p className="fx-muted" role="status">{note}</p>}
     </article>
   );
 }
@@ -297,8 +302,21 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   builtWith: { model: 'opus', builtAt: '2026-11-07' },
-  views: { 'glossary-index': { title: 'Glossary & Index', icon: 'list', render: () => <GlossaryPage /> } },
-  nav: { label: 'Plugins', items: [{ id: 'glossary-index', label: 'Glossary & Index', icon: 'list', view: 'glossary-index' }] },
+  views: {
+    'glossary-index': { title: 'Glossary & Index', icon: 'list', render: () => <GlossaryPage /> },
+    'demo-designer': { title: 'Demonstration Designer', icon: 'play', render: () => <DesignerPage /> },
+    'book-builder': { title: 'Book Builder', icon: 'file', render: () => <BooksPage /> },
+  },
+  dialogs: {
+    [WIZARD_DIALOG]: { title: 'New book', icon: 'file', render: (_props, close) => <BookWizard close={close} /> },
+    [ADD_TO_BOOK_DIALOG]: { title: 'Add to a book', icon: 'file', searchable: false, render: (props, close) => <AddToBook props={props} close={close} /> },
+  },
+  tabs: { [PLAYER_TAB]: () => <PlayerWindow /> },
+  nav: { label: 'Plugins', items: [
+    { id: 'glossary-index', label: 'Glossary & Index', icon: 'list', view: 'glossary-index' },
+    { id: 'demo-designer', label: 'Demonstration Designer', icon: 'play', view: 'demo-designer' },
+    { id: 'book-builder', label: 'Book Builder', icon: 'file', view: 'book-builder' },
+  ] },
   settingsTabs: [{ id: 'glossary-index', label: 'Glossary & Index', icon: 'list', order: 92, parent: 'plugins' }],
   settings: [{
     id: 'glossary-index.display', label: 'Display', icon: 'eye', tab: FOLDER, order: 10,
@@ -308,7 +326,24 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.limit, label: 'Entries per page', kind: 'choice', default: '250', options: PAGE_SIZES.map((n) => ({ value: String(n), label: String(n) })), description: 'How many entries the glossary and the grid draw before Show more.' },
       { key: KEYS.drafts, label: 'Show draft help entries', kind: 'toggle', default: true, description: 'Include controls whose help text is still a draft (generated from the code, not reviewed yet).' },
     ],
+  }, {
+    id: 'glossary-index.demos', label: 'Demonstrations', icon: 'play', tab: FOLDER, order: 20,
+    settings: [
+      { key: DEMO_KEYS.speak, label: 'Read each step out loud', kind: 'toggle', default: true, description: 'The player speaks every step with the browser\'s voice (a Piper voice is used when the recorder films it).' },
+      { key: DEMO_KEYS.run, label: 'Move the console to each step', kind: 'toggle', default: true, description: 'Run each step\'s action (open the screen, the settings tab, the dialog) so the highlight lands on the real control.' },
+      { key: DEMO_KEYS.auto, label: 'Advance by itself', kind: 'toggle', default: true, description: 'Go to the next step when the voice finishes; off = Next by hand (or by voice).' },
+      { key: DEMO_KEYS.voice, label: 'Voice control on by default', kind: 'toggle', default: false, description: 'Start listening when a demonstration plays: say next, back, repeat or stop (the browser asks for the microphone).' },
+    ],
   }],
+  register(rt) {
+    registerPlayer(rt);
+    // ?axf-view=<id>: open that view on load (the generated docs' live frames and Watch live deep-link the console this way)
+    try { const v = new URLSearchParams(globalThis.location?.search ?? '').get('axf-view'); if (v && /^[a-z][a-z0-9-]*$/.test(v)) setTimeout(() => rt.navigate(v), 0); } catch { /* no window */ }
+    rt.actions.register('demo.generate', ([entry]) => { if (!entry) { rt.navigate('demo-designer'); return; } void generateDemo(decodeURIComponent(entry), true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => rt.toast(e.message, 'danger', 'Demonstration')); }, { label: 'Generate a demonstration of a glossary entry', params: true });
+    rt.actions.register('book.new', () => rt.openDialog(WIZARD_DIALOG), { label: 'New book…' });
+    rt.actions.register('book.open', ([id]) => { if (id) openBook(id); rt.navigate('book-builder'); }, { label: 'Open a book in the Book Builder', params: true });
+    rt.actions.register('book.add', ([ref]) => { if (ref) rt.openDialog(ADD_TO_BOOK_DIALOG, { ref: decodeURIComponent(ref) }); }, { label: 'Add an entry to a book…', params: true });
+  },
   settingsPanels: [
     { id: 'glossary-index.catalog', tab: 'glossary-index', title: 'Catalog', icon: 'list', order: 20, render: () => <CatalogPanel /> },
     { id: 'glossary-index.lifecycle', tab: 'glossary-index', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

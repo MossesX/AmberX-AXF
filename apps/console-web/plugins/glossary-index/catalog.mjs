@@ -9,6 +9,8 @@
  *   - controls         every help@1 entry (framework chrome, Dev Console + plugins, axHub web): buttons, switches,
  *                      settings, tabs, columns, screens, menu items…
  *   - assets           framework/assets/<type>/*.json, and asset types from framework/schemas/asset-types.json
+ *   - demos            demonstrations, books, clips and docs (demonstration@1, book@1, clip@1, docs@1): the framework's
+ *                      starters and every one made in the console (this plugin's data folder, <type>/<id>.json)
  *   - CLI tools        framework/cli/*.mjs (first line of the header comment)
  *   - build options    framework/schemas/build-options.json
  *   - features         framework/catalog/catalog.json (the feature tracker)
@@ -58,7 +60,13 @@ export const KINDS = {
   'build-option': 'Build option',
   'job-type': 'Job type',
   'ui-element': 'UI element',
+  demonstration: 'Demonstration',
+  book: 'Book',
+  clip: 'Clip',
+  docs: 'Documentation',
 };
+/** Asset types that are glossary kinds of their own (demonstration@1, book@1, clip@1, docs@1: the demo system's registry assets). */
+export const DEMO_KINDS = new Set(['demonstration', 'book', 'clip', 'docs']);
 
 /** Help scopes read for controls, and the app each belongs to. */
 const HELP_SCOPES = [
@@ -242,14 +250,53 @@ function assetEntries() {
         let a;
         try { a = readJson(f); } catch { continue; }
         if (!a?.id) continue;
-        const kind = type === 'job-type' ? 'job-type' : 'asset';
+        const kind = type === 'job-type' ? 'job-type' : DEMO_KINDS.has(type) ? type : 'asset';
         const label = types[type]?.label || titleCase(type);
         out.push(entry({
-          id: `${kind}:${type}/${a.id}`, term: a.name || titleCase(a.id), kind, category: kind === 'job-type' ? 'Agents › Job types' : `Assets › ${types[type]?.group || 'Other'} › ${label}`,
+          id: `${kind}:${DEMO_KINDS.has(type) ? '' : `${type}/`}${a.id}`, term: a.name || titleCase(a.id), kind, category: kind === 'job-type' ? 'Agents › Job types' : DEMO_KINDS.has(type) ? `Demos › ${label}s` : `Assets › ${types[type]?.group || 'Other'} › ${label}`,
           summary: a.description || `A ${label.toLowerCase()} asset that ships with the framework.`, generic: !a.description, source: rel(f),
-          related: types[type] ? [`asset-type:${type}`] : [], tags: [type, ...(a.tags ?? [])],
+          related: [...(types[type] ? [`asset-type:${type}`] : []), ...demoLinks(type, a.data)], tags: [type, ...(a.tags ?? []), ...(DEMO_KINDS.has(type) ? a.data?.keywords ?? [] : [])],
         }));
       }
+    }
+  }
+  return out;
+}
+
+/** What a demo-system asset links to: the entries it is about / covers, the demonstrations and clips a book holds, a clip's source. */
+function demoLinks(type, d) {
+  if (!d || typeof d !== 'object') return [];
+  const out = [];
+  if (type === 'demonstration') out.push(...(d.about ? [d.about] : []), ...(d.entries ?? []), ...(d.chain ?? []).map((c) => `demonstration:${c}`));
+  if (type === 'book') for (const c of d.chapters ?? []) for (const it of c.items ?? []) { const r = String(it?.ref ?? ''); const m = /^(demonstration|clip|book)\/([a-z0-9-]+)/.exec(r); out.push(m ? `${m[1]}:${m[2]}` : r); }
+  if (type === 'clip') out.push(...(d.entries ?? []), ...(d.source?.kind === 'demonstration' && d.source.id ? [`demonstration:${d.source.id}`] : []), ...(d.source?.kind === 'book' && d.source.id ? [`book:${d.source.id}`] : []), ...(d.chain ?? []).map((c) => `clip:${c}`));
+  if (type === 'docs') out.push(...(d.source?.kind === 'book' && d.source.id ? [`book:${d.source.id}`] : []), ...(d.source?.kind === 'demonstration' && d.source.id ? [`demonstration:${d.source.id}`] : []), ...(d.source?.entries ?? []));
+  return out.filter((x) => typeof x === 'string' && x);
+}
+
+/**
+ * Demonstrations, books, clips and docs made in the console (the Demonstration Designer and Book Builder keep them as
+ * asset@1 files in this plugin's data folder, <dataDir>/<type>/<id>.json): every one is a registry entry too, so it is
+ * searchable, filterable and sortable like everything else and droppable into books.
+ */
+function demoStoreEntries() {
+  const out = [];
+  for (const type of DEMO_KINDS) {
+    for (const f of listJson(join(DATA_DIR, type))) {
+      let a;
+      try { a = readJson(f); } catch { continue; }
+      if (a?.$axf !== 'asset@1' || a.type !== type || !a.id) continue;
+      const label = KINDS[type];
+      const d = a.data ?? {};
+      const facts = type === 'clip' ? `${Math.round(d.media?.seconds ?? 0)} s, from ${d.source?.kind ?? 'manual'}${d.source?.id ? ` ${d.source.id}` : ''}.`
+        : type === 'demonstration' ? `${(d.steps ?? []).length} steps${d.about ? `, about ${d.about}` : ''}.`
+        : type === 'book' ? `${(d.chapters ?? []).length} chapters, ${(d.chapters ?? []).reduce((n, c) => n + (c.items?.length ?? 0), 0)} items.`
+        : `${d.depth ?? ''} ${d.format ?? ''}, ${(d.files ?? []).length} files.`;
+      out.push(entry({
+        id: `${type}:${a.id}`, term: a.name || titleCase(a.id), kind: type, category: `Demos › ${label}s`, app: 'Dev Console',
+        summary: a.description || `A ${label.toLowerCase()} made in the console: ${facts}`, detail: a.description ? `${a.description} ${facts}` : '', generic: !a.description,
+        source: `${rel(DATA_DIR)}/${type}/${a.id}.json`, where: ['Dev Console'], related: demoLinks(type, d), tags: [type, ...(a.tags ?? []), ...(d.keywords ?? [])],
+      }));
     }
   }
   return out;
@@ -328,7 +375,7 @@ function uiRegistryEntries() {
 
 /** Every source, deduped by id (first wins: concepts before generated entries). */
 export function collect() {
-  const all = [...concepts(), ...pluginEntries(), ...featureEntries(), ...helpEntries(), ...assetEntries(), ...cliEntries(), ...buildOptionEntries(), ...uiRegistryEntries()];
+  const all = [...concepts(), ...pluginEntries(), ...featureEntries(), ...helpEntries(), ...assetEntries(), ...demoStoreEntries(), ...cliEntries(), ...buildOptionEntries(), ...uiRegistryEntries()];
   const seen = new Map();
   for (const e of all) if (!seen.has(e.id)) seen.set(e.id, e);
   const entries = [...seen.values()];
