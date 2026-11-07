@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1397,
- "updatedAt": "2026-11-07T16:50:09.695Z",
+ "rev": 1398,
+ "updatedAt": "2026-11-07T16:50:31.537Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112185,15 +112185,15 @@
    "title": "Approve/Deny in the console do nothing: server-side owner relay",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T16:36:58.936Z",
-   "updatedAt": "2026-11-07T16:49:53.830Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T16:50:29.972Z",
+   "builtAt": "2026-11-07T16:50:29.973Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -112313,12 +112313,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:50:29.972Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:36:58.942Z",
-     "updatedAt": "2026-11-07T16:36:58.942Z"
+     "updatedAt": "2026-11-07T16:50:30.135Z"
     }
    ],
    "profiles": [
@@ -112329,7 +112329,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
