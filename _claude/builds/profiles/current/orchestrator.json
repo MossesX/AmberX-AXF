@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T00:23:16.263Z",
+ "updatedAt": "2026-11-07T00:29:14.185Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17673,17 +17673,26 @@
    "title": "Claude settings: tabs, views, Approvals & veto tab",
    "category": "Builds",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings-tabs-veto",
    "pr": "",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-07T00:13:39.729Z",
+   "updatedAt": "2026-11-07T00:29:01.171Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T00:29:01.171Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "\"The Claude settings interface is getting pretty big. We need to organize it. Give it multiple views, one of them being tabular. If you have it on the tab view, you can set where you want them to appear and how you want them to appear: on the left, on the right, on the top, and the bottom, whether you want the words or an icon.\" \"The veto and the approve are gonna be their own tab in there. Break it down and put it into tabs.\" Also: \"You don't need to run the 90-second veto thing unless you are writing stuff to the VPS.\"",
@@ -17711,8 +17720,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:28:55.584Z",
      "note": "",
      "uid": "st-mw5nheni0ew3df"
     },
@@ -17729,8 +17738,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:28:56.896Z",
      "note": "",
      "uid": "st-mw5nheni0fpc5p"
     },
@@ -17747,8 +17756,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:28:58.725Z",
      "note": "",
      "uid": "st-mw5nheni0g0xkw"
     },
@@ -17783,8 +17792,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T00:29:01.171Z",
      "note": "",
      "uid": "st-mw5nheni0ia6fn"
     },
