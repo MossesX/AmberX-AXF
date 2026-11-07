@@ -635,6 +635,18 @@
    "from": "detail",
    "addenda": []
   },
+  "blueprint-notes-tasks": {
+   "said": "Blueprints switch notes, tasks and to-dos too (Brett, Nov 7)\n\n1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists).\n2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the existing plans went to.\n3. Global lists: some lists are shared across all blueprints. \"Quick notes\" is global by default. A per-list switch \"show in every blueprint\".\n4. Voice: \"add X to quick notes\" always works; \"switch blueprint to X\" switches all of it. control@1, MCP, CLI.\n5. Active blueprint visible in AmberX and the console (chip), settings in place, assets only, no hard-coded styling. UI Review three options (--choices).\n6. Tests: switch filters plans + notes + tasks + to-dos; global lists stay; nothing lost. Add to Shipped features.\n\nAddendum (Brett, Nov 7): permanent Global group\n- Notes/tasks/to-do manager AND Plan Studio each get a permanent group called **Global** (can't be deleted or moved).\n- Global holds repo-wide items: they show no matter which blueprint is open.\n- Any plan, note, task, to-do or list can be set to Global (toggle + drag in), and back.\n- Quick notes lives in Global by default. Replaces the per-list \"show in every blueprint\" switch: Global is that switch.",
+   "at": "2026-11-07T14:45:07.894Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "bugs-board": {
    "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
    "at": "2026-11-04T00:00:00Z",
