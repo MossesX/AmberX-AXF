@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T14:06:16.368Z",
+ "updatedAt": "2026-11-07T14:10:51.586Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66721,15 +66721,15 @@
    "title": "Maintenance: redundancy scan (report-only)",
    "category": "Maintenance",
    "detail": "Read-only job in the Maintenance plugin that searches for redundant data sets stage by stage (builds store, plans, tracker/catalog/ledger, branches+worktrees, assets/baked copies, memory/docs, rest) under time/size budgets, and reports grouped findings with source of truth, confidence and suggested action. Never deletes or merges.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T13:46:06.752Z",
-   "updatedAt": "2026-11-07T14:06:15.209Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T14:10:50.074Z",
+   "builtAt": "2026-11-07T14:10:50.074Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -66831,8 +66831,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:10:50.074Z",
      "note": "",
      "uid": "st-mw6gi8pd0aqekz"
     }
