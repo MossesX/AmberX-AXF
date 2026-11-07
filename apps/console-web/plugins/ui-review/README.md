@@ -195,7 +195,7 @@ _claude/memory/docs/ui-review/shots/shots.json …` (views switched with `AXF.na
 
 ## Choices (ui-choices@1)
 
-A build ships at least 3 options for a UI: `review.mjs submit --choices <file.json>`, or `choices` on `POST submit`.
+A build ships at least 3 options for a UI: `review.mjs submit --name "…" --choices <file.json>`, or `choices` on `POST submit`.
 Pictures are the item's shots named `opt-<option id>--…`. Each option is a real asset of its type: the CLI writes it to
 `plugins/<owner>/assets/<type>/` (it ships in the PR), the API keeps it in the data folder under the same path. All of
 them join the asset library, picked or not. Brett picks in the item's Choices tab; `choices/decision` reads it, and the
