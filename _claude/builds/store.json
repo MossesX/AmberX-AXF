@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1362,
- "updatedAt": "2026-11-07T14:55:44.996Z",
+ "rev": 1363,
+ "updatedAt": "2026-11-07T14:59:45.887Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109305,7 +109305,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T14:47:07.835Z",
+   "updatedAt": "2026-11-07T14:59:44.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -109313,7 +109313,16 @@
      "at": "2026-11-07T14:11:23.379Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T14:59:44.715Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "the planner sends a request to the orchestrator to assign the building ID. The orchestrator has to assign all IDs and register them.\nwhat kind of database is this registry? Is it SQLite? Or Postgres.\nSQLite is too small. This project's too big.\nI'm thinking MongoDB or Postgres.\ncan we make Postgres run on the console?\nBundle the Postgres into the console's container.\nAnd make it queryable from the console.\ndon't run that. Put that in the planner for Molly and park it.",
@@ -109387,12 +109396,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:59:44.715Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:22:04.647Z",
-     "updatedAt": "2026-11-07T10:22:04.647Z"
+     "updatedAt": "2026-11-07T14:59:44.811Z"
     },
     {
      "id": "s4",
