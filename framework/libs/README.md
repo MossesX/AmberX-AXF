@@ -186,3 +186,12 @@ installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifes
 - **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
 - Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
 - Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).
+
+## moremenu (`ai.amberx.axf.moremenu`)
+
+The ⋯ "More" menu (harvested Nov 7 2026, build `library-harvest`, from the byte-identical copies ten console plugins
+carried): `<MoreMenu label="More for this entry" items={[{ label, icon?, onPick | onSelect, disabled?, title?, danger? }, cond && null]} />`
+is one `IconButton` opening a framework popover menu (`fx-menu`), closed on pick, outside tap, Escape, scroll or resize.
+`look="ctx"` (default: `fx-ctx fx-popover`, opens towards the roomier side) or `look="dropdown"` (`fx-popover fx-dropdown`,
+right-aligned, ≤ 260 px), both exactly as the plugins drew them. Pure rules in `core.ts` (`placeMenu`, `visibleItems`,
+`pick`), checked by `npx -y tsx framework/spec/check-moremenu.mts`, which also fails when a plugin grows its own copy again.

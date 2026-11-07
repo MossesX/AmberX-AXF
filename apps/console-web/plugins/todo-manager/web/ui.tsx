@@ -12,7 +12,7 @@ import {
 } from './core';
 import { bulk, createList, deleteEntry, deleteList, exportList, loadAll, openList, saveEntry, saveTypes, toggleCheck, toggleDone, todoState, updateList, useTodo, type EntryDraft } from './store';
 import { LoadingSkeleton } from '@console/emptyState';
-import { MoreMenu } from './MoreMenu';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 
 export const ENTRY_DIALOG = 'todo-manager.entry';
 const VIEW_KEY = 'todo-manager.view';

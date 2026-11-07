@@ -9,7 +9,7 @@ import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
   type AgentRef, type Config, type ContractInfo, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
 } from './api';
-import { MoreMenu } from './more';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 
 function useStore<T>(s: { get: () => T | undefined; subscribe: (f: () => void) => () => void; reload: () => Promise<T | undefined>; error: () => string }) {
   useEffect(() => { if (s.get() === undefined) void s.reload(); }, []);
@@ -369,7 +369,7 @@ export function ProvidersPanel() {
           <div className="fx-row">
             <Button icon="zap" disabled={busy === p.id} onClick={() => void test(p)}>{busy === p.id ? 'Testing…' : 'Test'}</Button>
             <Button icon="edit" onClick={() => { const k = cat.providers.find((x) => x.kind === p.kind) ?? cat.providers.find((x) => x.kind === 'custom'); if (k) setEdit({ kind: k, profile: p }); }}>Edit</Button>
-            <MoreMenu label={`More for ${p.label}`} items={[
+            <MoreMenu look="dropdown" label={`More for ${p.label}`} items={[
               cfg.defaultProfile !== p.id && { label: 'Make default', icon: 'star', onPick: () => void saveConfig({ defaultProfile: p.id }) },
               { label: cfg.fallback.includes(p.id) ? 'Remove fallback' : 'Use as fallback', icon: cfg.fallback.includes(p.id) ? 'minus' : 'plus', onPick: () => void saveConfig({ fallback: cfg.fallback.includes(p.id) ? cfg.fallback.filter((x) => x !== p.id) : [...cfg.fallback, p.id] }) },
               { label: p.enabled ? 'Disable' : 'Enable', icon: p.enabled ? 'pause' : 'play', onPick: () => void post('profiles', { id: p.id, kind: p.kind, enabled: !p.enabled }).then(refreshAll) },

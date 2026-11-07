@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Chip, useRuntime, IconButton, Note, Section, SelectField, Switch, TextField } from '@console/axf/react';
 import { call, del, post, put } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
-import { MoreMenu } from './more';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 
 type Kind = 'vps' | 'git' | 'github';
 export interface VinnyCommand {
@@ -125,7 +125,7 @@ export function VinnyCommandsDialog() {
                   <Chip tone={c.kind === 'github' ? 'accent' : undefined}>{KIND_LABEL[c.kind]}</Chip>
                   <span className="fx-grow" />
                   <IconButton icon="play" label={`Run ${c.name} now`} onClick={() => void run(c)} disabled={!book.ready || !c.enabled} />
-                  <MoreMenu label={`More for ${c.name}`} items={[
+                  <MoreMenu look="dropdown" label={`More for ${c.name}`} items={[
                     { label: 'Edit', icon: 'edit', onPick: () => setEdit(c) },
                     { label: armed === c.id ? 'Tap again to remove' : 'Remove', icon: 'trash', onPick: () => void remove(c) },
                   ]} />

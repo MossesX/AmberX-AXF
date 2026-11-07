@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime, BannerIcon } from '@console/axf/react';
 import { InstallerDialog } from './installer';
-import { MoreMenu } from './more';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 import {
   type ClaudeAi, type ClaudeItem, type Config, ago, api, dismissReminder, handoffSession, publish, refresh, set, until, useStore,
 } from './store';
@@ -50,7 +50,7 @@ export function HandoffView() {
         <div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1><p className="fx-muted axp-claude-handoff__lede" title="Everything a new Claude account needs to carry this project on, kept current.">What a new Claude account needs to carry on, kept current.</p></div>
         <div className="axp-claude-handoff__row axp-claude-handoff__acts">
           <Button tone="primary" icon="rocket" disabled={!!s.busy} title="Opens the installer: publishes the kit when out of date, walks every file group, then hands you the prompt" onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
-          <MoreMenu label="More handoff actions" items={[
+          <MoreMenu look="dropdown" label="More handoff actions" items={[
             !!s.assembled && { label: 'Copy the prompt again', icon: 'copy', onPick: () => copy(rt, s.assembled!.prompt, 'Prompt') },
             !!s.assembled?.results?.url && { label: 'Continue handoff on axHub', icon: 'external', onPick: () => window.open(s.assembled!.results!.url, '_blank', 'noopener,noreferrer') },
             { label: 'Last assembly results', icon: 'clock', disabled: !st?.state.lastAssembledAt, title: "The installer's results page from the last run: groups, steps, log, prompt, what was published", onPick: () => rt.openDialog('claude-handoff.last') },

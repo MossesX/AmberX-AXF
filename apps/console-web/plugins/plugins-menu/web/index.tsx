@@ -21,7 +21,7 @@ import { TabContent } from '@console/axf/libs/settings';
 import { post } from '@console/api';
 import { bundledPlugins, fetchPluginStatus, pluginApi, PLUGINS_CHANGED, type PluginStatus } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { MoreMenu } from './MoreMenu';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 import { appMenu } from './menu';
 import {
   FOLDER, ID, INFO_DIALOG, INSTALL_DIALOG, K, LADDER, PARAM_GROUPS, PARAM_TYPES, SETTINGS_DIALOG, TAB,

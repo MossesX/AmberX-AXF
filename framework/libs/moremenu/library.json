@@ -1,0 +1,28 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.moremenu",
+  "module": "lib-moremenu",
+  "version": "1.0.0",
+  "name": "More menu (⋯ secondary actions)",
+  "description": "The ⋯ menu for compact page heads, rows and editors: one IconButton that opens a framework popover menu with the secondary actions, closing on pick, outside tap, Escape, scroll or resize. Items take onPick (or onSelect), icon, disabled, title and danger; conditional items may be false or null. Two looks: ctx (context-menu look, opens towards the roomier side) and dropdown (right-aligned, at most 260 px). Harvested Nov 7 2026 (build library-harvest) from the byte-identical copies ten Dev Console plugins carried.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.moremenu",
+  "params": [],
+  "parts": [
+    { "id": "ctx-look", "label": "Context-menu look", "description": "The default look: fx-ctx popover under the button, opening towards the side with more room." },
+    { "id": "dropdown-look", "label": "Dropdown look", "description": "The fx-dropdown popover, right-aligned with the button and at most 260 px wide." },
+    { "id": "danger-items", "label": "Danger items", "description": "Items marked danger are drawn with the menu's danger style." }
+  ],
+  "config": {
+    "connections": [
+      { "id": "actions", "label": "Actions it opens", "kind": "action", "direction": "out", "many": true, "description": "The registered actions the menu's items run (a designer binds each item to one)." }
+    ],
+    "wizard": { "mode": "both", "intro": "A More menu: pick its look, then bind each item to an action." }
+  },
+  "ports": { "web": { "status": "compiled", "dir": "libs/moremenu" } },
+  "placeholders": [
+    { "capability": "axf.moremenu.android", "note": "Compose twin (AxfMoreMenu over DropdownMenu) — Android on hold." },
+    { "capability": "axf.moremenu.submenus", "note": "Nested items — not built; every menu is one level." }
+  ]
+}

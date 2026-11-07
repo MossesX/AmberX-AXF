@@ -8,7 +8,7 @@ import {
 } from './core';
 import { deleteDesign, getDesigns, isLoaded, loadDesigns, loadError, saveDesign, subscribe } from './store';
 import { openActionsWindow, setPickTarget } from './ActionsWindow';
-import { MoreMenu } from './MoreMenu';
+import { MoreMenu } from '@console/axf/libs/moremenu';
 import type { ActionRow } from './actions';
 import type { AxfRuntime } from '@console/axf/core';
 

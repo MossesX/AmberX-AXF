@@ -1,0 +1,3 @@
+/* ⋯ More menu (ai.amberx.axf.moremenu). Layout only: the look comes from the framework's fx-popover / fx-ctx / fx-menu. */
+.axf-moremenu__btn { display: inline-flex; flex: none }
+.axf-moremenu__pop { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
