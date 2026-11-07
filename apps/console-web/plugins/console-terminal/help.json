@@ -463,6 +463,16 @@
         "title": "When a new session starts",
         "text": "What the Terminal does when a headless Claude session starts. Add tab quietly (default) adds its tab in the background of an open Terminal window and shows a count on the Terminal toolbar icon, without bringing the window up. Do nothing adds no tab (the sessions list still shows it). Bring Terminal to front opens it and brings the window up.",
         "kind": "field"
+      },
+      {
+        "target": "find-previous",
+        "title": "Find previous",
+        "text": "Jumps to the previous match of the search text in this tab's output."
+      },
+      {
+        "target": "find-next",
+        "title": "Find next",
+        "text": "Jumps to the next match of the search text in this tab's output."
       }
     ],
     "intros": []

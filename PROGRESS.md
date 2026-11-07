@@ -7,3 +7,4 @@
 2026-11-07T16:35:05Z START step4 lock (CI check, rules, brief template)
 2026-11-07T16:36:27Z DONE step4 lock (CI api-coverage check + spec, rule in RULES.md/CLAUDE.md/brief template, decisions)
 2026-11-07T16:36:27Z START addendum API Browser
+2026-11-07T16:48:48Z API Browser plugin built (registry, 4 views, Try it, 3 looks); next: shots + UI Review

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1389,
- "updatedAt": "2026-11-07T16:36:29.408Z",
+ "rev": 1392,
+ "updatedAt": "2026-11-07T16:48:50.601Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111917,7 +111917,7 @@
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:36:29.264Z",
+   "updatedAt": "2026-11-07T16:48:50.470Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -112007,7 +112007,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T16:09:37.165Z",
-     "updatedAt": "2026-11-07T16:34:31.983Z"
+     "updatedAt": "2026-11-07T16:34:43.680Z"
     },
     {
      "id": "s4",
@@ -112090,12 +112090,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:48:49.501Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:18:02.340Z",
-     "updatedAt": "2026-11-07T16:18:02.498Z"
+     "updatedAt": "2026-11-07T16:48:49.629Z"
     },
     {
      "id": "s8",
@@ -112112,12 +112112,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:48:50.470Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:18:03.373Z",
-     "updatedAt": "2026-11-07T16:18:03.484Z"
+     "updatedAt": "2026-11-07T16:48:50.601Z"
     },
     {
      "id": "s9",
@@ -112150,7 +112150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

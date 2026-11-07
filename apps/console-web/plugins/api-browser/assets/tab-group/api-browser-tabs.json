@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "api-browser-tabs",
+  "name": "API Browser: top tabs",
+  "version": "1.0.0",
+  "description": "Underlined tabs across the top, icon and text, sticky while the list scrolls: the classic reference-docs look, with the most room for the grid.",
+  "author": "AmberX AXF",
+  "tags": [
+    "top",
+    "underline",
+    "sticky",
+    "api-browser",
+    "ui-choice",
+    "choice-set:api-browser-look",
+    "choice-option:tabs"
+  ],
+  "data": {
+    "style": "underline",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "display": "both",
+    "divider": true,
+    "sticky": true,
+    "badges": true,
+    "rememberLast": true
+  }
+}

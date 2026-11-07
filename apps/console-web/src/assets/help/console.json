@@ -995,6 +995,16 @@
         "target": "view:plan-studio.reader",
         "title": "Reader",
         "text": "Read a plan like a document."
+      },
+      {
+        "target": "icon-button",
+        "title": "Icon button",
+        "text": "A sample of the framework's icon button in the component gallery: it shows how icon-only buttons look under the current theme. It does nothing."
+      },
+      {
+        "target": "icon-button-active",
+        "title": "Icon button (active)",
+        "text": "The same sample icon button in its active (on) state, for comparing the look. It does nothing."
       }
     ],
     "intros": [

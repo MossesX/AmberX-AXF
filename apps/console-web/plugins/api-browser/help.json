@@ -1,0 +1,68 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "api-browser-help",
+  "name": "API Browser help",
+  "version": "0.1.0",
+  "description": "Help mode entries of the API Browser (help@1): its page, settings and every control it draws.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:api-browser",
+    "entries": [
+      {
+        "target": "view:api-browser",
+        "title": "API Browser",
+        "text": "Every way to drive the console without touching it: control@1, plugin commands, MCP tools, REST routes and the CLI, each with its policy, its names and a Try it.",
+        "kind": "screen"
+      },
+      {
+        "target": "api-browser",
+        "title": "API Browser settings",
+        "text": "Which view the API Browser opens on, the look of its view switcher, and whether Try it may run changes."
+      },
+      {
+        "target": "look-of-the-view-switcher",
+        "title": "Look of the view switcher",
+        "text": "Top tabs, a side rail or chips: one of the three tab-group looks the API Browser ships. Right-click the switcher for its own settings too."
+      },
+      {
+        "target": "try-it-may-run-changes",
+        "title": "Try it may run changes",
+        "text": "Off: Try it runs reads only. On: a change asks you once before it runs, and a delete asks for its confirm token as well."
+      },
+      {
+        "target": "make-it-again",
+        "title": "Make it again",
+        "text": "Reads the code again (control@1, every plugin, the MCP server, the CLI) and rebuilds the list now, instead of waiting for the next change."
+      },
+      {
+        "target": "policy",
+        "title": "Policy",
+        "text": "Show only the paths that run at once (reads), wait out the 90 s veto (changes), need a confirm token (deletes) or need Brett's own tap."
+      },
+      {
+        "target": "close-the-detail",
+        "title": "Close the detail",
+        "text": "Hides the detail pane and gives the list the whole width."
+      },
+      {
+        "target": "copy-the-rest-path",
+        "title": "Copy the REST path",
+        "text": "Copies the method and path, ready for curl or another app."
+      },
+      {
+        "target": "copy-the-cli-command",
+        "title": "Copy the CLI command",
+        "text": "Copies the axf command that does the same from a terminal."
+      },
+      {
+        "target": "run-with-the-confirm-token",
+        "title": "Run with the confirm token",
+        "text": "The first run of a delete only answered with a confirm token; this runs it for real with that token. Tell Brett first."
+      }
+    ]
+  }
+}
