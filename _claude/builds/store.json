@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1222,
- "updatedAt": "2026-11-07T05:00:12.270Z",
+ "rev": 1223,
+ "updatedAt": "2026-11-07T05:00:57.788Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -98830,9 +98830,14 @@
    "branch": "claude/gizmo-rebuild-fable",
    "pr": "#368",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-07T00:48:10.097Z",
+   "updatedAt": "2026-11-07T05:00:50.940Z",
    "builtAt": "2026-11-06T23:23:36.068Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #368 merged",
+     "at": "2026-11-07T05:00:50.940Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -99772,10 +99777,60 @@
    },
    "kind": "build",
    "planRef": "gizmo-rebuild-fable",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "gizmo-rebuild-fable",
+    "createdAt": "2026-11-06T22:31:04.507Z",
+    "builtAt": "2026-11-06T23:23:36.068Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw5jthux09pl7z": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthux0a6cm2": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthuy0b70zp": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthuy0cmxfe": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthuy0d196h": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthuy0ezk5j": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthuy0f5kys": "2026-11-06T22:31:04.511Z",
+     "st-mw5jthuy0groxc": "2026-11-06T22:31:04.511Z",
+     "st-mw5opsgy0upb1v": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy0vgza1": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy0w2c39": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy0xf02s": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy0yjz5e": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy0zr4s7": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy10indb": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy11ivth": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy12rbuu": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgy138bap": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz14ugnh": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz15we3n": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz16k0hq": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz17x1u7": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz18ablw": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz19wkl4": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1aj5vv": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1bm0ho": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1cksu7": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1dhfsh": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1eqf2g": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1f9wz4": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1gv6lv": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1hrwxj": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1ifyff": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1j1l1i": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1khf12": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1lv5o2": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1m3wcl": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1nz3j2": "2026-11-07T00:48:09.826Z",
+     "st-mw5opsgz1owetj": "2026-11-07T00:48:09.826Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-06T22:31:04.511Z",
    "rearranged": false,
@@ -104041,9 +104096,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:13.457Z",
-   "updatedAt": "2026-11-07T04:02:35.608Z",
+   "updatedAt": "2026-11-07T05:00:50.940Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/library-harvest (PR #378); PR #378",
+     "at": "2026-11-07T05:00:50.940Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -104156,7 +104216,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104893,7 +104953,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T03:28:42.687Z",
-   "updatedAt": "2026-11-07T04:42:35.532Z",
+   "updatedAt": "2026-11-07T05:00:50.940Z",
    "builtAt": "2026-11-07T04:42:34.631Z",
    "notes": [
     {
@@ -104903,6 +104963,10 @@
     {
      "text": "PR #380 open; UI Review waiting on the 4 looks (A top, B compact inline, C floating pill, D footer); report _claude/builds/reports/dataset-bar.md",
      "at": "2026-11-07T04:42:35.532Z"
+    },
+    {
+     "text": "Reconciler: branch claude/dataset-bar (PR #380); PR #380",
+     "at": "2026-11-07T05:00:50.940Z"
     }
    ],
    "approvals": [],
@@ -105105,7 +105169,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {

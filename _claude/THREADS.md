@@ -726,15 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s12 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s13 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s6 done, → running (current) · orchestrator
-- 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s7 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s8 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
-- 2026-11-06 18:17 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` branch claude/token-optimize, PR #360 (current) · builds-live
-- 2026-11-06 18:06 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
-- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · foreign-write
 - 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s15 undone, s16 undone, note (current) · foreign-write
 - 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · foreign-write
 - 2026-11-06 18:49 UTC · `assistant-chat-mode` s5 done, s6 done (current) · foreign-write
@@ -1126,6 +1117,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 05:00 UTC · `orchestrator-gate` added (4 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `voice-ui-edit-library` added (8 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `merge-conflict-alerts` added (5 steps) (current) · builds-live
+- 2026-11-07 04:49 UTC · `assistant-chat-mode` → complete, merged, note (current) · reconciler
+- 2026-11-07 04:49 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending, note (current) · reconciler
+- 2026-11-07 04:49 UTC · `ui-review-notify-session-audio` → complete, merged, note (current) · reconciler
+- 2026-11-07 04:49 UTC · `claude-badge-vps` → complete, merged, note (current) · reconciler
+- 2026-11-07 04:49 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · reconciler
+- 2026-11-07 04:49 UTC · `icon-browser-manager` → pending, note (current) · reconciler
+- 2026-11-07 05:00 UTC · `gizmo-rebuild-fable` note (current) · foreign-write
+- 2026-11-07 05:00 UTC · `library-harvest` note (current) · foreign-write
+- 2026-11-07 05:00 UTC · `dataset-bar` note (current) · foreign-write
 
 ## Token passes (log)
 

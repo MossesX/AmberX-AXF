@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:00:12.270Z",
+ "updatedAt": "2026-11-07T05:00:57.788Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17834,9 +17834,14 @@
    "branch": "claude/gizmo-rebuild-fable",
    "pr": "#368",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-07T00:48:10.097Z",
+   "updatedAt": "2026-11-07T05:00:50.940Z",
    "builtAt": "2026-11-06T23:23:36.068Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #368 merged",
+     "at": "2026-11-07T05:00:50.940Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -21897,7 +21902,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T03:28:42.687Z",
-   "updatedAt": "2026-11-07T04:42:35.532Z",
+   "updatedAt": "2026-11-07T05:00:50.940Z",
    "builtAt": "2026-11-07T04:42:34.631Z",
    "notes": [
     {
@@ -21907,6 +21912,10 @@
     {
      "text": "PR #380 open; UI Review waiting on the 4 looks (A top, B compact inline, C floating pill, D footer); report _claude/builds/reports/dataset-bar.md",
      "at": "2026-11-07T04:42:35.532Z"
+    },
+    {
+     "text": "Reconciler: branch claude/dataset-bar (PR #380); PR #380",
+     "at": "2026-11-07T05:00:50.940Z"
     }
    ],
    "approvals": [],
@@ -22082,9 +22091,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:13.457Z",
-   "updatedAt": "2026-11-07T04:02:35.608Z",
+   "updatedAt": "2026-11-07T05:00:50.940Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/library-harvest (PR #378); PR #378",
+     "at": "2026-11-07T05:00:50.940Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
