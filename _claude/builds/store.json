@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
  "rev": 1257,
- "updatedAt": "2026-11-07T09:19:46.854Z",
+ "updatedAt": "2026-11-07T09:43:53.378Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -94989,6 +94989,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -97819,6 +97823,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -98847,6 +98855,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #359 merged",
+     "at": "2026-11-06T19:16:22.437Z"
     }
    ],
    "approvals": [],
@@ -104085,6 +104097,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #376 names s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40 done",
+     "at": "2026-11-07T02:50:20.877Z"
     }
    ],
    "approvals": [],
@@ -106378,7 +106394,7 @@
   {
    "id": "dataset-bar",
    "title": "Data set bar plugin: search-bar, filter-button, sort-control and data-set-bar registry assets, attachable to any dataset (right-click, Registry Browser, voice, API/MCP/CLI), hidden by default, local-first per-attachment config",
-   "category": "",
+   "category": "Plugins",
    "detail": "Launched headless on Fable (AXF_MODEL=fable, agent Reel Rhonda, worktree /root/axf-builds/dataset-bar, branch claude/dataset-bar). Every step runs in this one Fable session: s1-s3 need Fable (asset types, engine, framework hooks); s4-s8 ride along in the same session rather than a second launch.",
    "status": "built",
    "hidden": false,
@@ -106603,12 +106619,12 @@
     "all"
    ],
    "order": {
-    "all": 99
+    "all": 98
    },
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {

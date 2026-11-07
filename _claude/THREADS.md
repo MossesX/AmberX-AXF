@@ -732,41 +732,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 20:04 UTC · `shipped-features-r2` note (angel) · orchestrator
-- 2026-11-06 20:07 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, note (current) · foreign-write
-- 2026-11-06 20:07 UTC · `ui-review-notify-session-audio` s5 done (current) · orchestrator
-- 2026-11-06 20:09 UTC · `ui-review-notify-session-audio` PR #365 (current) · builds-live
-- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · foreign-write
-- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` s6 done, → built (current) · orchestrator
-- 2026-11-06 20:15 UTC · `ui-review-notify-session-audio` note (current) · orchestrator
-- 2026-11-06 20:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
-- 2026-11-06 20:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
-- 2026-11-06 20:18 UTC · `claude-badge-vps` added (4 steps) (current) · orchestrator
-- 2026-11-06 20:27 UTC · `claude-badge-vps` s1 done, → running (current) · orchestrator
-- 2026-11-06 20:27 UTC · `claude-badge-vps` s2 done (current) · orchestrator
-- 2026-11-06 20:27 UTC · `claude-badge-vps` s3 done (current) · orchestrator
-- 2026-11-06 20:27 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · orchestrator
-- 2026-11-06 20:27 UTC · `token-usage-log-accounts-plan-studio-control` note (current) · orchestrator
-- 2026-11-06 20:27 UTC · `claude-badge-vps` note (current) · orchestrator
-- 2026-11-06 20:31 UTC · `claude-badge-vps` branch claude/claude-badge-vps, PR #366 (current) · builds-live
-- 2026-11-06 20:31 UTC · `claude-badge-vps` s4 done, → built (current) · orchestrator
-- 2026-11-06 20:57 UTC · `notifications-control-panel` added (6 steps) (current) · orchestrator
-- 2026-11-06 20:57 UTC · `notifications-control-panel` → running (current) · orchestrator
-- 2026-11-06 21:07 UTC · `notifications-control-panel` s1 done (current) · orchestrator
-- 2026-11-06 21:07 UTC · `notifications-control-panel` s2 done (current) · orchestrator
-- 2026-11-06 21:07 UTC · `notifications-control-panel` s3 done (current) · orchestrator
-- 2026-11-06 21:13 UTC · `notifications-control-panel` s4 done (current) · orchestrator
-- 2026-11-06 21:13 UTC · `notifications-control-panel` s5 done (current) · orchestrator
-- 2026-11-06 21:13 UTC · `notifications-control-panel` s6 done, → complete (current) · orchestrator
-- 2026-11-06 21:13 UTC · `notifications-control-panel` → built, PR #367 (current) · builds-live
-- 2026-11-06 21:13 UTC · `notifications-control-panel` note (current) · orchestrator
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` added (8 steps) (current) · orchestrator
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` → running (current) · orchestrator
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` s1 done (current) · orchestrator
-- 2026-11-06 22:31 UTC · `gizmo-rebuild-fable` branch claude/gizmo-rebuild-fable (current) · builds-live
-- 2026-11-06 22:41 UTC · `gizmo-rebuild-fable` s2 done (current) · orchestrator
-- 2026-11-06 22:37 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 22:45 UTC · `gizmo-rebuild-fable` s2 done (current) · foreign-write
 - 2026-11-06 22:45 UTC · `ui-registry-shortcuts` added (6 steps) (current) · orchestrator
 - 2026-11-06 22:54 UTC · `ui-registry-shortcuts` added (6 steps) (current) · foreign-write
 - 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s3 done (current) · orchestrator
@@ -1132,6 +1097,41 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 06:00 UTC · `badges-notify-followup` → complete, merged, note (current) · reconciler
 - 2026-11-07 06:10 UTC · `skins-asset-types` → pending, note (current) · reconciler
 - 2026-11-07 09:02 UTC · `grindr-ai-wingman` note, removed (current) · pending
+- 2026-11-06 18:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
+- 2026-11-06 18:40 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
+- 2026-11-06 18:45 UTC · `assistant-chat-mode` s5 done, → running (current) · orchestrator
+- 2026-11-06 18:45 UTC · `assistant-chat-mode` s6 done (current) · orchestrator
+- 2026-11-06 18:45 UTC · `assistant-chat-mode` branch claude/assistant-chat-mode-r4 (current) · builds-live
+- 2026-11-06 18:46 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
+- 2026-11-07 03:28 UTC · `dataset-bar` added (8 steps) (current) · orchestrator
+- 2026-11-07 03:28 UTC · `dataset-bar` → running (current) · orchestrator
+- 2026-11-07 03:28 UTC · `dataset-bar` branch claude/dataset-bar (current) · builds-live
+- 2026-11-07 03:42 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → complete, note (current) · foreign-write
+- 2026-11-07 03:42 UTC · `icon-browser-manager` added (10 steps) (current) · foreign-write
+- 2026-11-07 03:42 UTC · `dataset-bar` s1 done (current) · orchestrator
+- 2026-11-07 03:42 UTC · `dataset-bar` s2 done (current) · orchestrator
+- 2026-11-07 03:42 UTC · `dataset-bar` s3 done (current) · orchestrator
+- 2026-11-07 03:59 UTC · `icon-browser-manager` s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-07 03:59 UTC · `dataset-bar` s4 done (current) · orchestrator
+- 2026-11-07 03:59 UTC · `dataset-bar` s5 done (current) · orchestrator
+- 2026-11-07 03:59 UTC · `dataset-bar` s6 done (current) · orchestrator
+- 2026-11-07 04:02 UTC · `dataset-bar` s1 undone, s1 undone, note (current) · foreign-write
+- 2026-11-07 04:02 UTC · `library-harvest` added (4 steps) (current) · foreign-write
+- 2026-11-07 04:02 UTC · `skins-asset-types` added (3 steps) (current) · foreign-write
+- 2026-11-07 04:02 UTC · `glossary-index-demos` added (6 steps) (current) · foreign-write
+- 2026-11-07 04:40 UTC · `assistant-chat-mode` note (current) · foreign-write
+- 2026-11-07 04:40 UTC · `claude-badge-vps` note (current) · foreign-write
+- 2026-11-07 04:40 UTC · `icon-browser-manager` note (current) · foreign-write
+- 2026-11-07 04:40 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done (current) · orchestrator
+- 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, PR #380 (current) · builds-live
+- 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, s8-7 done, → built (current) · orchestrator
+- 2026-11-07 04:42 UTC · `dataset-bar` note (current) · orchestrator
+- 2026-11-06 19:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
+- 2026-11-06 19:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
+- 2026-11-06 19:16 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
+- 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
+- 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
 
 ## Token passes (log)
 
