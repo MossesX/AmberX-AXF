@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · orchestrator
 - 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · builds-live
 - 2026-11-05 06:01 UTC · `priority-tags` → complete, merged, note (current) · reconciler
 - 2026-11-05 11:04 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:30 UTC · `claude-settings-tabs-veto` PR #371 (current) · builds-live
 - 2026-11-07 00:30 UTC · `claude-settings-tabs-veto` s6 done (current) · orchestrator
 - 2026-11-07 00:30 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · orchestrator
+- 2026-11-07 00:35 UTC · `plan-studio-backfill-12h` added (8 steps) (current) · orchestrator
 
 ## Token passes (log)
 
