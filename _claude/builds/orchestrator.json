@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T13:02:13.381Z",
+ "updatedAt": "2026-11-07T13:03:18.402Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66322,7 +66322,7 @@
    "branch": "claude/style-override-rule",
    "pr": "",
    "createdAt": "2026-11-07T12:36:39.385Z",
-   "updatedAt": "2026-11-07T12:58:41.308Z",
+   "updatedAt": "2026-11-07T13:03:17.010Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -66443,8 +66443,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:03:17.010Z",
      "note": "",
      "uid": "st-mw6e0x510edv3y"
     },
