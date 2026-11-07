@@ -245,6 +245,7 @@ jobs:
             node framework/cli/chrome-settings.mjs check               # every app (shared-assets apps + Expenses) carries its custom chrome settings interfaces
             node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
+            node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots

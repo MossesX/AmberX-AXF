@@ -31,6 +31,34 @@ Developer apps: the AXF Dev Console (web and Android), axHub's own
 pages, the AXHub phone app, and any future app that opts in. **Not** every app built on AXF: an ordinary app keeps its
 own local settings. Voice Vault is deliberately out (offline password vault).
 
+## Every asset type, at any scope: skin-coverage@1 (build skins-asset-types, Nov 7 2026)
+
+How a skin reaches each registered asset type is derived from the registry (`framework/schemas/asset-types.json`) and
+the style targets (`framework/schemas/customize.json`) by `framework/core/engines/skin-coverage.mjs`; nothing names a
+type by hand, so a new type is covered (or fails CI) the moment it is registered:
+
+| by | how the skin reaches it | which types |
+| --- | --- | --- |
+| `slot` | the skin picks the active asset (`assets[type]`, the three themes) | every type not excluded from appearance slots |
+| `parts` | the skin styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items) | widgets and attachables (label, badge, clock, counter …); slot types with a target take parts too |
+| `reference` | the skin names it through a field (`iconPack`) or an asset it picks (`via: branding` for logo marks) | declared on the registry entry |
+| `bundle` | a whole look the skin stands in for | design package, style package, interface, skin (declared) |
+| `none` | no look (declared with a `why`) | access policy, help, job type, card |
+
+`node framework/spec/check-skin-coverage.mjs` fails on any type with none of these (a widget without a style target, an
+excluded type with no declaration, a bad declaration). `node framework/cli/skins.mjs coverage` and `covers <skin>`
+print the table; Settings → Appearance → *What a skin covers* shows it.
+
+**Scopes** (the icon-map model): the chain for a place is `plugin:<id>` → `ui:<view>` → `app` → `global`, and the first
+level that is not *inherit* decides; its overrides and those of every level nearer the leaf apply (child over parent).
+`global` is the `skin` field of the shared appearance@1 document (`skins.mjs global <skin>`); an app takes it only while
+`skin.inherit` is on (Follow the hub-wide skin; off by default: "by default they're all their own"). `ui:` and `plugin:`
+states live in the app's look document under `scopes` (`{ use: on | off | inherit, id, overrides }`). The runtime draws
+a sub level that resolves differently from the app as a scoped view (`rt.skinScoped(key)`, like an interface scope)
+under `<SkinScope>` on every view root and every plugin root; a skin's `iconPack` lands in `axf.icons.pack.<scopeKey>`
+and its `parts` in the customize sheet. Pure functions: `resolveSkinChain`, `resolveLookSkin`, `composeLookAt`,
+`setScopeSkin`, `setInheritSkin`; fixture `spec/fixtures/skin.json` (`coverage`, `scopes`), `spec/check-skin.mts`.
+
 ## The document: `appearance@1`
 
 Project `shared`, path `settings/appearance.json` on the hub's data server (`/projects/_shared/_data/settings/appearance.json`,

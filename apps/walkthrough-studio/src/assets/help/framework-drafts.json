@@ -306,6 +306,24 @@
         "title": "Restore to default",
         "text": "Asks before putting this app back to its default look. Skin and picks are cleared, and you can undo it once in Settings → Appearance.",
         "kind": "screen"
+      },
+      {
+        "target": "inherit",
+        "title": "Inherit",
+        "text": "Puts this screen or plugin back to following its parent level: the app's skin, or the hub-wide one when the app follows it. Its own skin choice is dropped.",
+        "kind": "button"
+      },
+      {
+        "target": "follow-the-hub-wide-skin",
+        "title": "Follow the hub-wide skin",
+        "text": "On: this app takes the skin set for the whole hub on axHub while Use skin is off. Off (the default): this app keeps its own look whatever the hub says. Use skin on always wins.",
+        "kind": "toggle"
+      },
+      {
+        "target": "change",
+        "title": "Change",
+        "text": "Opens Where the skin applies: give one screen or plugin its own skin, switch skins off inside it, or let it inherit again; and see what a skin covers.",
+        "kind": "button"
       }
     ],
     "intros": []
