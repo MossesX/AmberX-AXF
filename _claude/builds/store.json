@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1282,
- "updatedAt": "2026-11-07T11:17:43.323Z",
+ "rev": 1283,
+ "updatedAt": "2026-11-07T11:17:50.881Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -76320,7 +76320,7 @@
    "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-07T11:17:36.348Z",
+   "updatedAt": "2026-11-07T11:17:45.358Z",
    "builtAt": "2026-11-07T11:17:33.434Z",
    "notes": [
     {
@@ -76338,6 +76338,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Nov 7: fixed on branch claude/gizmo-voice-fix (committed, not pushed yet). Report _claude/builds/reports/gizmo-voice.md. Phone test of the new APK is Brett's.",
+     "at": "2026-11-07T11:17:45.358Z"
     }
    ],
    "approvals": [],
@@ -76431,7 +76435,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "gizmo-voice",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90965,12 +90969,16 @@
    "branch": "claude/gizmo-voice-fix",
    "pr": "",
    "createdAt": "2026-11-05T01:38:10.037Z",
-   "updatedAt": "2026-11-07T11:17:36.892Z",
+   "updatedAt": "2026-11-07T11:17:46.296Z",
    "builtAt": "2026-11-07T11:17:32.753Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Nov 7: fixed on branch claude/gizmo-voice-fix (committed, not pushed yet). Report _claude/builds/reports/gizmo-voice.md. Phone test of the new APK is Brett's.",
+     "at": "2026-11-07T11:17:46.296Z"
     }
    ],
    "approvals": [],
@@ -91068,7 +91076,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

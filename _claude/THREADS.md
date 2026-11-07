@@ -740,8 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:32 UTC · `ui-registry-shortcuts` PR #369 (current) · builds-live
-- 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s6 done (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` note (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` → built (current) · orchestrator
 - 2026-11-06 23:33 UTC · `ui-registry-shortcuts` s3 done (current) · orchestrator
@@ -1140,6 +1138,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:17 UTC · `gizmo-voice` s3 done, → complete (all) · orchestrator
 - 2026-11-07 11:17 UTC · `gizmo-voice` branch claude/gizmo-voice-fix (all) · builds-live
 - 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` branch claude/gizmo-voice-fix (all) · builds-live
+- 2026-11-07 11:17 UTC · `gizmo-voice` note (all) · orchestrator
+- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` note (all) · orchestrator
 
 ## Token passes (log)
 
