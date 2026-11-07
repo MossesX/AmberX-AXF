@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T11:07:28.224Z",
+ "updatedAt": "2026-11-07T11:07:35.445Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22997,7 +22997,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T11:07:27.278Z",
+   "updatedAt": "2026-11-07T11:07:28.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -23007,6 +23007,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-glossary-index-demos-r2--lenny, own login copy)",
      "at": "2026-11-07T10:50:11.115Z"
+    },
+    {
+     "text": "s1 done on Opus (claude/glossary-index-demos-r2, commits 8c1aa0edd + polish): plugin glossary-index, glossary-catalog@1 built from plugin manifests, help@1, assets, asset types, CLI, build options, feature tracker, UI registry; CI test.mts + catalog.mjs --check. Stopped at s2: needs Fable for the demo / book+chapter / docs / clip asset contracts. s5 (post-build hook = catalog.mjs build --reason build --build <id>) can run on Opus any time.",
+     "at": "2026-11-07T11:07:28.001Z"
     }
    ],
    "approvals": [],
