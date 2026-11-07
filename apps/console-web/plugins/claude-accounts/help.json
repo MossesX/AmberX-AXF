@@ -3,7 +3,7 @@
   "type": "help",
   "id": "claude-accounts-help",
   "name": "claude-accounts help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help mode entries for plugin:claude-accounts.",
   "author": "AmberX AXF",
   "tags": [
@@ -71,6 +71,42 @@
         "title": "Switch Claude account",
         "text": "The saved Claude accounts with a Switch button on each. A switch waits for your approval.",
         "kind": "screen"
+      },
+      {
+        "target": "make-worker",
+        "title": "Make worker",
+        "text": "Turns this account into a worker: it only runs headless jobs and is never the console's account.",
+        "kind": "button"
+      },
+      {
+        "target": "stop-worker",
+        "title": "Stop worker",
+        "text": "Stops sending headless jobs to this account. Running jobs finish where they are.",
+        "kind": "button"
+      },
+      {
+        "target": "sign-in",
+        "title": "Sign in",
+        "text": "Signs this account in, in its own folder, so the active login isn't touched. Use it for a new account or when a login expired. Asks for approval, then opens in the Terminal.",
+        "kind": "button"
+      },
+      {
+        "target": "remove",
+        "title": "Remove",
+        "text": "Sets this saved account aside on the VPS. Nothing is deleted. The active account and one running a job can't be removed.",
+        "kind": "button"
+      },
+      {
+        "target": "add-and-sign-in",
+        "title": "Add and sign in",
+        "text": "Creates a new account folder and starts its sign-in. Once it's signed in, tap Make worker on its row.",
+        "kind": "button"
+      },
+      {
+        "target": "new-account-name",
+        "title": "New account name",
+        "text": "The name for the new account: lower-case letters, digits and dashes.",
+        "kind": "field"
       }
     ]
   }

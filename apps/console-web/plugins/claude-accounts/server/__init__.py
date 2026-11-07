@@ -49,7 +49,7 @@ READ_TTL_S = 30.0
 PENDING_TTL_S = 180.0  # the 90 s veto countdown and some room; a call he denied clears by itself after this
 LIST_LINE = re.compile(r"^(\*)?\s*([a-z0-9-]{1,32})(?: \[(token|api key)\])?(?: \(active\))?$")
 TYPES = {"": "login", "token": "token", "api key": "api-key"}  # what `claude-account list` marks each row with
-NOTE = "Running builds keep their account; new launches use the active one."
+NOTE = "Running builds keep their account. New jobs go to the least busy worker, else the active account."
 
 _lock = threading.RLock()
 _cache: dict[str, Any] = {"at": 0.0, "value": None}
