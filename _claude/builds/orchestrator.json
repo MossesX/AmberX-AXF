@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T23:57:53.173Z",
+ "updatedAt": "2026-11-07T23:59:36.588Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67826,6 +67826,37 @@
      "uid": "st-mw72cyxk0e6pmp"
     }
    ]
+  },
+  {
+   "id": "brief-approval-dialog-before-every-headless-sess",
+   "title": "Brief approval dialog before every headless session",
+   "category": "",
+   "detail": "Before the orchestrator launches any headless Claude session, it sends Gizmo an approval dialog (console + AmberX phone) showing the exact brief it is sending: build, steps, model, account, estimate. Session starts only on approve; veto sends it back to re-plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "brief-approval-dialog-before-every-headless-sess",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T23:59:35.398Z",
+   "updatedAt": "2026-11-07T23:59:35.398Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

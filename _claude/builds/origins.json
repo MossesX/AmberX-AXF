@@ -659,6 +659,18 @@
    "from": "",
    "addenda": []
   },
+  "brief-approval-dialog-before-every-headless-sess": {
+   "said": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "bugs-board": {
    "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
    "at": "2026-11-04T00:00:00Z",
