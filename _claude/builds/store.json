@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1272,
- "updatedAt": "2026-11-07T11:00:37.437Z",
+ "rev": 1273,
+ "updatedAt": "2026-11-07T11:00:45.413Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109642,10 +109642,26 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T10:50:06.361Z",
-   "updatedAt": "2026-11-07T10:53:38.192Z",
+   "updatedAt": "2026-11-07T11:00:37.408Z",
    "builtAt": "",
-   "notes": [],
-   "approvals": [],
+   "notes": [
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-07T11:00:37.408Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-07T11:00:37.408Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD). Replace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what is redundant. Single profile all already on main. Flow: Request → orchestrator → Pending → Queued (one queue per Claude account, max 5) → Building (parallel per account, default 3). Build table states ONLY Pending, Queued, Building. Shipped features: Waiting → Building → Pending merge → Live. Headless sessions load ONLY the brief; brief check before queueing; progress file per build (START/END per step, never pauses, watcher crosses steps off, token usage per session and per step); final step updates Shipped features. Blocked flow: phone alert → Brett answers or taps Let orchestrator decide → relaunch from the blocked step. Phone notifications on session started, build finished, failed, stopped incomplete, blocked, landed. Account dies → move its builds + alert. Landing discards _claude/builds sync noise; on land Shipped features Live + alert. Decisions to _claude/memory. Acceptance suite in CI blocks landing.",
@@ -109728,12 +109744,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T11:00:37.408Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T10:50:06.367Z",
-     "updatedAt": "2026-11-07T10:50:06.367Z"
+     "updatedAt": "2026-11-07T11:00:37.526Z"
     },
     {
      "id": "s4",
@@ -110041,7 +110057,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
