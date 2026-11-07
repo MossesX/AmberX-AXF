@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1378,
- "updatedAt": "2026-11-07T15:34:18.436Z",
+ "rev": 1379,
+ "updatedAt": "2026-11-07T15:38:21.236Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -9790,15 +9790,15 @@
    "title": "Dev Console Android app: wrapper shell (one codebase)",
    "category": "App",
    "detail": "Brett chose the wrapper over a native rewrite (Nov 7 2026): the web Dev Console (console.amberxai.com) runs inside an Android app shell (Capacitor, like AmberX), so every console change shows on the phone at once. Shell: sign-in kept (cookies), back button, pull-to-refresh, offline screen. Native bridges: notifications for build alerts (console /api/alerts, quiet when AmberX already posts them), mic for voice, background wake (periodic alerts check), file share/download (APKs), deep links to console screens. Console UI stays asset-driven (phone layout assets). APK in CI next to amberx-debug.apk, listed under Apps. UI Review with three shell-chrome options. App: apps/console-droid. Replaces the native tab plan (Pilot is retired).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "console-android-app-tabs",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-11-07T15:34:06.350Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T15:38:20.289Z",
+   "builtAt": "2026-11-07T15:38:20.289Z",
    "notes": [
     {
      "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
@@ -9983,12 +9983,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T15:38:20.289Z",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-10-21T04:46:12.596Z",
-     "updatedAt": "2026-11-07T15:14:01.954Z"
+     "updatedAt": "2026-11-07T15:38:20.396Z"
     }
    ],
    "profiles": [
@@ -10000,7 +10000,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
