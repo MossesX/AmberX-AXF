@@ -97,6 +97,18 @@
    "from": "",
    "addenda": []
   },
+  "amber-chat-asset": {
+   "said": "Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7). Rule: every UI element is an asset. The AmberX companion chat is a plain component. 1. Chat as an asset (Fable: contract). 2. Rename Gizmo -> Amber, safely: inventory, rename everywhere, migrate saved chats/settings, keep gizmo as an alias, back up old data, one-step rollback, CI check. 3. UI Review with choices: THREE distinct looks. 4. Tests + Shipped features.",
+   "at": "2026-11-07T12:30:40.602Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-appearance-lock": {
    "said": "AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
    "at": "2026-10-27",
