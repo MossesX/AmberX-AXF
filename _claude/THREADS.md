@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 22:41 UTC · `ai-keys-new-format` s1 done, → running (current) · orchestrator
 - 2026-11-05 22:41 UTC · `ai-keys-new-format` s2 done (current) · orchestrator
 - 2026-11-05 22:42 UTC · `ai-keys-new-format` branch claude/ai-keys-new-format-r4, PR #356 (current) · builds-live
 - 2026-11-05 22:42 UTC · `ai-keys-new-format` s3 done, → built (current) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:48 UTC · `notes-tasks-calendar` added (5 steps) (current) · backfill
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s6 done (current) · orchestrator
 - 2026-11-07 00:56 UTC · `plan-studio-backfill-12h` s7 done (current) · orchestrator
+- 2026-11-07 00:57 UTC · `build-todo-sync` → running, note (current) · orchestrator
 
 ## Token passes (log)
 

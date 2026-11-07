@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T00:56:25.419Z",
+ "updatedAt": "2026-11-07T00:57:02.262Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10693,7 +10693,7 @@
    "title": "Build to-do sync plugin: build names + categories, live to-do checklists, Plan Studio plan per build with Planned & fixes and docs",
    "category": "Plugin",
    "detail": "Spec: /root/axf-builds/build-todo-sync/.brief.md (brief + 4 addenda). Agent Snap Sully. Branch claude/brett-todo-sync.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "code",
    "pendingId": "",
@@ -10701,7 +10701,7 @@
    "pr": "#333",
    "priority": "P0",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-05T13:36:04.980Z",
+   "updatedAt": "2026-11-07T00:57:00.598Z",
    "builtAt": "",
    "notes": [
     {
@@ -10715,6 +10715,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T19:00:29.397Z"
+    },
+    {
+     "text": "Clash: build plan-studio-backfill-12h (PR to the merge queue) added build-plan@1, which makes a plan per build with its own managed block. Reconcile this build's plan block with it before PR 333 lands.",
+     "at": "2026-11-07T00:57:00.598Z"
     }
    ],
    "approvals": [],
