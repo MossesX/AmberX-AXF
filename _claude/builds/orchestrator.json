@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T22:04:45.310Z",
+ "updatedAt": "2026-11-07T23:36:17.783Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67638,6 +67638,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "Oh, let's build that section. Let's build the the view the viewer with um, behind a login gate uh, with a guest login.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "idle-alert-phone-flag-when-nothing-is-building",
+   "title": "Idle alert: phone flag when nothing is building",
+   "category": "",
+   "detail": "Orchestrator watchdog checks continuously. If zero builds are running while pending work exists (or the queue stalls), send an AmberX phone notification with the reason (needs reprocess, violations, waiting for approval, launch-without-asking off).",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "idle-alert-phone-flag-when-nothing-is-building",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T23:36:16.273Z",
+   "updatedAt": "2026-11-07T23:36:16.273Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "alerts on my phone when shit stops building, dude. You constantly need to be checking every, you know, all the time. If there's nothing running, I need a flag to appear on my phone.",
     "at": "",
     "source": "",
     "session": "",

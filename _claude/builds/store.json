@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1416,
- "updatedAt": "2026-11-07T22:04:45.310Z",
+ "rev": 1417,
+ "updatedAt": "2026-11-07T23:36:17.783Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108313,7 +108313,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108323,7 +108323,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-07T04:02:18.385Z",
-    "builtAt": "",
+    "builtAt": "2026-11-07T21:58:52.269Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mw5x6wuc0gznf6": "2026-11-07T04:02:18.386Z",
@@ -114195,6 +114195,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-07T21:39:31.022Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "idle-alert-phone-flag-when-nothing-is-building",
+   "title": "Idle alert: phone flag when nothing is building",
+   "category": "",
+   "detail": "Orchestrator watchdog checks continuously. If zero builds are running while pending work exists (or the queue stalls), send an AmberX phone notification with the reason (needs reprocess, violations, waiting for approval, launch-without-asking off).",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "idle-alert-phone-flag-when-nothing-is-building",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T23:36:16.273Z",
+   "updatedAt": "2026-11-07T23:36:16.273Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "alerts on my phone when shit stops building, dude. You constantly need to be checking every, you know, all the time. If there's nothing running, I need a flag to appear on my phone.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 421
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-07T23:36:16.273Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}
