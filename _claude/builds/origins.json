@@ -1505,7 +1505,7 @@
    "session": "",
    "link": "",
    "by": "claude-voice",
-   "brief": "",
+   "brief": "# glossary-index-demos (r2)\n\nThis build already exists in the orchestrator (profile `all`, id `glossary-index-demos`, 6 steps, none done) with its Plan Studio plan. An old folder /root/axf-builds/glossary-index-demos exists from an earlier attempt: check it for any committed work and bring it over.\n\n1. Get the full brief: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief glossary-index-demos` (and its Plan Studio plan). Follow it exactly: documentation index, glossary and walkthrough demos.\n2. If a step needs Fable (new shared asset type/contract), stop there and write `blocked: needs Fable for sN` to PROGRESS.md.\n3. Progress: append `<time> START|DONE <step>` to PROGRESS.md in this folder at each step; don't stop between steps.\n4. Last step: add it to Shipped features.\n\nShipped-product quality, no hard-coded styling. Commit, don't push.",
    "verbatim": true,
    "from": "",
    "addenda": []
