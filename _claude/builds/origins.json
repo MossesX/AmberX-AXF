@@ -397,6 +397,18 @@
    "from": "detail",
    "addenda": []
   },
+  "approve-button-fix": {
+   "said": "Bug: in the console's \"Approval waiting\" dialog (approvals-in-place, landed today on main), clicking Approve repeatedly does nothing; the dialog stays. It says \"This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.\" Brett is signed in to the console as owner (Admin). (launch brief, Nov 7 2026)",
+   "at": "2026-11-07T16:36:58.936Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "apps-control-surface": {
    "said": "Nov 3: \"Put EVERY app on the API, MCP and CLI\" (Molly, axHub web, AmberX, and every future app via the framework template; plus an apps_list read). Nov 4, after Amber couldn't open AmberX's notes/to-dos for him because the console has no AmberX screen and AmberX has no control surface: \"All right, move that to next in queue.\"",
    "at": "2026-11-04T15:00:00.000Z",

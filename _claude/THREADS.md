@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 03:55 UTC · `icon-browser-manager` s6 done (current) · orchestrator
 - 2026-11-07 04:00 UTC · `icon-browser-manager` PR #377 (current) · builds-live
 - 2026-11-07 04:00 UTC · `icon-browser-manager` note (current) · orchestrator
 - 2026-11-07 04:50 UTC · `assistant-chat-mode` → complete, merged, note (current) · builds-live
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:34 UTC · `full-api-control` s3 done (all) · foreign-write
 - 2026-11-07 16:36 UTC · `full-api-control` s5 done (all) · orchestrator
 - 2026-11-07 16:36 UTC · `full-api-control` s6 done (all) · orchestrator
+- 2026-11-07 16:36 UTC · `approve-button-fix` added (5 steps) (all) · orchestrator
 
 ## Token passes (log)
 
