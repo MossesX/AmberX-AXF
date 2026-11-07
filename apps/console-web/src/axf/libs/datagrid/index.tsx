@@ -12,7 +12,7 @@ import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
-import { anyRowHooks, applyDataset, DATASET_FOOTER_SLOT, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
+import { anyRowHooks, applyDataset, DATASET_CONTEXT_TARGET, DATASET_FOOTER_SLOT, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
 import './datagrid.css';
 
@@ -161,7 +161,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   } : {});
 
   const grid = (
-    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
+    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-fx-ctx-target={dsId ? DATASET_CONTEXT_TARGET : undefined} data-fx-ctx-payload={dsId || undefined}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (
@@ -205,7 +205,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
 export function DatasetFrame({ dataset, label, className, children }: { dataset: string; label?: string; className?: string; children?: ReactNode }) {
   if (!dataset) return <>{children}</>;
   return (
-    <div className={`axf-dataset ${className ?? ''}`} data-axf-dataset={dataset}>
+    <div className={`axf-dataset ${className ?? ''}`} data-axf-dataset={dataset} data-fx-ctx-target={DATASET_CONTEXT_TARGET} data-fx-ctx-payload={dataset}>
       <Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset, label: label ?? dataset }} />
       {children}
       <Slot name={DATASET_FOOTER_SLOT} props={{ dataset, label: label ?? dataset }} />

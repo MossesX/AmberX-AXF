@@ -19,6 +19,13 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 export const DATASET_TOOLBAR_SLOT = 'axf.dataset.toolbar';
 /** Below an attached dataset (data-set-bar@1 placement `bottom`); same props as the toolbar slot. */
 export const DATASET_FOOTER_SLOT = 'axf.dataset.footer';
+/**
+ * Context target of a dataset's own frame (`data-fx-ctx-target` on the DataGrid root / DatasetFrame, payload = the dataset
+ * id): a right-click / long-press anywhere in a dataset that isn't on a row with a target of its own opens a menu for the
+ * dataset itself (plugins add their items through `rt.contextExtras` / `contextMenu`; the host also records
+ * `rt.contextDataset` from `data-axf-dataset`).
+ */
+export const DATASET_CONTEXT_TARGET = 'axf-dataset';
 
 export type FieldKind = 'text' | 'number' | 'date' | 'choice' | 'bool';
 export interface DatasetField<R = unknown> {

@@ -366,7 +366,7 @@ export function makeDsbCompare<R>(s: DsbState, fields: DsbField<R>[]): ((a: R, b
 }
 
 /** Add, flip or drop a sort key (multi-key: a new field goes last; the same field and direction again takes it off). */
-export function toggleDsbSort(s: DsbState, field: string, dir: 1 | -1, maxKeys = DSB_LIMITS.maxKeys.default): DsbState {
+export function toggleDsbSort(s: DsbState, field: string, dir: 1 | -1, maxKeys: number = DSB_LIMITS.maxKeys.default): DsbState {
   const i = s.sort.findIndex((k) => k.field === field);
   if (i >= 0) {
     if (s.sort[i]!.dir === dir) return { ...s, sort: s.sort.filter((_, j) => j !== i) };

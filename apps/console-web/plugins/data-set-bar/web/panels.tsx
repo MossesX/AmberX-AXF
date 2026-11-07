@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button, IconButton, Note, Segmented, SelectField, Switch, useRuntime } from '@console/axf/react';
 import { knownDatasets, useDatasetsRevision } from '@console/axf/libs/datagrid';
 import { attachmentPieces, DSB_PLACEMENT_LABELS, DSB_PLACEMENTS, dsbSummary, normalizeAttachment, normalizeDataSetBar, type DsbPlacement } from '@console/axf/core/engines/datasetbar';
-import { ACTIONS, act, describeAttachment, SETTINGS_DIALOG } from './core';
+import { ACTIONS, describeAttachment, SETTINGS_DIALOG } from './core';
 import { doAttach, doDetach, doReset, readDefaults, resolveFor, useAttachments, useDefaults, writeDefaults } from './store';
 import { Bar } from './ui';
 
@@ -50,7 +50,7 @@ export function AttachedPanel() {
         <Segmented label="Placement" size="sm" value={place || 'asset'} options={[{ value: 'asset', label: "Asset's" }, ...DSB_PLACEMENTS.map((p) => ({ value: p, label: DSB_PLACEMENT_LABELS[p] }))]} onChange={(v) => setPlace(v === 'asset' ? '' : (v as DsbPlacement))} />
         <Button icon="plus" disabled={!pick} onClick={() => { doAttach(rt, pick, place); setPick(''); }}>Attach</Button>
       </div>
-      <p className="axp-dsb__muted">By voice or script: <code>{act(ACTIONS.attach, '<data set>', 'top')}</code> · <code>{act(ACTIONS.detach, '<data set>')}</code> · <code>{ACTIONS.list}</code> (also on REST / MCP / CLI through plugin commands).</p>
+      <p className="axp-dsb__muted">By voice or script: <code>{`${ACTIONS.attach}:<data set id>:top`}</code> · <code>{`${ACTIONS.detach}:<data set id>`}</code> · <code>{ACTIONS.list}</code> (also on REST / MCP / CLI through plugin commands; ids with a colon travel URL-encoded).</p>
     </div>
   );
 }
