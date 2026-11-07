@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1191,
- "updatedAt": "2026-11-07T00:37:30.228Z",
+ "rev": 1192,
+ "updatedAt": "2026-11-07T00:45:45.554Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -98443,7 +98443,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:07.253Z",
-     "updatedAt": "2026-11-07T00:36:51.611Z"
+     "updatedAt": "2026-11-07T00:45:44.276Z"
     },
     {
      "id": "s7",
@@ -98465,7 +98465,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:13:07.253Z",
-     "updatedAt": "2026-11-07T00:37:29.552Z"
+     "updatedAt": "2026-11-07T00:45:44.276Z"
     }
    ],
    "profiles": [
@@ -98907,6 +98907,113 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-07T00:35:07.330Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "amberx-open-any-url-apk",
+   "title": "AmberX APK + AXHub web: open any website (follow-up to axHub #114, PR #39)",
+   "category": "",
+   "detail": "axHub now sends other sites as browser.open {url, browser, external:true} to capability open-any-url@1. Until the APK advertises it, the hub answers install the new AmberX APK, so www.hostinger.com still will not open.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "amberx-open-any-url-apk",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T00:45:42.473Z",
+   "updatedAt": "2026-11-07T00:45:42.473Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need a plugin that will let AmberX open up any website I tell her to.",
+    "at": "2026-11-07T00:45:42.473Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-54m1aq",
+     "title": "",
+     "text": "amberx-droid: OpenUrlRules accepts external:true (http or https, any host and port; still no other scheme, no user info; own-site check unchanged otherwise), default browser unless asked; AxppLink advertises open-any-url@1; notification wording for other sites; OpenUrlRulesTest. Note java.net.URI is stricter than the hub URL parser.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T00:45:42.474Z",
+     "updatedAt": "2026-11-07T00:45:44.057Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-i6yum8",
+     "title": "",
+     "text": "axhub-web: screen for the open_url setting (own / allowlist / any, allowlist editing) on /auth/api/amberx/open-url, shown when session can.openUrlSettings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T00:45:42.474Z",
+     "updatedAt": "2026-11-07T00:45:44.057Z"
+    }
+   ],
+   "profiles": [
+    "current"
+   ],
+   "order": {
+    "current": 90
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-07T00:45:42.473Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-54m1aq": "2026-11-07T00:45:42.474Z",
+     "st-i6yum8": "2026-11-07T00:45:42.474Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-07T00:45:44.057Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

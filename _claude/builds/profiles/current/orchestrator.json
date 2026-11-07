@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T00:37:30.228Z",
+ "updatedAt": "2026-11-07T00:45:45.554Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -18003,6 +18003,74 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw5o90r50gfijh"
+    }
+   ]
+  },
+  {
+   "id": "amberx-open-any-url-apk",
+   "title": "AmberX APK + AXHub web: open any website (follow-up to axHub #114, PR #39)",
+   "category": "",
+   "detail": "axHub now sends other sites as browser.open {url, browser, external:true} to capability open-any-url@1. Until the APK advertises it, the hub answers install the new AmberX APK, so www.hostinger.com still will not open.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "amberx-open-any-url-apk",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-07T00:45:42.473Z",
+   "updatedAt": "2026-11-07T00:45:42.473Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need a plugin that will let AmberX open up any website I tell her to.",
+    "at": "2026-11-07T00:45:42.473Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "amberx-droid: OpenUrlRules accepts external:true (http or https, any host and port; still no other scheme, no user info; own-site check unchanged otherwise), default browser unless asked; AxppLink advertises open-any-url@1; notification wording for other sites; OpenUrlRulesTest. Note java.net.URI is stricter than the hub URL parser.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-54m1aq"
+    },
+    {
+     "id": "s2",
+     "text": "axhub-web: screen for the open_url setting (own / allowlist / any, allowlist editing) on /auth/api/amberx/open-url, shown when session can.openUrlSettings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-i6yum8"
     }
    ]
   }

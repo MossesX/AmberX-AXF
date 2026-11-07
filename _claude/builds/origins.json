@@ -193,6 +193,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-open-any-url-apk": {
+   "said": "We need a plugin that will let AmberX open up any website I tell her to.",
+   "at": "2026-11-07T00:45:42.473Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-push": {
    "said": "'From now on all push notifications for approval or anything from axHub comes from amberx android app.' AmberX's WatchService already alerts on hub approvals (incl. merge approvals). Add the Dev Console's alerts (builds, CI, deploys, systems check; alert@1 via GET <console>/api/alerts) to AmberX's watcher, and make Patches and the AXHub app stay quiet while AmberX is installed (Brett approved the small AXHub app change despite the Android hold).",
    "at": "2026-10-28",
