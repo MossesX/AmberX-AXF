@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1367,
- "updatedAt": "2026-11-07T15:11:03.365Z",
+ "rev": 1368,
+ "updatedAt": "2026-11-07T15:11:16.925Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111616,16 +111616,21 @@
    "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
    "category": "Plan Studio",
    "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/blueprint-notes-tasks",
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-07T15:11:01.804Z",
+   "updatedAt": "2026-11-07T15:11:04.523Z",
    "builtAt": "2026-11-07T15:11:01.804Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Built on claude/blueprint-notes-tasks (on top of claude/plan-blueprints, both local, not pushed). UI Review r-20261107-b05bba4e (3 options). Hub notes migrated with backup. Report _claude/builds/reports/blueprint-notes-tasks.md",
+     "at": "2026-11-07T15:11:03.372Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -111804,7 +111809,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
