@@ -740,7 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 22:54 UTC · `gizmo-rebuild-fable` s4 done (current) · orchestrator
 - 2026-11-06 22:58 UTC · `gizmo-rebuild-fable` s5 done (current) · orchestrator
 - 2026-11-06 22:59 UTC · `gizmo-rebuild-fable` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-06 22:59 UTC · `ui-registry-shortcuts` s2 done (current) · orchestrator
@@ -1140,6 +1139,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 10:50 UTC · `build-pipeline-v2` added (15 steps) (all) · orchestrator
 - 2026-11-07 10:50 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 10:50 UTC · `build-pipeline-v2` s1 done, → running (all) · orchestrator
+- 2026-11-07 10:53 UTC · `build-pipeline-v2` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
