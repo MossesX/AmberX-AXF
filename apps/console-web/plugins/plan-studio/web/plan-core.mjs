@@ -187,7 +187,7 @@ function normStep(s, i) {
   const o = typeof s === 'string' ? { text: s } : obj(s);
   return {
     ...o,
-    id: str(o.id, 40) || `s${i + 1}`,
+    id: str(o.id, 120) || `s${i + 1}`,
     text: str(o.text ?? o.title ?? o.prompt, 2000).trim(),
     model: normModel(o.model) || 'Opus',
     minutes: minutesOf(o.minutes ?? o.estimate ?? o.est),
@@ -690,21 +690,134 @@ export function syncBuild(plan, build) {
   const bs = arr(build.steps);
   const done = bs.filter((s) => s.done || s.skip).length;
   const progress = bs.length ? Math.round((done / bs.length) * 100) : 0;
-  const complete = build.status === 'complete' || (bs.length > 0 && done === bs.length);
+  const complete = build.status === 'complete';
+  const twin = (s) => bs.find((x) => x.planStep === s.id) ?? bs.find((x) => str(x.text).trim() === s.text.trim());
   const steps = plan.steps.map((s) => {
-    const b = bs.find((x) => x.planStep === s.id) ?? bs.find((x) => str(x.text).trim() === s.text.trim());
+    const b = twin(s);
     return b && b.done && !s.done ? { ...s, done: true, doneAt: str(b.doneAt) || nowIso() } : s;
   });
+  // a step added on the build shows on the plan; a step only the plan has stays
+  const ids = new Set(steps.map((s) => s.id));
+  for (const [i, x] of bs.entries()) {
+    if (plan.steps.some((s) => twin(s) === x) || !str(x.text).trim()) continue;
+    let id = str(x.id) || `s${i + 1}`;
+    while (ids.has(id)) id = `${id}-${rid(3)}`;
+    ids.add(id);
+    steps.push({ id, text: str(x.text).trim(), model: normModel(x.model) || 'Opus', minutes: minutesOf(x.estimate), dependsOn: [], done: !!x.done, doneAt: x.done ? str(x.doneAt) : '', phase: str(x.phase, 60) });
+  }
+  const started = build.status !== 'pending' || done > 0;
   const next = {
     ...plan, steps,
-    build: { ...plan.build, status: complete ? 'complete' : str(build.status) || plan.build.status, progress, title: str(build.title, 300), branch: str(build.branch, 200), pr: str(build.pr, 200) },
-    status: complete ? 'done' : plan.status === 'done' ? 'done' : 'building',
+    build: { ...plan.build, status: str(build.status) || plan.build.status, progress, title: str(build.title, 300), branch: str(build.branch, 200), pr: str(build.pr, 200) },
+    // the plan's own status stands until the build gives a reason to move it
+    status: complete ? 'done' : plan.status === 'done' ? 'done' : build.status === 'archived' ? 'dropped' : started ? 'building' : plan.status,
     features: complete ? plan.features.map((f) => (f.state === 'planned' ? { ...f, state: 'have', haveAt: nowIso() } : f)) : plan.features,
   };
   if (build.pr && !next.links.some((l) => l.kind === 'pr' && l.ref === String(build.pr))) next.links = [...next.links, { kind: 'pr', ref: String(build.pr), label: 'Build PR' }];
   if (build.branch && !next.links.some((l) => l.kind === 'branch' && l.ref === build.branch)) next.links = [...next.links, { kind: 'branch', ref: build.branch, label: '' }];
-  const changed = JSON.stringify(diff(plan, next)) !== '[]';
+  const changed = JSON.stringify(diff(plan, next)) !== '[]' || JSON.stringify(plan.steps) !== JSON.stringify(steps);
   return { plan: changed ? next : plan, changed };
+}
+
+/* ------------------------------------------------------------------ A plan as a view of its build (build-plan@1) */
+
+/**
+ * Every build has a plan (Brett, Nov 7 2026: "Make the plan, put them in Plan Studio and check off their statuses").
+ * `managed: 'build'` = the steps, ticks, status, words and addenda are a projection of the build's record in the builds
+ * store, made again on every sync, so there is no second copy: a tick lands in the store (the orchestrator) and comes back
+ * here. Text Brett adds around the managed block, comments and steps only the plan has stay his.
+ *
+ * Step ids: `s7` = `<build>-7`, an addendum's sub-step `s7-2` = `<build>-7-2`.
+ */
+export const BLOCK_START = '<!-- axf:build-plan -->';
+export const BLOCK_END = '<!-- /axf:build-plan -->';
+export const STAGES = ['planned', 'paused', 'running', 'waiting', 'blocked', 'failed', 'built', 'merge-queue', 'merged', 'archived'];
+
+export const STAGE_LABEL = { planned: 'Planned', paused: 'Paused', running: 'Running', waiting: 'Waiting', blocked: 'Blocked', failed: 'Failed', built: 'Built, awaiting merge', 'merge-queue': 'In merge queue', merged: 'Merged', archived: 'Archived' };
+
+/** Plan Studio's id for a build step. */
+export function stepPlanId(buildId, step, i = 0) {
+  const m = /^s(\d+(?:-\d+)?)$/.exec(str(step.id));
+  return `${buildId}-${m ? m[1] : i + 1}`;
+}
+/** Where a build stands, in Brett's words: running / built / in merge queue / merged… */
+export function stageOf(build, { queued = false } = {}) {
+  const st = str(build.status);
+  if (st === 'complete' || str(build.mergedAt)) return 'merged';
+  if (st === 'archived') return 'archived';
+  if (st === 'built') return queued ? 'merge-queue' : 'built';
+  if (st === 'pending') return arr(build.steps).some((s) => s.done) ? 'paused' : 'planned';
+  return STAGES.includes(st) ? st : 'running';
+}
+const planStatusOf = (build, stage) => ({ planned: 'ready', merged: 'done', archived: 'dropped' }[stage] ?? 'building');
+const quote = (t) => str(t, 8000).split('\n').map((l) => `> ${l}`).join('\n');
+const fence = (t) => { const ticks = '`'.repeat(Math.max(3, ...[...str(t).matchAll(/`+/g)].map((m) => m[0].length + 1))); return `${ticks}text\n${t}\n${ticks}`; };
+
+/** A build's addenda in check-off order: each with the N of its item (a dateless one sorts last in the record). */
+const addendaOf = (build) => arr(obj(build.origin).addenda)
+  .map((a, i) => ({ ...a, n: arr(build.steps).find((s) => s.id === a.step)?.addendum || i + 1 }))
+  .sort((x, y) => x.n - y.n);
+
+/** The managed block: his words, each addendum (his words, the summary, the sub-steps), the brief. */
+export function buildBlock(build) {
+  const o = obj(build.origin);
+  const steps = arr(build.steps);
+  const out = [BLOCK_START, '## What Brett said', o.said ? quote(o.said) : '_Not recorded._'];
+  addendaOf(build).forEach((a) => {
+    const meta = [a.source, str(a.at).slice(0, 16).replace('T', ' ')].filter(Boolean).join(' · ');
+    out.push(`## Addendum ${a.n}${meta ? ` (${meta})` : ''}`, quote(a.said), `**What Claude will do:** ${str(a.summary) || '_No summary was written when it was added._'}`);
+    const subs = steps.filter((s) => s.parent === a.step);
+    if (subs.length) out.push(subs.map((s, j) => `- [${s.done ? 'x' : ' '}] \`${stepPlanId(build.id, s, j)}\` ${str(s.text)}`).join('\n'));
+  });
+  if (o.brief) out.push('## Brief', fence(o.brief));
+  out.push(BLOCK_END);
+  return out.join('\n\n');
+}
+function withBlock(body, block) {
+  const b = str(body); const i = b.indexOf(BLOCK_START); const j = b.indexOf(BLOCK_END);
+  if (i < 0 || j < i) return b.trim() ? `${block}\n\n${b.trim()}` : block;
+  return `${b.slice(0, i)}${block}${b.slice(j + BLOCK_END.length)}`;
+}
+
+/** The plan of a build, made or brought up to date. `plan` = the plan so far (null = a new one). Pure: same input, same plan. */
+export function planFromBuild(build, { plan = null, profile = '', queued = false, now = nowIso() } = {}) {
+  const prof = profile || plan?.build?.profile || arr(build.profiles)[0] || '';
+  const live = arr(build.steps);
+  const pid = (s) => stepPlanId(build.id, s, live.indexOf(s));
+  const steps = live.map((s) => {
+    const parent = s.parent ? live.find((x) => x.id === s.parent) : null;
+    return {
+      id: pid(s), text: str(s.title || s.text, 2000).trim(), model: normModel(s.model) || 'Opus', minutes: minutesOf(s.estimate), dependsOn: [],
+      done: !!s.done, doneAt: s.done ? str(s.doneAt) : '', phase: parent ? `Addendum ${parent.addendum}` : s.addendum ? `Addendum ${s.addendum}` : str(s.phase, 60),
+      buildStep: str(s.id), ...(s.skip ? { skip: true } : {}), ...(parent ? { parent: pid(parent) } : {}), ...(s.addendum ? { addendum: s.addendum } : {}),
+    };
+  });
+  const own = arr(plan?.steps).filter((s) => !s.buildStep && !steps.some((x) => x.text === str(s.text).trim()));
+  const stage = stageOf(build, { queued });
+  const counted = live.filter((s) => !s.skip);
+  const progress = counted.length ? Math.round((counted.filter((s) => s.done).length / counted.length) * 100) : stage === 'merged' ? 100 : 0;
+  const o = obj(build.origin);
+  const ref = `${prof}:${build.id}`;
+  const pendingRef = `pending:${build.pendingId || build.id}`;
+  const keep = arr(plan?.links).filter((l) => !(['build', 'branch', 'pr'].includes(l.kind) || l.ref === pendingRef));
+  const links = [{ kind: 'build', ref, label: 'Orchestrator build' }, { kind: 'related', ref: pendingRef, label: 'Pending list item' },
+    ...(build.branch ? [{ kind: 'branch', ref: str(build.branch), label: '' }] : []), ...(build.pr ? [{ kind: 'pr', ref: str(build.pr), label: 'Build PR' }] : []), ...keep];
+  return normalize({
+    ...(plan ?? {}),
+    $axf: SCHEMA, id: plan?.id || str(build.id, 80), title: str(build.displayName || build.title, 200) || build.id,
+    summary: plan?.summary || str(build.detail, 600), status: planStatusOf(build, stage), managed: 'build', profile: prof,
+    category: plan?.category || 'Builds', tags: [...new Set([...arr(plan?.tags), 'build'])], priority: plan?.priority || build.priority || 'P2',
+    origin: o.said || o.addenda ? { said: str(o.said), at: str(o.at), source: str(o.source), by: str(o.by), session: str(o.session), link: str(o.link), verbatim: !!o.verbatim } : undefined,
+    addenda: addendaOf(build).map((a) => ({ n: a.n, said: str(a.said), at: str(a.at), source: str(a.source), summary: str(a.summary), step: a.step ? stepPlanId(build.id, { id: a.step }) : '' })),
+    steps: [...steps, ...own], links, body: withBlock(plan?.body, buildBlock(build)),
+    build: { profile: prof, id: build.id, linkedAt: plan?.build?.linkedAt || now, status: str(build.status), stage, progress, title: str(build.title, 300), branch: str(build.branch, 200), pr: str(build.pr, 200), pendingId: str(build.pendingId || build.id, 80) },
+  }, { now });
+}
+
+/** Has anything that shows changed? Times, totals and the version are not a change. */
+export function planMoved(a, b) {
+  const pick = (p) => JSON.stringify([p.title, p.status, p.priority, p.steps, p.addenda ?? [], p.links, p.body, p.build, p.origin ?? null]);
+  return pick(a) !== pick(b);
 }
 
 /* ------------------------------------------------------------------ Catalog features on plans */

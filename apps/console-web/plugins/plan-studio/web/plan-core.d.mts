@@ -70,3 +70,14 @@ export function syncBuild(plan: Plan, build: unknown): { plan: Plan; changed: bo
 export function overlayCatalog(entries: unknown[], plans: Plan[]): CatalogEntry[];
 export function filterCatalog(entries: CatalogEntry[], f?: CatalogFilter): CatalogEntry[];
 export function planFromFeature(entry: CatalogEntry, feature: CatalogFeature, opts?: Record<string, unknown>): Plan;
+
+export interface PlanAddendum { n: number; said: string; at: string; source: string; summary: string; step: string }
+export const BLOCK_START: string;
+export const BLOCK_END: string;
+export const STAGES: string[];
+export const STAGE_LABEL: Record<string, string>;
+export function stepPlanId(buildId: string, step: { id: string }, i?: number): string;
+export function stageOf(build: Record<string, unknown>, opts?: { queued?: boolean }): string;
+export function buildBlock(build: Record<string, unknown>): string;
+export function planFromBuild(build: Record<string, unknown>, opts?: { plan?: Plan | null; profile?: string; queued?: boolean; now?: string }): Plan;
+export function planMoved(a: Plan, b: Plan): boolean;

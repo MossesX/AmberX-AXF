@@ -16,7 +16,8 @@
  *     brief:    the full brief text the build ran from
  *     verbatim: true = his exact words; false = taken from older text afterwards (backfill) and may be paraphrased
  *     from:     where a backfilled origin came from: brief | detail | notes | threads | report | changes ('' = captured live)
- *     addenda:  [{ said, at, source, by, verbatim }]   later changes he asked for, oldest first
+ *     addenda:  [{ said, at, source, by, verbatim, summary, step }]   later changes he asked for, oldest first; summary =
+ *               what Claude will do about it, step = the build step that is its check-off item (see checkoffSteps)
  *   }
  *
  * Merging two copies (the live publish, a git merge, an orchestrator write) never loses anything: `mergeOrigin` keeps
@@ -54,7 +55,11 @@ export const normSource = (v) => {
 
 function normAddendum(a) {
   const o = a && typeof a === 'object' ? a : {};
-  return { said: str(o.said, MAX_SAID).trim(), at: iso(o.at), source: normSource(o.source), by: str(o.by, 120), verbatim: o.verbatim !== false };
+  return {
+    said: str(o.said, MAX_SAID).trim(), at: iso(o.at), source: normSource(o.source), by: str(o.by, 120), verbatim: o.verbatim !== false,
+    ...(str(o.summary).trim() ? { summary: str(o.summary, 2000).trim() } : {}), // Claude's reading of it: what it will do
+    ...(str(o.step) ? { step: str(o.step, 40) } : {}), // the build step that is its check-off item
+  };
 }
 
 /** build-origin@1 in shape, or null when there is nothing in it (no words, no brief, no addenda). */
@@ -93,7 +98,7 @@ export function mergeOrigin(a, b) {
   for (const k of ['brief', 'by', 'session', 'link']) if (!out[k] && lose[k]) out[k] = lose[k];
   for (const k of ['at', 'source']) if (!out[k] && lose[k] && sameWords) out[k] = lose[k]; // when and where belong to the words
   const seen = new Map();
-  for (const ad of [...y.addenda, ...x.addenda]) seen.set(addKey(ad), ad);
+  for (const ad of [...y.addenda, ...x.addenda]) { const was = seen.get(addKey(ad)); seen.set(addKey(ad), was ? { ...ad, summary: ad.summary || was.summary, step: ad.step || was.step } : ad); }
   out.addenda = [...seen.values()].sort((p, q) => (p.at || '9') < (q.at || '9') ? -1 : (p.at || '9') > (q.at || '9') ? 1 : 0);
   return normOrigin(out);
 }
@@ -105,6 +110,59 @@ export function addAddendum(origin, ad, now = new Date().toISOString()) {
   const o = normOrigin(origin) ?? { said: '', at: '', source: '', session: '', link: '', by: '', brief: '', verbatim: false, from: '', addenda: [] };
   if (!o.addenda.some((x) => addKey(x) === addKey(a))) o.addenda.push(a);
   return normOrigin(o);
+}
+
+// ------------------------------------------------------------------ an addendum as a check-off item
+
+/**
+ * Every addendum on a build is a check-off item on the build (Brett, Nov 7 2026): a step `sK` with `addendum: N`, its
+ * sub-steps `sK-1`, `sK-2`… with `parent: 'sK'`. They are real steps of the build, so the orchestrator ticks them like any
+ * other and Plan Studio shows them as buildId-K and buildId-K-M. The item ticks itself when its last sub-step is done.
+ * With no sub-steps given, the addendum is one sub-step. Returns the new steps (plain objects: the caller normalises).
+ */
+export function checkoffSteps(steps, n, ad, { done = false, at = '' } = {}) {
+  const k = Math.max(0, ...steps.map((s) => Number(/^s(\d+)/.exec(s.id)?.[1] ?? 0))) + 1;
+  const first = str(ad.said).split(/(?<=[.!?])\s|\n/)[0].trim().slice(0, 200);
+  const what = str(ad.summary, 300).trim() || first;
+  const subs = (Array.isArray(ad.steps) ? ad.steps : []).map((t) => str(t, 2000).trim()).filter(Boolean);
+  const base = { model: steps[steps.length - 1]?.model || 'Opus', done, doneAt: done ? at : '' };
+  return [
+    { ...base, id: `s${k}`, text: `Addendum ${n}: ${what}`, addendum: n },
+    ...(subs.length ? subs : [what]).map((text, i) => ({ ...base, id: `s${k}-${i + 1}`, text, parent: `s${k}` })),
+  ];
+}
+
+/**
+ * Give every addendum of a build that has none its check-off item, in place. `plans` = [{ said, summary, steps }] from a
+ * brief (matched by the words); `norm(step, index)` is the caller's step normaliser. Returns how many were made.
+ */
+export function attachCheckoffs(b, plans = [], { norm, done = false, at = '' } = {}) {
+  const o = normOrigin(b.origin);
+  if (!o) return 0;
+  let made = 0;
+  o.addenda.forEach((a, i) => {
+    if (a.step) return;
+    const p = plans.find((x) => x.said === a.said) ?? {};
+    const steps = checkoffSteps(b.steps, i + 1, { ...a, ...p }, { done, at });
+    b.steps.push(...steps.map((s, j) => (norm ? norm(s, b.steps.length + j) : s)));
+    a.step = steps[0].id;
+    const summary = str(p.summary || a.summary).trim();
+    if (summary) a.summary = summary;
+    made += 1;
+  });
+  if (made) b.origin = o;
+  return made;
+}
+
+/** A check-off item follows its sub-steps: done when all are done or skipped, open again when one is opened. In place. */
+export function tickParents(steps, at = '') {
+  for (const p of steps.filter((s) => s.addendum)) {
+    const subs = steps.filter((s) => s.parent === p.id);
+    if (!subs.length) continue;
+    const done = subs.every((s) => s.done || s.skip);
+    if (done !== !!p.done) { p.done = done; p.doneAt = done ? at : ''; }
+  }
+  return steps;
 }
 
 // ------------------------------------------------------------------ dates in Brett's words ("Nov 3 2026", "Oct 30")
@@ -164,6 +222,19 @@ function sections(text) {
   return out.map((s) => ({ heading: s.heading, body: s.lines.join('\n').trim(), lines: s.lines }));
 }
 
+/**
+ * An addendum block: his words, then (when the words are quoted and bullets follow) Claude's reading of them as a
+ * list. The list is the summary and the sub-steps; without one the whole block is his words.
+ */
+function splitAddendum(lines) {
+  const body = lines.join('\n').trim();
+  const LIST = /^\s*(?:[-*]|\d+[.)])\s+/;
+  const at = lines.findIndex((l) => LIST.test(l));
+  if (at < 1 || !/^\s*(>|"|“)/.test(body)) return { said: unquote(body), summary: '', steps: [] };
+  const steps = lines.slice(at).filter((l) => LIST.test(l)).map((l) => l.replace(LIST, '').trim());
+  return { said: unquote(lines.slice(0, at).join('\n')), summary: steps.join(' ').slice(0, 2000), steps };
+}
+
 const SAID_RE = /^brett said\b/i;
 const ADD_RE = /^addendum\b\s*(\d+)?\s*(\(.*\))?/i;
 
@@ -178,7 +249,7 @@ export function parseBrief(text, { year = '' } = {}) {
   const yr = year || /\b(20\d{2})\b/.exec(t)?.[1] || '';
   const addenda = secs.filter((s) => ADD_RE.test(s.heading)).map((s) => {
     const { meta, rest } = readMeta(s.lines);
-    return { said: unquote(rest.join('\n')), at: meta.at || dateOf(s.heading, yr), source: meta.source || sourceIn(s.heading), by: meta.by || '', verbatim: !/paraphras/i.test(s.heading) };
+    return { ...splitAddendum(rest), at: meta.at || dateOf(s.heading, yr), source: meta.source || sourceIn(s.heading), by: meta.by || '', verbatim: !/paraphras/i.test(s.heading) };
   }).filter((a) => a.said);
   const block = secs.find((s) => SAID_RE.test(s.heading));
   if (block) {

@@ -4,7 +4,7 @@ claude.ai sessions (axHub memory_write on the same files) and the AmberX app sha
 
   GET  state        plans, categories, templates, saved views, build profiles (+ live build progress synced)
   POST api          {op, …} one change: get | save | delete | restore | bulk | category | template-save | template-delete
-                    | view-save | view-delete | import | export | catalog | feature | plan-feature | build | sync-builds
+                    | view-save | view-delete | import | export | catalog | feature | plan-feature | build | build-plan | tick | sync-builds
                     | ai-apply
   GET  catalog      every plugin / app / library / module / axHub with its features (have / partial / planned / idea)
   GET  ai/status    is an AI provider there (axf.llm@1, the AI assistant's providers)?
@@ -29,7 +29,7 @@ FOLDER = "plan-studio"
 CLI = Path(__file__).resolve().parent.parent / "plans.mjs"
 ROOT = CLI.parents[4]
 OPS = {"get", "save", "delete", "restore", "bulk", "category", "template-save", "template-delete", "view-save", "view-delete",
-       "import", "export", "catalog", "feature", "plan-feature", "build", "sync-builds", "ai-apply"}
+       "import", "export", "catalog", "feature", "plan-feature", "build", "build-plan", "tick", "sync-builds", "ai-apply"}
 
 
 def run(req: dict[str, Any], timeout: int = 90) -> dict[str, Any]:

@@ -170,6 +170,14 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$OR
   origin_line="$(node "$ORIGIN_CLI" capture --brief "$brief" --name "$name" --by "${agent:-$name}" 2>&1 | tail -2)" || true
   [[ -n "$origin_line" ]] && echo "claude-headless: $origin_line" >&2
 fi
+# Every build has a plan (build-plan@1, Brett, Nov 7 2026): the launch makes the build's record if it has none and its
+# Plan Studio plan: his words, the brief, the addenda and the steps, ticked from the builds store from then on. Never
+# stops the run. AXF_BUILD_PLANS=off skips it.
+PLAN_CLI="$HERE/../framework/cli/build-plan.mjs"
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$PLAN_CLI" ]] && [[ "${AXF_BUILD_PLANS:-on}" != off ]]; then
+  plan_line="$(node "$PLAN_CLI" ensure --brief "$brief" --name "$name" --by "${agent:-$name}" 2>&1 | tail -1)" || true
+  [[ -n "$plan_line" ]] && echo "claude-headless: $plan_line" >&2
+fi
 LOOK="$HERE/../framework/cli/ui-predict.mjs"
 look_on() { [[ "${AXF_LOOK_GATE:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LOOK" ]]; }
 # Predicted looks (ui-prediction@1, Brett Nov 3 2026): a build that changes UI gets its predicted look in UI Review at

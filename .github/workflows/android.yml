@@ -92,6 +92,7 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-build-plans.mjs              # build-plan@1: a plan is a view of its build; a stale file never resets a status or drops a step
       - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
       - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching

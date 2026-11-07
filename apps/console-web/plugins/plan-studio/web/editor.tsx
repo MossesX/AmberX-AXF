@@ -128,7 +128,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
       </Sec>
 
       <Sec id="steps" title={`Steps (${plan.steps.length})`} icon="list" aside={<span className="fx-muted axp-plan-studio__n">{pc.fmtMinutes(t.minutes)} · {pc.fmtCost(t.cost)}</span>}>
-        <StepsEditor steps={plan.steps} onChange={(steps) => edit({ steps })} />
+        {plan.managed === 'build' ? <BuildSteps plan={plan} onPlan={(p) => edit({ steps: p.steps, build: p.build, addenda: p.addenda, body: p.body, status: p.status } as Partial<Plan>)} /> : <StepsEditor steps={plan.steps} onChange={(steps) => edit({ steps })} />}
       </Sec>
 
       <Sec id="lists" title="Requirements, acceptance, decisions, questions, risks" icon="check-circle">
@@ -204,6 +204,43 @@ function TouchesField({ plan, onChange }: { plan: Plan; onChange: (t: Plan['touc
         </form>
       </div>
       <p className="fx-muted axp-plan-studio__hint">Pick them from the Catalog tab (“Add to a plan”) or type a catalog key.</p>
+    </div>
+  );
+}
+
+/**
+ * The steps of a plan that is a view of its build: read here, ticked through the orchestrator (the store is the one
+ * source; the plan comes back from it). Each addendum shows Brett's words, Claude's summary and its sub-steps.
+ */
+function BuildSteps({ plan, onPlan }: { plan: Plan; onPlan: (p: Plan) => void }) {
+  const { busy, error, run } = useBusy();
+  const tick = (s: Step, done: boolean) => run(async () => {
+    const r = await call<{ ok: boolean; error?: string; plan?: Plan }>('tick', { id: plan.id, build: plan.build?.id, step: s.buildStep, done });
+    if (!r.ok) throw new Error(r.error || 'The orchestrator did not take the tick');
+    if (r.plan) onPlan(r.plan);
+  });
+  const row = (s: Step) => (
+    <li key={s.id} className={`axp-plan-studio__bstep${s.done ? ' is-done' : ''}${s.parent ? ' is-sub' : ''}`}>
+      <input type="checkbox" className="fx-check" checked={s.done} disabled={busy || !!s.addendum || !s.buildStep} onChange={(e) => tick(s, e.target.checked)} aria-label={`${s.id} done`} />
+      <span className="axp-plan-studio__sid">{s.id}</span>
+      <span className="axp-plan-studio__btext">{s.text}{s.skip ? ' (skipped)' : ''}</span>
+    </li>
+  );
+  const addenda = (plan.addenda ?? []) as pc.PlanAddendum[];
+  const own = plan.steps.filter((s) => !s.addendum && !s.parent);
+  return (
+    <div className="axp-plan-studio__bsteps">
+      <ol>{own.map(row)}</ol>
+      {addenda.map((a) => (
+        <div key={a.n} className="axp-plan-studio__addendum">
+          <h3 className="axp-plan-studio__addh">Addendum {a.n}</h3>
+          <p className="axp-plan-studio__said">{a.said}</p>
+          <p className="fx-muted axp-plan-studio__hint">{a.summary ? `Claude will: ${a.summary}` : 'No summary was written when it was added.'}</p>
+          <ol>{plan.steps.filter((s) => s.id === a.step || s.parent === a.step).map(row)}</ol>
+        </div>
+      ))}
+      {error && <p className="axp-plan-studio__hint" role="alert">{error}</p>}
+      <p className="fx-muted axp-plan-studio__hint">These come from the build. A tick goes to the orchestrator; to change a step, change it there.</p>
     </div>
   );
 }
@@ -359,7 +396,7 @@ function BuildPanel({ plan, dirty }: { plan: Plan; dirty: boolean }) {
   if (plan.build) {
     return (
       <div className="axp-plan-studio__build">
-        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {plan.build.status} · {plan.build.progress ?? 0}% <PriorityTag build={plan.build.id} /></p>
+        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {pc.STAGE_LABEL[String(plan.build.stage ?? '')] ?? plan.build.status} · {plan.build.progress ?? 0}% <PriorityTag build={plan.build.id} /></p>
         <div className="axp-plan-studio__bar" role="progressbar" aria-valuenow={plan.build.progress ?? 0} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${plan.build.progress ?? 0}%` }} /></div>
         <div className="fx-row"><Button size="sm" icon="layers" onClick={() => rt.dispatch('nav:build-orchestrator')}>Open the orchestrator</Button><Button size="sm" tone="quiet" icon="refresh" busy={busy} onClick={() => run(async () => { await call('sync-builds'); })}>Check progress</Button></div>
         <p className="fx-muted axp-plan-studio__hint">The plan ticks its steps as the build does, and turns done (its planned features to have) when the build completes.</p>

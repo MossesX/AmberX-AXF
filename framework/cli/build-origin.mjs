@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url';
 import * as og from '../core/build-origin.mjs';
 import { findBuild as gateFind } from './model-gate.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
+import { normStep } from '../plan/builds-store-core.mjs';
 
 const by0 = () => process.env.AXF_AGENT || process.env.AXF_SESSION || process.env.AXF_ACTOR || 'build-origin';
 
@@ -71,12 +72,21 @@ export function writeOrigin(id, next, { action = 'origin:set', by = by0(), repla
   return out;
 }
 
+/** Every addendum becomes a check-off item on the build: real steps, so the orchestrator ticks them. */
+function checkoffs(b, plans, at) {
+  const made = og.attachCheckoffs(b, plans, { norm: (s, i) => normStep(s, i, { now: at }), at });
+  if (made && !b.rearranged) b.defaultSteps = b.steps.map((s) => ({ ...s }));
+  return made;
+}
+
 export function addAddendumTo(id, ad, { by = by0() } = {}) {
   let out = null;
   withStore((s) => {
     const b = byId(s, id); if (!b) throw new Error(`no build "${id}"`);
+    const at = new Date().toISOString();
     b.origin = og.addAddendum(b.origin, { by, ...ad });
-    b.updatedAt = new Date().toISOString();
+    checkoffs(b, [ad], at);
+    b.updatedAt = at;
     out = b;
     return s;
   }, { by, action: 'origin:addendum', note: id });
@@ -93,7 +103,9 @@ export function capture({ briefText, build = '', name = '', by = by0() }) {
   const next = { ...p, brief: briefText, by };
   const cur = og.normOrigin(b.origin);
   // a brief launched again with the same words: only new addenda / the brief come in
-  const r = writeOrigin(b.id, cur?.said && cur.verbatim && p.said !== cur.said ? { ...next, said: '', verbatim: false } : next, { action: 'origin:capture', by });
+  writeOrigin(b.id, cur?.said && cur.verbatim && p.said !== cur.said ? { ...next, said: '', verbatim: false } : next, { action: 'origin:capture', by });
+  let r = null;
+  withStore((s) => { r = byId(s, b.id); if (checkoffs(r, p.addenda, new Date().toISOString())) r.updatedAt = new Date().toISOString(); return s; }, { by, action: 'origin:addendum', note: b.id });
   return { ok: true, build: b.id, said: og.subtitle(r.origin), addenda: r.origin?.addenda?.length ?? 0, warn };
 }
 
