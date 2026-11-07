@@ -97,6 +97,18 @@
    "from": "",
    "addenda": []
   },
+  "amber-chat-asset": {
+   "said": "Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7). Rule: every UI element is an asset. The AmberX companion chat is a plain component. 1. Chat as an asset (Fable: contract). 2. Rename Gizmo -> Amber, safely: inventory, rename everywhere, migrate saved chats/settings, keep gizmo as an alias, back up old data, one-step rollback, CI check. 3. UI Review with choices: THREE distinct looks. 4. Tests + Shipped features.",
+   "at": "2026-11-07T12:30:40.602Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-appearance-lock": {
    "said": "AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
    "at": "2026-10-27",
@@ -623,6 +635,18 @@
    "from": "detail",
    "addenda": []
   },
+  "blueprint-notes-tasks": {
+   "said": "Blueprints switch notes, tasks and to-dos too (Brett, Nov 7)\n\n1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists).\n2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the existing plans went to.\n3. Global lists: some lists are shared across all blueprints. \"Quick notes\" is global by default. A per-list switch \"show in every blueprint\".\n4. Voice: \"add X to quick notes\" always works; \"switch blueprint to X\" switches all of it. control@1, MCP, CLI.\n5. Active blueprint visible in AmberX and the console (chip), settings in place, assets only, no hard-coded styling. UI Review three options (--choices).\n6. Tests: switch filters plans + notes + tasks + to-dos; global lists stay; nothing lost. Add to Shipped features.\n\nAddendum (Brett, Nov 7): permanent Global group\n- Notes/tasks/to-do manager AND Plan Studio each get a permanent group called **Global** (can't be deleted or moved).\n- Global holds repo-wide items: they show no matter which blueprint is open.\n- Any plan, note, task, to-do or list can be set to Global (toggle + drag in), and back.\n- Quick notes lives in Global by default. Replaces the per-list \"show in every blueprint\" switch: Global is that switch.",
+   "at": "2026-11-07T14:45:07.894Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "bugs-board": {
    "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
    "at": "2026-11-04T00:00:00Z",
@@ -726,6 +750,18 @@
    "session": "",
    "link": "",
    "by": "build-own-login-r2",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "build-pipeline-v2": {
+   "said": "Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD). Replace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what is redundant. Single profile all already on main. Flow: Request → orchestrator → Pending → Queued (one queue per Claude account, max 5) → Building (parallel per account, default 3). Build table states ONLY Pending, Queued, Building. Shipped features: Waiting → Building → Pending merge → Live. Headless sessions load ONLY the brief; brief check before queueing; progress file per build (START/END per step, never pauses, watcher crosses steps off, token usage per session and per step); final step updates Shipped features. Blocked flow: phone alert → Brett answers or taps Let orchestrator decide → relaunch from the blocked step. Phone notifications on session started, build finished, failed, stopped incomplete, blocked, landed. Account dies → move its builds + alert. Landing discards _claude/builds sync noise; on land Shipped features Live + alert. Decisions to _claude/memory. Acceptance suite in CI blocks landing.",
+   "at": "2026-11-07T10:30:00Z",
+   "source": "chat",
+   "session": "",
+   "link": "",
+   "by": "Brett",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -877,7 +913,7 @@
    "by": "backfill",
    "brief": "# Build: claude-badge-vps\n\nBrett (voice): \"I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.\"\n\nClaude badge plugin (apps/console-web/plugins/claude-badge):\n1. Two connections, each its own badge/indicator on the banner:\n   - Console connection: the existing test (console AI via axf.llm@1).\n   - VPS connection: the Claude Code login on the VPS (which account, logged in or not, limit hit). Read it with plain code, zero tokens (e.g. the ai-keys/claude-accounts VPS status or a cheap read of /root/.claude.json email + credentials expiry); green = logged in and working, amber = limit hit / out of credits, gray/red = not logged in.\n2. Settings (Settings > Plugins > Claude badge): show/hide each one; Icons only switch per badge; pick the icon for each badge and each state (ok / no credit / error), extending the existing Badge icons picker.\n3. Covers step 18 of pending item token-usage-log-accounts-plan-studio-control (clock badge watches VPS login): note it there, don't build it twice.\n4. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nNothing gets removed. One session for the whole build, read only files you need, no full CLAUDE.md chain. Stay out of notes/tasks/todo and AmberX notification code (other builds).\n## UPDATE from Brett (replaces the scope above)\n\"I need the Claude badge, the axHub badge, the VPS badge and the AmberX badge, all in one plugin, all able to select which icon for which, and fully configurable.\"\n- One plugin holds four badges: Claude (console AI), axHub (connection/health), VPS (Claude login on the VPS), AmberX (phone app connected/last seen). Move the existing ones in; old plugins can be disabled, nothing removed.\n- Per badge: show/hide, icons only or icon + label, label text, icon per state (ok / warn / error / off), order on the banner.\n- All plain-code checks, zero tokens.\n\n## Addendum 2 (Brett, voice)\nAdd a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.\n\n## Addendum 3 (Brett, voice)\n\"When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.\"\n- Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing.\n- Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.\n",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": [
     {
      "said": "Add a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.",
@@ -953,7 +989,7 @@
    "session": "",
    "link": "",
    "by": "backfill",
-   "brief": "",
+   "brief": "# Dev Console as an Android app: wrapper, one codebase (Brett, Nov 7)\n\nBrett chose the wrapper over a native rewrite: the existing web console runs inside an Android app shell, same way AmberX loads its web plugins. One codebase; every console change shows on the phone at once.\n\nReuse: orchestrator build `console-android-app-tabs` (19 steps, pending) — get its brief (`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief console-android-app-tabs`) and use what fits; ignore the archived native rewrite `console-android-native-tabs`. Reuse AmberX's Android shell/bridge pieces (apps/amberx-droid) rather than writing new ones.\n\n1. Android app shell loading the console (console.amberxai.com), with sign-in kept, back button/navigation, pull-to-refresh, offline screen.\n2. Native bridges where needed: push notifications (build start/finish/fail/land alerts), mic for voice, background wake, file share/download (APKs), deep links that open a console screen.\n3. Console UI stays asset-driven; phone layouts come from the existing three-layouts/phone assets, no hard-coded styling.\n4. APK built in CI next to amberx-debug.apk; listed under Apps in the console/axHub for install.\n5. UI Review with three options (--choices) for the shell chrome. Tests. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
    "verbatim": false,
    "from": "detail",
    "addenda": []
@@ -972,14 +1008,14 @@
   },
   "console-approvals-in-place": {
    "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
-   "at": "2026-11-06T00:00:00Z",
+   "at": "2026-11-06",
    "source": "voice",
    "session": "",
    "link": "",
-   "by": "headless",
+   "by": "backfill",
    "brief": "# today: approve/deny axHub approvals inside the Dev Console\n\nBrett's words (voice, Nov 6 2026): \"It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.\"\n\n## Problem\nWhen an axHub approval (confirm or veto countdown) is waiting, the console pops it up (approvals-banner / approval popup), but tapping it navigates to https://axhub.amberxai.com/auth/admin/approvals/<id>. Brett wants to stay in the console.\n\n## Build\n1. In the console's approval popup/banner (and any approval row in the console, incl. phone layout), tapping the approval opens an in-console approval view: title, description, the exact call/command, countdown if veto, and Approve / Deny buttons.\n2. Approve / Deny call axHub's approval API server-side from the console (console proxy using its existing axHub auth), never by sending Brett to the axHub site. Show the result in place (approved, denied, ran, failed).\n3. No link to the axHub page as the default tap. At most a small secondary \"open in axHub\" option.\n4. Register console actions (e.g. approvals.approve / approvals.deny with id) so they work through console commands too, and make console_show approval:<id> open this in-console view.\n5. AmberX phone notifications for approvals should open the console's in-console view, not axHub.\n\n## Rules\nFollow CLAUDE.md and _claude/rules/RULES.md. Never print or log secrets/tokens. Tests for approve/deny from the console. Update help/docs, THREADS row, orchestrator entry, report. Don't land; leave it for Brett's go.\n",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": [
     {
      "said": "\"Schedule a console build and deploy every night at 2 a.m.\" and \"I need refresh added to the API, the MCP and the CLI too.\"",
@@ -1277,7 +1313,7 @@
    "by": "backfill",
    "brief": "# Build: refresh-token-save (pending id first-refresh-token-saved-every-time-it-s-used-v)\n\nBrett said (verbatim): \"I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.\"\n\nTarget: ~20 minutes. Do ONLY this, nothing else.\n\nThe VPS Claude login is now mossesx@gmail.com (/root/.claude/.credentials.json). Whenever that login (or any saved account in /root/.claude-accounts or the ai-keys plugin store) uses or renews its OAuth refresh token, write the rotated refresh + access token back to the saved copy immediately, so the next run never uses a dead token. Check the ai-keys renew thread (apps/console-web/plugins/ai-keys), deploy/claude-headless.sh launches, and the account switch path.\n\nDon't load the full CLAUDE.md chain; read only the files you need. Small test with fake tokens. Commit on this branch, open a PR, do not land. Tick step 17 of pending item token-usage-log-accounts-plan-studio-control and mark pending item first-refresh-token-saved-every-time-it-s-used-v complete when done.",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": []
   },
   "fix-banner-snap": {
@@ -1393,6 +1429,26 @@
    "from": "detail",
    "addenda": []
   },
+  "full-api-control": {
+   "said": "The API controls EVERYTHING in the console. Rule: the API (control@1 / MCP / CLI / voice) must be able to do anything Brett can do by hand in the console and every plugin. Today it can't (e.g. it can open a terminal tab but can't type in it).",
+   "at": "2026-11-07T16:09:37.164Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "A real, polished API Browser plugin in the console listing EVERY API path (control@1 targets/actions, REST routes, MCP tools, CLI commands, plugin reads/commands) from one generated registry.\n- Multiple views: Grid (sort/filter/search), Tree (by app > plugin > screen > element), Cards, and a Coverage view (which UI elements have API paths, red for gaps).\n- Each entry: what it does, inputs/outputs schema, policy (instant/veto/approve), REST + MCP + CLI names, the UI element it maps to, links to docs/glossary.\n- \"Try it\" panel: fill inputs, run (respecting policy), see the result; reads run instantly.\n- Nice and pretty: from assets only, three looks to UI Review (--choices).",
+     "at": "",
+     "source": "console",
+     "by": "sully",
+     "verbatim": true
+    }
+   ]
+  },
   "github-app": {
    "said": "",
    "at": "",
@@ -1505,7 +1561,7 @@
    "session": "",
    "link": "",
    "by": "claude-voice",
-   "brief": "",
+   "brief": "# glossary-index-demos (r2)\n\nThis build already exists in the orchestrator (profile `all`, id `glossary-index-demos`, 6 steps, none done) with its Plan Studio plan. An old folder /root/axf-builds/glossary-index-demos exists from an earlier attempt: check it for any committed work and bring it over.\n\n1. Get the full brief: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief glossary-index-demos` (and its Plan Studio plan). Follow it exactly: documentation index, glossary and walkthrough demos.\n2. If a step needs Fable (new shared asset type/contract), stop there and write `blocked: needs Fable for sN` to PROGRESS.md.\n3. Progress: append `<time> START|DONE <step>` to PROGRESS.md in this folder at each step; don't stop between steps.\n4. Last step: add it to Shipped features.\n\nShipped-product quality, no hard-coded styling. Commit, don't push.",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -1810,6 +1866,18 @@
    "from": "",
    "addenda": []
   },
+  "maintenance-redundancy-scan": {
+   "said": "Maintenance: redundancy scan (Brett, Nov 7)\n\nAdd a job to the Maintenance plan/runner (reuse maintenance-vps-monitor / AmberX Maintenance / syscheck pieces where they exist) that searches for redundant data sets in a controlled, methodical way and REPORTS them. It never deletes or merges anything.",
+   "at": "2026-11-07T13:46:06.752Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",
@@ -1856,6 +1924,18 @@
    "brief": "# merge-conflict-alerts\nOrchestrator build ID: merge-conflict-alerts (profile current, 5 steps). Use that record: follow its steps and models, tick steps as you finish, record session and cost on it.\n\nURGENT FIRST (step s1): fix PR #370 (branch claude/badges-notify-followup, badges + usage meter). GitHub refuses to merge it: 'Pull Request has merge conflicts'. Merge origin/main into the branch, resolve conflicts keeping both sides' intent, re-run the checks, push, and get it landed through the merge queue (Brett already approved its UI Review items). Report what conflicted.\n\nThen steps s2-s5: detect conflicts on every open PR; alert Brett with an approval (AmberX push AND console) with 'Fix conflicts now'; a persistent item on the fixed banner until resolved; approving launches an orchestrator conflict-fix job and re-queues the PR.",
    "verbatim": false,
    "from": "",
+   "addenda": []
+  },
+  "merge-profiles-one": {
+   "said": "combine every build profile into ONE new profile on main and delete the others.",
+   "at": "2026-11-07",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "merge-profiles-one",
+   "brief": "",
+   "verbatim": false,
+   "from": "brief",
    "addenda": []
   },
   "merge-queue": {
@@ -2024,7 +2104,7 @@
    "by": "backfill",
    "brief": "# Build: notes-tasks-sync\n\nBrett (voice, verbatim): \"They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.\"\n\nProblem: AmberX's notes (https://amberx.amberxai.com/#/notes) show different notes than the Dev Console's Notes page. Same for tasks and to-dos.\n\nDo:\n1. Find where each copy stores data now (AmberX notes/tasks plugins, console notes, todo-manager, tasks). Report it.\n2. Make notes, task manager and to-do ONE shared plugin (or one plugin per kind, same code) that both the console and AmberX load, reading and writing ONE store on the server (console API / axHub shared data). No per-app copies.\n3. Migrate: merge existing AmberX and console data into the one store, no data lost (back up first).\n4. Live sync: a change on one shows on the other without reload.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly; everything goes through the merge queue.\n\nHeads up: paused build amberx-slim-queue-r2 also touches AmberX's plugin list (keep list includes notes, tasks); keep notes/tasks/to-do on AmberX's keep list. Don't load the full CLAUDE.md chain; one session for the whole build; read only files you need.",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": []
   },
   "notes-vault": {
@@ -2127,6 +2207,30 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "orchestrator-dup-check": {
+   "said": "Orchestrator: cheap redundancy check at split time (Brett, Nov 7). Every time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).",
+   "at": "2026-11-07T14:11:33.802Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless brief",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-gate": {
+   "said": "Orchestrator is the only door to the VPS; approval rules in orchestrator settings. Nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the orchestrator's settings, and work even when no Claude session exists.",
+   "at": "",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless build orchestrator-vps-gate",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "partial-land-ship-completed-steps-of-a-build": {
@@ -2261,6 +2365,42 @@
    "from": "detail",
    "addenda": []
   },
+  "plan-archive": {
+   "said": "Plan Studio: Archive folder (Brett, Nov 7)\n\n1. Add a separate **Archive** folder/section in Plan Studio. Archived plans are hidden from the normal lists, shown only in Archive, never deleted.\n2. Actions: `archive` and `unarchive` (restore) on planner.plans — in the UI (row menu + bulk select), control@1 (`control_act planner.plans archive|unarchive`), MCP/CLI/voice. Restore puts the plan back exactly as it was (status, steps, links, build link).\n3. Move EVERY existing plan (all ~58 at time of writing) into Archive. Do NOT archive the plan named \"New Hire\" if it exists, nor anything created after this build starts. Linked builds keep their links.\n4. Archive state stored in plan@1 (optional field, backward compatible); UI from assets, no hard-coded styling. UI Review: submit the Archive view with three options (--choices).\n5. Tests: archive/unarchive round-trip, bulk move, hidden from default lists, restore exact. Add to Shipped features.",
+   "at": "2026-11-07T12:28:04.815Z",
+   "source": "code",
+   "session": "",
+   "link": "",
+   "by": "paulie",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "plan-blueprints": {
+   "said": "Plan Studio: Blueprints (Brett, Nov 7)\n\nFIRST: the queued build plan-archive (queue id hl-mw6dmjiy-7w) is SUPERSEDED by this one. Remove it from the headless launch queue before it starts (or, if it already started, stop it with tmux kill axf-plan-archive-* and discard its branch). Note it in PROGRESS.md.\n\n## What a Blueprint is\nA named package of plans in Plan Studio, like build profiles but for plans. Only one blueprint is active at a time; Plan Studio shows only the active blueprint's plans. Plans keep their exact structure (steps, sub-items, status, build links) inside a blueprint.\n\n## Do\n1. Contract (Fable): blueprint@1 (id, name, description, created, plans). Plans gain an optional `blueprint` field (backward compatible). Store alongside plans; orchestrator/build links unaffected.\n2. Plan Studio gets a **Blueprints** section: list, create (name), rename, duplicate, delete (with confirm; plans move, never lost), move plans between blueprints (bulk select).\n3. **Context menu**: Plan Studio's context menu gets a **Blueprints** submenu listing every blueprint; selecting one switches the active blueprint. Same switch available via control@1 (planner.blueprints list/add/act switch), MCP, CLI and voice (\"switch blueprint to X\").\n4. Migration: create blueprint **\"Existing\"** (or similar) and move ALL current plans into it, structure untouched. Plan named \"New Hire\" (if present) goes in a new blueprint \"New Hire\".\n5. UI from assets, no hard-coded styling; settings in place. UI Review: three options (--choices) for the Blueprints section + submenu.\n6. Tests: migration keeps every plan identical, switch filters correctly, move between blueprints, links intact. Add to Shipped features.",
+   "at": "2026-11-07T13:13:15.891Z",
+   "source": "code",
+   "session": "",
+   "link": "",
+   "by": "gina",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "plan-designer": {
+   "said": "Plan Designer in AmberX: voice plans at zero Claude tokens (Brett, Nov 7). Trigger: Brett says \"let's make a plan\" (voice, AmberX) or taps Plan Designer. It's part of Plan Studio, lives in AmberX (phone first; console view too). 1. Talk back and forth with a LOCAL agent: Ollama on the VPS (Brett is installing it), through assistant@1's existing Ollama provider. Small model (3-8B, CPU only, no GPU) chosen in settings; never uses Claude while drafting. Agent role: interviewer that asks clarifying questions, keeps an outline (goal, what, why, steps, acceptance, open questions), reads it back. 2. Voice in/out via AmberX talk mode (same mic/echo-safe path as Amber). Text editing too. 3. Draft saved locally/on the VPS as it goes (no loss on disconnect). Works if the VPS model is slow: show progress, allow plain dictation with no agent replies. 4. Send to orchestrator: one button/voice \"send it\" sends the whole draft in ONE request; the orchestrator (Claude) picks models, splits into <=30-min steps, assigns the id. Show the token saving estimate. 5. If Ollama isn't installed/running: say so plainly with the setup line; dictation-only mode still works. 6. UI from assets, settings in place, no hard-coded styling. UI Review three options (--choices). Tests (mock Ollama). Add to Shipped features.",
+   "at": "2026-11-07T14:21:02.462Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "plan-studio": {
    "said": "a planning studio to store and view all plans, entered by hand, categorized; every plugin and app listed with its features checked off as have or planned. + plain-English AI command box (Oct 30 ~14:20) + AmberX voice conversation mode (Oct 30 ~14:22). Profile Angel, Opus, one session. Branch claude/plans. Web/TS/Python only; AmberX is its Capacitor web shell (allowed exception). Don't touch push-banner, approvals/veto, design-packs/ui-review, enterprise-branding, agent-voice files.",
    "at": "2026-10-30",
@@ -2279,7 +2419,7 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "Reel Rhonda",
+   "by": "backfill",
    "brief": "# Build: plan-studio-backfill-12h\n\n## Brett said (verbatim)\n\"Go retro. Go back to all the builds we've started in the last 12 hours. Make the plan, put them in Plan Studio and check off their statuses, all the steps, each individual step that's completed.\"\n\nPlain code where possible, zero tokens for the sync itself.\n1. Every build started in the last 12 hours (refresh-token-save, token-optimize, assistant-chat-mode-r4, md-chain-control, md-chain-default, notes-tasks-sync, ui-review-notify-audio, shipped-features-fable, claude-badge-vps, notifications-control-panel, gizmo-voice (stopped), gizmo-rebuild-fable, ui-registry-shortcuts, badges-notify-followup, claude-settings-tabs-veto, settings-sections-everywhere, and any others in /root/axf-builds newer than 12h) gets a Plan Studio plan: verbatim 'Brett said', the brief, every addendum in order, steps with IDs = buildId-N.\n2. Tick each step that is done, from the build's progress file, report, log and PR state. Status mirrors the build (running / built / in merge queue / merged).\n3. Link each plan to its build record and pending item; one source of truth with the builds store (no second copy).\n4. Going forward: build_start / claude-headless.sh create the plan automatically on launch. Document it.\n5. Fix: Plan Studio sync must not reset a pending item's status or drop added steps (today's bug on token-usage-log-accounts-plan-studio-control). Test it.\n6. Report, PR to the merge queue. Do NOT land directly. Don't touch other builds' code.\n\nOne session, lean chain.\n## Addendum 1 (Brett, voice)\n\"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.\"\n- Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable.\n- All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens.\n- Backfill today's addenda the same way.\n",
    "verbatim": true,
    "from": "",
@@ -2372,6 +2512,18 @@
    "from": "detail",
    "addenda": []
   },
+  "postgres-console": {
+   "said": "the planner sends a request to the orchestrator to assign the building ID. The orchestrator has to assign all IDs and register them.\nwhat kind of database is this registry? Is it SQLite? Or Postgres.\nSQLite is too small. This project's too big.\nI'm thinking MongoDB or Postgres.\ncan we make Postgres run on the console?\nBundle the Postgres into the console's container.\nAnd make it queryable from the console.\ndon't run that. Put that in the planner for Molly and park it.",
+   "at": "2026-11-06T13:41:20.323Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Amber (claude.ai voice)",
+   "brief": "# Postgres: ONE true location for all data sets, in its own container (Brett, Nov 7)\n\nOrchestrator build id: `postgres-console` (profile all, 7 steps) with Plan Studio plan `postgres-for-the-console-orchestrator-id-registr-anyx` — read both (`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief postgres-console`) and follow them, with this change: Postgres runs in its OWN Docker container, not inside the console's.\n\nProblem: the same data lives in 3+ places (builds store, per-profile orchestrator files, pending list, journal, plans, tracker/catalog, feature-ledger, origins) read by different tools, constantly out of sync.\n\n1. Contract (Fable): schema for builds, steps, plans, blueprints, journal, queue, accounts/workers usage, Shipped features, origins, ID registry (orchestrator assigns every id). Migrations versioned.\n2. Own container: `axf-postgres` (official image, pinned), internal Docker network only (no public port), named data volume, healthcheck, restart policy, nightly backup + restore script, credentials in the vault/env (never in git). Compose/deploy files + docs.\n3. Importer: every existing JSON source loaded losslessly, counts/hashes verified, duplicates resolved with a report.\n4. Switch every reader/writer (orchestrator, Build manager, Builds page, Plan Studio, builds-live, merge queue, MCP/CLI, AmberX, axHub) to the DB. JSON files become generated read-only exports for git/sessions. Kill file locks.\n5. CI check: no code writes those JSON files directly anymore.\n6. Tests + perf check. Add to Shipped features.\n\nDeploying the container is a VPS write: prepare it, and leave a one-command deploy for Brett/orchestrator. Progress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "postponed-gestures": {
    "said": "add draggable from anywhere to postponed gesture list",
    "at": "2026-10-28",
@@ -2428,6 +2580,18 @@
    "link": "",
    "by": "backfill",
    "brief": "# Build: profile-manager (Current profile)\n\nBrett, Nov 3 2026 (voice): a plugin to manage build profiles: view, browse, create, edit, delete, everything. Assigned agent: **Landin' Lenny** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in the **current** profile (id `profile-manager`) + banner entry. (Profile `current` was just created; if it's missing, create it: `node framework/cli/profiles.mjs create \"Current\" --id current --select`.)\n\n## Build on what exists - don't duplicate\nThe console already has the **Build profiles** plugin (`build-profiles`: dialog + settings tab, banner chip, switch/create/rename/remove) over `framework/cli/profiles.mjs` (build-profiles@1) and the builds store. Grow THAT plugin into a full manager page (rename the plugin title to 'Build profiles' manager if needed; keep its id, data and every existing feature).\n\n## Features\n- **Browse:** framework grid of every profile (collapsible rows): name, id, active star, description, counts (builds running / pending / complete / archived, pending items, queue steps), cost spent + cost left, last activity, created; sort/search/filter. Expand a row: its builds (with agent avatars once crew-live lands), pending list, queue, plan summary, files (`profiles.mjs where`).\n- **View** a profile page: all its builds and steps, timeline, totals, links to Builds page views filtered to it.\n- **Create** (name, id, description, copy from another profile, catalog on/off, make active), **Edit** (name, description, catalog, colour/icon for the banner chip), **Switch** (one tap; banner chip + context menu), **Duplicate**, **Merge** two profiles, **Move builds** between profiles (multi-select, drag rows onto a profile), **Archive / hide**, **Delete** = take off the list (data kept, restorable) with confirm; a separate 'Delete data too' that is owner-only and irreversible-confirm. Base profile and active profile can't be deleted.\n- **Cleanup helper:** flag archived builds that are actually complete (reconciler) - e.g. angel, big-dog, breakroom, refactor - with a one-tap fix.\n- Context-menu hooks everywhere: 'Build profiles...' and 'Move to profile' on any build row.\n- Commands declared once -> REST + MCP + CLI (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore) so Amber can manage profiles by voice (reads ALLOW policy, changes veto, data delete confirm).\n- Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/profile-manager.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+   "verbatim": false,
+   "from": "brief",
+   "addenda": []
+  },
+  "profiles-all-finish": {
+   "said": "Brett approved both open questions from merge-profiles-one:\n1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes).\n2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree).",
+   "at": "",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "profiles-all-finish",
+   "brief": "",
    "verbatim": false,
    "from": "brief",
    "addenda": []
@@ -2695,6 +2859,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "style-override-rule": {
+   "said": "# Style override rule (Brett, Nov 7) — contract + enforcement\n\nThe rule:\n1. Main apps — Dev Console, axHub web, AmberX, Patches — SHARE one style/theme/design. Their override switch is OFF by default.\n2. Every plugin and every UI asset has its own override switch, ON by default. On first install it stores its own copy seeded from the shared style, so everything looks the same until someone changes it.\n3. A plugin/asset override changes ONLY that plugin/asset. It never changes the app it belongs to, other plugins, or the shared style.\n4. Turning a plugin's override OFF makes it follow its app's (shared) style live.\n5. Turning an app's override ON gives that app its own style; its plugins keep their own copies.\n\nDo:\n- Find the existing pieces (app-style-override branch/build, apply-all-levels, appearance-asset-tokens, skins, theme engine, settings assets) and reuse them; finish app-style-override if it fits.\n- Implement the resolution order in the shared theme/style engine (both web and Android twins where they exist): asset own copy (if override on) → app (if app override on) → shared main style.\n- Switch in each app's and each plugin's settings (settings asset, no hard-coded UI). Migration: existing plugins get override ON with a copy of the current shared style; apps OFF.\n- Write the rule to RULES.md and the brief template so every build follows it. CI check: every UI asset/plugin declares the override field.\n- UI Review: submit the switch UI with three options (--choices).\n- Tests for each rule above. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+   "at": "2026-11-07T12:36:38.545Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "style-package-fable": {

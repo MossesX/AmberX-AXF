@@ -9,7 +9,8 @@
     { "id": "talking", "label": "Talking", "icon": "mic", "order": 50, "description": "How Amber talks to Brett (voice and chat)." },
     { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the AmberX app, and when it stays quiet." },
     { "id": "recording", "label": "Session recording", "icon": "mic", "order": 65, "description": "AmberX records each Claude session and every part is transcribed. Android's capture prompt and your own mic switch still decide." },
-    { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." }
+    { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." },
+    { "id": "deploy", "label": "Nightly deploy", "icon": "refresh", "order": 80, "description": "The console rebuilds and deploys from main once a night, when code changed." }
   ],
   "settings": [
     { "key": "noWait.enabled", "group": "no-wait", "label": "No wait", "kind": "toggle", "default": false, "owner": true, "level": "simple", "effect": "pass",
@@ -91,6 +92,10 @@
 
     { "key": "memory.sessionNotes", "group": "memory", "label": "Save session notes to Notes Vault", "kind": "toggle", "default": true, "level": "basic",
       "description": "Each session saves its notes to the Notes Vault on its own." },
+    { "key": "nightly.enabled", "group": "deploy", "label": "Nightly console deploy", "kind": "toggle", "default": true, "level": "simple",
+      "description": "On: every night the VPS rebuilds and deploys the console from main, if code changed since the last deploy (deploy/console-nightly.mjs). Off: only the usual update after a merge." },
+    { "key": "nightly.time", "group": "deploy", "label": "Deploy at", "kind": "time", "default": "02:00", "level": "basic",
+      "description": "When the nightly deploy starts (24 h clock, New York time)." },
     { "key": "memory.handoffNote", "group": "memory", "label": "Handoff note at end of session", "kind": "toggle", "default": true, "level": "basic",
       "description": "Each session ends with a handoff note (what was done, what's left) in THREADS.md." }
   ]

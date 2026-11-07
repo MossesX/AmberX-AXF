@@ -255,7 +255,7 @@ function help() {
     '  axf todo done <id>',
     '  axf note remove <id>              (prints a confirm token; repeat with --confirm <token>)',
     '  axf plan add "Voice macros" --field category="Apps > AmberX"',
-    '  axf build step token-control s5 --profile urgent',
+    '  axf build step token-control s5 --profile all',
     '  axf control act planner.builds token-control note --field text="halfway"',
     '', 'Flags: --select k=v · --field k=v · --list <id> · --profile <id> · --confirm <token> · --by · --reason · --remote [url] · --json',
     'Targets: ' + CONTROL_TARGET_IDS.join(', '),

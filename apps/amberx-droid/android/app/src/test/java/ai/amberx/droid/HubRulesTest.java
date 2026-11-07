@@ -133,6 +133,16 @@ public class HubRulesTest {
         assertEquals(0, HubRules.vetoes(HUB, "{\"held\":[" + held.replace(HUB + "/auth/api", "https://evil.example/auth/api") + "]}", 0L).size());
     }
 
+    @Test public void decisionsInPlace() {
+        assertTrue(HubRules.isDecision("approve"));
+        assertTrue(HubRules.isDecision("decline"));
+        assertFalse(HubRules.isDecision("deny"));
+        assertFalse(HubRules.isDecision("revoke"));
+        assertTrue(HubRules.declinedReply(200, "{\"ok\":true,\"result\":\"declined\"}"));
+        assertFalse(HubRules.declinedReply(409, "{\"ok\":true}"));
+        assertFalse(HubRules.declinedReply(200, "{\"ok\":false}"));
+    }
+
     @Test public void mutedTypesComeFromTheConsoleReply() {
         assertEquals(java.util.Set.of("amberx.veto"), HubRules.mutedTypes(200, "{\"alerts\":[],\"notify\":{\"off\":[\"amberx.veto\"]}}"));
         assertTrue(HubRules.mutedTypes(200, "{\"alerts\":[],\"notify\":{\"off\":[]}}").isEmpty());

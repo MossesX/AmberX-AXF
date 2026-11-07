@@ -22,6 +22,15 @@ export const ECHO_MS = 15_000;
 export const ECHO_TAIL_MS = 800;
 /** A mis-heard copy of a sentence AmberX said: letter-pair similarity at or above this is an echo. */
 export const ECHO_LIKE = 0.4;
+/**
+ * The bar for a conversation (Gizmo's talk mode, Nov 7 2026): his replies are long sentences and Brett's next message
+ * often shares their words ("what's in the merge queue" after "it's in the merge queue now" scores 0.55), while his
+ * voice coming back through the mic scores 0.89 and up. Below this a heard sentence is Brett, not an echo.
+ */
+export const TALK_ECHO_LIKE = 0.75;
+/** In a conversation the recognizer that stayed open while Gizmo talked hands in its final text up to about a second
+ * and a half after he stops (it waits for silence): anything final that soon is still his voice. */
+export const TALK_TAIL_MS = 1_500;
 export const ARMED_TAIL_MS = 4_000;
 /** Saves from unprompted sentences: this many within `SAVE_LOOP_MS` = a loop; unprompted saves pause for `SAVE_PAUSE_MS`. */
 export const SAVE_LOOP_COUNT = 3;
@@ -101,12 +110,18 @@ export function soundsLike(a: string, b: string): number {
   return (2 * both) / (x.length + y.length);
 }
 
-/** Is what the mic heard AmberX itself? (while talking, just after, or a copy — exact or mis-heard — of a recent sentence) */
-export function isEcho(g: SpeechGate, heard: string, now: number, opts: { armed?: boolean } = {}): boolean {
-  if (now < g.speakingUntil || now - g.endedAt < (opts.armed ? ARMED_TAIL_MS : ECHO_TAIL_MS)) return true;
+/**
+ * Is what the mic heard AmberX itself? (while talking, just after, or a copy — exact or mis-heard — of a recent sentence)
+ * `content` = judge by the words only, not by the clock: a listener that stays open while AmberX (or Gizmo) talks, so
+ * the person can cut in, uses it to tell "stop" from the reply coming back through the mic (Nov 7 2026). `like` = how
+ * alike a mis-heard copy must be (default `ECHO_LIKE`; a conversation uses `TALK_ECHO_LIKE`), `tail` = how long after
+ * it stops talking anything heard is still its voice (default `ECHO_TAIL_MS`, `ARMED_TAIL_MS` when armed).
+ */
+export function isEcho(g: SpeechGate, heard: string, now: number, opts: { armed?: boolean; content?: boolean; like?: number; tail?: number } = {}): boolean {
+  if (!opts.content && (now < g.speakingUntil || now - g.endedAt < (opts.tail ?? (opts.armed ? ARMED_TAIL_MS : ECHO_TAIL_MS)))) return true;
   const h = norm(heard);
   if (h.length < 4) return false;
-  return g.recent.some((r) => now - r.at < ECHO_MS && (r.text === h || r.text.includes(h) && h.length >= 0.6 * r.text.length || h.includes(r.text) || soundsLike(r.text, h) >= ECHO_LIKE));
+  return g.recent.some((r) => now - r.at < ECHO_MS && (r.text === h || r.text.includes(h) && h.length >= 0.6 * r.text.length || h.includes(r.text) || soundsLike(r.text, h) >= (opts.like ?? ECHO_LIKE)));
 }
 
 /** May an unprompted sentence (always armed, no wake phrase) save a note now? False while a save loop is paused. */

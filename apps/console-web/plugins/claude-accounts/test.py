@@ -130,7 +130,7 @@ ok(names == [f"account-{i}" for i in range(1, 7)], "token and API-key accounts a
 ok(active == "account-6" and kinds["account-2"] == "login" and kinds["account-3"] == "token" and kinds["account-5"] == "api-key", "each row keeps its type")
 ok(not any(x == "bad" for x in names), "an unknown tag is still malformed")
 svc = plugin_services.get("axf.claude-accounts@1")
-ok(svc and {"name", "type", "active", "email", "plan"} == set(svc.view()["accounts"][0]), "the capability lists names, types and emails, nothing else")
+ok(svc and {"name", "type", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent"} == set(svc.view()["accounts"][0]), "the capability lists names, roles and usage, nothing else")
 
 print("use")
 reset()
@@ -196,5 +196,39 @@ ok(not any(SECRET in b or "accessToken" in b or "refreshToken" in b for b in see
 ok(SECRET not in (Path(os.environ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"]) / "seen.json").read_text(), "nor the data file")
 source = (HERE / "server" / "__init__.py").read_text()
 ok(".credentials" not in source and "subprocess" not in source, "the server has no path to a credentials file and no shell of its own")
+
+
+print("workers")
+reset()
+host.out = (f"* account-1 (active)\n  account-2\n  account-3\n  key-1 [api key] \n{mod.SEP}\n{status()}\n{mod.SEP2}\n"
+            + json.dumps({"accounts": [
+                {"name": "account-2", "email": "two@example.com", "plan": "max", "limited": None, "running": ["axf-a"], "runsToday": 3, "costToday": 1.5, "costWeek": 9.25, "recent": [{"session": "axf-a", "name": "a", "costUsd": 1.5, "accessToken": SECRET}], "token": SECRET},
+                {"name": "account-3", "limited": {"until": "2030-01-01T00:00:00.000Z", "kind": "usage", "reason": "hit its limit", "secret": SECRET}},
+            ]}) + "\n")
+mod._forget_read()
+ok(post("/p/role", {"name": "account-1", "role": "worker"}).status_code == 409, "the console's account can't be a worker")
+ok(post("/p/role", {"name": "key-1", "role": "worker"}).status_code == 409, "an API key can't be a worker: it bills per token")
+ok(post("/p/role", {"name": "nobody", "role": "worker"}).status_code == 404, "only a saved account")
+ok(post("/p/role", {"name": "account-2", "role": "boss"}).status_code == 400, "only the two roles")
+ok(post("/p/role", {"name": "account-2", "role": "worker"}).status_code == 200 and post("/p/role", {"name": "account-3", "role": "worker"}).status_code == 200, "marks two workers")
+ok(mod.workers() == ["account-2", "account-3"] and post("/p/role", {"name": "account-2", "role": "worker"}).json()["ok"] and mod.workers() == ["account-3", "account-2"], "marking twice keeps one entry")
+v = c.get("/p/accounts").json()
+rows = {a["name"]: a for a in v["accounts"]}
+ok(rows["account-1"]["role"] == "interactive" and rows["account-2"]["role"] == "worker", "roles on the rows")
+ok(rows["account-2"]["running"] == ["axf-a"] and rows["account-2"]["costWeek"] == 9.25, "usage from the host")
+ok(rows["account-3"]["limited"]["kind"] == "usage" and "secret" not in rows["account-3"]["limited"], "a limit passes only its known fields")
+ok(SECRET not in json.dumps(v), "nothing unknown from the host passes")
+ok(post("/p/use", {"name": "account-2"}).status_code == 409 and not hub.calls, "a worker can't be made the console's account")
+ok(post("/p/remove", {"name": "account-1"}).status_code == 409, "the console's account can't be removed")
+ok(post("/p/remove", {"name": "account-2"}).status_code == 409, "a worker with a job running can't be removed")
+ok(not hub.calls, "refused asks send nothing")
+ok(post("/p/remove", {"name": "account-3"}).json()["state"] == "waiting" and "claude-workers.mjs remove account-3" in hub.calls[-1][1]["command"], "remove is one held call")
+mod._pending = None
+ok(post("/p/signin", {"name": "account-9"}).json()["state"] == "waiting" and hub.calls[-1][1]["command"].endswith("claude-workers.mjs signin account-9"), "sign-in is one held call, a new name is fine")
+mod._pending = None
+ok(mod.worker_health()["status"] == "ok" and "1 of 2" in mod.worker_health()["summary"], "health: one worker free")
+ok(post("/p/role", {"name": "account-2", "role": "saved"}).status_code == 200 and mod.worker_health()["status"] == "error", "health: every worker limited is an error")
+ok(post("/p/role", {"name": "account-3", "role": "saved"}).status_code == 200 and mod.workers() == [] and "No worker" in mod.worker_health()["summary"], "health stays quiet with no workers")
+ok(SECRET not in (mod._data() / "workers.json").read_text(), "workers.json holds names only")
 
 print(f"\nclaude-accounts: {checks} checks passed")

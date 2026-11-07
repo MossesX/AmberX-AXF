@@ -698,14 +698,26 @@ public class WatchService extends Service {
         @Override public void onEvent(int t, Bundle b) {}
     }
 
-    /** Audio focus around a one-shot utterance: a loss = another app or a call wants the audio, so we let go now. */
+    /**
+     * Audio focus around a one-shot utterance: a loss lets go only when a call or another app's recording wants the
+     * microphone ({@link FocusRules}). Google's recognizer takes transient focus itself as the one-shot opens; letting
+     * go for that (Nov 6 2026) cancelled every command after the wake phrase before it was heard (Nov 7 2026 fix).
+     */
     private class FocusEvents implements AudioFocusGuard.Events {
         @Override public void lost(boolean transientLoss) {
-            focusLost = true;
-            if (oneShot) cancelOneShot();
-            if (handsFreePolicy().pauseForOtherApps) micH.post(WatchService.this::micCheck);
+            oneShotFocusCheck();
+            main.postDelayed(WatchService.this::oneShotFocusCheck, FocusRules.RECHECK_MS);
         }
         @Override public void regained() { focusLost = false; micH.post(WatchService.this::micCheck); }
+    }
+
+    private void oneShotFocusCheck() {
+        if (focus == null || !focus.lost()) return;
+        String why = FocusRules.yieldOnLoss(MicRules.callMode(MicGuard.mode(this)), MicRules.others(MicGuard.foreign(this), ownRecognizer()), handsFreePolicy());
+        if (why == null) return;
+        focusLost = true;
+        if (oneShot) cancelOneShot();
+        micH.post(this::micCheck);
     }
 
     /** The utterance is over: the command goes on (nothing heard = back to idle quietly), tones back, Vosk idle again. */
@@ -717,6 +729,8 @@ public class WatchService extends Service {
         oneShotRec = null;
         if (rec != null) { try { rec.destroy(); } catch (Exception ignored) {} recognizerEnded(); }
         if (focus != null) focus.abandon();
+        // The focus is given back, so no `regained` will ever come: a loss must not keep hands-free yielded for good.
+        focusLost = false;
         MicGuard.releaseOwner(ListenerRules.ONESHOT);
         // The stop tone plays just after the result: restore a moment later, unless another utterance started.
         if (muted) main.postDelayed(() -> { if (!oneShot) SpeechTuning.loud(this); }, 600);

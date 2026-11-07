@@ -189,6 +189,28 @@ function writeKeepingOwner(f, text) {
   writeFileSync(f, text);
   if (process.getuid?.() === 0) { try { const st = statSync(d); for (const x of [...made, ...(fresh ? [f] : [])]) chownSync(x, st.uid, st.gid); if (fresh) chmodSync(f, 0o664); } catch { /* best effort */ } }
 }
+/**
+ * Fold the retired profiles into `all` in the store file itself (Brett, Nov 7 2026: one profile for everything).
+ * Reads are already healed in memory (normBuild); this writes the merge for good, in each old profile's order, with
+ * `fromProfile`, a note and `priority: 'P0'` on Urgent's builds. Works on the raw file because a normalized read has
+ * already folded the profiles. Idempotent: a store with no retired profile left is not touched.
+ */
+export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
+  const f = storeFile(); const unlock = lock(f);
+  try {
+    if (!existsSync(f)) return { changed: 0, report: null };
+    const raw = JSON.parse(readFileSync(f, 'utf8'));
+    const retired = core.RETIRED_PROFILES.filter((p) => (raw.builds ?? []).some((b) => (b.profiles ?? []).includes(p)) || [raw.rules, raw.meta?.queue, raw.meta?.pending, raw.drafts].some((m) => m?.[p] !== undefined));
+    if (!retired.length) return { changed: 0, report: null };
+    const { store: merged, report } = core.mergeProfiles({ ...raw, builds: (raw.builds ?? []).map((b) => ({ ...b, order: { ...(b.order ?? {}) }, profiles: [...(b.profiles ?? [])], notes: [...(b.notes ?? [])] })) }, core.RETIRED_PROFILES, core.MERGED_PROFILE);
+    const before = readStore();
+    const after = healOrigins(core.normalizeStore(merged));
+    const saved = saveStore(before, after, { by, action: 'merge-profiles', note: `${report.from.map((p) => `${p.id} (${p.builds})`).join(', ')} → ${report.into}: ${report.moved} build(s)` });
+    if (exportsOn()) exportAll(saved.store);
+    return { changed: saved.changes.length, report, store: saved.store };
+  } finally { unlock(); flushLiveSoon(); }
+}
+
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
 export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 

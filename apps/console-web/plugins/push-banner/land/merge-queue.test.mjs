@@ -172,7 +172,7 @@ await t('priority: higher lands first, manual order wins, a running stack is nev
 
 await t('priority: the host copy of the rule matches framework/core/build-priority.mjs', async () => {
   const { effectivePriority } = await import('../../../../../framework/core/build-priority.mjs');
-  for (const b of [{ id: 'x', title: 'Plain' }, { id: 'urgent-ci', title: 'CI' }, { id: 'x', title: 'Hotfix: y' }, { id: 'x', title: 'x', profiles: ['urgent'] },
+  for (const b of [{ id: 'x', title: 'Plain' }, { id: 'urgent-ci', title: 'CI' }, { id: 'x', title: 'Hotfix: y' }, { id: 'x', title: 'x', profiles: ['all'], priority: 'P0' },
     { id: 'x', title: 'x', detail: 'URGENT: down' }, { id: 'x', title: 'x', detail: 'not urgent' }, { id: 'x', title: 'x', detail: 'urgent\nnow' }, { id: 'urgent-x', title: 'x', priority: 'P3' }, null]) {
     assert.equal(q.buildPriority(b), effectivePriority(b), JSON.stringify(b));
   }

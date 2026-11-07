@@ -17,8 +17,8 @@ single grant `control.console.navigate`, so its runner refuses anything that wou
 tabs and dialogs open, navigation-only actions run, nothing else. When no console is open, Console commands' own
 delivery applies (queue + wake through AmberX where that is installed).
 
-Approvals are decided in the browser, never here: the console's pop-up reads the hub's feed and decides with Brett's
-own signed-in hub session (lib-approvals / veto@1). This server holds no hub session and can't approve anything.
+Approvals are never decided here: the console's pop-up reads the hub's feed and a tap goes through the approvals
+banner's relay with Brett's own browser session (lib-approvals / veto@1). This server holds no hub session.
 
 Only the owner's consoles follow Amber (the console token or a hub admin); a hub user who isn't an admin gets 403.
 State lives in .axf-console/plugins/follow-amber/state.json; the open streams live in memory.
