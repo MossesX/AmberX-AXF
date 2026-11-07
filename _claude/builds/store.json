@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1313,
- "updatedAt": "2026-11-07T13:13:32.496Z",
+ "rev": 1314,
+ "updatedAt": "2026-11-07T13:13:42.860Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110284,16 +110284,21 @@
    "title": "Plan Studio: Archive folder",
    "category": "Plan Studio",
    "detail": "Archive section in Plan Studio; archive/unarchive on planner.plans (UI row menu + bulk, control@1, MCP/CLI/voice); optional plan@1 archived field; move every plan existing at build start into Archive (not New Hire); tests; UI Review with 3 options.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plan-archive",
    "pr": "",
    "createdAt": "2026-11-07T12:28:04.815Z",
-   "updatedAt": "2026-11-07T12:46:54.629Z",
-   "builtAt": "2026-11-07T12:45:51.113Z",
-   "notes": [],
+   "updatedAt": "2026-11-07T13:13:33.358Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Superseded by plan-blueprints (Brett, Nov 7): the build had already run and committed on claude/plan-archive (unpushed); branch + worktree discarded, the 58 archived flags it set on the hub plans are removed by plan-blueprints' migration (plans go into blueprint Existing). UI Review item r-20261107-d94ad1b4 is moot.",
+     "at": "2026-11-07T13:13:32.124Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -110481,7 +110486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -110727,10 +110732,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:13:31.090Z",
+   "updatedAt": "2026-11-07T13:13:34.710Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -110911,7 +110916,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

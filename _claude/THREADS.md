@@ -748,9 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:36 UTC · `settings-sections-everywhere` s6 done (current) · orchestrator
-- 2026-11-07 00:37 UTC · `settings-sections-everywhere` s7 done, → built (current) · orchestrator
-- 2026-11-07 00:45 UTC · `settings-sections-everywhere` s6 done, s7 done, → complete (current) · foreign-write
 - 2026-11-07 00:45 UTC · `amberx-open-any-url-apk` added (2 steps) (current) · foreign-write
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s1 done, → running (current) · orchestrator
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s2 done (current) · orchestrator
@@ -1148,6 +1145,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:12 UTC · `amber-chat-asset` note (all) · orchestrator
 - 2026-11-07 13:13 UTC · `plan-blueprints` added (7 steps) (all) · gina
 - 2026-11-07 13:13 UTC · `plan-blueprints` → running (all) · gina
+- 2026-11-07 13:13 UTC · `plan-archive` → complete, note (all) · gina
+- 2026-11-07 13:13 UTC · `plan-archive` → archived (all) · gina
+- 2026-11-07 13:13 UTC · `plan-blueprints` branch claude/plan-blueprints (all) · builds-live
 
 ## Token passes (log)
 
