@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1228,
- "updatedAt": "2026-11-07T05:02:56.017Z",
+ "rev": 1229,
+ "updatedAt": "2026-11-07T05:03:13.299Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -104836,7 +104836,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T04:45:26.037Z",
-     "updatedAt": "2026-11-07T05:02:05.673Z"
+     "updatedAt": "2026-11-07T05:02:07.110Z"
     },
     {
      "id": "s2",
@@ -105682,9 +105682,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:56:03.670Z",
-   "updatedAt": "2026-11-07T04:59:47.191Z",
+   "updatedAt": "2026-11-07T05:02:07.390Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-merge-conflict-alerts--joey, own login copy)",
+     "at": "2026-11-07T05:02:07.390Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -105819,7 +105824,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
