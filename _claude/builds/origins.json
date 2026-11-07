@@ -545,27 +545,21 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "The notifications engine (registry, rules, groups, triggers, actions) lives on the console only. AmberX is a dumb delivery end: it receives notification commands from the console (show, sound, open link, action buttons that call back to the console) and nothing else. No notification logic or rules in AmberX; any that exist there get moved to the console.",
-     "step": "s5"
+     "verbatim": true
     },
     {
      "said": "Can I make it so a notification will be a vibration or an alarm or a certain sound, from the console?",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Yes: per notification type/group on the console: delivery style = silent / vibrate (pattern) / sound (pick from a list, custom upload) / alarm (full-screen, repeats until dismissed). AmberX executes it (notification channels per style so Android honours it). Test button per type.",
-     "step": "s6"
+     "verbatim": true
     },
     {
      "said": "When something is sent over from the console, AmberX opens it up and brings it to the front of my phone. If I say 'open up the console UI Review and bring this project into focus', it brings that right up to the front.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Console command -> AmberX: bring AmberX to the foreground on the phone (Android full-screen intent / overlay permission as needed) and open the target directly: a screen, a UI Review group, a specific item scrolled into focus. New UI Review items auto-open this way (setting to turn off; notification is the fallback). Works by voice through the local assistant / Gizmo: 'open UI Review and focus <project>'. Builds on PR #365 (ui-review-notify-audio, truthful wake); merge its branch claude/ui-review-notify-audio first, don't rebuild it. APK change via CI.",
-     "step": "s7"
+     "verbatim": true
     }
    ]
   },
@@ -890,17 +884,14 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "step": "s5"
+     "verbatim": true
     },
     {
      "said": "When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing. Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.",
-     "step": "s6"
+     "verbatim": true
     }
    ]
   },
@@ -932,18 +923,14 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "The approvals/veto policy settings are their own framework-level settings asset (settings-ui@1), owned by the framework, not the claude-settings plugin. Store: framework settings. Exposed on REST + MCP + CLI. Mounted in two places as the same asset: Framework settings and a tab in Claude settings. One source of truth.",
-     "step": "s7"
+     "verbatim": true
     },
     {
      "said": "Give me a bunch of options in UI Review to pick from, like ten.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "BEFORE building the UI: submit 10 predicted screenshots (ui-review-predicted) of where/how Framework settings and the Approvals & veto settings sit in the main settings interface: e.g. own top-level Framework tab; a section inside General; a left-rail group; a settings home card; a gear in the banner; icon tabs top/left/right/bottom variants; a compact phone layout; a two-pane layout. Phone + desktop each. Wait for Brett's pick in UI Review, then build that one. The 10 are mockups only, no code written for the losers.",
-     "step": "s8"
+     "verbatim": true
     }
    ]
   },
@@ -999,45 +986,35 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Nightly: cron on the VPS at 02:00 America/New_York runs deploy/install-console.sh (rebuild + deploy from current main) with the existing flock; log to /root/axf-builds/nightly-deploy.log; banner note on success/failure. Only when main changed since the last deploy. Setting to turn it off / change the time (Claude settings). New console command 'refresh' (console.refresh in control@1): reloads the live console page(s) (soft reload, or hard reload with cache clear as an option). REST + MCP + CLI + voice.",
-     "step": "s6"
+     "verbatim": true
     },
     {
      "said": "Make UI Review have a separate tab under each one for anything that requires a choice. You need to be able to select multiple with priorities. If you select multiple, it will create a separate view for each one you selected, with the first one being default.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "UI Review items can carry a 'Choices' set: a Choices tab under the item (Screens / Choices / Comments). Builder submits N options (predicted shots). Brett selects one or several and orders them by priority (drag or number). Result on the item: chosen[] in order. Single pick = build that one. Multiple picks = build each as a selectable view/layout, the first = default. API/MCP/CLI for submit choices + read the decision; the build waits on the decision like a normal hold. Also: UI Review grid gets a Date column of its own and sortable columns (Brett asked earlier).",
-     "step": "s7"
+     "verbatim": true
     },
     {
      "said": "Not all asset types can have more than one view; a settings interface may not need more than one. But make every choice, even the ones I don't pick, an asset, stored in that plugin's folder as an asset for the library.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Multi-pick only offered when the asset type supports multiple views; otherwise single pick. Every submitted option (chosen or not) is saved as a real asset of its type in the owning plugin's assets folder, tagged with the choice set and whether it was picked, so it shows in the asset library and can be applied later.",
-     "step": "s8"
+     "verbatim": true
     },
     {
      "said": "Every UI in the Appearance section will allow you to choose from any of the assets that have been made for it.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Settings > Appearance: for every UI that has assets (screens, dialogs, settings interfaces, tab groups, banners, menus, badges...), a picker listing every saved asset of that type for that UI (including unpicked UI Review options), with preview, apply, reset to default. Backed by the asset library + UI registry; REST/MCP/CLI + voice.",
-     "step": "s9"
+     "verbatim": true
     },
     {
      "said": "Everything comes shipped (all options as assets). For UI Review, for everything sent through it, I need a minimum of three choices. A setting for the default number of choices, and an option to enable a prompt any time something is sent, asking me how many options I want built.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Rule: every UI Review submission ships at least N options (default N = 3) as predicted shots + saved assets. Setting in UI Review settings: default option count (min 3). Optional prompt (setting on/off): when a build is about to submit a UI, Brett gets asked how many options to make (console pop-up / AmberX notification / voice through Gizmo); if no answer in X minutes, use the default. Update the rule in _claude/shared/rules/RULES.md + headless brief template.",
-     "step": "s10"
+     "verbatim": true
     }
    ]
   },
@@ -1432,72 +1409,56 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Move what Gizmo needs from ai-assistant (server chat route, provider, turn router) into the companion plugin / shared claude-session lib. Then remove the old Assistant plugin from AmberX (UI, nav, server part, bundle). Gizmo is the only assistant in AmberX. Console's own assistant is not affected unless it only depends on the AmberX copy; check and report. Report bundle size before/after.",
-     "step": "s9"
+     "verbatim": true
     },
     {
      "said": "It should be the other way around. Gizmo should control everything; the assistant should run off of Gizmo.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Gizmo owns the chat engine: server route, provider, turn router, tools, sessions. Any remaining assistant (console assistant, AmberX) becomes a thin client running on Gizmo's engine, no own copy of the logic. Remove the duplicated AmberX Assistant bloat once it runs on Gizmo.",
-     "step": "s10"
+     "verbatim": true
     },
     {
      "said": "Gizmo needs to be powerful, hardcore. He's got to be my full Claude client. He's gonna replace the Claude app on my phone. I'm not gonna use the Claude app no more. It's all gonna be Gizmo.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Target: full Claude app replacement on Brett's phone. Parity list to plan against: voice mode (hands-free, interrupt, screen off), chats with history/search, projects with instructions + files, memory, connectors/MCP (axHub services), web search + fetch, file/photo/camera attach, artifacts/docs, model + thinking picker, timers/alarms/calendar/location on the phone, notifications. This run: write the parity plan as a pending item with ~10-min steps (what exists, what's missing, order), build the core (engine ownership, voice screen-off, mic fixes) first, and as much of the rest as fits. Remaining steps stay in the plan for the next run. Don't pad; no extras beyond the list.",
-     "step": "s11"
+     "verbatim": true
     },
     {
      "said": "I don't really need chat history. I've already got the session logs in AmberX. Don't put that in Gizmo, that'd be dumb.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Drop chat history/search from the parity list. Gizmo uses AmberX's existing session logs (link to them), no second history store.",
-     "step": "s12"
+     "verbatim": true
     },
     {
      "said": "When I say replace Claude on my phone, I mean my interface, my chat, my input interface. Just the chat part.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Scope = the chat/input experience only: talking and typing to Claude (voice mode hands-free, interrupt, screen off; text input; attachments; streaming replies; tool use through axHub/MCP; model + thinking picker). Not in scope: chat history, projects, memory UI, artifacts, phone extras. Drop them from the parity plan.",
-     "step": "s13"
+     "verbatim": true
     },
     {
      "said": "I don't want you sending everything every time we exchange words. I don't want to resend the whole conversation... Everything I say is gonna go to the orchestrator first. Everything from Gizmo goes through the console. No AI. Until I send it to Claude.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Gizmo input goes to the console/orchestrator first, plain code, zero tokens. Never resend the whole conversation; send Claude only what's needed. Console holds Gizmo input in a sorted, manageable queue (reorder, edit, group/split into threads, delete). Nothing goes to Claude until Brett sends it (one item, a selection, or a thread). Settings: Gizmo plugin carries a settings-interface ASSET (every settings interface is an asset) that attaches to the orchestrator's settings interface as its own Gizmo tab (Gizmo-orchestrator integration settings). Gizmo has hooks to open it. Gizmo's existing AmberX settings stay as they are. API/MCP/CLI for the queue and settings.",
-     "step": "s14"
+     "verbatim": true
     },
     {
      "said": "I want to be able to search them. I don't want them to be read as memory every time the project loads, but I do want a database created that is searchable.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Build on PR #365 (ui-review-notify-audio: session recording + transcripts); don't rebuild it. One searchable database of every session transcript (full-text, plain code; optional local embeddings later): who, when, session, build, text with timestamps, link to the audio at that moment. NEVER loaded into context on project start or by default. Only queried on demand. Search tool for Gizmo/Claude (MCP + REST + CLI: transcripts_search, transcript_get) returning short snippets with links; search UI in the console recorder page.",
-     "step": "s15"
+     "verbatim": true
     },
     {
      "said": "\"Go ahead.\" (make it a real RAG, search by meaning)",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Install Ollama on the VPS with a small local embedding model (e.g. nomic-embed-text, ~0.5 GB RAM, CPU only). Zero Claude tokens. Index every transcript in chunks with embeddings in the background after each session (niced, one at a time); backfill existing transcripts. Hybrid search: meaning (vectors) + keywords, ranked; results = short snippets with session, time and audio link. Still never auto-loaded into context; only on demand through transcripts_search.",
-     "step": "s16"
+     "verbatim": true
     }
    ]
   },
@@ -1940,27 +1901,21 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Polished, modern calendar UI (framework tokens + theme only): smooth view transitions, drag to create / move / resize events, colour-coded calendars, now-line, mini-month, quick-add bar (plain English: 'gym every Mon Wed 6pm'), weekly schedule editor with drag blocks, phone gestures (swipe days/weeks, long-press drag), dark/light. Phone-first, desktop great too. Screenshots of every view (phone + desktop) to UI Review.",
-     "step": "s6"
+     "verbatim": true
     },
     {
      "said": "Open that in its own window with multiple layouts. Open numerous schedules, days and weeks: a week here and a month there, and drag events from here to there. Attach an RSVP list / invite list to an event with a check mark of who's replied. Send automatic emails to RSVP people, or emails asking people to confirm they've read/seen it. It needs to update in the scheduler on AmberX.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Calendar opens in its own window (windows@1 / dock@1); multiple panes side by side, each any view/date/calendar; save named layouts; drag events between panes. Invite / RSVP list per event: guests, status (invited / yes / no / maybe / seen), check marks, counts. Emails sent through axHub Google (Gmail) when it exists: invites, automatic RSVP reminders, read/seen confirmation requests (tracked link). Replies update the event status live on console and AmberX. Sending email = confirm approval (axHub policy).",
-     "step": "s7"
+     "verbatim": true
     },
     {
      "said": "Any replies to the emails get logged. They type their reply in a text field that's sent in the email; they have to reply in the text field so it gets logged in the system.",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Each invite/reminder email has a link to a small public reply page (per-guest signed token, no login): RSVP buttons + a text field. Submissions are logged on the event (who, when, answer, message) and update status live on console + AmberX. Plain email replies are also caught via Gmail (axHub) and logged on the event when possible, but the reply page is the main path. Reply page is rate-limited, token expires, no other data exposed.",
-     "step": "s8"
+     "verbatim": true
     }
    ]
   },
@@ -2016,9 +1971,7 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Notification groups (user-made, any types in a group, group on/off). Triggers: rules for when a notification fires (event, conditions, thresholds, schedule). Actions/commands: buttons on each notification that run a command (approve, open screen, run console command); custom commands per group. All editable in the panel and via REST/MCP/CLI.",
-     "step": "s7"
+     "verbatim": true
     }
    ]
   },
@@ -2240,9 +2193,7 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable. All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens. Backfill today's addenda the same way.",
-     "step": "s10"
+     "verbatim": true
     }
    ]
   },
@@ -2526,48 +2477,42 @@
      "at": "2026-11-04T13:00:00Z",
      "source": "voice",
      "by": "",
-     "verbatim": true,
-     "step": "s11"
+     "verbatim": true
     },
     {
      "said": "If the repo was first day, it was way before the third.",
      "at": "2026-11-04T14:00:00Z",
      "source": "voice",
      "by": "",
-     "verbatim": true,
-     "step": "s12"
+     "verbatim": true
     },
     {
      "said": "Just AmberX and axHub, not any of those other repos.",
      "at": "2026-11-04T15:00:00Z",
      "source": "voice",
      "by": "",
-     "verbatim": true,
-     "step": "s13"
+     "verbatim": true
     },
     {
      "said": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
      "at": "2026-11-04T16:00:00Z",
      "source": "voice",
      "by": "",
-     "verbatim": true,
-     "step": "s14"
+     "verbatim": true
     },
     {
      "said": "Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.",
      "at": "2026-11-04T17:00:00Z",
      "source": "voice",
      "by": "",
-     "verbatim": true,
-     "step": "s15"
+     "verbatim": true
     },
     {
      "said": "I want you to work on the Fable part right now. ... Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.",
      "at": "2026-11-04T21:30:00Z",
      "source": "voice",
      "by": "",
-     "verbatim": true,
-     "step": "s16"
+     "verbatim": true
     }
    ]
   },
@@ -2848,18 +2793,14 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "Build a local, zero-token assistant on top of the UI registry + voice-command@1 + control@1: plain-English parsing with a grammar/intent matcher (no LLM), fuzzy matching, slots (names, times, on/off), confirmation for writes. It can: open any registered UI, change any setting, run any registered command, create/edit notifications and their style (through the notifications plugin's API), queue items for Claude (Gizmo queue) when the request really needs AI. Lives on the console; AmberX and Gizmo send it text/voice. 'What can I say?' lists commands. API/MCP/CLI.",
-     "step": "s7"
+     "verbatim": true
     },
     {
      "said": "\"Yes, we're gonna do that.\" (run a small local model through Ollama)",
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "The local assistant uses a small CPU model through Ollama (e.g. llama3.2:3b or qwen2.5:3b, ~4 GB RAM) ONLY as a fallback when the pattern matcher can't map the sentence: the model picks a command from the UI registry, never free-form actions. Zero Claude tokens. Share the Ollama install with the Gizmo rebuild (it installs Ollama + an embedding model for transcript RAG); don't install twice. Setting to turn the model off; memory limit; unload when idle.",
-     "step": "s8"
+     "verbatim": true
     }
    ]
   },
@@ -2903,9 +2844,7 @@
      "at": "",
      "source": "",
      "by": "",
-     "verbatim": true,
-     "summary": "When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.",
-     "step": "s7"
+     "verbatim": true
     }
    ]
   },

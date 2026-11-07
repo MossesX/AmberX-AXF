@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T00:57:56.185Z",
+ "updatedAt": "2026-11-07T01:31:16.498Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4449,48 +4449,42 @@
       "at": "2026-11-04T13:00:00Z",
       "source": "voice",
       "by": "",
-      "verbatim": true,
-      "step": "s11"
+      "verbatim": true
      },
      {
       "said": "If the repo was first day, it was way before the third.",
       "at": "2026-11-04T14:00:00Z",
       "source": "voice",
       "by": "",
-      "verbatim": true,
-      "step": "s12"
+      "verbatim": true
      },
      {
       "said": "Just AmberX and axHub, not any of those other repos.",
       "at": "2026-11-04T15:00:00Z",
       "source": "voice",
       "by": "",
-      "verbatim": true,
-      "step": "s13"
+      "verbatim": true
      },
      {
       "said": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
       "at": "2026-11-04T16:00:00Z",
       "source": "voice",
       "by": "",
-      "verbatim": true,
-      "step": "s14"
+      "verbatim": true
      },
      {
       "said": "Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.",
       "at": "2026-11-04T17:00:00Z",
       "source": "voice",
       "by": "",
-      "verbatim": true,
-      "step": "s15"
+      "verbatim": true
      },
      {
       "said": "I want you to work on the Fable part right now. ... Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.",
       "at": "2026-11-04T21:30:00Z",
       "source": "voice",
       "by": "",
-      "verbatim": true,
-      "step": "s16"
+      "verbatim": true
      }
     ]
    },
@@ -4691,7 +4685,6 @@
      "done": true,
      "doneAt": "2026-11-07T00:47:59.495Z",
      "note": "",
-     "addendum": 1,
      "uid": "st-mw5opkag0817fs"
     },
     {
@@ -4710,7 +4703,6 @@
      "done": true,
      "doneAt": "2026-11-06T20:04:31.580Z",
      "note": "Ticked by the backfill from the build's evidence.",
-     "parent": "s11",
      "uid": "st-mw5opkag09d7j4"
     },
     {
@@ -4729,7 +4721,6 @@
      "done": true,
      "doneAt": "2026-11-07T00:47:59.495Z",
      "note": "",
-     "addendum": 2,
      "uid": "st-mw5opkag0adqb1"
     },
     {
@@ -4748,7 +4739,6 @@
      "done": true,
      "doneAt": "2026-11-06T20:04:31.580Z",
      "note": "Ticked by the backfill from the build's evidence.",
-     "parent": "s12",
      "uid": "st-mw5opkag0b137s"
     },
     {
@@ -4767,7 +4757,6 @@
      "done": true,
      "doneAt": "2026-11-07T00:47:59.495Z",
      "note": "",
-     "addendum": 3,
      "uid": "st-mw5opkag0cjeok"
     },
     {
@@ -4786,7 +4775,6 @@
      "done": true,
      "doneAt": "2026-11-06T20:04:31.580Z",
      "note": "Ticked by the backfill from the build's evidence.",
-     "parent": "s13",
      "uid": "st-mw5opkag0dz008"
     },
     {
@@ -4805,7 +4793,6 @@
      "done": true,
      "doneAt": "2026-11-07T00:47:59.495Z",
      "note": "",
-     "addendum": 4,
      "uid": "st-mw5opkag0e4aq9"
     },
     {
@@ -4824,7 +4811,6 @@
      "done": true,
      "doneAt": "2026-11-06T20:04:31.580Z",
      "note": "Ticked by the backfill from the build's evidence.",
-     "parent": "s14",
      "uid": "st-mw5opkag0fvkzh"
     },
     {
@@ -4843,7 +4829,6 @@
      "done": true,
      "doneAt": "2026-11-07T00:47:59.495Z",
      "note": "",
-     "addendum": 5,
      "uid": "st-mw5opkag0gl9k3"
     },
     {
@@ -4862,7 +4847,6 @@
      "done": true,
      "doneAt": "2026-11-06T20:04:31.580Z",
      "note": "Ticked by the backfill from the build's evidence.",
-     "parent": "s15",
      "uid": "st-mw5opkag0hltke"
     },
     {
@@ -4881,7 +4865,6 @@
      "done": true,
      "doneAt": "2026-11-07T00:47:59.495Z",
      "note": "",
-     "addendum": 6,
      "uid": "st-mw5opkag0izph1"
     },
     {
@@ -4900,7 +4883,6 @@
      "done": true,
      "doneAt": "2026-11-06T20:04:31.580Z",
      "note": "Ticked by the backfill from the build's evidence.",
-     "parent": "s16",
      "uid": "st-mw5opkag0j412j"
     }
    ]
