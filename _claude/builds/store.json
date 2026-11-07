@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1326,
- "updatedAt": "2026-11-07T13:51:26.871Z",
+ "rev": 1327,
+ "updatedAt": "2026-11-07T13:51:34.831Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110543,9 +110543,14 @@
    "branch": "claude/style-override-rule",
    "pr": "",
    "createdAt": "2026-11-07T12:36:39.385Z",
-   "updatedAt": "2026-11-07T13:51:25.786Z",
+   "updatedAt": "2026-11-07T13:51:26.630Z",
    "builtAt": "2026-11-07T13:51:25.786Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Built on claude/style-override-rule (committed, not pushed per the brief). UI Review r-20261107-91cd3e47 (3 options). Report _claude/builds/reports/style-override-rule.md",
+     "at": "2026-11-07T13:51:26.630Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -110746,7 +110751,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
