@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1398,
- "updatedAt": "2026-11-07T16:50:31.537Z",
+ "rev": 1399,
+ "updatedAt": "2026-11-07T16:58:59.062Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111924,15 +111924,15 @@
    "title": "The API controls everything in the console",
    "category": "",
    "detail": "Step 1 terminal typing (open tab on target, type visibly ~30 chars/s, keys, read screen, close; 'terminal' screen id). Step 2 audit every UI element, coverage table + registry. Step 3 fill gaps through control@1 generic addressing, UI Review approve/reject/pick. Step 4 CI check + rules.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:49:08.102Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-07T16:58:57.850Z",
+   "builtAt": "2026-11-07T16:58:57.850Z",
    "notes": [
     {
      "text": "Clash with settings-placement-everywhere (#329): both append control@1 targets after tokens.nav and edit check-control.mts. If #329 lands first: console.values + console.elements go after console.placement (indexes 24-25), count 26, and the console set exception names both console.placement and console.values; regenerate fixtures (gen-fixtures.mts).",
@@ -112153,12 +112153,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:58:57.850Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:18:04.270Z",
-     "updatedAt": "2026-11-07T16:18:04.419Z"
+     "updatedAt": "2026-11-07T16:58:57.960Z"
     }
    ],
    "profiles": [
@@ -112169,7 +112169,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

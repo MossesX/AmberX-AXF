@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 17:40 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · pending
 - 2026-11-06 17:40 UTC · `console-account-picker` note (current) · pending
 - 2026-11-06 17:41 UTC · `planner-select-items-and-build-them` note (current) · pending
 - 2026-11-06 17:43 UTC · `token-usage-log-accounts-plan-studio-control` note (current) · pending
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 16:49 UTC · `approve-button-fix` s3 done (all) · orchestrator
 - 2026-11-07 16:49 UTC · `approve-button-fix` s4 done (all) · orchestrator
 - 2026-11-07 16:50 UTC · `approve-button-fix` s5 done, → complete (all) · orchestrator
+- 2026-11-07 16:58 UTC · `full-api-control` s9 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 
