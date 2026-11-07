@@ -47,9 +47,12 @@
 .axp-glossary-index__ix-entry { padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm) }
 .axp-glossary-index__ix-entry .axp-glossary-index__term-btn { font-weight: inherit }
 
-/* grid cells */
-.axp-glossary-index__cell-term { font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
-.axp-glossary-index__cell-summary { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block }
+/* grid cells: the grid's rows are max-content, so every cell has a fixed width and ellipsis (lib-datagrid note) */
+.axp-glossary-index__cell { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-glossary-index__cell--term { width: min(calc(var(--fx-space) * 60), 24vw); font-weight: var(--fx-type-weights-strong) }
+.axp-glossary-index__cell--kind { width: min(calc(var(--fx-space) * 24), 10vw) }
+.axp-glossary-index__cell--category { width: min(calc(var(--fx-space) * 50), 18vw) }
+.axp-glossary-index__cell--summary { width: min(calc(var(--fx-space) * 100), 30vw) }
 
 .axp-glossary-index__more-row { display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
 
@@ -69,3 +72,4 @@
 .axp-glossary-index__detail-actions { display: flex; gap: var(--fx-dens-gap-sm) }
 
 .axp-glossary-index__counts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-sm) }
+.axp-glossary-index__links li { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm) }

@@ -177,14 +177,15 @@ function IndexTree({ entries, selected, onSelect, searching }: { entries: Entry[
 function Grid({ entries, cat, selected, onSelect, limit }: { entries: Entry[]; cat: Catalog; selected: string; onSelect: (id: string) => void; limit: number }) {
   const [hidden, setHidden] = useState<string[]>([]);
   const [sort, setSort] = useState<GridSort>(null);
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set(Object.keys(cat.kinds).filter((k) => k !== 'concept' && k !== 'plugin')));
   const columns: GridColumn<Entry>[] = [
-    { id: 'term', label: 'Term', width: 'minmax(0, 2fr)', fixed: true, sortable: true, sortValue: (e) => e.term.toLowerCase(), render: (e) => <span className="axp-glossary-index__cell-term">{e.term}</span> },
-    { id: 'kind', label: 'Kind', width: 'minmax(0, 1fr)', sortable: true, sortValue: (e) => e.kind, render: (e) => <KindChip kind={e.kind} kinds={cat.kinds} /> },
-    { id: 'category', label: 'Category', width: 'minmax(0, 2fr)', sortable: true, sortValue: (e) => e.category, render: (e) => <span className="fx-muted">{e.category}</span> },
-    { id: 'summary', label: 'Summary', width: 'minmax(0, 4fr)', render: (e) => <span className="axp-glossary-index__cell-summary">{e.summary}</span> },
+    { id: 'term', label: 'Term', width: 'minmax(0, 3fr)', fixed: true, sortable: true, sortValue: (e) => e.term.toLowerCase(), render: (e) => <span className="axp-glossary-index__cell axp-glossary-index__cell--term">{e.term}</span> },
+    { id: 'kind', label: 'Kind', width: 'minmax(0, 1fr)', sortable: true, sortValue: (e) => e.kind, render: (e) => <span className="axp-glossary-index__cell axp-glossary-index__cell--kind"><KindChip kind={e.kind} kinds={cat.kinds} /></span> },
+    { id: 'category', label: 'Category', width: 'minmax(0, 2fr)', sortable: true, sortValue: (e) => e.category, render: (e) => <span className="axp-glossary-index__cell axp-glossary-index__cell--category fx-muted">{e.category}</span> },
+    { id: 'summary', label: 'Summary', width: 'minmax(0, 4fr)', render: (e) => <span className="axp-glossary-index__cell axp-glossary-index__cell--summary fx-muted">{e.summary}</span> },
   ];
-  const groups = byKind(entries.slice(0, limit), cat.kinds).map((g) => ({ id: g.kind, title: `${g.label} (${g.entries.length})`, rows: g.entries, groups: [], collapsed: collapsed.has(g.kind) }));
+  // every kind is a group with its full count; each draws up to `limit` rows (Show more raises it)
+  const groups = byKind(entries, cat.kinds).map((g) => ({ id: g.kind, title: `${g.label} (${g.entries.length.toLocaleString()})`, rows: g.entries.slice(0, limit), groups: [], collapsed: collapsed.has(g.kind) }));
   return (
     <DataGrid<Entry>
       id="glossary.grid" label="Glossary entries" groups={groups} columns={columns} rowId={(e) => e.id} rowLabel={(e) => e.term}
@@ -219,6 +220,7 @@ function GlossaryPage() {
     return q.trim() ? hits : sortEntries(hits, sort, cat.kinds);
   }, [cat, q, kind, drafts, undescribed, sort]);
   const entry = useMemo(() => cat?.entries.find((e) => e.id === selected) ?? null, [cat, selected]);
+  const biggestKind = useMemo(() => { const n: Record<string, number> = {}; for (const e of results) n[e.kind] = (n[e.kind] ?? 0) + 1; return Math.max(0, ...Object.values(n)); }, [results]);
   const open = (id: string) => { setSelected(id); document.querySelector('.axp-glossary-index__detail')?.scrollIntoView({ block: 'nearest' }); };
 
   const kindOptions = cat ? Object.entries(cat.kinds).filter(([k]) => cat.counts[k]).map(([value, label]) => ({ value, label: `${label} (${cat.counts[value]})` })) : [];
@@ -252,9 +254,9 @@ function GlossaryPage() {
                   : view === 'glossary' ? <GlossaryList entries={results} cat={cat} selected={selected} onSelect={open} limit={limit} />
                   : view === 'index' ? <IndexTree entries={results} selected={selected} onSelect={open} searching={!!q.trim() || !!kind || undescribed} />
                   : <Grid entries={results} cat={cat} selected={selected} onSelect={open} limit={limit} />}
-                {view !== 'index' && results.length > limit && (
+                {(view === 'glossary' ? results.length > limit : view === 'grid' && biggestKind > limit) && (
                   <div className="axp-glossary-index__more-row">
-                    <span className="fx-muted">Showing {limit.toLocaleString()} of {results.length.toLocaleString()}.</span>
+                    <span className="fx-muted">{view === 'grid' ? `Showing up to ${limit.toLocaleString()} per kind.` : `Showing ${limit.toLocaleString()} of ${results.length.toLocaleString()}.`}</span>
                     <Button size="sm" icon="plus" onClick={() => setLimit((l) => l + (Number(pageSize) || 250))}>Show more</Button>
                   </div>
                 )}
