@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T05:02:06.461Z",
+ "updatedAt": "2026-11-07T05:02:23.339Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -19777,14 +19777,14 @@
     "from": "",
     "addenda": [
      {
-      "said": "\"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.\"\n- Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable.\n- All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens.\n- Backfill today's addenda the same way.",
+      "said": "Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.",
       "at": "",
       "source": "",
       "by": "",
       "verbatim": true
      },
      {
-      "said": "Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.",
+      "said": "\"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.\"\n- Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable.\n- All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens.\n- Backfill today's addenda the same way.",
       "at": "",
       "source": "",
       "by": "",
