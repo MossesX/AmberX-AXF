@@ -726,20 +726,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · orchestrator
-- 2026-11-06 18:07 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · builds-live
-- 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · builds-live
-- 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · builds-live
-- 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · builds-live
-- 2026-11-06 18:15 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s17 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s18 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s19 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s20 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s7 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s8 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s9 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s14 done (current) · orchestrator
-- 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s11 done (current) · orchestrator
 - 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s12 done (current) · orchestrator
 - 2026-11-06 18:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s13 done (current) · orchestrator
 - 2026-11-06 18:16 UTC · `headless-progress-file-lean-claude-md-chain` s6 done, → running (current) · orchestrator
@@ -1126,6 +1112,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 04:55 UTC · `orchestrator-gate` added (4 steps) (current) · claude-voice
 - 2026-11-07 04:55 UTC · `voice-ui-edit-library` added (8 steps) (current) · claude-voice
 - 2026-11-07 04:56 UTC · `merge-conflict-alerts` added (5 steps) (current) · claude-voice
+- 2026-11-07 05:00 UTC · `assistant-chat-mode` note (current) · builds-live
+- 2026-11-07 05:00 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · builds-live
+- 2026-11-07 05:00 UTC · `claude-badge-vps` note (current) · builds-live
+- 2026-11-07 05:00 UTC · `ui-asset-designer` note (current) · builds-live
+- 2026-11-07 05:00 UTC · `icon-browser-manager` note (current) · builds-live
+- 2026-11-07 05:00 UTC · `dataset-bar` added (8 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `library-harvest` added (4 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `skins-asset-types` added (8 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `glossary-index-demos` added (6 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `multi-account-headless-workers` added (5 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `follow-amber-stay-connected` added (4 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `orchestrator-gate` added (4 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `voice-ui-edit-library` added (8 steps) (current) · builds-live
+- 2026-11-07 05:00 UTC · `merge-conflict-alerts` added (5 steps) (current) · builds-live
 
 ## Token passes (log)
 
