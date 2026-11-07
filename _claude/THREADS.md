@@ -740,7 +740,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:34 UTC · `badges-notify-followup` added (4 steps) (current) · orchestrator
 - 2026-11-06 23:34 UTC · `badges-notify-followup` → running (current) · orchestrator
 - 2026-11-06 23:54 UTC · `gizmo-voice` note (current) · foreign-write
 - 2026-11-06 23:54 UTC · `badges-notify-followup` s1 done (current) · orchestrator
@@ -1140,6 +1139,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 11:29 UTC · `build-pipeline-v2` s7 done (all) · orchestrator
 - 2026-11-07 11:29 UTC · `build-pipeline-v2` s12 done (all) · orchestrator
 - 2026-11-07 11:30 UTC · `build-pipeline-v2` s13 done (all) · orchestrator
+- 2026-11-07 11:30 UTC · `glossary-index-demos` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

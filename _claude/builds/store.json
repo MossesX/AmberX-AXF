@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1285,
- "updatedAt": "2026-11-07T11:30:09.991Z",
+ "rev": 1286,
+ "updatedAt": "2026-11-07T11:30:28.655Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -106923,14 +106923,14 @@
    "title": "glossary-index-demos",
    "category": "",
    "detail": "Encyclopedia glossary + index of everything, registry-sourced; Demonstration Designer off walkthroughs; Book Builder (wizard, chapters, drag from glossary, live sandbox preview, walkthrough video); interactive HTML/TS docs option; orchestrator auto-updates catalog every build; generated clips auto-tagged registry assets. Brief: /root/axf-builds/glossary-index-demos/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "glossary-index-demos",
    "branch": "claude/glossary-index-demos-r2",
    "pr": "",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T11:07:36.470Z",
+   "updatedAt": "2026-11-07T11:30:27.779Z",
    "builtAt": "",
    "notes": [
     {
@@ -106944,6 +106944,10 @@
     {
      "text": "s1 done on Opus (claude/glossary-index-demos-r2, commits 8c1aa0edd + polish): plugin glossary-index, glossary-catalog@1 built from plugin manifests, help@1, assets, asset types, CLI, build options, feature tracker, UI registry; CI test.mts + catalog.mjs --check. Stopped at s2: needs Fable for the demo / book+chapter / docs / clip asset contracts. s5 (post-build hook = catalog.mjs build --reason build --build <id>) can run on Opus any time.",
      "at": "2026-11-07T11:07:28.001Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T11:30:27.779Z"
     }
    ],
    "approvals": [],
@@ -107103,7 +107107,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
