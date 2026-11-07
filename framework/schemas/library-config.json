@@ -1,0 +1,54 @@
+{
+  "$axf": "library-config-registry@1",
+  "wizardSteps": [
+    "about",
+    "capabilities",
+    "connections",
+    "settings",
+    "credentials",
+    "review"
+  ],
+  "wizardModes": [
+    "scripted",
+    "assisted",
+    "both"
+  ],
+  "connectionKinds": [
+    "dataset",
+    "registry-ui",
+    "plugin",
+    "service",
+    "action",
+    "asset"
+  ],
+  "connectionRefPrefix": {
+    "dataset": "dataset:",
+    "registry-ui": "ui:",
+    "plugin": "plugin:",
+    "service": "service:",
+    "action": "action:",
+    "asset": "asset:"
+  },
+  "connectionDirections": [
+    "in",
+    "out",
+    "both"
+  ],
+  "instanceStatuses": [
+    "configured",
+    "disabled",
+    "removed"
+  ],
+  "credentialSchemes": [
+    "env",
+    "secret",
+    "hub"
+  ],
+  "paramTypes": [
+    "text",
+    "list",
+    "bool",
+    "number",
+    "choice"
+  ]
+}

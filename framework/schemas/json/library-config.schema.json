@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/library-config.schema.json",
+  "title": "library-config@1: a library's no-code configuration manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "library",
+    "version",
+    "name",
+    "capabilities",
+    "settings",
+    "connections",
+    "credentials",
+    "wizard"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "library-config@1"
+    },
+    "library": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+    },
+    "module": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "manifestKey": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "default": {
+            "type": "boolean"
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "label",
+                "type"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "text",
+                    "list",
+                    "bool",
+                    "number",
+                    "choice"
+                  ]
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "default": {},
+                "help": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "type"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "list",
+              "bool",
+              "number",
+              "choice"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "default": {},
+          "help": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "kind",
+          "direction"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "dataset",
+              "registry-ui",
+              "plugin",
+              "service",
+              "action",
+              "asset"
+            ]
+          },
+          "direction": {
+            "enum": [
+              "in",
+              "out",
+              "both"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "accepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "many": {
+            "type": "boolean"
+          },
+          "forCapability": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "credentials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "help": {
+            "type": "string"
+          },
+          "env": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provides": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ports": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notYet": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "capability"
+        ],
+        "properties": {
+          "capability": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "wizard": {
+      "type": "object",
+      "required": [
+        "mode",
+        "steps"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "scripted",
+            "assisted",
+            "both"
+          ]
+        },
+        "intro": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "about",
+              "capabilities",
+              "connections",
+              "settings",
+              "credentials",
+              "review"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
