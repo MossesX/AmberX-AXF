@@ -99,7 +99,11 @@ export function mergeOrigin(a, b) {
   for (const k of ['at', 'source']) if (!out[k] && lose[k] && sameWords) out[k] = lose[k]; // when and where belong to the words
   const seen = new Map();
   for (const ad of [...y.addenda, ...x.addenda]) { const was = seen.get(addKey(ad)); seen.set(addKey(ad), was ? { ...ad, summary: ad.summary || was.summary, step: ad.step || was.step } : ad); }
-  out.addenda = [...seen.values()].sort((p, q) => (p.at || '9') < (q.at || '9') ? -1 : (p.at || '9') > (q.at || '9') ? 1 : 0);
+  // the same addendum read before its words and list were told apart: the copy with the summary stands for both
+  const said = (t) => t.replace(/[\s"“”]+/g, ' ').trim();
+  const all = [...seen.values()];
+  const kept = all.filter((a) => !all.some((o) => o !== a && o.summary && said(o.said).length < said(a.said).length && said(a.said).startsWith(said(o.said))));
+  out.addenda = kept.sort((p, q) => (p.at || '9') < (q.at || '9') ? -1 : (p.at || '9') > (q.at || '9') ? 1 : 0);
   return normOrigin(out);
 }
 
@@ -141,7 +145,7 @@ export function attachCheckoffs(b, plans = [], { norm, done = false, at = '' } =
   if (!o) return 0;
   let made = 0;
   o.addenda.forEach((a, i) => {
-    if (a.step) return;
+    if (a.step && b.steps.some((s) => s.id === a.step)) return; // a copy that lost the steps gets them again
     const p = plans.find((x) => x.said === a.said) ?? {};
     const steps = checkoffSteps(b.steps, i + 1, { ...a, ...p }, { done, at });
     b.steps.push(...steps.map((s, j) => (norm ? norm(s, b.steps.length + j) : s)));

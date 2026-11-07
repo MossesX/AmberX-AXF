@@ -26,7 +26,7 @@ const PLUGINS = join(HERE, '..', '..', 'apps', 'console-web', 'plugins');
 const MODULES = { 'plans@1': 'plans.mjs', 'orchestrator@1': 'orchestrator.mjs' };
 
 /** The Node module of the plugin that provides a capability (never a folder name), or null. */
-async function provider(capability) {
+export async function provider(capability) {
   for (const d of existsSync(PLUGINS) ? readdirSync(PLUGINS) : []) {
     try {
       const p = JSON.parse(readFileSync(join(PLUGINS, d, 'plugin.json'), 'utf8'));

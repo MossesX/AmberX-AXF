@@ -28,6 +28,9 @@ const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: string) => { t
 /** A plan to open when the page shows (quick capture, "Plan this", a search hit). */
 let pendingOpen: { id?: string; plan?: Plan } | null = null;
 const openers = new Set<() => void>();
+/** Where a build's plan stands (running, built, in merge queue, merged…); '' for a plan with no live build stage. */
+const planStage = (p: Plan) => pc.STAGE_LABEL[String(p.build?.stage ?? '')] ?? '';
+
 export function openPlan(o: { id?: string; plan?: Plan }) { pendingOpen = o; openers.forEach((f) => f()); }
 
 export function Head({ count }: { count?: number }) {
@@ -196,7 +199,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
           <span className="axp-plan-studio__rtitle">{p.title}</span>
           <span className="axp-plan-studio__rmeta">{p.category && <span className="fx-muted">{p.category}</span>}{t.steps > 0 && <span>{t.done}/{t.steps}</span>}{p.effort.left > 0 && <span>{pc.fmtMinutes(p.effort.left)}</span>}{p.targetDate && <span>{fmtDay(p.targetDate)}</span>}</span>
         </button>
-        <Chip tone={st.tone || undefined}>{st.label}</Chip>
+        <Chip tone={st.tone || undefined}>{planStage(p) || st.label}</Chip>
         <IconButton icon="edit" label={`Open ${p.title}`} onClick={() => onOpen(p)} />
       </div>
       {open && (
@@ -277,7 +280,7 @@ function TreeLeaf({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (
     <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
       <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
       <button type="button" data-fx-row className="axp-plan-studio__tname" onClick={() => onOpen(p)}><span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>{p.title}</button>
-      <Chip tone={st.tone || undefined}>{st.label}</Chip>
+      <Chip tone={st.tone || undefined}>{planStage(p) || st.label}</Chip>
     </li>
   );
 }
@@ -330,7 +333,7 @@ function Roadmap({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }
                 <span className="axp-plan-studio__rdate">{p.targetDate ? fmtDay(p.targetDate) : '—'}</span>
                 <span className="axp-plan-studio__rtitle">{p.title}</span>
                 <span className="axp-plan-studio__bar" aria-label={`${t.progress}% done`}><span style={{ width: `${t.progress}%` }} /></span>
-                <Chip tone={statusInfo(p.status).tone || undefined}>{statusInfo(p.status).label}</Chip>
+                <Chip tone={statusInfo(p.status).tone || undefined}>{planStage(p) || statusInfo(p.status).label}</Chip>
               </button></li>
             );
           })}</ul>

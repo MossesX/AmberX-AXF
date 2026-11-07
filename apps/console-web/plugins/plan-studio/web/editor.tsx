@@ -83,7 +83,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
       <div className="axp-plan-studio__edbar" role="toolbar" aria-label="Plan">
         <IconButton icon="arrow-left" label="Back to plans" onClick={onClose} />
         <b className="axp-plan-studio__edtitle">{plan.title || 'New plan'}</b>
-        <Chip tone={statusInfo(plan.status).tone || undefined}>{statusInfo(plan.status).label}</Chip>
+        <Chip tone={statusInfo(plan.status).tone || undefined}>{pc.STAGE_LABEL[String(plan.build?.stage ?? '')] ?? statusInfo(plan.status).label}</Chip>
         <span className="fx-muted axp-plan-studio__n">{dirty ? (isNew ? 'not saved yet' : autosave ? 'saving…' : 'unsaved changes') : `saved ${fmtWhen(saved?.updatedAt ?? '')}`}</span>
         <span className="axp-plan-studio__grow" />
         {canListen() && <Button size="sm" icon="mic" onClick={() => setVoice(true)} title="Talk the plan through">Talk</Button>}
@@ -233,10 +233,10 @@ function BuildSteps({ plan, onPlan }: { plan: Plan; onPlan: (p: Plan) => void })
       <ol>{own.map(row)}</ol>
       {addenda.map((a) => (
         <div key={a.n} className="axp-plan-studio__addendum">
-          <h3 className="axp-plan-studio__addh">Addendum {a.n}</h3>
+          <h3 className="axp-plan-studio__addh">{(() => { const item = plan.steps.find((s) => s.id === a.step); return <input type="checkbox" className="fx-check" checked={!!item?.done} disabled aria-label={`Addendum ${a.n} done`} />; })()} Addendum {a.n} <span className="axp-plan-studio__sid">{a.step}</span></h3>
           <p className="axp-plan-studio__said">{a.said}</p>
           <p className="fx-muted axp-plan-studio__hint">{a.summary ? `Claude will: ${a.summary}` : 'No summary was written when it was added.'}</p>
-          <ol>{plan.steps.filter((s) => s.id === a.step || s.parent === a.step).map(row)}</ol>
+          <ol>{plan.steps.filter((s) => s.parent === a.step).map(row)}</ol>
         </div>
       ))}
       {error && <p className="axp-plan-studio__hint" role="alert">{error}</p>}

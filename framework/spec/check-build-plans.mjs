@@ -21,9 +21,10 @@ const m = await import('../plan/builds-merge-core.mjs');
 const og = await import('../core/build-origin.mjs');
 const io = await import('../cli/builds-store.mjs');
 const bp = await import('../cli/build-plan.mjs');
-const orch = await import('../../apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
-const pc = await import('../../apps/console-web/plugins/plan-studio/web/plan-core.mjs');
-const plans = await import('../../apps/console-web/plugins/plan-studio/plans.mjs');
+// the plugins by capability: a framework check names no plugin folder
+const orch = await bp.provider('orchestrator@1');
+const plans = await bp.provider('plans@1');
+const pc = plans.planCore;
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -126,6 +127,14 @@ await t('check-off item + sub-steps: ids stay unique after steps are added, the 
   og.tickParents(made, at); assert.equal(made[0].done, false);
   made[1].done = true; made[2].skip = true; og.tickParents(made, at); assert.equal(made[0].done, true);
   made[1].done = false; og.tickParents(made, at); assert.equal(made[0].done, false);
+});
+
+await t('a stale copy cannot double an addendum or lose its item: the raw reading folds in, lost steps come back', () => {
+  const raw = { said: '"Do it."\n- part one', at };
+  const merged = og.mergeOrigin({ said: 'x', addenda: [raw] }, { said: 'x', addenda: [{ said: 'Do it.', at, summary: 'part one', step: 's3' }] });
+  assert.equal(merged.addenda.length, 1); assert.equal(merged.addenda[0].step, 's3');
+  const b = { steps: [{ id: 's1', model: 'Opus' }], origin: { said: 'x', addenda: [{ said: 'Do it.', step: 's3' }] } }; // an old merge dropped s3
+  assert.equal(og.attachCheckoffs(b, [], { at }), 1); assert.ok(b.steps.some((s) => s.id === 's2-1'));
 });
 
 // ------------------------------------------------------------------ the plan is a view of the build

@@ -37,6 +37,7 @@ import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } 
 import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, findBuild, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
 
+export const planCore = pc; // for callers that reach this module through plans@1
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'plan-studio';

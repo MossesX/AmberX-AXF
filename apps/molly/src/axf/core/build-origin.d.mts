@@ -21,3 +21,8 @@ export function briefHasSaid(text: string): boolean;
 export function subtitle(origin: unknown, max?: number): string;
 export function originText(origin: unknown): string;
 export function searchText(origin: unknown): string;
+
+/** One addendum as a check-off item: the step sK and its sub-steps sK-1… (plain objects, the caller normalises). */
+export function checkoffSteps(steps: { id: string; model?: string }[], n: number, ad: { said?: string; summary?: string; steps?: string[] }, opts?: { done?: boolean; at?: string }): Record<string, unknown>[];
+export function attachCheckoffs(b: { steps: Record<string, unknown>[]; origin?: unknown }, plans?: { said: string; summary?: string; steps?: string[] }[], opts?: { norm?: (s: Record<string, unknown>, i: number) => Record<string, unknown>; done?: boolean; at?: string }): number;
+export function tickParents<T extends Record<string, unknown>>(steps: T[], at?: string): T[];
