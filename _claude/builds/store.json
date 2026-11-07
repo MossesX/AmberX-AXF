@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1303,
- "updatedAt": "2026-11-07T13:02:05.182Z",
+ "rev": 1304,
+ "updatedAt": "2026-11-07T13:02:13.381Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110110,10 +110110,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/amber-chat-asset",
    "pr": "",
    "createdAt": "2026-11-07T12:30:40.602Z",
-   "updatedAt": "2026-11-07T13:02:03.886Z",
+   "updatedAt": "2026-11-07T13:02:05.664Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -110168,12 +110168,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:02:04.835Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T12:30:40.603Z",
-     "updatedAt": "2026-11-07T12:30:40.603Z"
+     "updatedAt": "2026-11-07T13:02:04.968Z"
     },
     {
      "id": "s3",
@@ -110250,7 +110250,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
