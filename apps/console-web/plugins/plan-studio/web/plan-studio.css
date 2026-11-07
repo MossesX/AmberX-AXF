@@ -158,3 +158,14 @@
 
 /* quick capture */
 .axp-plan-studio__capture { min-width: min(100%, calc(var(--fx-font-size) * 22)); }
+
+/* A plan that is a view of its build: read-only rows, addenda with Brett's words + sub-steps */
+.axp-plan-studio__bsteps ol { list-style: none; margin: 0; padding: 0; }
+.axp-plan-studio__bstep { display: grid; grid-template-columns: auto auto 1fr; align-items: baseline; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--axp-ps-hair); }
+.axp-plan-studio__bstep.is-sub { padding-left: var(--fx-dens-gap-xl); }
+.axp-plan-studio__bstep.is-done .axp-plan-studio__btext { color: var(--fx-muted); text-decoration: line-through; }
+.axp-plan-studio__bsteps .axp-plan-studio__sid { grid-area: auto; }
+.axp-plan-studio__btext { min-width: 0; overflow-wrap: anywhere; }
+.axp-plan-studio__addendum { margin-top: var(--fx-dens-gap-xl); }
+.axp-plan-studio__addh { margin: 0 0 var(--fx-dens-gap-sm); font-size: var(--fx-font-size); font-weight: 600; }
+.axp-plan-studio__said { margin: 0 0 var(--fx-dens-gap-sm); padding-left: var(--fx-dens-gap-xl); border-left: var(--fx-border-w) solid var(--fx-border); white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -64,7 +64,7 @@ const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
-const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note', 'parent', 'addendum'];
 
 // ------------------------------------------------------------------ records
 
@@ -98,6 +98,8 @@ export function normStep(s, i = 0, ctx = {}) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...(str(o.parent) ? { parent: str(o.parent, 40) } : {}), // an addendum's sub-step names its check-off item
+    ...(Number.isInteger(o.addendum) && o.addendum > 0 ? { addendum: o.addendum } : {}), // the check-off item of addendum N
     ...(str(o.fm).trim() ? { fm: str(o.fm, 80).trim() } : {}),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     createdAt: str(o.createdAt, 40) || at,
@@ -237,7 +239,7 @@ export function buildsOf(store, profile, { withDeleted = false } = {}) {
   return store.builds.filter((b) => b.profiles.includes(profile) && (withDeleted || !b.deleted))
     .sort((a, b) => (a.order[profile] ?? 0) - (b.order[profile] ?? 0) || (a.createdAt < b.createdAt ? -1 : 1));
 }
-const nextOrder = (store, profile) => buildsOf(store, profile, { withDeleted: true }).reduce((m, b) => Math.max(m, b.order[profile] ?? 0), -1) + 1;
+export const nextOrder = (store, profile) => buildsOf(store, profile, { withDeleted: true }).reduce((m, b) => Math.max(m, b.order[profile] ?? 0), -1) + 1;
 export const findBuild = (store, id) => store.builds.find((b) => b.id === id) ?? store.builds.find((b) => b.pendingId && b.pendingId === id) ?? null;
 
 /** A record's content without bookkeeping, to tell whether a write really changed it. */
@@ -339,6 +341,35 @@ export function projectOrchestrator(store, profile) {
   return { $axf: 'orchestrator@1', updatedAt: store.updatedAt, rules: { ...DEFAULT_RULES, ...(store.rules[profile] ?? {}) }, builds: buildsOf(store, profile).map(orchBuild) };
 }
 
+/** How far a build has come. A foreign file moves a build forward on this list, never back. */
+const STATUS_RANK = { pending: 0, running: 1, waiting: 1, blocked: 1, failed: 1, built: 2, complete: 3, archived: 4 };
+const foreignStatus = (cur, next) => ((STATUS_RANK[next] ?? -1) > (STATUS_RANK[cur] ?? 0) ? next : cur);
+
+/**
+ * The steps a foreign file (an export from another checkout, an older hub copy) may leave on a build. It can be older
+ * than the store, so it adds steps, edits them and ticks them, but it never drops one and never takes a tick back. A
+ * step comes in by uid, else by its text, so a copy whose uids were made again does not double the build.
+ */
+function foreignSteps(rec, incoming) {
+  const out = rec.steps.map((s) => ({ ...s }));
+  const used = new Set();
+  const nextId = () => `s${Math.max(0, ...out.map((s) => Number(/^s(\d+)/.exec(s.id)?.[1] ?? 0))) + 1}`;
+  for (const x of incoming) {
+    const old = out.find((s) => !used.has(s.uid) && x.uid && s.uid === x.uid) ?? out.find((s) => !used.has(s.uid) && plain(s.text) === plain(x.text));
+    if (old) {
+      used.add(old.uid);
+      const { done, doneAt } = old;
+      Object.assign(old, x, { id: old.id, uid: old.uid });
+      if (done && !x.done) { old.done = true; old.doneAt = doneAt; }
+    } else {
+      const s = { ...x, uid: x.uid || newUid() };
+      if (out.some((o) => o.id === s.id)) s.id = nextId();
+      used.add(s.uid); out.push(s);
+    }
+  }
+  return out;
+}
+
 /** Steps of an updated build: matched to the old records by uid, else id, else text; unmatched old ones are kept as removed. */
 function mergeSteps(rec, incoming, now, by, why) {
   const byUid = new Map(rec.steps.map((s) => [s.uid, s]));
@@ -374,11 +405,13 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
       s.builds.push(rec);
       return;
     }
-    if (rec.deleted) { rec.deleted = false; rec.deletedAt = ''; }
+    if (rec.deleted) { if (newerOnly) return; rec.deleted = false; rec.deletedAt = ''; } // a stale file brings nothing back
     if (!rec.profiles.includes(profile)) { rec.profiles.push(profile); rec.order[profile] = nextOrder(s, profile); }
+    const was = { status: rec.status, builtAt: rec.builtAt };
     for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && ob[k] !== undefined) rec[k] = clone(ob[k]);
+    if (newerOnly && foreignStatus(was.status, ob.status) === was.status) Object.assign(rec, was);
     { const og = mergeOrigin(ob.origin, rec.origin); if (og) rec.origin = og; } // his words are never lost on a write
-    mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
+    mergeSteps(rec, newerOnly ? foreignSteps(rec, ob.steps ?? []) : ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);
     if (!newerOnly) rec.order[profile] = i;
   });
@@ -480,9 +513,10 @@ export function absorbPending(store, profile, pending, change = null, { now = no
   for (const it of pending.items ?? []) {
     seen.add(it.id);
     let b = shown.get(it.id) ?? s.builds.find((x) => x.id === it.id || x.pendingId === it.id);
-    if (!b) { s.builds.push(buildFromItem(it, profile, { now, order: nextOrder(s, profile) })); continue; }
+    // from a foreign file the uids are seeded: two checkouts taking in the same item make the same steps
+    if (!b) { s.builds.push(buildFromItem(it, profile, { now, order: nextOrder(s, profile), seed: newerOnly ? str(it.id) : '' })); continue; }
     if (newerOnly && !(str(it.updatedAt) > str(b.updatedAt))) continue;
-    if (b.deleted) { b.deleted = false; b.deletedAt = ''; }
+    if (b.deleted) { if (newerOnly) continue; b.deleted = false; b.deletedAt = ''; } // a stale file brings nothing back
     if (!b.profiles.includes(profile)) { b.profiles.push(profile); b.order[profile] = nextOrder(s, profile); }
     const shownItem = itemOfBuild(b, now);
     if (canon(shownItem) === canon(it)) continue;
@@ -491,16 +525,16 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     b.detail = str(it.detail, 8000);
     { const og = mergeOrigin(it.origin, b.origin); if (og) b.origin = og; }
     if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
-      const st = orchStatusOfPending(it.status);
+      const st = newerOnly ? foreignStatus(b.status, orchStatusOfPending(it.status)) : orchStatusOfPending(it.status); // a foreign file never moves it back
       if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
-      else if (['built', 'complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
+      else if (!newerOnly && ['built', 'complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
     }
     const incoming = (it.subPrompts ?? []).map((p, k) => {
       const t = prefix ? plain(p.text) : str(p.text);
       const old = b.steps.find((x) => (prefix ? plain(x.text) : x.text) === t) ?? ((it.subPrompts.length === b.steps.length) ? b.steps[k] : null);
       return { ...(old ?? {}), id: old?.id ?? `s${b.steps.length + k + 1}`, text: t, model: stepModel(PREFIX.exec(str(p.text))?.[1] ?? old?.model ?? it.model), estimate: str(p.estimate) || old?.estimate || '', done: p.done === true, doneAt: p.done === true ? p.doneAt || old?.doneAt || now : '', skip: p.skip === true, fm: p.fm };
     });
-    mergeSteps(b, incoming, now, 'pending', 'removed on the Pending list');
+    mergeSteps(b, newerOnly ? foreignSteps(b, incoming) : incoming, now, 'pending', 'removed on the Pending list');
     followDefault(b, now);
     const notes = [...b.notes];
     for (const n of it.notes ?? []) if (n?.text && !notes.some((m) => m.text === n.text)) notes.push({ text: str(n.text, 2000), at: n.at || now });

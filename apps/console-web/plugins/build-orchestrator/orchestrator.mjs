@@ -36,6 +36,7 @@ loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setti
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
+import { pushPlan } from '../../../../framework/cli/build-plan.mjs';
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
@@ -61,6 +62,7 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   const p = profile();
   let r;
   withStore((s) => { r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  pushPlan(change?.id); // the orchestrator ticks Plan Studio: the build's plan, if it has one, follows every change
   return r;
 }
 

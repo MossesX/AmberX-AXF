@@ -22,6 +22,8 @@
  *   … ai "<plain English>" [--plan <id>] [--reply-file f] [--apply]   rules first; --reply-file = a fixed model reply (tests)
  *   … categories                      the category tree
  *   … api '<json {op,…}>'             everything the console page does (the server calls this); also reads stdin
+ *   … build-plan <build> [--plan id] [--no-create]   the plan of a build, made or refreshed from the store (build-plan@1)
+ *   … sync-builds                     every plan with a build, from the store
  *   … where                           the store folder
  *   --json on any command prints one JSON line.
  */
@@ -32,7 +34,10 @@ import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
 import { discover, readMatrices, writeBack } from './catalog.mjs';
 import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
+import { absorbOrchestrator, findBuild, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
 
+export const planCore = pc; // for callers that reach this module through plans@1
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'plan-studio';
@@ -136,28 +141,79 @@ export function turnIntoBuild(id, { profile, buildId, preview = false, by = '', 
   const prof = profile || plan.profile || activeProfile().id;
   const change = pc.toBuild(plan, { profile: prof, id: buildId, said, by });
   if (preview) return { ok: true, preview: true, change, profile: prof, minutes: change.steps.reduce((m, s) => m + pc.minutesOf(s.estimate), 0) };
-  const f = orchFile(prof);
-  const st = readJson(f, { $axf: 'orchestrator@1', builds: [] });
-  st.builds = st.builds ?? [];
-  if (st.builds.some((b) => b.id === change.id)) throw new Error(`"${change.id}" is already in the ${prof} orchestrator: pick another build id`);
   const now = new Date().toISOString();
-  st.builds.push({
-    id: change.id, title: change.title, category: change.category, detail: change.detail, status: 'pending', hidden: false, source: 'plan-studio', pendingId: '', branch: '', pr: '',
+  const rec = {
+    id: change.id, title: change.title, category: change.category, detail: change.detail, status: 'pending', hidden: false, source: 'plan-studio', pendingId: '', branch: '', pr: '', planRef: plan.id,
     createdAt: now, updatedAt: now, builtAt: '', notes: [{ text: `Plan Studio plan: ${plan.id} (${plan.title})`, at: now }], approvals: [], ...(change.origin ? { origin: change.origin } : {}),
     steps: change.steps.map((s, i) => ({ id: `s${i + 1}`, text: s.text, model: s.model, why: '', phase: s.phase, group: '', estimate: s.estimate, files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' })),
-  });
-  writeJson(f, st);
+  };
+  if (process.env.AXF_ORCH_FILE) { // a plain orchestrator@1 file (tests)
+    const st = readJson(orchFile(prof), { $axf: 'orchestrator@1', builds: [] });
+    st.builds = st.builds ?? [];
+    if (st.builds.some((b) => b.id === change.id)) throw new Error(`"${change.id}" is already in the ${prof} orchestrator: pick another build id`);
+    st.builds.push(rec); writeJson(orchFile(prof), st);
+  } else {
+    // through the one builds store: a whole export written back would be taken in as a foreign file, stale steps and all
+    withStore((s) => {
+      const doc = projectOrchestrator(s, prof);
+      if (doc.builds.some((b) => b.id === change.id)) throw new Error(`"${change.id}" is already in the ${prof} orchestrator: pick another build id`);
+      doc.builds.push(rec);
+      const out = absorbOrchestrator(s, prof, doc, { by: by || 'plan-studio' });
+      const made = out.builds.find((b) => b.id === change.id); if (made) made.planRef = plan.id;
+      return out;
+    }, { by: by || 'plan-studio', action: 'orchestrator:add', note: change.id });
+  }
   const saved = savePlan(pc.linkBuild(plan, { profile: prof, id: change.id }), { by, kind: 'build', note: `Turned into build ${prof}:${change.id}`, force: true });
   return { ok: true, build: { profile: prof, id: change.id }, plan: saved.plan };
 }
+
+/** The build's live record: the store, never an export (AXF_ORCH_FILE = a plain file, tests). */
+function liveBuild(id, profile) {
+  if (process.env.AXF_ORCH_FILE) return orchBuilds(profile).find((x) => x.id === id) ?? null;
+  const b = findBuild(loadStore(), id);
+  return b && !b.deleted ? b : null;
+}
+/** Open PRs in the merge queue (the queue's own file, found by name: no plugin folder is named here). */
+function queuedPrs() {
+  const root = join(process.env.AXF_CONSOLE_ROOT || '/opt/axf', '.axf-console/plugins');
+  const out = new Set();
+  for (const d of existsSync(root) ? readdirSync(root) : []) {
+    const q = readJson(join(root, d, 'merge-queue.json'));
+    for (const it of [...(q?.items ?? []), ...(q?.stack ?? []), ...(q?.waiting ?? [])]) if (it?.pr) out.add(String(it.pr).replace('#', ''));
+  }
+  return out;
+}
+const isQueued = (b, q) => !!b.pr && q.has(String(b.pr).replace('#', ''));
+
+/**
+ * The plan of a build, made or brought up to date from the store (build-plan@1). `create: false` only refreshes a plan
+ * that exists, so a tick never makes one. A plan deleted on purpose stays deleted. Returns { ok, plan?, changed }.
+ */
+export function planForBuild(id, { by = 'orchestrator', create = true, planId = '', queued = null } = {}) {
+  const b = liveBuild(id);
+  if (!b) return { ok: false, error: `no build "${id}"` };
+  const wanted = planId || b.planRef || b.pending?.planId || '';
+  const all = loadPlans();
+  const plan = all.find((p) => p.build?.id === b.id) ?? all.find((p) => p.id === wanted) ?? all.find((p) => p.id === b.id) ?? null;
+  if (!plan && (!create || (readJson(P('deleted.json'), { ids: [] }).ids ?? []).includes(b.id))) return { ok: true, changed: false };
+  const q = queued ?? queuedPrs();
+  const next = pc.planFromBuild(b, { plan, queued: isQueued(b, q) });
+  if (plan && !pc.planMoved(plan, next)) return { ok: true, plan, changed: false };
+  const saved = savePlan(next, { by, kind: 'build', note: plan ? `Build ${pc.stageOf(b, { queued: isQueued(b, q) })}` : `Plan of build ${b.id}`, force: true });
+  if (!process.env.AXF_ORCH_FILE && b.planRef !== saved.plan.id) {
+    withStore((s) => { const r = findBuild(s, b.id); if (r) r.planRef = saved.plan.id; return s; }, { by, action: 'plan:link', note: b.id });
+  }
+  return { ok: true, plan: saved.plan, changed: true, created: !plan };
+}
+
 /** Live progress: every plan with a build reads its build; changed plans are saved. */
 export function syncBuilds() {
   const changed = [];
-  const cache = new Map();
+  const q = queuedPrs();
   for (const p of loadPlans()) {
     if (!p.build) continue;
-    if (!cache.has(p.build.profile)) cache.set(p.build.profile, orchBuilds(p.build.profile));
-    const b = cache.get(p.build.profile).find((x) => x.id === p.build.id);
+    if (p.managed === 'build') { if (planForBuild(p.build.id, { create: false, queued: q }).changed) changed.push(p.id); continue; }
+    const b = liveBuild(p.build.id, p.build.profile);
     const r = pc.syncBuild(p, b);
     if (r.changed) { savePlan(r.plan, { by: 'orchestrator', kind: 'build', note: b?.status === 'complete' ? 'Build complete' : 'Build progress', force: true }); changed.push(p.id); }
   }
@@ -258,6 +314,12 @@ export async function api(req) {
     }
     case 'build': return turnIntoBuild(r.id, { profile: r.profile, buildId: r.buildId, preview: !!r.preview, by, said: typeof r.said === 'string' ? r.said : '' });
     case 'sync-builds': return { ok: true, changed: syncBuilds() };
+    case 'tick': { // a managed plan's tick goes to the orchestrator; the plan comes back from the store
+      const { tick } = await import('../../../../framework/cli/build-plan.mjs');
+      const res = await tick(r.build, r.step, r.done !== false, { by: by || 'plan-studio' });
+      return { ...res, plan: getPlan(r.id) };
+    }
+    case 'build-plan': return planForBuild(r.id, { by: by || 'orchestrator', create: r.create !== false, planId: r.planId || '' });
     case 'ai': return aiTurn(r.text, { planId: r.plan, reply: r.reply ?? null, apply: !!r.apply, by: by || 'AI' });
     case 'ai-apply': { // apply edits the page already showed as a diff
       const plans = loadPlans(); const plan = r.plan ? plans.find((p) => p.id === r.plan) ?? null : null;
@@ -323,6 +385,7 @@ async function main(argv) {
     const r = await aiTurn(rest.join(' '), { planId: typeof f.plan === 'string' ? f.plan : '', reply, apply: !!f.apply, by: 'AI (cli)' });
     return out(r, r.ok ? `${r.say}${r.applied ? ' (applied)' : r.ops?.some((o) => !['answer', 'ask'].includes(o.op)) ? ' (not applied: add --apply)' : ''}` : `✗ ${r.error}`);
   }
+  if (cmd === 'build-plan') { const r = planForBuild(rest[0], { by: 'cli', create: !f['no-create'], planId: typeof f.plan === 'string' ? f.plan : '' }); return out(r, r.ok ? `${r.plan?.id ?? 'no plan'}${r.created ? ' (made)' : r.changed ? ' (updated)' : ''}` : r.error); }
   if (cmd === 'sync-builds') { const c = syncBuilds(); return out({ ok: true, changed: c }, c.length ? `updated ${c.join(', ')}` : 'nothing changed'); }
   throw new Error(`unknown command ${cmd}`);
 }

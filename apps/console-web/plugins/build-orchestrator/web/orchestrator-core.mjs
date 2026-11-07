@@ -10,7 +10,7 @@
  * session, no sub-agents, and only the current phase goes into a brief.
  */
 
-import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { addAddendum, attachCheckoffs, normOrigin, originText, tickParents } from '../../../../../framework/core/build-origin.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
@@ -76,6 +76,8 @@ function normStep(s, i) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...(str(o.parent) ? { parent: str(o.parent, 40) } : {}), // an addendum's sub-step names its check-off item
+    ...(Number.isInteger(o.addendum) && o.addendum > 0 ? { addendum: o.addendum } : {}), // the check-off item of addendum N
   };
 }
 
@@ -156,7 +158,7 @@ export function nextUp(build, rules = DEFAULT_RULES) {
   const ps = phases(build);
   const phase = ps.find((p) => !p.done) ?? null;
   if (!phase) return { phase: null, step: null, needsApproval: false, done: build.steps.length > 0 };
-  const step = phase.steps.find(open) ?? null;
+  const step = phase.steps.find((s) => open(s) && !s.addendum) ?? phase.steps.find(open) ?? null; // an addendum's item ticks itself
   // An upgrade always waits for Brett (the approveModelSwitch rule can't turn that off); a downgrade never waits.
   const needsApproval = phase.upgrade && !phase.approved;
   return { phase, step, needsApproval, done: false };
@@ -296,7 +298,12 @@ export function apply(state, change) {
       if (c.done !== false && ph && !ph.approved) throw new Error(`${upgradeLine(b.id, ph)}: a model upgrade needs Brett's approval first (orchestrator.mjs request-upgrade ${b.id} ${ph.index})`);
       if (c.done !== false && ph && ph.gate && ph.kind === 'downgrade' && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) { b.approvals.push(normApproval({ phase: ph.index, from: ph.from, to: ph.model, at: now(), by: 'auto', kind: 'downgrade' })); log.push(`${b.id}: downgrade ${ph.from} → ${ph.model} recorded (phase ${ph.index + 1})`); }
       if (c.done !== false && ph && ph.upgrade && !upgradeNeedsApproval() && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) autoUpgrade(b, ph, log);
-      st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }
+      st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); tickParents(b.steps, now()); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }
+    case 'addendum': { b = find(); // what Brett said + Claude's summary + sub-steps: one check-off item on the build (build-origin@1)
+      if (!str(c.said).trim()) throw new Error('an addendum needs what Brett said');
+      b.origin = addAddendum(b.origin, { said: c.said, summary: c.summary, at: c.at || now(), source: c.source, by: c.by });
+      attachCheckoffs(b, [{ said: str(c.said).trim(), summary: c.summary, steps: c.steps }], { norm: normStep, at: now() });
+      { const item = b.origin.addenda.find((a) => a.said === str(c.said).trim())?.step; log.push(`${b.id}: addendum check-off ${item} (${b.steps.filter((x) => x.parent === item).length} sub-steps)`); } break; }
     case 'add-step': { b = find(); const st = normStep({ ...c.stepData, id: `s${b.steps.length + 1}` }, b.steps.length); if (!st.text) throw new Error('step text needed'); const at = Number.isInteger(c.at) ? c.at : b.steps.length; b.steps.splice(at, 0, st); log.push(`${b.id} + ${st.id}`); break; }
     case 'edit-step': { b = find(); const st = stepOf(b); if (!st.done && c.stepData?.model && modelRank(c.stepData.model) > modelRank(st.model)) needApprover(c, `raising ${b.id} ${st.id} from ${st.model} to ${c.stepData.model}`); Object.assign(st, normStep({ ...st, ...c.stepData, id: st.id, done: st.done, doneAt: st.doneAt }, 0)); log.push(`${b.id} ${st.id} edited`); break; }
     case 'skip-step': { b = find(); const st = stepOf(b); st.skip = c.skip !== false; log.push(`${b.id} ${st.id} ${st.skip ? 'skipped' : 'back in'}`); break; } // the feature matrix's view of a step; the step stays

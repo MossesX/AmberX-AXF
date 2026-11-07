@@ -18,6 +18,7 @@ import { mergeOrigin } from '../core/build-origin.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
+const stepWords = (s) => str(s.text).replace(/^\[(Fable|Opus|Sonnet)\]\s*/i, '').trim();
 const num = (v) => (Number.isInteger(v) ? v : 0);
 
 /** > 0 when a is newer than b. updatedAt first, then rev; a tie is no change. */
@@ -34,7 +35,8 @@ export function newer(a, b) {
 export function liveStatus(b) {
   if (['blocked', 'failed', 'archived'].includes(b.status)) return b.status;
   if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged: done, even with steps left unticked
-  const steps = (b.steps ?? []).filter((s) => !s.skip);
+  // an addendum's check-off items show on the plan; a build that finished its own steps is not held open by them
+  const steps = (b.steps ?? []).filter((s) => !s.skip && !s.addendum && !s.parent);
   if (!steps.length) return b.status === 'built' && str(b.mergedAt) ? 'complete' : b.status;
   const done = steps.filter((s) => s.done).length;
   if (done === steps.length) return str(b.pr) && !str(b.mergedAt) ? 'built' : 'complete';
@@ -58,8 +60,9 @@ export function settleStatus(b, now = new Date().toISOString()) {
 /**
  * Merge two copies of one build record. Build-level fields come from the newer copy; steps are merged by uid, each
  * from its newer copy (so session A ticking s2 and session B ticking s3 both survive). Steps only in the newer copy are
- * kept in its order; a step only in the older copy is kept when it was changed after the newer copy was written (added
- * there later), else it was removed in the newer copy and stays removed. Fields only one side has (branch, pr, mergedAt)
+ * kept in its order. A step only in the older copy is kept unless the newer copy recorded removing it: a copy that never
+ * saw a step did not remove it. The same step under another uid (a copy re-created from an export) is one step, by its
+ * text, and keeps its tick. Fields only one side has (branch, pr, mergedAt)
  * are never blanked by the other.
  */
 export function mergeBuild(a, b) {
@@ -68,10 +71,21 @@ export function mergeBuild(a, b) {
   const [win, lose] = newer(a, b) >= 0 ? [a, b] : [b, a];
   const out = clone(win);
   const other = new Map(lose.steps.map((s) => [s.uid, s]));
+  const twins = lose.steps.filter((s) => !win.steps.some((w) => w.uid === s.uid)); // in the older copy only
+  const taken = new Set();
   let combined = false;
-  out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
-  const have = new Set(out.steps.map((s) => s.uid));
-  lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
+  out.steps = win.steps.map((s) => {
+    const o = other.get(s.uid);
+    if (o) { if (newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); }
+    const twin = twins.find((t) => !taken.has(t.uid) && stepWords(t) === stepWords(s));
+    if (!twin) return clone(s);
+    taken.add(twin.uid);
+    if (!twin.done || s.done) return clone(s);
+    combined = true; return { ...clone(s), done: true, doneAt: twin.doneAt };
+  });
+  const removed = new Set((win.removedSteps ?? []).map((r) => r?.step?.uid));
+  lose.steps.forEach((s, i) => { if (twins.includes(s) && !taken.has(s.uid) && !removed.has(s.uid)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
+  if (combined) { const ids = new Set(); let n = out.steps.length; for (const s of out.steps) { while (ids.has(s.id)) { n += 1; s.id = `s${n}`; } ids.add(s.id); } } // ids stay unique within the build
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }

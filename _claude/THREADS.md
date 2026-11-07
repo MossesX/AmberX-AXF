@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
+| Plan Studio backfill (`plan-studio-backfill-12h`, Current, Opus, agent Reel Rhonda): every build has a live plan (build-plan@1), addenda as check-off items, stale files can't reset or drop a build; 24 plans backfilled | built, PR #373 in the merge queue, UI Review waiting | `claude/plan-studio-backfill-12h` | Re-run backfill once after it lands; Fable review of the optional plan@1 + step fields; reconcile with PR #333 |
 | Every headless build keeps its own Claude login (Current `build-own-login`, Opus; Brett Nov 5 voice: "Yeah, it should be like that already."): per-build `CLAUDE_CONFIG_DIR` copy of the active saved account (`deploy/claude-login.mjs`), inherited OAuth token dropped, account recorded (log, tmux tag, event, build note), `--account` per launch, swarm runner too | built, in the merge queue | `claude/build-own-login-r2` | (see Live build log) | Report `_claude/builds/reports/build-own-login.md`. Brett: none | 2026-11-05 |
 | AI keys console-wide store (`ai-keys-console-store`, Opus; Janitor Joey): AI keys was already one store and never held a key, Brett's 5 are in `~/.claude-accounts`. Added an admin + service-token guard, a per-user store migration (no such files today), `vpsAccounts` on GET /keys, POST /active and /switch for VPS accounts (held), fixed claude-accounts dropping `[token]` / `[api key]` rows. Tokens deliberately not copied: AI keys rotates refresh tokens. Importing them is Brett's call | in progress | claude/ai-keys-console-store-2 | | merge queue, redeploy, verify | 2026-11-05 |
 | AI keys accept new Anthropic key formats (`ai-keys-new-format`, Opus; Brett Nov 5 voice: "Put someone else on it."): `sk-ant-usr…` and any unknown `sk-ant-` API format accepted and checked live (OK / invalid / no credit), `sk-ant-oat` stays a subscription login; shared `axf.anthropic_keys`; report `_claude/builds/reports/ai-keys-new-format.md` | built, in merge queue | claude/ai-keys-new-format-r4 | #356 | merge queue lands it | 2026-11-05 |
@@ -197,6 +198,11 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Plan Studio backfill (`plan-studio-backfill-12h`, Current, Opus) — branch `claude/plan-studio-backfill-12h`, PR #373
+- Asked: every build of the last 12 hours as a Plan Studio plan with ticks; plans made on launch; addenda as check-off items through the orchestrator; fix the sync bug. Report: `_claude/builds/reports/plan-studio-backfill-12h.md`.
+- Left: Brett's UI Review of PR #373, then the merge queue. After it lands run `node apps/console-web/plugins/plan-studio/backfill.mjs --map _claude/builds/reports/plan-studio-backfill-12h/backfill-map.json` once.
+- **First message:** `Carry on plan-studio-backfill-12h: read THREADS "Plan Studio backfill"; if PR 373 is merged, run the backfill once and check the plans.`
 
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
