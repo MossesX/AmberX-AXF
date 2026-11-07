@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 23:53 UTC · `ai-keys-console-store` note (current) · orchestrator
 - 2026-11-06 00:15 UTC · `skins` added (11 steps) (main-framework) · orchestrator
 - 2026-11-06 00:40 UTC · `ai-keys-console-store` → pending, merged, note (current) · reconciler
 - 2026-11-06 00:50 UTC · `skins` → pending, note (main-framework) · reconciler
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7-1 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s7-2 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8 done (current) · orchestrator
+- 2026-11-07 01:31 UTC · `notes-tasks-calendar` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7-1 done, s7-2 done, s8 done, s8-1 done, note (current) · foreign-write
 
 ## Token passes (log)
 
