@@ -8,6 +8,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { NAV_GROUP } from '@console/notesHost';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { calendarLibrary } from './calendar/library';
 import { appMenu } from './menu';
 import { notesLibrary } from './notes/library';
 import { NOTES_ID } from './notes/store';
@@ -16,19 +17,21 @@ import { tasksLibrary } from './tasks/library';
 export const plugin: AxfWebLibrary = {
   id: NOTES_ID,
   label: 'Notes and tasks',
-  version: '0.1.0',
+  version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-06' },
-  provides: ['amberx.notes', 'amberx.tasks'],
+  provides: ['amberx.notes', 'amberx.tasks', 'amberx.calendar'],
   appMenu,
-  views: { ...notesLibrary.views, ...tasksLibrary.views },
-  nav: { label: NAV_GROUP, items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }, { id: 'tasks', label: 'Tasks', icon: 'check-circle', view: 'tasks', badge: 'tasks.today' }] },
-  dialogs: { ...notesLibrary.dialogs, ...tasksLibrary.dialogs },
-  contextMenu: [...(notesLibrary.contextMenu ?? []), ...(tasksLibrary.contextMenu ?? [])],
+  views: { ...notesLibrary.views, ...tasksLibrary.views, ...calendarLibrary.views },
+  nav: { label: NAV_GROUP, items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }, { id: 'tasks', label: 'Tasks', icon: 'check-circle', view: 'tasks', badge: 'tasks.today' }, { id: 'calendar', label: 'Calendar', icon: 'clock', view: 'calendar' }] },
+  dialogs: { ...notesLibrary.dialogs, ...tasksLibrary.dialogs, ...calendarLibrary.dialogs },
+  tabs: calendarLibrary.tabs,
+  contextMenu: [...(notesLibrary.contextMenu ?? []), ...(tasksLibrary.contextMenu ?? []), ...(calendarLibrary.contextMenu ?? [])],
   settingsTabs: [{ id: 'notes-tasks', label: 'Notes and tasks', icon: 'check-circle', order: 30, parent: 'plugins' }],
-  settings: tasksLibrary.settings,
+  settings: [...(tasksLibrary.settings ?? []), ...(calendarLibrary.settings ?? [])],
   settingsPanels: [{ id: 'notes-tasks.lifecycle', tab: 'notes-tasks', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder="notes-tasks" /> }],
   register(rt) {
     notesLibrary.register?.(rt);
     tasksLibrary.register?.(rt);
+    calendarLibrary.register?.(rt);
   },
 };

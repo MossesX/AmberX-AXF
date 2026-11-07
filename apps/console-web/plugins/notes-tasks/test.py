@@ -16,6 +16,8 @@ import types
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path[:0] = [str(HERE.parents[1] / "server"), str(HERE.parents[3] / "framework/python")]
+os.environ["AXF_CALENDAR_TICK"] = "off"
 TMP = Path(tempfile.mkdtemp(prefix="axf-notes-tasks-test-"))
 spec = importlib.util.spec_from_file_location("nt_migrate", HERE / "server" / "migrate.py")
 m = importlib.util.module_from_spec(spec)
@@ -118,5 +120,9 @@ services["axf.notes@1"] = Notes(False)
 ok(srv.vault()["available"] is False, "hub folder not mounted: an empty answer")
 
 shutil.rmtree(TMP)
+import subprocess  # noqa: E402
+
+fails += subprocess.run([sys.executable, str(HERE / "test_calendar.py")]).returncode != 0
+fails += subprocess.run(["npx", "-y", "tsx", str(HERE / "web/calendar/core.test.mts")]).returncode != 0
 print("FAILED" if fails else "all good")
 sys.exit(1 if fails else 0)

@@ -3,7 +3,7 @@
   "type": "help",
   "id": "notes-tasks-help",
   "name": "Notes and tasks help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help mode entries for the Notes and tasks plugin (help@1).",
   "author": "Brett",
   "tags": [
@@ -22,6 +22,36 @@
         "target": "view:tasks",
         "title": "Tasks",
         "text": "Your to-dos and tasks by when they're due: Today, Upcoming, Todo, All and Done.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:calendar",
+        "title": "Calendar",
+        "text": "Your events, weekly schedules and tasks with due dates, on the console and AmberX. Drag to make, move or resize. Long-press to drag on a phone, swipe to change the date.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.event",
+        "title": "Event",
+        "text": "When, where, repeats and reminders. Guests has the invite list: who replied and what they said, and the buttons that email them.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.block",
+        "title": "Schedule block",
+        "text": "One block of a weekly schedule: its day, time and colour.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.calendar",
+        "title": "Calendar settings",
+        "text": "Name and colour. Name a Google calendar for two-way sync through axHub.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:calendar.layouts",
+        "title": "Layouts",
+        "text": "Set the calendar window's panes, or save the panes you have under a name. Saved layouts follow you to every device.",
         "kind": "screen"
       },
       {

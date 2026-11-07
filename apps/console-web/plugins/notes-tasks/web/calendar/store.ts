@@ -104,7 +104,7 @@ export function mutateCal<T>(fn: (s: CalStore) => T): T {
   for (const table of TABLES) {
     if (SERVER_TABLES.includes(table)) continue;
     const a = before[table] as Record<string, unknown>;
-    const b = next[table] as Record<string, Record<string, unknown>>;
+    const b = next[table] as unknown as Record<string, Record<string, unknown>>;
     for (const id of new Set([...Object.keys(a), ...Object.keys(b)])) {
       if (!(id in b)) { enqueue({ table, id, row: null }); continue; }
       if (JSON.stringify(a[id]) === JSON.stringify(b[id])) continue;

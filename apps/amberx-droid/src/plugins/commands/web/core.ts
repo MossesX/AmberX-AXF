@@ -16,7 +16,7 @@
 
 export const FORMAT = 'voice-command@1';
 
-export type CategoryId = 'notes' | 'tasks' | 'developer' | 'snippets';
+export type CategoryId = 'notes' | 'tasks' | 'calendar' | 'developer' | 'snippets';
 export interface Category {
   id: CategoryId;
   label: string;
@@ -31,6 +31,7 @@ export interface Category {
 export const CATEGORIES: Category[] = [
   { id: 'notes', label: 'Notes', icon: 'file', triggers: ['note', 'notes', 'notebook'], view: 'notes', description: 'Notes, lists and sub-lists: take, find, sort, rename, move, read back, export.' },
   { id: 'tasks', label: 'Tasks', icon: 'check', triggers: ['task', 'tasks', 'todo', 'to do', 'todos'], view: 'tasks', description: 'Tasks and to-dos: add, due dates, priorities, checklists, subtasks, reviews.' },
+  { id: 'calendar', label: 'Calendar', icon: 'clock', triggers: ['calendar', 'schedule', 'event', 'whats on'], view: 'calendar', description: 'The calendar: open any view, add events in plain English.' },
   { id: 'developer', label: 'Developer', icon: 'code', triggers: ['dev', 'developer', 'console', 'gizmo'], view: 'developer', description: 'Drive the Dev Console and the VPS through Gizmo: builds, PRs, checks, deploys, health.' },
   { id: 'snippets', label: 'AI snippets', icon: 'sparkles', triggers: ['ask', 'gizmo', 'ai', 'snippet'], view: 'snippets', description: 'Ready-made prompts run through the AI (Gizmo): summarize, rewrite, plan, explain.' },
 ];
@@ -170,7 +171,7 @@ export function parseOverrides(raw: unknown): Overrides {
   return out;
 }
 
-const CATEGORY_IDS: CategoryId[] = ['notes', 'tasks', 'developer', 'snippets'];
+const CATEGORY_IDS: CategoryId[] = ['notes', 'tasks', 'calendar', 'developer', 'snippets'];
 
 /** Chains, wizards and commands the person made (`mine.*` ids), from settings: checked like everything else. */
 export function parseCustom(raw: unknown): Command[] {

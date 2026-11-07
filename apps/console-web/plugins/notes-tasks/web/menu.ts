@@ -5,6 +5,8 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
   { id: 'notes-tasks.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [
     { id: 'notes', label: 'Notes', icon: 'file', action: 'nav:notes' },
     { id: 'tasks', label: 'Tasks', icon: 'check-circle', action: 'nav:tasks', badge: 'tasks.today' },
+    { id: 'calendar', label: 'Calendar', icon: 'clock', action: 'nav:calendar' },
+    { id: 'calendar.window', label: 'Calendar window', icon: 'layout', action: 'calendar.window' },
     { id: 'notes.add', label: 'New note', icon: 'plus', action: 'notes.add' },
     { id: 'tasks.add', label: 'New task', icon: 'plus', action: 'tasks.add' },
     { id: 'notes.search', label: 'Search notes', icon: 'search', action: 'notes.search' },

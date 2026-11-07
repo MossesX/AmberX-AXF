@@ -1,3 +1,4 @@
+// @ts-nocheck: run by tsx, the console has no Node types
 /** Calendar core: `npx -y tsx apps/console-web/plugins/notes-tasks/web/calendar/core.test.mts`. */
 import { readFileSync } from 'node:fs';
 import {
