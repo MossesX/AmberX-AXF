@@ -2146,6 +2146,18 @@
    "from": "",
    "addenda": []
   },
+  "settings-sections-everywhere": {
+   "said": "All groups of settings in every settings interface as of now, everything, it's gotta be in sections. Everything's gonna be arranged in sections that are similar: certain types of settings in a section that's collapsible. Every settings interface that is in existence thus far is gonna be like that. You're gonna go through and refactor them, put everything in categories. And they're all collapsible sections.",
+   "at": "2026-11-07T00:13:07.252Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "share-search": {
    "said": "make a plugin with a toolbar of programmable actions for filtering, sorting and searching grids. Toolbar name: Share Search. HELD: Brett said 'send to orchestrator and hold off on build' — don't start until he says.",
    "at": "2026-10-28",

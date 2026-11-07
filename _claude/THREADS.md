@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 02:29 UTC · `banner-widgets` s6 done (current) · orchestrator
 - 2026-11-05 02:36 UTC · `banner-widgets` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` branch claude/amberx-approvals-fix, PR #353 (urgent) · builds-live
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` s2 done (urgent) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:10 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
 - 2026-11-07 00:10 UTC · `ui-registry-shortcuts` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
 - 2026-11-07 00:10 UTC · `badges-notify-followup` added (4 steps) (current) · foreign-write
+- 2026-11-07 00:13 UTC · `settings-sections-everywhere` added (7 steps) (current) · orchestrator
 
 ## Token passes (log)
 
