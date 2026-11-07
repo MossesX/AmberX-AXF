@@ -96,7 +96,7 @@ Restart on every phone. One implementation (`core.mjs`) behind the page, the ser
 | `apps/console-web/plugins/amberx-listeners/test.mjs` / `test.py` | 31 / 15 |
 | `check-theme` (companion, listeners, console plugin), `check-controls`, `check-toolbars`, `check-chrome-assets` | clean |
 | `plugins.mjs --check`, `plugin-commands.mjs check amberx-listeners`, `plugin-lifecycle.mjs check`, `menu-reach.mts`, `help-coverage --check` | clean |
-| Android `ListenerRulesTest` + the rest (`:app:testDebugUnitTest`) and the APK | **CI** (no JDK here) |
+| Android `ListenerRulesTest` + the rest (`:app:testDebugUnitTest`) and the APK | green in CI (full run 42314557332 on the branch: AmberX job, engine sweep, console, Gradle all pass) |
 
 ## Screenshots
 
