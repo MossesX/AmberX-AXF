@@ -705,8 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 02:30 UTC · `amberx-slim-down-voice-queue` added (0 steps) (current) · foreign-write
-- 2026-11-06 02:32 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · foreign-write
 - 2026-11-06 02:37 UTC · `planner-select-items-and-build-them` note (current) · foreign-write
 - 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s1 done, → running (current) · orchestrator
 - 2026-11-06 02:37 UTC · `amberx-slim-down-voice-queue` s2 done (current) · orchestrator
@@ -1105,6 +1103,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-1 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-2 done (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` s8-3 done (current) · orchestrator
+- 2026-11-07 01:33 UTC · `notes-tasks-calendar` s8-2 done, s8-3 done, note (current) · foreign-write
+- 2026-11-07 01:33 UTC · `console-approvals-in-place` branch claude/approvals-in-place-r2, PR #375 (current) · builds-live
 
 ## Token passes (log)
 

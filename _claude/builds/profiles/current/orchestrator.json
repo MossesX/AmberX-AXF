@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T01:32:25.244Z",
+ "updatedAt": "2026-11-07T01:33:11.333Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13562,10 +13562,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/today",
-   "pr": "",
+   "branch": "claude/approvals-in-place-r2",
+   "pr": "#375",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T00:48:26.359Z",
+   "updatedAt": "2026-11-07T01:33:10.441Z",
    "builtAt": "",
    "notes": [
     {
@@ -20198,12 +20198,16 @@
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:31:53.529Z",
+   "updatedAt": "2026-11-07T01:32:17.392Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/notes-tasks-calendar (no PR yet)",
      "at": "2026-11-07T01:30:26.731Z"
+    },
+    {
+     "text": "PR #374 stacked on #363. Waits on Brett's UI Review (r-20261107-0c40cd1d). After landing: the console installer must run for the /public/ wall router; test a real reply link; real Google and Gmail run once axhub-google lands and Brett signs in. Gaps listed in the PR.",
+     "at": "2026-11-07T01:32:17.392Z"
     }
    ],
    "approvals": [],

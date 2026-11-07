@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1211,
- "updatedAt": "2026-11-07T01:32:25.244Z",
+ "rev": 1212,
+ "updatedAt": "2026-11-07T01:33:11.333Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -91819,10 +91819,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/today",
-   "pr": "",
+   "branch": "claude/approvals-in-place-r2",
+   "pr": "#375",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T00:48:26.359Z",
+   "updatedAt": "2026-11-07T01:33:10.441Z",
    "builtAt": "",
    "notes": [
     {
@@ -92374,7 +92374,7 @@
    },
    "kind": "build",
    "planRef": "console-approvals-in-place",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101916,12 +101916,16 @@
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:31:53.529Z",
+   "updatedAt": "2026-11-07T01:32:17.392Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/notes-tasks-calendar (no PR yet)",
      "at": "2026-11-07T01:30:26.731Z"
+    },
+    {
+     "text": "PR #374 stacked on #363. Waits on Brett's UI Review (r-20261107-0c40cd1d). After landing: the console installer must run for the /public/ wall router; test a real reply link; real Google and Gmail run once axhub-google lands and Brett signs in. Gaps listed in the PR.",
+     "at": "2026-11-07T01:32:17.392Z"
     }
    ],
    "approvals": [],
@@ -102267,7 +102271,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T01:31:52.237Z"
+     "updatedAt": "2026-11-07T01:33:10.229Z"
     },
     {
      "id": "s8-3",
@@ -102289,7 +102293,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T00:48:24.663Z",
-     "updatedAt": "2026-11-07T01:31:53.643Z"
+     "updatedAt": "2026-11-07T01:33:10.229Z"
     }
    ],
    "profiles": [
