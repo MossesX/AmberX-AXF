@@ -30,7 +30,7 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 23, `23 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 25, `25 targets (${CONTROL_TARGET_IDS.length})`);
 eq(CONTROL_TARGET_IDS.slice(0, 13), ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.look', 'tokens.custom', 'tokens.slots', 'amberx.items', 'amberx.lists', 'planner.plans', 'planner.builds'], 'targets are append-only');
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   ok(/^(tokens|amberx|planner|console|pass|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
@@ -38,14 +38,20 @@ for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   ok(t.doc.length > 30, `${id} documented`);
   if (t.paths === 'entity') { ok(t.fields && Object.keys(t.fields).length > 3, `${id} has fields`); ok(t.ops.includes('remove') && t.ops.includes('act'), `${id} is a full entity target`); }
   else ok(!t.ops.includes('remove') && !t.ops.includes('add'), `${id}: tokens, console and plugin targets are never added or removed`);
-  if (t.domain === 'console') ok(!t.ops.includes('set') && !t.ops.includes('reset'), `${id}: the console is opened and run, never set`);
+  // the console is opened and run; only its setting values are set (full-api-control, Nov 7 2026)
+  if (t.domain === 'console') ok(id === 'console.values' || (!t.ops.includes('set') && !t.ops.includes('reset')), `${id}: the console is opened and run, only console.values is set`);
   for (const [verb, eff] of Object.entries(t.actEffect ?? {})) ok(verb in (t.acts ?? {}) && ['navigate', 'read', 'write', 'destructive'].includes(eff), `${id} act ${verb} effect ${eff}`);
 }
 eq(Object.keys(CONTROL_PERMISSIONS).length, 19, 'six domains × read / write / delete, plus console navigate');
 eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a plugin read only reads');
 eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
 eq(CONTROL_TARGET_IDS.slice(20, 22), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
-eq(CONTROL_TARGET_IDS.slice(22), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
+eq(CONTROL_TARGET_IDS.slice(22, 23), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
+eq(CONTROL_TARGET_IDS.slice(23), ['console.values', 'console.elements'], 'setting values and elements on screen come last (append-only, build full-api-control)');
+eq(controlPermission('console.values', 'set'), 'control.console.write', 'changing a setting writes');
+eq(controlPermission('console.values', 'get'), 'control.console.read', 'reading a setting reads');
+eq(controlPermission('console.elements', 'act', 'press'), 'control.console.write', 'pressing an element writes (a deleting one asks for more)');
+eq(controlPermission('console.elements', 'act', 'focus'), 'control.console.navigate', 'showing an element only navigates');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');
 eq(controlPermission('console.nav', 'act', 'back'), 'control.console.navigate', 'going back only navigates');
 eq(controlPermission('console.actions', 'act', 'run'), 'control.console.write', 'running an action writes (the host may ask for more)');

@@ -88,7 +88,7 @@ export function TreeView(p: TreeViewProps) {
           {...(b.fixed ? {} : dragProps('branch', b.id, b.label, b.icon ?? 'folder'))}>
           <IconButton icon={open ? 'chevron-down' : 'chevron-right'} label={open ? 'Collapse' : 'Expand'} onClick={() => p.onToggle?.(b.id)} />
           <span className="axf-dnd-grip"><Icon name={b.icon ?? 'folder'} size={14} /></span>
-          <button type="button" data-fx-row className="axf-tree-label" onClick={() => p.onSelectBranch?.(b.id)}><Highlight text={b.label} q={p.query} /></button>
+          <button type="button" data-fx-row className="axf-tree-label" aria-label={b.label} onClick={() => p.onSelectBranch?.(b.id)}><Highlight text={b.label} q={p.query} /></button>
           {b.meta != null && <span className="axf-tree-meta">{b.meta}</span>}
           {config.meters && b.progress != null && <span className="axf-tree-meter"><Meter value={b.progress} small done={b.progress >= 100} label={`${Math.round(b.progress)}% of ${b.label}`} /></span>}
         </div>

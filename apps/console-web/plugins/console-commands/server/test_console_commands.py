@@ -356,5 +356,18 @@ eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
 eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
 eq(cc._how({"picked": True, "wake": None}), "woke via AmberX", "the console that opened from the link is")
 
+# full-api-control: console.values / console.elements answer with what the console said
+base = {"$axf": "control@1", "ok": True, "op": "get", "target": "console.values", "path": "k", "confirmToken": "tok", "ttlMs": 1, "item": {"id": "k"}}
+a = cc._console_answer({**base, "delivered": [{"client": "c", "ok": True, "message": "k", "data": {"value": 3}}]}, "read")
+ok(a["ok"] and a["value"] == 3 and "confirmToken" not in a, "the console's value is the answer (the token never leaks)")
+a = cc._console_answer({**base, "op": "act", "target": "console.elements", "delivered": [{"client": "c", "ok": False, "message": "pressing Delete deletes", "data": {"needsConfirm": True, "element": {"id": "x"}}}]}, "press")
+ok(not a["ok"] and a["code"] == "confirmation_required" and a["confirm"] == "tok" and a["element"] == {"id": "x"}, "a destructive press asks for the confirm token")
+a = cc._console_answer({**base, "delivered": [{"client": "c", "ok": False, "message": "needs Brett", "data": {"code": "denied"}}]}, "press")
+ok(not a["ok"] and a["code"] == "denied" and "confirm" not in a, "a person-only element is refused with its code")
+a = cc._console_answer({**base, "delivered": [{"client": "c", "ok": False, "pending": True, "message": "sent"}]}, "read")
+ok(not a["ok"] and a["code"] == "unexpected", "no answer from the console is not a value")
+a = cc._console_answer({**base, "delivered": [{"client": "c", "ok": True, "message": "opened"}]}, "open")
+ok(a["ok"] and "confirmToken" not in a and "value" not in a, "navigation answers stay as they were")
+
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

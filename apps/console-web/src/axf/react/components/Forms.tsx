@@ -135,17 +135,19 @@ export interface TextFieldProps {
   autoComplete?: string;
   name?: string;
   className?: string;
+  /** The control's name when `label` is empty (screen readers and the API: control@1 console.elements). */
+  ariaLabel?: string;
 }
 
 /** Single- or multi-line text input inside a Field. */
-export function TextField({ label, value, onChange, placeholder, hint, error, mono, required, disabled, rows, type = 'text', autoFocus, autoComplete = 'off', name, className }: TextFieldProps) {
+export function TextField({ label, value, onChange, placeholder, hint, error, mono, required, disabled, rows, type = 'text', autoFocus, autoComplete = 'off', name, className, ariaLabel }: TextFieldProps) {
   const cls = `fx-input fx-field__input ${mono ? 'fx-mono' : ''}`;
   return (
     <Field label={label} hint={hint} error={error} required={required} className={className}>
       {(id, describedBy) => rows && rows > 1 ? (
-        <textarea id={id} name={name} className={cls} rows={rows} value={value} placeholder={placeholder} disabled={disabled} required={required} aria-invalid={error ? true : undefined} aria-describedby={describedBy} autoFocus={autoFocus} autoComplete={autoComplete} spellCheck={false} onChange={(e) => onChange(e.target.value)} />
+        <textarea id={id} name={name} className={cls} rows={rows} value={value} placeholder={placeholder} disabled={disabled} required={required} aria-label={ariaLabel} aria-invalid={error ? true : undefined} aria-describedby={describedBy} autoFocus={autoFocus} autoComplete={autoComplete} spellCheck={false} onChange={(e) => onChange(e.target.value)} />
       ) : (
-        <input id={id} name={name} className={cls} type={type} value={value} placeholder={placeholder} disabled={disabled} required={required} aria-invalid={error ? true : undefined} aria-describedby={describedBy} autoFocus={autoFocus} autoComplete={autoComplete} spellCheck={false} onChange={(e) => onChange(e.target.value)} />
+        <input id={id} name={name} className={cls} type={type} value={value} placeholder={placeholder} disabled={disabled} required={required} aria-label={ariaLabel} aria-invalid={error ? true : undefined} aria-describedby={describedBy} autoFocus={autoFocus} autoComplete={autoComplete} spellCheck={false} onChange={(e) => onChange(e.target.value)} />
       )}
     </Field>
   );
@@ -197,14 +199,16 @@ export interface SelectFieldProps {
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  /** The control's name when `label` is empty (screen readers and the API: control@1 console.elements). */
+  ariaLabel?: string;
 }
 
 /** Native select inside a Field. */
-export function SelectField({ label, value, options, onChange, hint, error, empty, required, disabled, className }: SelectFieldProps) {
+export function SelectField({ label, value, options, onChange, hint, error, empty, required, disabled, className, ariaLabel }: SelectFieldProps) {
   return (
     <Field label={label} hint={hint} error={error} required={required} className={className}>
       {(id, describedBy) => (
-        <select id={id} className="fx-input fx-field__input" value={value} disabled={disabled} required={required} aria-invalid={error ? true : undefined} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)}>
+        <select id={id} className="fx-input fx-field__input" value={value} disabled={disabled} required={required} aria-label={ariaLabel} aria-invalid={error ? true : undefined} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)}>
           {empty !== undefined && <option value="">{empty}</option>}
           {options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>)}
         </select>

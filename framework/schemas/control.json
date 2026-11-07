@@ -43,6 +43,10 @@
     },
     "plugins.reads": {
       "read": "read"
+    },
+    "console.elements": {
+      "focus": "navigate",
+      "context": "navigate"
     }
   },
   "domains": [
@@ -2224,6 +2228,52 @@
       ],
       "value": "field",
       "doc": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it."
+    },
+    "console.values": {
+      "domain": "console",
+      "label": "Console setting values",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "paths": "host",
+      "value": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string",
+        "tab": "string"
+      },
+      "doc": "Every setting the open console has (its settings registry: the plugins' too), by key (\"axf.display.fontScale\") or words. list = the settings (key, label, kind, tab, options, range), get = its value now, set = change it exactly as its control would (checked against its kind, options and range; a setting that needs a role permission needs it here too), reset = back to its default. Secrets can be set, never read. A plugin whose settings live on its own server is reached through plugins.commands (<plugin>/settings-set). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.elements": {
+      "domain": "console",
+      "label": "Console elements on screen",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "press": {},
+        "toggle": {},
+        "set": {},
+        "focus": {},
+        "context": {}
+      },
+      "actEffect": {
+        "focus": "navigate",
+        "context": "navigate"
+      },
+      "doc": "Every button, switch, tab, menu item, context-menu entry, toolbar button, field and link the open console shows right now (dialogs, menus and pop-ups included), each with a stable id (<where>/<role>:<label>) and its state. act press clicks it, toggle flips a switch or checkbox (input.on = true / false to set it), set fills a field, slider or select (input.value), focus scrolls to it and highlights it, context opens its right-click menu (then list shows the menu's items). A press that deletes or resets needs control.console.delete and the confirm token the first try answers with; anything Brett must tap himself (approvals, owner-only settings) is refused. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     }
   },
   "aliases": {
@@ -2260,7 +2310,7 @@
     },
     "console": {
       "target": "console.*",
-      "note": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+      "note": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients|values|elements] [words] | value <key> [new value] | press <element> | toggle <element> [on|off] | fill <element> <value>"
     },
     "pass": {
       "target": "pass.scopes",
@@ -2307,7 +2357,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2361,7 +2413,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2416,7 +2470,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2478,7 +2534,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2540,7 +2598,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2602,7 +2662,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2668,7 +2730,9 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.values",
+              "console.elements"
             ],
             "description": "what to control"
           },
@@ -2772,7 +2836,7 @@
       "list": "axf list <op> … = axf control <op> amberx.lists",
       "plan": "axf plan <op> … = axf control <op> planner.plans",
       "build": "axf build <op> … = axf control <op> planner.builds",
-      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]",
+      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients|values|elements] [words] | value <key> [new value] | press <element> | toggle <element> [on|off] | fill <element> <value>",
       "pass": "axf pass <op> … = axf control <op> pass.scopes",
       "plugins": "axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin's commands and reads)"
     },
@@ -2799,7 +2863,9 @@
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "console.values",
+      "console.elements"
     ]
   },
   "schema": {
@@ -2850,7 +2916,9 @@
           "pass.scopes",
           "plugins.commands",
           "plugins.reads",
-          "tokens.nav"
+          "tokens.nav",
+          "console.values",
+          "console.elements"
         ]
       },
       "path": {
@@ -3959,6 +4027,57 @@
           "items.hidden",
           "items.pinned"
         ]
+      },
+      "console.values": {
+        "description": "Every setting the open console has (its settings registry: the plugins' too), by key (\"axf.display.fontScale\") or words. list = the settings (key, label, kind, tab, options, range), get = its value now, set = change it exactly as its control would (checked against its kind, options and range; a setting that needs a role permission needs it here too), reset = back to its default. Secrets can be set, never read. A plugin whose settings live on its own server is reached through plugins.commands (<plugin>/settings-set). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          },
+          "tab": {
+            "type": "string"
+          }
+        },
+        "paths": "host"
+      },
+      "console.elements": {
+        "description": "Every button, switch, tab, menu item, context-menu entry, toolbar button, field and link the open console shows right now (dialogs, menus and pop-ups included), each with a stable id (<where>/<role>:<label>) and its state. act press clicks it, toggle flips a switch or checkbox (input.on = true / false to set it), set fills a field, slider or select (input.value), focus scrolls to it and highlights it, context opens its right-click menu (then list shows the menu's items). A press that deletes or resets needs control.console.delete and the confirm token the first try answers with; anything Brett must tap himself (approvals, owner-only settings) is refused. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "press": {},
+          "toggle": {},
+          "set": {},
+          "focus": {},
+          "context": {}
+        },
+        "paths": "host"
       }
     }
   }

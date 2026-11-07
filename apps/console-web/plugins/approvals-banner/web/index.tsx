@@ -295,8 +295,8 @@ function PendingButtons({ p }: { p: Pending }) {
   const run = (d: ApprovalDecision) => { setBusy(d); void decidePending(p, d).finally(() => setBusy(null)); };
   return (
     <div className="fx-row axp-approvals-banner__acts">
-      <Button tone="danger" icon="x-circle" busy={busy === 'decline'} disabled={busy !== null} aria-label={`Deny: ${p.tool}`} onClick={() => run('decline')}>Deny</Button>
-      <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== null} aria-label={`Approve: ${p.tool}`} onClick={() => run('approve')}>Approve</Button>
+      <Button tone="danger" icon="x-circle" busy={busy === 'decline'} disabled={busy !== null} aria-label={`Deny: ${p.tool}`} onClick={() => run('decline')} data-axf-person-only="">Deny</Button>
+      <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== null} aria-label={`Approve: ${p.tool}`} onClick={() => run('approve')} data-axf-person-only="">Approve</Button>
     </div>
   );
 }

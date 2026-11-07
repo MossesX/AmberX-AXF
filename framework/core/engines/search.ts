@@ -35,6 +35,11 @@ export interface SearchEntry {
   /** UAC permission; denied entries are dropped (hide) or kept marked (disable) per the policy */
   requires?: string;
   focus: SearchFocus;
+  /**
+   * false = listed for remote callers (the console catalog: control@1 console.dialogs) but never shown as a search
+   * result (a dialog marked searchable: false, full-api-control Nov 7 2026).
+   */
+  searchable?: boolean;
 }
 
 export interface SearchHit extends SearchEntry {
@@ -116,6 +121,7 @@ export class SearchIndex {
     const hits: SearchHit[] = [];
     for (const e of this.entries()) {
       if (opts.kinds?.length && !opts.kinds.includes(e.kind)) continue;
+      if (e.searchable === false) continue;
       const gate = this.rt.gate(e.requires);
       if (gate === 'hide') continue;
       const score = scoreEntry(e, q);

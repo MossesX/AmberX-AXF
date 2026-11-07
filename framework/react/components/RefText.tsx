@@ -44,7 +44,7 @@ export function refIndexOf(rt: AxfRuntime): { index: RefIndex; builds: RefTarget
   const c = cache.get(rt);
   if (c && c.rev === sourcesRev && Date.now() - c.at < INDEX_TTL_MS) return c;
   const targets: RefTarget[] = [];
-  for (const e of rt.search.entries()) { const t = refTargetFromSearch(e); if (t) targets.push(t); }
+  for (const e of rt.search.entries()) { if (e.searchable === false) continue; const t = refTargetFromSearch(e); if (t) targets.push(t); }
   for (const s of sources.values()) { try { targets.push(...s()); } catch { /* a broken source adds nothing */ } }
   const index = refIndex(targets);
   const next = { at: Date.now(), rev: sourcesRev, index, builds: [...index.byId.values()].filter((t) => t.kind === 'build') };

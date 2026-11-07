@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1384,
- "updatedAt": "2026-11-07T16:17:36.909Z",
+ "rev": 1387,
+ "updatedAt": "2026-11-07T16:34:32.807Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111917,7 +111917,7 @@
    "branch": "claude/full-api-control",
    "pr": "",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:17:36.794Z",
+   "updatedAt": "2026-11-07T16:34:32.659Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -111932,7 +111932,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "A real, polished API Browser plugin in the console listing EVERY API path (control@1 targets/actions, REST routes, MCP tools, CLI commands, plugin reads/commands) from one generated registry.\n- Multiple views: Grid (sort/filter/search), Tree (by app > plugin > screen > element), Cards, and a Coverage view (which UI elements have API paths, red for gaps).\n- Each entry: what it does, inputs/outputs schema, policy (instant/veto/approve), REST + MCP + CLI names, the UI element it maps to, links to docs/glossary.\n- \"Try it\" panel: fill inputs, run (respecting policy), see the result; reads run instantly.\n- Nice and pretty: from assets only, three looks to UI Review (--choices).",
+      "at": "",
+      "source": "console",
+      "by": "sully",
+      "verbatim": true
+     }
+    ]
    },
    "steps": [
     {
@@ -111994,12 +112002,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:34:31.887Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:09:37.165Z",
-     "updatedAt": "2026-11-07T16:09:37.165Z"
+     "updatedAt": "2026-11-07T16:34:31.983Z"
     },
     {
      "id": "s4",
@@ -112016,12 +112024,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T16:34:32.659Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T16:09:37.165Z",
-     "updatedAt": "2026-11-07T16:09:37.165Z"
+     "updatedAt": "2026-11-07T16:34:32.807Z"
     },
     {
      "id": "s5",
@@ -112066,6 +112074,72 @@
      "rev": 1,
      "createdAt": "2026-11-07T16:09:37.165Z",
      "updatedAt": "2026-11-07T16:09:37.165Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw6lxmde01t3b4",
+     "title": "",
+     "text": "API Browser: one generated API registry (control@1 targets, REST, MCP, CLI, plugin commands) + server route",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T16:18:02.340Z",
+     "updatedAt": "2026-11-07T16:18:02.498Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw6lxn4s014cr5",
+     "title": "",
+     "text": "API Browser plugin: Grid, Tree, Cards, Coverage views + Try it panel (policy-aware)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T16:18:03.373Z",
+     "updatedAt": "2026-11-07T16:18:03.484Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mw6lxnur01p48e",
+     "title": "",
+     "text": "API Browser: three looks as assets to UI Review (--choices), tests, docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-07T16:18:04.270Z",
+     "updatedAt": "2026-11-07T16:18:04.419Z"
     }
    ],
    "profiles": [
@@ -112076,7 +112150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -49,6 +49,19 @@ export const FRAMEWORK_MODULE = 'axf.framework';
 export class ActionBus {
   private handlers = new Map<string, { fn: ActionHandler; meta: ActionMeta }>();
   private owner: string | undefined;
+  private remote = 0;
+
+  /**
+   * Run `fn` as a remote caller's input (control@1 console.elements pressing a button, full-api-control Nov 7 2026):
+   * while it runs, a personOnly action refuses, so a remote press can never stand in for Brett's own tap.
+   */
+  asRemote<T>(fn: () => T): T {
+    this.remote++;
+    try { return fn(); } finally { this.remote--; }
+  }
+
+  /** Is a remote caller's input running right now? */
+  get remoteInput(): boolean { return this.remote > 0; }
 
   register(id: string, fn: ActionHandler, meta: ActionMeta): () => void {
     const m = meta.module || !this.owner ? meta : { ...meta, module: this.owner };
@@ -82,6 +95,10 @@ export class ActionBus {
     const h = this.handlers.get(id);
     if (!h) {
       ctx.runtime.toast(`No handler is registered for "${id}".`, 'warning', 'Unknown action');
+      return false;
+    }
+    if (h.meta.personOnly && this.remote > 0) {
+      ctx.runtime.toast(`"${h.meta.label}" needs your own tap.`, 'warning', 'Not from a remote caller');
       return false;
     }
     if (h.meta.requires && !ctx.runtime.can(h.meta.requires)) {

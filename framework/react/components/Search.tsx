@@ -88,9 +88,9 @@ export function useSearchHost(views: ViewMap, dialogs: DialogMap): void {
     const offViews = rt.search.add('axf.views', () => Object.entries(viewsRef.current).map(([id, v]) => ({
       id: `view:${id}`, kind: 'view', label: v.title, detail: 'Page', icon: v.icon ?? 'layout', keywords: [id, ...(v.keywords ?? [])], focus: { kind: 'view', view: id },
     })));
+    // every dialog is listed (the console catalog opens any of them by API); searchable: false only keeps it out of results
     const offDialogs = rt.search.add('axf.dialogs', () => Object.entries(dialogsRef.current)
-      .filter(([, d]) => d.searchable !== false)
-      .map(([id, d]) => ({ id: `dialog:${id}`, kind: 'dialog', label: d.title, detail: 'Dialog', icon: d.icon ?? 'box', keywords: [id], focus: { kind: 'dialog', id } })));
+      .map(([id, d]) => ({ id: `dialog:${id}`, kind: 'dialog', label: d.title, detail: 'Dialog', icon: d.icon ?? 'box', keywords: [id], focus: { kind: 'dialog', id }, ...(d.searchable === false ? { searchable: false } : {}) })));
     const offText = rt.search.add('axf.text', () => {
       const out: SearchEntry[] = [];
       for (const [view, hits] of pageText) {

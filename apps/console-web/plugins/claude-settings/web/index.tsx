@@ -101,7 +101,8 @@ function SettingRow({ s }: { s: Setting }) {
     );
   }
   return (
-    <div className="axp-cs-row" data-key={s.key}>
+    // owner-only: Brett's own click; a remote press (control@1 console.elements) is refused here (full-api-control)
+    <div className="axp-cs-row" data-key={s.key} {...(s.owner === true ? { 'data-axf-person-only': '' } : {})}>
       <div className="axp-cs-row__control">{control}</div>
       {(badge || busy) && <div className="axp-cs-row__badge">{busy ? <span className="axp-cs-row__when" role="status">Saving…</span> : badge}</div>}
       {error && <Note tone="danger">{error}</Note>}

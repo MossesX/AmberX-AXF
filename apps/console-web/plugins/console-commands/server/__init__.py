@@ -61,7 +61,9 @@ CLIENT_RE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
 STALE_S = 90.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
 ACK_WAIT_S = 10.0       # how long an answer waits for the consoles to say what they did (4 s was too short on a
                         # busy VPS: the ack itself queued behind other requests, Nov 3 2026)
-CATALOG_MAX_BYTES = 1_500_000
+CATALOG_MAX_BYTES = 3_000_000
+ACK_DATA_MAX_BYTES = 400_000  # what a console may answer with (console.values / console.elements)
+ANSWER_OPS = ("read", "set", "unset", "elements", "press")  # message ops whose answer is the console's own (full-api-control)
 OWNER = "owner"
 DELIVERY_WAIT_S = 60.0  # how long a call waits for a queued (or reconnecting) command to reach a console
 WAKE_AFTER_S = 3.0      # no console connected this long after queuing → ask AmberX to open one
@@ -468,8 +470,33 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
         r["sent"] = d.get("message")
         r["delivered"] = deliver([str(x) for x in d.get("to") or []], d.get("message") or {}, audience)
         r["delivery"] = {"how": "after reconnect" if r["delivered"] and all(x.get("afterReconnect") for x in r["delivered"] if x.get("ok")) and any(x.get("ok") for x in r["delivered"]) else "live"}
+        r = _console_answer(r, (d.get("message") or {}).get("op", ""))
+    else:
+        r.pop("confirmToken", None)
     _log(command, r, by, audience)
     return r
+
+
+def _console_answer(r: dict[str, Any], op: str) -> dict[str, Any]:
+    """console.values / console.elements: the answer is what the console said (its data), not only that it got the
+    message. A press the console found destructive answers confirmation_required with the runner's confirm token."""
+    token = r.pop("confirmToken", None)
+    ttl = r.pop("ttlMs", None)
+    if op not in ANSWER_OPS:
+        return r
+    acks = [x for x in r.get("delivered") or [] if isinstance(x, dict)]
+    good = next((x for x in acks if x.get("ok")), None)
+    if good is None:
+        first = acks[0] if acks else {}
+        extra = first.get("data") if isinstance(first.get("data"), dict) else {}
+        keep = {k: v for k, v in r.items() if k in ("$axf", "op", "target", "path", "action", "delivered", "delivery", "sent")}
+        if extra.get("needsConfirm") and token:
+            return {**keep, "ok": False, "code": "confirmation_required", "confirm": token, "ttlMs": ttl, "element": extra.get("element"),
+                    "message": f"{first.get('message') or 'that press deletes or resets something'}; tell Brett, then send the same command again with this confirm token (it needs control.console.delete)"}
+        code = str(extra.get("code") or ("unexpected" if first.get("pending") else "not_found"))
+        return {**keep, "ok": False, "code": code if code in STATUS else "unexpected", "message": first.get("message") or "the console didn't answer",
+                **({"candidates": extra["candidates"]} if isinstance(extra.get("candidates"), list) else {})}
+    return {**r, **(good.get("data") or {})}
 
 
 def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: str, wait: float) -> dict[str, Any]:
@@ -638,6 +665,9 @@ async def ack(request: Request) -> dict[str, Any]:
         a = _acks.get(mid)
         if a is not None and cid in a["want"]:
             a["results"][cid] = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
+            data = b.get("data")
+            if isinstance(data, dict) and len(json.dumps(data, default=str)) <= ACK_DATA_MAX_BYTES:  # a value, the elements on screen
+                a["results"][cid]["data"] = data
             if set(a["results"]) >= a["want"]:
                 a["event"].set()
     return {"ok": True}

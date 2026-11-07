@@ -784,7 +784,7 @@ export class AxfRuntime {
   /** Built-in live lists every app gets: views, toolbar, nav, settings, windows, dialogs, chrome (visibility toggles). */
   private registerBuiltinAppMenuProviders() {
     const fromSearch = (kinds: string[], icon: string, action: (f: Record<string, string>) => string | undefined) => (): MenuItem[] =>
-      this.search.entries().filter((e) => kinds.includes(e.kind)).map((e) => {
+      this.search.entries().filter((e) => kinds.includes(e.kind) && e.searchable !== false).map((e) => {
         const f = e.focus as Record<string, string>;
         const spec = action(f);
         return { id: e.id, label: e.label, icon: e.icon ?? icon, ...(spec ? { action: spec } : {}), ...(e.requires ? { requires: e.requires } : {}) };

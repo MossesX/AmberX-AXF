@@ -22,6 +22,7 @@
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
+ *           console.values | console.elements (every setting value and every element on screen, full-api-control) |
  *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
  *           plugins.commands | plugins.reads
  *   path    the token id / entity id (get, set, reset, remove, act; reset without a path = everything of the target)
@@ -116,6 +117,10 @@ export const CONTROL_TARGETS = {
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
   'tokens.nav': { domain: 'tokens', label: 'Navigation style tokens', asset: 'nav-style', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.' },
+  // full-api-control (Nov 7 2026, Brett: "the API must be able to do anything I can do by hand in the console"): every
+  // setting value and every element on screen, not only screens, dialogs, settings tabs and actions
+  'console.values': { domain: 'console', label: 'Console setting values', ops: ['list', 'get', 'set', 'reset'], paths: 'host', value: 'host', select: { ...CONSOLE_SELECT, tab: 'string' }, doc: `Every setting the open console has (its settings registry: the plugins' too), by key ("axf.display.fontScale") or words. list = the settings (key, label, kind, tab, options, range), get = its value now, set = change it exactly as its control would (checked against its kind, options and range; a setting that needs a role permission needs it here too), reset = back to its default. Secrets can be set, never read. A plugin whose settings live on its own server is reached through plugins.commands (<plugin>/settings-set). ${CONSOLE_DELIVERY}` },
+  'console.elements': { domain: 'console', label: 'Console elements on screen', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { press: {}, toggle: {}, set: {}, focus: {}, context: {} }, actEffect: { focus: 'navigate', context: 'navigate' }, doc: `Every button, switch, tab, menu item, context-menu entry, toolbar button, field and link the open console shows right now (dialogs, menus and pop-ups included), each with a stable id (<where>/<role>:<label>) and its state. act press clicks it, toggle flips a switch or checkbox (input.on = true / false to set it), set fills a field, slider or select (input.value), focus scrolls to it and highlights it, context opens its right-click menu (then list shows the menu's items). A press that deletes or resets needs control.console.delete and the confirm token the first try answers with; anything Brett must tap himself (approvals, owner-only settings) is refused. ${CONSOLE_DELIVERY}` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -134,7 +139,7 @@ export const CONTROL_ALIASES = {
   list: { target: 'amberx.lists' },
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
-  console: { target: 'console.*', note: 'axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]' },
+  console: { target: 'console.*', note: 'axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients|values|elements] [words] | value <key> [new value] | press <element> | toggle <element> [on|off] | fill <element> <value>' },
   pass: { target: 'pass.scopes', note: 'axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)' },
   plugins: { target: 'plugins.*', note: 'axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin\'s commands and reads)' },
 };
@@ -222,6 +227,7 @@ export function controlValueErrors(target, path, value) {
   const t = CONTROL_TARGETS[target];
   if (!t) return [`unknown target ${String(target)}`];
   if (t.paths === 'entity') return [];
+  if (target === 'console.values') return value === null || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || (Array.isArray(value) && value.length <= 200 && value.every((x) => typeof x === 'string')) ? [] : ['value must be a string, number, true / false, null or a list of strings'];
   if (t.paths === 'host') return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ? [] : ['value must be a string, number or true / false'];
   if (controlPathKnown(target, path) === false) return [`${target} has no token ${path} (control list ${target} names them)`];
   switch (target) {

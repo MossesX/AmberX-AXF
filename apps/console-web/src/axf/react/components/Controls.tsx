@@ -86,9 +86,11 @@ export interface SliderProps {
   max?: number;
   step?: number;
   unit?: string;
+  /** The control's name when `label` is empty (screen readers and the API: control@1 console.elements). */
+  ariaLabel?: string;
 }
 
-export function Slider({ label, value, onChange, min = 0, max = 100, step = 1, unit = '' }: SliderProps) {
+export function Slider({ label, value, onChange, min = 0, max = 100, step = 1, unit = '', ariaLabel }: SliderProps) {
   const s = useAsset('slider').data;
   const id = useId();
   const pct = ((value - min) / (max - min)) * 100;
@@ -106,6 +108,7 @@ export function Slider({ label, value, onChange, min = 0, max = 100, step = 1, u
       </div>
       <input
         id={id}
+        aria-label={ariaLabel || undefined}
         type="range"
         min={min}
         max={max}

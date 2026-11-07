@@ -47,7 +47,7 @@ export function runConsole(raw, { grants = ['*'], by = '', clients = [], now = D
   const c = normalizeControl(raw);
   if (!c.by && by) c.by = by;
   if (typeof c.target === 'string' && c.target in CONTROL_TARGETS && CONTROL_TARGETS[c.target].domain !== 'console') {
-    return controlFailure('invalid', `${c.target} isn't a console target (console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients)`, { op: c.op, target: c.target });
+    return controlFailure('invalid', `${c.target} isn't a console target (console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, console.values, console.elements)`, { op: c.op, target: c.target });
   }
   const salt = confirmSalt();
   const gate = controlGate(c, grants, { salt, now });
@@ -66,14 +66,16 @@ function flags(argv) {
     const a = argv[i];
     if (!a.startsWith('--') || a === '--') { out._.push(a); continue; }
     const [k, inline] = a.slice(2).split(/=(.*)/s);
-    const takes = !['json', 'help'].includes(k);
+    const takes = !['json', 'help', 'reset', 'hard', 'all'].includes(k);
     out[k] = inline !== undefined ? inline : takes && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[++i] : true;
   }
   return out;
 }
 
-const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients', values: 'console.values', elements: 'console.elements', buttons: 'console.elements' };
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients|values|elements] [words] | clients | value <key> [new value|--reset] | press <element> [--confirm t] | toggle <element> [on|off] | fill <element> <value> | focus <element> | menu <element>   [--to recent|all|<client>]';
+/** A CLI word as a setting value: JSON when it parses (true, 12, ["a"]), else the text. */
+const valueOf = (w) => { try { return JSON.parse(w); } catch { return w; } };
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -98,6 +100,24 @@ export function commandFromArgv(argv) {
     case 'refresh': cmd = { ...act('console.nav', 'refresh', 'here'), input: { ...input, ...(f.hard ? { hard: true } : {}), ...(f.all ? { to: 'all' } : {}) } }; break;
     case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
     case 'clients': case 'consoles': cmd = { op: 'list', target: 'console.clients' }; break;
+    // full-api-control (Nov 7 2026): setting values and elements on screen
+    case 'value': case 'val': {
+      const [key, ...v] = rest;
+      if (!key) return { error: USAGE };
+      cmd = f.reset ? { op: 'reset', target: 'console.values', path: key } : v.length ? { op: 'set', target: 'console.values', path: key, value: valueOf(v.join(' ')) } : { op: 'get', target: 'console.values', path: key };
+      if (Object.keys(input).length) cmd.input = input;
+      break;
+    }
+    case 'press': case 'click': case 'tap': case 'focus': case 'menu': case 'toggle': case 'fill': {
+      const verbOf = { press: 'press', click: 'press', tap: 'press', focus: 'focus', menu: 'context', toggle: 'toggle', fill: 'set' }[verb];
+      let path = words, extra = {};
+      if (verb === 'toggle' && ['on', 'off'].includes(rest[rest.length - 1])) { path = rest.slice(0, -1).join(' ').trim(); extra = { on: rest[rest.length - 1] === 'on' }; }
+      if (verb === 'fill') { if (rest.length < 2) return { error: USAGE }; path = rest[0]; extra = { value: valueOf(rest.slice(1).join(' ')) }; }
+      cmd = act('console.elements', verbOf, path);
+      if (cmd && Object.keys(extra).length) cmd.input = { ...(cmd.input ?? {}), ...extra };
+      if (cmd && typeof f.confirm === 'string') cmd.confirm = f.confirm;
+      break;
+    }
     case 'list': case 'ls': {
       const kind = LIST_KINDS[rest[0]];
       const q = (kind ? rest.slice(1) : rest).join(' ').trim();
@@ -120,8 +140,11 @@ export function formatAnswer(r) {
     const rows = r.items ?? [];
     if (!rows.length) return r.target === 'console.clients' ? 'no console is open right now' : 'nothing matches';
     if (r.target === 'console.clients') return rows.map((c) => `${c.id.padEnd(26)} ${(c.device || '').padEnd(8)} ${(c.here?.screen ?? '').padEnd(22)} ${c.lastUsed}  ${c.user}`).join('\n');
-    return `${rows.map((i) => `${i.id.padEnd(32)} ${i.label}${i.params ? '  (needs args)' : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
+    if (r.target === 'console.elements') return `${rows.map((e) => `${e.id}${e.state ? `  ${JSON.stringify(e.state)}` : ''}${e.personOnly ? '  (Brett only)' : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
+    return `${rows.map((i) => `${i.id.padEnd(32)} ${i.label}${i.params ? '  (needs args)' : ''}${i.valueKind ? `  [${i.valueKind}${i.options ? `: ${i.options.join('|')}` : ''}]` : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
   }
+  if (r.target === 'console.values' && r.op !== 'list') return `${r.item?.label ?? r.path}${r.item?.id && r.item.id !== r.item.label ? ` (${r.item.id})` : ''} = ${JSON.stringify(r.value ?? null)}${r.was !== undefined ? ` (was ${JSON.stringify(r.was)})` : ''}`;
+  if (r.target === 'console.elements' && r.op !== 'list') { const e = r.element ?? r.item ?? {}; return `${r.op === 'act' ? `✓ ${r.action} ` : ''}${e.id ?? r.path}${e.state ? `  ${JSON.stringify(e.state)}` : ''}`; }
   if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
   const sent = r.delivered ?? [];
   const what = r.item ? `${r.item.label} (${r.item.id})` : r.action;
@@ -150,6 +173,8 @@ export async function main(argv) {
   const [cmd] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') {
     console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients',
+      '  axf console value axf.display.fontScale 1.1 · axf console list values terminal · axf console list elements toolbar',
+      '  axf console press "Save" · axf console toggle "Compact mode" on · axf console fill "Search" plan · axf console menu "Plan Studio"',
       '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }

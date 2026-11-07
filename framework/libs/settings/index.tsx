@@ -151,14 +151,14 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
         </div>
       );
     case 'number':
-      control = <input className="axf-settings__field" type="number" value={typeof value === 'number' ? value : ''} min={spec.min} max={spec.max} step={spec.step} disabled={locked} onChange={(e) => set(e.target.value === '' ? null : Number(e.target.value))} />;
+      control = <input className="axf-settings__field" type="number" aria-label={spec.label} value={typeof value === 'number' ? value : ''} min={spec.min} max={spec.max} step={spec.step} disabled={locked} onChange={(e) => set(e.target.value === '' ? null : Number(e.target.value))} />;
       break;
     case 'text':
     case 'secret':
-      control = <input className="axf-settings__field" type={spec.kind === 'secret' ? 'password' : 'text'} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      control = <input className="axf-settings__field" type={spec.kind === 'secret' ? 'password' : 'text'} aria-label={spec.label} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'color':
-      control = <input type="color" value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      control = <input type="color" aria-label={spec.label} value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'choice':
       // Up to three options read better as a three-way switch (radio group) than a drop-down.

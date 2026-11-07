@@ -22,7 +22,8 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { consoleCatalogFrom, consoleMessageErrors, consoleValueItems, normalizeConsoleCatalog, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { listElements, pressElement, valueOp, type Answer } from './elements';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -91,7 +92,10 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
 function catalogOf(rt: AxfRuntime) {
   const tabs = rt.settings.listTabs().map((t) => ({ kind: 'settings-tab', label: t.label, icon: t.icon, keywords: [t.description ?? '', t.parent ? `${t.parent} sub-tab` : ''], parent: t.parent, focus: { kind: 'setting', tab: t.id } }));
   const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs];
-  return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+  const cat = consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+  // every setting with a value (console.values, full-api-control): what each settings tab's groups declare
+  const groups = rt.settings.listTabs().flatMap((t) => rt.settings.groupsIn(t.id).map((g) => ({ tab: t.id, label: g.label, settings: g.settings as unknown as Record<string, unknown>[] })));
+  return normalizeConsoleCatalog({ ...cat, items: [...cat.items, ...consoleValueItems(groups)] });
 }
 
 /**
@@ -111,7 +115,7 @@ async function reloadPage(hard: boolean): Promise<void> {
 }
 
 /** Run one message; → [ok, what happened]. */
-function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
+function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): Answer {
   const errors = consoleMessageErrors(m);
   if (errors.length) return [false, errors.join('; ')];
   switch (m.op) {
@@ -147,6 +151,10 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       rt.navigate(prev);
       return [true, `back to ${prev}`];
     }
+    // full-api-control: setting values and elements on screen (elements.ts)
+    case 'read': case 'set': case 'unset': return valueOp(rt, m);
+    case 'elements': return listElements(rt, m);
+    case 'press': return pressElement(rt, m);
     default: return [false, 'unknown op'];
   }
 }
@@ -204,11 +212,12 @@ function ConsoleCommandsClient() {
         if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
         // inside a host, bring this console's frame to the front first, so Brett sees the command happen
         if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
-        let res: [boolean, string];
+        let res: Answer;
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
-        markDone(m.id, res);
-        if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
-        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        markDone(m.id, [res[0], res[1]]); // the answer data (elements, a value) is not kept: a repeat answers ok + message
+        const quiet = m.op === 'read' || m.op === 'elements'; // reads don't toast
+        if (res[0] && !quiet && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
+        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], ...(res[2] ? { data: res[2] } : {}), here: hereOf(rt), ...where() }).catch(() => undefined);
         if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
       },
     );

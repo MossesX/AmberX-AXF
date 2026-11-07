@@ -67,7 +67,7 @@ export function LookDialog() {
         <span className="axp-claude-handoff-look__picklabel">{LABEL[t]}</span>
         {items.length <= 6
           ? <Segmented size="sm" label={LABEL[t]} value={cur} options={items} onChange={(v) => pickAsset(t, v)} />
-          : <SelectField label="" value={cur} options={items} onChange={(v) => pickAsset(t, v)} />}
+          : <SelectField label="" ariaLabel={LABEL[t]} value={cur} options={items} onChange={(v) => pickAsset(t, v)} />}
       </div>
     );
   };
@@ -164,9 +164,9 @@ function LeafEditor({ n, value, onEdit }: { n: TreeNode; value: unknown; onEdit:
       ? <input className="axp-claude-handoff-look__color" type="color" aria-label={n.label} value={hex} onChange={(e) => onEdit(e.target.value)} />
       : <span className="axp-claude-handoff-look__value" title={String(value)}>{String(value)}</span>;
   }
-  if (f.kind === 'enum') return <SelectField label="" value={String(value)} options={f.values.map((x) => ({ value: String(x), label: String(x) }))} onChange={(v) => onEdit(typeof f.values[0] === 'number' ? Number(v) : v)} />;
+  if (f.kind === 'enum') return <SelectField label="" ariaLabel={n.label} value={String(value)} options={f.values.map((x) => ({ value: String(x), label: String(x) }))} onChange={(v) => onEdit(typeof f.values[0] === 'number' ? Number(v) : v)} />;
   if (f.kind === 'bool') return <Segmented size="sm" label={n.label} value={value ? 'on' : 'off'} options={[{ value: 'on', label: 'On' }, { value: 'off', label: 'Off' }]} onChange={(v) => onEdit(v === 'on')} />;
-  if (f.kind === 'number') return <TextField label="" type="number" value={String(value ?? '')} onChange={(v) => { const x = Number(v); if (Number.isFinite(x)) onEdit(Math.min(f.max, Math.max(f.min, x))); }} />;
+  if (f.kind === 'number') return <TextField label="" ariaLabel={n.label} type="number" value={String(value ?? '')} onChange={(v) => { const x = Number(v); if (Number.isFinite(x)) onEdit(Math.min(f.max, Math.max(f.min, x))); }} />;
   return <span className="axp-claude-handoff-look__value" title={String(value)}>{String(value ?? '')}</span>;
 }
 

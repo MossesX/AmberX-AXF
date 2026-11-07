@@ -237,7 +237,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
       {f.kind === 'bool' && <label className={`${P}__opt`}><input type="checkbox" checked={!!v} onChange={(e) => commit(e.target.checked)} /> {v ? 'on' : 'off'}</label>}
       {f.kind === 'number' && (
         <>
-          <input className="fx-input" type="number" value={Number(v)} step={Number.isInteger(v) ? 1 : 0.01} onChange={(e) => commit(Number(e.target.value))} />
+          <input className="fx-input" type="number" aria-label={node.label} value={Number(v)} step={Number.isInteger(v) ? 1 : 0.01} onChange={(e) => commit(Number(e.target.value))} />
           {f.range && f.range[0] !== f.range[1] && <input type="range" min={f.range[0]} max={f.range[1]} step={Number.isInteger(f.range[0]) && Number.isInteger(f.range[1]) ? 1 : 0.01} value={Number(v)} onChange={(e) => commit(Number(e.target.value))} aria-label={`${node.label} slider`} />}
           {f.range && <span className="fx-small fx-muted">Rolls stay between {f.range[0]} and {f.range[1]} (what the known themes use).</span>}
         </>
@@ -245,12 +245,12 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
       {f.kind === 'color' && (
         <div className={`${P}__bar`}>
           {hex && <input type="color" value={hex} onChange={(e) => commit(e.target.value)} aria-label={`${node.label} colour`} />}
-          <input className="fx-input fx-mono fx-grow" value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
+          <input className="fx-input fx-mono fx-grow" aria-label={node.label} value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
         </div>
       )}
       {f.kind === 'string' && (
         <>
-          <input className="fx-input" value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
+          <input className="fx-input" aria-label={node.label} value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
           {!!f.values?.length && <select className="fx-input" value="" onChange={(e) => e.target.value && commit(JSON.parse(e.target.value) as Json)} aria-label="Values other themes use"><option value="">Values other themes use…</option>{f.values.map((x) => <option key={JSON.stringify(x)} value={JSON.stringify(x)}>{String(x).slice(0, 60)}</option>)}</select>}
         </>
       )}

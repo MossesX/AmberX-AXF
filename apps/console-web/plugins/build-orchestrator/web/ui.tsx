@@ -190,7 +190,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
       </div>
       {!embedded && n.needsApproval && n.phase && (
         <div className="pl-note is-warn oc-gate"><Icon name="alert" size={14} />Next phase upgrades {n.phase.from} → {n.phase.model}. Only you can approve it; no session starts it before you do.
-          <Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: n.phase!.index })}>Approve upgrade to {n.phase.model}</Button>
+          <Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: n.phase!.index })} data-axf-person-only="">Approve upgrade to {n.phase.model}</Button>
         </div>
       )}
       {!n.needsApproval && n.step && !core.isFinished(b.status) && <p className="fx-small fx-muted">Next: <b>{n.step.id}</b> on <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model}</span> — {n.step.text}</p>}
@@ -310,7 +310,7 @@ function ApprovalsTab({ state, busy, act }: { state: State; busy: boolean; act: 
             <div className="pd-meta"><span className={`oc-model is-${p.from.toLowerCase()}`}>{p.from}</span><Icon name="chevron-right" size={13} /><span className={`oc-model is-${p.model.toLowerCase()}`}>{p.model}</span><span>{p.steps.length} steps · {core.formatMinutes(p.minutesLeft) || 'done'}</span></div>
             {by && <p className="fx-small fx-muted">{by}</p>}
             {req && <p className="fx-small">Asked by {req.by || 'a session'} · {req.at.slice(0, 16).replace('T', ' ')}</p>}
-            {!p.approved && <div><Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: p.index })}>Approve upgrade to {p.model}</Button></div>}
+            {!p.approved && <div><Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: p.index })} data-axf-person-only="">Approve upgrade to {p.model}</Button></div>}
           </article>
         );
       })}
@@ -481,7 +481,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
     const cost = rows.filter((s) => !s.done).reduce((t, s) => t + usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0), 0);
     return { id: `ph:${ph.index}`, title: `${ph.name} · ${ph.model}`, icon: ph.gate ? 'zap' : 'layers', rows, groups: [], fixed: true,
       progress: rows.length ? (done / rows.length) * 100 : undefined,
-      summary: <>{done}/{rows.length} · {core.formatMinutes(ph.minutesLeft) || 'done'}{ph.minutesLeft ? ` · ${money(cost)}` : ''}{ph.gate && ` · ${switchNote(ph)}`}{locked && <> · <Button size="sm" tone="primary" icon="check" disabled={busy} onClick={(e) => { e.stopPropagation(); void act({ action: 'approve', id: b.id, phase: ph.index }); }}>Approve upgrade from {ph.from}</Button></>}</> };
+      summary: <>{done}/{rows.length} · {core.formatMinutes(ph.minutesLeft) || 'done'}{ph.minutesLeft ? ` · ${money(cost)}` : ''}{ph.gate && ` · ${switchNote(ph)}`}{locked && <> · <Button size="sm" tone="primary" icon="check" disabled={busy} onClick={(e) => { e.stopPropagation(); void act({ action: 'approve', id: b.id, phase: ph.index }); }} data-axf-person-only="">Approve upgrade from {ph.from}</Button></>}</> };
   });
   const cols: GridColumn<GStep>[] = [
     { id: 'done', label: 'Done', width: 'calc(var(--fx-font-size) * 3)', sortable: true, sortValue: (s) => (s.done ? 1 : 0),

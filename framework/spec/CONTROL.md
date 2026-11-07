@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.values` · `console.elements` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -79,6 +79,26 @@ console that says hello (checked first against that user's last catalog, so a wr
 waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked through axHub (`amberx.open_url`, amberxai.com only)
 to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
 (`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
+
+**Everything by hand, by API** (`console.values`, `console.elements`, build full-api-control, Nov 7 2026, Brett: "the API must be
+able to do anything I can do by hand in the console and every plugin"). `console.values` is every setting the open console's
+settings registry declares (its plugins' too; the catalog carries key, label, control kind, tab, choices and range): `list`
+(`select.q`, `select.tab`), `get` (its value now; a secret is never read back), `set` (checked against its kind, choices and range
+before it is sent, then written by the console exactly as its control would, the setting's own `requires` checked there) and
+`reset` (its default). A key no group declares (toolbar and chrome keys) takes any plain value. `console.elements` is what the
+open console shows right now — every button, switch, tab, menu and context-menu item, toolbar button, field and link, dialogs and
+pop-ups included — with a stable id `<where>/<role>:<label>` (`data-axf-id` when the element sets one) and its state:
+`list` (`select.q` = words), `get`, and `act press | toggle (input.on) | set (input.value) | focus | context` (opens its right-click
+menu, whose items `list` then shows). A press of an element that deletes or resets (its label, or a danger style) answers
+`confirmation_required` with a confirm token and needs `control.console.delete` on the second try. Brett's own taps stay his:
+anything inside `[data-axf-person-only]` (approval Approve / Deny / Shelve, Approve upgrade, owner-only Claude settings, guarded
+notifications) is listed with `personOnly: true` and refused, and every press runs inside `rt.actions.asRemote`, where a
+`personOnly` action refuses. A window that is a screen (the Terminal) is named by the action that opens it (`ActionMeta.screen`), so
+`console.screens open terminal` works. The console answers these ops itself: the ack carries `data` (the value, the elements), and
+the answer is that data. Shortcut MCP tools `console_value`, `console_elements`, `console_press`; CLI `axf console value <key> [v]`,
+`axf console list elements [words]`, `axf console press <element>`. The Terminal is typed into through its plugin commands
+(`console-terminal/open-tab | type | keys | screen | close-tab | tabs`). The coverage registry (`apps/console-web/api-coverage.json`,
+`node framework/cli/api-coverage.mjs`) lists every UI element of the console with its API path; CI fails on a gap.
 
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session
 calls MCP `console_show` {target, highlight?, say?} every time it mentions something in the console; the Follow Amber plugin

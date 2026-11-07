@@ -93,7 +93,7 @@ function TypeRowView({ t, s, act }: { t: TypeRow; s: State; act: (path: string, 
     );
   };
   return (
-    <div className={`${P}__row`} data-type={t.id}>
+    <div className={`${P}__row`} data-type={t.id} {...(t.guarded ? { 'data-axf-person-only': '' } : {})}>
       <div className={`${P}__top`}>
         <div className={`${P}__name`}>
           {t.fixed ? <b>{t.label}</b> : <Switch label={t.label} checked={t.settings.enabled} onChange={(v) => void act('set', { type: t.id, enabled: v })} hint={t.description} />}

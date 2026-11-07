@@ -10,6 +10,7 @@ import { controlGate } from '../core/engines/control-rules.mjs';
 import {
   CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
   consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
+  consoleValueItems, consoleValueErrors, consoleElementId, consoleElementResolve, consoleElementDestructive, CONSOLE_OPS,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -155,11 +156,64 @@ ok(!wcat.items.some((i) => i.id === 'secret'), 'a person-only action names no sc
 eq(consoleResolve(wcat.items, 'screen', 'terminal').item?.id, 'terminal', '"terminal" resolves as a screen');
 eq(consoleResolve(wcat.items, 'screen', 'open the terminal').item?.id, 'terminal', 'and by words');
 
+/* ---- setting values (console.values, full-api-control) ---- */
+const vitems = consoleValueItems([{ tab: 'display', label: 'Display', settings: [
+  { key: 'axf.display.compact', label: 'Compact mode', kind: 'toggle' },
+  { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', min: 0.8, max: 1.6, step: 0.05 },
+  { key: 'axf.display.density', label: 'Density', kind: 'choice', options: [{ value: 'compact', label: 'Compact' }, { value: 'roomy', label: 'Roomy' }] },
+  { key: 'axf.ai.key', label: 'API key', kind: 'secret' },
+  { key: 'axf.display.head', label: 'Heading', kind: 'section' },
+] }]);
+eq(vitems.map((i) => i.id), ['axf.display.compact', 'axf.display.fontScale', 'axf.display.density', 'axf.ai.key'], 'every setting with a value is an item (sections are not)');
+eq(consoleValueErrors(vitems[0], 'yes').length, 1, 'a switch takes true / false');
+eq(consoleValueErrors(vitems[1], 2).length, 1, 'a slider keeps its range');
+eq(consoleValueErrors(vitems[1], 1.1), [], 'in range passes');
+eq(consoleValueErrors(vitems[2], 'tiny').length, 1, 'a choice keeps its options');
+eq(consoleValueErrors(null, { a: 1 }).length, 1, 'an undeclared key takes only plain values');
+const vcat = normalizeConsoleCatalog({ items: [...cat.items, ...vitems] });
+ok(vcat.items.find((i) => i.id === 'axf.display.fontScale')?.max === 1.6 && vcat.items.find((i) => i.id === 'axf.ai.key')?.secret === true, 'the catalog keeps kind, range and secret');
+const vctx = { ...ctx, clients: clients.map((c) => ({ ...c, catalog: vcat })) };
+const vr = (cmd: Record<string, unknown>) => runConsoleCommand(cmd, vctx) as { ok: boolean; data?: Record<string, unknown>; deliver?: { message: Record<string, unknown> }; message?: string };
+eq((vr({ op: 'list', target: 'console.values', select: { tab: 'display' } }).data as { total: number }).total, 4, 'list by tab');
+const vg = vr({ op: 'get', target: 'console.values', path: 'text size' });
+ok(vg.ok && vg.deliver!.message.op === 'read' && vg.deliver!.message.target === 'axf.display.fontScale', 'get by label words reads the key in the console');
+ok(!vr({ op: 'get', target: 'console.values', path: 'axf.ai.key' }).ok, 'a secret is never read back');
+const vs = vr({ op: 'set', target: 'console.values', path: 'axf.display.compact', value: true });
+ok(vs.ok && vs.deliver!.message.op === 'set' && vs.deliver!.message.arg === 'true', 'set sends the JSON value');
+ok(!vr({ op: 'set', target: 'console.values', path: 'axf.display.compact', value: 'nope' }).ok, 'a wrong value is refused before it is sent');
+ok(vr({ op: 'set', target: 'console.values', path: 'axf.toolbar.main.tapConfirm', value: 'off' }).ok, 'an undeclared key (toolbar settings) can be set');
+eq(vr({ op: 'reset', target: 'console.values', path: 'axf.display.density' }).deliver!.message.op, 'unset', 'reset unsets it');
+ok(gated({ op: 'set', target: 'console.values', path: 'axf.display.compact', value: true }, ['control.console.read']).ok === false, 'set needs write');
+ok(gated({ op: 'set', target: 'console.values', path: 'axf.x', value: ['a', 'b'] }).ok, 'a list of strings is a value (multi choice)');
+
+/* ---- elements on screen (console.elements) ---- */
+eq(consoleElementId({ where: 'Plan / Studio', role: 'button', label: 'Save  draft' }), 'Plan ∕ Studio/button:Save draft', 'id = where/role:label, slashes in names folded');
+eq(consoleElementId({ where: 'toolbar', role: 'button', label: 'Save', n: 2 }), 'toolbar/button:Save#2', 'the second of the same label gets #2');
+eq(consoleElementId({ own: 'my-id', where: 'x', role: 'button', label: 'y' }), 'my-id', 'data-axf-id wins');
+const els = [{ id: 'toolbar/button:Save', label: 'Save', role: 'button', where: 'toolbar' }, { id: 'toolbar/button:Save as', label: 'Save as', role: 'button', where: 'toolbar' }, { id: 'list/button:Delete plan', label: 'Delete plan', role: 'button', where: 'list' }];
+eq(consoleElementResolve(els, 'toolbar/button:Save').item?.id, 'toolbar/button:Save', 'by id');
+eq(consoleElementResolve(els, 'save').item?.id, 'toolbar/button:Save', 'by words: the exact label wins');
+ok(consoleElementDestructive(els[2]) && !consoleElementDestructive(els[0]) && consoleElementDestructive({ label: 'Go', danger: true }), 'deleting labels and danger styles are destructive');
+const er = (cmd: Record<string, unknown>, grants = ['*']) => runConsoleCommand(cmd, { ...ctx, grants }) as { ok: boolean; data?: Record<string, unknown>; deliver?: { message: Record<string, unknown> }; code?: string };
+const el1 = er({ op: 'list', target: 'console.elements', select: { q: 'toolbar' } });
+ok(el1.ok && el1.deliver!.message.op === 'elements' && el1.deliver!.message.arg === 'toolbar', 'list goes to the console with the words');
+const ep = er({ op: 'act', target: 'console.elements', path: 'Delete plan', action: 'press' });
+ok(ep.ok && ep.deliver!.message.op === 'press' && ep.deliver!.message.verb === 'press' && !ep.deliver!.message.confirmed && typeof ep.data!.confirmToken === 'string', 'a press goes with a confirm token held back for the server');
+const tok = ep.data!.confirmToken as string;
+const ep2 = er({ op: 'act', target: 'console.elements', path: 'Delete plan', action: 'press', confirm: tok });
+ok(ep2.ok && ep2.deliver!.message.confirmed === true, 'the confirm token marks the press confirmed');
+eq(er({ op: 'act', target: 'console.elements', path: 'Delete plan', action: 'press', confirm: tok }, ['control.console.write']).code, 'denied', 'a confirmed press needs control.console.delete');
+eq(er({ op: 'act', target: 'console.elements', path: 'Delete plan', action: 'press', confirm: 'bogus' }).code, 'validation', 'a wrong token is refused');
+eq(er({ op: 'act', target: 'console.elements', path: 'Name', action: 'set' }).code, 'validation', 'set needs input.value');
+eq(JSON.parse(String(er({ op: 'act', target: 'console.elements', path: 'Compact', action: 'toggle', input: { on: false } }).deliver!.message.arg)), { on: false }, 'toggle carries on');
+ok(['read', 'set', 'unset', 'elements', 'press'].every((o) => CONSOLE_OPS.includes(o)), 'the new message ops are known');
+eq(consoleMessageErrors({ $axf: 'console-command@1', op: 'press', target: 'x', verb: 'smash' }).length, 1, 'an unknown verb is refused by the console too');
+
 /* ---- messages ---- */
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action', target: 'x' }).length === 1, 'open of an action refused');
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
-eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
+eq(CONSOLE_TOOLS.length, 12, 'twelve MCP shortcut tools (value, elements, press since full-api-control)');
 
 console.log(`✓ console commands — ${n} checks`);

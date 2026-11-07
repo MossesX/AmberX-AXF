@@ -74,7 +74,7 @@ export function VetoButtons({ c, deps, row, onDone }: { c: VetoCall; deps: VetoD
     <div className="fx-row fx-row--wrap axp-approvals-banner__acts">
       {ORDER.filter((a) => c.actions.includes(a)).map((a) => (row && a === 'shelve'
         ? <button key={a} type="button" className="fx-iconbtn axp-approvals-banner__shelve" aria-label={`Shelve: ${c.title}`} title="Shelve: pause the countdown until you decide" disabled={busy !== null} onClick={() => run(a)}><Icon name={ACTION_ICON[a]} size={18} /></button>
-        : <Button key={a} tone={ACTION_TONE[a]} icon={ACTION_ICON[a]} busy={busy === a} disabled={busy !== null} aria-label={`${VETO_ACTION_LABELS[a]}: ${c.title}`} onClick={() => run(a)}>
+        : <Button key={a} tone={ACTION_TONE[a]} icon={ACTION_ICON[a]} busy={busy === a} disabled={busy !== null} aria-label={`${VETO_ACTION_LABELS[a]}: ${c.title}`} onClick={() => run(a)} data-axf-person-only="">
           {VETO_ACTION_LABELS[a]}
         </Button>
       ))}

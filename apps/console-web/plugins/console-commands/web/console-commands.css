@@ -3,3 +3,5 @@
 .axf-cc__row { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-2xl); padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .axf-cc__id { font-family: var(--fx-font-mono); font-weight: 600; }
 .axf-cc__muted { color: var(--fx-muted); }
+/* console.elements focus / press (full-api-control): the element a remote caller acts on lights up for a moment. */
+.axf-cc-flash { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); transition: outline-color var(--fx-motion); }

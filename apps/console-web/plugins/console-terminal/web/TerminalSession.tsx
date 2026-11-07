@@ -330,9 +330,9 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       {search !== null && (
         <form className={`${P}__search`} onSubmit={(e) => { e.preventDefault(); searchRef.current?.findNext(search); }}>
           <input className="fx-input" autoFocus placeholder="Find in terminal" value={search} onChange={(e) => { setSearch(e.target.value); searchRef.current?.findNext(e.target.value); }} />
-          <button type="button" className="fx-iconbtn" onClick={() => searchRef.current?.findPrevious(search)}><Icon name="chevron-up" size={14} /></button>
-          <button type="button" className="fx-iconbtn" onClick={() => searchRef.current?.findNext(search)}><Icon name="chevron-down" size={14} /></button>
-          <button type="button" className="fx-iconbtn" onClick={() => setSearch(null)}><Icon name="x" size={14} /></button>
+          <button type="button" className="fx-iconbtn" aria-label="Find previous" onClick={() => searchRef.current?.findPrevious(search)}><Icon name="chevron-up" size={14} /></button>
+          <button type="button" className="fx-iconbtn" aria-label="Find next" onClick={() => searchRef.current?.findNext(search)}><Icon name="chevron-down" size={14} /></button>
+          <button type="button" className="fx-iconbtn" aria-label="Close find" onClick={() => setSearch(null)}><Icon name="x" size={14} /></button>
         </form>
       )}
       {open.readOnly && (

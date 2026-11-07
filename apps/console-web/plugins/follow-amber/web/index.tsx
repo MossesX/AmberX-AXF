@@ -305,8 +305,8 @@ function ApprovalDialog({ id }: { id: string }) {
       </Container>
       {result?.frame ? <HubFrame url={item.url} /> : (
         <div className="fx-row axp-follow-amber__acts">
-          <Button tone="danger" icon="x" busy={busy === 'deny'} disabled={busy !== '' || !offers(item, false)} aria-label={`Deny: ${item.title}`} onClick={() => void tap(false)} data-axf-one-tap="">Deny</Button>
-          <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== '' || !offers(item, true)} aria-label={`Approve: ${item.title}`} onClick={() => void tap(true)} data-axf-one-tap="">Approve</Button>
+          <Button tone="danger" icon="x" busy={busy === 'deny'} disabled={busy !== '' || !offers(item, false)} aria-label={`Deny: ${item.title}`} onClick={() => void tap(false)} data-axf-one-tap="" data-axf-person-only="">Deny</Button>
+          <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== '' || !offers(item, true)} aria-label={`Approve: ${item.title}`} onClick={() => void tap(true)} data-axf-one-tap="" data-axf-person-only="">Approve</Button>
         </div>
       )}
       {(route === 'frame' || route === 'open') && !result?.frame && <p className="fx-small fx-muted">This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.</p>}
@@ -346,8 +346,8 @@ function ApprovalFallback({ id, error }: { id: string; error: string }) {
       {item && <strong>{item.title}</strong>}
       {call && <code className="axp-follow-amber__call">{call}</code>}
       <div className="fx-row axp-follow-amber__acts">
-        <Button tone="danger" icon="x" busy={busy} disabled={busy || !item} onClick={() => void tap(false)} data-axf-one-tap="">Deny</Button>
-        <Button tone="success" icon="check" busy={busy} disabled={busy || !item} onClick={() => void tap(true)} data-axf-one-tap="">Approve</Button>
+        <Button tone="danger" icon="x" busy={busy} disabled={busy || !item} onClick={() => void tap(false)} data-axf-one-tap="" data-axf-person-only="">Deny</Button>
+        <Button tone="success" icon="check" busy={busy} disabled={busy || !item} onClick={() => void tap(true)} data-axf-one-tap="" data-axf-person-only="">Approve</Button>
       </div>
       {msg && <p className="fx-small fx-muted">{msg}</p>}
       <div className="fx-row fx-row--wrap axp-follow-amber__foot">

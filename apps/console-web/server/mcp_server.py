@@ -923,7 +923,8 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
-CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh",
+                 "console_value", "console_elements", "console_press")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -1000,10 +1001,43 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "get", "target": "console.nav", "path": "here"})
 
     @mcp.tool(annotations=READ)
-    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
-        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs or actions,
-        best matches for `q` first (all of them when q is empty)."""
+    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions", "values"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
+        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs, actions or
+        setting values (every setting key with its kind, choices and range), best matches for `q` first (all of them
+        when q is empty). What is on screen right now: console_elements."""
         return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_value(key: str, value: Any = None, reset: bool = False, to: Delivery = "recent") -> dict[str, Any]:
+        """Read or change any setting in Brett's open console, exactly as its switch, slider or field would: `key` = the
+        setting key ("axf.display.fontScale") or its label words; no `value` = read it; `value` = set it (checked against
+        its kind, choices and range); reset=true = back to its default. Secrets can be set, never read. Settings a plugin
+        keeps on its own server: that plugin's settings-set command (plugin_commands lists them)."""
+        if reset:
+            return await go({"op": "reset", "target": "console.values", "path": key, "input": inp(to)})
+        if value is None:
+            return await go({"op": "get", "target": "console.values", "path": key, "input": inp(to)})
+        return await go({"op": "set", "target": "console.values", "path": key, "value": value, "input": inp(to)})
+
+    @mcp.tool(annotations=READ)
+    async def console_elements(q: str = "", element: str = "", limit: int = 200) -> dict[str, Any]:
+        """What Brett's open console shows right now: every button, switch, tab, menu and context-menu item, toolbar
+        button, field and link (dialogs and pop-ups included), each with its id (<where>/<role>:<label>), role, label and
+        state. `q` = words to filter by; `element` = one id or label. Press one with console_press."""
+        if element:
+            return await go({"op": "get", "target": "console.elements", "path": element})
+        return await go({"op": "list", "target": "console.elements", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 400))}.items() if v}})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_press(element: str, action: Literal["press", "toggle", "set", "focus", "context"] = "press", on: bool | None = None, value: Any = None,
+                            confirm: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Do what Brett would do with his finger on something on screen: press a button, tab or menu item; toggle a
+        switch (on=true/false sets it); set a field, slider or select (value); focus (scroll to it and light it up);
+        context (open its right-click menu, then console_elements lists the menu's items). `element` = its id from
+        console_elements or its label. One that deletes or resets answers confirmation_required with `confirm`: tell
+        Brett, then call again with it. Approvals and owner-only settings stay Brett's own tap (refused)."""
+        return await go({"op": "act", "target": "console.elements", "path": element, "action": action, "confirm": confirm,
+                         "input": inp(to, **({"on": on} if on is not None else {}), **({"value": value} if value is not None else {}))})
 
     @mcp.tool(annotations=READ)
     async def console_clients() -> dict[str, Any]:

@@ -1,13 +1,13 @@
 // Types for console-commands.mjs (the console domain of control@1: open screens, dialogs, settings tabs, run actions).
 import type { ControlCommand, ControlWireCode } from './control-rules.mjs';
 
-export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action';
+export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action' | 'value';
 export type ConsoleActionEffect = 'navigate' | 'read' | 'write' | 'destructive';
-export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string; /** a screen that is a window: the action that opens it */ action?: string }
+export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string; /** a screen that is a window: the action that opens it */ action?: string; /** value items: the setting's control kind, choices and range */ valueKind?: string; options?: string[]; min?: number; max?: number; step?: number; secret?: boolean }
 export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh' | 'read' | 'set' | 'unset' | 'elements' | 'press'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; verb?: string; hard?: boolean; confirmed?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };
@@ -40,3 +40,17 @@ export function consoleMessage(fields: Partial<ConsoleMessage> & { op: ConsoleMe
 export function consoleMessageErrors(m: unknown): string[];
 export function runConsoleCommand(c: ControlCommand, ctx?: { clients?: readonly ConsoleClient[]; grants?: readonly string[]; salt?: string; now?: number; id?: string; by?: string }): ConsoleRun;
 export function consoleActionConfirm(spec: string, salt: string, now?: number): string;
+
+// full-api-control (Nov 7 2026): setting values and elements on screen
+export const CONSOLE_OPS: readonly string[];
+export const CONSOLE_VALUE_SKIP: readonly string[];
+export const CONSOLE_ELEMENT_ACTS: readonly string[];
+export const CONSOLE_ELEMENT_ROLES: readonly string[];
+export const CONSOLE_ELEMENTS_MAX: number;
+export const CONSOLE_VALUE_KEY: RegExp;
+export interface ConsoleElementLike { id: string; label: string; role?: string; where?: string; danger?: boolean }
+export function consoleValueItems(groups: readonly { tab?: string; label?: string; settings?: readonly Record<string, unknown>[] }[]): ConsoleItem[];
+export function consoleValueErrors(item: ConsoleItem | null | undefined, value: unknown): string[];
+export function consoleElementDestructive(el: { label?: string; danger?: boolean } | null | undefined): boolean;
+export function consoleElementId(o: { own?: string; where?: string; role?: string; label?: string; n?: number }): string;
+export function consoleElementResolve<T extends ConsoleElementLike>(items: readonly T[], path: unknown): { item?: T; candidates?: T[]; ambiguous?: boolean };

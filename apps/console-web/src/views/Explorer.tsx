@@ -157,7 +157,7 @@ function TokenRow({ token, what, available }: { token: string; what: string; ava
     <div className="cx-row" title={`${what} — color-theme token "${token}" (${value || 'derived'})`}>
       <span className="cx-swatch" style={{ background: value ? `var(--fx-${token.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())})` : 'transparent' }} />
       <span className="fx-grow">{what} <span className="fx-muted fx-mono fx-small">{token}</span></span>
-      {available && value ? <input type="color" value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#888888' /* theme-ok: data value */} onChange={(e) => edit('color-theme', ['tokens', token], e.target.value)} /> : <span className="fx-muted fx-small">{value ? '—' : 'derived'}</span>}
+      {available && value ? <input type="color" aria-label={`${what} colour`} value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#888888' /* theme-ok: data value */} onChange={(e) => edit('color-theme', ['tokens', token], e.target.value)} /> : <span className="fx-muted fx-small">{value ? '—' : 'derived'}</span>}
     </div>
   );
 }
@@ -171,8 +171,8 @@ function ParamRow({ p, available }: { p: StyleParam; available: boolean }) {
       <span className="fx-grow">{p.label} <span className="fx-muted fx-mono fx-small">{p.type}.{p.path.join('.')}</span></span>
       {!available || cur === undefined ? <span className="fx-muted fx-small">{cur === undefined ? 'n/a' : String(cur)}</span>
         : p.kind === 'enum' ? <select className="fx-input" value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)}>{p.options?.map((o) => <option key={o} value={o}>{o}</option>)}</select>
-        : p.kind === 'number' ? <span style={{ width: 160 }}><Slider label="" value={Number(cur)} min={p.min} max={p.max} step={p.step} onChange={(v) => edit(p.type, p.path, v)} /></span>
-        : <input className="fx-input" value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)} />}
+        : p.kind === 'number' ? <span style={{ width: 160 }}><Slider label="" ariaLabel={p.label} value={Number(cur)} min={p.min} max={p.max} step={p.step} onChange={(v) => edit(p.type, p.path, v)} /></span>
+        : <input className="fx-input" aria-label={p.label} value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)} />}
     </div>
   );
 }
@@ -204,7 +204,7 @@ export function ElementPreview({ kind }: { kind: string }) {
   const body = (() => {
     switch (kind) {
       case 'BUTTON': return <div className="fx-row fx-row--wrap"><Button tone="primary" icon="zap">Primary</Button><Button>Neutral</Button><Button tone="danger" icon="trash">Danger</Button><Button tone="ghost">Ghost</Button></div>;
-      case 'ICON_BUTTON': return <div className="fx-row"><button className="fx-iconbtn"><Icon name="settings" /></button><button className="fx-iconbtn is-active"><Icon name="star" /></button></div>;
+      case 'ICON_BUTTON': return <div className="fx-row"><button className="fx-iconbtn" aria-label="Icon button"><Icon name="settings" /></button><button className="fx-iconbtn is-active" aria-label="Icon button (active)"><Icon name="star" /></button></div>;
       case 'SWITCH': return <div className="fx-stack"><Switch label="Switch" hint="With a hint line" checked={on} onChange={setOn} /><Switch hideLabel label="Bare switch" text={on ? 'On' : 'Off'} checked={on} onChange={setOn} /><Switch label="Disabled" checked disabled onChange={() => undefined} /></div>;
       case 'CHECKBOX': return <label><input type="checkbox" defaultChecked /> Checked</label>;
       case 'CHIP': return <div className="fx-row fx-row--wrap"><Chip>neutral</Chip><Chip tone="accent">accent</Chip><Chip tone="success">success</Chip><Chip tone="warning">warning</Chip><Chip tone="danger">danger</Chip></div>;
@@ -214,7 +214,7 @@ export function ElementPreview({ kind }: { kind: string }) {
       case 'SELECT_FIELD': return <SelectField label="Select field" value={pick} onChange={setPick} options={[{ value: 'a', label: 'One' }, { value: 'b', label: 'Two' }, { value: 'c', label: 'Three' }]} hint="A native drop-down" />;
       case 'CHOICE_GRID': return <ChoiceGrid label="Choice" choices={[{ id: 'a', title: 'First', text: 'A card with text', icon: 'zap' }, { id: 'b', title: 'Second', tag: 'tag' }, { id: 'c', title: 'Disabled', disabled: true }]} selected={[pick]} onToggle={setPick} />;
       case 'LIBRARY_PARAM': return <div className="fx-stack"><LibraryParamField p={{ key: 'on', label: 'Bool parameter', type: 'bool', default: true, help: 'A bool renders as a switch' }} value={text === 'false' ? 'false' : 'true'} onChange={setText} /><LibraryParamField p={{ key: 'mode', label: 'Choice parameter', type: 'choice', choices: ['a', 'b', 'c'], default: 'a' }} value={pick} onChange={setPick} /><LibraryParamField p={{ key: 'n', label: 'Number parameter', type: 'number', min: 1, max: 12, default: 6 }} value={String(v)} onChange={(x) => setV(Number(x) || 0)} /></div>;
-      case 'PASSWORD_FIELD': return <input className="fx-input" type="password" defaultValue="secret" />;
+      case 'PASSWORD_FIELD': return <input className="fx-input" type="password" aria-label="Password field" defaultValue="secret" />;
       case 'SEARCH_FIELD': return <div className="fx-search"><Icon name="search" /><input placeholder="Search" /></div>;
       case 'CARD': return <Container title="Card" icon="box"><p style={{ margin: 0 }}>Card body from the container asset.</p></Container>;
       case 'LIST_ITEM': return <div className="cx-item"><Icon name="file" /><div className="fx-grow">Title<div className="fx-muted fx-small">Subtitle</div></div><Chip>trailing</Chip></div>;
