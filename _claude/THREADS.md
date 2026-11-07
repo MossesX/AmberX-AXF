@@ -748,9 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s8 done (current) · orchestrator
-- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10-1 done (current) · orchestrator
-- 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10-2 done (current) · orchestrator
 - 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` s10 done, s10-3 done (current) · orchestrator
 - 2026-11-07 00:57 UTC · `plan-studio-backfill-12h` → built (current) · orchestrator
 - 2026-11-07 01:31 UTC · `notes-tasks-calendar` note (current) · foreign-write
@@ -1148,6 +1145,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 13:59 UTC · `orchestrator-gate` s2 done (all) · orchestrator
 - 2026-11-07 14:06 UTC · `maintenance-redundancy-scan` s4 done (all) · earl
 - 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` s5 done, → complete (all) · earl
+- 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` note (all) · earl
+- 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` branch claude/maintenance-redundancy-scan (all) · builds-live
+- 2026-11-07 14:11 UTC · `maintenance-redundancy-scan` → built (all) · earl
 
 ## Token passes (log)
 

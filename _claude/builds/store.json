@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1334,
- "updatedAt": "2026-11-07T14:10:51.586Z",
+ "rev": 1335,
+ "updatedAt": "2026-11-07T14:11:01.553Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -110985,16 +110985,21 @@
    "title": "Maintenance: redundancy scan (report-only)",
    "category": "Maintenance",
    "detail": "Read-only job in the Maintenance plugin that searches for redundant data sets stage by stage (builds store, plans, tracker/catalog/ledger, branches+worktrees, assets/baked copies, memory/docs, rest) under time/size budgets, and reports grouped findings with source of truth, confidence and suggested action. Never deletes or merges.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/maintenance-redundancy-scan",
    "pr": "",
    "createdAt": "2026-11-07T13:46:06.752Z",
-   "updatedAt": "2026-11-07T14:10:50.074Z",
+   "updatedAt": "2026-11-07T14:10:59.918Z",
    "builtAt": "2026-11-07T14:10:50.074Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "All 5 steps done on branch claude/maintenance-redundancy-scan (committed, not pushed). UI Review r-20261107-38c6ff69. Report _claude/builds/reports/maintenance-redundancy-scan.md",
+     "at": "2026-11-07T14:10:51.385Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -111129,7 +111134,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

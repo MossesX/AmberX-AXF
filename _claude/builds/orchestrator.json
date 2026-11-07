@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T14:10:51.586Z",
+ "updatedAt": "2026-11-07T14:11:01.553Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66721,16 +66721,21 @@
    "title": "Maintenance: redundancy scan (report-only)",
    "category": "Maintenance",
    "detail": "Read-only job in the Maintenance plugin that searches for redundant data sets stage by stage (builds store, plans, tracker/catalog/ledger, branches+worktrees, assets/baked copies, memory/docs, rest) under time/size budgets, and reports grouped findings with source of truth, confidence and suggested action. Never deletes or merges.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/maintenance-redundancy-scan",
    "pr": "",
    "createdAt": "2026-11-07T13:46:06.752Z",
-   "updatedAt": "2026-11-07T14:10:50.074Z",
+   "updatedAt": "2026-11-07T14:10:59.918Z",
    "builtAt": "2026-11-07T14:10:50.074Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "All 5 steps done on branch claude/maintenance-redundancy-scan (committed, not pushed). UI Review r-20261107-38c6ff69. Report _claude/builds/reports/maintenance-redundancy-scan.md",
+     "at": "2026-11-07T14:10:51.385Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
