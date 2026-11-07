@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T02:19:28.371Z",
+ "updatedAt": "2026-11-07T02:52:42.335Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -15107,7 +15107,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-07T01:33:54.885Z",
+   "updatedAt": "2026-11-07T02:50:20.877Z",
    "builtAt": "",
    "notes": [
     {
@@ -15117,6 +15117,10 @@
     {
      "text": "s1 / s4-3 covered by PR 375 (claude/approvals-in-place-r2): Approve and Deny act in place, nothing opens a window. The policy and rules steps are untouched.",
      "at": "2026-11-07T01:33:54.885Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-07T02:50:20.877Z"
     }
    ],
    "approvals": [],
@@ -15192,7 +15196,7 @@
      "done": true,
      "doneAt": "2026-11-07T01:33:54.091Z",
      "note": "",
-     "uid": "st-mw4zphvl048p7k"
+     "uid": "st-mw52nz5g1bbxbf"
     },
     {
      "id": "s5-4",
@@ -15210,7 +15214,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw4zphvl05upd2"
+     "uid": "st-mw52nz5g1cwdiw"
     },
     {
      "id": "s6-5",
@@ -15228,7 +15232,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw4zphvl064vdl"
+     "uid": "st-mw52nz5g1d7puw"
     }
    ]
   },
@@ -20532,16 +20536,21 @@
    "title": "UI asset designer: host plugin + designer add-ons (app menu, nav menu, toolbar, banner, embed, widget), designed@1 manifests, asset context section",
    "category": "Assets",
    "detail": "Fable phase: designer@1 contracts (add-on model, designer + embed asset types, designed@1 manifest + identifier + registration, designer-doc@1 interaction contract, asset-context@1 section), fixtures, validators, checks, PORTING.md, DESIGNER.md. Opus phase: the host plugin, six standalone add-on plugins, voice + API/MCP/CLI, tests, UI Review. Plan Studio: Proposed > Assets (proposed-fzf3). Supersedes the menu / toolbar editors of the old asset-designer pending build.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-asset-designer",
    "pr": "#376",
    "createdAt": "2026-11-07T02:11:01.038Z",
-   "updatedAt": "2026-11-07T02:19:11.599Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-07T02:50:20.877Z",
+   "builtAt": "2026-11-07T02:50:20.877Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #376 names s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40 done",
+     "at": "2026-11-07T02:50:20.877Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -20697,8 +20706,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21bm2s2"
     },
@@ -20717,8 +20726,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21c0wg8"
     },
@@ -20737,8 +20746,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21d10w5"
     },
@@ -20757,8 +20766,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21ergnn"
     },
@@ -20777,8 +20786,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21fdbph"
     },
@@ -20797,8 +20806,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21gu4ch"
     },
@@ -20817,8 +20826,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21hbwn0"
     },
@@ -20838,8 +20847,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21ifh12"
     },
@@ -20858,8 +20867,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21j11xz"
     },
@@ -20879,8 +20888,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21k9usc"
     },
@@ -20900,8 +20909,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21ly9gg"
     },
@@ -20920,8 +20929,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21ml59u"
     },
@@ -20940,8 +20949,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21n6pb8"
     },
@@ -20960,8 +20969,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21o5kfd"
     },
@@ -20980,8 +20989,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21p2zjm"
     },
@@ -21000,8 +21009,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21qoxqp"
     },
@@ -21020,8 +21029,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21r39ul"
     },
@@ -21040,8 +21049,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21sv0hx"
     },
@@ -21060,8 +21069,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf21thm9a"
     },
@@ -21080,8 +21089,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf71ukmda"
     },
@@ -21100,8 +21109,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf71v26x9"
     },
@@ -21120,8 +21129,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf71wwsto"
     },
@@ -21140,8 +21149,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf71xu1ma"
     },
@@ -21160,8 +21169,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf71yzrg1"
     },
@@ -21180,8 +21189,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf71zxi62"
     },
@@ -21201,8 +21210,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf720bv4o"
     },
@@ -21221,8 +21230,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf7211tmt"
     },
@@ -21241,8 +21250,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf722itwx"
     },
@@ -21261,8 +21270,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf723yh70"
     },
@@ -21281,8 +21290,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf7240euf"
     },
@@ -21301,8 +21310,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf725xcow"
     },
@@ -21322,8 +21331,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf726dxyz"
     },
@@ -21342,8 +21351,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
      "note": "",
      "uid": "st-mw5rocf727wo93"
     },
@@ -21360,10 +21369,257 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T02:50:20.877Z",
+     "note": "",
+     "uid": "st-mw5rocf728ij0n"
+    }
+   ]
+  },
+  {
+   "id": "icon-browser-manager",
+   "title": "Icon Browser plugin + Icon Manager (icon library, icon maps, icon packs)",
+   "category": "Assets",
+   "detail": "Icon Browser plugin: starter library of open-licensed icon sets stored as icon-pack assets (framework/icon-library, served by the plugin, never bundled); tree / grid / list views with categories, sort, filter, search and a thumbnails toggle; configurable sources of any kind (local, HTTP, REST, MCP, FTP/SFTP, Google Drive, Google Photos, Dropbox, known online repositories) with per-type forms and secrets in the plugin's private store; packs composed by drag and drop between collapsible / floatable panes; selected icons open into docked or floating tab groups; packs saved as icon-pack assets. Icon Manager: every UI and plugin has an icon map (icon-map@1: slot -> icon ref, inheritance app root -> UI -> plugin, child overrides parent); list / grid of every UI with a map, filterable by app; map editor + live preview with drops; Save / Apply; a global pack listing every icon; switch packs globally, randomize, generate cohesive packs. Everything is assets with API / MCP / CLI parity and voice actions; settings in categorized collapsible sections; UI options to UI Review first (3+).",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/icon-browser-manager",
+   "pr": "",
+   "createdAt": "2026-11-07T02:52:29.111Z",
+   "updatedAt": "2026-11-07T02:52:42.254Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Launched headless on Fable by Brett from the Build manager (agent Gina, change chg-20261107-a5722a8eb3). Phase 1 (s1-s6) runs on Fable; s7-s10 are Opus: at that switch the session stops and hands over the brief (downgrade, no approval).",
+     "at": "2026-11-07T02:52:42.254Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "# Icon Browser + Icon Manager (Brett, voice)\n\n## 1. Icon Browser plugin\n- Ship a starter library: download a couple thousand icons (open-licensed sets), stored as assets.\n- Views: tree, grid, list, etc. Categorized, sortable, filterable, searchable. Tree thumbnails toggle on/off.\n- Sources (configurable, any type): FTP/SFTP (credentials + root folder), MCP, REST API, HTTP/online, local folder, Google Drive folder, Google Photos album, Dropbox, etc. Per-type config form: credentials when needed, root/path, auth. 'Online' shows a big list of known icon repositories, each with a section for what's needed to access it (API key etc.). Secrets in the secure store.\n- Packs: create icon packs by drag and drop between panes. Panes are collapsible and floatable.\n- Tab groups: open one or many selected icons into a floating tab group, a docked tab group, or a pane. 'Open new tab group' spawns docked or floating; with a selection it holds those icons, empty it shows a + to add. Drag icons from tree to groups and group to group.\n- Save a pack as an icon-pack asset.\n\n## 2. Icon Manager\n- Every UI and plugin gets an icon map (icon slots/tags -> icon). All of AmberX, Console, axHub, everything.\n- List/grid of every UI with an icon map, filterable by app. Open a map, or open a live preview of the UI and drag icons onto the preview. Save / Apply makes it permanent for that icon tag.\n- Global icon pack asset listing every icon in the whole system.\n- Inheritance: assign a pack to the whole app (root), or per UI, or per plugin. The child overrides the parent.\n- Save changes as a new pack: root/global pack, or a UI/plugin-scoped pack.\n- Icon packs are separate from design/style packs. A design pack MAY reference an icon pack but does not have to.\n- Switch packs globally; a randomize button reshuffles the whole icon set; generate cohesive packs that follow one theme/style.\n\n## Rules\n- Everything is registry assets, with API/MCP/CLI parity and voice control.\n- Settings in categorized collapsible sections.\n- Submit UI options to UI Review first (at least 3).",
+    "at": "2026-11-07T02:43:20.924Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "Brett",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Contracts: icon-map@1 (slots -> icon refs, scope app | ui | plugin, extends, inheritance child over parent) and icon-source@1 (kind, config, secretRef) asset types in asset-types.json; iconmap-rules.mjs + .d.mts (normalize, errors, ref parsing name | pack:<id>/<glyph>, resolve chain, randomize, cohesive generation), engine iconmap.ts exported from core; fixture spec/fixtures/icon-map.json + check-icon-map.mts; starter assets; validate --framework and schemas green; Kotlin twin recorded as deferred in PORTING.md",
+     "model": "Fable",
+     "why": "new shared asset types + cross-port contract",
+     "phase": "",
+     "group": "Contracts",
+     "estimate": "30",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/core/engines/iconmap-rules.mjs",
+      "framework/core/engines/iconmap.ts",
+      "framework/spec/fixtures/icon-map.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw5rocf728ij0n"
+     "uid": "st-mw5t5o5y0b1z5a"
+    },
+    {
+     "id": "s2",
+     "text": "Icon library: framework/cli/icon-import.mjs (SVG -> icon-pack glyphs: path, circle, ellipse, rect, line, polyline, polygon; 24 grid; <= 600 glyphs per pack, sets split by category) downloads open-licensed sets (Lucide ISC, Tabler MIT, Feather MIT, Heroicons MIT, Bootstrap Icons MIT, Phosphor MIT) from npm into framework/icon-library/ (icon-library@1 index.json: sets -> packs, licence, counts, categories, tags), every pack a valid icon-pack@1; `icon-import.mjs library --check` (valid, in sync, size budget) wired into CI",
+     "model": "Fable",
+     "why": "library format + converter correctness is a contract every port reads",
+     "phase": "",
+     "group": "Library",
+     "estimate": "30",
+     "files": [
+      "framework/cli/icon-import.mjs",
+      "framework/icon-library/index.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0c5g5r"
+    },
+    {
+     "id": "s3",
+     "text": "Runtime: rt.iconFor(name, scope) resolves through the icon maps (plugin / UI map -> app root map -> active icon pack -> framework glyph), React IconScope context, Icon.tsx reads it; settings keys axf.icons.* (map picks per scope, slot overrides) count as appearance settings so the hub look carries them to every app; actions icons.set | icons.apply | icons.pack | icons.randomize | icons.generate | icons.reset registered for voice / MCP / CLI; check-icon-map covers the runtime path",
+     "model": "Fable",
+     "why": "cross-app GUI behaviour in the runtime + appearance contract",
+     "phase": "",
+     "group": "Runtime",
+     "estimate": "30",
+     "files": [
+      "framework/core/runtime.ts",
+      "framework/react/components/Icon.tsx",
+      "framework/core/engines/appearance.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0dvzzq"
+    },
+    {
+     "id": "s4",
+     "text": "Icon Browser plugin core (apps/console-web/plugins/icon-browser): plugin.json (lifecycle, commands block, help.json, builtWith), server part (library index + search from framework/icon-library, sources CRUD, private secret store in the data dir, packs save as icon-pack assets, maps list), web: page head, tree / grid / list views with categories, sort, filter, search, thumbnails toggle, virtualised grid; menu.ts entries; settings tab in categorized collapsible sections",
+     "model": "Fable",
+     "why": "first consumer of the icon-library and icon-map contracts; shapes the plugin's data model",
+     "phase": "",
+     "group": "Browser",
+     "estimate": "30",
+     "files": [
+      "apps/console-web/plugins/icon-browser/plugin.json",
+      "apps/console-web/plugins/icon-browser/server/__init__.py",
+      "apps/console-web/plugins/icon-browser/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0e2q3p"
+    },
+    {
+     "id": "s5",
+     "text": "Panes, packs and tab groups: collapsible / floatable panes (library, pack composer, details) on the dock engine; drag icons between panes to compose a pack; Save pack as an icon-pack asset (server writes it, runtime registers it); open one or many selected icons into a docked or floating tab group or a pane through WindowManager (openGroup / openFloating / addTab); 'Open new tab group' docked or floating, empty shows a + to add; drag tree -> group and group -> group",
+     "model": "Fable",
+     "why": "changes how GUIs work across apps (window / dock engine use, drag-drop between hosts)",
+     "phase": "",
+     "group": "Browser",
+     "estimate": "30",
+     "files": [
+      "apps/console-web/plugins/icon-browser/web/panes.tsx",
+      "apps/console-web/plugins/icon-browser/web/packs.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0fwgj8"
+    },
+    {
+     "id": "s6",
+     "text": "Icon Manager page: list / grid of every UI with an icon map (console, plugins, axHub web, AmberX, Molly), filterable by app; map editor (slot -> icon, drops from the browser); live preview of the UI with drops onto its icons; Save / Apply makes the pick permanent for that slot; inheritance view (root -> UI -> plugin, child overrides); assign a pack at root, UI or plugin; Save changes as a new root / scoped pack; global 'every icon' pack; switch packs globally; Randomize; Generate cohesive pack (one set / style)",
+     "model": "Fable",
+     "why": "cross-app GUI behaviour: icon maps for every app",
+     "phase": "",
+     "group": "Manager",
+     "estimate": "30",
+     "files": [
+      "apps/console-web/plugins/icon-browser/web/manager.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0gt4t3"
+    },
+    {
+     "id": "s7",
+     "text": "Sources: per-type config forms (local folder, HTTP, REST, MCP, FTP / SFTP, Google Drive, Google Photos, Dropbox, online repository) with credentials, root / path and auth; secrets saved to the plugin's private store by reference only; framework/schemas/icon-repos.json: the known online icon repositories with what each needs (API key, token, none) shown per repository; test connection; import from a source into the library",
+     "model": "Opus",
+     "why": "forms and integrations on top of the contracts",
+     "phase": "",
+     "group": "Sources",
+     "estimate": "30",
+     "files": [
+      "apps/console-web/plugins/icon-browser/web/sources.tsx",
+      "framework/schemas/icon-repos.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0hseco"
+    },
+    {
+     "id": "s8",
+     "text": "Icon maps for every app: framework/cli/icon-map.mjs scan | list | check scans the icon names each UI and plugin uses (console, plugins, axHub web, AmberX, Molly) and writes / updates their icon-map assets; CI check that no UI is without a map; MCP / CLI parity of the plugin commands checked (plugin-commands.mjs check)",
+     "model": "Opus",
+     "why": "scanner + CI wiring",
+     "phase": "",
+     "group": "Manager",
+     "estimate": "30",
+     "files": [
+      "framework/cli/icon-map.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0i9umr"
+    },
+    {
+     "id": "s9",
+     "text": "Polish: help.json for every control, menu-reach, help-coverage, check-theme / check-controls / check-chrome-assets / plugin-lifecycle / plugin-pages green; settings sections finished; console re-bake",
+     "model": "Opus",
+     "why": "conformance",
+     "phase": "",
+     "group": "Checks",
+     "estimate": "30",
+     "files": [
+      "apps/console-web/plugins/icon-browser/help.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0jvbnm"
+    },
+    {
+     "id": "s10",
+     "text": "Screenshots (desktop + phone) of at least 3 UI options for the browser and the manager submitted to UI Review; report _claude/builds/reports/icon-browser-manager.md; THREADS.md; PR opened and linked",
+     "model": "Opus",
+     "why": "review + hand-off",
+     "phase": "",
+     "group": "Checks",
+     "estimate": "30",
+     "files": [
+      "_claude/builds/reports/icon-browser-manager.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw5t5o5y0k2bvw"
     }
    ]
   }

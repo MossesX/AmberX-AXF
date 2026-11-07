@@ -877,7 +877,7 @@
    "by": "backfill",
    "brief": "# Build: claude-badge-vps\n\nBrett (voice): \"I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.\"\n\nClaude badge plugin (apps/console-web/plugins/claude-badge):\n1. Two connections, each its own badge/indicator on the banner:\n   - Console connection: the existing test (console AI via axf.llm@1).\n   - VPS connection: the Claude Code login on the VPS (which account, logged in or not, limit hit). Read it with plain code, zero tokens (e.g. the ai-keys/claude-accounts VPS status or a cheap read of /root/.claude.json email + credentials expiry); green = logged in and working, amber = limit hit / out of credits, gray/red = not logged in.\n2. Settings (Settings > Plugins > Claude badge): show/hide each one; Icons only switch per badge; pick the icon for each badge and each state (ok / no credit / error), extending the existing Badge icons picker.\n3. Covers step 18 of pending item token-usage-log-accounts-plan-studio-control (clock badge watches VPS login): note it there, don't build it twice.\n4. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nNothing gets removed. One session for the whole build, read only files you need, no full CLAUDE.md chain. Stay out of notes/tasks/todo and AmberX notification code (other builds).\n## UPDATE from Brett (replaces the scope above)\n\"I need the Claude badge, the axHub badge, the VPS badge and the AmberX badge, all in one plugin, all able to select which icon for which, and fully configurable.\"\n- One plugin holds four badges: Claude (console AI), axHub (connection/health), VPS (Claude login on the VPS), AmberX (phone app connected/last seen). Move the existing ones in; old plugins can be disabled, nothing removed.\n- Per badge: show/hide, icons only or icon + label, label text, icon per state (ok / warn / error / off), order on the banner.\n- All plain-code checks, zero tokens.\n\n## Addendum 2 (Brett, voice)\nAdd a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.\n\n## Addendum 3 (Brett, voice)\n\"When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.\"\n- Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing.\n- Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.\n",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": [
     {
      "said": "Add a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.",
@@ -972,14 +972,14 @@
   },
   "console-approvals-in-place": {
    "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
-   "at": "2026-11-06T00:00:00Z",
+   "at": "2026-11-06",
    "source": "voice",
    "session": "",
    "link": "",
-   "by": "headless",
+   "by": "backfill",
    "brief": "# today: approve/deny axHub approvals inside the Dev Console\n\nBrett's words (voice, Nov 6 2026): \"It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.\"\n\n## Problem\nWhen an axHub approval (confirm or veto countdown) is waiting, the console pops it up (approvals-banner / approval popup), but tapping it navigates to https://axhub.amberxai.com/auth/admin/approvals/<id>. Brett wants to stay in the console.\n\n## Build\n1. In the console's approval popup/banner (and any approval row in the console, incl. phone layout), tapping the approval opens an in-console approval view: title, description, the exact call/command, countdown if veto, and Approve / Deny buttons.\n2. Approve / Deny call axHub's approval API server-side from the console (console proxy using its existing axHub auth), never by sending Brett to the axHub site. Show the result in place (approved, denied, ran, failed).\n3. No link to the axHub page as the default tap. At most a small secondary \"open in axHub\" option.\n4. Register console actions (e.g. approvals.approve / approvals.deny with id) so they work through console commands too, and make console_show approval:<id> open this in-console view.\n5. AmberX phone notifications for approvals should open the console's in-console view, not axHub.\n\n## Rules\nFollow CLAUDE.md and _claude/rules/RULES.md. Never print or log secrets/tokens. Tests for approve/deny from the console. Update help/docs, THREADS row, orchestrator entry, report. Don't land; leave it for Brett's go.\n",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": [
     {
      "said": "\"Schedule a console build and deploy every night at 2 a.m.\" and \"I need refresh added to the API, the MCP and the CLI too.\"",
@@ -1265,7 +1265,7 @@
    "by": "backfill",
    "brief": "# Build: refresh-token-save (pending id first-refresh-token-saved-every-time-it-s-used-v)\n\nBrett said (verbatim): \"I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.\"\n\nTarget: ~20 minutes. Do ONLY this, nothing else.\n\nThe VPS Claude login is now mossesx@gmail.com (/root/.claude/.credentials.json). Whenever that login (or any saved account in /root/.claude-accounts or the ai-keys plugin store) uses or renews its OAuth refresh token, write the rotated refresh + access token back to the saved copy immediately, so the next run never uses a dead token. Check the ai-keys renew thread (apps/console-web/plugins/ai-keys), deploy/claude-headless.sh launches, and the account switch path.\n\nDon't load the full CLAUDE.md chain; read only the files you need. Small test with fake tokens. Commit on this branch, open a PR, do not land. Tick step 17 of pending item token-usage-log-accounts-plan-studio-control and mark pending item first-refresh-token-saved-every-time-it-s-used-v complete when done.",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": []
   },
   "fix-banner-snap": {
@@ -1642,6 +1642,18 @@
    "from": "detail",
    "addenda": []
   },
+  "icon-browser-manager": {
+   "said": "# Icon Browser + Icon Manager (Brett, voice)\n\n## 1. Icon Browser plugin\n- Ship a starter library: download a couple thousand icons (open-licensed sets), stored as assets.\n- Views: tree, grid, list, etc. Categorized, sortable, filterable, searchable. Tree thumbnails toggle on/off.\n- Sources (configurable, any type): FTP/SFTP (credentials + root folder), MCP, REST API, HTTP/online, local folder, Google Drive folder, Google Photos album, Dropbox, etc. Per-type config form: credentials when needed, root/path, auth. 'Online' shows a big list of known icon repositories, each with a section for what's needed to access it (API key etc.). Secrets in the secure store.\n- Packs: create icon packs by drag and drop between panes. Panes are collapsible and floatable.\n- Tab groups: open one or many selected icons into a floating tab group, a docked tab group, or a pane. 'Open new tab group' spawns docked or floating; with a selection it holds those icons, empty it shows a + to add. Drag icons from tree to groups and group to group.\n- Save a pack as an icon-pack asset.\n\n## 2. Icon Manager\n- Every UI and plugin gets an icon map (icon slots/tags -> icon). All of AmberX, Console, axHub, everything.\n- List/grid of every UI with an icon map, filterable by app. Open a map, or open a live preview of the UI and drag icons onto the preview. Save / Apply makes it permanent for that icon tag.\n- Global icon pack asset listing every icon in the whole system.\n- Inheritance: assign a pack to the whole app (root), or per UI, or per plugin. The child overrides the parent.\n- Save changes as a new pack: root/global pack, or a UI/plugin-scoped pack.\n- Icon packs are separate from design/style packs. A design pack MAY reference an icon pack but does not have to.\n- Switch packs globally; a randomize button reshuffles the whole icon set; generate cohesive packs that follow one theme/style.\n\n## Rules\n- Everything is registry assets, with API/MCP/CLI parity and voice control.\n- Settings in categorized collapsible sections.\n- Submit UI options to UI Review first (at least 3).",
+   "at": "2026-11-07T02:43:20.924Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "interface-roller": {
    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
    "at": "2026-10-27",
@@ -1928,7 +1940,7 @@
    "by": "backfill",
    "brief": "# Build: notes-tasks-sync\n\nBrett (voice, verbatim): \"They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.\"\n\nProblem: AmberX's notes (https://amberx.amberxai.com/#/notes) show different notes than the Dev Console's Notes page. Same for tasks and to-dos.\n\nDo:\n1. Find where each copy stores data now (AmberX notes/tasks plugins, console notes, todo-manager, tasks). Report it.\n2. Make notes, task manager and to-do ONE shared plugin (or one plugin per kind, same code) that both the console and AmberX load, reading and writing ONE store on the server (console API / axHub shared data). No per-app copies.\n3. Migrate: merge existing AmberX and console data into the one store, no data lost (back up first).\n4. Live sync: a change on one shows on the other without reload.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly; everything goes through the merge queue.\n\nHeads up: paused build amberx-slim-queue-r2 also touches AmberX's plugin list (keep list includes notes, tasks); keep notes/tasks/to-do on AmberX's keep list. Don't load the full CLAUDE.md chain; one session for the whole build; read only files you need.",
    "verbatim": true,
-   "from": "",
+   "from": "brief",
    "addenda": []
   },
   "notes-vault": {
@@ -2183,7 +2195,7 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "Reel Rhonda",
+   "by": "backfill",
    "brief": "# Build: plan-studio-backfill-12h\n\n## Brett said (verbatim)\n\"Go retro. Go back to all the builds we've started in the last 12 hours. Make the plan, put them in Plan Studio and check off their statuses, all the steps, each individual step that's completed.\"\n\nPlain code where possible, zero tokens for the sync itself.\n1. Every build started in the last 12 hours (refresh-token-save, token-optimize, assistant-chat-mode-r4, md-chain-control, md-chain-default, notes-tasks-sync, ui-review-notify-audio, shipped-features-fable, claude-badge-vps, notifications-control-panel, gizmo-voice (stopped), gizmo-rebuild-fable, ui-registry-shortcuts, badges-notify-followup, claude-settings-tabs-veto, settings-sections-everywhere, and any others in /root/axf-builds newer than 12h) gets a Plan Studio plan: verbatim 'Brett said', the brief, every addendum in order, steps with IDs = buildId-N.\n2. Tick each step that is done, from the build's progress file, report, log and PR state. Status mirrors the build (running / built / in merge queue / merged).\n3. Link each plan to its build record and pending item; one source of truth with the builds store (no second copy).\n4. Going forward: build_start / claude-headless.sh create the plan automatically on launch. Document it.\n5. Fix: Plan Studio sync must not reset a pending item's status or drop added steps (today's bug on token-usage-log-accounts-plan-studio-control). Test it.\n6. Report, PR to the merge queue. Do NOT land directly. Don't touch other builds' code.\n\nOne session, lean chain.\n## Addendum 1 (Brett, voice)\n\"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.\"\n- Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable.\n- All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens.\n- Backfill today's addenda the same way.\n",
    "verbatim": true,
    "from": "",
