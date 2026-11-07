@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-07T13:03:28.426Z",
+ "updatedAt": "2026-11-07T13:07:37.507Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66200,10 +66200,19 @@
    "branch": "claude/amber-chat-asset",
    "pr": "",
    "createdAt": "2026-11-07T12:30:40.602Z",
-   "updatedAt": "2026-11-07T13:02:05.664Z",
+   "updatedAt": "2026-11-07T13:07:36.298Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-07T13:07:36.298Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7). Rule: every UI element is an asset. The AmberX companion chat is a plain component. 1. Chat as an asset (Fable: contract). 2. Rename Gizmo -> Amber, safely: inventory, rename everywhere, migrate saved chats/settings, keep gizmo as an alias, back up old data, one-step rollback, CI check. 3. UI Review with choices: THREE distinct looks. 4. Tests + Shipped features.",
@@ -66267,8 +66276,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T13:07:36.298Z",
      "note": "",
      "uid": "st-mw6dt8ba08gacl"
     },
