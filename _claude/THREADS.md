@@ -748,7 +748,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 01:33 UTC · `console-approvals-in-place` s6-1 done (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s6-2 done (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s7 done (current) · orchestrator
 - 2026-11-07 01:33 UTC · `console-approvals-in-place` s7-1 done (current) · orchestrator
@@ -1148,6 +1147,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 14:51 UTC · `orchestrator-gate` s4 done (all) · orchestrator
 - 2026-11-07 14:45 UTC · `blueprint-notes-tasks` added (7 steps) (all) · orchestrator
 - 2026-11-07 14:52 UTC · `blueprint-notes-tasks` s1 done, → running (all) · orchestrator
+- 2026-11-07 14:55 UTC · `blueprint-notes-tasks` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
