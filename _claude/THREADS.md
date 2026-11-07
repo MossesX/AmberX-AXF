@@ -705,9 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 02:36 UTC · `amberx-approvals-fix` note (urgent) · orchestrator
-- 2026-11-05 02:46 UTC · `banner-widgets` note (current) · orchestrator
-- 2026-11-05 02:49 UTC · `banner-widgets` note (current) · orchestrator
 - 2026-11-05 03:00 UTC · `amberx-approvals-fix` → pending, note (urgent) · reconciler
 - 2026-11-05 03:20 UTC · `banner-widgets` → pending, note (current) · reconciler
 - 2026-11-05 03:30 UTC · `banner-widgets` merged, note (current) · reconciler
@@ -1105,6 +1102,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 00:15 UTC · `claude-settings-tabs-veto` added (6 steps) (current) · foreign-write
 - 2026-11-07 00:15 UTC · `settings-sections-everywhere` s1 done, → running (current) · orchestrator
 - 2026-11-07 00:22 UTC · `settings-sections-everywhere` s2 done (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s3 done (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s4 done (current) · orchestrator
+- 2026-11-07 00:22 UTC · `settings-sections-everywhere` s5 done (current) · orchestrator
 
 ## Token passes (log)
 
