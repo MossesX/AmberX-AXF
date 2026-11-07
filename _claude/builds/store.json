@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1357,
- "updatedAt": "2026-11-07T14:50:22.129Z",
+ "rev": 1358,
+ "updatedAt": "2026-11-07T14:51:37.202Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107757,7 +107757,7 @@
    "branch": "claude/orchestrator-vps-gate",
    "pr": "",
    "createdAt": "2026-11-07T04:55:09.050Z",
-   "updatedAt": "2026-11-07T14:13:51.352Z",
+   "updatedAt": "2026-11-07T14:51:35.881Z",
    "builtAt": "",
    "notes": [
     {
@@ -107861,12 +107861,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-07T14:51:35.881Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-07T04:55:09.052Z",
-     "updatedAt": "2026-11-07T13:32:40.293Z"
+     "updatedAt": "2026-11-07T14:51:36.013Z"
     },
     {
      "id": "s5",
@@ -107900,7 +107900,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
