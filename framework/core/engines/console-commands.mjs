@@ -97,7 +97,7 @@ export function consoleCatalogFrom(entries, actions = [], extra = {}) {
   }
   for (const a of Array.isArray(actions) ? actions : []) {
     const m = isObj(a?.meta) ? a.meta : {};
-    if (!a?.id || m.stub) continue;
+    if (!a?.id || m.stub || m.personOnly === true) continue; // personOnly: a person's tap only, never a remote caller
     items.push({ kind: 'action', id: a.id, label: m.label || a.id, detail: a.id, requires: m.requires, effect: m.effect, params: m.params === true, module: m.module });
   }
   return normalizeConsoleCatalog({ ...extra, items });

@@ -112,6 +112,8 @@ export interface NativeApi {
    * `VetoAlerts`). Browser: ok false (the plugin opens the call on the hub).
    */
   vetoAction(opts: { id: string; action: VetoActionName }): Promise<{ ok: boolean; state?: string; error?: string }>;
+  /** Approve / Decline a call waiting for an approval with the phone's hub session, in place. */
+  approvalDecide(opts: { id: string; action: 'approve' | 'decline' }): Promise<{ ok: boolean }>;
   /** The banner plugin's alarm settings (Java `VetoAlarm`: alarm audio stream, rings through silent mode). */
   vetoAlarm(opts: Record<string, unknown>): Promise<void>;
   /** Ring the alarm once now with these settings (Settings → Test). */
@@ -327,6 +329,7 @@ const web: NativeApi = {
   // Veto calls in a browser: the banner plugin rings its own alarm and opens the hub page for Deny / Approve / Shelve
   // (the hub only takes them under its own Origin).
   async vetoAction() { return { ok: false, error: 'browser' }; },
+  async approvalDecide() { throw new Error('browser'); },
   async vetoAlarm() { /* the plugin rings in the page */ },
   async vetoAlarmTest() { /* the plugin rings in the page */ },
   async vetoAlarmStop() { /* nothing rings natively */ },

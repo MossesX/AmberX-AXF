@@ -10,8 +10,8 @@
  *    or nothing here when the native side rings). Shelved and approved calls go quiet.
  *  - `AlarmPanel`: the alarm settings that need more than a generated row (his own sound file, Test, Stop).
  *
- * Actions go through lib-hub's `runVetoAction`: the app's host (the phone's own hub session) first, then a page on the
- * hub's origin, else the call's page on the hub opens. Only ever on a person's tap.
+ * Actions go through lib-hub's `runVetoAction`: the app's host (the phone's own hub session, the console's relay) first,
+ * then a page on the hub's origin, else the call's page on the hub opens. Only ever on a person's tap.
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Note } from '@console/axf/react';
@@ -62,10 +62,15 @@ export async function actResult(d: VetoDeps, c: VetoCall, action: VetoAction): P
  */
 export function VetoButtons({ c, deps, row, onDone }: { c: VetoCall; deps: VetoDeps; row?: boolean; onDone?: () => void }) {
   const [busy, setBusy] = useState<VetoAction | null>(null);
+  const [failed, setFailed] = useState('');
   const left = secondsLeftNow(c);
   if (!c.shelved && left <= 0) return null;
-  const run = (a: VetoAction) => { setBusy(a); void act(deps, c, a).then((ok) => { setBusy(null); if (ok) onDone?.(); }); };
+  const run = (a: VetoAction) => {
+    setBusy(a); setFailed('');
+    void actResult(deps, c, a).then((r) => { setBusy(null); if (r.ok) onDone?.(); else if (!r.opened) setFailed(r.error ?? 'That did not go through.'); });
+  };
   return (
+    <>
     <div className="fx-row fx-row--wrap axp-approvals-banner__acts">
       {ORDER.filter((a) => c.actions.includes(a)).map((a) => (row && a === 'shelve'
         ? <button key={a} type="button" className="fx-iconbtn axp-approvals-banner__shelve" aria-label={`Shelve: ${c.title}`} title="Shelve: pause the countdown until you decide" disabled={busy !== null} onClick={() => run(a)}><Icon name={ACTION_ICON[a]} size={18} /></button>
@@ -74,6 +79,8 @@ export function VetoButtons({ c, deps, row, onDone }: { c: VetoCall; deps: VetoD
         </Button>
       ))}
     </div>
+    {failed && !row && <Note tone="danger">{failed}</Note>}
+    </>
   );
 }
 

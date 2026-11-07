@@ -150,6 +150,18 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /** Approve / Decline a call waiting for an approval with the phone's hub session, in place (no hub view). */
+    @PluginMethod
+    public void approvalDecide(PluginCall call) {
+        String id = call.getString("id", "");
+        String action = call.getString("action", "");
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null || !HubRules.isDecision(action)) { call.reject("Not a request id or decision."); return; }
+        io.execute(() -> {
+            boolean ok = HubRules.decide(HubRules.HUB, id, action, android.webkit.CookieManager.getInstance().getCookie(HubRules.HUB));
+            call.resolve(new JSObject().put("ok", ok));
+        });
+    }
+
     /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
     public void vetoAlarm(PluginCall call) {

@@ -104,7 +104,10 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];
-    case 'run': return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
+    case 'run':
+      // the catalog already leaves these out; a stale catalog or a crafted message stops here
+      if (rt.actions.list().some((a) => a.meta.personOnly === true && a.id === m.spec!.split(':')[0])) return [false, `${m.label ?? m.spec} needs Brett's own tap`];
+      return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
     case 'close': {
       const open = rt.getState().dialog;
       if (!open) return [true, 'no dialog was open'];
