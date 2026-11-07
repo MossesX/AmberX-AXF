@@ -129,3 +129,7 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 ## Deferred: build priority (Nov 5 2026)
 
 `framework/core/build-priority.mjs` and `framework/react/components/PriorityTag.tsx` have no Kotlin twin. Android work is on hold; builds show only in the web console today. A port needs the same levels (P0-P3), the same read-time default and the same `waitingOn` rows.
+
+## Deferred: data set bar (Nov 7 2026)
+
+`framework/core/engines/datasetbar.ts` (data-set-bar@1: the `filter-button`, `sort-control` and `data-set-bar` asset types, the `search-bar` `scope: dataset` fields, attachments, fuzzy field-scoped search, rules, multi-key sort, saved filters and sorts; fixture `spec/fixtures/dataset-bar.json`, check `spec/check-dataset-bar.mts`) has no Kotlin twin, and neither do the console plugin `data-set-bar` (React, on lib-datagrid's datasets registry) nor the dataset footer slot / `contextDataset` hooks in the web runtime. Android work is on hold. A port needs a `DataSetBarEngine` replaying `dataset-bar.json` (normalizers, `resolveAttachment`, `searchScore`, `makeDsbFilter` / `makeDsbCompare`, attach / detach moves) and a Compose bar on the same attachment record, read from the app's local settings. The three new types are plain optional types (`roll: {slot: false, asset: false}`, not widgets, not attachable) so the spec-driven Kotlin validator accepts them as they are.

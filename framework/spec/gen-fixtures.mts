@@ -34,6 +34,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
+import * as dsb from '../core/engines/datasetbar';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -1957,5 +1958,96 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+// Data set bar (data-set-bar@1; core/engines/datasetbar.ts): the four assets normalized, attachments resolved, attach / detach
+// moves, fuzzy field-scoped search, rules and multi-key sort replayed on one small row set, saved filters and sorts.
+{
+  const T = '2026-11-07T00:00:00.000Z';
+  const starters = (type: string) => Object.fromEntries(readdirSync(join(root, 'assets', type)).filter((f) => f.endsWith('.json')).sort().map((f) => { const a = JSON.parse(readFileSync(join(root, 'assets', type, f), 'utf8')); return [a.id, a.data]; }));
+  const fields: dsb.DsbField<Record<string, unknown>>[] = [
+    { id: 'name', label: 'Name', value: (r) => r.name as string }, { id: 'status', label: 'Status', value: (r) => r.status as string },
+    { id: 'cost', label: 'Cost', value: (r) => r.cost as number | null }, { id: 'when', label: 'When', value: (r) => r.when as string | null },
+  ];
+  const rows = [
+    { id: 'a', name: 'Alpha build', status: 'running', cost: 12.5, when: '2026-11-01' },
+    { id: 'b', name: 'Beta release', status: 'done', cost: 3, when: '2026-10-20' },
+    { id: 'c', name: 'Alpine theme', status: 'pending', cost: null, when: null },
+    { id: 'd', name: 'Gamma grid', status: 'done', cost: 40, when: '2026-11-05' },
+    { id: 'e', name: 'Delta dock', status: 'running', cost: 0, when: '2026-09-09' },
+  ];
+  const ids = (rs: typeof rows) => rs.map((r) => r.id);
+  const apply = (state: Partial<dsb.DsbState>, scope: dsb.SearchScope = { fuzzy: true }) => {
+    const st = { ...dsb.DSB_EMPTY_STATE, ...state };
+    const f = dsb.makeDsbFilter(st, fields, scope, (r) => `${r.name} ${r.status}`);
+    const c = dsb.makeDsbCompare(st, fields);
+    const out = rows.filter(f);
+    return ids(c ? out.map((r, i) => [r, i] as const).sort(([a, i], [b, j]) => c(a, b) || i - j).map(([r]) => r) : out);
+  };
+  const rule = (field: string, op: dsb.DsbOp, value = '', extra: Partial<dsb.DsbRule> = {}): dsb.DsbRule => ({ id: `r-${field}-${op}`, field, op, value, ...extra });
+  const barDefault = starters('data-set-bar').default;
+  let map: dsb.DsbAttachments = {};
+  const moves: Record<string, dsb.DsbAttachments> = {};
+  map = dsb.attachBar(map, 'builds', { now: T }); moves['attach bar default'] = map;
+  map = dsb.attachBar(map, 'builds', { placement: 'floating', now: T }); moves['attach bar again: floating'] = map;
+  map = dsb.attachPiece(map, 'pending', 'search', 'dataset', { now: T }); moves['attach search piece only'] = map;
+  map = dsb.attachPiece(map, 'pending', 'sort', 'chips', { placement: 'bottom', now: T }); moves['attach sort piece, bottom'] = map;
+  map = dsb.attachBar(map, 'pending', { bar: 'compact', now: T }); moves['bar on a pieces-only attachment drops the piece overrides'] = map;
+  map = dsb.setAttachmentState(map, 'builds', { ...dsb.DSB_EMPTY_STATE, query: 'alp', rules: [rule('status', 'equals', 'done')], sort: [{ field: 'cost', dir: -1 }] }, T); moves['state set'] = map;
+  map = dsb.detachPiece(map, 'pending', 'search', starters('data-set-bar').compact, T); moves['detach search piece from compact bar'] = map;
+  map = dsb.detachPiece(map, 'pending', 'filter', starters('data-set-bar').compact, T); map = dsb.detachPiece(map, 'pending', 'sort', starters('data-set-bar').compact, T); moves['detach the last piece drops the attachment'] = map;
+  map = dsb.detachBar(map, 'builds'); moves['detach bar'] = map;
+  let att = dsb.normalizeAttachment({ bar: 'default', overrides: { placement: 'top' }, state: { query: 'x', rules: [rule('status', 'equals', 'done')], sort: [{ field: 'cost', dir: 1 }] } }, 'builds', T);
+  att = dsb.saveDsbFilter(att, 'Done only', T); att = dsb.saveDsbSort(att, 'Cheapest first', T);
+  const savedThen = att;
+  att = dsb.setAttachmentState({ builds: att }, 'builds', dsb.DSB_EMPTY_STATE, T).builds!;
+  const reapplied = dsb.applyDsbSavedSort(dsb.applyDsbSavedFilter(att, 'done-only', T), 'cheapest-first', T);
+  write('dataset-bar.json', {
+    $axf: 'dataset-bar-fixture@1',
+    enums: { placements: dsb.DSB_PLACEMENTS, displays: dsb.DSB_DISPLAYS, tones: dsb.DSB_TONES, sizes: dsb.DSB_SIZES, matches: dsb.DSB_MATCHES, sortStyles: dsb.SORT_CONTROL_STYLES, aligns: dsb.DSB_ALIGNS, densities: dsb.DSB_DENSITIES, surfaces: dsb.DSB_SURFACES, floatingSides: dsb.DSB_FLOATING_SIDES, pieces: dsb.DSB_PIECES, pieceTypes: dsb.DSB_PIECE_TYPES, ops: dsb.DSB_OPS.map((o) => o.id), limits: dsb.DSB_LIMITS },
+    defaults: { filterButton: dsb.FILTER_BUTTON_DEFAULT, sortControl: dsb.SORT_CONTROL_DEFAULT, dataSetBar: dsb.DATA_SET_BAR_DEFAULT, datasetSearch: dsb.DATASET_SEARCH_DEFAULT },
+    normalize: {
+      filterButton: { empty: dsb.normalizeFilterButton({}), junk: dsb.normalizeFilterButton({ display: 'huge', match: 'some', maxRules: 99, quickFields: ['a', 3, ''], tone: 'danger', label: ' Sift ' }), starters: Object.fromEntries(Object.entries(starters('filter-button')).map(([id, d]) => [id, dsb.normalizeFilterButton(d)])) },
+      sortControl: { empty: dsb.normalizeSortControl({}), junk: dsb.normalizeSortControl({ style: 'wheel', maxKeys: 0, savedSorts: 'no', quickFields: 'name' }), starters: Object.fromEntries(Object.entries(starters('sort-control')).map(([id, d]) => [id, dsb.normalizeSortControl(d)])) },
+      dataSetBar: { empty: dsb.normalizeDataSetBar({}), junk: dsb.normalizeDataSetBar({ placement: 'side', search: 'Not An Id', filter: '', sort: 7, count: 'yes', floatingSide: 'middle' }), starters: Object.fromEntries(Object.entries(starters('data-set-bar')).map(([id, d]) => [id, dsb.normalizeDataSetBar(d)])) },
+      datasetSearch: { app: dsb.datasetSearchConfig(starters('search-bar').everything), dataset: dsb.datasetSearchConfig(starters('search-bar').dataset), exact: dsb.datasetSearchConfig(starters('search-bar')['dataset-exact']), junk: dsb.datasetSearchConfig({ scope: 'dataset', minChars: 9, fields: 'name', fuzzy: 'yes' }) },
+      state: { junk: dsb.normalizeDsbState({ query: 7, field: 'name', match: 'maybe', rules: [{ op: 'nope' }, rule('cost', 'between', '1', { value2: '5' }), { field: 'x', op: 'in', values: ['a', 1] }], sort: [{ field: 'cost', dir: -1 }, { field: 'cost', dir: 1 }, { field: '' }, { field: 'name' }] }) },
+    },
+    errors: {
+      filterButton: dsb.dsbAssetErrors('filter-button', { maxRules: 50, quickFields: 'name' }), sortControl: dsb.dsbAssetErrors('sort-control', { maxKeys: 9 }),
+      dataSetBar: dsb.dsbAssetErrors('data-set-bar', { search: 1 }), searchApp: dsb.dsbAssetErrors('search-bar', { fields: ['a'] }), searchDataset: dsb.dsbAssetErrors('search-bar', { scope: 'dataset', fields: ['a'], minChars: 2 }), clean: dsb.dsbAssetErrors('filter-button', starters('filter-button').default),
+    },
+    placement: Object.fromEntries(dsb.DSB_PLACEMENTS.map((p) => [p, dsb.placementSlot(p)])),
+    search: {
+      wordScores: { substring: dsb.searchWordScore('Alpha build', 'alpha', true), oneEdit: dsb.searchWordScore('Alpha build', 'alpah', true), swap: dsb.searchWordScore('alphabet', 'alhpabet', true), subsequence: dsb.searchWordScore('Alpine theme', 'apn', true), none: dsb.searchWordScore('Beta', 'zzz', true), exactMiss: dsb.searchWordScore('Alpha build', 'alpah', false), shortNoEdit: dsb.searchWordScore('cat', 'cot', true) },
+      rows: {
+        'fuzzy alp': apply({ query: 'alp' }), 'fuzzy alpah': apply({ query: 'alpah' }), 'exact alpah': apply({ query: 'alpah' }, { fuzzy: false }),
+        'two words any order': apply({ query: 'build alpha' }), 'field scoped status': apply({ query: 'done', field: 'status' }), 'field scoped name misses status': apply({ query: 'done', field: 'name' }),
+        'scope fields name only': apply({ query: 'running' }, { fuzzy: true, fields: ['name'] }), 'under minChars = all': apply({ query: 'a' }, { fuzzy: true, minChars: 2 }),
+      },
+      score: { close: dsb.searchScore({ name: 'Alpha build' }, 'alpha', { fuzzy: true }), far: dsb.searchScore({ name: 'Alpine theme' }, 'apn', { fuzzy: true }), miss: dsb.searchScore({ name: 'Beta' }, 'alpha', { fuzzy: true }) },
+    },
+    filter: {
+      'status is done': apply({ rules: [rule('status', 'equals', 'done')] }), 'cost > 10': apply({ rules: [rule('cost', 'gt', '10')] }), 'cost between 1 and 20': apply({ rules: [rule('cost', 'between', '1', { value2: '20' })] }),
+      'when after Oct 25': apply({ rules: [rule('when', 'gt', '2026-10-25')] }), 'cost empty': apply({ rules: [rule('cost', 'empty')] }), 'status one of': apply({ rules: [rule('status', 'in', '', { values: ['done', 'pending'] })] }),
+      'any of two': apply({ match: 'any', rules: [rule('status', 'equals', 'pending'), rule('cost', 'gte', '40')] }), 'all of two': apply({ rules: [rule('status', 'equals', 'done'), rule('cost', 'gte', '40')] }),
+      'rule off ignored': apply({ rules: [rule('status', 'equals', 'done', { off: true })] }), 'rule missing value ignored': apply({ rules: [rule('status', 'equals', '')] }), 'search + rule': apply({ query: 'gri', rules: [rule('status', 'equals', 'done')] }),
+      ready: { ok: dsb.dsbRuleReady(rule('a', 'contains', 'x')), noValue: dsb.dsbRuleReady(rule('a', 'contains', '')), empty: dsb.dsbRuleReady(rule('a', 'empty')), list: dsb.dsbRuleReady(rule('a', 'in', '', { values: [] })), between: dsb.dsbRuleReady(rule('a', 'between', '1')), noField: dsb.dsbRuleReady(rule('', 'empty')) },
+    },
+    sort: {
+      'cost asc, empties last': apply({ sort: [{ field: 'cost', dir: 1 }] }), 'cost desc, empties still last': apply({ sort: [{ field: 'cost', dir: -1 }] }), 'status then name': apply({ sort: [{ field: 'status', dir: 1 }, { field: 'name', dir: 1 }] }),
+      'status desc then cost desc': apply({ sort: [{ field: 'status', dir: -1 }, { field: 'cost', dir: -1 }] }), 'when asc dates': apply({ sort: [{ field: 'when', dir: 1 }] }), 'unknown field ignored': apply({ sort: [{ field: 'nope', dir: 1 }] }),
+      toggle: (() => { let s = dsb.DSB_EMPTY_STATE; const steps: dsb.DsbSortKey[][] = []; s = dsb.toggleDsbSort(s, 'cost', 1); steps.push(s.sort); s = dsb.toggleDsbSort(s, 'name', -1); steps.push(s.sort); s = dsb.toggleDsbSort(s, 'cost', -1); steps.push(s.sort); s = dsb.toggleDsbSort(s, 'cost', -1); steps.push(s.sort); s = dsb.toggleDsbSort(s, 'status', 1, 1); steps.push(s.sort); return steps; })(),
+      compare: { numbers: dsb.dsbCompareValues(2, 10), text: dsb.dsbCompareValues('b', 'A'), natural: dsb.dsbCompareValues('a2', 'a10'), emptyLast: dsb.dsbCompareValues(null, 1), emptyLastDesc: dsb.dsbCompareValues(null, 1, -1), bothEmpty: dsb.dsbCompareValues('', null) },
+    },
+    attachments: {
+      moves, resolved: { 'builds floating': dsb.resolveAttachment(moves['attach bar again: floating']!.builds!, barDefault), 'pending pieces only': dsb.resolveAttachment(moves['attach sort piece, bottom']!.pending!, null), 'pieces of pending': dsb.attachmentPieces(dsb.resolveAttachment(moves['attach sort piece, bottom']!.pending!, null)) },
+      isDefault: { fresh: dsb.attachmentIsDefault(dsb.normalizeAttachment({}, 'x', T)), moved: dsb.attachmentIsDefault(moves['attach bar again: floating']!.builds!), stated: dsb.attachmentIsDefault(moves['state set']!.builds!) },
+      reset: dsb.resetAttachment({ ...savedThen, floatingPos: { x: 0.2, y: 0.9 } }, T),
+      saved: { then: savedThen, reapplied, deleted: dsb.deleteDsbSavedSort(dsb.deleteDsbSavedFilter(savedThen, 'done-only', T), 'cheapest-first', T).saved, summary: dsb.dsbSummary(savedThen.state), summaryEmpty: dsb.dsbSummary(dsb.DSB_EMPTY_STATE) },
+      parse: { string: dsb.parseAttachments(JSON.stringify({ g: { bar: 'default' }, '': { bar: 'x' }, h: 'junk' }), T), junk: dsb.parseAttachments('{not json'), nothing: dsb.parseAttachments(undefined), floating: dsb.normalizeAttachment({ floatingPos: { x: 1.7, y: -2 } }, 'g', T).floatingPos },
+    },
+    labels: { placements: dsb.DSB_PLACEMENT_LABELS, pieces: dsb.DSB_PIECE_LABELS },
   });
 }

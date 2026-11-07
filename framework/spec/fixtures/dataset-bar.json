@@ -1,0 +1,1230 @@
+{
+  "$axf": "dataset-bar-fixture@1",
+  "enums": {
+    "placements": [
+      "top",
+      "bottom",
+      "inline",
+      "floating"
+    ],
+    "displays": [
+      "icon",
+      "label",
+      "both"
+    ],
+    "tones": [
+      "neutral",
+      "primary",
+      "ghost",
+      "quiet"
+    ],
+    "sizes": [
+      "sm",
+      "md"
+    ],
+    "matches": [
+      "all",
+      "any"
+    ],
+    "sortStyles": [
+      "menu",
+      "chips",
+      "buttons"
+    ],
+    "aligns": [
+      "start",
+      "center",
+      "end",
+      "spread"
+    ],
+    "densities": [
+      "compact",
+      "regular"
+    ],
+    "surfaces": [
+      "flat",
+      "raised",
+      "glass"
+    ],
+    "floatingSides": [
+      "bottom-end",
+      "bottom-start",
+      "top-end",
+      "top-start"
+    ],
+    "pieces": [
+      "search",
+      "filter",
+      "sort"
+    ],
+    "pieceTypes": {
+      "search": "search-bar",
+      "filter": "filter-button",
+      "sort": "sort-control"
+    },
+    "ops": [
+      "contains",
+      "not-contains",
+      "equals",
+      "not-equals",
+      "starts",
+      "ends",
+      "in",
+      "gt",
+      "gte",
+      "lt",
+      "lte",
+      "between",
+      "empty",
+      "not-empty"
+    ],
+    "limits": {
+      "maxRules": {
+        "min": 1,
+        "max": 20,
+        "default": 10
+      },
+      "maxKeys": {
+        "min": 1,
+        "max": 5,
+        "default": 3
+      },
+      "minChars": {
+        "min": 0,
+        "max": 5,
+        "default": 1
+      },
+      "savedName": 60,
+      "query": 400,
+      "value": 400
+    }
+  },
+  "defaults": {
+    "filterButton": {
+      "display": "both",
+      "match": "all",
+      "label": "Filter",
+      "icon": "sliders",
+      "tone": "neutral",
+      "size": "sm",
+      "savedFilters": true,
+      "quickFields": [],
+      "maxRules": 10,
+      "showCount": true,
+      "clear": true
+    },
+    "sortControl": {
+      "display": "both",
+      "style": "menu",
+      "label": "Sort",
+      "icon": "chevron-down",
+      "tone": "neutral",
+      "size": "sm",
+      "maxKeys": 3,
+      "savedSorts": true,
+      "quickFields": [],
+      "showCount": true
+    },
+    "dataSetBar": {
+      "placement": "top",
+      "search": "dataset",
+      "filter": "default",
+      "sort": "default",
+      "count": true,
+      "clear": true,
+      "align": "start",
+      "density": "compact",
+      "surface": "flat",
+      "label": "Data set bar",
+      "floatingSide": "bottom-end"
+    },
+    "datasetSearch": {
+      "scope": "dataset",
+      "placeholder": "Search…",
+      "fuzzy": true,
+      "fields": [],
+      "fieldPicker": true,
+      "minChars": 1,
+      "width": "regular"
+    }
+  },
+  "normalize": {
+    "filterButton": {
+      "empty": {
+        "display": "both",
+        "match": "all",
+        "label": "Filter",
+        "icon": "sliders",
+        "tone": "neutral",
+        "size": "sm",
+        "savedFilters": true,
+        "quickFields": [],
+        "maxRules": 10,
+        "showCount": true,
+        "clear": true
+      },
+      "junk": {
+        "display": "both",
+        "match": "all",
+        "label": "Sift",
+        "icon": "sliders",
+        "tone": "neutral",
+        "size": "sm",
+        "savedFilters": true,
+        "quickFields": [
+          "a"
+        ],
+        "maxRules": 20,
+        "showCount": true,
+        "clear": true
+      },
+      "starters": {
+        "default": {
+          "display": "both",
+          "match": "all",
+          "label": "Filter",
+          "icon": "sliders",
+          "tone": "neutral",
+          "size": "sm",
+          "savedFilters": true,
+          "quickFields": [],
+          "maxRules": 10,
+          "showCount": true,
+          "clear": true
+        },
+        "icon": {
+          "display": "icon",
+          "match": "all",
+          "label": "Filter",
+          "icon": "sliders",
+          "tone": "quiet",
+          "size": "sm",
+          "savedFilters": true,
+          "quickFields": [],
+          "maxRules": 10,
+          "showCount": true,
+          "clear": true
+        }
+      }
+    },
+    "sortControl": {
+      "empty": {
+        "display": "both",
+        "style": "menu",
+        "label": "Sort",
+        "icon": "chevron-down",
+        "tone": "neutral",
+        "size": "sm",
+        "maxKeys": 3,
+        "savedSorts": true,
+        "quickFields": [],
+        "showCount": true
+      },
+      "junk": {
+        "display": "both",
+        "style": "menu",
+        "label": "Sort",
+        "icon": "chevron-down",
+        "tone": "neutral",
+        "size": "sm",
+        "maxKeys": 1,
+        "savedSorts": true,
+        "quickFields": [],
+        "showCount": true
+      },
+      "starters": {
+        "chips": {
+          "display": "both",
+          "style": "chips",
+          "label": "Sort",
+          "icon": "chevron-down",
+          "tone": "quiet",
+          "size": "sm",
+          "maxKeys": 3,
+          "savedSorts": true,
+          "quickFields": [],
+          "showCount": false
+        },
+        "default": {
+          "display": "both",
+          "style": "menu",
+          "label": "Sort",
+          "icon": "chevron-down",
+          "tone": "neutral",
+          "size": "sm",
+          "maxKeys": 3,
+          "savedSorts": true,
+          "quickFields": [],
+          "showCount": true
+        },
+        "icon": {
+          "display": "icon",
+          "style": "menu",
+          "label": "Sort",
+          "icon": "chevron-down",
+          "tone": "quiet",
+          "size": "sm",
+          "maxKeys": 3,
+          "savedSorts": true,
+          "quickFields": [],
+          "showCount": true
+        }
+      }
+    },
+    "dataSetBar": {
+      "empty": {
+        "placement": "top",
+        "search": "dataset",
+        "filter": "default",
+        "sort": "default",
+        "count": true,
+        "clear": true,
+        "align": "start",
+        "density": "compact",
+        "surface": "flat",
+        "label": "Data set bar",
+        "floatingSide": "bottom-end"
+      },
+      "junk": {
+        "placement": "top",
+        "search": "dataset",
+        "filter": "",
+        "sort": "default",
+        "count": true,
+        "clear": true,
+        "align": "start",
+        "density": "compact",
+        "surface": "flat",
+        "label": "Data set bar",
+        "floatingSide": "bottom-end"
+      },
+      "starters": {
+        "bottom": {
+          "placement": "bottom",
+          "search": "dataset",
+          "filter": "default",
+          "sort": "chips",
+          "count": true,
+          "clear": true,
+          "align": "spread",
+          "density": "regular",
+          "surface": "raised",
+          "label": "Data set bar (footer)",
+          "floatingSide": "bottom-end"
+        },
+        "compact": {
+          "placement": "inline",
+          "search": "dataset-exact",
+          "filter": "icon",
+          "sort": "icon",
+          "count": true,
+          "clear": false,
+          "align": "end",
+          "density": "compact",
+          "surface": "flat",
+          "label": "Data set bar (compact)",
+          "floatingSide": "bottom-end"
+        },
+        "default": {
+          "placement": "top",
+          "search": "dataset",
+          "filter": "default",
+          "sort": "default",
+          "count": true,
+          "clear": true,
+          "align": "start",
+          "density": "compact",
+          "surface": "flat",
+          "label": "Data set bar",
+          "floatingSide": "bottom-end"
+        },
+        "floating": {
+          "placement": "floating",
+          "search": "dataset",
+          "filter": "icon",
+          "sort": "icon",
+          "count": true,
+          "clear": true,
+          "align": "center",
+          "density": "compact",
+          "surface": "raised",
+          "label": "Data set bar (floating)",
+          "floatingSide": "bottom-end"
+        }
+      }
+    },
+    "datasetSearch": {
+      "app": {
+        "scope": "app",
+        "placeholder": "Search everything…",
+        "fuzzy": false,
+        "fields": [],
+        "fieldPicker": true,
+        "minChars": 1,
+        "width": "regular"
+      },
+      "dataset": {
+        "scope": "dataset",
+        "placeholder": "Search rows…",
+        "fuzzy": true,
+        "fields": [],
+        "fieldPicker": true,
+        "minChars": 1,
+        "width": "regular"
+      },
+      "exact": {
+        "scope": "dataset",
+        "placeholder": "Find…",
+        "fuzzy": false,
+        "fields": [],
+        "fieldPicker": false,
+        "minChars": 2,
+        "width": "compact"
+      },
+      "junk": {
+        "scope": "dataset",
+        "placeholder": "Search…",
+        "fuzzy": true,
+        "fields": [],
+        "fieldPicker": true,
+        "minChars": 5,
+        "width": "regular"
+      }
+    },
+    "state": {
+      "junk": {
+        "query": "",
+        "field": "name",
+        "match": "all",
+        "rules": [
+          {
+            "id": "r-cost-between",
+            "field": "cost",
+            "op": "between",
+            "value": "1",
+            "value2": "5"
+          },
+          {
+            "id": "rmw5uy91i0",
+            "field": "x",
+            "op": "in",
+            "value": "",
+            "values": [
+              "a"
+            ]
+          }
+        ],
+        "sort": [
+          {
+            "field": "cost",
+            "dir": -1
+          },
+          {
+            "field": "name",
+            "dir": 1
+          }
+        ]
+      }
+    }
+  },
+  "errors": {
+    "filterButton": [
+      "data.maxRules must be a number 1–20",
+      "data.quickFields must be a list of field ids"
+    ],
+    "sortControl": [
+      "data.maxKeys must be a number 1–5"
+    ],
+    "dataSetBar": [
+      "data.search must be an asset id or \"\""
+    ],
+    "searchApp": [
+      "data.fields / fieldPicker / minChars need scope: dataset"
+    ],
+    "searchDataset": [],
+    "clean": []
+  },
+  "placement": {
+    "top": {
+      "slot": "axf.dataset.toolbar",
+      "inline": false
+    },
+    "bottom": {
+      "slot": "axf.dataset.footer",
+      "inline": false
+    },
+    "inline": {
+      "slot": "axf.dataset.toolbar",
+      "inline": true
+    },
+    "floating": {
+      "slot": "floating",
+      "inline": false
+    }
+  },
+  "search": {
+    "wordScores": {
+      "substring": 3,
+      "oneEdit": 2,
+      "swap": 2,
+      "subsequence": 1,
+      "none": 0,
+      "exactMiss": 0,
+      "shortNoEdit": 0
+    },
+    "rows": {
+      "fuzzy alp": [
+        "a",
+        "c"
+      ],
+      "fuzzy alpah": [
+        "a"
+      ],
+      "exact alpah": [],
+      "two words any order": [
+        "a"
+      ],
+      "field scoped status": [
+        "b",
+        "d"
+      ],
+      "field scoped name misses status": [],
+      "scope fields name only": [],
+      "under minChars = all": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ]
+    },
+    "score": {
+      "close": 3,
+      "far": 1,
+      "miss": 0
+    }
+  },
+  "filter": {
+    "status is done": [
+      "b",
+      "d"
+    ],
+    "cost > 10": [
+      "a",
+      "d"
+    ],
+    "cost between 1 and 20": [
+      "a",
+      "b"
+    ],
+    "when after Oct 25": [
+      "a",
+      "d"
+    ],
+    "cost empty": [
+      "c"
+    ],
+    "status one of": [
+      "b",
+      "c",
+      "d"
+    ],
+    "any of two": [
+      "c",
+      "d"
+    ],
+    "all of two": [
+      "d"
+    ],
+    "rule off ignored": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+    ],
+    "rule missing value ignored": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+    ],
+    "search + rule": [
+      "d"
+    ],
+    "ready": {
+      "ok": true,
+      "noValue": false,
+      "empty": true,
+      "list": false,
+      "between": false,
+      "noField": false
+    }
+  },
+  "sort": {
+    "cost asc, empties last": [
+      "e",
+      "b",
+      "a",
+      "d",
+      "c"
+    ],
+    "cost desc, empties still last": [
+      "d",
+      "a",
+      "b",
+      "e",
+      "c"
+    ],
+    "status then name": [
+      "b",
+      "d",
+      "c",
+      "a",
+      "e"
+    ],
+    "status desc then cost desc": [
+      "a",
+      "e",
+      "c",
+      "d",
+      "b"
+    ],
+    "when asc dates": [
+      "e",
+      "b",
+      "a",
+      "d",
+      "c"
+    ],
+    "unknown field ignored": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+    ],
+    "toggle": [
+      [
+        {
+          "field": "cost",
+          "dir": 1
+        }
+      ],
+      [
+        {
+          "field": "cost",
+          "dir": 1
+        },
+        {
+          "field": "name",
+          "dir": -1
+        }
+      ],
+      [
+        {
+          "field": "cost",
+          "dir": -1
+        },
+        {
+          "field": "name",
+          "dir": -1
+        }
+      ],
+      [
+        {
+          "field": "name",
+          "dir": -1
+        }
+      ],
+      [
+        {
+          "field": "status",
+          "dir": 1
+        }
+      ]
+    ],
+    "compare": {
+      "numbers": -8,
+      "text": 1,
+      "natural": -1,
+      "emptyLast": 1,
+      "emptyLastDesc": 1,
+      "bothEmpty": 0
+    }
+  },
+  "attachments": {
+    "moves": {
+      "attach bar default": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {},
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "attach bar again: floating": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "attach search piece only": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        },
+        "pending": {
+          "dataset": "pending",
+          "bar": "",
+          "overrides": {
+            "search": "dataset"
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "attach sort piece, bottom": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        },
+        "pending": {
+          "dataset": "pending",
+          "bar": "",
+          "overrides": {
+            "search": "dataset",
+            "sort": "chips",
+            "placement": "bottom"
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "bar on a pieces-only attachment drops the piece overrides": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        },
+        "pending": {
+          "dataset": "pending",
+          "bar": "compact",
+          "overrides": {},
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "state set": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "alp",
+            "field": "",
+            "match": "all",
+            "rules": [
+              {
+                "id": "r-status-equals",
+                "field": "status",
+                "op": "equals",
+                "value": "done"
+              }
+            ],
+            "sort": [
+              {
+                "field": "cost",
+                "dir": -1
+              }
+            ]
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        },
+        "pending": {
+          "dataset": "pending",
+          "bar": "compact",
+          "overrides": {},
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "detach search piece from compact bar": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "alp",
+            "field": "",
+            "match": "all",
+            "rules": [
+              {
+                "id": "r-status-equals",
+                "field": "status",
+                "op": "equals",
+                "value": "done"
+              }
+            ],
+            "sort": [
+              {
+                "field": "cost",
+                "dir": -1
+              }
+            ]
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        },
+        "pending": {
+          "dataset": "pending",
+          "bar": "compact",
+          "overrides": {
+            "search": ""
+          },
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "detach the last piece drops the attachment": {
+        "builds": {
+          "dataset": "builds",
+          "bar": "default",
+          "overrides": {
+            "placement": "floating"
+          },
+          "state": {
+            "query": "alp",
+            "field": "",
+            "match": "all",
+            "rules": [
+              {
+                "id": "r-status-equals",
+                "field": "status",
+                "op": "equals",
+                "value": "done"
+              }
+            ],
+            "sort": [
+              {
+                "field": "cost",
+                "dir": -1
+              }
+            ]
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "detach bar": {}
+    },
+    "resolved": {
+      "builds floating": {
+        "placement": "floating",
+        "search": "dataset",
+        "filter": "default",
+        "sort": "default",
+        "count": true,
+        "clear": true,
+        "align": "start",
+        "density": "compact",
+        "surface": "flat",
+        "label": "Data set bar",
+        "floatingSide": "bottom-end"
+      },
+      "pending pieces only": {
+        "placement": "bottom",
+        "search": "dataset",
+        "filter": "",
+        "sort": "chips",
+        "count": true,
+        "clear": true,
+        "align": "start",
+        "density": "compact",
+        "surface": "flat",
+        "label": "Data set bar",
+        "floatingSide": "bottom-end"
+      },
+      "pieces of pending": [
+        {
+          "piece": "search",
+          "type": "search-bar",
+          "id": "dataset"
+        },
+        {
+          "piece": "sort",
+          "type": "sort-control",
+          "id": "chips"
+        }
+      ]
+    },
+    "isDefault": {
+      "fresh": true,
+      "moved": false,
+      "stated": false
+    },
+    "reset": {
+      "dataset": "builds",
+      "bar": "default",
+      "overrides": {},
+      "state": {
+        "query": "",
+        "field": "",
+        "match": "all",
+        "rules": [],
+        "sort": []
+      },
+      "saved": {
+        "filters": [
+          {
+            "id": "done-only",
+            "name": "Done only",
+            "match": "all",
+            "rules": [
+              {
+                "id": "r-status-equals",
+                "field": "status",
+                "op": "equals",
+                "value": "done"
+              }
+            ],
+            "query": "x",
+            "savedAt": "2026-11-07T00:00:00.000Z"
+          }
+        ],
+        "sorts": [
+          {
+            "id": "cheapest-first",
+            "name": "Cheapest first",
+            "sort": [
+              {
+                "field": "cost",
+                "dir": 1
+              }
+            ],
+            "savedAt": "2026-11-07T00:00:00.000Z"
+          }
+        ]
+      },
+      "attachedAt": "2026-11-07T00:00:00.000Z",
+      "updatedAt": "2026-11-07T00:00:00.000Z"
+    },
+    "saved": {
+      "then": {
+        "dataset": "builds",
+        "bar": "default",
+        "overrides": {
+          "placement": "top"
+        },
+        "state": {
+          "query": "x",
+          "field": "",
+          "match": "all",
+          "rules": [
+            {
+              "id": "r-status-equals",
+              "field": "status",
+              "op": "equals",
+              "value": "done"
+            }
+          ],
+          "sort": [
+            {
+              "field": "cost",
+              "dir": 1
+            }
+          ]
+        },
+        "saved": {
+          "filters": [
+            {
+              "id": "done-only",
+              "name": "Done only",
+              "match": "all",
+              "rules": [
+                {
+                  "id": "r-status-equals",
+                  "field": "status",
+                  "op": "equals",
+                  "value": "done"
+                }
+              ],
+              "query": "x",
+              "savedAt": "2026-11-07T00:00:00.000Z"
+            }
+          ],
+          "sorts": [
+            {
+              "id": "cheapest-first",
+              "name": "Cheapest first",
+              "sort": [
+                {
+                  "field": "cost",
+                  "dir": 1
+                }
+              ],
+              "savedAt": "2026-11-07T00:00:00.000Z"
+            }
+          ]
+        },
+        "attachedAt": "2026-11-07T00:00:00.000Z",
+        "updatedAt": "2026-11-07T00:00:00.000Z"
+      },
+      "reapplied": {
+        "dataset": "builds",
+        "bar": "default",
+        "overrides": {
+          "placement": "top"
+        },
+        "state": {
+          "query": "x",
+          "field": "",
+          "match": "all",
+          "rules": [
+            {
+              "id": "r-status-equals",
+              "field": "status",
+              "op": "equals",
+              "value": "done"
+            }
+          ],
+          "sort": [
+            {
+              "field": "cost",
+              "dir": 1
+            }
+          ]
+        },
+        "saved": {
+          "filters": [
+            {
+              "id": "done-only",
+              "name": "Done only",
+              "match": "all",
+              "rules": [
+                {
+                  "id": "r-status-equals",
+                  "field": "status",
+                  "op": "equals",
+                  "value": "done"
+                }
+              ],
+              "query": "x",
+              "savedAt": "2026-11-07T00:00:00.000Z"
+            }
+          ],
+          "sorts": [
+            {
+              "id": "cheapest-first",
+              "name": "Cheapest first",
+              "sort": [
+                {
+                  "field": "cost",
+                  "dir": 1
+                }
+              ],
+              "savedAt": "2026-11-07T00:00:00.000Z"
+            }
+          ]
+        },
+        "attachedAt": "2026-11-07T00:00:00.000Z",
+        "updatedAt": "2026-11-07T00:00:00.000Z"
+      },
+      "deleted": {
+        "filters": [],
+        "sorts": []
+      },
+      "summary": "\"x\" · 1 rule · sorted by 1",
+      "summaryEmpty": ""
+    },
+    "parse": {
+      "string": {
+        "g": {
+          "dataset": "g",
+          "bar": "default",
+          "overrides": {},
+          "state": {
+            "query": "",
+            "field": "",
+            "match": "all",
+            "rules": [],
+            "sort": []
+          },
+          "saved": {
+            "filters": [],
+            "sorts": []
+          },
+          "attachedAt": "2026-11-07T00:00:00.000Z",
+          "updatedAt": "2026-11-07T00:00:00.000Z"
+        }
+      },
+      "junk": {},
+      "nothing": {},
+      "floating": {
+        "x": 1,
+        "y": 0
+      }
+    }
+  },
+  "labels": {
+    "placements": {
+      "top": "Top",
+      "bottom": "Bottom",
+      "inline": "Inline",
+      "floating": "Floating"
+    },
+    "pieces": {
+      "search": "Search bar",
+      "filter": "Filter button",
+      "sort": "Sort control"
+    }
+  }
+}

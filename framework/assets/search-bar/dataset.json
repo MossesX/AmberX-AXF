@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "search-bar",
+  "id": "dataset",
+  "name": "Data set search",
+  "version": "1.0.0",
+  "description": "The search piece of a data set bar: searches the rows of the data set it is attached to, every field or one picked field, fuzzy (words in any order, small typos). The same asset type as the top-bar search.",
+  "author": "AmberX AXF",
+  "tags": ["search", "dataset", "data-set-bar"],
+  "data": { "placeholder": "Search rows…", "maxResults": 14, "width": "regular", "shortcut": false, "scope": "dataset", "fuzzy": true, "fields": [], "fieldPicker": true, "minChars": 1 }
+}

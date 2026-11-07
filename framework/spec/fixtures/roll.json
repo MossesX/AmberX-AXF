@@ -49,6 +49,9 @@
     "job-type": false,
     "card": false,
     "help": false,
+    "filter-button": false,
+    "sort-control": false,
+    "data-set-bar": false,
     "uac-policy": false
   },
   "cases": {

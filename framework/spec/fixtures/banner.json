@@ -52,6 +52,8 @@
     "clock:digital-12h",
     "clock:digital-24h",
     "search-bar:compact",
+    "search-bar:dataset",
+    "search-bar:dataset-exact",
     "search-bar:everything"
   ],
   "place": {

@@ -47,7 +47,10 @@
     "sizing",
     "agent-card",
     "job-type",
-    "card"
+    "card",
+    "filter-button",
+    "sort-control",
+    "data-set-bar"
   ],
   "parsed": {
     "full": {

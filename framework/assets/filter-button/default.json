@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "filter-button",
+  "id": "default",
+  "name": "Filter",
+  "version": "1.0.0",
+  "description": "Icon + label button that opens the filter dialog: rules on any field, match all / any, saved filters, a badge with the active rule count.",
+  "author": "AmberX AXF",
+  "tags": ["filter", "dataset", "data-set-bar"],
+  "data": { "display": "both", "match": "all", "label": "Filter", "icon": "sliders", "tone": "neutral", "size": "sm", "savedFilters": true, "quickFields": [], "maxRules": 10, "showCount": true, "clear": true }
+}

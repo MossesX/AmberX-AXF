@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "data-set-bar",
+  "id": "floating",
+  "name": "Data set bar, floating pill",
+  "version": "1.0.0",
+  "description": "Option C: a raised pill floating over the data set's bottom end corner (drag it anywhere, the spot is remembered): search, Filter and Sort icons, count. Good on phones.",
+  "author": "AmberX AXF",
+  "tags": ["dataset", "data-set-bar", "floating", "phone"],
+  "data": { "placement": "floating", "search": "dataset", "filter": "icon", "sort": "icon", "count": true, "clear": true, "align": "center", "density": "compact", "surface": "raised", "label": "Data set bar (floating)", "floatingSide": "bottom-end" }
+}

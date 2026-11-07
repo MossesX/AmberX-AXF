@@ -301,6 +301,8 @@
     "logo:wordmark",
     "progress:build",
     "search-bar:compact",
+    "search-bar:dataset",
+    "search-bar:dataset-exact",
     "search-bar:everything",
     "spacer:gap",
     "spacer:push",
