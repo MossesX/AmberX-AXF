@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1514,
- "updatedAt": "2026-11-08T17:33:21.251Z",
+ "rev": 1515,
+ "updatedAt": "2026-11-08T17:33:38.002Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117990,7 +117990,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:23:21.874Z",
-   "updatedAt": "2026-11-08T17:33:18.713Z",
+   "updatedAt": "2026-11-08T17:33:30.323Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -118039,7 +118039,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -118048,9 +118048,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:23:21.876Z"
+     "updatedAt": "2026-11-08T17:33:21.298Z"
     },
     {
      "id": "s3",
@@ -118061,7 +118061,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -118070,9 +118070,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:23:21.876Z"
+     "updatedAt": "2026-11-08T17:33:23.485Z"
     },
     {
      "id": "s4",
@@ -118083,7 +118083,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "25 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -118092,9 +118092,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:23:21.876Z"
+     "updatedAt": "2026-11-08T17:33:25.305Z"
     },
     {
      "id": "s5",
@@ -118105,7 +118105,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -118114,9 +118114,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:23:21.876Z"
+     "updatedAt": "2026-11-08T17:33:27.153Z"
     },
     {
      "id": "s6",
@@ -118127,7 +118127,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -118136,9 +118136,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:23:21.876Z"
+     "updatedAt": "2026-11-08T17:33:29.089Z"
     },
     {
      "id": "s7",
@@ -118149,7 +118149,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "25 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -118158,9 +118158,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:23:21.876Z"
+     "updatedAt": "2026-11-08T17:33:30.673Z"
     }
    ],
    "profiles": [
@@ -118171,7 +118171,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
