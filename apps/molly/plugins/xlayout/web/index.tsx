@@ -10,7 +10,8 @@ import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } f
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
 const WARM_APPS = ['console'];
-import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import { APP_TAB, AppMain, AppTab, applyPresetById, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import { LAYOUT_MODE_PRESET, type LayoutMode } from '../../../src/axf/core/engines/xlayout';
 import helpPack from '../help.json';
 import './xlayout.css';
 
@@ -37,6 +38,14 @@ export interface XLayoutService {
   saveSlot(slot: number, items: import('../../../src/axf/core/engines/xlayout').XToolbarItem[]): void;
   /** run an item now (try it) */
   run(item: import('../../../src/axf/core/engines/xlayout').XToolbarItem): void;
+  /** the layout mode in force (single | tabs | split | ide) and the preset it uses */
+  mode(): { mode: LayoutMode; preset: string };
+  /** switch the layout mode (tabs / split / ide lay the apps out on the dock with the preset; single = one at a time) */
+  setMode(mode: LayoutMode, preset?: string): boolean;
+  /** the dock arrangement now (dock@1 snapshot, null when nothing is docked), to keep in a named layout */
+  snapshot(): unknown;
+  /** bring back an arrangement taken by snapshot() */
+  restore(snapshot: unknown): boolean;
 }
 
 let host: ChromeHost | null = null;
@@ -70,7 +79,7 @@ function IdePanel() {
   const presets = rt.registry.list('dock-layout' as never) as unknown as { id: string; name: string }[];
   return (
     <div className="fx-stack">
-      <Switch label="IDE mode" hint="Apps open as tabs in panes you drag, resize and dock, instead of one app at a time." checked={l.ide.on} onChange={(on) => { rt.settings.set(K.ideOn, on); if (on) enterIde(rt); else keepIde(rt); }} />
+      <Switch label="IDE mode" hint="Apps open as tabs in panes you drag, resize and dock, instead of one app at a time. Other layout modes: Settings → Plugins → One shell." checked={l.ide.on} onChange={(on) => { rt.settings.set(K.ideOn, on); rt.settings.set(K.mode, on ? 'ide' : 'single'); if (on) enterIde(rt); else keepIde(rt); }} />
       <SelectField label="Pane layout" hint="The layout IDE mode starts with. Pick one with a preview: Choose layout." value={l.ide.preset} options={l.ide.presets.filter((p) => presets.some((x) => x.id === p)).map((p) => ({ value: p, label: presets.find((x) => x.id === p)?.name ?? p }))} onChange={(v) => rt.settings.set(K.preset, v)} />
       <SelectField label="Pane limit" hint="The most panes at once; a tab dropped past it joins a pane as a tab." value={String(l.ide.paneLimit)} options={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => { rt.settings.set(K.paneLimit, Number(v)); rt.windows.setDockRules({ paneLimit: Number(v) }); }} />
       <div className="fx-form__actions"><Button icon="layout" onClick={() => rt.openDialog(LAYOUT_DIALOG)}>Choose layout…</Button></div>
@@ -159,7 +168,7 @@ export const plugin: AxfWebLibrary = {
     h.subscribe(() => { const k = Object.keys(h.navViews).join(','); if (k !== lastViews) { lastViews = k; views(); } });
     const on = rt.actions.register.bind(rt.actions);
     on(RUN_ACTION, (args) => { h.run(args.join(':')); }, { label: 'Run an app’s menu item' });
-    on('xlayout.ide', () => { const now = !effectiveXLayout(rt).ide.on; rt.settings.set(K.ideOn, now); if (now) enterIde(rt); else keepIde(rt); rt.toast(now ? 'Apps open in panes now.' : 'One app at a time again.', 'info', now ? 'IDE mode on' : 'IDE mode off'); }, { label: 'IDE mode on / off' });
+    on('xlayout.ide', () => { const now = !effectiveXLayout(rt).ide.on; rt.settings.set(K.ideOn, now); rt.settings.set(K.mode, now ? 'ide' : 'single'); if (now) enterIde(rt); else keepIde(rt); rt.toast(now ? 'Apps open in panes now.' : 'One app at a time again.', 'info', now ? 'IDE mode on' : 'IDE mode off'); }, { label: 'IDE mode on / off' });
     on('xlayout.layout', () => rt.openDialog(LAYOUT_DIALOG), { label: 'Pane layout…' });
     on('xlayout.open', (args, ctx) => {
       const [target = 'main', ...rest] = args;
@@ -173,6 +182,10 @@ export const plugin: AxfWebLibrary = {
       chrome: () => h.chrome(),
       saveSlot: (slot, items) => saveSlotItems(rt, slot, items),
       run: (item) => runToolbarItem(rt, h, item),
+      mode: () => { const l = effectiveXLayout(rt); return { mode: l.mode, preset: l.mode === 'ide' ? l.ide.preset : LAYOUT_MODE_PRESET[l.mode] }; },
+      setMode: (mode, preset) => applyPresetById(rt, preset ?? (mode === 'ide' ? effectiveXLayout(rt).ide.preset : LAYOUT_MODE_PRESET[mode]), mode),
+      snapshot: () => rt.windows.snapshot(),
+      restore: (snap) => { try { const ok = rt.windows.restoreLayout(snap); if (ok) keepIde(rt); return ok; } catch { return false; } },
     } satisfies XLayoutService);
     rt.settings.onChange(K.paneLimit, () => rt.windows.setDockRules({ paneLimit: effectiveXLayout(rt).ide.paneLimit }));
   },

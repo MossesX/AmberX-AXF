@@ -1,0 +1,46 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.shell",
+  "name": "One shell",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Molly as the one shell for every app: one menu over every app's screens, plugins, actions and settings (the Go menu and Go to anything: grouped by app and category, slim sliding sub menus, search, favorites, recent), built from each app's registry so new plugins appear by themselves; layout modes (one at a time, tabs, side by side, IDE) and named layouts; capability axf.shell@1 for native app mounts.",
+  "targets": ["molly"],
+  "provides": ["dialog:shell.go", "settings-tab:shell"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": ["axf.xlayout@1"],
+  "banner": false,
+  "tabable": false,
+  "uiEditor": ["layout"],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/shell",
+    "env": [],
+    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "list", "title": "List every place in Molly", "description": "The one menu over every app (menu-index@1): Favorites, Recent, then each app's screens, plugins, actions, settings and dialogs by category.", "action": "shell.list", "readOnly": true, "output": "menu-index@1" },
+      { "id": "surfaces", "title": "List every app surface", "description": "What each app brings into Molly (shell-surface@1): its items and how it mounts.", "action": "shell.surfaces", "readOnly": true, "output": "shell-surface@1[]" },
+      { "id": "open", "title": "Open anything in Molly", "description": "Opens a place by its ref <app>:<kind>:<id> (from list), optionally in a pane or a floating window: pane:console:screen:nav:build.", "action": "shell.open", "input": { "type": "object", "properties": { "ref": { "type": "string" }, "target": { "type": "string", "enum": ["main", "floating", "pane"] } }, "required": ["ref"] } },
+      { "id": "find", "title": "Search every app", "description": "Opens Go to anything with the words already typed.", "action": "shell.find", "input": { "type": "object", "properties": { "query": { "type": "string" } }, "required": ["query"] } },
+      { "id": "favorite", "title": "Add to / remove from favorites", "action": "shell.favorite", "input": { "type": "object", "properties": { "ref": { "type": "string" } }, "required": ["ref"] } },
+      { "id": "mode", "title": "Pick the layout mode", "description": "single (one at a time), tabs, split (side by side) or ide (docked panes).", "action": "shell.mode", "input": { "type": "object", "properties": { "mode": { "type": "string", "enum": ["single", "tabs", "split", "ide"] } }, "required": ["mode"] } },
+      { "id": "layout-save", "title": "Save this layout", "action": "shell.layout.save", "input": { "type": "object", "properties": { "name": { "type": "string" } }, "required": ["name"] } },
+      { "id": "layout-switch", "title": "Switch to a named layout", "action": "shell.layout.switch", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
+      { "id": "layout-remove", "title": "Remove a named layout", "action": "shell.layout.remove", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
+      { "id": "recents-clear", "title": "Clear recent", "action": "shell.recents.clear" },
+      { "id": "go", "title": "Open Go to anything", "action": "shell.go" },
+      { "id": "settings", "title": "Open One shell settings", "action": "shell.settings" }
+    ],
+    "noReads": "no data folder: favorites, recent, layouts and menu settings are per-device settings"
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-08", "branch": "claude/molly-one-shell-r4" },
+  "help": "help.json",
+  "opens": "dialog"
+}

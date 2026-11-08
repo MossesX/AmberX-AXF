@@ -1,0 +1,15 @@
+/* One shell (Molly): layout only; every colour, size and spacing is a theme token (framework/spec/THEMING.md). */
+.axp-shell-go { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: min(100%, calc(var(--fx-space) * 60)); }
+.axp-shell-go__list, .axp-shell-list { max-height: min(60vh, calc(var(--fx-space) * 110)); overflow-y: auto; }
+.axp-shell-go__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-shell-go__row > .fx-menu__item { flex: 1; min-width: 0; }
+.axp-shell-go__row .fx-menu__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.axp-shell-go__detail { font-size: var(--fx-type-scale-xs); }
+.axp-shell-go__acts { display: inline-flex; gap: var(--fx-dens-gap-sm); }
+.axp-shell-go__acts [aria-pressed="true"] { color: var(--fx-accent); }
+.axp-shell-go__foot { font-size: var(--fx-type-scale-xs); }
+.axp-shell-row { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; }
+.axp-shell-code { white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); }
+/* phones (the framework's narrow layout) and touch screens: the side buttons (pane / floating window) give way; the star stays */
+:where([data-fx-narrow]) .axp-shell-go__wide { display: none; }
+@media (pointer: coarse) { .axp-shell-go__wide { display: none; } }

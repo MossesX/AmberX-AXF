@@ -10,13 +10,13 @@ import type { AxfRuntime } from '../../../src/axf/core';
 import type { TabSpec } from '../../../src/axf/core/engines/windows';
 import { paneGroups } from '../../../src/axf/core/engines/windows';
 import { normalizeDockLayout, type DockLayoutData } from '../../../src/axf/core/engines/dock';
-import { dockRulesOf, idePresets, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
+import { LAYOUT_MODE_PRESET, dockRulesOf, idePresets, type LayoutMode, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
 import { Button, Icon, useAxfState, useRuntime } from '../../../src/axf/react';
 import { DockHost, DockPresetThumb } from '../../../src/axf/react/windows/DockHost';
 import { useWindowState } from '../../../src/axf/react/windows/WindowHost';
 import { AppSlot } from '../../../src/molly/FrameDeck';
 import { MOLLY_APPS, mollyApp } from '../../../src/molly/apps';
-import { effectiveXLayout, K } from './model';
+import { docked, effectiveXLayout, K } from './model';
 
 /** Tab kind of an app in a pane (payload = the app id). */
 export const APP_TAB = 'molly-app';
@@ -56,7 +56,8 @@ export function showInDock(rt: AxfRuntime, app: string): void {
 export function openApp(rt: AxfRuntime, app: string, target: OpenTarget): void {
   const a = mollyApp(app); if (!a) return;
   const wm = rt.windows;
-  const ide = effectiveXLayout(rt).ide.on;
+  const l0 = effectiveXLayout(rt);
+  const ide = l0.ide.on, inDock = docked(l0);
   if (target === 'floating') {
     const at = findTab(rt, app);
     if (at && at.windowId !== wm.mainWindowId) { wm.focus(at.windowId); return; }
@@ -74,7 +75,7 @@ export function openApp(rt: AxfRuntime, app: string, target: OpenTarget): void {
     return;
   }
   rt.navigate(app);
-  if (ide) showInDock(rt, app);
+  if (inDock) showInDock(rt, app);
 }
 
 /** Put the xlayout's pane limit in force, and bring back the arrangement kept from last time. */
@@ -117,9 +118,36 @@ export function Workspace({ app }: { app: string }) {
 export function AppMain({ app }: { app: string }) {
   const rt = useRuntime();
   useAxfState();
-  const ide = effectiveXLayout(rt).ide.on;
+  const ide = docked(effectiveXLayout(rt));
   // the app area already fills the main region edge to edge (xlayout.css), so the frame covers just its slot
   return ide ? <Workspace app={app} /> : <AppSlot id={app} fill="self" />;
+}
+
+/**
+ * Lay the apps out with a dock-layout preset: the mode (tabs / split / ide) and preset are saved, the dock rules put in
+ * force, enough apps opened to fill the panes (the open ones first, the one on screen leading), the preset applied and
+ * the arrangement kept. Single mode keeps the arrangement and shows one app at a time.
+ */
+export function applyPresetById(rt: AxfRuntime, presetId: string, mode: LayoutMode): boolean {
+  if (mode === 'single') { keepIde(rt); rt.settings.set(K.mode, 'single'); rt.settings.set(K.ideOn, false); return true; }
+  const all = rt.registry.list('dock-layout' as never) as unknown as { id: string; data: unknown }[];
+  const asset = all.find((a) => a.id === presetId) ?? all.find((a) => a.id === LAYOUT_MODE_PRESET[mode]);
+  if (!asset) return false;
+  const data = normalizeDockLayout(asset.data);
+  rt.settings.set(K.mode, mode);
+  rt.settings.set(K.ideOn, mode === 'ide');
+  if (mode === 'ide') rt.settings.set(K.preset, asset.id);
+  rt.windows.setDockRules(dockRulesOf(effectiveXLayout(rt)));
+  const limit = dockRulesOf(effectiveXLayout(rt)).paneLimit;
+  const view = rt.getState().view.split('/')[0] ?? '';
+  const open = Object.values(rt.windows.state.groups).filter((g) => g.windowId === rt.windows.mainWindowId).flatMap((g) => g.tabs).filter((t) => t.kind === APP_TAB).map((t) => t.payload!);
+  const order = [...new Set([...(mollyApp(view) ? [view] : []), ...open, ...MOLLY_APPS.map((a) => a.id)])];
+  const placed = order.slice(0, Math.max(Math.min(data.panes, limit), Math.min(open.length, order.length)));
+  for (const app of placed) if (!findTab(rt, app)) { const g = currentGroup(rt); if (g) rt.windows.addTab(g, tabOf(app)); else rt.windows.openGroup([tabOf(app)]); }
+  rt.windows.applyPreset(data);
+  keepIde(rt);
+  if (!mollyApp(view)) rt.navigate(placed[0] ?? MOLLY_APPS[0]!.id);
+  return true;
 }
 
 /** The presets the layout picker offers: the xlayout's list, kept to the dock-layout assets installed, in its order. */
@@ -152,13 +180,7 @@ export function LayoutPicker({ close }: { close: () => void }) {
   const placed = order.slice(0, Math.max(panes, Math.min(open.length, order.length)));
   const apply = () => {
     if (!chosen) return;
-    rt.settings.set(K.ideOn, true);
-    rt.settings.set(K.preset, chosen.id);
-    rt.windows.setDockRules(dockRulesOf(effectiveXLayout(rt)));
-    for (const app of placed) if (!findTab(rt, app)) { const g = currentGroup(rt); if (g) rt.windows.addTab(g, tabOf(app)); else rt.windows.openGroup([tabOf(app)]); }
-    rt.windows.applyPreset(chosen.data);
-    keepIde(rt);
-    if (!mollyApp(view)) rt.navigate(placed[0] ?? MOLLY_APPS[0]!.id);
+    applyPresetById(rt, chosen.id, 'ide');
     close();
   };
   if (!presets.length) return <p className="fx-muted">No pane layouts are installed (dock-layout assets).</p>;
