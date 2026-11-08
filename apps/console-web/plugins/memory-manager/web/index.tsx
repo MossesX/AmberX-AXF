@@ -12,6 +12,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Column } from './Column';
 import { ChainPane, DocPane, OutlinePane, RefsPane } from './Doc';
 import { appMenu } from './menu';
+import { MemorySettings, applyFilterText, buildChunks, deleteFile, loadMemory, moveFile, searchInside, setPanel, setSettingText, showDetails, type Panel } from './memory';
 import { VIEWS, idFromLoose, viewOf, type ViewId } from './model';
 import { FOLDER, K, VIEW_ID, activeDocId, bindRuntime, loadListing, openDoc, saveDoc, setEditable, setSidePanes, setView, studio, useStudio } from './state';
 import './memory-manager.css';
@@ -19,10 +20,12 @@ import './memory-manager.css';
 const ID = 'ai.amberx.axf.console.memory-manager';
 const VERSION = '0.1.0';
 
-/** Deep links: `?memory=<id or path>` opens a file, `?memory-context=<id or path>` its context view (approval rows link here). */
+/** Deep links (`#/memory-manager?…`): `memory=<id or path>` opens a file, `memory-context=` its context view, `memory-panel=memory|files|chunks|start` picks the column panel, `memory-file=<path>` shows who reads and writes it. */
 function openFromUrl() {
   const read = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k);
-  const doc = read('memory'), ctx = read('memory-context');
+  const doc = read('memory'), ctx = read('memory-context'), panel = read('memory-panel'), file = read('memory-file');
+  if (panel) setPanel(panel as Panel);
+  if (file) showDetails(file);
   if (doc) openDoc(idFromLoose(doc));
   if (ctx) openDoc(idFromLoose(ctx), 'tab', 'mm-chain');
 }
@@ -38,7 +41,7 @@ function StudioView() {
   return (
     <div className="fx-stack axp-memory-manager" data-view={view} data-column={column}>
       <header className="fx-pagehead axp-memory-manager__head">
-        <div className="axp-memory-manager__label"><p className="fx-eyebrow">Claude files · docs</p><h1>Memory Manager</h1><p className="fx-muted axp-memory-manager__hint">Every Markdown file by scope, opened as tabs you can split, float and edit safely. {v.hint}</p></div>
+        <div className="axp-memory-manager__label"><p className="fx-eyebrow">Claude memory</p><h1>Memory Manager</h1><p className="fx-muted axp-memory-manager__hint">Every memory file, what reads and writes it, and the chunks sessions load. Files open as tabs you can split, float and edit safely. {v.hint}</p></div>
         <div className="axp-memory-manager__acts">
           <Segmented label="View" size="sm" value={view} onChange={(x) => setView(x as ViewId)} options={VIEWS.map((x) => ({ value: x.id, label: x.label, icon: x.icon }))} />
           <IconButton icon="layout" label="Pane layouts" onClick={() => rt.openDialog('dock-layout', { arg: rt.windows.mainWindowId })} />
@@ -70,7 +73,7 @@ export const plugin: AxfWebLibrary = {
   label: 'Memory Manager',
   version: VERSION,
   appMenu,
-  builtWith: { model: 'opus', builtAt: '2026-11-03' },
+  builtWith: { model: 'opus', builtAt: '2026-11-08' },
   register(rt) {
     bindRuntime(rt);
     const go = () => rt.navigate(VIEW_ID);
@@ -83,6 +86,21 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('memory-manager.toggle-edit', (args, ctx) => { const s = arg(args, ctx.payload); const id = s ? idFromLoose(s) : activeDocId(); if (id) setEditable(id, !studio().editable[id]); }, { label: 'Switch editing on or off for a file', params: true });
     rt.actions.register('memory-manager.save', () => { const id = activeDocId(); if (id) void saveDoc(id); }, { label: 'Save the open Markdown file' });
     rt.actions.register('memory-manager.view', (args) => { const v = viewOf(args[0]); setView(v.id); go(); }, { label: 'Switch the Memory Manager view (browse, read, write, ide)', params: true });
+    const words = (args: string[], ctx: { payload?: string }) => arg(args, ctx.payload);
+    rt.actions.register('memory-manager.memory', (args, ctx) => { go(); setPanel('memory'); const s = words(args, ctx); if (s) applyFilterText(s); else void loadMemory(); }, { label: 'Show the memory list (optional filter)', params: true });
+    rt.actions.register('memory-manager.files', () => { go(); setPanel('files'); }, { label: 'Show the Markdown files' });
+    rt.actions.register('memory-manager.rescan', () => { go(); setPanel('memory'); void loadMemory(true); }, { label: 'Refresh the memory scan' });
+    rt.actions.register('memory-manager.search', (args, ctx) => { go(); void searchInside(words(args, ctx)); }, { label: 'Search inside memory files', params: true });
+    rt.actions.register('memory-manager.filter', (args, ctx) => { go(); setPanel('memory'); applyFilterText(words(args, ctx)); }, { label: 'Filter the memory list (category:, kind:, root:, writer:, loaded, clear)', params: true });
+    rt.actions.register('memory-manager.details', (args, ctx) => { const s = words(args, ctx); if (!needArg(rt, s)) return; go(); showDetails(s); }, { label: 'Show who reads and writes a memory file', params: true });
+    rt.actions.register('memory-manager.move', (args, ctx) => { const [from, to] = args.length >= 2 ? [args[0]!, args.slice(1).join(':')] : (ctx.payload ?? '').split(/\s+/); if (!from || !to) { rt.toast('Say what to move and where, e.g. _claude/plans/a.md _claude/plans/b.md.', 'warning'); return; } if (window.confirm(`Move ${from} to ${to}?`)) void moveFile(idFromLoose(from), to); }, { label: 'Move a memory file', params: true });
+    rt.actions.register('memory-manager.delete', (args, ctx) => { const s = words(args, ctx); if (!needArg(rt, s)) return; void deleteFile(idFromLoose(s)); }, { label: 'Delete a memory file (asks first; kept as a version)', params: true });
+    rt.actions.register('memory-manager.history', (args, ctx) => { const s = words(args, ctx); if (!needArg(rt, s)) return; go(); openDoc(idFromLoose(s)); }, { label: 'Version history of a memory file', params: true });
+    rt.actions.register('memory-manager.chunks', () => { go(); setPanel('chunks'); }, { label: 'Show the memory chunks' });
+    rt.actions.register('memory-manager.build-chunks', () => void buildChunks(), { label: 'Rebuild the memory chunks' });
+    rt.actions.register('memory-manager.load', () => { go(); setPanel('start'); }, { label: 'What a session loads at start' });
+    rt.actions.register('memory-manager.setting', (args, ctx) => void setSettingText(args.length ? args.join(' ') : ctx.payload ?? ''), { label: 'Change a Memory Manager setting (key value)', params: true });
+    rt.actions.register('memory-manager.settings', () => rt.dispatch(`settings.open:${FOLDER}`), { label: 'Open Memory Manager settings' });
     rt.actions.register('memory-manager.notes', () => { go(); void loadListing(); }, { label: 'Open the Notes Vault in Memory Manager' });
   },
   views: { [VIEW_ID]: { title: 'Memory Manager', icon: 'file', render: () => <StudioView /> } },
@@ -115,6 +133,7 @@ export const plugin: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
+    { id: 'memory-manager.memory', tab: FOLDER, title: 'Memory scan, list, safety and chunks', icon: 'layers', order: 15, render: () => <MemorySettings /> },
     { id: 'memory-manager.where', tab: FOLDER, title: 'What it opens', icon: 'folder', order: 20, render: () => <SettingsPanel /> },
     { id: 'memory-manager.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

@@ -62,18 +62,21 @@
       {
         "route": "GET /history",
         "id": "file-history",
-        "title": "Version history of a file"
+        "title": "Version history of a file",
+        "description": "The kept versions of a file, newest first (version, size, savedAt, savedBy, reason: write, move or delete)."
       },
       {
         "route": "GET /version",
         "id": "file-version",
-        "title": "Read a kept version of a file"
+        "title": "Read a kept version of a file",
+        "description": "One kept version of a file with its text (id, version)."
       },
       {
         "route": "POST /restore",
         "id": "restore-version",
         "title": "Restore a kept version",
-        "confirm": true
+        "confirm": true,
+        "description": "Writes a kept version back ({id, version, if_version}); the text it replaces is kept too, so a restore can be undone. Also brings back a deleted or moved file."
       },
       {
         "route": "GET /chain",
@@ -84,7 +87,8 @@
       {
         "route": "GET /refs",
         "id": "file-refs",
-        "title": "References of a file"
+        "title": "References of a file",
+        "description": "The files a Markdown file references, resolved to ids (null when the file is not there)."
       },
       {
         "action": "memory-manager.open",
@@ -95,12 +99,14 @@
       {
         "action": "memory-manager.edit",
         "id": "edit-file",
-        "title": "Open a file to edit in Memory Manager"
+        "title": "Open a file to edit in Memory Manager",
+        "description": "Opens a file in the open console with editing switched on (args: an id or a path)."
       },
       {
         "action": "memory-manager.context",
         "id": "open-context",
-        "title": "Open the context view of a file in Memory Manager"
+        "title": "Open the context view of a file in Memory Manager",
+        "description": "Opens the context view of a file: everything it references, with token counts (args: an id or a path)."
       },
       {
         "route": "GET /memory",

@@ -45,10 +45,10 @@
           "action": "terminal.new"
         },
         {
-          "id": "handoff",
-          "label": "Account handoff",
-          "icon": "rocket",
-          "action": "claude-handoff.open"
+          "id": "memory-manager",
+          "label": "Memory Manager",
+          "icon": "layers",
+          "action": "memory-manager.show"
         },
         {
           "id": "plugin-switches",

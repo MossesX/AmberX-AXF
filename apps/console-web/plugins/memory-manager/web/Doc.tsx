@@ -262,7 +262,7 @@ export function OutlinePane() {
   const heads = useMemo(() => outline(ds?.draft ?? ''), [ds?.draft]);
   if (!id || !ds?.doc) return <div className="fx-empty">Open a file to see its outline.</div>;
   return (
-    <nav className="axp-memory-manager__outline" aria-label="Outline">
+    <nav className="axp-memory-manager__outline" aria-label="Outline" data-axf-nav="memory-manager.outline">
       <p className="fx-small fx-muted">{ds.doc.name}</p>
       {!heads.length && <p className="fx-small fx-muted">No headings.</p>}
       {heads.map((h) => (
@@ -278,7 +278,7 @@ export function RefsPane() {
   const { id, ds } = useActiveDoc();
   if (!id || !ds?.doc) return <div className="fx-empty">Open a file to see what it references.</div>;
   return (
-    <nav className="axp-memory-manager__outline" aria-label="References">
+    <nav className="axp-memory-manager__outline" aria-label="References" data-axf-nav="memory-manager.refs">
       <p className="fx-small fx-muted">{ds.doc.name} references</p>
       {!ds.doc.refs.length && <p className="fx-small fx-muted">Nothing.</p>}
       {ds.doc.refs.map((x) => (

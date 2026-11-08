@@ -88,6 +88,13 @@
         "text": "Where you set “Minutes”. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "add-item",
+        "title": "Add item",
+        "text": "Adds item. Part of Feature matrix.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

@@ -468,6 +468,20 @@
         "title": "Read each step out loud",
         "text": "On: the player speaks every step with the browser's voice. Off: words on screen only.",
         "kind": "toggle"
+      },
+      {
+        "target": "kind",
+        "title": "Kind",
+        "text": "Where you set “Kind”. Change it and the app uses the new value. Part of Glossary, Index & Demos.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "id",
+        "title": "Id",
+        "text": "Where you set “Id”. Change it and the app uses the new value. Part of Glossary, Index & Demos.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": [

@@ -102,6 +102,13 @@
         "target": "notes-browser",
         "title": "Notes settings",
         "text": "Where the notes are kept, and the plugin's install and uninstall panel."
+      },
+      {
+        "target": "notes",
+        "title": "Notes",
+        "text": "Shows the “Notes” part of this screen. Part of Notes.",
+        "kind": "tab",
+        "draft": true
       }
     ],
     "intros": [

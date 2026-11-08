@@ -15,7 +15,7 @@
       {
         "target": "view:memory-manager",
         "title": "Memory Manager",
-        "text": "Every Markdown file in one place: pick a file on the left and it opens as a tab you can float, split and drag anywhere.",
+        "text": "Every place Claude memory lives, in one list: what each file is, whether sessions load it at start, and which parts of the app read and write it. Pick a file to see its readers and writers, view, edit, move or delete it (every change keeps the old text as a version), or open it as a tab you can split and float. The Chunks panel lists the chunked store sessions load from; Session start shows what a session loads first.",
         "kind": "screen"
       },
       {
@@ -237,6 +237,112 @@
         "title": "Memory Manager",
         "text": "A Markdown browser and editor for every .md file: project docs, Claude files, repo docs and notes.",
         "kind": "tab"
+      },
+      {
+        "target": "memory",
+        "title": "Memory list",
+        "text": "Every memory file grouped by category (or location, root, kind: Settings). Filter by category, kind, where it lives, who writes it, or only what loads at session start. Scan again re-reads the code for readers and writers. Search inside memory finds words in the files' text."
+      },
+      {
+        "target": "chunks",
+        "title": "Memory chunks",
+        "text": "The chunked store in _claude/chunks: one chunk per Status entry, decision, thread row or doc section, with a one-line index. Sessions grep the index and read only the chunks they need. Rebuild chunks regenerates them from their sources."
+      },
+      {
+        "target": "session-start",
+        "title": "Session start",
+        "text": "What a session loads first: the small CLAUDE.md, then the orchestrator's list of builds started in the last 24 hours that stopped unfinished, with their next step and the chunks about them."
+      },
+      {
+        "target": "versions",
+        "title": "Versions",
+        "text": "Shows “Versions”. Part of Memory Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "move-or-rename-to",
+        "title": "Move or rename to",
+        "text": "Where you set “Move or rename to”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "find-memory-files",
+        "title": "Find memory files",
+        "text": "Where you set “Find memory files”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "where",
+        "title": "Where",
+        "text": "Where you set “Where”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "written-by",
+        "title": "Written by",
+        "text": "Where you set “Written by”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "loaded-at-session-start-only",
+        "title": "Loaded at session start only",
+        "text": "Turns “Loaded at session start only” on or off. It takes effect straight away and is remembered. Part of Memory Manager.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "search-inside-memory",
+        "title": "Search inside memory",
+        "text": "Where you set “Search inside memory”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "w-r",
+        "title": "w · r",
+        "text": "Shows “w · r”. Part of Memory Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "find-chunks",
+        "title": "Find chunks",
+        "text": "Where you set “Find chunks”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "rebuild-chunks",
+        "title": "Rebuild chunks",
+        "text": "Rebuilds chunks. Part of Memory Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "builds-started-in-the-last",
+        "title": "Builds started in the last",
+        "text": "Where you set “Builds started in the last”. Change it and the app uses the new value. Part of Memory Manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "open-claude-md",
+        "title": "Open CLAUDE.md",
+        "text": "Opens cLAUDE.md. Part of Memory Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-the-chunk-index",
+        "title": "Open the chunk index",
+        "text": "Opens the chunk index. Part of Memory Manager.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": [

@@ -26,7 +26,7 @@ from urllib.parse import quote
 HERE = Path(__file__).resolve().parent
 TMP = Path(tempfile.mkdtemp(prefix="axf-memory-manager-test-"))
 REPO, HUB, DATA = TMP / "repo", TMP / "projects", TMP / "data"
-os.environ.update({"AXF_ROOT": str(REPO), "AXHUB_PROJECTS_DIR": str(HUB), "AXF_MEMORY_MANAGER_DATA_DIR": str(DATA)})
+os.environ.update({"AXF_ROOT": str(REPO), "AXHUB_PROJECTS_DIR": str(HUB), "AXF_MEMORY_MANAGER_DATA_DIR": str(DATA), "AXF_MEMORY_HOME": str(TMP / "home")})
 
 
 def put(p: Path, text: str) -> None:
@@ -49,6 +49,20 @@ put(HUB / "_shared/_claude/rules/RULES.md", "# Shared rules\n")
 put(HUB / "_shared/_claude/notes/plans/p.md", "# A plan\n")
 put(HUB / "amberx-axf/_claude/rules/RULES.md", "# AXF rules\n\nShared: `_claude/shared/rules/RULES.md`.\n")
 put(HUB / "amberx-axf/_claude/THREADS.md", "# Threads\n")
+# memory files + code that reads / writes them (memory-manager@1 scan)
+put(REPO / "_claude/THREADS.md", "# Threads and builds log\n\n## Active\n\n| Thread | State |\n|---|---|\n| Alpha thread | working |\n| Beta thread | done |\n")
+put(REPO / "_claude/memory/STATUS.md", "# Status\n\n## Status\n\n- **Feature one (Nov 1 2026):** zebra stripes landed.\n- **Feature two (Nov 2 2026):** more.\n")
+put(REPO / "_claude/memory/docs/spec.md", "# Spec\n\n## Part A\n\nzebra in the docs\n")
+put(REPO / "_claude/plans/p.md", "# Plan\n")
+put(REPO / "_claude/builds/reports/r.md", "# Report\n")
+(REPO / "_claude/builds/reports/shot.png").write_bytes(b"\x89PNG")
+put(REPO / "changes/2026/11/c1.json", "{}")
+put(REPO / "changes/2026/11/c2.json", "{}")
+put(REPO / "framework/cli/writer.mjs", "import { writeFileSync } from 'node:fs';\nwriteFileSync('_claude/THREADS.md', 'x');\n")
+put(REPO / "tools/reader.py", "print(open('_claude/memory/STATUS.md').read())\n")
+put(REPO / "tools/test.py", "open('_claude/THREADS.md', 'w')\n")
+put(TMP / "home/.claude/CLAUDE.md", "# user\n")
+shutil.copy(HERE.parents[3] / "framework/cli/memory-chunks.mjs", REPO / "framework/cli/memory-chunks.mjs")
 
 
 class FakeNotes:
@@ -243,6 +257,78 @@ try:
     r = c.put("/file", json={"id": "notes:plans/p.md", "content": "x"})
     check("note write without the capability = 503", r.status_code == 503, r.text)
     NOTES.on = True
+
+    # ---- memory (memory-manager@1) --------------------------------------------------------------------------------
+    m = c.get("/memory").json()
+    paths = {f["path"]: f for f in m["files"]}
+    check("memory list: CLAUDE.md, THREADS, STATUS, docs, plans, reports", all(p in paths for p in ["CLAUDE.md", "_claude/THREADS.md", "_claude/memory/STATUS.md", "_claude/memory/docs/spec.md", "_claude/plans/p.md", "_claude/builds/reports/r.md"]), sorted(paths))
+    check("binary files are not listed", "_claude/builds/reports/shot.png" not in paths)
+    check("change log folded into one summary row", any(f.get("summary") and f["path"] == "changes/" and f["count"] == 2 for f in m["files"]) and "changes/2026/11/c1.json" not in paths)
+    th = paths["_claude/THREADS.md"]
+    check("THREADS: map writers + the code scan finds writer.mjs as a writer", any(w.get("path") == "framework/cli/writer.mjs" and w["source"] == "scan" for w in th["writers"]) and any(w.get("path") == "framework/cli/builds-live.mjs" for w in th["writers"]), th["writers"])
+    check("test files are not counted as writers", not any((w.get("path") or "").endswith("tools/test.py") for w in th["writers"] + th["readers"]))
+    st_ = paths["_claude/memory/STATUS.md"]
+    check("STATUS: reader.py found as a reader (no writes)", any(r.get("path") == "tools/reader.py" for r in st_["readers"]), st_["readers"])
+    check("CLAUDE.md loads at start; THREADS doesn't", paths["CLAUDE.md"]["loadedAtStart"] and not th["loadedAtStart"])
+    check("user CLAUDE.md listed read-only", any(f["root"] == "user" and not f["openable"] for f in m["files"]))
+    check("hub copy listed", any(f["id"] == "hub:amberx-axf/THREADS.md" for f in m["files"]), [f["id"] for f in m["files"] if f["root"] == "hub"])
+    f1 = c.get("/memory", params={"category": "Session logs"}).json()
+    check("filter by category", f1["files"] and all(f["category"] == "Session logs" for f in f1["files"]))
+    f2 = c.get("/memory", params={"writer": "writer.mjs"}).json()
+    check("filter by writer", [f["path"] for f in f2["files"]] == ["_claude/THREADS.md"], [f["path"] for f in f2["files"]])
+    f3 = c.get("/memory", params={"loaded": "true"}).json()
+    check("filter loaded at start", f3["files"] and all(f["loadedAtStart"] for f in f3["files"]))
+    f4 = c.get("/memory", params={"root": "hub"}).json()
+    check("filter by root", f4["files"] and all(f["root"] == "hub" for f in f4["files"]))
+    d = c.get("/memory/file", params={"id": "repo:_claude/THREADS.md"}).json()
+    check("details of one file", d["location"] == "threads" and d["writers"], d)
+    check("details of a non-memory file = 404", c.get("/memory/file", params={"id": "repo:docs/guide.md"}).status_code == 404)
+    srch = c.get("/search", params={"q": "zebra"}).json()
+    check("search inside memory files", {r["path"] for r in srch["results"]} == {"_claude/memory/STATUS.md", "_claude/memory/docs/spec.md"} and all(r["snippet"] for r in srch["results"]), srch)
+    check("empty search refused", c.get("/search", params={"q": " "}).status_code == 400)
+    # move, delete, restore
+    r = c.post("/move", json={"id": "repo:_claude/plans/p.md", "to": "repo:_claude/plans/q.md"})
+    check("move within the repo", r.status_code == 200 and (REPO / "_claude/plans/q.md").is_file() and not (REPO / "_claude/plans/p.md").exists(), r.text)
+    check("move keeps the old text as a version", c.get("/history", params={"id": "repo:_claude/plans/p.md"}).json()["versions"][0]["reason"].startswith("move"))
+    check("move onto an existing file = 409", c.post("/move", json={"id": "repo:_claude/plans/q.md", "to": "repo:CLAUDE.md"}).status_code == 409)
+    check("move across scopes refused", c.post("/move", json={"id": "repo:_claude/plans/q.md", "to": "hub:amberx-axf/plans/q.md"}).status_code == 400)
+    v_now = c.get("/file", params={"id": "repo:_claude/plans/q.md"}).json()["version"]
+    check("delete with a stale version = 409", c.post("/delete", json={"id": "repo:_claude/plans/q.md", "if_version": "0000000000000000"}).status_code == 409)
+    r = c.post("/delete", json={"id": "repo:_claude/plans/q.md", "if_version": v_now})
+    check("delete", r.status_code == 200 and not (REPO / "_claude/plans/q.md").exists(), r.text)
+    hv = c.get("/history", params={"id": "repo:_claude/plans/q.md"}).json()["versions"]
+    check("delete keeps the text as a version", hv and hv[0]["reason"] == "delete", hv)
+    r = c.post("/restore", json={"id": "repo:_claude/plans/q.md", "version": hv[0]["version"]})
+    check("restore brings a deleted file back", r.status_code == 200 and (REPO / "_claude/plans/q.md").read_text() == "# Plan\n", r.text)
+    r = c.post("/delete", json={"id": "hub:amberx-axf/THREADS.md"})
+    meta = json.loads((HUB / ".axhub/claude/amberx-axf/versions" / f"{quote('THREADS.md', safe='')}.json").read_text())
+    check("hub delete keeps the version in the hub's history", r.status_code == 200 and meta[0]["reason"] == "delete" and not (HUB / "amberx-axf/_claude/THREADS.md").exists(), r.text)
+    c.post("/restore", json={"id": "hub:amberx-axf/THREADS.md", "version": meta[0]["version"]})
+    # settings
+    sd = c.get("/settings").json()
+    check("settings by category", [x["category"] for x in sd["categories"]] == ["Scan", "List", "Safety", "Chunks"] and sd["settings"]["scan.includeChunks"] is False, sd)
+    check("unknown setting refused", c.put("/settings", json={"nope": 1}).status_code == 400)
+    r = c.put("/settings", json={"scan.includeLogs": True, "list.groupBy": "kind"})
+    check("settings saved", r.status_code == 200 and r.json()["settings"]["scan.includeLogs"] is True and r.json()["settings"]["list.groupBy"] == "kind", r.text)
+    check("bad choice falls back to the default", c.put("/settings", json={"list.sort": "colour"}).json()["settings"]["list.sort"] == "path")
+    m2 = c.get("/memory").json()
+    check("includeLogs lists each change-log entry", any(f["path"] == "changes/2026/11/c1.json" for f in m2["files"]))
+    c.put("/settings", json={"scan.includeLogs": False, "scan.codeScan": False})
+    m3 = {f["path"]: f for f in c.get("/memory").json()["files"]}
+    check("code scan off: only the map's readers and writers", all(w["source"] == "map" for w in m3["_claude/THREADS.md"]["writers"]))
+    c.put("/settings", json={"scan.codeScan": True})
+    # audit + chunks
+    check("audit map served", any(x["id"] == "threads" for x in c.get("/audit").json()["locations"]))
+    check("chunks before a build", c.get("/chunks").json()["built"] is False)
+    if shutil.which("node"):
+        b = c.post("/chunks/build").json()
+        ch = c.get("/chunks").json()
+        check("chunks built from the memory files", ch["built"] and ch["count"] == b.get("count") and any(x["title"] == "Alpha thread" for x in ch["chunks"]) and any(x["title"].startswith("Feature one") for x in ch["chunks"]), ch)
+        check("chunk filter", [x["title"] for x in c.get("/chunks", params={"q": "feature two"}).json()["chunks"]] == ["Feature two (Nov 2 2026)"])
+        m4 = c.get("/memory").json()
+        check("chunks fold into one row by default", any(f.get("summary") and f["location"] == "chunks" for f in m4["files"]))
+    r = c.post("/scan")
+    check("refresh scan", r.status_code == 200 and r.json()["scannedAt"], r.text[:200])
 
     # ---- hub not mounted ------------------------------------------------------------------------------------------
     mod.STORE.hub = TMP / "nohub"

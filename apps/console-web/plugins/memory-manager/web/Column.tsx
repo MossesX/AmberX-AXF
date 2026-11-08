@@ -5,18 +5,25 @@
  * context-menu contribution in index.tsx, target `memory-manager-file`).
  */
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Icon, IconButton, Note, Segmented, SelectField, Switch, TabGroup, TextField } from '@console/axf/react';
+import { ChunksPanel, MemoryPanel, StartPanel, setPanel, useMem, type Panel } from './memory';
 import { SNIPPETS, WIZARDS, WIZARD_PURPOSES, viewOf, wizardId, type Wizard, type WizardScope } from './model';
 import { api, createDoc, loadListing, openDoc, setEditable, useStudio, type FileEntry, type Ref } from './state';
 
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
-type Panel = 'files' | 'snippets' | 'wizards';
+const PANELS: { value: Panel; label: string; icon: string }[] = [
+  { value: 'memory', label: 'Memory', icon: 'layers' }, { value: 'files', label: 'Files', icon: 'folder' }, { value: 'chunks', label: 'Chunks', icon: 'grid' },
+  { value: 'start', label: 'Session start', icon: 'play' }, { value: 'snippets', label: 'Snippets', icon: 'copy' }, { value: 'wizards', label: 'Wizards', icon: 'sparkles' },
+];
 
 export function Column() {
-  const [panel, setPanel] = useState<Panel>('files');
+  const panel = useMem((s) => s.panel);
   return (
     <aside className="axp-memory-manager__col">
-      <Segmented label="Column" size="sm" value={panel} onChange={(v) => setPanel(v as Panel)} options={[{ value: 'files', label: 'Files', icon: 'folder' }, { value: 'snippets', label: 'Snippets', icon: 'copy' }, { value: 'wizards', label: 'Wizards', icon: 'sparkles' }]} />
+      <TabGroup id="memory-manager.column" label="Memory Manager panels" size="sm" value={panel} onChange={(v) => setPanel(v as Panel)} tabs={PANELS} />
+      {panel === 'memory' && <MemoryPanel />}
+      {panel === 'chunks' && <ChunksPanel />}
+      {panel === 'start' && <StartPanel />}
       {panel === 'files' && <Files />}
       {panel === 'snippets' && <Snippets />}
       {panel === 'wizards' && <Wizards />}
@@ -49,7 +56,7 @@ function Files() {
       </div>
       {listError && <Note tone="danger">{listError}</Note>}
       {!listing && !listError && <p className="fx-muted">Loading…</p>}
-      <nav className="axp-memory-manager__tree" aria-label="Markdown files">
+      <nav className="axp-memory-manager__tree" aria-label="Markdown files" data-axf-nav="memory-manager.files">
         {listing?.scopes.filter((s) => s.available).map((s) => {
           const count = s.groups.reduce((n, g) => n + g.files.length, 0);
           if (searching && !count) return null;

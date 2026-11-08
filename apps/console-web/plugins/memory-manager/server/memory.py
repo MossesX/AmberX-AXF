@@ -215,7 +215,7 @@ class MemoryIndex:
             if loc:
                 for proj in ("amberx-axf", "_shared"):
                     base = self.store.hub / proj / "_claude"
-                    for rel, f in self.store._walk(base, lambda r: r in ("builds/journal/", "chunks/")):
+                    for rel, f in self.store._walk(base, lambda r, proj=proj: r in ("builds/journal/", "chunks/") or (proj == "_shared" and r == "notes/")):
                         files.append(self._file_entry("hub", f"{proj}/{rel}", f, loc, {"files": {}}))
         if st["scan.includeUser"]:
             u = self.home / ".claude" / "CLAUDE.md"
@@ -298,7 +298,10 @@ class MemoryIndex:
         for e in self.scan()["files"]:
             if not e["openable"]:
                 continue
-            _r, _rel, f = self.store.parse(e["id"])
+            try:
+                _r, _rel, f = self.store.parse(e["id"])
+            except MemError:
+                continue
             t = _safe_text(f) if f is not None else ""
             low = t.lower()
             if all(w in low or w in e["path"].lower() for w in words):
