@@ -131,6 +131,13 @@ t('matrix-applied build: skipped step leaves progress, phases and the brief', ()
   const one = { ...b2, steps: b2.steps.map((st) => ({ ...st, model: 'Fable' })) };
   assert.match(c.brief(one), /\[skip\] s3/); assert.match(c.brief(one), /\[ \] fm-dark-mode-shots/); assert.match(c.brief(one), /3 left, ~1 h/);
 });
+t('every brief is self-contained: goal, files, acceptance checks, how to tick, the fixed footer', () => {
+  const x = c.apply(c.emptyState(), { action: 'add', title: 'Lean', detail: 'Make headless sessions lean.', steps: [{ text: 'do it', model: 'Opus', files: ['deploy/x.sh'], checks: ['bash -n deploy/x.sh'] }] }).state;
+  const br = c.brief(x.builds[0], x.rules);
+  assert.match(br, /Goal: Make headless sessions lean\./); assert.match(br, /Files \(read and touch only these/); assert.match(br, /deploy\/x\.sh/);
+  assert.match(br, /Acceptance checks .*bash -n deploy\/x\.sh/); assert.match(br, /act step lean <stepId> done/); assert.ok(br.endsWith(c.BRIEF_FOOTER));
+  assert.match(c.BRIEF_FOOTER, /Do not read CLAUDE\.md/);
+});
 t('every brief carries the asset-conformance rule', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
   assert.ok(c.brief(b2).includes(c.ASSET_RULE));

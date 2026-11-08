@@ -210,6 +210,18 @@ export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
 }
 
 /**
+ * The fixed footer every brief ends with (Brett, Nov 8 2026: headless sessions read ONLY the brief). Headless runs start
+ * with no CLAUDE.md / rules / memory chain (deploy/claude-headless.sh), so these are the only standing rules they get.
+ */
+export const BRIEF_FOOTER = [
+  'Session rules (this brief is your whole context):',
+  '- Read only this brief and the files it lists. Do not read CLAUDE.md, _claude/ rules, memory, THREADS.md, STATUS.md or progress files.',
+  '- Work on the branch you are on. Commit small, clear commits (code, comments and commit messages stay professional). No direct pushes to main; nothing merges except the merge queue.',
+  '- Tick each step as it lands (command above); that is your progress marker. Blocked = note it on the build (`orchestrator.mjs act note <id> "…"`) and stop.',
+  '- No secrets in files, logs or commits. No sub-agents. Never launch or switch to a higher model than the step is pinned to.',
+].join('\n');
+
+/**
  * Brief for the next session: only the current phase (fewest tokens), the token rules, what to read first and how
  * to report. Paste it as the first message, or `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.
  */
@@ -221,6 +233,7 @@ export function brief(build, rules = DEFAULT_RULES) {
   const checks = [...new Set(p.steps.filter(open).flatMap((s) => s.checks))];
   const lines = [
     `Continue build "${build.title}" (${build.id})${build.category ? ` [${build.category}]` : ''} — ${p.name}, model ${p.model}.`,
+    build.detail ? `Goal: ${str(build.detail, 4000).trim()}` : '',
     build.origin?.said || build.origin?.addenda?.length ? `What Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\n${originText(build.origin)}` : '',
     n.needsApproval ? `STOP: ${upgradeLine(build.id, p)}. That is a model UPGRADE: only Brett can approve it. Do no work on this phase: run \`orchestrator.mjs request-upgrade ${build.id} ${p.index}\` (files the axHub approval), tell Brett, and end the session. Never approve it yourself.` : '',
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
@@ -231,11 +244,12 @@ export function brief(build, rules = DEFAULT_RULES) {
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
-    files.length ? `Read first: ${files.join(', ')}` : '',
-    checks.length ? `Checks: ${checks.join(' · ')}` : '',
+    files.length ? `Files (read and touch only these, plus what they lead to): ${files.join(', ')}` : '',
+    checks.length ? `Acceptance checks (all must pass before you tick the last step): ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
     'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
     'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
+    BRIEF_FOOTER,
   ];
   return lines.filter(Boolean).join('\n');
 }
