@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1556,
- "updatedAt": "2026-11-08T19:22:09.889Z",
+ "rev": 1557,
+ "updatedAt": "2026-11-08T19:23:06.572Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -18967,7 +18967,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18979,7 +18979,10 @@
     "createdAt": "2026-10-25T14:46:55.696Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw87uvrm01necw": "2026-11-08T19:19:32.433Z",
+     "st-mw87uvrm02mk8m": "2026-11-08T19:19:32.433Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:19:32.433Z",
@@ -95137,7 +95140,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95149,7 +95152,11 @@
     "createdAt": "2026-11-06T02:30:29.394Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw87vru105ve73": "2026-11-08T19:20:13.993Z",
+     "st-mw87vru106ker2": "2026-11-08T19:20:13.993Z",
+     "st-mw87vru107m9rw": "2026-11-08T19:20:13.993Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:20:13.993Z",
@@ -95922,7 +95929,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95934,7 +95941,11 @@
     "createdAt": "2026-11-06T02:40:18.142Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw87x80u013v09": "2026-11-08T19:21:21.629Z",
+     "st-mw87x80u02nwtb": "2026-11-08T19:21:21.629Z",
+     "st-mw87x80u03pihu": "2026-11-08T19:21:21.629Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:21:21.629Z",
@@ -96093,7 +96104,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -96105,7 +96116,11 @@
     "createdAt": "2026-11-06T04:47:39.335Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw87xpu304l79c": "2026-11-08T19:21:44.715Z",
+     "st-mw87xpu305xr4o": "2026-11-08T19:21:44.715Z",
+     "st-mw87xpu3064n0k": "2026-11-08T19:21:44.715Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:21:44.715Z",
@@ -113728,7 +113743,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -113740,7 +113755,10 @@
     "createdAt": "2026-11-08T00:17:39.669Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw87y8g207u0d6": "2026-11-08T19:22:08.834Z",
+     "st-mw87y8g208bgm5": "2026-11-08T19:22:08.834Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:22:08.834Z",
@@ -122160,6 +122178,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T19:13:49.284Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "rebase-land-approve-button-fix-approve-goes-stra",
+   "title": "Rebase + land approve-button-fix (Approve goes straight through)",
+   "category": "",
+   "detail": "Branch claude/approve-button-fix is 73 behind main and the merge fails. Rebase/merge it onto main, resolve conflicts, CI green, land. Goal (Brett): tapping Approve in the console's approval dialog approves right away and closes the dialog; no 'opened in axHub, approve or deny there'. Uses a console-relay hub account (AXF_HUB_RELAY_USER/PASSWORD); if not set, say exactly what Brett must set. Every UI action gets API control. Queue after the Demonstration Designer.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "rebase-land-approve-button-fix-approve-goes-stra",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T19:23:04.271Z",
+   "updatedAt": "2026-11-08T19:23:04.271Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click an approved link in the console, approved pop up in the dialog, it just says opened in Axe Hub, approve it or deny it there. It needs to fucking go right through and close the goddamn dialog.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 460
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "45 min",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T19:23:04.271Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}

@@ -2824,6 +2824,18 @@
    "from": "",
    "addenda": []
   },
+  "rebase-land-approve-button-fix-approve-goes-stra": {
+   "said": "When I click an approved link in the console, approved pop up in the dialog, it just says opened in Axe Hub, approve it or deny it there. It needs to fucking go right through and close the goddamn dialog.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "refactor-all": {
    "said": "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.",
    "at": "2026-10-28",

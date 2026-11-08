@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:22:09.889Z",
+ "updatedAt": "2026-11-08T19:23:06.572Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73752,6 +73752,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "Now I want to make sure he makes the orchestrator is going to include in the briefs, everything comes with an API. It also needs to make the stepped plan in Plan Studio for the build. And it needs to update any plan in the Plan Studio. So the Plan Studio needs to be uh, somehow synced with future builds.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "rebase-land-approve-button-fix-approve-goes-stra",
+   "title": "Rebase + land approve-button-fix (Approve goes straight through)",
+   "category": "",
+   "detail": "Branch claude/approve-button-fix is 73 behind main and the merge fails. Rebase/merge it onto main, resolve conflicts, CI green, land. Goal (Brett): tapping Approve in the console's approval dialog approves right away and closes the dialog; no 'opened in axHub, approve or deny there'. Uses a console-relay hub account (AXF_HUB_RELAY_USER/PASSWORD); if not set, say exactly what Brett must set. Every UI action gets API control. Queue after the Demonstration Designer.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "rebase-land-approve-button-fix-approve-goes-stra",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T19:23:04.271Z",
+   "updatedAt": "2026-11-08T19:23:04.271Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click an approved link in the console, approved pop up in the dialog, it just says opened in Axe Hub, approve it or deny it there. It needs to fucking go right through and close the goddamn dialog.",
     "at": "",
     "source": "",
     "session": "",
