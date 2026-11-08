@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T02:31:25.728Z",
+ "updatedAt": "2026-11-08T02:35:04.071Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -69341,6 +69341,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw74aqj60ab7xq"
+    }
+   ]
+  },
+  {
+   "id": "fix-owner-check-bug-dead-start-button",
+   "title": "Fix owner check bug + dead start button",
+   "category": "bug fix",
+   "detail": "Signed in to the console as admin (the only account), Gizmo could raise Max parallel builds but 'Launch builds without asking' says owner only and won't toggle. The owner check must treat the admin login as the owner for every owner-only setting. Also: the Build Manager start button on a pending build does nothing (no log line).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T02:35:00.329Z",
+   "updatedAt": "2026-11-08T02:35:00.329Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find why the owner check passes for max parallel but fails for launchWithoutAsking; make the admin login count as owner for all owner-only settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw77z1qq040wp5"
+    },
+    {
+     "id": "s2",
+     "text": "Wire the Build Manager start button on pending builds to actually launch, with a log line and error shown on failure",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw77z1qq05egks"
+    },
+    {
+     "id": "s3",
+     "text": "Test: admin toggles every owner-only setting; start launches a pending build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw77z1qq06g7yp"
     }
    ]
   }
