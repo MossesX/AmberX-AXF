@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:02 UTC · `icon-browser-manager` note (current) · foreign-write
 - 2026-11-07 04:02 UTC · `library-harvest` added (4 steps) (current) · claude-voice
 - 2026-11-07 04:02 UTC · `skins-asset-types` added (3 steps) (current) · claude-voice
 - 2026-11-07 04:02 UTC · `glossary-index-demos` added (6 steps) (current) · claude-voice
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` s5 done (all) · orchestrator
 - 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` note (all) · orchestrator
 - 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` branch claude/glossary-walkthrough-generator (all) · builds-live
+- 2026-11-08 03:25 UTC · `glossary-walkthrough-generator-investor-demos` s6 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 
