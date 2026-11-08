@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1547,
- "updatedAt": "2026-11-08T18:47:35.899Z",
+ "rev": 1548,
+ "updatedAt": "2026-11-08T19:10:17.237Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -121533,6 +121533,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T18:47:33.943Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "demonstration-designer-plugin-new-standalone",
+   "title": "Demonstration Designer plugin (new, standalone)",
+   "category": "",
+   "detail": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "demonstration-designer-plugin-new-standalone",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T19:10:13.866Z",
+   "updatedAt": "2026-11-08T19:10:13.866Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make a new one. I want a, a, a demonstration designer plugin.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 458
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "3 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T19:10:13.866Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}
