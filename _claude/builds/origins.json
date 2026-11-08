@@ -3639,6 +3639,18 @@
    "from": "brief",
    "addenda": []
   },
+  "urgent-amberx-veto-notice-alarm-too-loud-approve": {
+   "said": "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "urgent-builds": {
    "said": "/projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
    "at": "2026-10-31",

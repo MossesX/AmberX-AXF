@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1602,
- "updatedAt": "2026-11-08T22:07:29.208Z",
+ "rev": 1603,
+ "updatedAt": "2026-11-08T22:23:02.019Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122858,7 +122858,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122868,7 +122868,7 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T19:13:49.284Z",
-    "builtAt": "",
+    "builtAt": "2026-11-08T22:07:03.823Z",
     "prefixSteps": false,
     "stepAt": {
      "st-mw884p3x01c3ns": "2026-11-08T19:27:10.365Z",
@@ -124388,7 +124388,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124400,10 +124400,73 @@
     "createdAt": "2026-11-08T21:29:54.434Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8ck6x601mq28": "2026-11-08T21:31:11.753Z",
+     "st-mw8ck6x602ujer": "2026-11-08T21:31:11.753Z",
+     "st-mw8ck6x603razf": "2026-11-08T21:31:11.753Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T21:31:11.753Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "urgent-amberx-veto-notice-alarm-too-loud-approve",
+   "title": "URGENT: AmberX veto notice alarm too loud + Approve must go straight through",
+   "category": "",
+   "detail": "Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T22:22:59.195Z",
+   "updatedAt": "2026-11-08T22:22:59.195Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 471
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T22:22:59.195Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
