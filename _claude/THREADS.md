@@ -750,10 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s15 undone, s16 undone, note (current) · foreign-write
-- 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · foreign-write
-- 2026-11-07 05:03 UTC · `multi-account-headless-workers` s1 done (current) · foreign-write
-- 2026-11-07 05:03 UTC · `merge-conflict-alerts` note (current) · foreign-write
 - 2026-11-07 05:03 UTC · `merge-conflict-alerts` → running (current) · merge-conflict-alerts
 - 2026-11-07 05:12 UTC · `skins-asset-types` s8 done (current) · foreign-write
 - 2026-11-07 05:14 UTC · `skins-asset-types` s8 done (current) · foreign-write
@@ -1150,6 +1146,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:21 UTC · `memory-restructure-chunked-claude-md-store-memor` s9 done, → built (all) · orchestrator
 - 2026-11-08 17:22 UTC · `orchestrator-checks-shipped-features-before-spli` added (0 steps) (all) · pending
 - 2026-11-08 17:22 UTC · `adopt-today-s-direct-launched-builds-record-only` added (0 steps) (all) · pending
+- 2026-11-08 17:23 UTC · `memory-restructure-chunked-claude-md-store-memor` s9 done, → complete (all) · foreign-write
+- 2026-11-08 17:23 UTC · `account-failover-notify` s4 done (all) · foreign-write
+- 2026-11-08 17:23 UTC · `orchestrator-checks-shipped-features-before-spli` added (0 steps) (all) · foreign-write
+- 2026-11-08 17:23 UTC · `adopt-today-s-direct-launched-builds-record-only` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
