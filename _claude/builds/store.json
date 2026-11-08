@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1542,
- "updatedAt": "2026-11-08T17:57:11.118Z",
+ "rev": 1543,
+ "updatedAt": "2026-11-08T18:00:49.431Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115761,19 +115761,23 @@
    "title": "Universal voice + API control (everything controllable)",
    "category": "new feature",
    "detail": "Every setting, every screen and every button in the whole app (console, axHub, patches, AmberX, everything) must be fully controllable by the API and by voice. Everything is already an asset and a token, so build one control registry: each control gets a stable ID, type, allowed actions and a description; the API can list, find and act on any of them; voice maps spoken commands onto those API calls. Separate build so it can run in parallel with the others.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:46:49.844Z",
-   "updatedAt": "2026-11-08T17:38:55.325Z",
+   "updatedAt": "2026-11-08T18:00:48.077Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Overlap (Nov 8 2026, ui-api-parity-rule): s6 is done by api-coverage@1 + ui-api@1 (CI). s2 and s4 are largely done by full-api-control (control@1 console.values / console.elements / console.actions over MCP+CLI); the per-plugin named-op work is split into ui-api-parity-{builds,agents,console,look,media,framework}. Re-scope before building: what is left is s3 (axHub web + AmberX controls) and s5 (voice layer).",
      "at": "2026-11-08T17:38:55.325Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-08T18:00:48.077Z"
     }
    ],
    "approvals": [],
@@ -115920,7 +115924,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117054,7 +117058,7 @@
    "branch": "claude/molly-one-shell-r4",
    "pr": "#395",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T17:51:09.977Z",
+   "updatedAt": "2026-11-08T18:00:48.077Z",
    "builtAt": "",
    "notes": [
     {
@@ -117076,6 +117080,10 @@
     {
      "text": "r4 done: s4-s6 (Opus downgrade) + s9 on PR #395 (claude/molly-one-shell-r4, includes #390). Partial: s10 (layout modes + named layouts done; drag from a menu onto a container + per-container tab-group switch UI left), s12 (actions + plugin commands done; Molly plugins not in the console plugin-commands domain yet), s13 (One shell settings in sections; level toolbar left). Left: s7, s8, s11, s14 (UI Review, PR held), s15 Fable review. Report _claude/builds/reports/molly-one-shell.md.",
      "at": "2026-11-08T17:51:08.596Z"
+    },
+    {
+     "text": "Reconciler: PR #395 names s4, s5, s6, s15 done",
+     "at": "2026-11-08T18:00:48.077Z"
     }
    ],
    "approvals": [
@@ -117435,12 +117443,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-08T18:00:48.077Z",
+     "note": "PR #395 (claude/molly-one-shell-r4)",
+     "rev": 2,
      "createdAt": "2026-11-08T17:29:00.589Z",
-     "updatedAt": "2026-11-08T17:29:00.763Z"
+     "updatedAt": "2026-11-08T18:00:48.077Z"
     }
    ],
    "profiles": [
@@ -117451,7 +117459,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
