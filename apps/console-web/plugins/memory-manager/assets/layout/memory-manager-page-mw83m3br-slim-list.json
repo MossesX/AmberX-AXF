@@ -1,0 +1,25 @@
+{
+ "$axf": "asset@1",
+ "type": "layout",
+ "id": "memory-manager-page-mw83m3br-slim-list",
+ "name": "memory-manager-page-mw83m3br: Slim list, wide reading (Read)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A narrow memory column and a wide editor for reading long files like THREADS.md and STATUS.md.",
+ "tags": [
+  "ui-choice",
+  "choice-set:memory-manager-page-mw83m3br",
+  "choice-option:slim-list"
+ ],
+ "data": {
+  "nav": "left",
+  "navWidth": 200,
+  "showMenubar": true,
+  "showToolbar": true,
+  "toolbarPosition": "top",
+  "showStatusbar": false,
+  "inspector": "none",
+  "inspectorWidth": 0,
+  "contentMaxWidth": 1440
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "$axf": "asset@1",
+ "type": "layout",
+ "id": "memory-manager-page-mw83m3br-list-and-editor",
+ "name": "memory-manager-page-mw83m3br: Wide memory list + editor (Browse)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The memory list in a wide column on the left, files open as dock tabs on the right; readers and writers expand under each file. Current default.",
+ "tags": [
+  "ui-choice",
+  "choice-set:memory-manager-page-mw83m3br",
+  "choice-option:list-and-editor"
+ ],
+ "data": {
+  "nav": "left",
+  "navWidth": 224,
+  "showMenubar": true,
+  "showToolbar": true,
+  "toolbarPosition": "top",
+  "showStatusbar": false,
+  "inspector": "none",
+  "inspectorWidth": 0,
+  "contentMaxWidth": 1280
+ }
+}

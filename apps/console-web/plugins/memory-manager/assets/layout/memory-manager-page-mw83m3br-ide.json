@@ -1,0 +1,25 @@
+{
+ "$axf": "asset@1",
+ "type": "layout",
+ "id": "memory-manager-page-mw83m3br-ide",
+ "name": "memory-manager-page-mw83m3br: Tree + editor + outline (IDE)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Dense memory tree, editor tabs, and the outline and references docked on the right.",
+ "tags": [
+  "ui-choice",
+  "choice-set:memory-manager-page-mw83m3br",
+  "choice-option:ide"
+ ],
+ "data": {
+  "nav": "left",
+  "navWidth": 200,
+  "showMenubar": true,
+  "showToolbar": true,
+  "toolbarPosition": "top",
+  "showStatusbar": false,
+  "inspector": "right",
+  "inspectorWidth": 320,
+  "contentMaxWidth": 1600
+ }
+}
