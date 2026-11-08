@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1613,
- "updatedAt": "2026-11-08T22:41:24.219Z",
+ "rev": 1614,
+ "updatedAt": "2026-11-08T22:42:06.204Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124453,7 +124453,7 @@
    "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
    "pr": "#397",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:41:09.244Z",
+   "updatedAt": "2026-11-08T22:42:04.773Z",
    "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
@@ -124471,6 +124471,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny, own login copy)",
      "at": "2026-11-08T22:27:51.860Z"
+    },
+    {
+     "text": "Session axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny on account-3 ended (exit 0); the build was already built.",
+     "at": "2026-11-08T22:42:04.773Z"
     }
    ],
    "approvals": [],
@@ -124491,12 +124495,19 @@
     "queuedAt": "2026-11-08T22:27:44.014Z",
     "queuedBy": "cli",
     "account": "account-3",
-    "session": "axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-08T22:27:50.181Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-08T22:42:04.301Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "account-3",
+     "session": "axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny"
+    },
     "split": {
      "at": "2026-11-08T22:23:20.536Z",
      "by": "orchestrator",
@@ -124586,7 +124597,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
