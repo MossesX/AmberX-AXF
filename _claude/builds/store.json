@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1498,
- "updatedAt": "2026-11-08T17:14:38.743Z",
+ "rev": 1499,
+ "updatedAt": "2026-11-08T17:17:10.246Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107643,10 +107643,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "memory-restructure-chunked-claude-md-store-memor",
-   "branch": "claude/memory-manager-r2",
+   "branch": "claude/memory-manager-r3",
    "pr": "",
    "createdAt": "2026-11-06T17:33:08.806Z",
-   "updatedAt": "2026-11-08T17:14:19.789Z",
+   "updatedAt": "2026-11-08T17:16:55.760Z",
    "builtAt": "",
    "notes": [
     {
@@ -107777,11 +107777,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T17:05:30.402Z",
+     "doneAt": "2026-11-08T17:16:48.813Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-08T16:54:09.996Z",
-     "updatedAt": "2026-11-08T17:05:30.543Z"
+     "updatedAt": "2026-11-08T17:16:49.104Z"
     },
     {
      "id": "s6",
@@ -107799,11 +107799,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T17:05:31.706Z",
+     "doneAt": "2026-11-08T17:16:51.693Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-08T16:54:09.996Z",
-     "updatedAt": "2026-11-08T17:05:31.912Z"
+     "updatedAt": "2026-11-08T17:16:52.126Z"
     },
     {
      "id": "s7",
@@ -107821,11 +107821,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T17:14:16.349Z",
+     "doneAt": "2026-11-08T17:16:55.760Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-08T16:54:09.996Z",
-     "updatedAt": "2026-11-08T17:14:16.786Z"
+     "updatedAt": "2026-11-08T17:16:56.507Z"
     },
     {
      "id": "s8",
