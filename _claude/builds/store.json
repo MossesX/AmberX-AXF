@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1579,
- "updatedAt": "2026-11-08T21:14:58.647Z",
+ "rev": 1580,
+ "updatedAt": "2026-11-08T21:15:15.161Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123604,6 +123604,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T21:14:57.057Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "terminal-toolbar-responsive-overflow-every-item-",
+   "title": "Terminal toolbar: responsive overflow, every item a snappable asset",
+   "category": "",
+   "detail": "Brett: the Terminal toolbar items overlap when the window gets small. Make the toolbar measure its width and drop items into a three-dot overflow (same framework overflow control as the top banner) by priority; never overlap at any width. Every toolbar item is a snappable registry asset (can be moved, docked, reordered, hidden). Check the unlanded terminal-header-responsive branch and reuse it. Full API + voice + MCP/CLI control. Shots at 3 widths; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "terminal-toolbar-responsive-overflow-every-item-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:14:58.067Z",
+   "updatedAt": "2026-11-08T21:14:58.067Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "And clean up the toolbar on the terminal. It's, uh, it's overlaps each other. When it gets too small, it needs to drop things. So make sure everything is a snappable asset.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 464
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:14:58.067Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}

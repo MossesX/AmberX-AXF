@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:14:58.647Z",
+ "updatedAt": "2026-11-08T21:15:15.161Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74639,6 +74639,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "Clean up plant studio too. It's too much like redundant. It's too complicated. Clean uh, clean that up.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "terminal-toolbar-responsive-overflow-every-item-",
+   "title": "Terminal toolbar: responsive overflow, every item a snappable asset",
+   "category": "",
+   "detail": "Brett: the Terminal toolbar items overlap when the window gets small. Make the toolbar measure its width and drop items into a three-dot overflow (same framework overflow control as the top banner) by priority; never overlap at any width. Every toolbar item is a snappable registry asset (can be moved, docked, reordered, hidden). Check the unlanded terminal-header-responsive branch and reuse it. Full API + voice + MCP/CLI control. Shots at 3 widths; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "terminal-toolbar-responsive-overflow-every-item-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:14:58.067Z",
+   "updatedAt": "2026-11-08T21:14:58.067Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "And clean up the toolbar on the terminal. It's, uh, it's overlaps each other. When it gets too small, it needs to drop things. So make sure everything is a snappable asset.",
     "at": "",
     "source": "",
     "session": "",
