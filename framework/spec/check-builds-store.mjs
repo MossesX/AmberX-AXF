@@ -27,7 +27,7 @@ const sources = { profiles: [
   history: [{ file: 'p.json', commit: 'abc', items: [{ id: 'gone', title: 'Gone once', status: 'pending', subPrompts: [], notes: [] }] }] },
   { id: 'all', orchFile: 'o-ref.json', orch: { builds: [
     { id: 'shared', title: 'Shared new', status: 'running', updatedAt: '2026-10-30T00:00:00Z', steps: [step('s1', 'new a', { done: true, doneAt: at }), step('s2', 'new b')], notes: [{ text: 'ref note', at }] },
-    { id: 'odd', title: 'Odd status', status: 'queued', steps: [step('s1', 'z')] },
+    { id: 'odd', title: 'Odd status', status: 'bogus', steps: [step('s1', 'z')] },
   ] }, pending: [{ file: 'repo:r.json', state: { items: [{ id: 'shared', title: 'Shared new', model: 'Opus', status: 'pending', subPrompts: [{ text: '[Opus] new a', at, done: true, doneAt: at }, { text: '[Opus] new b', at }], notes: [{ text: 'only on pending', at }], createdAt: at, updatedAt: '2026-10-29T00:00:00Z' }] } }, { file: 'hub:r.json', state: { items: [] } }],
   queue: { order: [], steps: {}, history: [] }, queueFile: 'rq.json', features: [], history: [] },
 ] };
@@ -37,7 +37,7 @@ t('one record per build, no duplicate ids', () => assert.equal(ids.length, new S
 t('validateStore: the migrated store is a valid builds@1', () => assert.deepEqual(c.validateStore(M).errors, []));
 t('validateStore names every problem by path', () => {
   const bad = JSON.parse(JSON.stringify(M));
-  bad.$axf = 'nope'; bad.builds[0].status = 'queued'; bad.builds[1].id = bad.builds[0].id; delete bad.builds[0].order[bad.builds[0].profiles[0]];
+  bad.$axf = 'nope'; bad.builds[0].status = 'bogus'; bad.builds[1].id = bad.builds[0].id; delete bad.builds[0].order[bad.builds[0].profiles[0]];
   bad.builds[0].steps[0].model = 'Sonnet'; bad.builds[0].steps.push({ ...bad.builds[0].steps[0] });
   const v = c.validateStore(bad); const paths = v.errors.map((e) => e.path).join('\n');
   assert.equal(v.ok, false);
@@ -66,7 +66,7 @@ t('items only in git history come back archived, off the Pending list', () => {
   assert.ok(!c.projectPending(M, 'side').items.some((x) => x.id === 'gone'));
   assert.equal(report.recovered.length, 1);
 });
-t('an unknown orchestrator status is kept as a note', () => assert.ok(M.builds.find((x) => x.id === 'odd').notes.some((x) => x.text.includes('"queued"'))));
+t('an unknown orchestrator status is kept as a note', () => assert.ok(M.builds.find((x) => x.id === 'odd').notes.some((x) => x.text.includes('"bogus"'))));
 t('verifyNothingLost passes on the migrated store', () => { const v = c.verifyNothingLost(sources, M); assert.ok(v.length > 10); assert.deepEqual(v.filter((x) => !x.ok), []); });
 t('verifyNothingLost catches a lost step', () => {
   const broken = JSON.parse(JSON.stringify(M)); const b = broken.builds.find((x) => x.id === 'p-only'); b.steps = b.steps.slice(1); b.copies = []; b.defaultSteps = [];

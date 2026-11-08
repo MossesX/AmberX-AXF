@@ -96,7 +96,7 @@ export function statusFromBuild({ status = '', pr = '', mergedAt = '', live = fa
   if (s === 'built' || (pr && s !== 'pending')) return { status: 'in-pr', stalled: s === 'failed' || s === 'blocked' };
   if (s === 'running') return { status: 'building', stalled: false };
   if (s === 'failed') return { status: 'building', stalled: true };
-  if (s === 'blocked' || s === 'waiting') return { status: 'queued', stalled: s === 'blocked' };
+  if (s === 'blocked' || s === 'waiting' || s === 'queued') return { status: 'queued', stalled: s === 'blocked' };
   return { status: 'planned', stalled: false };
 }
 
