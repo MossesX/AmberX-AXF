@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1487,
- "updatedAt": "2026-11-08T17:01:13.339Z",
+ "rev": 1488,
+ "updatedAt": "2026-11-08T17:01:23.338Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116830,7 +116830,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T17:00:15.800Z",
+   "updatedAt": "2026-11-08T17:01:00.852Z",
    "builtAt": "",
    "notes": [
     {
@@ -116945,7 +116945,7 @@
      "id": "s5",
      "uid": "st-mw82su9f0j75lt",
      "title": "",
-     "text": "layout-mode asset type: modes (single, tabs, split, IDE), IDE containers dock/split/float/resize, optional tab-group container, named layouts; schema, engine, fixture",
+     "text": "Layout modes on the existing dock@1 + xlayout@1 (extend, no new type unless they cannot hold it): modes single/tabs/split/IDE, IDE containers dock/split/float/resize, optional tab-group container, named layouts; drop xlayout@1 guest/embed fields; fixtures",
      "model": "Fable",
      "why": "",
      "phase": "",
@@ -116959,9 +116959,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:57:58.979Z",
-     "updatedAt": "2026-11-08T16:57:58.979Z"
+     "updatedAt": "2026-11-08T17:01:01.166Z"
     },
     {
      "id": "s6",
@@ -117170,7 +117170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
