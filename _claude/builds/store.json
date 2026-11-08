@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1424,
- "updatedAt": "2026-11-08T00:02:57.521Z",
+ "rev": 1425,
+ "updatedAt": "2026-11-08T00:17:39.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109568,12 +109568,12 @@
    "detail": "Train the agent Molly to search Rhode Island's public court records portal (RI Judiciary public portal) for Brett's OWN records on request: open the portal, search by Brett's name/DOB as he provides, list matching cases (case number, court, type, status, dates), and summarize. Respect the portal's terms of use and any CAPTCHA (hand off to Brett when a human check appears; never bypass it). Read-only; no account logins unless Brett supplies them. Reuse the existing browser-automation work. Voice + API/MCP/CLI parity. Orchestrator assigns models.",
    "status": "pending",
    "hidden": false,
-   "source": "console",
-   "pendingId": "",
+   "source": "pending",
+   "pendingId": "molly-ri-court-records",
    "branch": "",
    "pr": "",
-   "createdAt": "2026-11-07T05:20:19.515Z",
-   "updatedAt": "2026-11-07T05:20:19.515Z",
+   "createdAt": "2026-11-08T00:17:38.161Z",
+   "updatedAt": "2026-11-08T00:17:38.161Z",
    "builtAt": "",
    "notes": [
     {
@@ -109673,7 +109673,7 @@
      "updatedAt": "2026-11-07T05:34:09.737Z"
     },
     {
-     "id": "s5-4",
+     "id": "s5",
      "uid": "st-mw5yfsq505mukr",
      "title": "",
      "text": "Find the official RI court records portal and its search flow; note terms of use",
@@ -109690,12 +109690,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:20:19.516Z",
-     "updatedAt": "2026-11-07T05:20:19.516Z"
+     "updatedAt": "2026-11-08T00:17:38.244Z"
     },
     {
-     "id": "s6-5",
+     "id": "s6",
      "uid": "st-mw5yfsq50674l8",
      "title": "",
      "text": "Molly skill: search by Brett's details, collect case list, summarize",
@@ -109712,12 +109712,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:20:19.516Z",
-     "updatedAt": "2026-11-07T05:20:19.516Z"
+     "updatedAt": "2026-11-08T00:17:38.244Z"
     },
     {
-     "id": "s7-6",
+     "id": "s7",
      "uid": "st-mw5yfsq507agy3",
      "title": "",
      "text": "CAPTCHA/human-check handoff to Brett; never bypass",
@@ -109734,12 +109734,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:20:19.516Z",
-     "updatedAt": "2026-11-07T05:20:19.516Z"
+     "updatedAt": "2026-11-08T00:17:38.244Z"
     },
     {
-     "id": "s8-7",
+     "id": "s8",
      "uid": "st-mw5yfsq5089nlh",
      "title": "",
      "text": "Voice command ('Molly, search my Rhode Island records') + API",
@@ -109756,23 +109756,23 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:20:19.516Z",
-     "updatedAt": "2026-11-07T05:20:19.516Z"
+     "updatedAt": "2026-11-08T00:17:38.244Z"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 108
+    "all": 425
    },
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
-   "deleted": true,
-   "deletedAt": "2026-11-07T22:04:44.079Z",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-07T05:20:19.516Z",
