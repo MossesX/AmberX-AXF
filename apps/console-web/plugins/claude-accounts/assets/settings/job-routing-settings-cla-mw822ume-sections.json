@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "job-routing-settings-cla-mw822ume-sections",
+ "name": "job-routing-settings-cla-mw822ume: Sections (status and rules open)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Five collapsible sections in order: account status, workers and limits, API accounts and spend caps, routing rules, test a job. Status and rules start open.",
+ "tags": [
+  "ui-choice",
+  "choice-set:job-routing-settings-cla-mw822ume",
+  "choice-option:sections"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.routing": "basic",
+   "claude-accounts.list": "simple",
+   "claude-accounts.runs": "developer",
+   "claude-accounts.add": "administrator"
+  },
+  "view": "sections",
+  "order": [
+   "status",
+   "workers",
+   "api",
+   "rules",
+   "test"
+  ],
+  "open": [
+   "status",
+   "rules"
+  ]
+ }
+}

@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "claude-accounts-routing-sections",
+  "name": "Job routing: sections",
+  "version": "1.0.0",
+  "description": "Five collapsible sections in order: account status, workers and limits, API accounts and spend caps, routing rules, test a job. Status and rules start open.",
+  "author": "Claude accounts plugin",
+  "tags": [
+    "claude-accounts",
+    "job-routing",
+    "ui-choices:claude-accounts-routing"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.routing": "basic",
+      "claude-accounts.list": "simple",
+      "claude-accounts.runs": "developer",
+      "claude-accounts.add": "administrator"
+    },
+    "view": "sections",
+    "order": [
+      "status",
+      "workers",
+      "api",
+      "rules",
+      "test"
+    ],
+    "open": [
+      "status",
+      "rules"
+    ]
+  }
+}

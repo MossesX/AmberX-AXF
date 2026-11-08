@@ -2,45 +2,435 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-accounts",
   "name": "Claude accounts",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Claude accounts on the VPS: lists the saved logins, switches the console's account and saves the current login through the host's claude-account script, and runs worker accounts: subscriptions that only run headless jobs, signed in side by side, with limit, jobs and cost per account. Never shows a credential. Every switch, save, sign-in or removal is one held axHub call. Running builds keep their account; new jobs go to the least busy worker, else the active account.",
-  "targets": ["axf-console"],
+  "description": "Claude accounts on the VPS: lists the saved logins and API keys, switches the console's account, and routes headless jobs: every subscription login is a worker (the console's account takes jobs after them), 3 build and 5 wait per account, and API-key accounts take only the jobs a routing rule sends them, under daily and weekly spend caps with alerts. Job routing settings: rules on job type, model, size, priority, profile and a subscriptions-busy fallback, in order, each on or off, with a test-a-job preview. Never shows a credential. Every switch, save, sign-in or removal is one held axHub call.",
+  "targets": [
+    "axf-console"
+  ],
   "provides": [
     "view:claude-accounts",
     "settings-tab:claude-accounts",
     "dialog:claude-accounts.switch",
     "action:claude-accounts.open",
     "action:claude-accounts.switch",
-    "service:axf.claude-accounts@1"
+    "service:axf.claude-accounts@1",
+    "settings-panel:claude-accounts.routing",
+    "action:claude-accounts.routing"
   ],
-  "requires": ["service:axf.headless@1", "service:axf.vinny@1"],
-  "scopes": ["ROUTES"],
+  "requires": [
+    "service:axf.headless@1",
+    "service:axf.vinny@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
   "enabledByDefault": true,
   "forFramework": true,
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /accounts", "id": "list", "title": "List Claude accounts", "description": "The Claude logins and API keys saved on the VPS: name, type, which is active, email and plan. Never a credential.", "readOnly": true },
-      { "route": "GET /who", "id": "who", "title": "Active Claude account", "description": "Which saved Claude account new launches use.", "readOnly": true },
-      { "route": "POST /use", "id": "use", "title": "Switch Claude account", "description": "Switch Claude on the VPS to a saved account (voice: 'switch Claude to account 2'; name 'account 2' works). Sends one held axHub call: Brett approves or denies it. Running builds keep their account; new launches use the active one.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "saved account name, 1 to 32 lower-case letters, digits or dashes" } }, "required": ["name"] } },
-      { "route": "POST /role", "id": "role", "title": "Make a Claude account a worker", "description": "Mark a saved account as a worker (only runs headless jobs, never the console's account) or take it back. API keys and the active account can't be workers.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "saved account name" }, "role": { "type": "string", "enum": ["worker", "saved"], "description": "worker, or saved to take it back" } }, "required": ["name", "role"] } },
-      { "route": "POST /signin", "id": "signin", "title": "Sign a Claude account in", "description": "Start the sign-in for a new or expired account in its own folder, so the active login isn't touched. Sends one held axHub call; the sign-in then opens in the Terminal for Brett to finish.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "account name, 1 to 32 lower-case letters, digits or dashes" } }, "required": ["name"] } },
-      { "route": "POST /remove", "id": "remove", "title": "Remove a saved Claude account", "description": "Set a saved account aside: its folder moves to .removed on the VPS, nothing is deleted. Refused for the active account or one running a job. Sends one held axHub call.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "saved account name" } }, "required": ["name"] } },
-      { "route": "POST /save", "id": "save", "title": "Save the current Claude login", "description": "Save the login Claude is signed in with on the VPS under a name. Sends one held axHub call: Brett approves or denies it.", "input": { "type": "object", "properties": { "name": { "type": "string", "description": "name to save it as, 1 to 32 lower-case letters, digits or dashes" } }, "required": ["name"] } }
+      {
+        "route": "GET /accounts",
+        "id": "list",
+        "title": "List Claude accounts",
+        "description": "The Claude logins and API keys saved on the VPS: name, type, which is active, email and plan. Never a credential.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /who",
+        "id": "who",
+        "title": "Active Claude account",
+        "description": "Which saved Claude account new launches use.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /use",
+        "id": "use",
+        "title": "Switch Claude account",
+        "description": "Switch Claude on the VPS to a saved account (voice: 'switch Claude to account 2'; name 'account 2' works). Sends one held axHub call: Brett approves or denies it. Running builds keep their account; new launches use the active one.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "saved account name, 1 to 32 lower-case letters, digits or dashes"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "POST /role",
+        "id": "role",
+        "title": "Make a Claude account a worker or stop it",
+        "description": "Every saved subscription login takes headless jobs unless stopped. role worker = takes jobs again, saved = stop it (voice: 'stop account 1 taking jobs'). The console's own account and API keys have their own settings under Job routing.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "saved account name"
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "worker",
+                "saved"
+              ],
+              "description": "worker, or saved to take it back"
+            }
+          },
+          "required": [
+            "name",
+            "role"
+          ]
+        }
+      },
+      {
+        "route": "POST /signin",
+        "id": "signin",
+        "title": "Sign a Claude account in",
+        "description": "Start the sign-in for a new or expired account in its own folder, so the active login isn't touched. Sends one held axHub call; the sign-in then opens in the Terminal for Brett to finish.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "account name, 1 to 32 lower-case letters, digits or dashes"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "POST /remove",
+        "id": "remove",
+        "title": "Remove a saved Claude account",
+        "description": "Set a saved account aside: its folder moves to .removed on the VPS, nothing is deleted. Refused for the active account or one running a job. Sends one held axHub call.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "saved account name"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "POST /save",
+        "id": "save",
+        "title": "Save the current Claude login",
+        "description": "Save the login Claude is signed in with on the VPS under a name. Sends one held axHub call: Brett approves or denies it.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "name to save it as, 1 to 32 lower-case letters, digits or dashes"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "GET /routing",
+        "id": "routing",
+        "title": "Show Claude job routing",
+        "description": "Which accounts take headless jobs: each account's role, running and queued jobs against its limits, cost today and this week, API spend caps and alerts, and the routing rules in order.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /routing/test",
+        "id": "routing-test",
+        "title": "Test where a job would go",
+        "description": "Preview which Claude account a job would run on right now and which rule decided it (voice: 'where would a small Opus walkthrough go'). Nothing is launched.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "job": {
+              "type": "object",
+              "properties": {
+                "jobType": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "profile": {
+                  "type": "string"
+                },
+                "steps": {
+                  "type": "integer"
+                },
+                "minutes": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "required": [
+            "job"
+          ]
+        }
+      },
+      {
+        "route": "POST /routing/settings",
+        "id": "routing-settings",
+        "title": "Change Claude job routing settings",
+        "description": "Whether the console's own account also takes headless jobs (after the workers), and how many jobs build (default 3) and wait (default 5) per account.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "interactiveTakesJobs": {
+              "type": "boolean"
+            },
+            "building": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "queue": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /routing/rule",
+        "id": "routing-rule",
+        "title": "Change a Claude job routing rule",
+        "description": "Add, update, remove, move (up, down or a position) or switch on/off a rule that sends jobs to API accounts or keeps them on subscriptions. The first matching rule wins.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "add",
+                "update",
+                "remove",
+                "move",
+                "enable",
+                "disable"
+              ]
+            },
+            "id": {
+              "type": "string",
+              "description": "the rule's id (not for add)"
+            },
+            "rule": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string",
+                  "enum": [
+                    "api",
+                    "subscription"
+                  ]
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "accounts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "API accounts this rule may use ([] = any)"
+                },
+                "when": {
+                  "type": "object",
+                  "description": "when the rule applies; every list empty = any",
+                  "properties": {
+                    "jobTypes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots\u2026)"
+                    },
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "fable, opus"
+                    },
+                    "priorities": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "P0-P3 or urgent/high/normal/low"
+                    },
+                    "profiles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "build profiles (all)"
+                    },
+                    "minSteps": {
+                      "type": "integer"
+                    },
+                    "maxSteps": {
+                      "type": "integer"
+                    },
+                    "maxMinutes": {
+                      "type": "integer",
+                      "description": "estimated minutes left at most"
+                    },
+                    "subs": {
+                      "type": "string",
+                      "enum": [
+                        "any",
+                        "busy"
+                      ],
+                      "description": "busy = only while no subscription account can start the job now (fallback)"
+                    }
+                  }
+                }
+              }
+            },
+            "at": {
+              "type": "integer",
+              "description": "add at this position (0 = first)"
+            },
+            "to": {
+              "description": "move: up, down or a position"
+            }
+          },
+          "required": [
+            "op"
+          ]
+        }
+      },
+      {
+        "route": "POST /routing/api",
+        "id": "routing-api",
+        "title": "Set up a Claude API account",
+        "description": "Add an API-key account as a worker with its daily and weekly spend caps, change its caps or alert level, switch it on or off, or remove it. A session can lower a cap but only Brett's own click raises or removes one. The key itself is saved on the VPS (claude-account savekey <name>), never here.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "add",
+                "remove",
+                "enable",
+                "disable",
+                "caps"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "dailyCapUsd": {
+              "type": "number"
+            },
+            "weeklyCapUsd": {
+              "type": "number"
+            },
+            "alertAt": {
+              "type": "number",
+              "description": "0.1-1, share of a cap that raises an alert (default 0.8)"
+            }
+          },
+          "required": [
+            "op",
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "PUT /routing",
+        "id": "routing-save",
+        "title": "Replace the Claude job routing config",
+        "description": "Write the whole routing config (claude-workers@1) at once. Same cap rule as routing-api.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "config": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "config"
+          ]
+        }
+      },
+      {
+        "route": "POST /label",
+        "id": "label",
+        "title": "Name a Claude account",
+        "description": "Give a saved account a display name (voice: 'call account 3 Hulu').",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "label"
+          ]
+        }
+      }
     ]
   },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-04" },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-08"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/claude-accounts",
-    "env": ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"],
-    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "deploy/claude-login.mjs", "deploy/claude-workers.mjs", "deploy/claude-workers.test.mjs", "deploy/claude-headless.sh"],
+    "env": [
+      "AXF_CLAUDE_ACCOUNTS_DATA_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "deploy/claude-headless.sh",
+      "deploy/claude-login.mjs",
+      "deploy/claude-workers.mjs",
+      "deploy/claude-workers.test.mjs",
+      "deploy/worker-routing.mjs",
+      "deploy/worker-routing.test.mjs"
+    ],
     "keeps": [
       "/root/.claude-accounts and /usr/local/bin/claude-account on the VPS host: the saved logins and the script belong to the host, not to this plugin"
     ]
