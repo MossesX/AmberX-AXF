@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T18:40:23.095Z",
+ "updatedAt": "2026-11-08T18:47:35.899Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73330,6 +73330,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "Now make sure the orchestrator knows that. Everything gets the API.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "one-way-to-start-builds-the-orchestrator-dispatc",
+   "title": "One way to start builds: the orchestrator dispatches from the queue",
+   "category": "",
+   "detail": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T18:47:33.943Z",
+   "updatedAt": "2026-11-08T18:47:33.943Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
     "at": "",
     "source": "",
     "session": "",

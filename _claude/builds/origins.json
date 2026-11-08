@@ -2295,6 +2295,18 @@
     }
    ]
   },
+  "one-way-to-start-builds-the-orchestrator-dispatc": {
+   "said": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orch-live-sync": {
    "said": "you fix it, I trust you",
    "at": "2026-11-03",
