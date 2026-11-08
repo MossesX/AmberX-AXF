@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1536,
- "updatedAt": "2026-11-08T17:51:05.857Z",
+ "rev": 1537,
+ "updatedAt": "2026-11-08T17:51:17.592Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117049,7 +117049,7 @@
    "branch": "claude/molly-one-shell-r4",
    "pr": "#390",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T17:37:32.570Z",
+   "updatedAt": "2026-11-08T17:37:35.101Z",
    "builtAt": "",
    "notes": [
     {
@@ -117198,12 +117198,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:37:33.738Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-08T16:57:58.979Z",
-     "updatedAt": "2026-11-08T17:01:01.166Z"
+     "updatedAt": "2026-11-08T17:37:33.913Z"
     },
     {
      "id": "s6",
@@ -117220,12 +117220,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:37:35.101Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:57:58.979Z",
-     "updatedAt": "2026-11-08T16:57:58.979Z"
+     "updatedAt": "2026-11-08T17:37:35.295Z"
     },
     {
      "id": "s7",
@@ -117434,7 +117434,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
