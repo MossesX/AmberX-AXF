@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:27:11.485Z",
+ "updatedAt": "2026-11-08T19:27:23.851Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74389,9 +74389,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:23:04.271Z",
-   "updatedAt": "2026-11-08T19:23:04.271Z",
+   "updatedAt": "2026-11-08T19:27:22.881Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:27:22.881Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -74406,7 +74411,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/approve-button-fix is 73 behind main and the merge fails. Rebase/merge it onto main, resolve conflicts, CI green, land. Goal (Brett): tapping Approve in the console's approval dialog approves right away and closes the dialog; no 'opened in axHub, approve or deny there'. Uses a console-relay hub account (AXF_HUB_RELAY_USER/PASSWORD); if not set, say exactly what Brett must set. Every UI action gets API control. Queue after the Demonstration Designer.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw884yrl04tfaf"
+    },
+    {
+     "id": "s2",
+     "text": "When I click an approved link in the console, approved pop up in the dialog, it just says opened in Axe Hub, approve it or deny it there. It needs to fucking go right through and close the goddamn dialog.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw884yrl05n4s2"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/rebase-land-approve-button-fix-approve-goes-stra.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/rebase-land-approve-button-fix-approve-goes-stra.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw884yrl06hdt9"
+    }
+   ]
   }
  ]
 }
