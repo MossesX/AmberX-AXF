@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1588,
- "updatedAt": "2026-11-08T21:17:49.119Z",
+ "rev": 1589,
+ "updatedAt": "2026-11-08T21:18:14.714Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124299,9 +124299,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-08T21:17:47.099Z",
+   "updatedAt": "2026-11-08T21:18:13.459Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:18:13.459Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124316,7 +124321,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:18:13.459Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8c3idv01jvy5",
+     "title": "",
+     "text": "Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:18:13.459Z",
+     "updatedAt": "2026-11-08T21:18:13.459Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8c3idv02i0gu",
+     "title": "",
+     "text": "There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:18:13.459Z",
+     "updatedAt": "2026-11-08T21:18:13.459Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8c3idv031sab",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/one-builds-page-pending-queued-built-tabs-remove.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/one-builds-page-pending-queued-built-tabs-remove.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:18:13.459Z",
+     "updatedAt": "2026-11-08T21:18:13.459Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -124325,7 +124420,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124340,7 +124435,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:18:13.459Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

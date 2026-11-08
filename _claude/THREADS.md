@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 11:37 UTC · `build-pipeline-v2` s14 done (all) · orchestrator
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` s15 done, → complete (all) · orchestrator
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` branch claude/pipeline-v2 (all) · builds-live
 - 2026-11-07 11:37 UTC · `build-pipeline-v2` note (all) · orchestrator
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 21:17 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` note (all) · orchestrator
 - 2026-11-08 21:17 UTC · `big-library-of-snappable-title-bar-widgets-each-` note (all) · orchestrator
 - 2026-11-08 21:17 UTC · `one-builds-page-pending-queued-built-tabs-remove` added (0 steps) (all) · pending
+- 2026-11-08 21:18 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · orchestrator
 
 ## Token passes (log)
 
