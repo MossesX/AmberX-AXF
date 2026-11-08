@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Page = tab group (Pipeline, Builds, Approvals, Rules); the Pipeline tab shows Pending / Queue / Building, the accounts, what the next tick starts and why the rest waits. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -36,13 +36,15 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
+      ".github/workflows/android.yml",
       "CLAUDE.md",
-      "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
       "_claude/builds/README.md",
+      "_claude/memory/STATUS.md",
       "_claude/rules/RULES.md",
       "_claude/shared/rules/RULES.md",
       "deploy/claude-headless.sh",
+      "deploy/install-console.sh",
       "framework/spec/check-builds-live.mjs"
     ]
   },
@@ -215,6 +217,71 @@
           ]
         },
         "output": "{ id, origin }"
+      },
+      {
+        "id": "pipeline-status",
+        "route": "GET /pipeline",
+        "title": "Pipeline status",
+        "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
+        "readOnly": true,
+        "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
+      },
+      {
+        "id": "pipeline-queue",
+        "route": "POST /pipeline/queue",
+        "title": "Queue a build",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. Say 'queue the icon browser build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status, pipeline }"
+      },
+      {
+        "id": "pipeline-unqueue",
+        "route": "POST /pipeline/unqueue",
+        "title": "Take a build out of the Queue",
+        "description": "Move a queued build back to Pending before it starts.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-split",
+        "route": "POST /pipeline/split",
+        "title": "Split a build into steps",
+        "description": "Ask the orchestrator to split (or re-split) a build into steps of 30 minutes or less, Fable only where needed; done by the dispatcher within a minute.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, requested }"
       }
     ]
   },

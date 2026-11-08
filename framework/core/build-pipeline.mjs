@@ -69,7 +69,7 @@ export const canUnqueue = (b) => !!b && b.status === 'queued';
 
 /** Builds of the Queue in start order: priority first (P0 before P3), then the moment they were queued. */
 export function queueOrder(builds, priorityOf = () => 'P2') {
-  const rank = (p) => Number(String(p).replace(/^P/, '')) || 2;
+  const rank = (p) => { const n = parseInt(String(p).replace(/^P/, ''), 10); return Number.isInteger(n) ? n : 2; };
   return [...builds].filter((b) => b.status === 'queued').sort((a, b) => rank(priorityOf(a)) - rank(priorityOf(b)) || str(a.pipeline?.queuedAt).localeCompare(str(b.pipeline?.queuedAt)) || str(a.createdAt).localeCompare(str(b.createdAt)));
 }
 
@@ -83,9 +83,9 @@ export const nextModel = (b) => openSteps(b)[0]?.model ?? '';
  * killed) = requeued, until `runs` reaches maxRuns, then failed. A clean exit with steps left = the session stopped on
  * purpose (a question, UI Review, a step marked for a new session): back to Pending for Brett, with the reason.
  */
-export function outcomeOf({ exit, stepsLeft, runs }, maxRuns = DEFAULT_MAX_RUNS) {
+export function outcomeOf({ exit, stepsLeft, runs, phaseSwitch = false }, maxRuns = DEFAULT_MAX_RUNS) {
   if (!stepsLeft) return 'finished';
-  if (exit === 0) return 'returned';
+  if (exit === 0) return phaseSwitch ? 'requeued' : 'returned'; // a phase ended on purpose: the next phase runs on its own model's account
   return runs >= maxRuns ? 'failed' : 'requeued';
 }
 export const STATUS_AFTER = Object.freeze({ finished: 'built', requeued: 'queued', returned: 'pending', failed: 'failed' });

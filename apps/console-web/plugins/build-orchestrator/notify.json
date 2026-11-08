@@ -1,0 +1,65 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "pipeline.idle",
+      "label": "Nothing is building",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "No build is running while the Queue has work (with the reason: no free account, no Fable account, a split still to come), or the Queue is empty and builds wait in Pending for you. Pushed to the phone once per idle spell; cleared when a build runs.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:idle"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "pipeline.launched",
+      "label": "Build started",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The dispatcher started a headless session for a Queue build: which account, which model, which phase.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:run:"
+      },
+      "channels": {
+        "amberx": false
+      }
+    },
+    {
+      "id": "pipeline.ended",
+      "label": "Build ended, returned or failed",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A dispatcher session ended: every step done (built), crashed and back in the Queue, stopped early and back in Pending for you, or failed after too many runs.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:end:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "pipeline.split",
+      "label": "Build split into steps",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The orchestrator split a new build into steps (or had to fall back to rules and asks you to review them).",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:split:"
+      },
+      "channels": {
+        "amberx": false
+      }
+    }
+  ]
+}
