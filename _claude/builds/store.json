@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1561,
- "updatedAt": "2026-11-08T19:24:13.315Z",
+ "rev": 1562,
+ "updatedAt": "2026-11-08T19:24:43.577Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114416,12 +114416,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/approve-button-fix",
    "pr": "",
    "createdAt": "2026-11-07T16:36:58.936Z",
-   "updatedAt": "2026-11-07T16:50:29.972Z",
+   "updatedAt": "2026-11-08T19:24:42.488Z",
    "builtAt": "2026-11-07T16:50:29.973Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/approve-button-fix (no PR yet)",
+     "at": "2026-11-08T19:24:42.488Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -114556,7 +114561,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:24:13.315Z",
+ "updatedAt": "2026-11-08T19:24:43.577Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67709,12 +67709,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/approve-button-fix",
    "pr": "",
    "createdAt": "2026-11-07T16:36:58.936Z",
-   "updatedAt": "2026-11-07T16:50:29.972Z",
+   "updatedAt": "2026-11-08T19:24:42.488Z",
    "builtAt": "2026-11-07T16:50:29.973Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/approve-button-fix (no PR yet)",
+     "at": "2026-11-08T19:24:42.488Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
