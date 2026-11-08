@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:17:28.440Z",
+ "updatedAt": "2026-11-08T21:17:49.119Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75058,6 +75058,37 @@
      "uid": "st-mw8c2ium06ejj1"
     }
    ]
+  },
+  {
+   "id": "one-builds-page-pending-queued-built-tabs-remove",
+   "title": "One builds page: Pending, Queued, Built tabs; remove every other builds table",
+   "category": "",
+   "detail": "Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "one-builds-page-pending-queued-built-tabs-remove",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:17:47.099Z",
+   "updatedAt": "2026-11-08T21:17:47.099Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
