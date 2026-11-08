@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1533,
- "updatedAt": "2026-11-08T17:50:27.530Z",
+ "rev": 1534,
+ "updatedAt": "2026-11-08T17:50:42.380Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -118246,15 +118246,15 @@
    "title": "Account health probe + failover + phone alerts",
    "category": "Claude accounts",
    "detail": "A (new): probe every Claude account (subscriptions + API keys) on console load and on a schedule with a tiny headless session (no rules, no CLAUDE.md, no MCP): login valid, usage left (5-hour + weekly, resets; API balance/spend vs cap), models it can use. One shared account-status store every plugin reads (usage badge, Claude accounts screen, routing); routing only sends a job to an account the store says can take it with the model it needs. E: phone notification before and after the probe (type account-status). B/C/D are built by account-failover-notify (same branch line); this build stacks on it.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-08T17:44:28.366Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T17:50:32.551Z",
+   "builtAt": "2026-11-08T17:50:32.552Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -118374,12 +118374,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:50:32.551Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T17:24:55.216Z",
-     "updatedAt": "2026-11-08T17:24:55.216Z"
+     "updatedAt": "2026-11-08T17:50:32.760Z"
     }
    ],
    "profiles": [
@@ -118390,7 +118390,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
