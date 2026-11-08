@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 21:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 21:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 21:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 21:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 00:23 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` added (0 steps) (all) · pending
 - 2026-11-08 00:32 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → running (all) · orchestrator
 - 2026-11-08 00:32 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` branch claude/pipeline-rebuild (all) · builds-live
+- 2026-11-08 00:37 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
