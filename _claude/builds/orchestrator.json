@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T16:37:59.199Z",
+ "updatedAt": "2026-11-08T16:38:14.170Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -69690,15 +69690,15 @@
    "title": "Workers + API accounts + routing rules",
    "category": "Builds > Claude accounts",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/workers-api-routing",
    "pr": "#389",
    "createdAt": "2026-11-08T16:15:21.028Z",
-   "updatedAt": "2026-11-08T16:37:56.629Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T16:37:59.282Z",
+   "builtAt": "2026-11-08T16:37:59.282Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -69818,8 +69818,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:37:59.282Z",
      "note": "",
      "uid": "st-mw81a0l30c4t9g"
     }
