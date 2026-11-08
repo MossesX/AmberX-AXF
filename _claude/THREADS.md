@@ -755,7 +755,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 12:45 UTC · `style-override-rule` s2 done (all) · orchestrator
 - 2026-11-07 12:45 UTC · `plan-archive` s7 done, → complete (all) · paulie
 - 2026-11-07 12:46 UTC · `plan-archive` branch claude/plan-archive (all) · builds-live
 - 2026-11-07 12:46 UTC · `plan-archive` → built (all) · paulie
@@ -1155,6 +1154,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 22:07 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` → built, PR #396 (all) · builds-live
 - 2026-11-08 22:22 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` added (0 steps) (all) · pending
 - 2026-11-08 22:23 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · orchestrator
+- 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` → queued, note (all) · cli
 
 ## Token passes (log)
 
