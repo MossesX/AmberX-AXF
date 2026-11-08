@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1491,
- "updatedAt": "2026-11-08T17:01:57.437Z",
+ "rev": 1492,
+ "updatedAt": "2026-11-08T17:05:31.818Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107646,7 +107646,7 @@
    "branch": "claude/memory-manager-r2",
    "pr": "",
    "createdAt": "2026-11-06T17:33:08.806Z",
-   "updatedAt": "2026-11-08T17:01:37.106Z",
+   "updatedAt": "2026-11-08T17:05:30.402Z",
    "builtAt": "",
    "notes": [
     {
@@ -107776,12 +107776,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:05:30.402Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:54:09.996Z",
-     "updatedAt": "2026-11-08T16:54:10.077Z"
+     "updatedAt": "2026-11-08T17:05:30.543Z"
     },
     {
      "id": "s6",
@@ -107881,7 +107881,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {

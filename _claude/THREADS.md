@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:00 UTC · `gizmo-rebuild-fable` note (current) · foreign-write
 - 2026-11-07 05:00 UTC · `library-harvest` note (current) · foreign-write
 - 2026-11-07 05:00 UTC · `dataset-bar` note (current) · foreign-write
 - 2026-11-07 05:00 UTC · `multi-account-headless-workers` note (current) · orchestrator
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:01 UTC · `molly-one-shell` branch claude/molly-one-shell-r3, PR #390 (all) · builds-live
 - 2026-11-08 17:01 UTC · `memory-restructure-chunked-claude-md-store-memor` note (all) · orchestrator
 - 2026-11-08 17:01 UTC · `handoff-2` note (all) · orchestrator
+- 2026-11-08 17:05 UTC · `memory-restructure-chunked-claude-md-store-memor` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
