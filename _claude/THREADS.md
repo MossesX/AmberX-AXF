@@ -750,10 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:34 UTC · `merge-conflict-alerts` branch claude/merge-conflict-alerts (current) · builds-live
-- 2026-11-07 04:44 UTC · `skins-asset-types` branch claude/skins-asset-types (current) · builds-live
-- 2026-11-07 05:01 UTC · `skins-asset-types` s1 done, → running (current) · orchestrator
-- 2026-11-07 05:01 UTC · `skins-asset-types` s2 done (current) · orchestrator
 - 2026-11-07 05:01 UTC · `skins-asset-types` s4 done (current) · orchestrator
 - 2026-11-07 05:11 UTC · `skins-asset-types` s5 done (current) · orchestrator
 - 2026-11-07 05:26 UTC · `skins-asset-types` s7 done (current) · orchestrator
@@ -1150,6 +1146,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:38 UTC · `ui-api-parity-look` added (8 steps) (all) · orchestrator
 - 2026-11-08 17:38 UTC · `ui-api-parity-media` added (10 steps) (all) · orchestrator
 - 2026-11-08 17:38 UTC · `ui-api-parity-framework` added (6 steps) (all) · orchestrator
+- 2026-11-08 17:38 UTC · `universal-voice-api-control-everything-controllable` s6 done, → running (all) · orchestrator
+- 2026-11-08 17:38 UTC · `universal-voice-api-control-everything-controllable` note (all) · orchestrator
+- 2026-11-08 17:38 UTC · `orchestrator-full-api-control` note (all) · orchestrator
+- 2026-11-08 17:38 UTC · `ui-api-parity-builds` note (all) · orchestrator
 
 ## Token passes (log)
 

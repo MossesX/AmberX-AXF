@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:38:51.973Z",
+ "updatedAt": "2026-11-08T17:39:10.475Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -69056,9 +69056,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:45:55.038Z",
-   "updatedAt": "2026-11-08T00:45:55.038Z",
+   "updatedAt": "2026-11-08T17:38:57.280Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash note (Nov 8 2026, ui-api-parity-rule): ui-api-parity-builds maps the Build orchestrator's view to named ops (plugin.json ui, ui-api@1). Build these together or map the new hold/resume/kill controls in its ui block as they land; ui-parity.mjs check fails a mapped view that isn't full.",
+     "at": "2026-11-08T17:38:57.280Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -69159,16 +69164,21 @@
    "title": "Universal voice + API control (everything controllable)",
    "category": "new feature",
    "detail": "Every setting, every screen and every button in the whole app (console, axHub, patches, AmberX, everything) must be fully controllable by the API and by voice. Everything is already an asset and a token, so build one control registry: each control gets a stable ID, type, allowed actions and a description; the API can list, find and act on any of them; voice maps spoken commands onto those API calls. Separate build so it can run in parallel with the others.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:46:49.844Z",
-   "updatedAt": "2026-11-08T00:46:49.844Z",
+   "updatedAt": "2026-11-08T17:38:55.325Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlap (Nov 8 2026, ui-api-parity-rule): s6 is done by api-coverage@1 + ui-api@1 (CI). s2 and s4 are largely done by full-api-control (control@1 console.values / console.elements / console.actions over MCP+CLI); the per-plugin named-op work is split into ui-api-parity-{builds,agents,console,look,media,framework}. Re-scope before building: what is left is s3 (axHub web + AmberX controls) and s5 (voice layer).",
+     "at": "2026-11-08T17:38:55.325Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -69275,9 +69285,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:38:52.644Z",
+     "note": "Covered by full-api-control (api-coverage@1: every UI element has an API path, CI) + ui-api-parity-rule (ui-api@1 parity check, ratchet, deep links), branch claude/ui-api-parity-rule-r3.",
      "uid": "st-mw743xi50cmc03"
     }
    ]
@@ -71042,9 +71052,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:35.326Z",
-   "updatedAt": "2026-11-08T17:38:35.327Z",
+   "updatedAt": "2026-11-08T17:38:59.094Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash: orchestrator-full-api-control (pending) adds step hold/resume/kill to the Build orchestrator; build them together so its controls are mapped once.",
+     "at": "2026-11-08T17:38:59.094Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
