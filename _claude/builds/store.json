@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1475,
- "updatedAt": "2026-11-08T16:37:31.076Z",
+ "rev": 1476,
+ "updatedAt": "2026-11-08T16:37:59.199Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116072,10 +116072,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/workers-api-routing",
+   "pr": "#389",
    "createdAt": "2026-11-08T16:15:21.028Z",
-   "updatedAt": "2026-11-08T16:37:17.529Z",
+   "updatedAt": "2026-11-08T16:37:56.629Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -116234,7 +116234,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
