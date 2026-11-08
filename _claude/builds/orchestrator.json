@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T16:38:14.170Z",
+ "updatedAt": "2026-11-08T16:42:59.360Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -69428,15 +69428,15 @@
    "title": "Headless sessions get the brief only",
    "category": "Builds",
    "detail": "Headless builds (deploy/claude-headless.sh, claude -p) load no CLAUDE.md chain, memory, rules files or settings-injected context; MCP servers only when the job needs them (default none); the orchestrator writes self-contained briefs (rule snippets by tag, template, size budget); start tokens measured before/after and shown per build in the console. Reuses rules-brief@1 from claude/token-optimize (PR #360).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/brief-only-headless",
    "pr": "#388",
    "createdAt": "2026-11-08T16:14:35.744Z",
-   "updatedAt": "2026-11-08T16:35:23.711Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T16:42:58.380Z",
+   "builtAt": "2026-11-08T16:42:58.380Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -69556,8 +69556,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:42:58.380Z",
      "note": "",
      "uid": "st-mw8191ld0ctpi0"
     }
