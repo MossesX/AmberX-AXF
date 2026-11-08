@@ -214,6 +214,7 @@ fi
 # One deploy per merge-queue stack (Brett, Nov 4 2026: "Save the compute"): while the queue is merging a stack it
 # keeps push-banner/queue-merging fresh; the update waits until the last PR of the stack is in (stale after 15 min).
 QUEUE_HOLD="$DIR/.axf-console/plugins/push-banner/queue-merging"  # axf-plugin:push-banner
+AXF_UPDATE_DEPLOY="${AXF_DEPLOY_LOG:-$DIR/.axf-console/deploys/log.jsonl} console" \
 AXF_UPDATE_PRELUDE="[ -n \"\$(find \"$QUEUE_HOLD\" -mmin -15 2>/dev/null)\" ] && exit 0  # the merge queue is landing a stack: one deploy once it is all in" \
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
@@ -236,6 +237,9 @@ axf_cron_file axf-console-nightly "* * * * * root N=$DIR/deploy/console-nightly.
 # Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
 axf_cron_file axf-doctor "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1"
 DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true
+
+# deploy-log@1: what is live on the console now (Shipped features dates features from it)
+axf_deploy_log "${AXF_DEPLOY_LOG:-$DIR/.axf-console/deploys/log.jsonl}" console "$(git -C "$DIR" rev-parse HEAD 2>/dev/null || true)"
 
 sleep 3
 docker ps --filter "name=^$NAME$" --format '{{.Names}} is {{.Status}}' | sed 's/^/[axf] /'

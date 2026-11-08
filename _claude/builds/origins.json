@@ -1,6 +1,30 @@
 {
  "$axf": "build-origins@1",
  "origins": {
+  "account-failover-notify": {
+   "said": "Brief (headless launch, no verbatim block): Account failover + phone alerts + one home per login. 1. Automatic failover: when a build fails on an account for auth (expired/unrefreshable login) or usage limit, immediately mark that account out and relaunch the same build on the next available account (workers, then the interactive account; API accounts only per routing rules). No build should die and stay dead because of one account. Today three builds died in 1 s each on account-1 (OAuth expired) and nothing retried. 2. Phone notification (AmberX) on every such problem: which account, what failed (expired login / limit / no credits), which build moved where, and what Brett needs to do (e.g. sign account-1 in). 3. One home per login: each account's credentials live in exactly ONE store; every token refresh from any build, console or session writes back to that same place. No duplicate copies that can spend a refresh token and leave others dead. Audit claude-login.mjs / claude-token-save.mjs / claude-headless.sh and the console AI keys store for duplicates; find why account-1's refresh failed (spent by another copy vs idle expiry) and report it. 4. Status in the console Claude accounts screen: out/why/until, last refresh time per login.",
+   "at": "2026-11-08T16:59:53.289Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "adopt-today-s-direct-launched-builds-record-only": {
+   "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "agent-cap": {
    "said": "a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
    "at": "2026-11-01",
@@ -650,6 +674,30 @@
   "blueprint-notes-tasks": {
    "said": "Blueprints switch notes, tasks and to-dos too (Brett, Nov 7)\n\n1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists).\n2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the existing plans went to.\n3. Global lists: some lists are shared across all blueprints. \"Quick notes\" is global by default. A per-list switch \"show in every blueprint\".\n4. Voice: \"add X to quick notes\" always works; \"switch blueprint to X\" switches all of it. control@1, MCP, CLI.\n5. Active blueprint visible in AmberX and the console (chip), settings in place, assets only, no hard-coded styling. UI Review three options (--choices).\n6. Tests: switch filters plans + notes + tasks + to-dos; global lists stay; nothing lost. Add to Shipped features.\n\nAddendum (Brett, Nov 7): permanent Global group\n- Notes/tasks/to-do manager AND Plan Studio each get a permanent group called **Global** (can't be deleted or moved).\n- Global holds repo-wide items: they show no matter which blueprint is open.\n- Any plan, note, task, to-do or list can be set to Global (toggle + drag in), and back.\n- Quick notes lives in Global by default. Replaces the per-list \"show in every blueprint\" switch: Global is that switch.",
    "at": "2026-11-07T14:45:07.894Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "brief-approval-dialog-before-every-headless-sess": {
+   "said": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "brief-only-headless": {
+   "said": "Headless builds (deploy/claude-headless.sh, claude -p) must NOT load CLAUDE.md, the CLAUDE.md chain, memory folders, rules files or any auto-loaded context. The ONLY input is the brief the orchestrator writes: exactly what that job needs, nothing more.",
+   "at": "2026-11-08T16:14:35.744Z",
    "source": "",
    "session": "",
    "link": "",
@@ -1746,6 +1794,18 @@
    "from": "",
    "addenda": []
   },
+  "idle-alert-phone-flag-when-nothing-is-building": {
+   "said": "alerts on my phone when shit stops building, dude. You constantly need to be checking every, you know, all the time. If there's nothing running, I need a flag to appear on my phone.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "interface-roller": {
    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
    "at": "2026-10-27",
@@ -1756,6 +1816,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "investor-demo-player-shell-with-login-gate-skins": {
+   "said": "Oh, let's build that section. Let's build the the view the viewer with um, behind a login gate uh, with a guest login.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "jump-menu-asset": {
@@ -2025,6 +2097,30 @@
    "from": "",
    "addenda": []
   },
+  "molly-native-expenses": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-08T16:58:59.537Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "molly-one-shell": {
+   "said": "Brett wants everything in ONE app. Molly becomes the single shell for every app and plugin: Dev Console, axHub web, AmberX, and all future apps. Patches is scrapped. NO embedding: Do NOT embed other apps as pages/iframes (no second file menu/banner/chrome). ONE native app: Molly has the only chrome (one banner, one file menu, one nav, one settings). Every app's screens, plugins, menus and settings load natively into Molly as plugins, merged into Molly's single menu/nav. Menus: Molly's menus reach EVERYTHING from every app: every screen, plugin, action, setting. Grouped by app and category, search/jump-to-anything, favorites and recents, sliding sub menus, three-dot overflow on small screens. Fully voice and API controllable. Layouts: User picks a layout mode. IDE-style is ONE option among others. In the IDE layout, containers dock/split/float/resize, and each container can optionally be a tab group: drag anything from a menu onto a container and it opens there as a new tab; tabs drag between containers. Save/switch named layouts. Reuse framework tab group / drag-to-tab work.",
+   "at": "2026-11-08T16:57:58.978Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-opus": {
    "said": "combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
    "at": "2026-11-02",
@@ -2035,6 +2131,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "molly-sign-in-once": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-08T16:59:02.204Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "mosses-build-tools": {
@@ -2219,6 +2327,30 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "orchestrator-chain-trace-brownie-molly-group-cha": {
+   "said": "All right, I want a plugin from now. I want actually, I want settings in the orchestrator. But for the chains... I want to see what exactly he receives, for instructions, what he does with those instructions, who he what he launches on the VPS, if anything, what. And then what other se sections he sends information to, like he has to send it to the plant studio... Molly is the plant studio, so I want to see Brownie sending the stuff to to uh, whatever her name is in the group chat. Talking back and forth.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-checks-shipped-features-before-spli": {
+   "said": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "orchestrator-dup-check": {
@@ -2909,6 +3041,18 @@
    "from": "",
    "addenda": []
   },
+  "terminal-header-responsive": {
+   "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
+   "at": "2026-11-08T16:15:18.411Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "terminal-no-focus": {
    "said": "I don't want the terminal to come to the front on every session.",
    "at": "2026-11-04T00:00:00Z",
@@ -3088,6 +3232,18 @@
    "from": "detail",
    "addenda": []
   },
+  "ui-api-parity-rule": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:23:21.874Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-asset-designer": {
    "said": "\"We're gonna build a UI asset designer, which will create assets with their manifest and their identifier. It's going to create separate plugins for the app menu designer, the nav menu designer, the toolbar designer, the banner designer, the embedded widget designer, the widget designer. These are not dependent on the designer, but the designer interface will inherit those other designers. The UI designer plugin will have add-ons, each with their own settings interface and the designer's interface.\" \"Redo them all from scratch.\" \"Make it a build and get the Fable stuff going. Make it super powerful: full-blown context menu, drag and drop, map-based. Every UI asset will also have a context menu section which gives you a preview of the UI, and informs you in multiple ways (tooltips etc).\"",
    "at": "2026-11-07T01:33:59.833Z",
@@ -3243,6 +3399,18 @@
    "from": "",
    "addenda": []
   },
+  "urgent-rebuild-pipeline-orchestrator-ids-splits-": {
+   "said": "You need to start the pipeline over from scratch. From now on, what I say, send a build to the orchestrator. The orchestrator is going to assign an ID. A build ID. He's going to use you to break it up into steps select a model Babel or Opus Babel when it's needed and then he's going to see how many subscriptions are connected to the VPS how many accounts are available How many, what's the max parallel for each one? And uh, if it's a account that has Fable, he'll send the Fable to that. He'll send everything else to Opus. He will, no, he will check the BPS to see what accounts have what slots. Available parallel. Dish out the steps, okay? The steps are marked. We already have the rules for how the steps are marked down into a, in a progress pile and blah blah blah. Updated in real time because you have a monitor watching the progress files. And um, the orchestrator starts starts the head, headless. The orchestrator then sends it to the queue, or he sends it to pending. Yeah, he sends everything to the pending. And I have to send them from pending to queue.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "veto-everywhere": {
    "said": "it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
    "at": "2026-10-30",
@@ -3369,6 +3537,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "workers-api-routing": {
+   "said": "All subscription logins are workers: account-1 (brettspend), account-3 (hulu0241, 'Hulu'), mossesx-max- (Moses X). The interactive/active account can also take headless jobs (setting, default on). Fix whatever left cfg.workers empty and make sure the orchestrator actually routes across all workers in parallel (per-account queue max default 5, building default 3). Allow API-key accounts as workers: add 'Hulu API' and 'Moses X API' slots (keys from the vault; never print or commit keys). API accounts are billed per token, so they only get jobs that match routing rules. Orchestrator settings interface: rules for which jobs go to API accounts vs subscription accounts. Rules on job type, model, size/estimated steps, priority, profile, when subscriptions are limited/busy (fallback), and daily/weekly spend caps per API account with alerts. Rule order, enable/disable, test-a-job preview showing which account it would go to. Show per-account status in the console: role, running, limit, cost today/week.",
+   "at": "2026-11-08T16:15:21.028Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "xlayout": {

@@ -32,6 +32,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
+import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
@@ -255,6 +256,8 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
   foldOrigins(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
+  if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
 }
 

@@ -12,10 +12,14 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
 import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
+import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '../core/feature-ledger.mjs';
+import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
+import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -177,6 +181,8 @@ export function validateAsset(raw) {
   errors.push(...jobTypeErrors(raw.type, raw.data));
   // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, raw.data));
+  // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
+  errors.push(...demoAssetErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
@@ -808,6 +814,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
+    if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
@@ -845,6 +852,13 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   for (const [n, schema] of Object.entries(swarmJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const swreg = join(FRAMEWORK_DIR, 'schemas/swarm.json');
   writeFileSync(swreg, JSON.stringify(SWARM, null, 2) + '\n'); written.push(swreg);
+  // feature-ledger@1 (Shipped features) + deploy-log@1: JSON Schemas + the registry snapshots the plugin's server and Python readers use
+  for (const [n, schema] of Object.entries({ ...ledgerJsonSchemas(), ...deployLogJsonSchemas() })) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const lreg = join(FRAMEWORK_DIR, 'schemas/feature-ledger.json'); writeFileSync(lreg, JSON.stringify(LEDGER_REGISTRY, null, 2) + '\n'); written.push(lreg);
+  const dreg = join(FRAMEWORK_DIR, 'schemas/deploy-log.json'); writeFileSync(dreg, JSON.stringify(DEPLOY_LOG_REGISTRY, null, 2) + '\n'); written.push(dreg);
+  // build-hook@1: the one event every build creator fires (builds store writes → listeners)
+  for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeFileSync(hreg, JSON.stringify(BUILD_HOOK_REGISTRY, null, 2) + '\n'); written.push(hreg);
   return written;
 }
 
