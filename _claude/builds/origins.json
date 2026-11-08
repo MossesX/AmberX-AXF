@@ -1352,6 +1352,18 @@
    "from": "detail",
    "addenda": []
   },
+  "every-banner-title-bar-and-toolbar-snappable-ass": {
+   "said": "every banner and title bar is snap, has to be snaps. Every banner and title bar and all that has to be snappable assets so nothing overlines. And they all need a settings. Every single one needs its own settings.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "expenses-port": {
    "said": "I want to port expenses to AmberX. It's in another repo. ... It should stay its own app in the same repo. ... Make sure it's the right one, the one that has the most entries in it.",
    "at": "2026-11-04T00:00:00Z",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1580,
- "updatedAt": "2026-11-08T21:15:15.161Z",
+ "rev": 1581,
+ "updatedAt": "2026-11-08T21:15:45.596Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123663,6 +123663,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T21:14:58.067Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "every-banner-title-bar-and-toolbar-snappable-ass",
+   "title": "Every banner, title bar and toolbar: snappable assets with their own settings",
+   "category": "",
+   "detail": "Brett standing rule: every banner, title bar and toolbar in every app (console, AmberX, Molly, axHub web) and every item on them is a snappable registry asset, and every single one has its own settings (in a dialog, categorized collapsible sections). They measure their width and drop items into a three-dot overflow by priority so nothing ever overlaps at any size. Audit all existing banners/title bars/toolbars and convert them; add a CI check that fails on any bar or bar item that isn't a snappable asset or lacks settings. Folds in the Terminal toolbar item. Full API + voice + MCP/CLI control. Shots at 3 widths; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "every-banner-title-bar-and-toolbar-snappable-ass",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:15:44.105Z",
+   "updatedAt": "2026-11-08T21:15:44.105Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "every banner and title bar is snap, has to be snaps. Every banner and title bar and all that has to be snappable assets so nothing overlines. And they all need a settings. Every single one needs its own settings.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 465
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "2 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:15:44.105Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}
