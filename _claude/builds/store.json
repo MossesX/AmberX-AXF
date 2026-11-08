@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1569,
- "updatedAt": "2026-11-08T19:27:23.851Z",
+ "rev": 1570,
+ "updatedAt": "2026-11-08T21:08:47.265Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -113870,7 +113870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -113882,7 +113882,10 @@
     "createdAt": "2026-11-08T00:17:40.473Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw87znmu0197f9": "2026-11-08T19:23:15.174Z",
+     "st-mw87znmu02x4v0": "2026-11-08T19:23:15.174Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:23:15.174Z",
@@ -115163,7 +115166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115175,7 +115178,11 @@
     "createdAt": "2026-11-07T21:39:31.022Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8801kv03zsf6": "2026-11-08T19:23:33.247Z",
+     "st-mw8801kv04ecrv": "2026-11-08T19:23:33.247Z",
+     "st-mw8801kv05lkmg": "2026-11-08T19:23:33.247Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:23:33.247Z",
@@ -115603,7 +115610,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115615,7 +115622,11 @@
     "createdAt": "2026-11-07T23:59:35.398Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw880c6606uq1x": "2026-11-08T19:23:46.974Z",
+     "st-mw880c66075ovm": "2026-11-08T19:23:46.974Z",
+     "st-mw880c6608wpg6": "2026-11-08T19:23:46.974Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:23:46.974Z",
@@ -115757,7 +115768,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115769,7 +115780,11 @@
     "createdAt": "2026-11-08T00:01:25.881Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw880vi301huqm": "2026-11-08T19:24:12.027Z",
+     "st-mw880vi302faka": "2026-11-08T19:24:12.027Z",
+     "st-mw880vi3031lda": "2026-11-08T19:24:12.027Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:24:12.027Z",
@@ -118988,7 +119003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119000,7 +119015,11 @@
     "createdAt": "2026-11-08T17:22:53.861Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw881k0l04w3j0": "2026-11-08T19:24:43.797Z",
+     "st-mw881k0l05pr9h": "2026-11-08T19:24:43.797Z",
+     "st-mw881k0l063dsm": "2026-11-08T19:24:43.797Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:24:43.797Z",
@@ -119142,7 +119161,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119154,7 +119173,11 @@
     "createdAt": "2026-11-08T17:22:54.809Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8825yl07z35h": "2026-11-08T19:25:12.237Z",
+     "st-mw8825yl08igbm": "2026-11-08T19:25:12.237Z",
+     "st-mw8825yl09grj4": "2026-11-08T19:25:12.237Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:25:12.237Z",
@@ -122631,7 +122654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122643,7 +122666,11 @@
     "createdAt": "2026-11-08T18:40:19.876Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw883e1h01q259": "2026-11-08T19:26:09.365Z",
+     "st-mw883e1h0238ch": "2026-11-08T19:26:09.365Z",
+     "st-mw883e1h032apg": "2026-11-08T19:26:09.365Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:26:09.365Z",
@@ -122785,7 +122812,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122797,7 +122824,11 @@
     "createdAt": "2026-11-08T18:47:33.943Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw883n8c04er14": "2026-11-08T19:26:21.276Z",
+     "st-mw883n8c05dxvz": "2026-11-08T19:26:21.276Z",
+     "st-mw883n8c060gef": "2026-11-08T19:26:21.276Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:26:21.276Z",
@@ -122943,7 +122974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122955,7 +122986,11 @@
     "createdAt": "2026-11-08T19:10:13.866Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw883wk507uzgy": "2026-11-08T19:26:33.365Z",
+     "st-mw883wk508h0bv": "2026-11-08T19:26:33.365Z",
+     "st-mw883wk50974gl": "2026-11-08T19:26:33.365Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:26:33.365Z",
@@ -123097,7 +123132,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123109,7 +123144,11 @@
     "createdAt": "2026-11-08T19:13:49.284Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw884p3x01c3ns": "2026-11-08T19:27:10.365Z",
+     "st-mw884p3x02ut6w": "2026-11-08T19:27:10.365Z",
+     "st-mw884p3x031fkm": "2026-11-08T19:27:10.365Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:27:10.365Z",
@@ -123251,7 +123290,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123263,10 +123302,73 @@
     "createdAt": "2026-11-08T19:23:04.271Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw884yrl04tfaf": "2026-11-08T19:27:22.881Z",
+     "st-mw884yrl05n4s2": "2026-11-08T19:27:22.881Z",
+     "st-mw884yrl06hdt9": "2026-11-08T19:27:22.881Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T19:27:22.881Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "agent-profile-schema-skills-personas-with-a-big-",
+   "title": "Agent profile schema: skills + personas, with a big template library",
+   "category": "",
+   "detail": "Contract work (Fable). New asset schemas for crew agents: agent-skill@1 (name, domain, what it does, tools allowed, files/areas it owns, rules, checks it runs, model preference, cost cap, examples) and agent-persona@1 (name, nickname, voice/tone, job title, avatar, how it reports, strengths, limits), plus agent-profile@1 that combines one persona with several skills. Validators, fixtures, CI check. Ship a large library of boilerplate templates: skills (React UI, Kotlin/Compose, Python server, plugin manifests, themes/skins, tests, docs, merge-fixer, CI fixer, slot watchdog, account health, notifications, voice/API wiring, security review, UI Review designer, demo/pitch writer, data/Postgres, deploy/Coolify, refactor, perf) and personas (lander, reviewer, builder, watchdog, reporter, etc.). Template picker + 'new from template' in the Crew plugin; migrate the existing roster (Earl, Rhonda, Sully, Lenny, Gina, Paulie, Joey, Vinnie) onto it. Orchestrator reads skills when assigning steps. Every UI gets full API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "agent-profile-schema-skills-personas-with-a-big-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:08:45.566Z",
+   "updatedAt": "2026-11-08T21:08:45.566Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Create a schema for the agents that for their skills and personas. Create a schema with a shitload of templates that um with boilerplates for certain skills and all that.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 461
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "2 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:08:45.566Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

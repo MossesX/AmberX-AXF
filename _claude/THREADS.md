@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 11:07 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 11:07 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r2 (all) · builds-live
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s5 done (all) · orchestrator
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s6 done (all) · orchestrator
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 19:26 UTC · `demonstration-designer-plugin-new-standalone` note (all) · orchestrator
 - 2026-11-08 19:27 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` note (all) · orchestrator
 - 2026-11-08 19:27 UTC · `rebase-land-approve-button-fix-approve-goes-stra` note (all) · orchestrator
+- 2026-11-08 21:08 UTC · `agent-profile-schema-skills-personas-with-a-big-` added (0 steps) (all) · pending
 
 ## Token passes (log)
 
