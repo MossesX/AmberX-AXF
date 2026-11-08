@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1551,
- "updatedAt": "2026-11-08T19:19:39.353Z",
+ "rev": 1552,
+ "updatedAt": "2026-11-08T19:19:56.431Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25595,17 +25595,89 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-08T02:31:12.141Z",
+   "updatedAt": "2026-11-08T19:19:49.849Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:19:49.849Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:19:49.849Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw87v97e032dp7",
+     "title": "",
+     "text": "One command on the VPS builds the console + API + panel container behind Coolify Traefik with HTTPS at console.amberxai.com, prints AXF_TOKEN and auto-updates every 5 minutes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:19:49.849Z",
+     "updatedAt": "2026-11-08T19:19:49.849Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw87v97e04kwm3",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/x.deploy.console.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/x.deploy.console.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:19:49.849Z",
+     "updatedAt": "2026-11-08T19:19:49.849Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -25615,14 +25687,14 @@
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.console",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": {
     "estimate": "30 min"
    },
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:19:49.849Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [

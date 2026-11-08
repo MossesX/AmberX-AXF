@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:02 UTC · `library-harvest` added (4 steps) (current) · foreign-write
 - 2026-11-07 04:02 UTC · `skins-asset-types` added (3 steps) (current) · foreign-write
 - 2026-11-07 04:02 UTC · `glossary-index-demos` added (6 steps) (current) · foreign-write
 - 2026-11-07 04:40 UTC · `assistant-chat-mode` note (current) · foreign-write
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 19:13 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` added (0 steps) (all) · pending
 - 2026-11-08 19:19 UTC · `handoff-session-threads` note (all) · builds-live
 - 2026-11-08 19:19 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → complete, merged, note (all) · builds-live
+- 2026-11-08 19:19 UTC · `x.deploy.console` note (all) · builds-live
 
 ## Token passes (log)
 
