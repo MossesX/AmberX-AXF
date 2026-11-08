@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1544,
- "updatedAt": "2026-11-08T18:20:27.165Z",
+ "rev": 1545,
+ "updatedAt": "2026-11-08T18:30:32.092Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117051,14 +117051,14 @@
    "title": "Molly is the one native shell for every app (no embedding); all-apps menus; layout modes with IDE + tab-group containers; Patches leftovers retired",
    "category": "Molly",
    "detail": "Brief: /root/axf-builds/molly-one-shell-r2/.brief.md (r1/r2 runs died before doing anything; r3 = this run). Patches itself was already removed by kill-patches-pilot; this build clears what is left.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-one-shell-r4",
    "pr": "#395",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T18:00:48.077Z",
+   "updatedAt": "2026-11-08T18:30:30.986Z",
    "builtAt": "",
    "notes": [
     {
@@ -117084,6 +117084,10 @@
     {
      "text": "Reconciler: PR #395 names s4, s5, s6, s15 done",
      "at": "2026-11-08T18:00:48.077Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-08T18:30:30.986Z"
     }
    ],
    "approvals": [
@@ -117459,7 +117463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
