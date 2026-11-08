@@ -39,6 +39,7 @@
       "AXF_GITHUB_TOKEN_SOURCE"
     ],
     "mentions": [
+      "_claude/memory/docs/project-guide.md",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",

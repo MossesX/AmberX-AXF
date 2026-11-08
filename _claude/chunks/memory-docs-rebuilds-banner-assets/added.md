@@ -1,0 +1,5 @@
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md lines=26-30 tokens=244 -->
+## Added
+- **Android Compose banner** `framework/android/axf-ui/.../components/Banner.kt`: `AxfBanner` (three sides as `1fr auto 1fr`, surfaces flat/raised/accent with `LocalBannerForeground` for accent text, divider, brand mark + logo text scaled to the height, context target `banner`), `AxfBannerBadge` (pill/icon/dot, tone tokens, `link` → action), the pop-out popup (auto-dismiss after its duration, tap to close). `AppShell` draws it above both grids (desktop and phone) and now owns the status-bar inset so the banner sits under the system bar once.
+- `framework/spec/check-widgets.mts` (CI): replays `banner.json` + `widgets.json` through the reference engine, checks the TS and CLI validators agree on every `validation.json` case, and exercises the runtime host API (attach / replace / detach by origin / detachAll / warnings / hidden banner / popup). 93 checks.
+- Kotlin `KernelTest.widget hosts: attach, replace, detach, warn` (runtime host API on a real kernel).

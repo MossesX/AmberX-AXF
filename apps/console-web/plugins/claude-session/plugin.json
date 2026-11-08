@@ -31,6 +31,7 @@
       "AXF_CLAUDE_DIR"
     ],
     "mentions": [
+      "_claude/memory/docs/project-guide.md",
       ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/shared/rules/RULES.md",

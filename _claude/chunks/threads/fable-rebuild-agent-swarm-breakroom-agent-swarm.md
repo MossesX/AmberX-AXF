@@ -1,0 +1,6 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=99-99 tokens=326 -->
+## Active
+
+| Thread | State | Branch | PR | Queued / next | Updated |
+|---|
+| Fable rebuild: agent swarm (Breakroom `agent-swarm-fable-rebuild`, 7 steps, Fable s1–s6 + Opus s7; Brett Nov 3, voice: "finish the Breakroom profile"): the swarm's seven contracts into `framework/core/engines/swarm-rules.mjs` (one registry, normalizers, field-naming validators, JSON Schemas, snapshot `schemas/swarm.json`, fixture `spec/fixtures/swarm.json`, `check-swarm.mts` in CI; plugin re-exports them), then planner, context packer, card/avatar check, group chat contract, vibe engine, differences report | review (all 7 steps done; PR open, the push banner merges it) | `claude/agent-swarm-fable-rebuild` | [#247](https://github.com/MossesX/AmberX-AXF/pull/247) | s1: contracts in the framework. s2: planner on the model policy, `fallback` agent, folder-vs-glob overlap, one agent one job across builds. s3: best-hit snippets, folder outlines (real brief 4321 → 352 tokens). s4: avatar as a part list from the card rules. s5: chat contract `swarm-chat.mjs`. s6: vibe engine `swarm-vibe.mjs`; `check-swarm.mts` 223 checks. s7: report `_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md` + LOG.md; no shots (the sandbox console cannot render without axHub; same pixels anyway). Brett: none needed | 2026-11-03 |

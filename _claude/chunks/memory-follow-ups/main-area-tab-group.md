@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/follow-ups.md lines=5-5 tokens=200 -->
+## Nov 3 2026 - queued after the feature freeze (CI green + merge everything first)
+
+- **Main area tab group** (Brett, voice: "Give the main viewing area a tab group, and when you right click the tab group, you can open its settings and you can place it wherever you want, top, left, right, bottom. So you can have multiple things persistent in the main area."): the main area holds multiple open pages as persistent tabs (they stay alive when you switch); right-click the tab group = its settings (tab position top/left/right/bottom, look, theme, close/pin behaviour, max tabs); drag a tab out = detach to a floating window, drag a floating window onto the group = dock it as a tab. Build together with the detach items above (one 'main area' build), on the dock engine (#245) and the window host.

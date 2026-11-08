@@ -1,0 +1,3 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=229-231 tokens=169 -->
+## Notes vault (Nov 3 2026, notes-vault, Opus) <!-- axf-plugin:notes-browser -->
+Brett's hand-saved notes (handoffs, session logs, plans, install notes, saved commands) live in one place: `/projects/_shared/_claude/notes/` (axHub memory project `shared`, area `claude`; `_claude/shared/notes/` in a checkout), index `notes/INDEX.md`. Console plugin `notes-browser` (Plugins → Notes): folders + notes, rendered Markdown, search, sort, new / rename / move / delete, conflict-safe edit (if_version), hub version history kept; capability `axf.notes@1` for MD Studio's Notes scope (md-studio s11). Report: `_claude/builds/reports/notes-vault.md`. <!-- axf-plugin:notes-browser -->

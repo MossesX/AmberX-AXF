@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=9-9 tokens=218 -->
+## Before building anything
+
+- **Models: Opus or Fable only, never Sonnet (Nov 1 2026, Brett; three headless builds had run on Sonnet because the launcher could not start Fable, fixed in axHub decision #111).** Fable for foundation work: schemas, asset types, data models, kernel/engines, cross-app GUI behaviour. Opus for the rest. No Sonnet or Haiku anywhere: not for builds, not for hired job agents, not for swarm agents, not for banter or one-shot calls. One registry says so and every picker reads it: `framework/core/model-policy.mjs` (snapshot `framework/schemas/model-policy.json`; `node framework/spec/check-model-policy.mjs` in CI); a stored Sonnet or Haiku choice runs as Opus (coerced up, never down). Opus-built foundation work gets a **Fable review first**, and only what the review flags is rebuilt (`_claude/builds/reports/fable-review.md`, Nov 1 2026).

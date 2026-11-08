@@ -1,0 +1,8 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=257-263 tokens=399 -->
+### Gizmo companion (`gizmo-companion`, Current, Opus) — branch `claude/gizmo-companion`
+- **Asked (Brett, Nov 3 2026, voice):** a full Claude companion in AmberX as a plugin, as complete as the Claude app (chat, voice, connectors, crew, projects + memory, every setting, overlay bubble, commands for other plugins); harvest AmberX's assistant + the Terminal's session code into a shared lib; brains on the VPS via axHub, no keys in the APK; Gizmo replaces agent Molly.
+- **On the branch:** s1 lib `claude-session` + Terminal migration; s2 chat (plugin `apps/amberx-droid/src/plugins/companion`); s3 talk mode; s6b model + budget; s7a settings; s9 Gizmo agent (agent-manager add-on `gizmo`, roster card) + Molly → Gizmo texts.
+- **Left:** s9 (s4a) connector list + approvals UI, s10 (s4b) Follow Amber / `console_show` hooks, s11–s12 (s5) crew link buttons, s13 (s6a) projects + memory on axHub, s16 (s7b) overlay bubble (native, APK), s17 (s8) REST/MCP/CLI + tools from other plugins; developer voice commands still reach agent Molly via `/api/ai/molly`.
+- **Read first:** the report `_claude/builds/reports/gizmo-companion.md`, `apps/amberx-droid/src/plugins/companion/web/Chat.tsx`, `framework/libs/claude-session/core.ts`.
+- **Checks:** `npx -y tsx framework/spec/check-claude-session.mts`, `npx -y tsx apps/amberx-droid/test.mjs`, `cd apps/amberx-droid && npx tsc --noEmit`, `node framework/cli/check-theme.mjs`, `node framework/cli/check-controls.mjs`.
+- **First message:** "Carry on build gizmo-companion (Current profile) from the store: next open step, branch claude/gizmo-companion."

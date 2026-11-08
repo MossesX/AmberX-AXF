@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/docs/voice-command-center.md lines=13-16 tokens=188 -->
+## Molly
+- The Agent manager's bundled add-on `molly` (`addons/molly/addon.json`, agent-addon@1): persona + skills (codebase, app help, walkthrough, builds, GitHub, VPS, containers, console, DNS); tools axhub_call (dangerous, approvals on axHub), repo_*, container_* (write batch approved + snapshotted). Installed once on console start and added to Safety → dangerous agents (`_offer_molly`); an uninstall is respected.
+- AmberX → `POST /api/ai/molly` (admins) → the console's Molly guide plugin (`POST …/ask`, folder set by `AMBERX_MOLLY_PLUGIN`) → `axf.agents@1.run_task("molly", …)`. Token: the AmberX installer copies `AXF_TOKEN` from `/opt/axf/.axf-console/env` into its 0600 server env (`AMBERX_CONSOLE_TOKEN`, URL `http://axf-console:7090`).

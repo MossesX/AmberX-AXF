@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=30-30 tokens=216 -->
+## Before building anything
+
+- **"Sync my chats" (Nov 1 2026, Brett):** when Brett says "sync my chats" in a claude.ai session (text or voice), Claude lists his chats with `recent_chats`, reads each new or updated one with `read_conversation`, and writes each to the hub drop folder with `axhub.memory_write` (project `amberx-axf`, area `data`, path `sessions/claude-ai/<conversation uuid>.json`, the whole conversation as session@1: `$axf`, `uuid`, `source` `claude-ai-text`|`claude-ai-voice`, `title`, `startedAt`, `updatedAt`, `messages` [{`role` user|assistant, `text`, `at`}]; schema in `apps/console-web/plugins/chat-viewer/README.md` → Hub drop folder). The console's Chat viewer ingests them on its next check. Never scrape claude.ai or use his login; the other way in is his claude.ai data export, uploaded in the viewer. <!-- axf-plugin:chat-viewer -->

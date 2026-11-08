@@ -31,6 +31,7 @@
       "AXF_SLOTS_DIR"
     ],
     "mentions": [
+      "_claude/memory/docs/project-guide.md",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "_claude/THREADS.md",

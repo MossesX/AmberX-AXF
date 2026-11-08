@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=103-104 tokens=202 -->
+## Oct 21 2026 — the axHub web app is an AXF developer app (Opus)
+
+- *[superseded Nov 3 2026]* **Oct 22 2026 — Patches manages the plugins of the apps it hosts (Brett).** When Patches loads developer apps (Console, Pilot, axHub, and every later one) in tabs, Patches owns all plugins: the hosted apps' plugins are switched off inside Patches and enabled only in Patches, and every plugin-related hook or screen in a hosted app (plugin settings, Plugin Manager, plugin switches, plugin menu entries) is greyed out with a note that plugins are managed in Patches. When a hosted app uses a plugin Patches doesn't have, Patches' systems check banner gets an entry whose fix installs the missing plugins into Patches, and Patches tries that install by itself first. Standalone, every app keeps its own plugins.

@@ -1,154 +1,31 @@
 # AmberX AXF
 
-Cross-platform app framework where every UI piece (theme, layout, menu, toolbar, dialog, popup, button, slider, container, access policy) is a hot-swappable JSON asset in one shared format, `asset@1`. One framework, several ports: the **web port** (TypeScript reference engines + React) and the **Android port** (Kotlin/Compose, pure-Kotlin kernel). Apps built on it (starting with the Dev Console) define and extend the framework as they are built.
+Cross-platform app framework where every UI piece is a hot-swappable JSON asset (`asset@1`): web port (TypeScript
+engines + React) and Android port (Kotlin, on hold). Apps on it start with the Dev Console (`apps/console-web`).
 
 **Brett's rules (always loaded):**
 
 @_claude/shared/rules/RULES.md
 @_claude/rules/RULES.md
 
-**Claude settings (Brett, Nov 3 2026):** at session start and before acting, read Claude settings (`claude_settings_get`, or `node apps/console-web/plugins/claude-settings/claude-settings.mjs get`) and follow them. Owner-only ones (No wait, Include irreversible, launch without asking, default model, UI Review gate, raising caps) change only with Brett's own click in the console. <!-- axf-plugin:claude-settings -->
+## Session start: ask the orchestrator what to load
 
-**Fix it yourself (Brett, Oct 30 2026):** when something is broken and the tools at hand can fix it (a dead key, a stuck or crashed build, a failed launch, CI red, a restarting container, missing config), fix it straight away as a veto call with a plain reason, then tell him what was fixed. Never ask whether to fix it; ask only when it needs his hands (a new token on github.com, paying, a device) or a real choice, and then put it in a banner item with the exact steps.
+This file stays small. Everything else is in the chunked memory store, and you load only what the work needs:
 
-**Threads and builds (read on every load):** `_claude/THREADS.md` lists every thread, its state, branch, PR and queued items. Read it first, pick up from it, and update + commit it whenever a thread starts, changes, opens or merges a PR, or queues an item. All build work lives in the repo (branches, PRs, this log), never only in chat.
+1. `node framework/cli/memory-load.mjs` (the SessionStart hook runs it): the builds the orchestrator says were
+   started in the last 24 h and stopped unfinished, with their next step, branch, PR and the memory chunks about
+   them. Builds data belongs to the orchestrator (`_claude/builds/store.json`), not to memory.
+2. `_claude/chunks/INDEX.md`: one line per chunk (rules, THREADS rows, Status entries, decisions, docs, the project
+   guide). Grep it for the feature you are on (or `node framework/cli/memory-chunks.mjs find <text>`) and read only
+   those chunks (`_claude/chunks/<id>.md`).
+3. Before acting, read Claude settings (`node apps/console-web/plugins/claude-settings/claude-settings.mjs get`, or MCP `claude_settings_get`) and follow them. <!-- axf-plugin:claude-settings -->
 
-Everything else Claude should know is in `_claude/` (axhub-projects@1, see `_claude/README.md`): `rules/`, `instructions/`, `memory/` (decisions in `memory/decisions.md`, specs in `memory/docs/`) and `shared/` for all projects. It syncs with the hub's `/projects/amberx-axf/_claude/` (and `shared/` with `/projects/_shared/_claude/`); the `claude-sync start` SessionStart hook syncs and loads it. Edit it, run `claude-sync sync`, commit.
+The long guide that used to be here (stack, layout, build/run/test commands, conventions, related repos, working with
+Brett) is `_claude/memory/docs/project-guide.md`, chunked as `memory-docs-project-guide/…`. The chunks are generated:
+edit the source file, then `node framework/cli/memory-chunks.mjs build` and commit. Memory files, and what reads and
+writes each one, are managed in the console's Memory Manager (`/#/memory-manager`). <!-- axf-plugin:memory-manager -->
 
-## Status
-
-Lives in `_claude/memory/STATUS.md` (about 237K characters; not loaded automatically). Don't read it whole: Grep it for the feature you're working on and read only those lines. Per-feature docs are in `_claude/memory/docs/`.
-
-## Stack & layout
-
-TypeScript/React 18 + Vite (web), Node 22 (CLI/build engine, `.mjs`), Kotlin + Jetpack Compose (Android, JDK 17, AGP 8.7, API 35), Python 3.12 + FastAPI (console API + MCP).
-
-```
-framework/
-  core/         web reference engines + runtime (TS, framework-agnostic)
-  react/        AxfProvider, AppShell, controls, windows, studio views
-  ui/axf.css    base stylesheet (reads only engine-compiled CSS vars)
-  assets/       starter assets (asset@1), one folder per type
-  schemas/      asset-types.json = single source of truth; json/ generated
-  spec/         INTEROP.md, PORTING.md, fixtures/ (golden engine outputs)
-  android/      Gradle build: axf-kernel, axf-platform-android, axf-ui,
-                axf-assets, axf-nav, axf-data, axf-network, axf-devtools,
-                axf-testing, lib-* (settings, logging real; admin,
-                accounts, profile, billing placeholders; browser)
-  cli/          axf.mjs (CLI), build-engine.mjs, tracker.mjs, engine-rpc.mjs
-  catalog/      catalog.json, status.json, libraries.json (feature tracker)
-  plan/         plan.json, build-queue.json (build order + completion)
-  templates/    react-ts, next-ts, android-compose, web-fastapi-wall, android-module
-  deploy/       axf-deploy.sh: shared VPS installer helpers (Coolify, axHub wall, auto-update) + test.sh
-  boilerplates/ app starting points (boilerplate@1) + index.json
-  library-templates/, libs/, python/   installable-library scaffolding
-apps/
-  demo/         web demo (untouched `axf init` output) -> axf.amberxai.com
-  console-web/  web Dev Console (React/TS) + server/ (FastAPI, mcp_server.py)
-  console/      Android showcase of the console (ai.amberx.axf.console)
-  expenses/     Expense Tracker (Next.js, imported from MossesX/Expense with history) -> expenses.amberxai.com
-deploy/         install.sh (demo), install-console.sh (sources framework/deploy/axf-deploy.sh), dryrun/ (before/after harness), panel/ (/panel UI)
-_claude/        Claude files (rules/, instructions/, memory/, shared/), synced with /projects/amberx-axf/_claude
-project.manifest.json   this repo's project manifest (apps/* have their own)
-tracker.json    generated from catalog + status
-.mcp.json       registers the axf MCP server (local stdio + console.amberxai.com)
-```
-
-## Build, run, test
-
-Build engine (Node 22, no install needed):
-```bash
-node framework/cli/axf.mjs validate --framework     # framework assets
-node framework/cli/axf.mjs validate apps/demo
-node framework/cli/tracker.mjs --check              # tracker.json in sync
-node framework/cli/tracker.mjs                      # regenerate it
-node framework/cli/axf.mjs schemas                  # regenerate JSON Schemas
-node framework/cli/persist.mjs                      # where shared data is read from (/projects or repo); push | pull
-node framework/cli/project.mjs validate --all       # every project manifest (also: list, rules, init, schema)
-node framework/cli/claude-project.mjs [dir] --dry-run --yes   # what claude-project would do in a folder
-node framework/spec/check-project-fixtures.mjs      # JS validator vs reference fixtures
-node framework/spec/check-build-steps.mjs           # small-steps rule: pending + build-queue cores (40 checks)
-node framework/spec/check-builds-store.mjs          # builds@1 store: migration loses nothing, projections, reorder, rename, harvest, apply/discard
-node framework/cli/builds-store.mjs [verify|history <id>|restore <id> <rev>]   # the one builds store
-node framework/cli/build-origin.mjs get <id> | addendum <id> --said "…" | missing   # what Brett said that started a build
-node framework/spec/check-build-priority.mjs        # priority tags: levels, backfill, waiting-on, agent queue order
-node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
-node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
-node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
-node framework/cli/build-queue.mjs --steps | --check-steps    # same for the build queue
-claude-sync status                                  # Claude files + shared data sync with the hub
-npx -y tsx framework/spec/gen-fixtures.mts          # after changing a reference engine
-npx -y tsx framework/spec/check-widgets.mts         # banner + widget host engines vs fixtures, validators agree, runtime host API
-```
-Web apps:
-```bash
-cd apps/demo && npm ci && npm run build             # also: npm run dev / typecheck
-cd apps/console-web && npm install && npm run dev   # :5173, proxies /api to :7090
-cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --port 7090 --reload
-```
-CI re-bakes the framework into the console before building it: `rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done` (run in `apps/console-web`).
-
-Android needs **JDK 17, the Android SDK (API 35) and Maven/Google repo access**. That usually isn't available here, so **GitHub Actions (`.github/workflows/android.yml`) is the compiler.** There is **no Gradle wrapper** in the repo; CI uses Gradle 8.14.3:
-```bash
-cd framework/android && gradle :axf-kernel:test                 # kernel + conformance tests
-cd framework/android && gradle assembleDebug publishToMavenLocal
-cd apps/console && gradle :app:assembleDebug                    # console APK
-```
-CI artifacts: `console-debug.apk`, `axf-maven-repo`, `console-web-dist`, `kernel-test-reports`. Build failures are posted to an open GitHub issue titled "CI build errors" (and to the PR for kernel test failures). Read that issue rather than downloading artifacts.
-
-Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-pushes `dist/` to the `site` branch. The VPS pulls that branch every 2 minutes. The console runs as a Docker image (`apps/console-web/server/Dockerfile`, repo root as build context) behind Coolify.
-
-## Conventions & decisions
-
-- **Everything visible is an asset** (`asset@1`). Engines compile assets into tokens/variables; UI reads only compiled tokens and never hardcodes colours or sizes. Hot-swap = `runtime.swap(type, id)`.
-- **All UI code conforms to the asset system (Oct 31 2026):** handwritten or generated, web CSS/TSX and Kotlin UI take every colour, size, spacing, font, radius and border from asset tokens and use framework controls; `check-theme.mjs` + `check-controls.mjs` fail CI otherwise (file:line + token to use), `axf init` refuses non-conformant output, frozen Android code is held to `framework/spec/conform-baseline.json`.
-- **Every toolbar is a Toolbars plugin toolbar (Nov 3 2026):** per-toolbar settings + editor via its context menu, tap-to-confirm on touch only (first tap shows the tip and arms for 3 s, second tap runs; mouse/pen/keyboard = single click), accepts dropped hooks. Every toolbar is `role="toolbar"` + `aria-label`; the framework (`framework/react/tapConfirm.ts`, installed by `AxfProvider`) does the rest; `check-toolbars.mjs` fails CI otherwise.
-- **Plugin and library UIs conform to the theme engines** (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).
-- **Transparency is themed too:** style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.
-- **Console sizes are tokens (Oct 17 2026):** `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.
-- **Build options are `--switches` on every build driver** (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.
-- **Every project has a validated manifest** (`project.manifest.json`); nothing is loaded or compiled without one. Rules live in `framework/schemas/project-rules.json` (Dev Console → Standards).
-- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.
-- **Engine compatibility across ports is a hard constraint.** Kotlin kernel and TS `framework/core` are the same design, file for file. Fixtures in `framework/spec/fixtures` are the conformance contract. Change a reference engine, then regenerate fixtures.
-- Android kernel is **pure Kotlin (no Android imports)**. Platform specifics go behind kernel seams. Packages are `ai.amberx.axf.*`, Maven coordinates are `ai.amberx.axf:<module>:<version>`.
-- **Interop:** the kernel never knows a protocol. Protocols are modules contributing a `ProtocolAdapter`. Exposure is default-deny, and a remote caller can never exceed the local UAC role. Wire error codes never change meaning (see INTEROP.md).
-- **React/TS port:** the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.
-- `axf init` **bakes** `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.
-- **One builds store (Oct 31 2026):** every build of every profile is one record in `_claude/builds/store.json` (builds@1, owned by the orchestrator; profiles are a field, Pending a status, the queue an order). Every write is versioned (`_claude/builds/journal/`); the old orchestrator/pending/build-queue files are read-only exports. `node framework/cli/builds-store.mjs verify | history <id> | restore <id> <rev>`.
-- **Every build shows what Brett said (Nov 3 2026):** each build record carries `origin` (build-origin@1, `framework/core/build-origin.mjs`): his verbatim words (`said`), when, where (voice/chat/console/code), session/link, who launched it, the brief and later addenda. Every launch puts his exact words in the brief's `## Brett said (verbatim)` block (or `said` on orchestrator add / `pending_change` / Plan Studio); a paraphrase never replaces them. Merges never lose it (store + `_claude/builds/origins.json` sidecar). `node framework/cli/build-origin.mjs get|set|addendum|capture|backfill|missing|block`.
-- **Approve and Deny stay in the console (Nov 7 2026):** the tap goes through the approvals banner's relay (`POST /api/plugins/approvals-banner/decide`) with the browser's own hub session; the console token can't use it and deciding actions are `personOnly`, so no session can approve its own call. Report `_claude/builds/reports/approvals-in-place-r2.md`. <!-- axf-plugin:approvals-banner -->
-- **UI Review choices (Nov 7 2026):** a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`. <!-- axf-plugin:ui-review -->
-- **Every build has a priority tag (Nov 5 2026):** Urgent / High / Normal / Low = P0-P3 (`framework/core/build-priority.mjs`, optional `priority` on a build, unset = Normal or Urgent when marked urgent, worked out on read). `<PriorityTag build=id />` on every build view: tap or right-click changes it and lists what is waiting on it. Priority orders the agent-slots queue and the merge queue; manual moves still win and a running merge-queue stack is never rebuilt for it. `node framework/cli/build-priority.mjs list|get|waiting|set`. Docs: `_claude/memory/docs/priority-tags.md`.
-- **Builds go live to main (Nov 3 2026):** every store write (step, status, note, branch, PR) is pushed to main at once as a status-only `[skip ci]` commit (`framework/cli/builds-live.mjs`, newer-wins merge per build and step), with a line in THREADS.md's Live build log; code still goes through PRs. Sessions start with `builds-live.mjs sync` + `builds-reconcile.mjs --apply` (SessionStart hook) and never trust an export alone. `built` = all steps done, PR not merged; `complete` once merged. Details: `_claude/builds/README.md` → Live on main.
-- Feature status lives in `framework/catalog/status.json`. Build order and completion live in `framework/plan/build-queue.json`, which the MCP tools `build_next` and `build_step` drive. Update both, then run `tracker.mjs`, whenever something lands.
-- **Shipped features (Nov 4 2026):** every feature from planned to live is one row in the Shipped features ledger (`apps/console-web/plugins/shipped-features`, SQLite, feature-ledger@1). Builds need nothing extra: every builds store write fires build-hook@1 (`framework/cli/build-hooks.mjs`), which plans a created build's steps as features (or edits of existing ones) with his verbatim words. Every deploy script logs what went live with `axf_deploy_log` (deploy-log@1). Contracts Fable-reviewed Nov 6 2026 (`_claude/builds/reports/shipped-features.md` → Fable review). <!-- axf-plugin:shipped-features -->
-- **Claude works as an assigned agent (Nov 3 2026):** every Claude session calls `claude_session_start` first and works as the agent Brett assigns (name, persona / voice, `AXF_AGENT`), booking its work on that agent's card with `claude_session_book`; Brett picks in the console pop-up or approves the default on axHub (`apps/console-web/plugins/claude-session`). <!-- axf-plugin:claude-session -->
-- **Follow Amber (Nov 3 2026):** one console switch (Settings → Plugins → Follow Amber, right-click anywhere, banner chip). When `console_follow` says it's on, call `console_show` every time you mention something in the console; it opens and highlights it (navigate grant only, so no veto). His axHub approvals pop up in the console (one-tap Approve / Deny, his own hub session; the console server never decides). Navigation console tools are read-only so axHub runs them at once. <!-- axf-plugin:follow-amber -->
-- **Agent cap (Nov 1 2026):** every headless `claude -p` on the VPS (deploy/claude-headless.sh, so axHub build_start and console launches; the agent swarm) takes a slot from `framework/cli/agent-slots.mjs` first: max running agents (default 6), memory floor (2 GB), extras queue and start by themselves (`queued at position N`). Wrap heavy steps (pnpm/vite builds, docker test runs, Playwright) in `node framework/cli/agent-slots.mjs heavy -- <cmd>` (default 3 at once). Settings: Settings → Plugins → Agent cap; `agent-slots.mjs status`. <!-- axf-plugin:agent-slots -->
-- **Worker accounts (Nov 7 2026):** the console stays on one Claude subscription; accounts marked as workers (Builds → Claude accounts) only run headless jobs, on private login copies. `deploy/claude-headless.sh` sends a job with no `--account` to the least busy worker (`deploy/claude-workers.mjs route`), a worker on its limit hands the run to the next one without changing the console's account, and runs and cost are kept per account (`claude-workers.mjs status`). No worker marked = nothing changes. <!-- axf-plugin:claude-accounts -->
-- **Patches and Build Pilot are retired (Nov 3 2026):** both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.
-- Model policy: per step in the Build orchestrator (Fable for contracts/engines/migrations/cross-app GUI behaviour, Opus otherwise). Downgrades (Fable → Opus) pass by themselves; **upgrades (Opus → Fable) need Brett's approval** (his console click or an axHub approval), never a session's (Nov 3 2026, `framework/core/model-switch.mjs`).
-- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.
-- **GitHub goes through the GitHub App (Nov 1 2026):** get tokens from the broker `framework/cli/github-token.mjs` (`installation` | `user` | `token` | `repo create`), never a new personal token; the console keeps `GITHUB_TOKEN` on the app's installation token, the old PAT is only the fallback. Setup: Settings → Plugins → GitHub. <!-- axf-plugin:github-app -->
-
-## Related repos
-
-- **`MossesX/axHub`**: standalone connector hub at `axhub.amberxai.com`. axHub's server core never depends on AXF; its UI may be built on AXF (axHub decision #93, Oct 23 2026), as static files the hub only hosts. AXF plugs in from its side via `lib-hub` (protocol defined by axHub: AXPP) and the `axhub-adapter-axf` plugin, which lives in **this** repo. axHub's step 3 proxies this console's `/mcp` as its first downstream service.
-- **`MossesX/studiox`**: AmberX AI Studio (Next.js), an earlier, separate `@axf/core` line. It does not consume this repo.
-- **`MossesX/amberx`**: earlier PyQt6 desktop AmberX framework (dormant). This repo's planned `python` port (`x.python.port`) is separate from it.
-
-
----
-
-## Working with Brett (same in every MossesX repo)
-
-- **Where he works:** mostly from his Android phone (Samsung Galaxy S26 Ultra), often through **Moshi** (mosh) into his Hostinger VPS, where Claude Code runs. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.
-- **Model choice (Oct 27 2026):** no per-build model question any more. The Build orchestrator (`_claude/builds/orchestrator.json`) pins each step to Fable or Opus; a downgrade (Fable → Opus) needs nobody; an **upgrade** (Opus → Fable) needs Brett's approval (Nov 3 2026): stop, `orchestrator.mjs request-upgrade <id> <phase>`, never approve it yourself. One session, no sub-agents. You can't switch models yourself: at a switch, hand him the next phase's brief (`orchestrator.mjs brief <id>`). Rule in `_claude/shared/rules/RULES.md`.
-- **`_claude/` + the repo are the shared memory.** Sessions on the phone (Moshi), desktop, web and claude.ai don't share chat history, so anything a future session needs must live in `_claude/` (synced with the hub's `/projects`) or in this repo. Commit and push often with clear messages, and update `_claude/memory/STATUS.md` whenever something meaningful changes.
-- **No secrets in the repo:** no tokens, passwords, keys or IPs with credentials. Use environment variables or GitHub Actions secrets.
-- **GitHub:** account `MossesX`. A new repo must exist on GitHub before a session can push to it.
-- **Server:** a Hostinger VPS running **Coolify**. Coolify's Traefik proxy owns ports 80/443, so new web apps go behind it as Coolify apps (no separate nginx). His domain is `amberxai.com`.
-- **axHub:** his connector hub on the VPS (repo `MossesX/axHub`). If the axHub MCP server is configured in this Claude Code install, use its `list_services`, `describe_service` and `call` tools to reach his other services instead of asking him for credentials.
+Headless builds load no CLAUDE.md at all (their brief is everything; build `brief-only-headless`).
 
 ## Persona
 

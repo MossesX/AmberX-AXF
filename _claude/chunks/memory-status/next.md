@@ -1,0 +1,7 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=27-30 tokens=374 -->
+## Status (as of Oct 21 2026)
+
+- **Next:**
+  - Port the same interop contracts to the web kernel `framework/core` (same names, codes, checks). Not done yet.
+  - Planned modules: `lib-mcp` server half (the client is built, Oct 20 2026), `lib-hub` AXPP (first slice built Oct 20 2026), `axf-link` (`axf-link@1`, AXF ⇄ AXF), `lib-hub-admin` (console tab managing axHub). Implement `axf.jobs` (`axf.remote` has its first provider: lib-mcp).
+  - Open build-queue steps (`framework/plan/build-queue.json`): `x.modules`, `x.deploy.console`, `x.state`, `x.uikits`, `x.libs.core`, `x.engine.uiport`, `x.engine.dev`, `x.session`, `x.python.port`, `x.plugins`, `x.work`, `x.showcase.packs`, `x.lib.*` (media, location, editor, ai, vps, github, notifications, sensors, files, charts), `x.console.repo`. **Every remaining step has an estimate and, when over 30 min, small steps (Oct 21 2026):** `steps[epic].estimate` + `steps[epic].steps[] = {text, estimate, done?, doneAt?}` (the queue view shows `estimate`, `steps`, `stepsDone`, `minutesLeft`, `needsSplit`; `minutesLeftByModel`, `unsplit`), edited through `build_steps` (MCP), `POST /api/build-queue/steps`, engine-rpc `build-steps`, `stepsAction` in `build-queue-core.mjs`; `node framework/cli/build-queue.mjs --steps | --check-steps`. Time left (Oct 23 2026, hours, with dollars): queue Fable 51 h (~$842), Opus 50.5 h (~$424); pending Fable 100 h (~$1,650), Opus 1.5 h (~$13). Per-step list + what needs Brett: `_claude/memory/docs/build-steps.md`.

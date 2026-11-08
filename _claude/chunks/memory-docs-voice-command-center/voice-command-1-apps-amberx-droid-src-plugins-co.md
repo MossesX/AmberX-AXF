@@ -1,0 +1,7 @@
+<!-- memory-chunk@1 source=_claude/memory/docs/voice-command-center.md lines=3-9 tokens=332 -->
+## voice-command@1 (`apps/amberx-droid/src/plugins/commands/web/core.ts`)
+- **Category** = a tab: `notes`, `tasks`, `developer`, `snippets`, each with trigger words ("note", "task", "dev", "ask"…). A sentence starting with a trigger only matches that tab; otherwise every tab is tried and the page on screen breaks ties (+3), a trigger +5, each literal word +10.
+- **Command** = `{id, category, kind: action|chain|wizard, group, label, description, phrases[], steps[], slots?, optional?, settings?, defaultOff?, needsAi?, developer?}`. Phrases are patterns: words + `{slot}`.
+- **Steps:** `action` (runtime spec), `intent` (notes core intent), `op` (ops.ts), `say`, `ask` (slot, question, kind, optional, choices), `confirm` (no stops), `wait`, `run` (another command), `ai` (prompt, `into` keeps the answer in a slot), `molly` (developer task). `cleanSteps` checks every step from settings or imports.
+- **Overrides** (what a person changed, per command id): on, phrases, recordings (said twice, matched by `recordingsMatch`), settings (confirm, speak, reply, onlyOnPage), steps, label. Their own commands: `mine.*` (`parseCustom`).
+- `checkLibrary`: unique ids, clean steps, every slot filled by every phrase / asked / optional, wizards ask, chains have 2+ steps, `run` targets exist. test.mjs runs it on the whole library.

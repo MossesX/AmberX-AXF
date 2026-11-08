@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=183-183 tokens=220 -->
+## Status (as of Oct 21 2026)
+
+- **Approve / Deny in the application menu (Nov 1 2026, Opus, headless; branch `claude/menu-approve`):** Approvals → Waiting for approval (axhub-web, AmberX) and Console → Approvals waiting / Apps → axHub → Waiting for approval (console) put red Deny + green Approve on every waiting row, with a live countdown on held calls; a tap flips that row in place (Running / Approved / Denied) and drops it, no list reload. Framework: app-menu live-list rows carry `buttons` / `detail` / `deadline` / `paused`, providers answer through `AppMenuProvider.act` (`rt.runAppMenuButton`), renderer `AppMenu.tsx` LiveRow; lib-approvals `menu.ts` `installApprovalsMenu` + `host.ts` `decideApproval` (shared with the badge). Console approvals-banner 0.5.1. Test `framework/spec/check-approvals-menu.mts` (jsdom, CI). Report `_claude/builds/reports/menu-approve.md`.

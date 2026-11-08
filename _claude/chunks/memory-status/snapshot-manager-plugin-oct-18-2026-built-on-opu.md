@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=69-69 tokens=185 -->
+## Status (as of Oct 21 2026)
+
+- **Snapshot Manager plugin (Oct 18 2026, built on Opus):** `apps/console-web/plugins/snapshot-manager`. `axf.snapshots@1`: take/list/get/diff/restore/delete/prune. Snapshots in `.axf-console/plugins/snapshot-manager/snaps/<id>/` (tar.gz + file list + manifest: container, paths, who, why, batch, chat turn); excluded folders (node_modules, caches) skipped and never touched by a restore; restore snapshots the current state first (undo of an undo); 30 days / 5 GB, 1 GB per snapshot. Settings → Plugins → Snapshots (browse by container and date, what changed since + per-file diff, restore with confirm, take one, retention, change log). Self-test `test.py` (49 checks). <!-- axf-plugin:snapshot-manager -->

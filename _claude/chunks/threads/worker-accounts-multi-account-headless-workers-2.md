@@ -1,0 +1,3 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=218-219 tokens=150 -->
+### Worker accounts (multi-account-headless-workers)
+Asked: the console signs into more than one subscription; one is interactive, the others only run headless jobs the orchestrator sends them. Model Opus. Branch `claude/multi-account-headless-workers`, PR #382, all steps built. Left: UI Review approval, then the merge queue. Report: `_claude/builds/reports/multi-account-headless-workers.md`. Check: `node deploy/claude-workers.test.mjs`. Waits on Brett: approve the look, sign a second subscription in, tap Make worker. First message: "Carry on multi-account-headless-workers from its report."

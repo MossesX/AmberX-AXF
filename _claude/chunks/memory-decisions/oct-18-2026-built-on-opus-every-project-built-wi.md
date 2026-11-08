@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=16-16 tokens=181 -->
+## Framework
+
+- Oct 18 2026 (built on Opus): every project built with or for AmberX has a manifest (`project.manifest.json`, project-manifest@1) defining its identity and repo (a repo that doesn't exist yet is still defined, for future naming); its `name` names the project's folder in the hub's `/projects`. Every template ships one, `axf init` fills it in, and the build engine refuses to load or compile a project whose manifest fails validation. The rules live in the Dev Console's new **Standards** section. Each hub project folder has `_data/` (the manifest's `data.shared`, laid out like the project) and `_claude/` (memory, instructions, rules, shared); projects have the same `_claude/`. axHub decisions #70-#76.

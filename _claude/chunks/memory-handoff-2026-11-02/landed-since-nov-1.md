@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-02.md lines=3-6 tokens=196 -->
+## Landed since Nov 1
+- **Molly** (Opus, profile `big-dog`, branch `claude/project-thread-nxdu3m`): one interface for AmberX, axHub and the Dev Console, apps stay separate. App `apps/molly`, target molly.amberxai.com. PR #230 merged, #232 merged (installer gets its GitHub token from the GitHub App broker). Left: s9 deploy (Coolify app from `apps/molly/Dockerfile`, DNS A record `molly` -> VPS + DNS log line, redeploy axHub web + AmberX for the header), s10 UI Review shots. Carry on: "Carry on molly-opus (Big Dog) from s9 on branch claude/project-thread-nxdu3m."
+- **Whole-stack walkthrough** (Refactor, Opus): #229, #233, #234 merged, recorded (s25). #235 merged Nov 2: one video per chapter, re-record a single chapter, Chapters view. Left: live player UI check -> UI Review.

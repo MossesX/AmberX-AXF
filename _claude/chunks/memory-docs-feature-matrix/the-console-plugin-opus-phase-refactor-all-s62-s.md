@@ -1,0 +1,17 @@
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=79-95 tokens=841 -->
+## The console plugin (Opus phase, refactor-all s62–s67, Oct 29 2026) <!-- axf-plugin:feature-matrix -->
+
+Plugin `apps/console-web/plugins/feature-matrix` (`ai.amberx.axf.console.feature-matrix`, built on Opus). <!-- axf-plugin:feature-matrix -->
+
+| Piece | Where | <!-- axf-plugin:feature-matrix -->
+| --- | --- | <!-- axf-plugin:feature-matrix -->
+| Store + CLI | `matrix.mjs`: `list` · `state` · `get <id>` · `act '<change>'` · `seed '{ref, profile?}'` · `apply '{matrix}'` · `import [profile]` · `where` (`--json` for the server) | <!-- axf-plugin:feature-matrix -->
+| Files | one per build profile, next to its orchestrator tracker: `_claude/builds/matrices.json` (main framework), `_claude/builds/profiles/<id>/matrices.json`; every save is mirrored to the plugin data folder through persist (`.axf-console/plugins/feature-matrix/matrices/<profile>.json`, on the hub's projects tree when mounted), which is also the read fallback. Apply reports: `reports.json` there (last 50). | <!-- axf-plugin:feature-matrix -->
+| Draft | the pre-contract `feature-matrix@0` file (refactor-all, `keep` / `done` flags) is read as @1 by `web/draft.mjs` `fromDraft`: keep → keep/skip, done → a `done` history line (the contract has no done field), every item tied to the build step carrying its `[source step]` tag (so Apply finds it), dirty when the last edit is newer than the last apply. Written as @1 on the first save or **Import**. | <!-- axf-plugin:feature-matrix -->
+| Server | `server/__init__.py` at `/api/plugins/feature-matrix/`: `GET state`, `GET matrix?id=`, `POST act` (refuses remove/delete), `POST seed`, `POST apply`, `POST import`; runs `matrix.mjs`; change-log entries (ref kind `change`) are read and written through `axf.changes@1` | <!-- axf-plugin:feature-matrix -->
+| Page | Builds → Feature matrix: the matrices grid (DataGrid `feature-matrices`: build, profile, date added, time cost, kept / skipped, status, last applied; newest first) → each row opens its matrix (groups, tick keep / untick skip, Keep all / Skip all per group, add + inline edit, Fable/Opus totals, Rename, history drawer, Apply + what-changed report). A matrix a hook asks for that doesn't exist yet shows **Make its matrix** (seed). | <!-- axf-plugin:feature-matrix -->
+| Reach | app menu **Builds ▸ Feature matrix** (next to Build orchestrator), Plugins ▸ Feature matrix settings, nav Builds, default right-click, the `builds.toolbar` slot button on the orchestrator, Pending builds, Build queue and Build manager pages, and every builds grid's row hook | <!-- axf-plugin:feature-matrix -->
+| Settings | Settings → Plugins → Feature matrix (shared renderer, level toolbar): default order, row button in builds grids, open history with the matrix; Install & uninstall panel | <!-- axf-plugin:feature-matrix -->
+| Tests | `test.mjs` (draft import against the repo copy, seeding, targets, CLI round trip on scratch files, repo files never written), `test.py` (manifest, server routes against fakes) | <!-- axf-plugin:feature-matrix -->
+
+What Apply targets for each ref kind (`web/draft.mjs` `targetsFor`): orchestrator → the build + its `pendingId` item; pending → the item + the orchestrator build importing it; queue → the build-queue record; plan → the feature; change → the change-log entry (the server saves it through `axf.changes@1`). <!-- axf-plugin:feature-matrix -->

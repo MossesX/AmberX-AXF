@@ -1,0 +1,140 @@
+{
+  "$axf": "memory-map@1",
+  "about": "Every place AmberX-AXF keeps Claude memory, and every part of the app that reads or writes it (audit, Nov 8 2026, build memory-restructure-chunked-claude-md-store-memor). The Memory Manager matches scanned files to these locations by glob; its code scan adds any other file that names the path. kind: memory = Claude memory; builds = orchestrator data (not memory, shown for reference); log = history; generated = rebuilt from other files.",
+  "locations": [
+    {
+      "id": "claude-md", "label": "CLAUDE.md (root)", "category": "Loaded at start", "kind": "memory", "root": "repo", "globs": ["CLAUDE.md"], "loadedAtStart": true,
+      "writers": [
+        { "who": "Claude sessions", "how": "edited by hand when a rule or convention changes" },
+        { "who": "plugin lifecycle", "path": "framework/cli/plugin-lifecycle.mjs", "how": "uninstall strips lines marked <!-- axf-plugin:<folder> -->" },
+        { "who": "claude-project", "path": "framework/cli/claude-project.mjs", "how": "writes a new project's CLAUDE.md or adds the rules import" }
+      ],
+      "readers": [
+        { "who": "Claude Code", "how": "loaded at every session start with its @imports" },
+        { "who": "agent swarm", "path": "apps/console-web/plugins/agent-swarm/swarm.mjs", "how": "counts the tokens a plain session loads" },
+        { "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "chunked into _claude/chunks/" },
+        { "who": "MD Studio", "path": "apps/console-web/plugins/md-studio/server/store.py", "how": "lists and edits it, follows its @imports" }
+      ]
+    },
+    {
+      "id": "rules", "label": "Rules (project + shared)", "category": "Loaded at start", "kind": "memory", "root": "repo", "globs": ["_claude/rules/**", "_claude/shared/rules/**"], "loadedAtStart": true,
+      "writers": [
+        { "who": "Claude sessions", "how": "a rule Brett states is saved here" },
+        { "who": "claude-sync", "path": "~/.local/bin/claude-sync", "how": "three-way sync with /projects/<name>/_claude and /projects/_shared/_claude" },
+        { "who": "plugin lifecycle", "path": "framework/cli/plugin-lifecycle.mjs", "how": "strips a plugin's marked lines on uninstall" }
+      ],
+      "readers": [
+        { "who": "Claude Code", "how": "@imported by CLAUDE.md" },
+        { "who": "claude-sync start", "how": "printed at session start when not imported" },
+        { "who": "agent swarm", "path": "apps/console-web/plugins/agent-swarm/swarm.mjs", "how": "token count of a plain session" }
+      ]
+    },
+    {
+      "id": "persona", "label": "Persona", "category": "Loaded at start", "kind": "memory", "root": "repo", "globs": ["_claude/persona.md"], "loadedAtStart": true,
+      "writers": [{ "who": "Claude sessions", "how": "by hand" }],
+      "readers": [{ "who": "Claude Code", "how": "@imported by CLAUDE.md" }]
+    },
+    {
+      "id": "threads", "label": "THREADS.md (threads and builds log)", "category": "Session logs", "kind": "memory", "root": "repo", "globs": ["_claude/THREADS.md"], "loadedAtStart": false,
+      "writers": [
+        { "who": "Claude sessions", "how": "a row per thread and a To carry on block, by hand" },
+        { "who": "builds live", "path": "framework/cli/builds-live.mjs", "how": "appends one Live build log line per store write and commits it to main" },
+        { "who": "token passes", "path": "apps/console-web/plugins/token-control/lib/pass.mjs", "how": "appends Token passes (log) lines" },
+        { "who": "claude-sync", "how": "syncs it with the hub" }
+      ],
+      "readers": [
+        { "who": "Claude sessions", "how": "read on load (project rule)" },
+        { "who": "agent swarm", "path": "apps/console-web/plugins/agent-swarm/swarm.mjs", "how": "token count" },
+        { "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "one chunk per thread row and To carry on block; the live log and token passes are left out (builds data / audit log)" }
+      ]
+    },
+    {
+      "id": "status", "label": "STATUS.md", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/memory/STATUS.md"], "loadedAtStart": false,
+      "writers": [{ "who": "Claude sessions", "how": "a status entry per landed feature" }, { "who": "plugin lifecycle", "path": "framework/cli/plugin-lifecycle.mjs", "how": "strips marked lines on uninstall" }],
+      "readers": [
+        { "who": "systems check", "path": "apps/console-web/plugins/systems-check/server/routine.py", "how": "reads the status for the routine check" },
+        { "who": "claude-sync start", "how": "printed at session start (memory/ section, within its load budget)" },
+        { "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "one chunk per status entry" }
+      ]
+    },
+    {
+      "id": "decisions", "label": "decisions.md", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/memory/decisions.md"], "loadedAtStart": false,
+      "writers": [{ "who": "Claude sessions", "how": "a decision Brett makes" }],
+      "readers": [{ "who": "build breaker", "path": "apps/console-web/plugins/build-breaker/web/bb-core.mjs", "how": "links decisions.md references" }, { "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "one chunk per decision" }]
+    },
+    {
+      "id": "memory-other", "label": "Other memory files", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/memory/*.md", "_claude/memory/todo/**", "_claude/README.md", "_claude/fuck-you.md"], "loadedAtStart": false,
+      "writers": [{ "who": "Claude sessions", "how": "handoff notes (memory/handoff-<date>.md, Claude setting memory.handoffNote), follow-ups, registry notes" }],
+      "readers": [{ "who": "claude-sync start", "how": "printed at session start within its budget" }, { "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "chunked per section" }]
+    },
+    {
+      "id": "docs", "label": "Specs and docs (memory/docs)", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/memory/docs/**"], "loadedAtStart": false,
+      "writers": [
+        { "who": "Claude sessions", "how": "a doc per feature; rebuild differences reports in docs/rebuilds/ (project rule)" },
+        { "who": "rebuild shots", "path": "framework/cli/rebuild-shots.mjs", "how": "before/after screenshots under docs/rebuilds/<id>/shots" },
+        { "who": "android rebuild shots", "path": ".github/workflows/rebuild-shots.yml", "how": "commits docs/rebuilds/<id>/android.md" }
+      ],
+      "readers": [{ "who": "fable rebuilds", "path": "apps/console-web/plugins/fable-rebuilds/server/__init__.py", "how": "lists rebuild reports" }, { "who": "claude-sync start", "how": "listed (path and size), read on demand" }, { "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "chunked per section" }]
+    },
+    {
+      "id": "instructions", "label": "Instructions", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/instructions/**", "_claude/shared/instructions/**"], "loadedAtStart": true,
+      "writers": [{ "who": "Claude sessions", "how": "by hand" }, { "who": "claude-sync", "how": "hub sync" }],
+      "readers": [{ "who": "claude-sync start", "how": "printed at session start" }]
+    },
+    {
+      "id": "shared-memory", "label": "Shared memory (every project)", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/shared/memory/**", "_claude/shared/notes/**", "_claude/shared/*.md"], "loadedAtStart": true,
+      "writers": [{ "who": "claude-sync", "how": "synced with /projects/_shared/_claude" }, { "who": "Notes Vault", "path": "apps/console-web/plugins/notes-browser/server/store.py", "how": "writes notes on the hub (/projects/_shared/_claude/notes)" }],
+      "readers": [{ "who": "claude-sync start", "how": "printed at session start" }]
+    },
+    {
+      "id": "chunks", "label": "Memory chunks (generated)", "category": "Chunked store", "kind": "generated", "root": "repo", "globs": ["_claude/chunks/**"], "loadedAtStart": false,
+      "writers": [{ "who": "memory chunks", "path": "framework/cli/memory-chunks.mjs", "how": "build: one chunk per entry or section + INDEX.md + index.json" }, { "who": "Memory Manager", "path": "apps/console-web/plugins/memory-manager/server/store.py", "how": "Rebuild chunks button / POST /chunks/build" }],
+      "readers": [{ "who": "memory load", "path": "framework/cli/memory-load.mjs", "how": "session start: index summary and the chunks of stopped builds" }, { "who": "Claude sessions", "how": "grep INDEX.md, read single chunks" }]
+    },
+    {
+      "id": "session-notes", "label": "Session notes (_claude/sessions)", "category": "Session logs", "kind": "log", "root": "repo", "globs": ["_claude/sessions/**"], "loadedAtStart": false,
+      "writers": [{ "who": "Claude sessions", "how": "a day's session notes (Claude setting memory.sessionNotes)" }],
+      "readers": [{ "who": "MD Studio / Memory Manager", "how": "browse" }]
+    },
+    {
+      "id": "session-archive", "label": "Session check-in archive (sessions/)", "category": "Session logs", "kind": "log", "root": "repo", "globs": ["sessions/**"], "loadedAtStart": false,
+      "writers": [{ "who": "session check-in", "path": "apps/console-web/plugins/session-checkin/lib.mjs", "how": "one session-log@1 record per session (hub copy first, repo copy as fallback)" }],
+      "readers": [{ "who": "plugin lifecycle", "path": "framework/cli/plugin-lifecycle.mjs", "how": "treated as history" }, { "who": "session check-in", "path": "apps/console-web/plugins/session-checkin/lib.mjs", "how": "lists past sessions" }]
+    },
+    {
+      "id": "changes", "label": "Codebase changes log (changes/)", "category": "Session logs", "kind": "log", "root": "repo", "globs": ["changes/**"], "loadedAtStart": false,
+      "writers": [{ "who": "codebase changes", "path": "apps/console-web/plugins/codebase-changes/changes.mjs", "how": "change-log@1 entry per request (hooks + CLI); hub copy in /projects/amberx-axf/_data/changes" }],
+      "readers": [{ "who": "Build manager", "how": "Live list and history" }]
+    },
+    {
+      "id": "build-reports", "label": "Build reports", "category": "Builds data", "kind": "builds", "root": "repo", "globs": ["_claude/builds/reports/**", "_claude/builds/README.md", "_claude/builds/BRIEF-TEMPLATE.md"], "loadedAtStart": false,
+      "writers": [{ "who": "build sessions", "how": "a report per build (project rule)" }],
+      "readers": [{ "who": "maintenance", "path": "apps/console-web/plugins/maintenance/engine/profiles.mjs", "how": "links a build's report" }, { "who": "what's shipped", "path": "apps/console-web/plugins/whats-shipped/server/__init__.py", "how": "wording from the report" }]
+    },
+    {
+      "id": "builds-store", "label": "Builds store (orchestrator)", "category": "Builds data", "kind": "builds", "root": "repo", "globs": ["_claude/builds/store.json", "_claude/builds/origins.json", "_claude/builds/orchestrator.json", "_claude/builds/profiles/**"], "loadedAtStart": false,
+      "writers": [{ "who": "orchestrator", "path": "apps/console-web/plugins/build-orchestrator/orchestrator.mjs", "how": "every build write, versioned in the journal" }, { "who": "builds live", "path": "framework/cli/builds-live.mjs", "how": "status-only commits to main" }],
+      "readers": [{ "who": "memory load", "path": "framework/cli/memory-load.mjs", "how": "builds started in the last 24 h that stopped unfinished" }]
+    },
+    {
+      "id": "plans", "label": "Plans", "category": "Project memory", "kind": "memory", "root": "repo", "globs": ["_claude/plans/**"], "loadedAtStart": false,
+      "writers": [{ "who": "Claude sessions", "how": "plan write-ups" }],
+      "readers": [{ "who": "Claude sessions", "how": "on demand" }]
+    },
+    {
+      "id": "handoff", "label": "Handoff kit (deleted)", "category": "Retired", "kind": "memory", "root": "repo", "globs": ["_claude/handoff/**"], "loadedAtStart": false,
+      "writers": [{ "who": "claude-handoff plugin (deleted Nov 8 2026)", "how": "handoff.mjs build/publish wrote the kit; removed with this build" }],
+      "readers": []
+    },
+    {
+      "id": "user-claude", "label": "User CLAUDE.md (~/.claude)", "category": "This machine", "kind": "memory", "root": "user", "globs": ["~/.claude/CLAUDE.md"], "loadedAtStart": true,
+      "writers": [{ "who": "claude-sync install", "how": "adds its block" }, { "who": "claude-pick", "path": "deploy/claude-pick.sh", "how": "adds / removes the rules import" }],
+      "readers": [{ "who": "Claude Code", "how": "every session on this machine" }, { "who": "session check-in", "path": "apps/console-web/plugins/session-checkin/lib.mjs", "how": "lists it" }]
+    },
+    {
+      "id": "hub-claude", "label": "Hub copy (/projects/amberx-axf/_claude)", "category": "Hub", "kind": "memory", "root": "hub", "globs": ["amberx-axf/**", "_shared/**"], "loadedAtStart": false,
+      "writers": [{ "who": "claude-sync", "how": "three-way sync" }, { "who": "axhub.memory_write", "how": "claude.ai sessions" }, { "who": "Notes Vault", "path": "apps/console-web/plugins/notes-browser/server/store.py", "how": "notes" }],
+      "readers": [{ "who": "axhub.memory_read", "how": "claude.ai sessions" }, { "who": "claude-sync", "how": "pull" }]
+    }
+  ]
+}

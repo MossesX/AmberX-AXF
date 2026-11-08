@@ -1,0 +1,7 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=501-507 tokens=372 -->
+### Build Breaker plugin
+
+- **Asked (Oct 29 2026):** a console plugin "Build Breaker" listing every ask Brett made across the whole project in plain English: page head with totals (asks, built, pending, planned, removed, waiting, time, $ by model); toolbar with search, status (multi) / model / date filters, sort, group-by, expand / collapse all, tabs All · Apps · Plugins · Timeline; an Apps container (a collapsible grid per app) and a Plugins container (a grid per plugin); one-line rows (title, date, time with ≈ when approximate, status badge with icon, time · cost · model badge) that open to the description, his own words, sources, branch / PR links and the Feature matrix; app menu Builds ▸ Build Breaker (Feature matrix already there); a permanent Build item on every context menu with every build page. Model Opus.
+- **Done:** branch `claude/build-breaker` — the plugin folder (manifest, lifecycle scripts, server `GET asks`, CLI `asks.mjs`, web page, `test.mjs`), seed `data/asks.jsonl` (390 asks), README line. Checks: tsc, check-controls, check-theme, check-plugin-pages, plugins.mjs --check (main profile), lifecycle check, self-test.
+- **Left:** CI on the PR, then Brett merges. Later sessions record new asks with the plugin's `asks.mjs add --title … --app …` and change status with `set-status <id> <status>`, then commit `data/asks.jsonl`.
+- **First message to carry on:** "Check the Build Breaker PR (branch claude/build-breaker): CI state, fix any failure, report."

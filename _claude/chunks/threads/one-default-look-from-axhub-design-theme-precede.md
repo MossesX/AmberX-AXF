@@ -1,0 +1,6 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=115-115 tokens=294 -->
+## Active
+
+| Thread | State | Branch | PR | Queued / next | Updated |
+|---|
+| One default look from axHub + design theme precedence (Brett Nov 1: new default style + colour theme every app inherits, combined into a default design theme; a loaded design theme wins, a later style/colour pick overrides only its part; app Settings → Appearance selection only, plugin settings untouched; banners didn't compress). Opus build merged (#228); **Fable review + banner contract** relaunched Nov 3 as `one-look-default-2` (the Nov 1 headless run died on the weekly limit) | review | `claude/one-look-default-2` | #244 | Fable review of the precedence contract (swap of the package slot loads it, Restore = default package in full, applied = the slot, retired `appearance-package` slot), thin banner's day/night switch moved into the framework copy (per-app overrides dropped, fixtures regenerated), check-hub-look on the three real apps (110 checks); app builds + tests green, UI Review shots waiting (group "One look - Nov 1"), report `_claude/builds/reports/one-look-default.md`; PR #244 open, push banner merges it when CI is green. Kotlin twin deferred (PORTING.md) | Nov 3 2026 |

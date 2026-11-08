@@ -1,0 +1,7 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=311-316 tokens=373 -->
+### UI Review predicted looks (`ui-review-predicted`, Urgent, Opus) — branch `claude/ui-review-predicted`
+- **Asked (Brett, Nov 3 2026, voice):** UI Review shows predicted pictures of what a build will look like before it is built; approve the look before money is spent; setting to wait for look approval (default off); refresh while running, real shots replace it at the end; backfill queued/running UI builds; commands once → REST + MCP + CLI. Agent Snap Sully (booked, source assign).
+- **On the branch:** `framework/core/ui-predict.mjs` (+ .d.mts), `framework/cli/ui-predict.mjs`, `framework/spec/check-ui-predict.mjs` (CI), UI Review `server/predicted.py`, `web/mockup.tsx`, `web/look-settings.tsx`, detail badge + compare, schema field `prediction`, launcher look gate in `deploy/claude-headless.sh`, phone layout fix for the item detail.
+- **Left:** PR #285 merge (automatic once main CI is green and Brett approves UI Review r-20261103-c9a82c5e). After merge the 7 backfilled items (made through `submit` on the old console) behave as predicted items.
+- **Checks:** `python3 <console plugins>/ui-review/test.py` (178), `npx tsx <console plugins>/ui-review/test.mts`, `node framework/spec/check-ui-predict.mjs`, `check-ui-review.mjs`, `check-plugin-commands.mjs`, console tsc + vite build.
+- **First message to carry on:** "Carry on build ui-review-predicted on branch claude/ui-review-predicted: read _claude/builds/reports/ui-review-predicted.md, finish what THREADS says is left."

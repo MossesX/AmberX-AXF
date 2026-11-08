@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=139-139 tokens=201 -->
+## Status (as of Oct 21 2026)
+
+- **Todo manager plugin (Oct 22 2026, Opus):** `apps/console-web/plugins/todo-manager` (`ai.amberx.axf.console.todo-manager`), ported from xGallery's developer task manager (`src/pages/dev/tasks`, `server/src/routes/tasks.ts`): lists with nested groups, notes / to-dos / tasks with subtasks, checklists, tags, due dates and custom fields per kind (Settings → Plugins → Todo manager: what each kind must / may / never holds), tree (by lists, kind, status, priority, tag, due) or grid, group actions, Markdown export, context menu on entries; server routes `/api/plugins/todo-manager/{types,lists,entries,…}` (console token, 404 when off, not on MCP), data `store.json` (todo-store@1, 0600); self-test `test.py` (56). Todo manager is tabable. <!-- axf-plugin:todo-manager -->

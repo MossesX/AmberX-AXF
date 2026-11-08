@@ -33,6 +33,7 @@
       "AXF_SHIPPED_FEATURES_DIR"
     ],
     "mentions": [
+      "_claude/memory/docs/project-guide.md",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",

@@ -1,0 +1,8 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=741-748 tokens=389 -->
+### feature-matrix (stopped by the STOP ORDER Oct 28 2026 15:26 EDT; Fable s1–s2 done on `fable/feature-matrix`, folded into refactor-all)
+- **Stopped:** after s2, nothing mid-way. s1 (contract) + s2 (Apply engine) are pushed on `fable/feature-matrix` (`cb43a82`, handoff `aa82cf2`), not merged. In `refactor-all`: s24, s25 ticked done; s62–s67 (= s3–s8) left. Full handoff in that branch's THREADS.md and `_claude/memory/docs/feature-matrix.md`.
+- **Asked (Brett, Oct 28 2026, claude.ai):** full request in orchestrator build `feature-matrix` detail. Model of the UI: the windows-terminal scope list https://claude.ai/artifact/CwBGQof4NBe4F3dPTczBvS (its db doc `scope/selection` is the first matrix).
+- **Picks:** Refactor profile; standalone plugin; builds-one-page archived ("remove one page"); own chat thread.
+- **Model:** Fable s1–s2 (feature-matrix@1 contract + apply engine), Opus s3–s8 (console plugin, views, grid hooks, seed, ship). Approval card at the switch.
+- **Read first:** apps/console-web/plugins/build-orchestrator (web/orchestrator-core.mjs), framework/cli/pending.mjs, framework/cli/build-queue.mjs, apps/console-web/plugins/build-manager, apps/console-web/plugins/changes-grid, orchestrator build share-search s1 (grid-attach@1). <!-- axf-plugin:build-orchestrator -->
+- **First message for the new chat (Fable):** "Start orchestrator build feature-matrix (refactor) in AmberX-AXF: Fable phase s1–s2 on branch fable/feature-matrix. Read the brief with orchestrator.mjs brief feature-matrix." <!-- axf-plugin:build-orchestrator -->

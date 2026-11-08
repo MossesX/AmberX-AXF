@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=124-124 tokens=199 -->
+## Status (as of Oct 21 2026)
+
+- **Plugins a host makes unneeded aren't loaded (Oct 22 2026, Opus; web, Android twin deferred):** `AxfWebLibrary.embed.skipWhen` (`embedded` = any host, `take:<fn>` = the host takes that function, `hidden:<type>` = the host hides that chrome; `embedSkipReason` in `engines/embed.ts`, page mode never skips). `installLibraries` doesn't install such a library inside a matching host, `rt.skippedLibraries` keeps it with why, `noteSkippedLibraries` writes the launch log (one terminal line each + a summary), framework Settings → Plugins lists them under "Not loaded inside <host>". Declared so far: App tabs (`embedded`: the host runs the tabs), Claude badge and Alerts bell (`hidden:banner`: they only draw on the banner a host hides). `check-embed.mts` 261 → 275.

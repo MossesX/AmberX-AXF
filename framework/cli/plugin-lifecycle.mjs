@@ -47,6 +47,7 @@ const HARVEST_DIR = join(ROOT, '_claude', 'memory', 'docs', 'harvest');
 // The Codebase changes log (change-log@1, one JSON per request) is history too: an entry names the folders a build touched.
 const CHANGES_DIR = join(ROOT, 'changes');
 const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
+const CHUNKS_DIR = join(ROOT, '_claude/chunks'); // the chunked memory store (memory-chunks@1): generated from the memory files, like a baked copy
 const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (session-log@1): records of past sessions, history like the changes log
 // The builds store's read-only exports (pending list + build queue, per profile) carry build notes: plans, like _claude/builds.
 // CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json): per-file counts of findings that
@@ -140,7 +141,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file))) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || file.startsWith(CHUNKS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file))) continue;
     // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.
     if (file.startsWith(APPS_DIR + '/') && file.slice(APPS_DIR.length).split('/').slice(2, 4).join('/') === 'src/axf') continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime

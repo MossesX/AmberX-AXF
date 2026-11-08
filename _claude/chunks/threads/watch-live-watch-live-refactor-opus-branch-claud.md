@@ -1,0 +1,6 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=470-474 tokens=285 -->
+### Watch live (`watch-live`, Refactor, Opus) — branch `claude/watch-live`
+- **Asked:** Watch live = hot render. Link on each approval row (expanded details) and each running build in the Build manager / orchestrator; pops up (floating window desktop, full-screen sheet phone) the exact screen the session changes, changed element scrolled to + outlined, hot-rendering as files change; every web app, every hot-swappable asset (no reload), Android screens via the web port with a next-APK note. Greyed "No live preview" otherwise.
+- **On the branch:** everything built and tested (`framework/spec/WATCH-LIVE.md`, report `_claude/builds/reports/watch-live.md`).
+- **Left (pushed to main Nov 1 01:4x UTC):** once `approval-expand` is on main: put `<WatchLiveFor text={…}/>` into the new expanded approval row details (approvals-banner), retest (`check-watch-live.mts`, `test_previews.py`, console tsc + build, theme/controls/lifecycle), `git push origin HEAD:main`.
+- **First message:** "Carry on Watch live from _claude/THREADS.md: merge origin/main into claude/watch-live, add the link to the approval rows' expanded details, retest, push."

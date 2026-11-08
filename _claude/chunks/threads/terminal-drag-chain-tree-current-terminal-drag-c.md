@@ -1,0 +1,6 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=70-70 tokens=286 -->
+## Active
+
+| Thread | State | Branch | PR | Queued / next | Updated |
+|---|
+| Terminal drag + chain tree (Current `terminal-drag-chain-tree`, Opus, 6 steps; agent Landin' Lenny; Brett Nov 3 voice: "There's nowhere to click to drag the terminal window around … It's all tabbed." + context chain as an indented tree + addenda: context menu opens Terminal settings, per-pane text size): framework `WindowGrip` + `useTabPress` (hold-drag tabs, long-press menu), chain items with reason/parentI (imports, mentions, start rules) and a nested `tree` from the route, ChainPane tree, window menu with Terminal settings first, text size per pane per tab per device (phone Auto from tokens) | built (all 6 steps; PR open, UI Review waiting) | `claude/terminal-drag-chain-tree` | [#292](https://github.com/MossesX/AmberX-AXF/pull/292) | Report `_claude/builds/reports/terminal-drag-chain-tree.md`. UI Review r-20261103-axtev01 (desktop only; VPS load ~100 blocked phone shots), Snap Sully job job-ui-screenshots-2026-11-03-2348 queued for phone + desktop. Clashes: terminal-tabs-left (running), terminal-sessions-nav #286 touch TerminalHost | 2026-11-03 |

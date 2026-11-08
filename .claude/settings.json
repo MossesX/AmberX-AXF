@@ -7,6 +7,11 @@
             "type": "command",
             "command": "cd \"$CLAUDE_PROJECT_DIR\" && node framework/cli/builds-live.mjs sync --quiet; node framework/cli/builds-reconcile.mjs --apply --brief 2>&1 | sed 's/^/[builds] /' | head -40; true",
             "timeout": 90
+          },
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && node framework/cli/memory-load.mjs 2>/dev/null | head -60; true",
+            "timeout": 30
           }
         ]
       }

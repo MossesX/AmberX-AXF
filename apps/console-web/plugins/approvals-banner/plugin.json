@@ -51,6 +51,7 @@
       "AXF_APPROVALS_BANNER_DATA_DIR"
     ],
     "mentions": [
+      "_claude/memory/docs/project-guide.md",
       "CLAUDE.md",
       "_claude/memory/STATUS.md"
     ]

@@ -1,0 +1,7 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=475-480 tokens=375 -->
+### Every change through a PR (push banner 0.5.0)
+
+- **Asked (Oct 30 2026, Brett, voice):** "I want everything to need a PR and to pull against main before it's merged." Push banner 0.5.0: autoPr (a PR for every branch ahead of main, setting on), merge-branch refused (Open PR instead), auto-merge oldest first, pull main into a PR behind it and merge only when 0 behind + CI green on the new pinned head, one merge per round, conflicting pulls → Pull failed; branch protection on main where the token may (systems check item with Auto fix otherwise, never loosened).
+- **Done:** branch `claude/pr-only-merge` (on `claude/veto-everywhere`): `apps/console-web/plugins/push-banner/` server + web + test.py (132 checks), `systems-check/server/derive.py` reads `axf.syscheck.items@1:<name>` items, `boilerplate-shots.yml` pushes to `bot/boilerplate-shots` instead of main, shared rule "Automatic merge" widened, plugins README. Checks: test.py, console tsc, check-theme, check-controls, plugin-lifecycle check push-banner pass; systems-check test.py fails at "bad proposals rejected" on the base commit too (not this build). <!-- axf-plugin:push-banner -->
+- **Left:** CI on the PR → auto-merge (after #176). After deploy: watch the systems check for "Branch protection" rows (AmberX-AXF is private: protection may need GitHub Pro or a token with Administration write).
+- **First message to carry on:** "Check the push banner 0.5.0 PR (branch claude/pr-only-merge): CI state, fix any failure, report."

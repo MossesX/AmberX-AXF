@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=170-170 tokens=206 -->
+## Status (as of Oct 21 2026)
+
+- **Every change through a PR, up to date with main (Oct 30 2026, Opus; push banner 0.5.0, orchestrator `pr-only-merge`):** auto-merge opens a PR for every branch ahead of main (`autoPr`, on), takes ready PRs oldest first, pulls main into one that is behind (head pinned) and merges only when it is 0 behind with CI green on the new head, one merge per round; `merge-branch` refuses (open a PR) and `merge` refuses a PR behind its base; conflicting pulls go to Pull failed and wait for a new commit. Branch protection on main (PR required, strict, the checks every merged PR ran; never loosened) every 6 h; when the token can't, a systems check row (`axf.syscheck.items@1:push-protection`) explains it with Auto fix. `boilerplate-shots.yml` pushes to `bot/boilerplate-shots` instead of main.

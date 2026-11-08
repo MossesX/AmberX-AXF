@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=157-157 tokens=188 -->
+## Models (Nov 1 2026)
+
+- **Opus or Fable only, never Sonnet (Brett, Nov 1 2026).** Three headless builds (land-stragglers, autoclose-fix, breakroom-hooks) ran on Sonnet because `vps.build_start` could not launch Fable (fixed, axHub decision #111). Fable for foundation work (schemas, asset types, data models, kernel/engines, cross-app GUI behaviour), Opus for the rest; no Sonnet or Haiku for builds, job agents, swarm agents or one-shot calls. One registry, `framework/core/model-policy.mjs` (`model-policy@1`, snapshot `framework/schemas/model-policy.json`), drives job-type@1, the swarm roster and planner, the plan model picker and the builds store; a stored Sonnet/Haiku choice is coerced up to Opus. CI: `framework/spec/check-model-policy.mjs`.

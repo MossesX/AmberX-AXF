@@ -1,0 +1,3 @@
+<!-- memory-chunk@1 source=_claude/THREADS.md lines=352-354 tokens=136 -->
+### Orchestrator live sync (`orch-live-sync`)
+Done (PR open). If a later session must carry on: read `_claude/builds/reports/orch-live-sync.md` (Known gaps). Follow-ups worth a build: wire `builds-live.mjs heal` into the push banner's *Pull failed* path; let the GitHub App bypass protection for `_claude/`-only commits if main protection ever tightens; attach the 28 orphan PRs to builds or close them. Checks: `node framework/spec/check-builds-live.mjs`, `node framework/cli/builds-live.mjs status`, `node framework/cli/builds-reconcile.mjs`.

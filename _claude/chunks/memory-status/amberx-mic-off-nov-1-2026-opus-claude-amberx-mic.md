@@ -1,0 +1,4 @@
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=20-20 tokens=184 -->
+## Status (as of Oct 21 2026)
+
+- **AmberX Mic off (Nov 1 2026, Opus, `claude/amberx-mic-kill`):** one tap lets go of every microphone AmberX holds (green dot off), kept across restarts: native gate `MicGuard.java` (every mic user asks `mayOpen`; tile `MicTile` "AmberX mic"; Mic off/on on the watch notification), page gate `src/micguard.ts` (`mic-off@1`, wraps getUserMedia + SpeechRecognition), switch on Home / banner (`status/amberx-mic`) / toolbar / AmberX menu / Settings → Sound and microphone (`src/mic.tsx`). Hands-free now yields to calls, VoIP (Claude voice) and other apps' recordings and resumes after 3 s free (`MicRules.java`, JUnit `MicRulesTest`). Needs the new APK. Report `_claude/builds/reports/amberx-mic-kill.md`.
