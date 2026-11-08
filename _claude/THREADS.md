@@ -750,8 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:00 UTC · `multi-account-headless-workers` added (5 steps) (current) · builds-live
-- 2026-11-07 05:00 UTC · `follow-amber-stay-connected` added (4 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `orchestrator-gate` added (4 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `voice-ui-edit-library` added (8 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `merge-conflict-alerts` added (5 steps) (current) · builds-live
@@ -1150,6 +1148,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 16:59 UTC · `account-failover-notify` added (5 steps) (all) · orchestrator
 - 2026-11-08 17:00 UTC · `molly-one-shell` s1 done, → running (all) · orchestrator
 - 2026-11-08 16:59 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
+- 2026-11-08 16:54 UTC · `memory-restructure-chunked-claude-md-store-memor` branch claude/memory-manager-r2 (all) · orchestrator
+- 2026-11-08 16:54 UTC · `memory-restructure-chunked-claude-md-store-memor` → running (all) · orchestrator
 
 ## Token passes (log)
 
