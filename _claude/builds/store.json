@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1499,
- "updatedAt": "2026-11-08T17:17:10.246Z",
+ "rev": 1500,
+ "updatedAt": "2026-11-08T17:20:36.377Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107643,10 +107643,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "memory-restructure-chunked-claude-md-store-memor",
-   "branch": "claude/memory-manager-r3",
-   "pr": "",
+   "branch": "claude/memory-manager-r2",
+   "pr": "#391",
    "createdAt": "2026-11-06T17:33:08.806Z",
-   "updatedAt": "2026-11-08T17:16:55.760Z",
+   "updatedAt": "2026-11-08T17:20:25.752Z",
    "builtAt": "",
    "notes": [
     {
@@ -107881,7 +107881,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
