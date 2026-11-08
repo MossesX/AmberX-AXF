@@ -163,7 +163,9 @@ def parse_workers(text: str) -> dict[str, dict[str, Any]]:
             continue
         lim = a.get("limited") if isinstance(a.get("limited"), dict) else None
         sp = a.get("spend") if isinstance(a.get("spend"), dict) else None
-        out[a["name"]] = {"limited": {k: str(lim.get(k) or "")[:40] for k in ("until", "kind", "reason")} if lim else None,
+        home = a.get("home") if isinstance(a.get("home"), dict) else None
+        out[a["name"]] = {"limited": {**{k: str(lim.get(k) or "")[:60] for k in ("until", "kind", "reason", "at")}, "untilSignin": bool(lim.get("untilSignin"))} if lim else None,
+                          "home": {k: str(home.get(k) or "")[:80] for k in ("lastRefreshAt", "lastRefreshBy", "expiresAt")} if home else None,
                           "role": str(a.get("role") or "") if a.get("role") in ROLE_NAMES else "", "kind": "api" if a.get("kind") == "api" else "subscription",
                           "label": str(a.get("label") or "")[:40], "queued": int(a.get("queued") or 0), "building": int(a.get("building") or 0), "queue": int(a.get("queue") or 0),
                           "hasKey": a.get("hasKey") is not False, "why": str(a.get("why") or "")[:200], "takesJobs": bool(a.get("takesJobs")),
@@ -173,6 +175,19 @@ def parse_workers(text: str) -> dict[str, dict[str, Any]]:
                           "email": str(a.get("email") or "")[:200], "plan": str(a.get("plan") or "")[:40],
                           "recent": [{k: r.get(k) for k in ("session", "name", "agent", "model", "at", "end", "exit", "costUsd")} for r in (a.get("recent") or [])[:5] if isinstance(r, dict)]}
     return out
+
+
+EVENT_KEYS = ("at", "action", "account", "kind", "reason", "build", "to", "movedTo", "until", "stopped", "waiting")
+
+
+def parse_events(text: str) -> list[dict[str, Any]]:
+    """The host's recent account events (out / move / back), newest first; names, kinds and times only."""
+    try:
+        v = json.loads(text or "{}")
+    except ValueError:
+        return []
+    ev = v.get("events") if isinstance(v, dict) else None
+    return [{k: (e.get(k) if isinstance(e.get(k), bool) else str(e.get(k) or "")[:120]) for k in EVENT_KEYS if k in e} for e in (ev if isinstance(ev, list) else [])[:20] if isinstance(e, dict)]
 
 
 def clean_name(raw: Any) -> str:
@@ -232,7 +247,7 @@ def _read() -> dict[str, Any]:
         listing, _, rest = str(r.get("out") or "").partition(SEP)
         status, _, hosted = rest.partition(SEP2)
         names, active, types = parse_list(listing)
-        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip()), **parse_status(status.strip()), "host": parse_workers(hosted.strip())}
+        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip()), **parse_status(status.strip()), "host": parse_workers(hosted.strip()), "events": parse_events(hosted.strip())}
         _cache.update(at=now, value=value)
         return value
 
@@ -263,7 +278,7 @@ def view() -> dict[str, Any]:
     if active and login.get("email") and not changed:
         _remember(active, login)
         seen[active] = login
-    idle = {"limited": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": [], "label": "", "queued": 0, "building": 0, "queue": 0, "spend": None, "why": "", "takesJobs": False}
+    idle = {"limited": None, "home": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": [], "label": "", "queued": 0, "building": 0, "queue": 0, "spend": None, "why": "", "takesJobs": False}
 
     def row(n: str) -> dict[str, Any]:
         host = v["host"].get(n, {})
@@ -277,7 +292,7 @@ def view() -> dict[str, Any]:
     names = names + [n for n in v["host"] if n not in names]   # API worker slots whose key isn't saved yet
     rows = [row(n) for n in names]
     return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE,
-            "checked": v["checked"], "expiresAt": v["expiresAt"]}
+            "checked": v["checked"], "expiresAt": v["expiresAt"], "events": v.get("events") or [], "failover": failover_settings()}
 
 
 def _who(request: Request) -> str:
@@ -595,6 +610,140 @@ async def remove(request: Request) -> dict[str, Any]:
     return await run_in_threadpool(ask, "remove", name, by)
 
 
+FAILOVER_DEFAULTS = {"enabled": True, "maxMoves": 6, "waitMinutes": 720, "alerts": True, "alertOnLimit": True}  # = worker-routing.mjs FAILOVER_DEFAULTS
+FAILOVER_RANGES = {"maxMoves": (0, 20), "waitMinutes": (0, 2880)}
+
+
+def failover_settings() -> dict[str, Any]:
+    """Failover settings with defaults filled in (the same rules as normFailover in deploy/worker-routing.mjs)."""
+    raw = _raw_config().get("failover")
+    raw = raw if isinstance(raw, dict) else {}
+    out = dict(FAILOVER_DEFAULTS)
+    for k in ("enabled", "alerts", "alertOnLimit"):
+        out[k] = raw.get(k) is not False
+    for k, (lo, hi) in FAILOVER_RANGES.items():
+        try:
+            out[k] = min(hi, max(lo, int(round(float(raw[k])))))
+        except (KeyError, TypeError, ValueError):
+            pass
+    return out
+
+
+@router.get("/failover")
+def get_failover(request: Request) -> dict[str, Any]:
+    _who(request)
+    v = view()
+    return {"ok": True, "failover": failover_settings(), "events": v.get("events") or [],
+            "out": [{"name": a["name"], "label": a.get("label") or "", "email": a["email"], **(a["limited"] or {})} for a in v["accounts"] if a.get("limited")],
+            "logins": [{"name": a["name"], "email": a["email"], **(a.get("home") or {})} for a in v["accounts"] if a.get("home")]}
+
+
+@router.post("/failover")
+async def set_failover(request: Request) -> dict[str, Any]:
+    """{ enabled?, maxMoves?, waitMinutes?, alerts?, alertOnLimit? }: what happens when an account stops a build."""
+    by = _who(request)
+    b = _body_dict(await _body(request))
+
+    def change() -> dict[str, Any]:
+        cfg = _raw_config()
+        f = dict(failover_settings())
+        for k in ("enabled", "alerts", "alertOnLimit"):
+            if k in b:
+                if not isinstance(b[k], bool):
+                    raise HTTPException(400, f"{k} is true or false.")
+                f[k] = b[k]
+        for k, (lo, hi) in FAILOVER_RANGES.items():
+            if k in b:
+                try:
+                    n = int(b[k])
+                except (TypeError, ValueError):
+                    raise HTTPException(400, f"{k} is a whole number from {lo} to {hi}.") from None
+                if not lo <= n <= hi:
+                    raise HTTPException(400, f"{k} is a whole number from {lo} to {hi}.")
+                f[k] = n
+        return _save_config({**cfg, "failover": f}, by, _owner(request)).get("failover") or f
+
+    return {"ok": True, "failover": await run_in_threadpool(change)}
+
+
+def _clear_limit(name: str) -> bool:
+    """Take an account out of worker-state.json's limits (the host's lock file, so the launcher never loses a claim)."""
+    state_file = _data() / "worker-state.json"
+    lock = Path(f"{state_file}.lock")
+    deadline = time.time() + 15
+    while True:
+        try:
+            os.close(os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600))
+            break
+        except FileExistsError:
+            try:
+                if time.time() - lock.stat().st_mtime > 10:
+                    lock.unlink(missing_ok=True)
+                    continue
+            except OSError:
+                continue
+            if time.time() > deadline:
+                raise HTTPException(503, "The worker state is locked: try again in a moment.") from None
+            time.sleep(0.05)
+    try:
+        try:
+            st = json.loads(state_file.read_text())
+        except (OSError, ValueError):
+            return False
+        limits = st.get("limits") if isinstance(st, dict) else None
+        if not isinstance(limits, dict) or name not in limits:
+            return False
+        del limits[name]
+        tmp = Path(f"{state_file}.{os.getpid()}.tmp")
+        tmp.write_text(json.dumps(st, indent=1))
+        tmp.replace(state_file)
+        return True
+    finally:
+        lock.unlink(missing_ok=True)
+
+
+def _resolve_alerts(name: str) -> None:
+    try:
+        import main  # noqa: PLC0415 — the console core (only inside the console process)
+        hub = getattr(main, "ALERTS", None)
+        if hub:
+            hub.resolve([f"claude-accounts:account:{name}:{k}" for k in ("auth", "usage", "credits")])
+    except Exception:  # noqa: BLE001 — the alert closing never stops the change
+        pass
+
+
+@router.post("/clear")
+async def clear(request: Request) -> dict[str, Any]:
+    """{ name }: bring an account back in now (signed in again, topped up). Its phone alert closes."""
+    _who(request)
+    name = await _name(request)
+    had = await run_in_threadpool(_clear_limit, name)
+    if had:
+        _resolve_alerts(name)
+    _forget_read()
+    return {"ok": True, "name": name, "cleared": had, "message": f"{name} takes jobs again." if had else f"{name} was not out."}
+
+
+LOGINS_COMMAND = "timeout 15 node /opt/axf/deploy/claude-home.mjs audit --json 2>/dev/null || echo []"
+
+
+@router.get("/logins")
+def logins(request: Request) -> dict[str, Any]:
+    """One home per login: every place a login is kept on the host (home, live login, build copies) and whether it is in step."""
+    _who(request)
+    svc = plugin_services.get("axf.headless@1")
+    if svc is None or not hasattr(svc, "vps_read"):
+        raise HTTPException(503, "The Terminal plugin is off, so the console can't reach the VPS host.")
+    r = svc.vps_read(LOGINS_COMMAND, 20)
+    try:
+        rows = json.loads(str(r.get("out") or "[]").strip() or "[]")
+    except ValueError:
+        rows = []
+    keep = ("kind", "session", "owner", "token", "expiresAt", "state")   # token = a 12-character hash prefix, never a credential
+    out = [{k: str(x.get(k) or "")[:80] for k in keep} for x in rows if isinstance(x, dict)][:200]
+    return {"ok": True, "ready": bool(r.get("ready")), "logins": out, "behind": sum(1 for x in out if x["state"] == "behind"), "foreign": sum(1 for x in out if x["state"] == "foreign")}
+
+
 def worker_health() -> dict[str, Any]:
     """Systems check: a job needs an account that can run it."""
     v = view()
@@ -608,6 +757,19 @@ def worker_health() -> dict[str, Any]:
         return {"status": "ok", "summary": f"{len(free)} of {len(rows)} Claude accounts can take headless jobs."}
     ends = sorted(a["limited"]["until"] for a in rows if a["limited"])
     return {"status": "error", "summary": f"No Claude account can take jobs{f' until {ends[0]}' if ends else ''}: new builds wait or run on the console's account."}
+
+
+def login_health() -> dict[str, Any]:
+    """Systems check: a saved login that died (expired, could not be renewed) stays out of every job until it is signed in."""
+    v = view()
+    if not v["ready"]:
+        return {"status": "unknown", "summary": v["why"] or "Can't read the VPS host.", "unreachable": True}
+    dead = [a for a in v["accounts"] if (a.get("limited") or {}).get("untilSignin")]
+    if not dead:
+        return {"status": "ok", "summary": "Every saved Claude login works (or comes back by itself)."}
+    names = ", ".join(f"{a['name']}{' (' + a['email'] + ')' if a.get('email') else ''}" for a in dead)
+    since = min(str((a["limited"] or {}).get("at") or "") for a in dead)
+    return {"status": "error", "summary": f"Claude login dead, needs signing in: {names}{' (since ' + since[:16].replace('T', ' ') + ' UTC)' if since else ''}. Builds skip it and run on the other accounts."}
 
 
 def api_health() -> dict[str, Any]:
@@ -641,6 +803,9 @@ def _register_health(tries: int = 12) -> None:
         svc.register({"id": "claude-workers", "label": "Claude worker accounts", "run": worker_health, "severity": "warn", "service": "claude", "order": 62,
                       "breaks": "New headless builds run on the console's own account until a worker can take them.",
                       "instructions": ["Builds → Claude accounts shows when each worker comes back. Sign a worker in again there if its login failed."]}, owner=FOLDER)
+        svc.register({"id": "claude-logins", "label": "Claude logins", "run": login_health, "severity": "error", "service": "claude", "order": 61,
+                      "breaks": "A Claude account whose login died takes no builds until it is signed in again; the others carry its work.",
+                      "instructions": ["Builds → Claude accounts → that account → Sign in (or tell Amber \"sign <account> in\"). It comes back by itself once the new login is saved, and its phone alert closes."]}, owner=FOLDER)
         svc.register({"id": "claude-api-spend", "label": "Claude API accounts", "run": api_health, "severity": "warn", "service": "claude", "order": 63,
                       "breaks": "An API account at its daily or weekly cap takes no more jobs; one without a key takes none at all.",
                       "instructions": ["Settings → Plugins → Claude accounts → Job routing shows each API account's spend and caps. Only your own click raises a cap.",

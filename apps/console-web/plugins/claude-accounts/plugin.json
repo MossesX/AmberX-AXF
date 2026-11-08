@@ -406,6 +406,51 @@
             "label"
           ]
         }
+      },
+      {
+        "route": "GET /failover",
+        "id": "failover",
+        "title": "Claude account failover status",
+        "description": "Which Claude accounts are out and why (login expired, limit, no credits) and until when, the last account events (out, moved, back), each login's last token refresh, and the failover settings (voice: 'which Claude accounts are down').",
+        "readOnly": true
+      },
+      {
+        "route": "POST /failover",
+        "id": "failover-set",
+        "title": "Change Claude account failover",
+        "description": "What happens when an account stops a build: enabled (move it to the next account), maxMoves (0-20 per run), waitMinutes (0-2880: every account out = wait this long for one instead of stopping), alerts (phone alert on every account problem), alertOnLimit (also for limits that end by themselves). Voice: 'turn off phone alerts for Claude limits'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "maxMoves": { "type": "integer", "minimum": 0, "maximum": 20 },
+            "waitMinutes": { "type": "integer", "minimum": 0, "maximum": 2880 },
+            "alerts": { "type": "boolean" },
+            "alertOnLimit": { "type": "boolean" }
+          }
+        }
+      },
+      {
+        "route": "POST /clear",
+        "id": "clear",
+        "title": "Bring a Claude account back in",
+        "description": "Take an account that is out (dead login, limit, credits) back into the job rotation now, e.g. after signing it in or topping it up (voice: 'account 1 is back'). Its phone alert closes. A login that was signed in again comes back by itself within a minute anyway.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "description": "saved account name" }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "GET /logins",
+        "id": "logins",
+        "title": "Where each Claude login is kept",
+        "description": "One home per login: every place a Claude login is kept on the VPS (its home, the live login, each build's copy), whose it is and whether it is in step with its home (behind = would renew with a spent token; foreign = a login no saved account knows). Token hashes only, never a credential.",
+        "readOnly": true
       }
     ]
   },

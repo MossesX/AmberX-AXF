@@ -12,6 +12,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
+import { FAILOVER_ASSETS, Failover } from './failover';
 import './claude-accounts.css';
 
 const ID = 'ai.amberx.axf.console.claude-accounts';
@@ -28,7 +29,8 @@ type Role = 'interactive' | 'worker' | 'saved' | 'api-worker' | 'api-off';
 interface Run { session: string; name: string; agent?: string; model?: string; at: string; end: string; exit: number | null; costUsd: number }
 interface Account {
   name: string; active: boolean; email: string; plan: string; type: string; kind: 'subscription' | 'api'; role: Role; label: string; hasKey: boolean;
-  limited: { until: string; kind: string; reason: string } | null; running: string[]; queued: number; building: number; queue: number;
+  limited: { until: string; kind: string; reason: string; at?: string; untilSignin?: boolean } | null; running: string[]; queued: number; building: number; queue: number;
+  home: { lastRefreshAt: string; lastRefreshBy: string; expiresAt: string } | null;
   runsToday: number; costToday: number; costWeek: number; recent: Run[];
   spend: { day: number; week: number; dayCap: number; weekCap: number; state: 'ok' | 'warn' | 'capped'; why: string } | null;
 }
@@ -101,11 +103,13 @@ function Row({ a, view, onDone, manage }: { a: Account; view: View; onDone: (m: 
         <b>{a.label || a.name}</b>{a.label && <span className="axp-ca-row__sub"> · {a.name}</span>}
         {sub && <p className="axp-ca-row__sub">{sub}</p>}
         <p className="axp-ca-row__sub">{usageLine(a)}</p>
+        {a.limited && <p className="axp-ca-row__sub">Out: {a.limited.reason}{a.limited.at ? ` since ${when(a.limited.at)}` : ''} · {a.limited.untilSignin ? 'until it is signed in again' : `back ${when(a.limited.until)}`}</p>}
+        {a.home && <p className="axp-ca-row__sub">Last refresh {a.home.lastRefreshAt ? `${when(a.home.lastRefreshAt)}${a.home.lastRefreshBy ? ` (${a.home.lastRefreshBy})` : ''}` : 'not seen yet'}</p>}
       </div>
       <div className="axp-ca-row__actions">
       {a.active ? <Chip tone="success"><Icon name="check" size={12} /> Console</Chip> : <Chip tone={isWorker || a.role === 'api-worker' ? 'accent' : undefined}>{ROLE_CHIP[a.role] ?? a.role}</Chip>}
       {isApi && a.hasKey === false && <Chip tone="warning">No key</Chip>}
-      {a.limited && <Chip tone="warning">Out until {when(a.limited.until)}</Chip>}
+      {a.limited && (a.limited.untilSignin ? <Chip tone="danger">Login dead · sign in</Chip> : <Chip tone="warning">Out until {when(a.limited.until)}</Chip>)}
       {a.spend && a.spend.state !== 'ok' && <Chip tone={a.spend.state === 'capped' ? 'danger' : 'warning'}>{a.spend.state === 'capped' ? 'Capped' : 'Near cap'}</Chip>}
       {waiting && <Chip tone="warning">Waiting for approval</Chip>}
       {!a.active && !isApi && <Button tone="primary" icon="refresh" busy={busy} disabled={held} onClick={() => run(ask('use', a.name))}>Switch</Button>}
@@ -246,6 +250,7 @@ function Page() {
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>
       <Container title="Accounts" icon="key"><Accounts manage /></Container>
+      <Container title="Failover & alerts" icon="alert"><Failover /></Container>
       <Container title="Job routing" icon="shuffle"><JobRouting /></Container>
       <Container title="Add a worker account" icon="user"><Workers /></Container>
       <Container title="Recent headless runs" icon="clock"><Runs /></Container>
@@ -277,7 +282,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
     rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });
     // the Job routing layouts are settings assets (the UI Review options): in the registry, so the asset library lists them
-    for (const a of ROUTING_ASSETS) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
+    for (const a of [...ROUTING_ASSETS, ...FAILOVER_ASSETS]) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
     void loadRouting().catch(() => undefined);
     listeners.add((v) => paint(rt, v));
     const tick = () => { if (document.visibilityState === 'visible') void load().catch(() => undefined); };
@@ -287,9 +292,10 @@ export const plugin: AxfWebLibrary = {
   views: { 'claude-accounts': { title: 'Claude accounts', icon: 'key', render: () => <Page /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
   dialogs: { [DIALOG]: { title: 'Switch Claude account', icon: 'key', searchable: false, render: () => <Accounts /> } },
-  settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; usage per account.' }],
+  settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; failover and phone alerts when an account stops a build; last refresh per login; usage per account.' }],
   settingsPanels: [
     { id: 'claude-accounts.list', tab: VIEW, title: 'Accounts', icon: 'key', order: 1, render: () => <Accounts manage /> },
+    { id: 'claude-accounts.failover', tab: VIEW, title: 'Failover & alerts', icon: 'alert', order: 1.5, render: () => <Failover /> },
     { id: 'claude-accounts.routing', tab: VIEW, title: 'Job routing', icon: 'shuffle', order: 2, render: () => <JobRouting /> },
     { id: 'claude-accounts.workers', tab: VIEW, title: 'Add a worker account', icon: 'user', order: 3, render: () => <Workers /> },
     { id: 'claude-accounts.runs', tab: VIEW, title: 'Recent headless runs', icon: 'clock', order: 3, render: () => <Runs /> },

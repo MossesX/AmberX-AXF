@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Claude accounts plugin",
+  "id": "claude-accounts-failover-sections",
+  "name": "Failover: sections",
+  "description": "Five collapsible sections: accounts out now, failover, phone alerts, account events, logins. Out now and failover start open.",
+  "tags": [
+    "claude-accounts",
+    "failover",
+    "ui-choices:claude-accounts-failover"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.failover": "basic"
+    },
+    "view": "sections",
+    "order": [
+      "out",
+      "failover",
+      "alerts",
+      "events",
+      "logins"
+    ],
+    "open": [
+      "out",
+      "failover"
+    ]
+  }
+}

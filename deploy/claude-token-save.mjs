@@ -23,7 +23,7 @@
  * Writes are atomic and 0600, keep every other field of the target (mcpOAuth…), and never print a credential.
  * token-chain.json in a copy holds sha256 prefixes only. Paths: AXF_CLAUDE_ACCOUNTS, AXF_CLAUDE_HOME, AXF_AI_KEYS_HOST_DIR.
  */
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -192,7 +192,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     await watch(flag('copy'), { parent: Number(flag('parent', '0')) || 0, every: Number(flag('every', '3000')) || 3000 });
   } else if (cmd === 'sweep') {
     const r = sweep();
-    if (r.fromAiKeys || r.fromLive) console.log(`${new Date().toISOString()} saved rotated tokens: ${r.fromLive} from the live login, ${r.fromAiKeys} from AI keys`);
+    if (r.fromAiKeys || r.fromLive) console.log(`${new Date().toISOString()} ${r.live === 'pulled' ? 'pulled the newer home token into the live login' : 'saved rotated tokens'}: ${r.fromLive} from the live login${r.owner ? ` (${r.owner})` : ''}, ${r.fromAiKeys} from AI keys`);
+    // account-failover-notify: accounts that are back (time passed, or signed in again) leave the limits and their phone
+    // alert is resolved; alerts the console could not take yet are sent
+    // (child processes: claude-workers imports claude-login, which imports this file)
+    const here = dirname(fileURLToPath(import.meta.url));
+    const rv = spawnSync(process.execPath, [join(here, 'claude-workers.mjs'), 'revive'], { encoding: 'utf8', timeout: 30_000 });
+    if (/^back: /.test(rv.stdout || '')) console.log(`${new Date().toISOString()} Claude accounts ${rv.stdout.trim()}`);
+    spawnSync(process.execPath, [join(here, 'account-alerts.mjs'), 'flush'], { encoding: 'utf8', timeout: 60_000 });
   } else {
     console.error('usage: claude-token-save.mjs watch --copy <dir> [--parent <pid>] [--every <ms>] | sweep');
     process.exit(2);

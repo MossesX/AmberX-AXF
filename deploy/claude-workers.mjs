@@ -52,7 +52,8 @@ import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, re
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { accounts, paths as loginPaths } from './claude-login.mjs';
-import { tokenHash } from './claude-home.mjs';
+import { meta as homeMeta, tokenHash } from './claude-home.mjs';
+import { readEvents as accountEvents } from './account-alerts.mjs';
 import { NAME_RE, SCHEMA, alerts as routingAlerts, decide, normConfig, normJob, normRule, raisedCaps, roster } from './worker-routing.mjs';
 
 export { SCHEMA };
@@ -260,6 +261,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
       email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
       limited: limitOf(state, a.name, now, env), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
+      home: homeOf(a.name, env),
     };
   });
   // API worker slots set up before their key is saved still show (no key yet)
@@ -267,7 +269,17 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   const ro = roster(cfg, base);
   const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why }));
   const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
-  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
+  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base),
+    events: accountEvents(env, 20), at: new Date(now).toISOString() };
+}
+
+/** The login's one home (claude-home.mjs): when its token was last renewed and by whom, when it runs out. No credential. */
+function homeOf(name, env) {
+  try {
+    const m = homeMeta(name, env);
+    if (!m.current) return null;
+    return { lastRefreshAt: m.lastRefreshAt || '', lastRefreshBy: m.lastRefreshBy || '', expiresAt: m.expiresAt ? new Date(m.expiresAt).toISOString() : '' };
+  } catch { return null; }
 }
 
 /** Rows as the router sees them for one job: queued-ahead jobs count as running. */
@@ -439,9 +451,10 @@ const usd = (n) => `$${Number(n || 0).toFixed(2)}`;
 /** One line per account, for people. */
 export function statusLines(s) {
   return s.accounts.map((a) => {
-    const lim = a.limited ? ` · out until ${a.limited.until}` : '';
+    const lim = a.limited ? ` · out (${a.limited.reason}) ${a.limited.untilSignin ? 'until signed in again' : `until ${a.limited.until}`}` : '';
+    const ref = a.home?.lastRefreshAt ? ` · last refresh ${a.home.lastRefreshAt}${a.home.lastRefreshBy ? ` (${a.home.lastRefreshBy})` : ''}` : '';
     const cap = a.spend ? ` · caps ${a.spend.dayCap ? usd(a.spend.dayCap) : 'none'}/day ${a.spend.weekCap ? usd(a.spend.weekCap) : 'none'}/week${a.spend.state !== 'ok' ? ` (${a.spend.state})` : ''}` : '';
-    return `${a.role.padEnd(11)} ${a.name}${a.label ? ` "${a.label}"` : ''}${a.email ? ` (${a.email})` : ''}${lim} · ${a.running.length}/${a.building} running · ${a.queued}/${a.queue} queued · ${usd(a.costToday)} today · ${usd(a.costWeek)} week${cap}${a.why && !a.limited ? ` · ${a.why}` : ''}`;
+    return `${a.role.padEnd(11)} ${a.name}${a.label ? ` "${a.label}"` : ''}${a.email ? ` (${a.email})` : ''}${lim} · ${a.running.length}/${a.building} running · ${a.queued}/${a.queue} queued · ${usd(a.costToday)} today · ${usd(a.costWeek)} week${cap}${a.why && !a.limited ? ` · ${a.why}` : ''}${ref}`;
   });
 }
 

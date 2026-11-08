@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Claude accounts plugin",
+  "id": "claude-accounts-failover-status-first",
+  "name": "Failover: status first",
+  "description": "What is wrong first: accounts out now and the latest account events open on top; the settings fold below.",
+  "tags": [
+    "claude-accounts",
+    "failover",
+    "ui-choices:claude-accounts-failover"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.failover": "basic"
+    },
+    "view": "status-first",
+    "order": [
+      "out",
+      "events",
+      "logins",
+      "failover",
+      "alerts"
+    ],
+    "open": [
+      "out",
+      "events"
+    ]
+  }
+}

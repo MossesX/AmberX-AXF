@@ -118,7 +118,216 @@
         "target": "settings-panel:claude-accounts.routing",
         "title": "Job routing",
         "text": "Every saved subscription login takes headless jobs unless you stop it; the console's account takes jobs after them when its switch is on. At most 3 jobs build and 5 wait per account. API keys bill per token, so they only take jobs a routing rule sends them, and nothing once a daily or weekly spend cap is reached. Rules are checked in order and the first switched-on match decides. Test a job shows where a job would go right now.",
-        "kind": "panel"
+        "kind": "card"
+      },
+      {
+        "target": "bring-back",
+        "title": "Bring back",
+        "text": "Takes this account back into the job rotation now, e.g. after you signed it in or topped it up. Its phone alert closes. A login signed in again comes back by itself within a minute anyway.",
+        "kind": "button"
+      },
+      {
+        "target": "move-a-build-when-its-account-stops-it",
+        "title": "Move a build when its account stops it",
+        "text": "When a build dies on an account's login, usage limit or credits, the account is taken out and the build starts again on the next account the routing rules allow. Off = the build stops there.",
+        "kind": "toggle"
+      },
+      {
+        "target": "most-moves-per-build",
+        "title": "Most moves per build",
+        "text": "How many times one build may move to another account before it stops (0 to 20).",
+        "kind": "field"
+      },
+      {
+        "target": "wait-for-an-account-minutes",
+        "title": "Wait for an account (minutes)",
+        "text": "When every account is out, the build waits this long for one to come back instead of stopping. 0 = stop at once.",
+        "kind": "field"
+      },
+      {
+        "target": "phone-alert-on-every-account-problem",
+        "title": "Phone alert on every account problem",
+        "text": "Sends an AmberX alert when an account stops a build: which account, what failed, where the build moved and what to do. It closes when the account works again.",
+        "kind": "toggle"
+      },
+      {
+        "target": "also-for-limits-that-end-by-themselves",
+        "title": "Also for limits that end by themselves",
+        "text": "Off = a usage limit that resets on its own doesn't buzz your phone; dead logins, no credits and builds with nowhere to go still do.",
+        "kind": "toggle"
+      },
+      {
+        "target": "check-where-each-login-is-kept",
+        "title": "Check where each login is kept",
+        "text": "Lists every place a Claude login is kept on the VPS (its home, the console's login, each build's copy) and whether each is in step with its home. Shows token hashes only.",
+        "kind": "button"
+      },
+      {
+        "target": "console-account-takes-headless-jobs",
+        "title": "Console account takes headless jobs",
+        "text": "Turns “Console account takes headless jobs” on or off. It takes effect straight away and is remembered. Part of Claude accounts.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "jobs-building-at-once-per-account",
+        "title": "Jobs building at once, per account",
+        "text": "Where you set “Jobs building at once, per account”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "jobs-waiting-per-account",
+        "title": "Jobs waiting, per account",
+        "text": "Where you set “Jobs waiting, per account”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-limits",
+        "title": "Save limits",
+        "text": "Saves limits. Nothing is kept until you tap it. Part of Claude accounts.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "takes-jobs",
+        "title": "Takes jobs",
+        "text": "Turns “Takes jobs” on or off. It takes effect straight away and is remembered. Part of Claude accounts.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "daily-cap-usd",
+        "title": "Daily cap (USD)",
+        "text": "Where you set “Daily cap (USD)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "weekly-cap-usd",
+        "title": "Weekly cap (USD)",
+        "text": "Where you set “Weekly cap (USD)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "alert-at-of-a-cap",
+        "title": "Alert at (% of a cap)",
+        "text": "Where you set “Alert at (% of a cap)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-caps",
+        "title": "Save caps",
+        "text": "Saves caps. Nothing is kept until you tap it. Part of Claude accounts.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "name-on-the-vps",
+        "title": "Name on the VPS",
+        "text": "Where you set “Name on the VPS”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "shown-as",
+        "title": "Shown as",
+        "text": "Where you set “Shown as”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "rule-name",
+        "title": "Rule name",
+        "text": "Where you set “Rule name”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "send-matching-jobs-to",
+        "title": "Send matching jobs to",
+        "text": "Where you set “Send matching jobs to”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "api-accounts-empty-any",
+        "title": "API accounts (empty = any)",
+        "text": "Where you set “API accounts (empty = any)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "profiles-empty-any",
+        "title": "Profiles (empty = any)",
+        "text": "Where you set “Profiles (empty = any)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "steps-left-at-least",
+        "title": "Steps left, at least",
+        "text": "Where you set “Steps left, at least”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "steps-left-at-most",
+        "title": "Steps left, at most",
+        "text": "Where you set “Steps left, at most”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "minutes-left-at-most",
+        "title": "Minutes left, at most",
+        "text": "Where you set “Minutes left, at most”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "only-when-subscriptions-are-full-or-limited",
+        "title": "Only when subscriptions are full or limited",
+        "text": "Turns “Only when subscriptions are full or limited” on or off. It takes effect straight away and is remembered. Part of Claude accounts.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "add-a-rule",
+        "title": "Add a rule",
+        "text": "Adds a rule. Part of Claude accounts.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "job-type",
+        "title": "Job type",
+        "text": "Where you set “Job type”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "steps-left",
+        "title": "Steps left",
+        "text": "Where you set “Steps left”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "minutes-left",
+        "title": "Minutes left",
+        "text": "Where you set “Minutes left”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "settings-panel:claude-accounts.failover",
+        "title": "Failover & alerts",
+        "text": "Which Claude accounts are out, why and until when, what moved where, each login's last token refresh, and what happens when an account stops a build: move it, wait for an account, phone alerts.",
+        "kind": "card"
       }
     ]
   }

@@ -130,7 +130,7 @@ ok(names == [f"account-{i}" for i in range(1, 7)], "token and API-key accounts a
 ok(active == "account-6" and kinds["account-2"] == "login" and kinds["account-3"] == "token" and kinds["account-5"] == "api-key", "each row keeps its type")
 ok(not any(x == "bad" for x in names), "an unknown tag is still malformed")
 svc = plugin_services.get("axf.claude-accounts@1")
-ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits and usage, nothing else")
+ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs", "home"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits, usage and last refresh, nothing else")
 
 print("use")
 reset()
@@ -277,5 +277,44 @@ host.out = host.out.replace('"costToday": 0, "costWeek": 0, "recent": [], "takes
 mod._forget_read()
 ok(mod.api_health()["status"] == "error" and "daily cap" in mod.api_health()["summary"], "API health: over the (lowered) $8 cap is an error")
 ok(SECRET not in (data / "workers.json").read_text(), "workers.json holds names and numbers only")
+
+print("failover (account-failover-notify)")
+user[0] = None
+host.out = (f"* account-1 (active)\n  account-2\n  account-3\n{mod.SEP}\n{status()}\n{mod.SEP2}\n"
+            + json.dumps({"accounts": [
+                host_row("account-1", "interactive", home={"lastRefreshAt": "2026-11-08T11:50:59Z", "lastRefreshBy": "live login", "expiresAt": "2026-11-08T19:50:59Z", "refreshToken": SECRET}),
+                host_row("account-2", "worker", email="dead@example.com", limited={"until": "2026-12-08T16:33:00Z", "kind": "auth", "reason": "login expired and could not be renewed", "at": "2026-11-08T16:33:50Z", "untilSignin": True, "login": SECRET}),
+                host_row("account-3", "worker", limited={"until": "2030-01-01T00:00:00.000Z", "kind": "usage", "reason": "hit its usage limit"}),
+            ], "events": [{"at": "2026-11-08T16:33:50Z", "action": "out", "account": "account-2", "kind": "auth", "build": "memory-manager", "movedTo": "account-3", "token": SECRET},
+                          {"at": "2026-11-08T16:33:50Z", "action": "move", "account": "account-2", "to": "account-3", "kind": "auth", "build": "memory-manager"}]}) + "\n")
+mod._forget_read()
+f = c.get("/p/failover").json()
+ok(f["failover"] == mod.FAILOVER_DEFAULTS, "failover on by default: 6 moves, waits 12 h when every account is out, alerts on")
+out = {x["name"]: x for x in f["out"]}
+ok(out["account-2"]["untilSignin"] is True and out["account-2"]["reason"].startswith("login expired") and out["account-2"]["at"], "out: why, since, and until signed in again")
+ok(out["account-3"]["untilSignin"] is False and out["account-3"]["until"].startswith("2030"), "a limit: until its reset")
+ok(f["events"][0]["action"] == "out" and f["events"][0]["movedTo"] == "account-3" and f["events"][1]["to"] == "account-3", "the account events: out, and where the build moved")
+ok(any(x["name"] == "account-1" and x["lastRefreshAt"].startswith("2026-11-08T11:50") and x["lastRefreshBy"] == "live login" for x in f["logins"]), "last refresh per login, and who did it")
+ok(SECRET not in json.dumps(f) and SECRET not in json.dumps(c.get("/p/accounts").json()), "no token from the host passes (refresh token, login hash, unknown event fields)")
+h = mod.login_health()
+ok(h["status"] == "error" and "account-2 (" in h["summary"] and "since 2026-11-08 16:33" in h["summary"], f"systems check: a dead login is a red item with since: {h['summary']}")
+r = c.post("/p/failover", json={"alertOnLimit": False, "waitMinutes": 60})
+ok(r.status_code == 200 and r.json()["failover"]["alertOnLimit"] is False and r.json()["failover"]["waitMinutes"] == 60, "the console token (voice, MCP) changes failover settings")
+ok(json.loads((data / "workers.json").read_text())["failover"]["waitMinutes"] == 60, "written to workers.json, where the launcher reads it")
+ok(c.post("/p/failover", json={"maxMoves": 99}).status_code == 400 and c.post("/p/failover", json={"enabled": "yes"}).status_code == 400, "out-of-range or wrong-type values are refused")
+(data / "worker-state.json").write_text(json.dumps({"limits": {"account-2": {"kind": "auth", "until": "2026-12-08T16:33:00Z"}}, "claims": {"s": {"account": "account-3"}}}))
+resolved: list = []
+sys.modules["main"] = types.SimpleNamespace(ALERTS=types.SimpleNamespace(resolve=lambda keys: resolved.extend(keys)))
+r = c.post("/p/clear", json={"name": "account-2"}).json()
+st = json.loads((data / "worker-state.json").read_text())
+ok(r["cleared"] and "account-2" not in st["limits"] and st["claims"]["s"]["account"] == "account-3", "clear: the account is back in, claims untouched")
+ok("claude-accounts:account:account-2:auth" in resolved, "and its phone alert closes")
+ok(c.post("/p/clear", json={"name": "account-2"}).json()["cleared"] is False and c.post("/p/clear", json={"name": "../x"}).status_code == 400, "clearing twice is harmless; a bad name is refused")
+ok(not (data / "worker-state.json.lock").exists(), "the lock is released")
+host.out = json.dumps([{"kind": "home", "owner": "account-1", "token": "0123456789ab", "state": "in step", "file": "/root/.claude-accounts/account-1/.credentials.json"},
+                       {"kind": "build copy", "session": "axf-x", "owner": "account-1", "token": "ba9876543210", "state": "behind", "refreshToken": SECRET}])
+lg = c.get("/p/logins").json()
+ok(lg["behind"] == 1 and lg["logins"][1]["state"] == "behind" and "file" not in lg["logins"][0], "logins: every place a login is kept, behind counted, no paths")
+ok(SECRET not in json.dumps(lg) and host.commands[-1] == mod.LOGINS_COMMAND, "one fixed read command, no credential")
 
 print(f"\nclaude-accounts: {checks} checks passed")
