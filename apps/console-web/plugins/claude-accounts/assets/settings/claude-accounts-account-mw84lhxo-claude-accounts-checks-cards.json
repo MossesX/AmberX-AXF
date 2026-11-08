@@ -1,0 +1,34 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-accounts-account-mw84lhxo-claude-accounts-checks-cards",
+ "name": "claude-accounts-account-mw84lhxo: Cards (default)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Each account first as a card with its Check button; settings folded below.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-accounts-account-mw84lhxo",
+  "choice-option:claude-accounts-checks-cards"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.checks": "basic"
+  },
+  "view": "cards",
+  "order": [
+   "status",
+   "schedule",
+   "notify"
+  ],
+  "open": [
+   "status"
+  ]
+ }
+}

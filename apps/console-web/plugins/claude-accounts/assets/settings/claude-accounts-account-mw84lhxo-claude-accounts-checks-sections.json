@@ -1,0 +1,36 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-accounts-account-mw84lhxo-claude-accounts-checks-sections",
+ "name": "claude-accounts-account-mw84lhxo: Sections",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Three sections, all open: status, when to check, phone notifications.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-accounts-account-mw84lhxo",
+  "choice-option:claude-accounts-checks-sections"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.checks": "basic"
+  },
+  "view": "sections",
+  "order": [
+   "status",
+   "schedule",
+   "notify"
+  ],
+  "open": [
+   "status",
+   "schedule",
+   "notify"
+  ]
+ }
+}
