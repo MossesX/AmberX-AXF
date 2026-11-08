@@ -755,7 +755,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 12:35 UTC · `plan-archive` s6 done (all) · paulie
 - 2026-11-07 12:36 UTC · `style-override-rule` added (8 steps) (all) · orchestrator
 - 2026-11-07 12:36 UTC · `style-override-rule` → running (all) · orchestrator
 - 2026-11-07 12:36 UTC · `style-override-rule` branch claude/style-override-rule (all) · builds-live
@@ -1155,6 +1154,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 21:59 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` note (all) · orchestrator
 - 2026-11-08 21:59 UTC · `workers-api-routing` → complete, merged, note (all) · reconciler
 - 2026-11-08 22:04 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` s1 done, → running (all) · orchestrator
+- 2026-11-08 22:06 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
