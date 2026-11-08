@@ -260,3 +260,14 @@ confirmed; `data-axf-person-only` + `rt.actions.asRemote` keep Brett's taps his)
 CLI `axf console value|press|toggle|fill|focus|menu`. Audit `framework/cli/api-coverage.mjs` (registry
 `apps/console-web/api-coverage.json`, 4252 elements, 0 gaps; CI fails on a gap). API Browser plugin over
 `framework/cli/api-registry.mjs` (1262 paths). Report `_claude/builds/reports/full-api-control.md`. <!-- axf-plugin:api-browser -->
+
+## Every UI is fully API-controllable (Nov 8 2026, ui-api-parity-rule, Opus; branch `claude/ui-api-parity-rule-r3`, carries full-api-control)
+Parity, not just a path: each plugin view and dialog maps open / state / every action / every setting to named ops in
+its plugin.json `ui` (ui-api@1); `framework/cli/ui-parity.mjs check` in CI with the ratchet
+`framework/spec/ui-parity-baseline.json` (67 areas, 2549 gaps; only goes down); `audit` → the report's audit.md.
+Deep links for every view (deep-link@1, `?axf-view= / axf-dialog= / axf-settings= / axf-do=`, navigate/read actions
+only; `framework/react/deepLinks.ts` in AxfProvider; `framework/cli/deep-links.mjs`; MCP `console_link`). Briefs carry
+`API_PARITY_RULE` for UI builds. Glossary, Index & Demos at full parity: commands `demo-new` / `demo-change`, Designer
+and Book Builder on-screen state as `glossary.designer.*` / `glossary.books.*` values, actions `demo.edit|designer|
+play-step|listen`, `book.chapter|tab|preview`. The rest: pending builds `ui-api-parity-{builds,agents,console,look,media,
+framework}`. Report `_claude/builds/reports/ui-api-parity-rule.md`. <!-- axf-plugin:glossary-index -->
