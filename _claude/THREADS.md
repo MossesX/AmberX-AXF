@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Molly is the one shell (`molly-one-shell`, r3, agent Reel Rhonda; Brett: "Molly becomes the single shell for every app and plugin … Do NOT embed other apps") | phase 1 (Opus) done; stopped at the Fable switch | claude/molly-one-shell-r3 | #390 | launch phase 2 on Fable: s4 shell-surface@1, s5 layout-mode asset type, s6 menu index; gaps parked: molly-native-expenses, molly-sign-in-once | Nov 8 2026 |
 | Worker accounts (multi-account-headless-workers) | built, waiting on UI Review | claude/multi-account-headless-workers | #382 | Brett: approve in UI Review, sign in a second subscription, tap Make worker | Nov 7 2026 |
 | Builds journal parts (hotfix) | in the merge queue | claude/builds-journal-parts | #381 | lands by itself | Nov 7 2026 |
 | Glossary, index + demonstrations (`glossary-index-demos`, s1 Opus, s2–s6 Fable (r3, agent Janitor Joey); Brett voice: "a glossary in an index … as if it's indexing an encyclopedia … generate a demonstration … write my own book with it … interactive HTML, TypeScript documentation … every time we generate a clip it needs to automatically attach a shitload of keywords") | built (branch pushed, PR to open; shots in UI Review → Screenshots "Glossary demos - Nov 7") | `claude/glossary-index-demos-r3` (r2's s1 merged in) | – | s2 contracts demonstration@1 / book@1 / clip@1 / docs@1 (`framework/core/engines/demo-rules.mjs`, fixture + `check-demo.mts`, starters, schemas, PORTING gap) + Demonstration Designer + player; s3 Book Builder (wizard, tree, drag, chapter editor, content picker, live sandbox preview, Preview book, Record video → Walkthrough producer job); s4 docs output (`docs.mjs`: markdown / html / interactive HTML + TS, live frames through `?axf-view=`); s5 `build-hooks.mjs` rebuilds the catalog on every build event + rule in RULES.md / BRIEF-TEMPLATE; s6 clips (`clip from-demo`, Register a clip, large keyword set). Report `_claude/builds/reports/glossary-index-demos.md`. To carry on: Brett's session lands the PR through the merge queue; gaps: recorder data-script input (build-docs) for a book's video, the formal UI Review submission with 3 asset options. Checks: `npx -y tsx framework/spec/check-demo.mts`, `npx -y tsx apps/console-web/plugins/glossary-index/test.mts`, `node apps/console-web/plugins/glossary-index/catalog.mjs --check`, help-coverage / check-theme / check-controls / plugin-lifecycle. | 2026-11-07 |
@@ -208,6 +209,16 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### molly-one-shell
+
+Asked: Molly becomes the one native shell for every app (Dev Console, axHub web, AmberX, future apps), no iframes or embedding; menus reach every screen/plugin/action/setting of every app (grouped, search, favorites, recents, sliding sub menus, three-dot overflow, voice + API); layout modes with IDE as one option (dock/split/float/resize, tab-group containers, drag from a menu onto a container, tabs between containers, named layouts); retire Patches leftovers; audit unlanded Molly branches; standalone apps keep working, gaps as builds. Full brief: `/root/axf-builds/molly-one-shell-r2/.brief.md`; verbatim on the build's origin.
+Model: phase 1 Opus (done), phase 2 Fable (s4-s6), phase 3 Opus (s7-s14).
+Branch: `claude/molly-one-shell-r3`: rules/docs cleanup, decisions.md note, report `_claude/builds/reports/molly-one-shell.md`.
+Steps left: s4-s14 (see `orchestrator.mjs list`). Read first: the report (reuse table: #328, #341, #344, #322, #369, #323, #372), `apps/molly/README.md`, `apps/molly/src/molly/host.ts`, `apps/molly/plugins/xlayout/`.
+Waits on: nothing from Brett. Phase 3 should start after the reused PRs land.
+First message: "Carry on build molly-one-shell phase 2 on Fable: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief molly-one-shell`."
+
 
 ### approvals-in-place-r2
 
