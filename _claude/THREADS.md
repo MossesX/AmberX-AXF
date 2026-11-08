@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:07 UTC · `multi-account-headless-workers` s2 done, s4 done (current) · foreign-write
 - 2026-11-06 18:06 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
 - 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · foreign-write
 - 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s15 undone, s16 undone, note (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:20 UTC · `memory-restructure-chunked-claude-md-store-memor` PR #391 (all) · builds-live
 - 2026-11-08 17:21 UTC · `molly-banner-match` → pending, note (all) · reconciler
 - 2026-11-08 17:21 UTC · `account-failover-notify` s4 done (all) · orchestrator
+- 2026-11-08 17:21 UTC · `memory-restructure-chunked-claude-md-store-memor` s9 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

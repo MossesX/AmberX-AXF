@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:21:41.366Z",
+ "updatedAt": "2026-11-08T17:22:10.402Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17479,15 +17479,15 @@
    "title": "Memory restructure: chunked CLAUDE.md store + Memory Manager plugin",
    "category": "",
    "detail": "Fresh memory bank for amberx-axf. 1) Split _claude/handoff/context/CLAUDE.md (~240 KB) and everything it chains to (@ imports, THREADS.md, STATUS.md, decisions.md, memory/docs) into a chunked storage file in the repo: one chunk per Status entry/section plus a short index (one line per chunk) so sessions load only the pieces they need. 2) New CLAUDE.md stays tiny: at session start it asks the orchestrator what to load; the orchestrator reports only builds started in the last 24 h that stopped unfinished. Builds data belongs to the orchestrator, not Claude memory. 3) Delete the whole handoff part of the console (_claude/handoff + claude-handoff plugin writers); Brett restarts it later. 4) Audit every part of the app that writes to memory (THREADS.md, sessions/, builds/reports, handoff, STATUS.md, etc.) and list them. 5) Build a Memory Manager console plugin: duplicate (do not share) MD Studio's code so MD Studio can be deleted later; scan/refresh to find every memory file, show what reads and what writes each one, and full management (view, edit, move, delete, versions).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "memory-restructure-chunked-claude-md-store-memor",
    "branch": "claude/memory-manager-r2",
    "pr": "#391",
    "createdAt": "2026-11-06T17:33:08.806Z",
-   "updatedAt": "2026-11-08T17:20:25.752Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T17:21:34.995Z",
+   "builtAt": "2026-11-08T17:21:34.995Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -17670,8 +17670,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:21:34.995Z",
      "note": "",
      "uid": "st-mw82nxjx09lwwr"
     }
