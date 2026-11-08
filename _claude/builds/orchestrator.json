@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:51:17.592Z",
+ "updatedAt": "2026-11-08T17:51:29.558Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70064,9 +70064,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-one-shell-r4",
-   "pr": "#390",
+   "pr": "#395",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T17:37:35.101Z",
+   "updatedAt": "2026-11-08T17:51:09.977Z",
    "builtAt": "",
    "notes": [
     {
@@ -70084,6 +70084,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-08T17:37:32.570Z"
+    },
+    {
+     "text": "r4 done: s4-s6 (Opus downgrade) + s9 on PR #395 (claude/molly-one-shell-r4, includes #390). Partial: s10 (layout modes + named layouts done; drag from a menu onto a container + per-container tab-group switch UI left), s12 (actions + plugin commands done; Molly plugins not in the console plugin-commands domain yet), s13 (One shell settings in sections; level toolbar left). Left: s7, s8, s11, s14 (UI Review, PR held), s15 Fable review. Report _claude/builds/reports/molly-one-shell.md.",
+     "at": "2026-11-08T17:51:08.596Z"
     }
    ],
    "approvals": [
@@ -70096,6 +70100,14 @@
      "via": "policy",
      "kind": "upgrade",
      "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-08T17:51:05.398Z",
+     "by": "auto",
+     "kind": "downgrade"
     }
    ],
    "upgradeRequests": [],
@@ -70269,8 +70281,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:51:05.398Z",
      "note": "",
      "uid": "st-mw82su9f0nz984"
     },
