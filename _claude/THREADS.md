@@ -750,14 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:55 UTC · `voice-ui-edit-library` added (8 steps) (current) · claude-voice
-- 2026-11-07 04:56 UTC · `merge-conflict-alerts` added (5 steps) (current) · claude-voice
-- 2026-11-07 05:00 UTC · `assistant-chat-mode` note (current) · builds-live
-- 2026-11-07 05:00 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (current) · builds-live
-- 2026-11-07 05:00 UTC · `claude-badge-vps` note (current) · builds-live
-- 2026-11-07 05:00 UTC · `ui-asset-designer` note (current) · builds-live
-- 2026-11-07 05:00 UTC · `icon-browser-manager` note (current) · builds-live
-- 2026-11-07 05:00 UTC · `dataset-bar` added (8 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `library-harvest` added (4 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `skins-asset-types` added (8 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `glossary-index-demos` added (6 steps) (current) · builds-live
@@ -1150,6 +1142,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 16:57 UTC · `molly-one-shell` added (14 steps) (all) · orchestrator
 - 2026-11-08 16:58 UTC · `molly-native-expenses` added (4 steps) (all) · orchestrator
 - 2026-11-08 16:59 UTC · `molly-sign-in-once` added (3 steps) (all) · orchestrator
+- 2026-11-08 16:59 UTC · `molly-multi-instance-tabs` note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `molly-banner-match` → running, note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `drag-to-tab` note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `apps-control-surface` note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `ui-registry-shortcuts` note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `app-voice-commands` note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `settings-sections-everywhere` note (all) · orchestrator
+- 2026-11-08 16:59 UTC · `molly-one-shell` note (all) · orchestrator
 
 ## Token passes (log)
 
