@@ -14,12 +14,12 @@ import { Button, Icon, SelectField, useRuntime } from '@console/axf/react';
 import { EmptyState } from '@console/emptyState';
 import { featureStarts, normalizeBundle, playSteps, safeSrc, tryHit, type Bundle, type PlayStep } from '../walkthrough-rules.mjs';
 import { DEMO_KEYS, targetSelectors } from './demos-core';
-import { clearHighlight, highlight, hush, speak } from './player';
+import { clearHighlight, highlight, highlighted, hush, speak } from './player';
 import { WT_KEYS, getBundle } from './walkthroughs-core';
 
 export const WT_PLAYER_TAB = 'glossary-index.walkthrough-player';
 
-type TryState = 'none' | 'waiting' | 'done';
+type TryState = 'none' | 'waiting' | 'done' | 'missing';
 interface State { bundle: Bundle | null; steps: PlayStep[]; starts: number[]; at: number; windowId: string | null; error: string; tried: TryState; docs: boolean }
 let st: State = { bundle: null, steps: [], starts: [], at: 0, windowId: null, error: '', tried: 'none', docs: true };
 const subs = new Set<() => void>();
@@ -35,7 +35,8 @@ const setting = (key: string, d: boolean) => { const v = runtime?.settings.get(k
 function onDocClick(e: Event) {
   const step = st.steps[st.at];
   if (st.tried !== 'waiting' || !step) return;
-  const hit = tryHit(step, e.target, targetSelectors, (el, sel) => !!(el as Element | null)?.closest?.(sel));
+  const on = highlighted();
+  const hit = (!!on && e.target instanceof Node && on.contains(e.target)) || tryHit(step, e.target, targetSelectors, (el, sel) => !!(el as Element | null)?.closest?.(sel));
   if (!hit) return;
   set({ tried: 'done' });
   speak('Nice, that is it.', () => { if (setting(DEMO_KEYS.auto, true)) schedule(st.at + 1, 900); });
@@ -65,18 +66,43 @@ export function show(i: number) {
   set({ at, tried: isTry ? 'waiting' : 'none' });
   listenTaps(isTry && !!step.target);
   if (step.do && setting(DEMO_KEYS.run, true)) { try { runtime.dispatch(step.do); } catch { /* an action this app doesn't have: still explain the step */ } }
-  setTimeout(() => (step.target ? highlight(step.target, step.highlight || step.title) : clearHighlight()), 350);
+  setTimeout(() => {
+    if (!step.target) { clearHighlight(); return; }
+    const el = highlight(step.target, step.highlight || step.title);
+    if (el) setTimeout(() => dodge(el), 400);
+    else if (isTry && st.at === at) set({ tried: 'missing' });
+  }, 350);
   speak(step.say, () => {
     if (waits || !setting(DEMO_KEYS.auto, true) || at >= st.steps.length - 1) return;
     schedule(at + 1, 600 + step.wait);
   });
 }
 
+/** Keep the player off the control it highlights: move the floating window to the side (or end) with the most room. */
+function dodge(el: Element) {
+  if (!runtime || !st.windowId || typeof globalThis.innerWidth !== 'number') return;
+  const w = runtime.windows.state.windows.find((x) => x.id === st.windowId) as { x?: number; y?: number; width?: number; height?: number; type?: string } | undefined;
+  if (!w || typeof w.x !== 'number' || typeof w.y !== 'number' || !w.width || !w.height) return;
+  const r = el.getBoundingClientRect();
+  const overlaps = r.left < w.x + w.width && r.right > w.x && r.top < w.y + w.height && r.bottom > w.y;
+  if (!overlaps) return;
+  const vw = globalThis.innerWidth; const vh = globalThis.innerHeight;
+  const gap = Math.round(Math.min(vw, vh) / 50);
+  const right = vw - r.right; const left = r.left; const below = vh - r.bottom;
+  if (Math.max(right, left) >= w.width + gap * 2) runtime.windows.moveTo(st.windowId, right >= left ? vw - w.width - gap : gap, w.y);
+  else if (below >= w.height + gap) runtime.windows.moveTo(st.windowId, w.x, vh - w.height - gap);
+  else runtime.windows.moveTo(st.windowId, w.x, gap);
+}
+
 function openWindow() {
   if (!runtime) return;
   const wm = runtime.windows;
   if (st.windowId && wm.state.windows.some((w) => w.id === st.windowId)) return;
-  const id = wm.openFloating([{ id: `glossary-walkthrough-${Date.now()}`, title: 'Walkthrough', kind: WT_PLAYER_TAB, payload: '', icon: 'play' }], 'Walkthrough', 'floating', 460, 440);
+  // fits a phone: never wider than the screen, a little under half its height
+  const vw = typeof globalThis.innerWidth === 'number' ? globalThis.innerWidth : 1280;
+  const vh = typeof globalThis.innerHeight === 'number' ? globalThis.innerHeight : 800;
+  const width = Math.min(460, Math.round(vw * 0.96)); const height = Math.min(440, Math.round(vh * 0.48));
+  const id = wm.openFloating([{ id: `glossary-walkthrough-${Date.now()}`, title: 'Walkthrough', kind: WT_PLAYER_TAB, payload: '', icon: 'play' }], 'Walkthrough', 'floating', width, height, vw < 600 ? Math.round((vw - width) / 2) : undefined, vw < 600 ? Math.round(vh - height - vh * 0.02) : undefined);
   set({ windowId: id });
 }
 
@@ -135,7 +161,7 @@ export function WalkthroughPlayerWindow() {
   useEffect(() => () => { stopWalkthrough(); set({ windowId: null }); }, []);
   if (!g.bundle) {
     return (
-      <div className="fx-stack axp-glossary-index__player">
+      <div className="fx-stack axp-glossary-index__player" data-axp-player>
         <EmptyState compact icon="play">{g.error || 'Nothing is playing. Pick a walkthrough in the Walkthrough Generator, or generate one from glossary entries.'}</EmptyState>
         <div className="fx-row"><Button size="sm" icon="list" onClick={() => rt.navigate('walkthrough-generator')}>Walkthrough Generator</Button></div>
       </div>
@@ -147,7 +173,7 @@ export function WalkthroughPlayerWindow() {
   const chapters = [{ value: '-1', label: 'Introduction' }, ...g.bundle.features.map((f, i) => ({ value: String(i), label: `${i + 1}. ${f.term}` }))];
   const docs = feature?.docs;
   return (
-    <div className="fx-stack axp-glossary-index__player axp-glossary-index__wt-player" aria-live="polite">
+    <div className="fx-stack axp-glossary-index__player axp-glossary-index__wt-player" aria-live="polite" data-axp-player>
       <p className="fx-eyebrow">{g.bundle.name} · v{g.bundle.version} · Step {g.at + 1} of {g.steps.length}</p>
       <SelectField label="Part" value={String(step.feature)} options={chapters} onChange={(v) => { const n = Number(v); show(n < 0 ? 0 : g.starts[n] ?? 0); }} />
       {feature && <p className="fx-muted axp-glossary-index__player-meta">Part {step.feature + 1} of {g.bundle.features.length} · {step.part + 1}/{step.parts}</p>}
@@ -156,14 +182,14 @@ export function WalkthroughPlayerWindow() {
       {step.kind === 'try' && (
         <p className="axp-glossary-index__wt-try" data-state={g.tried} role="status">
           <Icon name={g.tried === 'done' ? 'check' : 'zap'} size={14} />{' '}
-          {g.tried === 'done' ? 'You did it.' : step.target ? `Your turn: tap ${step.highlight || 'the highlighted control'}.` : 'Your turn: try it, then tap Next.'}
+          {g.tried === 'done' ? 'You did it.' : g.tried === 'missing' ? `${step.highlight || 'It'} is not on this screen right now: tap Show me, or try it your way and tap Next.` : step.target ? `Your turn: tap ${step.highlight || 'the highlighted control'}.` : 'Your turn: try it, then tap Next.'}
         </p>
       )}
       <div className="axp-glossary-index__player-bar" role="toolbar" aria-label="Walkthrough player">
         <Button size="sm" icon="arrow-left" disabled={first} onClick={() => show(g.at - 1)}>Back</Button>
         <Button size="sm" icon="refresh" onClick={() => show(g.at)}>{step.kind === 'try' ? 'Show me' : 'Repeat'}</Button>
         <Button size="sm" tone="primary" icon="arrow-right" disabled={last} onClick={() => show(g.at + 1)}>Next</Button>
-        <Button size="sm" icon={g.docs ? 'eye-off' : 'file'} onClick={() => set({ docs: !g.docs })}>{g.docs ? 'Hide docs' : 'Docs'}</Button>
+        <Button size="sm" icon={g.docs ? 'minus' : 'file'} onClick={() => set({ docs: !g.docs })}>{g.docs ? 'Hide docs' : 'Docs'}</Button>
         <Button size="sm" icon="x" onClick={stopWalkthrough}>Stop</Button>
       </div>
       {g.docs && docs && feature && (

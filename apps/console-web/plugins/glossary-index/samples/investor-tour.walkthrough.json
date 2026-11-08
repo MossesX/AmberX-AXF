@@ -1,0 +1,1173 @@
+{
+ "$axf": "glossary-walkthrough-export@1",
+ "exportedAt": "2026-11-08T03:03:42.107Z",
+ "walkthrough": {
+  "$axf": "glossary-walkthrough@1",
+  "id": "investor-tour",
+  "name": "AmberX AXF investor tour",
+  "version": "1.0.0",
+  "createdAt": "2026-11-08T03:03:41.111Z",
+  "updatedAt": "2026-11-08T03:03:41.111Z",
+  "request": {
+   "$axf": "glossary-walkthrough-request@1",
+   "id": "investor-tour",
+   "title": "AmberX AXF investor tour",
+   "prompt": "Run a chain to demonstrate and explain these features for an investor demo.",
+   "terms": [
+    "concept:asset",
+    "plugin:theme-manager",
+    "control:console-web:glossary-index:only-undescribed",
+    "plugin:build-orchestrator",
+    "concept:merge-queue"
+   ],
+   "audience": "investors",
+   "style": "showcase",
+   "depth": "standard",
+   "mode": "claude",
+   "tryIt": true,
+   "intro": true,
+   "app": "console"
+  },
+  "brief": "# AmberX AXF investor tour\n\n## Prompt (verbatim)\n\n> Run a chain to demonstrate and explain these features for an investor demo.\n\n## Shape\n\n- Audience: investors. Investors: lead with the value and what is unique, keep jargon out, show it working, one idea per step.\n- Style: showcase; depth: standard (about 5 steps per feature).\n- Try it: every feature ends with a step the viewer does themselves.\n- Plays in: console, recorded ahead of time, no live model during playback.\n\n## Features (5)\n\n1. **Asset (asset@1)** (concept, `concept:asset`): A JSON file in the one shared asset@1 format that describes a visible piece of the UI: a theme, layout, menu, toolbar, dialog, button, slider, container or access policy.\n2. **Theme manager** (plugin, `plugin:theme-manager`): Roll colour, style and layout themes, or every themeable part at once.\n3. **Only undescribed** (setting, `control:console-web:glossary-index:only-undescribed`): Shows only entries whose source has no description of its own, so you can see what still needs writing.\n4. **Build orchestrator** (plugin, `plugin:build-orchestrator`): Breaks every build into small steps (30 min or less), each pinned to Fable or Opus.\n5. **Merge queue** (concept, `concept:merge-queue`): The only way a pull request reaches main: ready PRs are stacked, tested once on top of main plus the PRs ahead, and merged without a retest when green.\n\n## Each feature answers\n\n```json\n{\n  \"headline\": \"one line: why this matters\",\n  \"points\": [\"2-5 short documentation points\"],\n  \"steps\": [{ \"kind\": \"narrate|show|try|docs\", \"title\": \"short\", \"say\": \"what the narrator says\", \"do\": \"console action or empty\", \"target\": \"element to highlight or empty\", \"highlight\": \"label on the highlight\" }]\n}\n```",
+  "generator": {
+   "mode": "claude",
+   "model": "claude-opus-5-5",
+   "at": "2026-11-08T03:03:41.111Z",
+   "ms": 0,
+   "chain": [
+    {
+     "entry": "concept:asset",
+     "source": "claude",
+     "ms": 0,
+     "error": ""
+    },
+    {
+     "entry": "plugin:theme-manager",
+     "source": "claude",
+     "ms": 0,
+     "error": ""
+    },
+    {
+     "entry": "control:console-web:glossary-index:only-undescribed",
+     "source": "claude",
+     "ms": 0,
+     "error": ""
+    },
+    {
+     "entry": "plugin:build-orchestrator",
+     "source": "claude",
+     "ms": 0,
+     "error": ""
+    },
+    {
+     "entry": "concept:merge-queue",
+     "source": "claude",
+     "ms": 0,
+     "error": ""
+    }
+   ]
+  },
+  "intro": {
+   "kind": "narrate",
+   "title": "AmberX AXF investor tour",
+   "say": "Welcome. This walkthrough shows Asset (asset@1), Theme manager, Only undescribed, Build orchestrator and Merge queue. Each part shows it working, then lets you try it. Use Next and Back any time.",
+   "do": "",
+   "target": "",
+   "highlight": "",
+   "wait": 0
+  },
+  "outro": {
+   "kind": "narrate",
+   "title": "That is the tour",
+   "say": "That was Asset (asset@1), Theme manager, Only undescribed, Build orchestrator and Merge queue. Open any part again from the list, or read its docs.",
+   "do": "",
+   "target": "",
+   "highlight": "",
+   "wait": 0
+  },
+  "features": [
+   {
+    "entry": "concept:asset",
+    "term": "Asset (asset@1)",
+    "kind": "concept",
+    "category": "Concepts › Framework",
+    "demonstration": "investor-tour-f1",
+    "source": "claude",
+    "error": "",
+    "docs": {
+     "headline": "Every visible piece of the product is data, so the look changes without touching code.",
+     "summary": "A JSON file in the one shared asset@1 format that describes a visible piece of the UI: a theme, layout, menu, toolbar, dialog, button, slider, container or access policy.",
+     "detail": "Every asset has $axf, type, id, name, version, description, author, tags and data. Engines compile assets into tokens and CSS variables; the UI reads only those tokens, so swapping an asset restyles every app with no code change.",
+     "points": [
+      "One shared JSON format, asset@1, describes themes, layouts, menus, toolbars, dialogs, buttons and access policies.",
+      "Engines compile assets into design tokens; screens read only those tokens.",
+      "Swap an asset and every app built on the framework restyles at once, with no code change.",
+      "The same assets drive the web port and the Android port."
+     ],
+     "api": [],
+     "where": [],
+     "related": [
+      {
+       "id": "concept:hot-swap",
+       "term": "Hot-swap"
+      },
+      {
+       "id": "concept:engine",
+       "term": "Engine"
+      },
+      {
+       "id": "concept:token",
+       "term": "Token (--fx-*)"
+      },
+      {
+       "id": "asset-type:toolbar",
+       "term": "Toolbar"
+      }
+     ]
+    },
+    "steps": [
+     {
+      "kind": "narrate",
+      "title": "Everything is an asset",
+      "say": "Start with the idea the whole product is built on. Every piece of the interface you see is an asset: a small JSON file in one shared format.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Data, not code",
+      "say": "A theme, a menu, a toolbar, even who may press which button, is described as data. Engines turn that data into design tokens, and the screens read only those tokens.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Why it matters",
+      "say": "That means the look of every app can change without a developer touching code, and one change reaches every app on the framework.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "try",
+      "title": "Try it",
+      "say": "Your turn: think of one screen you would restyle for a customer. Tap Next and we will do it live.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     }
+    ]
+   },
+   {
+    "entry": "plugin:theme-manager",
+    "term": "Theme manager",
+    "kind": "plugin",
+    "category": "Plugins › Theme manager",
+    "demonstration": "investor-tour-f2",
+    "source": "claude",
+    "error": "",
+    "docs": {
+     "headline": "Restyle the whole product live, in seconds, safely.",
+     "summary": "Roll colour, style and layout themes, or every themeable part at once.",
+     "detail": "Roll colour, style and layout themes, or every themeable part at once. A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Nav → Plugins → Theme manager; Settings → Plugins → Themes.",
+     "points": [
+      "Roll new colour, style and layout themes, or every themeable part at once.",
+      "Rolls stay readable: palettes are contrast-checked and sizes stay in range.",
+      "Live preview with undo and redo; pin the ones you like.",
+      "Save a roll as a standard theme asset and apply it everywhere."
+     ],
+     "api": [
+      {
+       "kind": "cli",
+       "name": "axf theme-manager …"
+      }
+     ],
+     "where": [
+      "Dev Console"
+     ],
+     "related": [
+      {
+       "id": "control:console-web:theme-manager:apply-this-pinned-roll",
+       "term": "Apply this pinned roll"
+      },
+      {
+       "id": "control:console-web:theme-manager:colours",
+       "term": "Colours"
+      },
+      {
+       "id": "control:console-web:theme-manager:pin-this-roll",
+       "term": "Pin this roll"
+      },
+      {
+       "id": "control:console-web:theme-manager:redo",
+       "term": "Redo"
+      },
+      {
+       "id": "control:console-web:theme-manager:roll-ticked",
+       "term": "Roll ticked"
+      },
+      {
+       "id": "control:console-web:theme-manager:save-as-asset",
+       "term": "Save as asset"
+      },
+      {
+       "id": "control:console-web:theme-manager:themes",
+       "term": "Themes"
+      }
+     ]
+    },
+    "steps": [
+     {
+      "kind": "show",
+      "title": "The Theme manager",
+      "say": "This is the Theme manager. It is where the look of the product is changed while it runs.",
+      "do": "nav:theme-manager",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Roll a new look",
+      "say": "Roll new colours, styles and layouts, or everything at once. Every roll is checked for contrast, so it stays readable.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Safe to experiment",
+      "say": "There is a live preview with undo and redo. Keep the looks you like, and save one as a theme asset for every app.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "try",
+      "title": "Try it",
+      "say": "Your turn: roll a theme here and watch the whole console change. Tap Next when you are done.",
+      "do": "nav:theme-manager",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     }
+    ]
+   },
+   {
+    "entry": "control:console-web:glossary-index:only-undescribed",
+    "term": "Only undescribed",
+    "kind": "setting",
+    "category": "Plugins › Glossary, Index & Demos › Settings",
+    "demonstration": "investor-tour-f3",
+    "source": "claude",
+    "error": "",
+    "docs": {
+     "headline": "The product documents itself: thousands of entries, built from the code, and the gaps are measured.",
+     "summary": "Shows only entries whose source has no description of its own, so you can see what still needs writing.",
+     "detail": "Shows only entries whose source has no description of its own, so you can see what still needs writing. Their summary is generated.",
+     "points": [
+      "The glossary is rebuilt from what the code registers: plugins, screens, controls, settings, commands and assets.",
+      "Every entry says what it is, where it appears, its API and what it links to.",
+      "Continuous integration fails if anything new has no entry, and the number still undescribed may only go down.",
+      "This walkthrough was generated from those entries."
+     ],
+     "api": [],
+     "where": [
+      "Dev Console",
+      "Dev Console"
+     ],
+     "related": [
+      {
+       "id": "plugin:glossary-index",
+       "term": "Glossary, Index & Demos"
+      }
+     ]
+    },
+    "steps": [
+     {
+      "kind": "show",
+      "title": "The encyclopedia",
+      "say": "This is the glossary: an encyclopedia of the whole product, built from the code itself, so it never goes out of date.",
+      "do": "nav:glossary-index",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Built from the code",
+      "say": "Every plugin, screen, control, setting and command gets an entry automatically. If something new ships without one, the build fails.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "show",
+      "title": "Gaps are measured",
+      "say": "Only undescribed shows the entries that still need their own words. That number is tracked, and it is only allowed to go down.",
+      "do": "",
+      "target": "only-undescribed",
+      "highlight": "Only undescribed",
+      "wait": 0
+     },
+     {
+      "kind": "try",
+      "title": "Try it",
+      "say": "Your turn: switch on Only undescribed and see what is left to write.",
+      "do": "",
+      "target": "only-undescribed",
+      "highlight": "Only undescribed",
+      "wait": 0
+     }
+    ]
+   },
+   {
+    "entry": "plugin:build-orchestrator",
+    "term": "Build orchestrator",
+    "kind": "plugin",
+    "category": "Plugins › Build orchestrator",
+    "demonstration": "investor-tour-f4",
+    "source": "claude",
+    "error": "",
+    "docs": {
+     "headline": "AI builds the product in small, tracked, reviewable steps.",
+     "summary": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus.",
+     "detail": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act).",
+     "points": [
+      "Every build is split into steps of 30 minutes or less.",
+      "Each step is pinned to the right AI model for the job.",
+      "Progress is stored in the repository, so any session can pick up where another left off.",
+      "Reachable from the console, over REST and as MCP tools."
+     ],
+     "api": [
+      {
+       "kind": "mcp",
+       "name": "build_orchestrator_priority_list"
+      },
+      {
+       "kind": "mcp",
+       "name": "build_orchestrator_priority_get"
+      },
+      {
+       "kind": "mcp",
+       "name": "build_orchestrator_priority_set"
+      },
+      {
+       "kind": "mcp",
+       "name": "build_orchestrator_origin"
+      },
+      {
+       "kind": "mcp",
+       "name": "build_orchestrator_origin_set"
+      },
+      {
+       "kind": "mcp",
+       "name": "build_orchestrator_origin_addendum"
+      }
+     ],
+     "where": [
+      "Dev Console"
+     ],
+     "related": [
+      {
+       "id": "control:console-web:build-orchestrator:add-note",
+       "term": "Add note"
+      },
+      {
+       "id": "command:build-orchestrator:origin-addendum",
+       "term": "Add what Brett said later"
+      },
+      {
+       "id": "control:console-web:build-orchestrator:approve-upgrade-from",
+       "term": "Approve upgrade"
+      },
+      {
+       "id": "control:console-web:build-orchestrator:approve-upgrade-to",
+       "term": "Approve upgrade"
+      },
+      {
+       "id": "concept:orchestrator",
+       "term": "Build orchestrator"
+      },
+      {
+       "id": "command:build-orchestrator:priority-list",
+       "term": "Build priorities"
+      },
+      {
+       "id": "control:console-web:build-orchestrator:hidden",
+       "term": "Hidden"
+      },
+      {
+       "id": "control:console-web:build-orchestrator:keep",
+       "term": "Keep"
+      }
+     ]
+    },
+    "steps": [
+     {
+      "kind": "show",
+      "title": "The Build orchestrator",
+      "say": "This is the Build orchestrator, where every piece of work on the product is planned and tracked.",
+      "do": "nav:build-orchestrator",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Small steps",
+      "say": "Every build is broken into steps of thirty minutes or less, and each step is pinned to the AI model best suited to it.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Nothing gets lost",
+      "say": "Progress lives in the repository itself, so any session, on any machine, can continue a build exactly where the last one stopped.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "try",
+      "title": "Try it",
+      "say": "Your turn: open any build in the list and look at its steps. Tap Next when you are ready.",
+      "do": "nav:build-orchestrator",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     }
+    ]
+   },
+   {
+    "entry": "concept:merge-queue",
+    "term": "Merge queue",
+    "kind": "concept",
+    "category": "Concepts › Builds",
+    "demonstration": "investor-tour-f5",
+    "source": "claude",
+    "error": "",
+    "docs": {
+     "headline": "Changes land safely and cheaply: tested once, merged together.",
+     "summary": "The only way a pull request reaches main: ready PRs are stacked, tested once on top of main plus the PRs ahead, and merged without a retest when green.",
+     "detail": "",
+     "points": [
+      "Every change reaches main only through the merge queue.",
+      "Ready changes are stacked and each is tested once on top of the ones ahead.",
+      "Green changes merge with no retest; a failing one is removed and the rest carry on.",
+      "Fewer test runs means less compute spent."
+     ],
+     "api": [],
+     "where": [],
+     "related": [
+      {
+       "id": "plugin:push-banner",
+       "term": "Push banner"
+      }
+     ]
+    },
+    "steps": [
+     {
+      "kind": "narrate",
+      "title": "The merge queue",
+      "say": "Last, how changes reach the product. Nothing lands on the main line except through the merge queue.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Tested once",
+      "say": "Ready changes are stacked and tested once, together. Green ones merge without testing again, and a failing one is simply taken out.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "narrate",
+      "title": "Why it matters",
+      "say": "That keeps the product stable while many AI builds run at the same time, and it saves compute on every release.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     },
+     {
+      "kind": "try",
+      "title": "Your take",
+      "say": "Your turn: picture ten builds finishing at once. The queue lands them safely, one stack, one test run. Tap Next to finish.",
+      "do": "",
+      "target": "",
+      "highlight": "",
+      "wait": 0
+     }
+    ]
+   }
+  ],
+  "book": "investor-tour",
+  "history": [
+   {
+    "version": "1.0.0",
+    "at": "2026-11-08T03:03:41.111Z",
+    "mode": "claude",
+    "terms": 5,
+    "note": "Written by Claude (Opus 5.5) ahead of time"
+   }
+  ]
+ },
+ "assets": [
+  {
+   "$axf": "asset@1",
+   "type": "demonstration",
+   "id": "investor-tour-f1",
+   "name": "Asset (asset@1) (AmberX AXF investor tour)",
+   "version": "1.0.0",
+   "description": "Every visible piece of the product is data, so the look changes without touching code.",
+   "author": "Claude",
+   "tags": [
+    "demonstration",
+    "walkthrough",
+    "glossary-walkthrough",
+    "investors"
+   ],
+   "data": {
+    "about": "concept:asset",
+    "entries": [
+     "concept:asset",
+     "concept:hot-swap",
+     "concept:engine",
+     "concept:token",
+     "asset-type:toolbar"
+    ],
+    "app": "console",
+    "surface": "live",
+    "steps": [
+     {
+      "say": "Start with the idea the whole product is built on. Every piece of the interface you see is an asset: a small JSON file in one shared format.",
+      "do": "",
+      "target": "",
+      "title": "Everything is an asset"
+     },
+     {
+      "say": "A theme, a menu, a toolbar, even who may press which button, is described as data. Engines turn that data into design tokens, and the screens read only those tokens.",
+      "do": "",
+      "target": "",
+      "title": "Data, not code"
+     },
+     {
+      "say": "That means the look of every app can change without a developer touching code, and one change reaches every app on the framework.",
+      "do": "",
+      "target": "",
+      "title": "Why it matters"
+     },
+     {
+      "say": "Your turn: think of one screen you would restyle for a customer. Tap Next and we will do it live.",
+      "do": "",
+      "target": "",
+      "title": "Try it"
+     }
+    ],
+    "voice": {
+     "narrator": "",
+     "speed": 1
+    },
+    "chain": [],
+    "keywords": [
+     "walkthrough",
+     "amberx",
+     "axf",
+     "investor",
+     "tour",
+     "asset",
+     "asset@1",
+     "concept",
+     "concepts",
+     "framework",
+     "shared",
+     "json",
+     "format",
+     "describes",
+     "themes",
+     "layouts",
+     "menus",
+     "toolbars",
+     "dialogs",
+     "buttons",
+     "access",
+     "policies",
+     "engines",
+     "compile",
+     "assets",
+     "design",
+     "tokens",
+     "screens",
+     "read",
+     "those",
+     "swap",
+     "app",
+     "built",
+     "restyles",
+     "once",
+     "code",
+     "change",
+     "same",
+     "drive",
+     "web",
+     "port",
+     "android"
+    ],
+    "generated": {
+     "from": "book",
+     "at": "2026-11-08T03:03:41.111Z",
+     "build": ""
+    },
+    "editable": true
+   },
+   "updatedAt": "2026-11-08T03:03:41.111Z"
+  },
+  {
+   "$axf": "asset@1",
+   "type": "demonstration",
+   "id": "investor-tour-f2",
+   "name": "Theme manager (AmberX AXF investor tour)",
+   "version": "1.0.0",
+   "description": "Restyle the whole product live, in seconds, safely.",
+   "author": "Claude",
+   "tags": [
+    "demonstration",
+    "walkthrough",
+    "glossary-walkthrough",
+    "investors"
+   ],
+   "data": {
+    "about": "plugin:theme-manager",
+    "entries": [
+     "plugin:theme-manager",
+     "control:console-web:theme-manager:apply-this-pinned-roll",
+     "control:console-web:theme-manager:colours",
+     "control:console-web:theme-manager:pin-this-roll",
+     "control:console-web:theme-manager:redo",
+     "control:console-web:theme-manager:roll-ticked",
+     "control:console-web:theme-manager:save-as-asset",
+     "control:console-web:theme-manager:themes"
+    ],
+    "app": "console",
+    "surface": "live",
+    "steps": [
+     {
+      "say": "This is the Theme manager. It is where the look of the product is changed while it runs.",
+      "do": "nav:theme-manager",
+      "target": "",
+      "title": "The Theme manager"
+     },
+     {
+      "say": "Roll new colours, styles and layouts, or everything at once. Every roll is checked for contrast, so it stays readable.",
+      "do": "",
+      "target": "",
+      "title": "Roll a new look"
+     },
+     {
+      "say": "There is a live preview with undo and redo. Keep the looks you like, and save one as a theme asset for every app.",
+      "do": "",
+      "target": "",
+      "title": "Safe to experiment"
+     },
+     {
+      "say": "Your turn: roll a theme here and watch the whole console change. Tap Next when you are done.",
+      "do": "nav:theme-manager",
+      "target": "",
+      "title": "Try it"
+     }
+    ],
+    "voice": {
+     "narrator": "",
+     "speed": 1
+    },
+    "chain": [],
+    "keywords": [
+     "walkthrough",
+     "amberx",
+     "axf",
+     "investor",
+     "tour",
+     "theme",
+     "manager",
+     "plugin",
+     "plugins",
+     "roll",
+     "new",
+     "colour",
+     "style",
+     "layout",
+     "themes",
+     "themeable",
+     "part",
+     "once",
+     "rolls",
+     "stay",
+     "readable",
+     "palettes",
+     "contrast-checked",
+     "sizes",
+     "range",
+     "live",
+     "preview",
+     "undo",
+     "redo",
+     "pin",
+     "ones",
+     "save",
+     "standard",
+     "asset",
+     "apply",
+     "everywhere"
+    ],
+    "generated": {
+     "from": "book",
+     "at": "2026-11-08T03:03:41.111Z",
+     "build": ""
+    },
+    "editable": true
+   },
+   "updatedAt": "2026-11-08T03:03:41.111Z"
+  },
+  {
+   "$axf": "asset@1",
+   "type": "demonstration",
+   "id": "investor-tour-f3",
+   "name": "Only undescribed (AmberX AXF investor tour)",
+   "version": "1.0.0",
+   "description": "The product documents itself: thousands of entries, built from the code, and the gaps are measured.",
+   "author": "Claude",
+   "tags": [
+    "demonstration",
+    "walkthrough",
+    "glossary-walkthrough",
+    "investors"
+   ],
+   "data": {
+    "about": "control:console-web:glossary-index:only-undescribed",
+    "entries": [
+     "control:console-web:glossary-index:only-undescribed",
+     "plugin:glossary-index"
+    ],
+    "app": "console",
+    "surface": "live",
+    "steps": [
+     {
+      "say": "This is the glossary: an encyclopedia of the whole product, built from the code itself, so it never goes out of date.",
+      "do": "nav:glossary-index",
+      "target": "",
+      "title": "The encyclopedia"
+     },
+     {
+      "say": "Every plugin, screen, control, setting and command gets an entry automatically. If something new ships without one, the build fails.",
+      "do": "",
+      "target": "",
+      "title": "Built from the code"
+     },
+     {
+      "say": "Only undescribed shows the entries that still need their own words. That number is tracked, and it is only allowed to go down.",
+      "do": "",
+      "target": "only-undescribed",
+      "title": "Gaps are measured",
+      "highlight": "Only undescribed"
+     },
+     {
+      "say": "Your turn: switch on Only undescribed and see what is left to write.",
+      "do": "",
+      "target": "only-undescribed",
+      "title": "Try it",
+      "highlight": "Only undescribed"
+     }
+    ],
+    "voice": {
+     "narrator": "",
+     "speed": 1
+    },
+    "chain": [],
+    "keywords": [
+     "walkthrough",
+     "amberx",
+     "axf",
+     "investor",
+     "tour",
+     "undescribed",
+     "setting",
+     "plugins",
+     "glossary",
+     "index",
+     "demos",
+     "settings",
+     "rebuilt",
+     "code",
+     "registers",
+     "screens",
+     "controls",
+     "commands",
+     "assets",
+     "entry",
+     "says",
+     "where",
+     "appears",
+     "api",
+     "links",
+     "continuous",
+     "integration",
+     "fails",
+     "anything",
+     "new",
+     "has",
+     "number",
+     "still",
+     "may",
+     "down",
+     "generated",
+     "those",
+     "entries"
+    ],
+    "generated": {
+     "from": "book",
+     "at": "2026-11-08T03:03:41.111Z",
+     "build": ""
+    },
+    "editable": true
+   },
+   "updatedAt": "2026-11-08T03:03:41.111Z"
+  },
+  {
+   "$axf": "asset@1",
+   "type": "demonstration",
+   "id": "investor-tour-f4",
+   "name": "Build orchestrator (AmberX AXF investor tour)",
+   "version": "1.0.0",
+   "description": "AI builds the product in small, tracked, reviewable steps.",
+   "author": "Claude",
+   "tags": [
+    "demonstration",
+    "walkthrough",
+    "glossary-walkthrough",
+    "investors"
+   ],
+   "data": {
+    "about": "plugin:build-orchestrator",
+    "entries": [
+     "plugin:build-orchestrator",
+     "control:console-web:build-orchestrator:add-note",
+     "command:build-orchestrator:origin-addendum",
+     "control:console-web:build-orchestrator:approve-upgrade-from",
+     "control:console-web:build-orchestrator:approve-upgrade-to",
+     "concept:orchestrator",
+     "command:build-orchestrator:priority-list",
+     "control:console-web:build-orchestrator:hidden",
+     "control:console-web:build-orchestrator:keep"
+    ],
+    "app": "console",
+    "surface": "live",
+    "steps": [
+     {
+      "say": "This is the Build orchestrator, where every piece of work on the product is planned and tracked.",
+      "do": "nav:build-orchestrator",
+      "target": "",
+      "title": "The Build orchestrator"
+     },
+     {
+      "say": "Every build is broken into steps of thirty minutes or less, and each step is pinned to the AI model best suited to it.",
+      "do": "",
+      "target": "",
+      "title": "Small steps"
+     },
+     {
+      "say": "Progress lives in the repository itself, so any session, on any machine, can continue a build exactly where the last one stopped.",
+      "do": "",
+      "target": "",
+      "title": "Nothing gets lost"
+     },
+     {
+      "say": "Your turn: open any build in the list and look at its steps. Tap Next when you are ready.",
+      "do": "nav:build-orchestrator",
+      "target": "",
+      "title": "Try it"
+     }
+    ],
+    "voice": {
+     "narrator": "",
+     "speed": 1
+    },
+    "chain": [],
+    "keywords": [
+     "walkthrough",
+     "amberx",
+     "axf",
+     "investor",
+     "tour",
+     "build",
+     "orchestrator",
+     "plugin",
+     "plugins",
+     "split",
+     "steps",
+     "minutes",
+     "less",
+     "step",
+     "pinned",
+     "right",
+     "model",
+     "job",
+     "progress",
+     "stored",
+     "repository",
+     "session",
+     "pick",
+     "where",
+     "another",
+     "left",
+     "off",
+     "reachable",
+     "console",
+     "over",
+     "rest",
+     "mcp",
+     "tools"
+    ],
+    "generated": {
+     "from": "book",
+     "at": "2026-11-08T03:03:41.111Z",
+     "build": ""
+    },
+    "editable": true
+   },
+   "updatedAt": "2026-11-08T03:03:41.111Z"
+  },
+  {
+   "$axf": "asset@1",
+   "type": "demonstration",
+   "id": "investor-tour-f5",
+   "name": "Merge queue (AmberX AXF investor tour)",
+   "version": "1.0.0",
+   "description": "Changes land safely and cheaply: tested once, merged together.",
+   "author": "Claude",
+   "tags": [
+    "demonstration",
+    "walkthrough",
+    "glossary-walkthrough",
+    "investors"
+   ],
+   "data": {
+    "about": "concept:merge-queue",
+    "entries": [
+     "concept:merge-queue",
+     "plugin:push-banner"
+    ],
+    "app": "console",
+    "surface": "live",
+    "steps": [
+     {
+      "say": "Last, how changes reach the product. Nothing lands on the main line except through the merge queue.",
+      "do": "",
+      "target": "",
+      "title": "The merge queue"
+     },
+     {
+      "say": "Ready changes are stacked and tested once, together. Green ones merge without testing again, and a failing one is simply taken out.",
+      "do": "",
+      "target": "",
+      "title": "Tested once"
+     },
+     {
+      "say": "That keeps the product stable while many AI builds run at the same time, and it saves compute on every release.",
+      "do": "",
+      "target": "",
+      "title": "Why it matters"
+     },
+     {
+      "say": "Your turn: picture ten builds finishing at once. The queue lands them safely, one stack, one test run. Tap Next to finish.",
+      "do": "",
+      "target": "",
+      "title": "Your take"
+     }
+    ],
+    "voice": {
+     "narrator": "",
+     "speed": 1
+    },
+    "chain": [],
+    "keywords": [
+     "walkthrough",
+     "amberx",
+     "axf",
+     "investor",
+     "tour",
+     "merge",
+     "queue",
+     "concept",
+     "concepts",
+     "builds",
+     "change",
+     "reaches",
+     "main",
+     "through",
+     "ready",
+     "changes",
+     "stacked",
+     "tested",
+     "once",
+     "top",
+     "ones",
+     "ahead",
+     "green",
+     "retest",
+     "failing",
+     "removed",
+     "rest",
+     "carry",
+     "fewer",
+     "test",
+     "runs",
+     "means",
+     "less",
+     "compute",
+     "spent"
+    ],
+    "generated": {
+     "from": "book",
+     "at": "2026-11-08T03:03:41.111Z",
+     "build": ""
+    },
+    "editable": true
+   },
+   "updatedAt": "2026-11-08T03:03:41.111Z"
+  },
+  {
+   "$axf": "asset@1",
+   "type": "book",
+   "id": "investor-tour",
+   "name": "AmberX AXF investor tour",
+   "version": "1.0.0",
+   "description": "Generated walkthrough: Asset (asset@1), Theme manager, Only undescribed, Build orchestrator, Merge queue",
+   "author": "Dev Console",
+   "tags": [
+    "book",
+    "walkthrough",
+    "glossary-walkthrough",
+    "investors"
+   ],
+   "data": {
+    "about": "Run a chain to demonstrate and explain these features for an investor demo.",
+    "plan": {
+     "totalMinutes": 0,
+     "chapterMinutes": 5,
+     "style": "tour",
+     "theme": "",
+     "narrator": "",
+     "speed": 1
+    },
+    "chapters": [
+     {
+      "id": "part-1",
+      "title": "Asset (asset@1)",
+      "minutes": 0,
+      "intro": "Every visible piece of the product is data, so the look changes without touching code.",
+      "items": [
+       {
+        "ref": "demonstration/investor-tour-f1"
+       }
+      ],
+      "collapsed": false
+     },
+     {
+      "id": "part-2",
+      "title": "Theme manager",
+      "minutes": 0,
+      "intro": "Restyle the whole product live, in seconds, safely.",
+      "items": [
+       {
+        "ref": "demonstration/investor-tour-f2"
+       }
+      ],
+      "collapsed": false
+     },
+     {
+      "id": "part-3",
+      "title": "Only undescribed",
+      "minutes": 0,
+      "intro": "The product documents itself: thousands of entries, built from the code, and the gaps are measured.",
+      "items": [
+       {
+        "ref": "demonstration/investor-tour-f3"
+       }
+      ],
+      "collapsed": false
+     },
+     {
+      "id": "part-4",
+      "title": "Build orchestrator",
+      "minutes": 0,
+      "intro": "AI builds the product in small, tracked, reviewable steps.",
+      "items": [
+       {
+        "ref": "demonstration/investor-tour-f4"
+       }
+      ],
+      "collapsed": false
+     },
+     {
+      "id": "part-5",
+      "title": "Merge queue",
+      "minutes": 0,
+      "intro": "Changes land safely and cheaply: tested once, merged together.",
+      "items": [
+       {
+        "ref": "demonstration/investor-tour-f5"
+       }
+      ],
+      "collapsed": false
+     }
+    ],
+    "docs": {
+     "enabled": false,
+     "depth": "standard",
+     "format": "html",
+     "interactive": "none",
+     "includeApi": true,
+     "includeScreens": true
+    },
+    "outputs": {
+     "video": true,
+     "chapterClips": true
+    },
+    "keywords": [
+     "walkthrough",
+     "amberx",
+     "axf",
+     "investor",
+     "tour",
+     "asset",
+     "asset@1",
+     "theme",
+     "manager",
+     "undescribed",
+     "build",
+     "orchestrator",
+     "merge",
+     "queue"
+    ]
+   },
+   "updatedAt": "2026-11-08T03:03:41.111Z"
+  }
+ ]
+}

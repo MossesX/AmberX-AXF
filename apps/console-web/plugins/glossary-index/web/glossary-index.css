@@ -145,8 +145,8 @@
 .axp-glossary-index__wt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-row-h) * 16); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-sm) }
 .axp-glossary-index__wt-list li { padding: var(--fx-dens-gap-xs); border-radius: var(--fx-radius-sm); overflow-wrap: anywhere }
 .axp-glossary-index__wt-list li.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-glossary-index__wt-order { margin: 0; padding-inline-start: calc(var(--fx-dens-gap-lg) * 1.5); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
-.axp-glossary-index__wt-order li { display: list-item }
+.axp-glossary-index__wt-order { margin: 0; padding: 0; list-style-position: inside; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-glossary-index__wt-order li { display: list-item; overflow-wrap: anywhere }
 .axp-glossary-index__wt-order-term { overflow-wrap: anywhere }
 .axp-glossary-index__wt-order-tools { display: inline-flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); margin-inline-start: var(--fx-dens-gap-sm); vertical-align: middle }
 .axp-glossary-index__wt-job, .axp-glossary-index__wt-brief { padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }

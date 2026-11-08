@@ -76,6 +76,48 @@ clip tagger (`clipKeywords`, `clipFromDemonstration`) and the docs plan (`docsPl
 - Other plugins: capability `glossary@1` (`lookup(id)`, `search(q, kind, limit)`, `rebuild(reason, build)`,
   `demos(type)`, `demo(type, id)`, `generate(entry)`).
 
+## Walkthrough Generator (investor demos)
+
+**Help › Walkthrough Generator** (`nav:walkthrough-generator`): pick any number of glossary entries (search, kind and
+category filters, Picked only, Pick all shown, up to 60, reorder), write a prompt ("run a chain to demonstrate and explain
+these features"), pick audience / style / depth / writer, **Show brief**, **Generate walkthrough**. Generated ahead of
+time, played back with no model.
+
+- **Formats** (`walkthrough-rules.mjs`, pure, shared by the server, the CLI and the console):
+  `glossary-walkthrough-request@1` (terms in order, prompt verbatim, title, audience, style, depth, mode, tryIt) →
+  the brief (markdown: the prompt word for word, the shape, every entry with what the glossary says, the answer format) →
+  `glossary-walkthrough@1` (request, brief, generator facts with the per-part chain log, intro, parts, outro, history).
+  A part = the entry, its term / kind / category, its docs card (headline, summary, detail, points, API, where,
+  related), its steps (`narrate | show | try | docs`, title, say, do, target, highlight, wait) and who wrote it.
+- **The chain**: one prompt per part (`featurePrompt`: the brief's prompt, the entry, the actions and targets that really
+  exist from the zero-token template); each reply is JSON (`parseFeatureReply` drops any screen or target the model
+  invents); a missing or unusable reply falls back to the template, and the chain log says so. On the server the chain
+  runs in the background through `axf.llm@1` (`POST walkthrough/generate`, follow `GET walkthrough/job`); from a shell
+  `walkthroughs.mjs generate --llm claude` uses the claude CLI (Opus); a Claude Code session can answer `plan`'s
+  prompts itself and hand them to `assemble --replies <file>` (how `samples/investor-tour.walkthrough.json` was made).
+- **Storage + versions**: `<dataDir>/walkthrough/<id>/current.json` and `v<version>.json` for every version (1.0.0,
+  1.1.0, …; 50 kept). Regenerating bumps the version; **Versions** shows what changed (parts added, removed, rewritten);
+  **Restore** saves an old version as a new one. Each save also writes a `demonstration@1` per part (`<id>-f<n>`) and a
+  `book@1` (`<id>`, style tour), so the Designer, the Book Builder and the glossary know them.
+- **Player** (`web/walkthrough-player.tsx`, floating window): parts as chapters, Back / Repeat / Next / Docs / Stop,
+  arrows and Escape, each step moves the console and highlights its target (a selector, `data-help`, or a Help mode id
+  such as a label slug), the docs card under the steps, and **try-it** steps that wait for the viewer to tap the
+  highlighted control (Show me runs it again; a target that is not on screen says so). The window moves off the control
+  it highlights. Actions `walkthrough.play:<id>[:<step>]`, `walkthrough.next|prev|repeat|stop`.
+- **Demo sandbox**: open the console with `?axf-walkthrough=<id>` (from its store) or
+  `?axf-walkthrough-src=<same-origin path>.json` (an exported file served beside the console, no API needed), plus
+  `&axf-walkthrough-step=<n>`. `walkthroughs.mjs export <id> --out f.json` / `import f.json` (or `GET walkthrough/export`,
+  `POST walkthrough/import`) move a walkthrough between consoles with its demonstrations and book
+  (`glossary-walkthrough-export@1`).
+- Settings › Plugins › Glossary & Index › **Walkthroughs**: wait for the viewer on try-it steps, show the docs card,
+  default writer, audience and depth.
+- MCP / REST / CLI: `glossary_index_walkthroughs`, `_walkthrough`, `_walkthrough_plan`, `_walkthrough_generate`,
+  `_walkthrough_job`, `_walkthrough_cancel`, `_walkthrough_versions`, `_walkthrough_restore`, `_walkthrough_delete`,
+  `_walkthrough_export`, `_walkthrough_import`, `_walkthrough_play`; `node walkthroughs.mjs list | search | plan |
+  assemble | generate | get | versions | restore | delete | walkthrough | export | import`.
+- Tests: `test.mts` (request, picker, brief, chain replies, versions, player model, export / import, the shipped sample),
+  `test.py` (the routes and the background chain with no provider and with a fake `axf.llm@1`).
+
 ## Documentation output (docs@1)
 
 `docs.mjs` writes exactly the files `docsPlan` lists into `<dataDir>/docs-out/<docs id>/`: light = one page; standard =

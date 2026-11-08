@@ -342,3 +342,15 @@ ok('export → import: the sandbox file carries the walkthrough, its demos and b
 });
 
 console.log(`glossary walkthroughs: request, picker, brief, chain replies, versions, player model, export/import checked (${n} checks in all)`);
+
+ok('the shipped sample (investor-tour, written by Claude ahead of time) validates, plays and imports', () => {
+  const sample = JSON.parse(readFileSync(join(cat.ROOT, 'apps/console-web/plugins/glossary-index/samples/investor-tour.walkthrough.json'), 'utf8'));
+  assert.equal(sample.$axf, 'glossary-walkthrough-export@1');
+  assert.deepEqual(W.bundleErrors(sample.walkthrough), []);
+  assert.ok(sample.walkthrough.features.every((f: { source: string }) => f.source === 'claude'));
+  assert.ok(W.playSteps(sample.walkthrough).some((s: { kind: string; target: string }) => s.kind === 'try' && s.target), 'at least one try-it step on a real control');
+  for (const f of sample.walkthrough.features) assert.ok(byId.has(f.entry), `${f.entry} is still in the glossary`);
+  const back = walks.importBundle(sample);
+  assert.equal(back.id, 'investor-tour'); assert.equal(demos.get('book', 'investor-tour')?.data.chapters.length, sample.walkthrough.features.length);
+});
+console.log(`glossary walkthroughs: shipped sample checked (${n} checks in all)`);

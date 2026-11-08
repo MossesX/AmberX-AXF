@@ -7,8 +7,9 @@
  */
 import { useEffect, useSyncExternalStore } from 'react';
 import type { AxfRuntime, Walkthrough } from '@console/axf/core';
-import { Button, Icon, Switch, useRuntime } from '@console/axf/react';
+import { Button, Icon, Switch, describeHelpElement, findHelpTarget, useRuntime } from '@console/axf/react';
 import { EmptyState } from '@console/emptyState';
+import { HELP_CONTROL_SELECTOR, helpTarget } from '@console/axf/core/engines/help-rules.mjs';
 import { DEMO_KEYS, type DemoType, targetSelectors, voiceMove, walkthroughOf } from './demos-core';
 
 export const PLAYER_TAB = 'glossary-index.player';
@@ -43,15 +44,32 @@ export function clearHighlight() {
   if (typeof document === 'undefined') return;
   document.querySelectorAll(`.${HIGHLIGHT}`).forEach((el) => { el.classList.remove(HIGHLIGHT); el.removeAttribute('data-axp-highlight'); });
 }
-export function highlight(target: string, label = '') {
-  clearHighlight();
-  if (typeof document === 'undefined' || !target) return;
+/** The element a target names: a selector (targetSelectors), else a control whose help id (its label slug, Help mode's rule) matches. */
+export function findTarget(target: string): Element | null {
+  if (typeof document === 'undefined' || !target) return null;
   for (const sel of targetSelectors(target)) {
-    let el: Element | null = null;
-    try { el = document.querySelector(sel); } catch { continue; }
-    if (el) { el.classList.add(HIGHLIGHT); if (label) el.setAttribute('data-axp-highlight', label); el.scrollIntoView?.({ block: 'center', behavior: 'smooth' }); return; }
+    try { const el = document.querySelector(sel); if (el) return el; } catch { /* not a selector */ }
   }
+  const own = findHelpTarget(target);
+  if (own) return own;
+  // a help id (Help mode's rule: an action, a view, else the label slug) on a visible control outside the players
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>(HELP_CONTROL_SELECTOR))) {
+    if (el.closest('[data-axp-player]')) continue;
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    if (helpTarget(describeHelpElement(el)).lookup.includes(target)) return el;
+  }
+  return null;
 }
+
+/** Highlight what a target names; answers the element (null when it is not on screen). */
+export function highlight(target: string, label = ''): Element | null {
+  clearHighlight();
+  const el = findTarget(target);
+  if (el) { el.classList.add(HIGHLIGHT); if (label) el.setAttribute('data-axp-highlight', label); el.scrollIntoView?.({ block: 'center', behavior: 'smooth' }); }
+  return el;
+}
+export const highlighted = (): Element | null => (typeof document === 'undefined' ? null : document.querySelector(`.${HIGHLIGHT}`));
 
 type Recognizer = { start(): void; stop(): void; continuous: boolean; interimResults: boolean; lang: string; onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>>; resultIndex: number }) => void) | null; onend: (() => void) | null; onerror: (() => void) | null };
 let recognizer: Recognizer | null = null;
@@ -151,7 +169,7 @@ export function PlayerWindow() {
   const step = g.walk.steps[g.at]!;
   const first = g.at === 0; const lastStep = g.at === g.walk.steps.length - 1;
   return (
-    <div className="fx-stack axp-glossary-index__player" aria-live="polite">
+    <div className="fx-stack axp-glossary-index__player" aria-live="polite" data-axp-player>
       <p className="fx-eyebrow">{g.walk.title} · Step {g.at + 1} of {g.walk.steps.length}{g.speaking ? ' · speaking' : ''}</p>
       {(step as { title?: string }).title && <h3 className="axp-glossary-index__player-title">{(step as { title?: string }).title}</h3>}
       <p className="axp-glossary-index__player-say">{step.say}</p>

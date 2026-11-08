@@ -50,7 +50,11 @@ export function ThemeManager() {
   const ax = useAxfState();
   const hist = useHistory();
   const narrow = useNarrow();
-  const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy'), []);
+  // only types with an active asset are themeable here (content types such as demonstration, book, clip and docs have none)
+  const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => {
+    if (t === 'uac-policy') return false;
+    try { return !!(rt.asset(t as never) as unknown as { data?: Data } | undefined)?.data; } catch { return false; }
+  }), [rt]);
   const active = useMemo(() => Object.fromEntries(types.map((t) => [t, (rt.asset(t as never) as unknown as { data: Data }).data])) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const assets = useMemo(() => Object.fromEntries(types.map((t) => [t, rt.registry.list(t as never).filter((a) => !String(a.id).startsWith('tm-preview-')) as unknown as { data: Data }[]])), [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const tree = useMemo(() => buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types), [assets, active, types]);

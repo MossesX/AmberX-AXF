@@ -74,10 +74,11 @@ function PickedOrder({ selected, onChange }: { selected: string[]; onChange: (s:
     <ol className="axp-glossary-index__wt-order" aria-label="Walkthrough order">
       {selected.map((id, i) => (
         <li key={id}>
+          {byId.get(id) && <span className="axp-glossary-index__kind" data-kind={byId.get(id)!.kind}>{cat?.kinds[byId.get(id)!.kind] ?? byId.get(id)!.kind}</span>}{' '}
           <span className="axp-glossary-index__wt-order-term">{byId.get(id)?.term ?? id}</span>
           <span className="axp-glossary-index__wt-order-tools" role="toolbar" aria-label={`Order of ${byId.get(id)?.term ?? id}`}>
-            <IconButton icon="arrow-up" label="Move up" disabled={i === 0} onClick={() => onChange(moveTerm(selected, i, -1))} />
-            <IconButton icon="arrow-down" label="Move down" disabled={i === selected.length - 1} onClick={() => onChange(moveTerm(selected, i, 1))} />
+            <IconButton icon="chevron-up" label="Move up" disabled={i === 0} onClick={() => onChange(moveTerm(selected, i, -1))} />
+            <IconButton icon="chevron-down" label="Move down" disabled={i === selected.length - 1} onClick={() => onChange(moveTerm(selected, i, 1))} />
             <IconButton icon="x" label="Remove" onClick={() => onChange(selected.filter((x) => x !== id))} />
           </span>
         </li>
