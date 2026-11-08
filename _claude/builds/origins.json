@@ -3268,6 +3268,54 @@
    "from": "",
    "addenda": []
   },
+  "ui-api-parity-console": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:38.031Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-framework": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:42.522Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-look": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:39.309Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-media": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:40.979Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-api-parity-rule": {
    "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
    "at": "2026-11-08T17:23:21.874Z",
