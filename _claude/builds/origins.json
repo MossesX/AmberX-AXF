@@ -13,6 +13,18 @@
    "from": "",
    "addenda": []
   },
+  "adopt-today-s-direct-launched-builds-record-only": {
+   "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "agent-cap": {
    "said": "a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
    "at": "2026-11-01",
@@ -2319,6 +2331,18 @@
   },
   "orchestrator-chain-trace-brownie-molly-group-cha": {
    "said": "All right, I want a plugin from now. I want actually, I want settings in the orchestrator. But for the chains... I want to see what exactly he receives, for instructions, what he does with those instructions, who he what he launches on the VPS, if anything, what. And then what other se sections he sends information to, like he has to send it to the plant studio... Molly is the plant studio, so I want to see Brownie sending the stuff to to uh, whatever her name is in the group chat. Talking back and forth.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-checks-shipped-features-before-spli": {
+   "said": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
    "at": "",
    "source": "",
    "session": "",
