@@ -749,17 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-07 00:58 UTC · `notes-tasks-calendar` note (current) · orchestrator
-- 2026-11-07 01:30 UTC · `notes-tasks-calendar` branch claude/notes-tasks-calendar, note (current) · reconciler
-- 2026-11-07 01:33 UTC · `console-approvals-in-place` s5 done, s6 done (current) · foreign-write
-- 2026-11-07 02:20 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · reconciler
-- 2026-11-07 02:30 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · reconciler
-- 2026-11-07 02:40 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · reconciler
-- 2026-11-07 02:50 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → built, note (current) · reconciler
-- 2026-11-07 03:00 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → complete, note (current) · foreign-write
-- 2026-11-07 03:00 UTC · `icon-browser-manager` added (10 steps) (current) · foreign-write
-- 2026-11-07 03:10 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → complete, note (current) · foreign-write
 - 2026-11-07 03:10 UTC · `icon-browser-manager` added (10 steps) (current) · foreign-write
 - 2026-11-07 03:20 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → complete, note (current) · foreign-write
 - 2026-11-07 03:20 UTC · `icon-browser-manager` added (10 steps) (current) · foreign-write
@@ -1149,6 +1138,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` PR #384 (all) · builds-live
 - 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s8 done, → built (all) · orchestrator
 - 2026-11-08 02:31 UTC · `x.state` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.deploy.console` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.libs.core` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.uikits` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.engine.uiport` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.session` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.lib.notifications` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.engine.dev` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.lib.files` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `x.lib.hub` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `axhub-google` → pending (all) · claude-voice
+- 2026-11-08 02:31 UTC · `amberx-open-any-url` → pending (all) · claude-voice
 
 ## Token passes (log)
 
