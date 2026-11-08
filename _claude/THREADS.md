@@ -750,8 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:20 UTC · `molly-ri-court-records` added (4 steps) (current) · claude-voice
-- 2026-11-07 05:27 UTC · `skins-asset-types` s10 done (current) · foreign-write
 - 2026-11-07 05:30 UTC · `grindr-ai-wingman` added (5 steps) (current) · claude-voice
 - 2026-11-07 05:34 UTC · `console-account-picker` note (current) · foreign-write
 - 2026-11-07 05:34 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · foreign-write
@@ -1150,6 +1148,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:24 UTC · `account-health-failover` added (5 steps) (all) · headless
 - 2026-11-08 17:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
 - 2026-11-08 17:24 UTC · `account-health-failover` added (5 steps) (all) · headless
+- 2026-11-08 17:29 UTC · `account-health-failover` s1 done, → running (all) · orchestrator
+- 2026-11-08 17:29 UTC · `account-health-failover` s1 undone (all) · orchestrator
 
 ## Token passes (log)
 
