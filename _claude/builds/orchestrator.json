@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T01:05:23.596Z",
+ "updatedAt": "2026-11-08T02:31:12.708Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -58585,14 +58585,14 @@
    "title": "State, data cache, events, flags, config, migrations",
    "category": "Kernel & engines",
    "detail": "AxfStore (reducer/middleware/undo), QueryClient (stale-while-revalidate), EventBus, layered FeatureFlags and Config, migrations ledger + semver.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-08T02:31:10.888Z",
    "builtAt": "",
    "notes": [
     {

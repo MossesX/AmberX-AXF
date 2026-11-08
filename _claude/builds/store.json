@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1448,
- "updatedAt": "2026-11-08T01:05:23.596Z",
+ "rev": 1449,
+ "updatedAt": "2026-11-08T02:31:12.708Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25567,14 +25567,14 @@
    "title": "State, data cache, events, flags, config, migrations",
    "category": "Kernel & engines",
    "detail": "AxfStore (reducer/middleware/undo), QueryClient (stale-while-revalidate), EventBus, layered FeatureFlags and Config, migrations ledger + semver.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-08T02:31:10.888Z",
    "builtAt": "",
    "notes": [
     {
@@ -25771,7 +25771,7 @@
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.state",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
