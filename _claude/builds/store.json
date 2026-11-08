@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1611,
- "updatedAt": "2026-11-08T22:40:22.230Z",
+ "rev": 1612,
+ "updatedAt": "2026-11-08T22:41:09.540Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124447,9 +124447,9 @@
    "source": "mcp",
    "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
    "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
-   "pr": "",
+   "pr": "#397",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:40:13.684Z",
+   "updatedAt": "2026-11-08T22:41:07.897Z",
    "builtAt": "",
    "notes": [
     {
@@ -124582,7 +124582,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {

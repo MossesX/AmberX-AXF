@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T22:40:22.230Z",
+ "updatedAt": "2026-11-08T22:41:09.540Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75469,9 +75469,9 @@
    "source": "mcp",
    "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
    "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
-   "pr": "",
+   "pr": "#397",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:40:13.684Z",
+   "updatedAt": "2026-11-08T22:41:07.897Z",
    "builtAt": "",
    "notes": [
     {
