@@ -750,9 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:46 UTC · `skins` → built, PR #383 (main-framework) · builds-live
-- 2026-11-07 06:00 UTC · `notifications-control-panel` → complete, merged, note (current) · reconciler
-- 2026-11-07 06:00 UTC · `badges-notify-followup` → complete, merged, note (current) · reconciler
 - 2026-11-07 06:10 UTC · `skins-asset-types` → pending, note (current) · reconciler
 - 2026-11-07 09:02 UTC · `grindr-ai-wingman` note, removed (current) · pending
 - 2026-11-06 18:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
@@ -1150,6 +1147,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:50 UTC · `account-health-failover` s5 done, → complete (all) · orchestrator
 - 2026-11-08 17:50 UTC · `amberx-notify-panel` branch claude/amberx-notify-panel (all) · builds-live
 - 2026-11-08 17:50 UTC · `amberx-notify-panel` → running (all) · orchestrator
+- 2026-11-08 17:50 UTC · `account-health-failover` → built, branch claude/account-health-failover, PR #394 (all) · builds-live
+- 2026-11-08 17:50 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
+- 2026-11-08 17:50 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
 
 ## Token passes (log)
 

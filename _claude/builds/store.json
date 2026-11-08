@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1535,
- "updatedAt": "2026-11-08T17:50:52.502Z",
+ "rev": 1536,
+ "updatedAt": "2026-11-08T17:51:05.857Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -95623,7 +95623,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-07T05:14:22.807Z",
+   "updatedAt": "2026-11-08T17:50:38.766Z",
    "builtAt": "",
    "notes": [
     {
@@ -95637,6 +95637,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Overlap: account-health-failover (PR #394) adds the shared account-status@1 store and capability axf.account-status@1 (able(name, model)): use it to pick the account to switch to instead of a new check.",
+     "at": "2026-11-08T17:50:38.766Z"
     }
    ],
    "approvals": [],
@@ -95663,7 +95667,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95696,7 +95700,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-08T16:59:58.430Z",
+   "updatedAt": "2026-11-08T17:50:36.587Z",
    "builtAt": "",
    "notes": [
     {
@@ -95718,6 +95722,10 @@
     {
      "text": "Steps 3-5 (failover on limit/auth death, save rotated token back, banner/alert when no account is left) are built in account-failover-notify (branch claude/account-failover-notify). Steps 1-2 (switching the active account re-signs the VPS login; running builds follow the switch) remain.",
      "at": "2026-11-08T16:59:58.429Z"
+    },
+    {
+     "text": "Overlap: account-health-failover (PR #394) adds the shared account-status@1 store and capability axf.account-status@1 (able(name, model)): use it to pick the account to switch to instead of a new check.",
+     "at": "2026-11-08T17:50:36.587Z"
     }
    ],
    "approvals": [],
@@ -95953,7 +95961,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -118246,14 +118254,14 @@
    "title": "Account health probe + failover + phone alerts",
    "category": "Claude accounts",
    "detail": "A (new): probe every Claude account (subscriptions + API keys) on console load and on a schedule with a tiny headless session (no rules, no CLAUDE.md, no MCP): login valid, usage left (5-hour + weekly, resets; API balance/spend vs cap), models it can use. One shared account-status store every plugin reads (usage badge, Claude accounts screen, routing); routing only sends a job to an account the store says can take it with the model it needs. E: phone notification before and after the probe (type account-status). B/C/D are built by account-failover-notify (same branch line); this build stacks on it.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/account-health-failover",
+   "pr": "#394",
    "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-08T17:50:32.551Z",
+   "updatedAt": "2026-11-08T17:50:34.729Z",
    "builtAt": "2026-11-08T17:50:32.552Z",
    "notes": [],
    "approvals": [],
@@ -118390,7 +118398,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
