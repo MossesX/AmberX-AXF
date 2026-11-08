@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 19:46 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
 - 2026-11-06 20:00 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
 - 2026-11-06 20:00 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
 - 2026-11-06 20:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-07 23:36 UTC · `idle-alert-phone-flag-when-nothing-is-building` added (0 steps) (all) · pending
 - 2026-11-07 23:57 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` added (7 steps) (all) · Gizmo
 - 2026-11-07 23:59 UTC · `brief-approval-dialog-before-every-headless-sess` added (0 steps) (all) · pending
+- 2026-11-08 00:00 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` → archived (all) · Gizmo
 
 ## Token passes (log)
 
