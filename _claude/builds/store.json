@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1553,
- "updatedAt": "2026-11-08T19:21:09.947Z",
+ "rev": 1554,
+ "updatedAt": "2026-11-08T19:21:23.217Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -95792,7 +95792,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T02:40:18.142Z",
-   "updatedAt": "2026-11-06T02:41:59.215Z",
+   "updatedAt": "2026-11-08T19:21:21.629Z",
    "builtAt": "",
    "notes": [
     {
@@ -95802,6 +95802,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:21:21.629Z"
     }
    ],
    "approvals": [],
@@ -95818,7 +95822,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:21:21.629Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw87x80u013v09",
+     "title": "",
+     "text": "Start AFTER planner-registry lands. Brett selects completed steps in any build (even one that's unfinished or running). The tool works out which changes belong to those steps (files/diffs), splits them into their own branch and PR, merges, and deploys right away. A dependency check pulls in anything required, or warns. The rest of the build continues. No forced one-commit-per-step rule.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:21:21.629Z",
+     "updatedAt": "2026-11-08T19:21:21.629Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw87x80u02nwtb",
+     "title": "",
+     "text": "I want to be able to select stuff that's completed, like completed steps from within a build. Just take the completed things, transfer them to their own push request, merge them on their own, and deploy immediately so I can take partially finished builds, what's completed out of them, and deploy them without the whole thing being built, unless it needs it for dependencies.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:21:21.629Z",
+     "updatedAt": "2026-11-08T19:21:21.629Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw87x80u03pihu",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/partial-land-ship-completed-steps-of-a-build.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/partial-land-ship-completed-steps-of-a-build.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:21:21.629Z",
+     "updatedAt": "2026-11-08T19:21:21.629Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -95828,7 +95922,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95843,7 +95937,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:21:21.629Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

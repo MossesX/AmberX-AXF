@@ -751,11 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:02 UTC · `glossary-index-demos` added (6 steps) (current) · foreign-write
-- 2026-11-07 04:40 UTC · `assistant-chat-mode` note (current) · foreign-write
-- 2026-11-07 04:40 UTC · `claude-badge-vps` note (current) · foreign-write
-- 2026-11-07 04:40 UTC · `icon-browser-manager` note (current) · foreign-write
-- 2026-11-07 04:40 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done (current) · orchestrator
 - 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, PR #380 (current) · builds-live
 - 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, s8-7 done, → built (current) · orchestrator
 - 2026-11-07 04:42 UTC · `dataset-bar` note (current) · orchestrator
@@ -1151,6 +1146,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 19:19 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → complete, merged, note (all) · builds-live
 - 2026-11-08 19:19 UTC · `x.deploy.console` note (all) · builds-live
 - 2026-11-08 19:21 UTC · `planner-select-items-and-build-them` note (all) · builds-live
+- 2026-11-08 19:19 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → complete, merged, note (all) · reconciler
+- 2026-11-08 19:19 UTC · `handoff-session-threads` note (all) · orchestrator
+- 2026-11-08 19:19 UTC · `x.deploy.console` note (all) · orchestrator
+- 2026-11-08 19:20 UTC · `planner-select-items-and-build-them` note (all) · orchestrator
+- 2026-11-08 19:21 UTC · `partial-land-ship-completed-steps-of-a-build` note (all) · orchestrator
 
 ## Token passes (log)
 
