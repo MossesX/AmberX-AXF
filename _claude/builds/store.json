@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1437,
- "updatedAt": "2026-11-08T00:48:54.972Z",
+ "rev": 1438,
+ "updatedAt": "2026-11-08T00:49:03.941Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115585,7 +115585,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:47:19.843Z",
-   "updatedAt": "2026-11-08T00:48:54.121Z",
+   "updatedAt": "2026-11-08T00:48:54.661Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -115656,6 +115656,28 @@
      "rev": 1,
      "createdAt": "2026-11-08T00:47:19.844Z",
      "updatedAt": "2026-11-08T00:47:19.844Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw746lt601qbtg",
+     "title": "",
+     "text": "File ownership: each parallel track owns its own files; steps only run in parallel when their files don't overlap; lock shared files (configs) so sessions don't step on each other",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:48:54.662Z",
+     "updatedAt": "2026-11-08T00:48:54.762Z"
     },
     {
      "id": "s3",
@@ -115732,7 +115754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
