@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T22:41:09.540Z",
+ "updatedAt": "2026-11-08T22:41:24.219Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74421,12 +74421,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:23:04.271Z",
-   "updatedAt": "2026-11-08T19:27:22.881Z",
+   "updatedAt": "2026-11-08T22:41:10.797Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:27:22.881Z"
+    },
+    {
+     "text": "Superseded: ported and landed with urgent-amberx-veto-notice-alarm-too-loud-approve, PR #397",
+     "at": "2026-11-08T22:41:10.797Z"
     }
    ],
    "approvals": [],
@@ -75464,15 +75468,15 @@
    "title": "URGENT: AmberX veto notice alarm too loud + Approve must go straight through",
    "category": "",
    "detail": "Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
    "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
    "pr": "#397",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:41:07.897Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T22:41:09.244Z",
+   "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -75558,8 +75562,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T22:41:09.244Z",
      "note": "",
      "uid": "st-mw8ef93s032vl0"
     }
