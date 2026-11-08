@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T22:46:59.221Z",
+ "updatedAt": "2026-11-08T22:48:08.632Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74625,7 +74625,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T22:28:21.427Z",
+   "updatedAt": "2026-11-08T22:48:07.446Z",
    "builtAt": "",
    "notes": [
     {
@@ -74645,8 +74645,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "nested-menus-for-console-amberx-and-molly-overri",
+    "brief": "# Build: nested-menus-for-console-amberx-and-molly-overri\n\n## Brett said (verbatim)\n> You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.\n\n## What to build\nContinue build \"Nested menus for console, AmberX and Molly (override the shared menus)\" (nested-menus-for-console-amberx-and-molly-overri) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step nested-menus-for-console-amberx-and-molly-overri <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link nested-menus-for-console-amberx-and-molly-overri --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step nested-menus-for-console-amberx-and-molly-overri <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note nested-menus-for-console-amberx-and-molly-overri \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
