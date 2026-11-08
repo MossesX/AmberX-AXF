@@ -3209,6 +3209,18 @@
    "from": "",
    "addenda": []
   },
+  "tap-to-confirm-switch-in-every-toolbar-s-own-set": {
+   "said": "it should be in every toolbar setting.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "terminal-header-responsive": {
    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
    "at": "2026-11-08T16:15:18.411Z",

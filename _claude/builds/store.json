@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1589,
- "updatedAt": "2026-11-08T21:18:14.714Z",
+ "rev": 1590,
+ "updatedAt": "2026-11-08T21:22:48.371Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124420,7 +124420,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124432,10 +124432,73 @@
     "createdAt": "2026-11-08T21:17:47.099Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8c3idv01jvy5": "2026-11-08T21:18:13.459Z",
+     "st-mw8c3idv02i0gu": "2026-11-08T21:18:13.459Z",
+     "st-mw8c3idv031sab": "2026-11-08T21:18:13.459Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T21:18:13.459Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "tap-to-confirm-switch-in-every-toolbar-s-own-set",
+   "title": "Tap-to-confirm switch in every toolbar's own settings",
+   "category": "",
+   "detail": "Brett: tap-to-confirm (first tap shows tooltip, second tap runs) must be switchable from each toolbar's OWN settings (right-click the toolbar -> its settings dialog: inherit / on / off + arm window), not only Settings > Plugins > Toolbars > All toolbars. Applies to every toolbar in every app; fits the rule that every bar is a snappable asset with its own settings. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "tap-to-confirm-switch-in-every-toolbar-s-own-set",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:22:46.709Z",
+   "updatedAt": "2026-11-08T21:22:46.709Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "it should be in every toolbar setting.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 468
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "45 min",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:22:46.709Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
