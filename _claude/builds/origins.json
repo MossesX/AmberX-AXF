@@ -659,6 +659,18 @@
    "from": "",
    "addenda": []
   },
+  "brief-approval-dialog-before-every-headless-sess": {
+   "said": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "bugs-board": {
    "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
    "at": "2026-11-04T00:00:00Z",
@@ -1746,6 +1758,18 @@
    "from": "",
    "addenda": []
   },
+  "idle-alert-phone-flag-when-nothing-is-building": {
+   "said": "alerts on my phone when shit stops building, dude. You constantly need to be checking every, you know, all the time. If there's nothing running, I need a flag to appear on my phone.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "interface-roller": {
    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
    "at": "2026-10-27",
@@ -1756,6 +1780,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "investor-demo-player-shell-with-login-gate-skins": {
+   "said": "Oh, let's build that section. Let's build the the view the viewer with um, behind a login gate uh, with a guest login.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "jump-menu-asset": {
@@ -2219,6 +2255,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "orchestrator-chain-trace-brownie-molly-group-cha": {
+   "said": "All right, I want a plugin from now. I want actually, I want settings in the orchestrator. But for the chains... I want to see what exactly he receives, for instructions, what he does with those instructions, who he what he launches on the VPS, if anything, what. And then what other se sections he sends information to, like he has to send it to the plant studio... Molly is the plant studio, so I want to see Brownie sending the stuff to to uh, whatever her name is in the group chat. Talking back and forth.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "orchestrator-dup-check": {
@@ -3238,6 +3286,18 @@
    "session": "",
    "link": "",
    "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "urgent-rebuild-pipeline-orchestrator-ids-splits-": {
+   "said": "You need to start the pipeline over from scratch. From now on, what I say, send a build to the orchestrator. The orchestrator is going to assign an ID. A build ID. He's going to use you to break it up into steps select a model Babel or Opus Babel when it's needed and then he's going to see how many subscriptions are connected to the VPS how many accounts are available How many, what's the max parallel for each one? And uh, if it's a account that has Fable, he'll send the Fable to that. He'll send everything else to Opus. He will, no, he will check the BPS to see what accounts have what slots. Available parallel. Dish out the steps, okay? The steps are marked. We already have the rules for how the steps are marked down into a, in a progress pile and blah blah blah. Updated in real time because you have a monitor watching the progress files. And um, the orchestrator starts starts the head, headless. The orchestrator then sends it to the queue, or he sends it to pending. Yeah, he sends everything to the pending. And I have to send them from pending to queue.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",
