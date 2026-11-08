@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1425,
- "updatedAt": "2026-11-08T00:17:39.135Z",
+ "rev": 1426,
+ "updatedAt": "2026-11-08T00:17:47.870Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109788,12 +109788,12 @@
    "detail": "AI wingman for Brett's own Grindr account, using credentials he saves in axHub. 1) Browse and shortlist: filter profiles on what people write in their profiles (stats, what they're into, looking for), favor serious, active, complete profiles, skip time-wasters; send Brett the shortlist. No copying or storing other people's photos. 2) Honest outreach: first message always says it's Brett's AI assistant/friend reaching out for him; it never claims to be human or to be Brett, never invents facts about Brett, and stays truthful. If someone isn't interested or asks it to stop, it stops and never messages them again. Light rate limit. When someone replies with interest, hand the chat to Brett. Warn Brett in the UI that Grindr may ban accounts it detects as automated. Voice + API/MCP/CLI parity. Orchestrator assigns models.",
    "status": "pending",
    "hidden": false,
-   "source": "console",
-   "pendingId": "",
+   "source": "pending",
+   "pendingId": "grindr-ai-wingman",
    "branch": "",
    "pr": "",
-   "createdAt": "2026-11-07T05:30:24.186Z",
-   "updatedAt": "2026-11-07T05:30:24.186Z",
+   "createdAt": "2026-11-08T00:17:38.860Z",
+   "updatedAt": "2026-11-08T00:17:38.860Z",
    "builtAt": "",
    "notes": [
     {
@@ -109919,7 +109919,7 @@
      "updatedAt": "2026-11-07T05:34:09.737Z"
     },
     {
-     "id": "s6-5",
+     "id": "s6",
      "uid": "st-mw5ysr7n06rdud",
      "title": "",
      "text": "Save Grindr credentials in axHub; login and browse flow",
@@ -109936,12 +109936,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:30:24.187Z",
-     "updatedAt": "2026-11-07T05:30:24.187Z"
+     "updatedAt": "2026-11-08T00:17:38.965Z"
     },
     {
-     "id": "s7-6",
+     "id": "s7",
      "uid": "st-mw5ysr7n07hez5",
      "title": "",
      "text": "Profile-text filters and serious-profile scoring; shortlist to Brett",
@@ -109958,12 +109958,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:30:24.187Z",
-     "updatedAt": "2026-11-07T05:30:24.187Z"
+     "updatedAt": "2026-11-08T00:17:38.965Z"
     },
     {
-     "id": "s8-7",
+     "id": "s8",
      "uid": "st-mw5ysr7n0897ab",
      "title": "",
      "text": "Honest outreach: opens as Brett's AI friend, no lies, stops on no",
@@ -109980,12 +109980,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:30:24.187Z",
-     "updatedAt": "2026-11-07T05:30:24.187Z"
+     "updatedAt": "2026-11-08T00:17:38.965Z"
     },
     {
-     "id": "s9-8",
+     "id": "s9",
      "uid": "st-mw5ysr7n09gdwp",
      "title": "",
      "text": "Hand interested chats to Brett; rate limit; ban-risk warning",
@@ -110002,12 +110002,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:30:24.187Z",
-     "updatedAt": "2026-11-07T05:30:24.187Z"
+     "updatedAt": "2026-11-08T00:17:38.965Z"
     },
     {
-     "id": "s10-9",
+     "id": "s10",
      "uid": "st-mw5ysr7n0az26u",
      "title": "",
      "text": "Voice command + API",
@@ -110024,23 +110024,23 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T05:30:24.187Z",
-     "updatedAt": "2026-11-07T05:30:24.187Z"
+     "updatedAt": "2026-11-08T00:17:38.965Z"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 108
+    "all": 426
    },
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 3,
-   "deleted": true,
-   "deletedAt": "2026-11-07T09:02:31.231Z",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-07T05:30:24.187Z",
@@ -112945,12 +112945,12 @@
    "detail": "hi",
    "status": "pending",
    "hidden": false,
-   "source": "launcher",
-   "pendingId": "",
+   "source": "pending",
+   "pendingId": "slotstest-2208251-a",
    "branch": "",
    "pr": "",
-   "createdAt": "2026-11-07T14:27:31.162Z",
-   "updatedAt": "2026-11-07T14:27:31.346Z",
+   "createdAt": "2026-11-08T00:17:39.669Z",
+   "updatedAt": "2026-11-08T00:17:39.669Z",
    "builtAt": "",
    "notes": [
     {
@@ -112965,13 +112965,13 @@
     "all"
    ],
    "order": {
-    "all": 0
+    "all": 427
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
-   "deleted": true,
-   "deletedAt": "2026-11-07T14:29:55.772Z",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "",
@@ -112987,12 +112987,12 @@
    "detail": "hi",
    "status": "pending",
    "hidden": false,
-   "source": "launcher",
-   "pendingId": "",
+   "source": "pending",
+   "pendingId": "slotstest-2208251-b",
    "branch": "",
    "pr": "",
-   "createdAt": "2026-11-07T14:27:31.786Z",
-   "updatedAt": "2026-11-07T14:27:32.016Z",
+   "createdAt": "2026-11-08T00:17:40.473Z",
+   "updatedAt": "2026-11-08T00:17:40.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -113007,13 +113007,13 @@
     "all"
    ],
    "order": {
-    "all": 1
+    "all": 428
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
-   "deleted": true,
-   "deletedAt": "2026-11-07T14:29:56.639Z",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "",
