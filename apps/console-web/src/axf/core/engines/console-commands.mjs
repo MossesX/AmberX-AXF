@@ -12,11 +12,13 @@
  *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, hard?, by, at }
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, tab?, hard?, by, at }
+ *            `tab` (tab-control@1, Nov 8 2026): on an open screen, the tab path inside it ("pipeline", "plugins/x/Section")
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
 import { CONTROL_WIRE, controlConfirmToken, controlConfirmValid, controlGranted, CONTROL_CONFIRM_TTL_MS } from './control-rules.mjs';
+import { splitTabPath, TAB_ACTION_PREFIX } from './tab-control.mjs';
 
 export const CONSOLE_CATALOG_FRAME = 'console-catalog@1';
 export const CONSOLE_COMMAND_FRAME = 'console-command@1';
@@ -33,7 +35,7 @@ export const CONSOLE_CLIENT_STALE_MS = 90_000;
 export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
-const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
+const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+|tab\.[^:\s]+)$/;
 /** Words in an action id that mean it deletes or throws away something. */
 const DESTRUCTIVE = /(^|[.:_-])(delete|remove|reset|restore|clear|wipe|purge|uninstall|discard|drop|kill|destroy)([.:_-]|$)/i;
 
@@ -79,6 +81,8 @@ export function normalizeHere(raw) {
   const r = isObj(raw) ? raw : {};
   const out = {};
   for (const k of ['screen', 'screenLabel', 'dialog', 'settings']) { const v = str(r[k], 160); if (v) out[k] = v; }
+  // the tabs showing on the screen ("<row>:<tab>", tab-control@1)
+  if (Array.isArray(r.tabs)) { const t = r.tabs.map((x) => str(x, 160)).filter(Boolean).slice(0, 12); if (t.length) out.tabs = t; }
   return out;
 }
 
@@ -167,6 +171,30 @@ export function consoleResolve(items, kind, path) {
   return { candidates: scored.slice(0, 6).map(([i]) => i), ambiguous: true };
 }
 
+/**
+ * A screen path with a tab in it (tab-control@1): "build-orchestrator/pipeline", "Plan Studio › Board", "settings/appearance".
+ * The longest leading run of parts that names a screen is the screen; the rest is the tab path. A path that is no screen
+ * but names one tab action the console listed (`tab.<row>.<tab>`, by its tab or "Screen › Tab" label) runs that action.
+ * → { item, tab } | { action } | null (a plain screen: resolve as before).
+ */
+export function consoleScreenTab(items, path) {
+  const parts = splitTabPath(path);
+  const list = Array.isArray(items) ? items : [];
+  if (parts.length > 1) {
+    for (let n = parts.length - 1; n >= 1; n--) {
+      // strict: the leading parts must be the screen's id or title (a fuzzy hit would swallow a tab name)
+      const head = foldWords(parts.slice(0, n).join(' '));
+      const item = list.find((i) => i.kind === 'screen' && (foldWords(i.id) === head || foldWords(i.label) === head));
+      if (item) return { item, tab: parts.slice(n).join('/') };
+    }
+  }
+  if (consoleResolve(list, 'screen', path).item) return null;
+  const tabs = list.filter((i) => i.kind === 'action' && i.id.startsWith(TAB_ACTION_PREFIX) && i.id !== 'tab.open');
+  const want = foldWords(parts.join(' '));
+  const hits = tabs.filter((i) => foldWords(i.label) === want || foldWords(i.label.split('›').pop()) === want || foldWords(i.id.slice(i.id.lastIndexOf('.') + 1)) === want);
+  return hits.length === 1 ? { action: hits[0] } : null;
+}
+
 /* ================================================================== action policy */
 
 /** What running an action does: its declared effect, else navigate for known navigation ids, destructive for deleting words, else write. */
@@ -210,7 +238,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
   if (fields.hard === true) m.hard = true;
-  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
+  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'tab']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
   return m;
@@ -273,6 +301,14 @@ export function runConsoleCommand(c, ctx = {}) {
   if (c.op === 'list') {
     const items = consoleSearch(catalog, kind, str(select.q, 200), limit);
     return { ok: true, data: { items, total: catalog.filter((i) => i.kind === kind).length, client: targets[0].id } };
+  }
+  // console_open "build-orchestrator/pipeline": a screen, then the tab path inside it (tab-control@1)
+  if (c.target === 'console.screens' && c.op === 'act') {
+    const tabbed = consoleScreenTab(catalog, c.path);
+    if (tabbed) {
+      if (tabbed.action) return runConsoleCommand({ ...c, target: 'console.actions', path: tabbed.action.id, input: { ...input, args: undefined } }, ctx);
+      return send({ op: 'open', kind, target: tabbed.item.id, label: tabbed.item.label, tab: tabbed.tab }, { item: tabbed.item, tab: tabbed.tab });
+    }
   }
   const r = consoleResolve(catalog, kind, c.path);
   if (!r.item) {

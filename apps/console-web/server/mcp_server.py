@@ -957,7 +957,10 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
         """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
         `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
-        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
+        "orchestrator"); plugins' screens count. Add a tab path to switch tabs, sub-tabs or expand a section inside it:
+        "build-orchestrator/pipeline", "settings/appearance", "Plan Studio › Board" (each part an id or
+        label); a bare tab name the console has shown ("pipeline") works too. Not sure of the name?
+        console_list(kind="screens", q="…") first; console_list(kind="actions", q="tab") lists the tabs (tab.<row>.<tab>)."""
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
 
     @mcp.tool(annotations=NAVIGATE)
@@ -1023,7 +1026,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         dialog, a build, a plugin, a UI Review item, anything that needs him). When Follow Amber is on, his console opens
         it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
-        "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
+        "plugins/<plugin>"), a screen with a tab path ("build-orchestrator/pipeline"), or kind:name (screen:, settings:,
+        dialog:, action:, tab:<screen>/<tab>, approval:<id> pops up a waiting
         axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
         return await follow("show", target=target, highlight=highlight, say=say, to=to)
 

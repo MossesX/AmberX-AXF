@@ -11,7 +11,7 @@
  * layouts {default}, floating-panes, maximise, toolbars {max, labels}, floating-toolbars, customizer, phone {breakpoint}.
  */
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent, type ReactNode, type RefObject } from 'react';
-import { Button, Icon, IconButton, SelectField, Switch, TextField, WindowResizeHandles, useAxfState, useRuntime } from '../../react';
+import { Button, Icon, IconButton, SelectField, Switch, TextField, WindowResizeHandles, useAxfState, useRuntime, useTabControl } from '../../react';
 import type { Rect, ResizeEdge, SnapZone } from '../../core/engines/windows';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime, MenuEntry } from '../../core';
@@ -132,6 +132,8 @@ function AreaView({ ws, area, ids, zone, renderPane, emptyHint }: { ws: Workspac
   const front = useWorkspace(ws, (s) => s.front[area]);
   const zoom = useWorkspace(ws, (s) => s.zoom);
   const cur = ids.includes(front ?? '') ? front! : ids[0];
+  // hand-drawn pane strip (drag panes between areas): it registers its tabs itself (tab-control@1)
+  useTabControl({ id: `workspace.${ws.id}.${area}`, label: `Workspace panes (${area})`, value: cur ?? '', tabs: ids.map((id) => ({ value: id, label: ws.pane(id)?.title ?? id })), onSelect: (id) => ws.front(id) });
   if (!cur) return <section className={`axf-ws-area axf-ws-area--${area} is-empty`} data-axf-drop={`${zone}:area`} data-axf-drop-id={area}><div className="axf-ws-empty">{emptyHint ?? <><Icon name="layout" size={20} /><span>Drop a pane tab here.</span></>}</div></section>;
   return (
     <section className={`axf-ws-area axf-ws-area--${area}`} data-axf-drop={`${zone}:area`} data-axf-drop-id={area}>

@@ -12,13 +12,14 @@
  * search, descriptions, tab order/labels, what is left out and extra option groups, so apps loading the same
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
-import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, designLookLabel, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
+import { useSectionControl } from '../../react/tabControl';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
@@ -261,8 +262,11 @@ function AssetSlotCard({ spec }: { spec: SettingSpec }) {
 function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anchor, className, children }: { title: ReactNode; icon?: string; collapsible?: boolean; defaultOpen?: boolean; anchor?: string; className?: string; children: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   const shown = open || !collapsible;
+  // settings sections open by path too (tab.open:settings/<tab>/<section>, tab-control@1)
+  const self = useRef<HTMLElement>(null);
+  useSectionControl({ id: anchor, title, expand: () => setOpen(true), element: () => self.current });
   return (
-    <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open={shown ? 'true' : 'false'}>
+    <section ref={self} className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open={shown ? 'true' : 'false'}>
       {collapsible ? (
         <button type="button" data-fx-row className="axf-settings__ghead axf-settings__gtoggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           {icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span><Icon name="chevron-down" size={13} className={open ? '' : 'fx-rot--90'} />

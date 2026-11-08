@@ -24,6 +24,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, chromeInstanceData, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { useTabControl } from '../tabControl';
 
 export interface TabDef<T extends string = string> {
   value: T;
@@ -116,6 +117,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     if (data.rememberLast) rt.settings.set(lastKey, v);
     setMenu(false);
   }, [value, onChange, data.rememberLast, rt, lastKey]);
+  // every row is reachable by agents, voice, MCP and links: tab.open:<screen>/<tab>, tab.<id>.<tab> (tab-control@1)
+  useTabControl({ id, label, value, tabs, onSelect: (v) => pick(v as T) });
 
   // overflow 'more': measure once with every tab shown, then keep what fits; the active tab is always on the row
   const more = data.overflow === 'more' && data.position !== 'left' && data.position !== 'right';

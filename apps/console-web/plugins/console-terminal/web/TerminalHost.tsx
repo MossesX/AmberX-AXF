@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, Icon, WindowGrip, useRuntime, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
+import { AgentAvatar, Icon, WindowGrip, useRuntime, useTabControl, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
 import { reorderIndex, type TabSpec } from '@console/axf/core';
 import { call, getSettings, post, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target, type TmuxSession } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -70,6 +70,8 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const h = host(tab.id, tab.kind === 'terminal' ? [{ id: tab.id + '-s', title: tab.title, open: parseOpen(tab.payload) }] : undefined);
   const front = h.sessions.find((s) => s.id === h.active) ?? h.sessions[0] ?? null;
   const c = ctl(front?.id);
+  // the strip is hand-drawn (drag-to-reorder, tear-off), so it registers its tabs itself (tab-control@1)
+  useTabControl({ id: `terminal.${tab.id}`, label: 'Terminal tabs', value: front?.id ?? '', tabs: h.sessions.map((s) => ({ value: s.id, label: s.title })), onSelect: (sid) => activate(tab.id, sid) });
   const [renaming, setRenaming] = useState<{ id: string; text: string } | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; id: string } | null>(null);
   // the window menu (addendum 1, Nov 3 2026, Brett: "I need the context menu on the terminal to open its settings"):

@@ -15,7 +15,7 @@
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
 import { useEffect, useState } from 'react';
-import { Button, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Note, SelectField, Switch, activeTabsOf, openTabPath, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
@@ -28,6 +28,8 @@ const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
 const KEYS = { on: 'console-commands.enabled', toast: 'console-commands.toast' } as const;
 const HEARTBEAT_MS = 30_000;
+/** Commands this tab is running now (a tab path can take a few seconds while its rows draw). */
+const running = new Set<string>();
 
 /** This tab's id (one per browser tab, kept across reloads of the tab). */
 function clientId(): string {
@@ -84,6 +86,8 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
   if (label) here.screenLabel = label;
   if (s.dialog) here.dialog = s.dialog.id;
   if (s.view === 'settings') { const t = rt.settings.get('axf.settings.lastTab'); if (typeof t === 'string' && t) here.settings = t; }
+  const tabs = activeTabsOf(rt); // the tab rows on screen and the tab each shows (tab-control@1)
+  if (tabs.length) here.tabs = tabs;
   return here;
 }
 
@@ -110,12 +114,13 @@ async function reloadPage(hard: boolean): Promise<void> {
   location.reload();
 }
 
-/** Run one message; → [ok, what happened]. */
-function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
+/** Run one message; → [ok, what happened]. A screen with a tab path waits for its rows to draw (tab-control@1). */
+async function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): Promise<[boolean, string]> {
   const errors = consoleMessageErrors(m);
   if (errors.length) return [false, errors.join('; ')];
   switch (m.op) {
     case 'open':
+      if (m.kind === 'screen' && m.tab) { const r = await openTabPath(rt, m.tab, { screen: m.target! }); return [r.ok, r.message]; }
       if (m.kind === 'screen') { rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } }); return [rt.getState().view === m.target || !!rt.getState().dialog, `opened ${m.label ?? m.target}`]; }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
@@ -199,12 +204,17 @@ function ConsoleCommandsClient() {
         if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
         // inside a host, bring this console's frame to the front first, so Brett sees the command happen
         if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
+        if (running.has(m.id)) return; // still opening (a tab path waits for its rows): the ack follows
+        running.add(m.id);
+        void (async () => {
         let res: [boolean, string];
-        try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
+        try { res = await runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
+        running.delete(m.id);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
         const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
         if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
+        })();
       },
     );
     return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };

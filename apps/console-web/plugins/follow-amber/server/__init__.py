@@ -45,8 +45,9 @@ router = APIRouter()
 FOLDER = "follow-amber"
 FRAME = "follow-amber@1"
 ROOT = Path(__file__).resolve().parents[5]
-KINDS = ("screen", "settings", "dialog", "action")
-TARGET_OF = {"screen": "console.screens", "settings": "console.settings", "dialog": "console.dialogs", "action": "console.actions"}
+KINDS = ("screen", "settings", "dialog", "action", "tab")
+# tab:<screen>/<tab> or tab:<tab> (tab-control@1): the screens resolver opens the screen, then the tab path inside it
+TARGET_OF = {"screen": "console.screens", "settings": "console.settings", "dialog": "console.dialogs", "action": "console.actions", "tab": "console.screens"}
 # The order a bare name is tried in: a screen first, then a settings tab, then a dialog.
 TRY_ORDER = ("screen", "settings", "dialog")
 NAVIGATE = ["control.console.navigate"]

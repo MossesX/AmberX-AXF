@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
+import { installTabControl } from './tabControl';
 import { installMenuFit } from './components/menuFit';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
@@ -133,6 +134,9 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     const host = installTapConfirm(document, (key) => runtime.settings.get(key));
     return () => host.dispose();
   }, [runtime]);
+
+  // Every tab row and titled section can be opened by path (tab.open, per-tab actions, ?axf-open= deep links).
+  useEffect(() => installTabControl(runtime), [runtime]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;
 }

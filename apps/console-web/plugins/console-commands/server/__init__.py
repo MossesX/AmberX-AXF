@@ -27,7 +27,7 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  clients · GET recent · GET queue                           the caller's open consoles · the last commands · what waits
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
-  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
+  POST open {screen, tab?} (screen may be "<screen>/<tab>[/…]") · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -689,7 +689,10 @@ async def any_command(request: Request) -> JSONResponse:
 @router.post("/open")
 async def open_screen(request: Request) -> JSONResponse:
     b = await _body(request)
-    return await go(request, {"op": "act", "target": "console.screens", "path": b.get("screen") or b.get("path") or b.get("q"), "action": "open", **_to(b), **_audit(b)})
+    path = b.get("screen") or b.get("path") or b.get("q")
+    if path and b.get("tab"):  # a tab inside the screen (tab-control@1): same as "<screen>/<tab>"
+        path = f"{path}/{b['tab']}"
+    return await go(request, {"op": "act", "target": "console.screens", "path": path, "action": "open", **_to(b), **_audit(b)})
 
 
 @router.post("/dialog")

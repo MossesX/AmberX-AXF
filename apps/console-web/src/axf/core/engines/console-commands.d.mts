@@ -4,10 +4,10 @@ import type { ControlCommand, ControlWireCode } from './control-rules.mjs';
 export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action';
 export type ConsoleActionEffect = 'navigate' | 'read' | 'write' | 'destructive';
 export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string }
-export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
+export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string; /** "<row>:<tab>" for each tab row on the screen */ tabs?: string[] }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; /** tab-control@1: the tab path inside the opened screen */ tab?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };
@@ -32,6 +32,7 @@ export function consoleCatalogFrom(
 ): ConsoleCatalog;
 export function consoleSearch(items: readonly ConsoleItem[], kind: ConsoleItemKind | null, q?: string, limit?: number): ConsoleItem[];
 export function consoleResolve(items: readonly ConsoleItem[], kind: ConsoleItemKind, path: string): { item?: ConsoleItem; args?: string[]; candidates?: ConsoleItem[]; ambiguous?: boolean };
+export function consoleScreenTab(items: readonly ConsoleItem[], path: string): { item: ConsoleItem; tab: string } | { action: ConsoleItem } | null;
 export function consoleActionEffect(item: Partial<ConsoleItem>): Exclude<ConsoleActionEffect, 'read'>;
 export function consoleActionNeeds(item: Partial<ConsoleItem>): { effect: Exclude<ConsoleActionEffect, 'read'>; needs: string[] };
 export function consolePickClients<C extends ConsoleClient>(clients: readonly C[], to?: string, now?: number): C[];
