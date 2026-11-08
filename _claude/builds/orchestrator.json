@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T22:28:22.463Z",
+ "updatedAt": "2026-11-08T22:32:10.180Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75558,6 +75558,37 @@
      "uid": "st-mw8ef93s032vl0"
     }
    ]
+  },
+  {
+   "id": "approvals-page-auto-approve-toggle-1-h-2-h-until",
+   "title": "Approvals page: auto-approve toggle (1 h / 2 h / until off) + collapsible containers",
+   "category": "",
+   "detail": "SKIP PENDING: put straight in the queue. On the approvals / waiting page (console banner approvals and axHub approvals): an Auto-approve control with 1 hour, 2 hours, and Until I turn it off; shows remaining time; turned off from the same container. Uses axHub passes (axhub.pass_grant/revoke) covering every tool Brett allows, incl. veto vps.run if axHub permits; if destructive tools can't be passed, say so on the control. Waiting approvals grouped in collapsible containers (by service/tool/build). Full API + voice + MCP/CLI control. Tests; report; Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "approvals-page-auto-approve-toggle-1-h-2-h-until",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T22:32:08.043Z",
+   "updatedAt": "2026-11-08T22:32:08.043Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Add a slot and approve everything automatically. Add one hour, two hours, and until I turn it off, and it needs to be able to be turned off on that same container. And um, it also we need collapsible campaigns on the approval page. The w rating page.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

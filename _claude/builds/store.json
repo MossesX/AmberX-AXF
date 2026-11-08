@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1607,
- "updatedAt": "2026-11-08T22:28:22.463Z",
+ "rev": 1608,
+ "updatedAt": "2026-11-08T22:32:10.180Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124576,7 +124576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124588,10 +124588,73 @@
     "createdAt": "2026-11-08T22:22:59.195Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8ef93s01lvki": "2026-11-08T22:23:20.536Z",
+     "st-mw8ef93s024buh": "2026-11-08T22:23:20.536Z",
+     "st-mw8ef93s032vl0": "2026-11-08T22:23:20.536Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T22:23:20.536Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "approvals-page-auto-approve-toggle-1-h-2-h-until",
+   "title": "Approvals page: auto-approve toggle (1 h / 2 h / until off) + collapsible containers",
+   "category": "",
+   "detail": "SKIP PENDING: put straight in the queue. On the approvals / waiting page (console banner approvals and axHub approvals): an Auto-approve control with 1 hour, 2 hours, and Until I turn it off; shows remaining time; turned off from the same container. Uses axHub passes (axhub.pass_grant/revoke) covering every tool Brett allows, incl. veto vps.run if axHub permits; if destructive tools can't be passed, say so on the control. Waiting approvals grouped in collapsible containers (by service/tool/build). Full API + voice + MCP/CLI control. Tests; report; Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "approvals-page-auto-approve-toggle-1-h-2-h-until",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T22:32:08.043Z",
+   "updatedAt": "2026-11-08T22:32:08.043Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Add a slot and approve everything automatically. Add one hour, two hours, and until I turn it off, and it needs to be able to be turned off on that same container. And um, it also we need collapsible campaigns on the approval page. The w rating page.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 472
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T22:32:08.043Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
