@@ -36,3 +36,8 @@ _claude/builds/store.json.live.json
 
 # Auto-land (push banner): a finished worktree claude-sync leaves alone
 .claude-sync-hold
+# Headless build logs at a worktree's root (deploy/claude-headless.sh: <name>.log + .jsonl, .axf-*.log). An old
+# session log (assets.log) was committed once and then copied into every new worktree; logs never go in git.
+/*.log
+/*.jsonl
+/.axf-*.log
