@@ -1,6 +1,18 @@
 {
  "$axf": "build-origins@1",
  "origins": {
+  "account-failover-notify": {
+   "said": "Brief (headless launch, no verbatim block): Account failover + phone alerts + one home per login. 1. Automatic failover: when a build fails on an account for auth (expired/unrefreshable login) or usage limit, immediately mark that account out and relaunch the same build on the next available account (workers, then the interactive account; API accounts only per routing rules). No build should die and stay dead because of one account. Today three builds died in 1 s each on account-1 (OAuth expired) and nothing retried. 2. Phone notification (AmberX) on every such problem: which account, what failed (expired login / limit / no credits), which build moved where, and what Brett needs to do (e.g. sign account-1 in). 3. One home per login: each account's credentials live in exactly ONE store; every token refresh from any build, console or session writes back to that same place. No duplicate copies that can spend a refresh token and leave others dead. Audit claude-login.mjs / claude-token-save.mjs / claude-headless.sh and the console AI keys store for duplicates; find why account-1's refresh failed (spent by another copy vs idle expiry) and report it. 4. Status in the console Claude accounts screen: out/why/until, last refresh time per login.",
+   "at": "2026-11-08T16:59:53.289Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "agent-cap": {
    "said": "a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
    "at": "2026-11-01",
