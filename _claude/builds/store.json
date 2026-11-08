@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1490,
- "updatedAt": "2026-11-08T17:01:48.272Z",
+ "rev": 1491,
+ "updatedAt": "2026-11-08T17:01:57.437Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -88121,7 +88121,7 @@
    "branch": "claude/handoff-2",
    "pr": "#338",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T20:04:44.792Z",
+   "updatedAt": "2026-11-08T17:01:38.192Z",
    "builtAt": "2026-11-04T19:59:02.487Z",
    "notes": [
     {
@@ -88139,6 +88139,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Overlap: build memory-restructure-chunked-claude-md-store-memor (branch claude/memory-manager-r2) also deletes claude-handoff + _claude/handoff and rewrites CLAUDE.md tiny (body moved to _claude/memory/docs/project-guide.md). On rebase keep its CLAUDE.md and add the session-sync line there.",
+     "at": "2026-11-08T17:01:38.192Z"
     }
    ],
    "approvals": [],
@@ -88408,7 +88412,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107642,12 +107646,16 @@
    "branch": "claude/memory-manager-r2",
    "pr": "",
    "createdAt": "2026-11-06T17:33:08.806Z",
-   "updatedAt": "2026-11-08T17:01:36.142Z",
+   "updatedAt": "2026-11-08T17:01:37.106Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Overlap with handoff-2 (PR #338, built, 881 behind main): this build also deletes apps/console-web/plugins/claude-handoff and _claude/handoff (identical deletions, git merges them cleanly) and rewrites CLAUDE.md, which #338 edits too; when #338 is rebased, take this build's CLAUDE.md and re-add its session-sync line.",
+     "at": "2026-11-08T17:01:37.106Z"
     }
    ],
    "approvals": [],
@@ -107873,7 +107881,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
