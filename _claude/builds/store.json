@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1438,
- "updatedAt": "2026-11-08T00:49:03.941Z",
+ "rev": 1439,
+ "updatedAt": "2026-11-08T00:49:47.184Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115585,7 +115585,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:47:19.843Z",
-   "updatedAt": "2026-11-08T00:48:54.661Z",
+   "updatedAt": "2026-11-08T00:49:46.364Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -115744,6 +115744,28 @@
      "rev": 1,
      "createdAt": "2026-11-08T00:47:19.844Z",
      "updatedAt": "2026-11-08T00:47:19.844Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw747poy0165m4",
+     "title": "",
+     "text": "Model-aware slots: when scanning accounts/slots, also read which models each account has available (Fable limit hit or not); Fable steps only go to accounts with Fable available; if no Fable anywhere, only Opus runs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:49:46.364Z",
+     "updatedAt": "2026-11-08T00:49:46.450Z"
     }
    ],
    "profiles": [
@@ -115754,7 +115776,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
