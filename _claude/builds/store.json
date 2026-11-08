@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1594,
- "updatedAt": "2026-11-08T21:29:55.844Z",
+ "rev": 1595,
+ "updatedAt": "2026-11-08T21:31:12.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124773,9 +124773,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:29:54.434Z",
-   "updatedAt": "2026-11-08T21:29:54.434Z",
+   "updatedAt": "2026-11-08T21:31:11.753Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:31:11.753Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124790,7 +124795,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:31:11.753Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8ck6x601mq28",
+     "title": "",
+     "text": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:31:11.753Z",
+     "updatedAt": "2026-11-08T21:31:11.753Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8ck6x602ujer",
+     "title": "",
+     "text": "All design elements override X hubs except for the color theme.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:31:11.753Z",
+     "updatedAt": "2026-11-08T21:31:11.753Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8ck6x603razf",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:31:11.753Z",
+     "updatedAt": "2026-11-08T21:31:11.753Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -124799,7 +124894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124814,7 +124909,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:31:11.753Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

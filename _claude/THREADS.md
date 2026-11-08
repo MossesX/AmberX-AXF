@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 12:28 UTC · `plan-archive` added (7 steps) (all) · paulie
 - 2026-11-07 12:35 UTC · `plan-archive` s1 done, → running (all) · paulie
 - 2026-11-07 12:35 UTC · `plan-archive` s2 done (all) · paulie
 - 2026-11-07 12:35 UTC · `plan-archive` s3 done (all) · paulie
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 21:23 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` added (0 steps) (all) · pending
 - 2026-11-08 21:24 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` note (all) · orchestrator
 - 2026-11-08 21:29 UTC · `style-rule-every-design-element-overrides-axhub-` added (0 steps) (all) · pending
+- 2026-11-08 21:31 UTC · `style-rule-every-design-element-overrides-axhub-` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:29:55.844Z",
+ "updatedAt": "2026-11-08T21:31:12.832Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75353,9 +75353,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:29:54.434Z",
-   "updatedAt": "2026-11-08T21:29:54.434Z",
+   "updatedAt": "2026-11-08T21:31:11.753Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:31:11.753Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -75370,7 +75375,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8ck6x601mq28"
+    },
+    {
+     "id": "s2",
+     "text": "All design elements override X hubs except for the color theme.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8ck6x602ujer"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8ck6x603razf"
+    }
+   ]
   }
  ]
 }
