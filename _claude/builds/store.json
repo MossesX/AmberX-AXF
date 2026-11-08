@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1570,
- "updatedAt": "2026-11-08T21:08:47.265Z",
+ "rev": 1571,
+ "updatedAt": "2026-11-08T21:09:30.224Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123327,9 +123327,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:08:45.566Z",
-   "updatedAt": "2026-11-08T21:08:45.566Z",
+   "updatedAt": "2026-11-08T21:09:29.290Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:09:29.290Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -123344,7 +123349,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:09:29.290Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8bs9xm01nqqs",
+     "title": "",
+     "text": "Contract work (Fable). New asset schemas for crew agents: agent-skill@1 (name, domain, what it does, tools allowed, files/areas it owns, rules, checks it runs, model preference, cost cap, examples) and agent-persona@1 (name, nickname, voice/tone, job title, avatar, how it reports, strengths, limits), plus agent-profile@1 that combines one persona with several skills. Validators, fixtures, CI check. Ship a large library of boilerplate templates: skills (React UI, Kotlin/Compose, Python server, plugin manifests, themes/skins, tests, docs, merge-fixer, CI fixer, slot watchdog, account health, notifications, voice/API wiring, security review, UI Review designer, demo/pitch writer, data/Postgres, deploy/Coolify, refactor, perf) and personas (lander, reviewer, builder, watchdog, reporter, etc.). Template picker + 'new from template' in the Crew plugin; migrate the existing roster (Earl, Rhonda, Sully, Lenny, Gina, Paulie, Joey, Vinnie) onto it. Orchestrator reads skills when assigning steps. Every UI gets full API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:09:29.290Z",
+     "updatedAt": "2026-11-08T21:09:29.290Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8bs9xm02nb9z",
+     "title": "",
+     "text": "Create a schema for the agents that for their skills and personas. Create a schema with a shitload of templates that um with boilerplates for certain skills and all that.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:09:29.290Z",
+     "updatedAt": "2026-11-08T21:09:29.290Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8bs9xm03742e",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/agent-profile-schema-skills-personas-with-a-big-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/agent-profile-schema-skills-personas-with-a-big-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:09:29.290Z",
+     "updatedAt": "2026-11-08T21:09:29.290Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -123353,7 +123448,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123368,7 +123463,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:09:29.290Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
