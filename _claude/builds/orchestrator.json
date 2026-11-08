@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:15:55.801Z",
+ "updatedAt": "2026-11-08T21:16:13.289Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74695,9 +74695,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:57.057Z",
-   "updatedAt": "2026-11-08T21:14:57.057Z",
+   "updatedAt": "2026-11-08T21:16:08.871Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:16:08.871Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -74712,7 +74717,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett: Plan Studio is too redundant and too complicated. Audit every view, panel, button and setting; merge duplicates, cut what's redundant, keep one clear flow (plans list -> plan -> steps with status, estimate, model). Keep it in sync with the orchestrator (see Plan Studio sync item). Every element a snappable registry asset. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8c0u9404qqgu"
+    },
+    {
+     "id": "s2",
+     "text": "Clean up plant studio too. It's too much like redundant. It's too complicated. Clean uh, clean that up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8c0u9405a9hr"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/clean-up-plan-studio-simplify-remove-redundancy.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/clean-up-plan-studio-simplify-remove-redundancy.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8c0u9406a6rm"
+    }
+   ]
   },
   {
    "id": "terminal-toolbar-responsive-overflow-every-item-",

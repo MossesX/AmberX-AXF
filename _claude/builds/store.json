@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1582,
- "updatedAt": "2026-11-08T21:15:55.801Z",
+ "rev": 1583,
+ "updatedAt": "2026-11-08T21:16:13.289Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123663,9 +123663,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:57.057Z",
-   "updatedAt": "2026-11-08T21:14:57.057Z",
+   "updatedAt": "2026-11-08T21:16:08.871Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:16:08.871Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -123680,7 +123685,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:16:08.871Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8c0u9404qqgu",
+     "title": "",
+     "text": "Brett: Plan Studio is too redundant and too complicated. Audit every view, panel, button and setting; merge duplicates, cut what's redundant, keep one clear flow (plans list -> plan -> steps with status, estimate, model). Keep it in sync with the orchestrator (see Plan Studio sync item). Every element a snappable registry asset. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:16:08.871Z",
+     "updatedAt": "2026-11-08T21:16:08.871Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8c0u9405a9hr",
+     "title": "",
+     "text": "Clean up plant studio too. It's too much like redundant. It's too complicated. Clean uh, clean that up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:16:08.871Z",
+     "updatedAt": "2026-11-08T21:16:08.871Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8c0u9406a6rm",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/clean-up-plan-studio-simplify-remove-redundancy.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/clean-up-plan-studio-simplify-remove-redundancy.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:16:08.871Z",
+     "updatedAt": "2026-11-08T21:16:08.871Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -123689,7 +123784,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123704,7 +123799,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:16:08.871Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
