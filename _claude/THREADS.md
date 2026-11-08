@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:45 UTC · `claude-badge-vps` note (current) · foreign-write
 - 2026-11-07 04:45 UTC · `ui-asset-designer` s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, s29 done, s30 done, s31 done, s32 done, s33 done, s34 done, s35 done, s36 done, s37 done, s38 done, s39 done, s40 done, → complete, note (current) · foreign-write
 - 2026-11-07 04:45 UTC · `icon-browser-manager` note (current) · foreign-write
 - 2026-11-07 04:45 UTC · `library-harvest` added (4 steps) (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 16:32 UTC · `terminal-header-responsive` s4 done (all) · orchestrator
 - 2026-11-08 16:32 UTC · `terminal-header-responsive` s5 done, → complete (all) · orchestrator
 - 2026-11-08 16:32 UTC · `terminal-header-responsive` → built, branch claude/terminal-header-responsive, PR #387 (all) · builds-live
+- 2026-11-08 16:34 UTC · `brief-only-headless` s5 done (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1471,
- "updatedAt": "2026-11-08T16:32:58.817Z",
+ "rev": 1472,
+ "updatedAt": "2026-11-08T16:34:06.469Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116257,7 +116257,7 @@
    "branch": "claude/brief-only-headless",
    "pr": "",
    "createdAt": "2026-11-08T16:14:35.744Z",
-   "updatedAt": "2026-11-08T16:26:32.631Z",
+   "updatedAt": "2026-11-08T16:34:02.983Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -116378,12 +116378,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:34:02.983Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:14:35.745Z",
-     "updatedAt": "2026-11-08T16:14:35.745Z"
+     "updatedAt": "2026-11-08T16:34:03.382Z"
     },
     {
      "id": "s6",
@@ -116416,7 +116416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
