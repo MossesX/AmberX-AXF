@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1446,
- "updatedAt": "2026-11-08T01:01:00.416Z",
+ "rev": 1447,
+ "updatedAt": "2026-11-08T01:05:11.948Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114646,9 +114646,9 @@
    "source": "mcp",
    "pendingId": "urgent-rebuild-pipeline-orchestrator-ids-splits-",
    "branch": "claude/pipeline-rebuild",
-   "pr": "",
+   "pr": "#384",
    "createdAt": "2026-11-08T00:23:40.524Z",
-   "updatedAt": "2026-11-08T00:59:06.634Z",
+   "updatedAt": "2026-11-08T01:05:10.823Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -114913,7 +114913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
