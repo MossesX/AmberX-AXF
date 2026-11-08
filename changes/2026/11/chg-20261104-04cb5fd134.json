@@ -1,0 +1,65 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-04cb5fd134",
+  "createdAt": "2026-11-04T01:39:16.851Z",
+  "updatedAt": "2026-11-07T08:34:32.523Z",
+  "kind": "build",
+  "title": "# Build: app-style-override (Current profile) ## What Brett said (verbatim, Nov 3 2026, voice) \"Put\u2026",
+  "asked": "# Build: app-style-override (Current profile) ## What Brett said (verbatim, Nov 3 2026, voice) \"Put a button in each app's settings to override axHub's style, in design and colors.\" Context: axHub defines the default look for every app; apps inherit it live; manual edits override per setting with an 'Overriding axHub' note (same rule as nav menus - molly-nav-submenus Addendum 6 - and the appearance add-on in gizmo-companion's plan). Book to a free named agent (Polo if his card exists, else Ping Paulie). Register id `app-style-override` in the `current` profile + banner entry + What Brett said block. ## Do - s1 **axHub = style source**: make axHub's active color-theme + style-theme the default for every app (console, Molly, axHub web, AmberX, demo, Gizmo later, and the framework app template). Apps follow axHub live (change axHub's theme -> every inheriting app changes). - s2 **Each app's Settings -> Appearance** gets two clear switches: **Override axHub design** (style-theme: radius, density, fonts, shadows, blur, motion) and **Override axHub colors** (color-theme). Off = inherits (shows 'Inherited from axHub' + the axHub theme name). On = pick/edit this app's own theme; edits show 'Overriding axHub' with axHub's value beside them. Editing any design/colour setting while inheriting auto-switches that override on (with the note). 'Reset to axHub' button. - s3 Shared inherit/override implementation in the framework (one library used by apps, nav menus and add-ons - coordinate with molly-nav-submenus if it already created one; reuse, don't duplicate). - s4 Banner tokens: check whether the design package has banner tokens; if not, add per-banner-type colour tokens (info, success, warning, error, build, merge, ai, neutral) to color-theme so banners stay distinct in every theme (Brett noticed all console banners turned one colour after a theme change). Give every starter theme values. - s5 Expose via REST + MCP + CLI (app_style_get, app_style_override {app, design|colors, on|off}). Tests/type-check, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/app-style-override.md`, THREADS, PR. Commits clean and professional. ## ADDENDUM 1 (Brett, voice) Brett said: \"And the hook will reload axHub, and you can also save design back to axHub.\" - **Reload from axHub**: a button (and hook@1 action, droppable on toolbars) in each app's Appearance settings that re-pulls axHub's current design + colours and re-applies them (keeps overrides unless 'Reset to axHub' is chosen; offer both). - **Save to axHub**: push this app's current design and/or colours back to axHub as the new default for every inheriting app. Confirm dialog lists which apps will change; owner-only action (agents can't do it without Brett); saves a version so it can be undone ('Restore previous axHub style'). Choose: design only, colours only, or both. - Both exposed via REST + MCP + CLI (app_style_reload {app}, app_style_save_to_axhub {app, parts}). Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable \u2192 Opus) is fine. An UPGRADE (e.g. Opus \u2192 Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "6498000c-41f",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "failed",
+    "summary": "Stalled: taken off the banners (no word from its session, or stuck 30+ minutes).",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-11-07T08:34:32.523Z",
+    "by": "systems-check"
+  },
+  "state": "failed",
+  "status": "failed",
+  "buildRef": {
+    "kind": "queue",
+    "id": "app-style-override"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-04T01:39:16.851Z",
+  "finishedAt": "2026-11-07T08:34:32.519Z",
+  "lastSeenAt": "2026-11-04T02:48:48.048Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "branch": "claude/app-style-override",
+  "areas": [
+    "framework/core",
+    "framework/react",
+    "framework/assets/color-theme",
+    "apps/console-web"
+  ],
+  "doing": "Running: Record decision; check tsc",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/app-style-override",
+    "branch": "claude/app-style-override",
+    "base": "c25df01da5ba37c86f0d8baa1adc381bc1ddd290",
+    "head": "c25df01da5ba37c86f0d8baa1adc381bc1ddd290",
+    "pushed": true,
+    "dirty": 0,
+    "files": [],
+    "at": "2026-11-04T01:39:21.136Z"
+  }
+}

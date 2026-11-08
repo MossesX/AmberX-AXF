@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-4698be5f-e002-47b8-bbee-069f0b3edca2",
+ "source": "claude-code",
+ "sessionId": "4698be5f-e002-47b8-bbee-069f0b3edca2",
+ "project": "axhub",
+ "title": "# headless-test-login: builds can test behind the axHub login Brett, Nov 5 2026 (voice): \"For the headless, I need to s…",
+ "startedAt": "2026-11-06T01:46:54.560Z",
+ "endedAt": "2026-11-06T01:47:11.524Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/headless-test-login",
+  "repo": "",
+  "branch": "claude/headless-test-login"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T01:47:10.445Z",
+   "kind": "prompt",
+   "text": "# headless-test-login: builds can test behind the axHub login Brett, Nov 5 2026 (voice): \"For the headless, I need to set a variable on axHub to have my credentials so this browser can test.\" Agreed plan: a separate TEST login, not Brett's own. ## Do - axHub: a 'test' role/user that can sign in and view/click the console, Molly, axHub web and AmberX web, but can NOT approve or deny held calls, read or write the vault, grant passes, or change owner-only settings. (axHub repo: open a separate PR there if the role lives in axHub.) - Vault keys for it (names decided by you, e.g. `axf-test-login-u…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-0825fa9622"
+   ],
+   "features": [],
+   "output": "You've hit your 5-hour limit · resets 4:30am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-0825fa9622"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-06T01:47:12.226Z"
+}

@@ -1,0 +1,98 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-18cd0f50-d69d-4152-be18-a5d5b158059b",
+ "source": "claude-code",
+ "sessionId": "18cd0f50-d69d-4152-be18-a5d5b158059b",
+ "project": "other",
+ "title": "# RESUME: app-voice-commands Brett paused this so the merge queue could land, then said \"start building\". **The spec is…",
+ "startedAt": "2026-11-04T20:18:50.809Z",
+ "endedAt": "2026-11-04T20:43:48.058Z",
+ "minutes": 25,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/app-voice-commands-r2",
+  "repo": "",
+  "branch": "claude/app-voice-commands-r2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T20:19:09.763Z",
+   "kind": "prompt",
+   "text": "# RESUME: app-voice-commands Brett paused this so the merge queue could land, then said \"start building\". **The spec is `/root/axf-builds/app-voice-commands/.brief.md`. Read it first.** Your branch starts from the saved WIP. Rhonda had pushed a fix to PR #323 and was waiting on CI. Check the tail of `/root/axf-builds/app-voice-commands/app-voice-commands.log`, get CI green, then hand #323 to the merge queue (auto-land is OFF). It also lands Expenses follow-ups per the original brief. - Keep the store entry as `app-voice-commands` (no duplicate). Book to Reel Rhonda. Watch the cost (already ~$…",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 834,
+    "output": 35989,
+    "cacheRead": 2681982,
+    "cacheWrite": 118258,
+    "thinking": 14296
+   },
+   "costUsd": 3.9563,
+   "costEstimated": false,
+   "seconds": 1478,
+   "tools": {
+    "Read": 4,
+    "Bash": 66,
+    "Edit": 5
+   },
+   "commands": 66,
+   "files": [
+    "/root/axf-builds/app-voice-commands-r2/_claude/THREADS.md",
+    "/root/axf-builds/app-voice-commands-r2/_claude/builds/reports/app-voice-commands.md",
+    "/root/.claude/projects/-opt-axf/memory/build-manager-worktree-sandbox.md"
+   ],
+   "changeIds": [
+    "chg-20261104-b19a9c4f2a"
+   ],
+   "features": [
+    "orchestrator:app-voice-commands",
+    "queue:auto-land"
+   ],
+   "output": "Yo boss, Amber here. PR #323 is back in shape and sitting in the merge queue. The only thing holding it now is your UI Review tap. **What I did** - **Dropped the paused WIP commit** off the PR. It was carrying store, journal and changes files, which is why GitHub called the PR dirty. - **Merged mai…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/app-voice-commands-r2/_claude/THREADS.md",
+  "/root/axf-builds/app-voice-commands-r2/_claude/builds/reports/app-voice-commands.md",
+  "/root/.claude/projects/-opt-axf/memory/build-manager-worktree-sandbox.md"
+ ],
+ "changeIds": [
+  "chg-20261104-b19a9c4f2a"
+ ],
+ "features": [
+  "orchestrator:app-voice-commands",
+  "queue:auto-land"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 834,
+  "output": 35989,
+  "cacheRead": 2681982,
+  "cacheWrite": 118258,
+  "thinking": 14296,
+  "costUsd": 3.9563,
+  "costEstimated": false,
+  "toolCalls": 75,
+  "commands": 66,
+  "filesTouched": 3,
+  "reportedUsd": 4.8434
+ },
+ "ingestedAt": "2026-11-04T20:43:48.324Z"
+}

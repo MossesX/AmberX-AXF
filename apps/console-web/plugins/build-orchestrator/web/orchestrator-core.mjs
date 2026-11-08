@@ -15,9 +15,12 @@ import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgrade
 
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
-/** `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR). */
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
+/**
+ * `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR).
+ * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
+ */
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
 /** Finished work: no steps left (built waits only on its PR). */
 export const isFinished = (status) => status === 'built' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
@@ -192,6 +195,7 @@ export function derivedStatus(build, rules) {
   const n = nextUp(build, rules);
   if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
   if (n.needsApproval) return 'waiting';
+  if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
 }
 

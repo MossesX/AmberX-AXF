@@ -1,0 +1,90 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-4e084272-5027-4fd9-ae24-55bcfa81c66e",
+ "source": "claude-code",
+ "sessionId": "4e084272-5027-4fd9-ae24-55bcfa81c66e",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-05T11:31:46.017Z",
+ "endedAt": "2026-11-05T11:31:53.934Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-rvD8pG/two",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T11:31:46.906Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/handoff-2-addenda-r2/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 648,
+    "cacheRead": 39493,
+    "cacheWrite": 21914,
+    "thinking": 272
+   },
+   "costUsd": 0.1305,
+   "costEstimated": false,
+   "seconds": 7,
+   "tools": {
+    "Bash": 2
+   },
+   "commands": 2,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-0859d351b8"
+   ],
+   "features": [
+    "pending:handoff-2",
+    "pending:handoff-2-addenda-r2",
+    "orchestrator:handoff-2"
+   ],
+   "output": "Hi Brett. What are we working on? Both of my startup commands were blocked pending approval, so two things are still open: - **Build manager:** entry `chg-20261105-0859d351b8` is still open. It should be closed as \"no change\" unless this turns into a build. - **Claude settings:** I couldn't read th…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-0859d351b8"
+ ],
+ "features": [
+  "pending:handoff-2",
+  "pending:handoff-2-addenda-r2",
+  "orchestrator:handoff-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 648,
+  "cacheRead": 39493,
+  "cacheWrite": 21914,
+  "thinking": 272,
+  "costUsd": 0.1305,
+  "costEstimated": false,
+  "toolCalls": 2,
+  "commands": 2,
+  "filesTouched": 0,
+  "reportedUsd": 0.1962
+ },
+ "ingestedAt": "2026-11-05T11:31:54.111Z"
+}

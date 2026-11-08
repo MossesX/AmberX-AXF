@@ -1,0 +1,87 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-2dc480f2-9f60-4266-811e-2174a67ba9c1",
+ "source": "claude-code",
+ "sessionId": "2dc480f2-9f60-4266-811e-2174a67ba9c1",
+ "project": "other",
+ "title": "# Build: shipped-features-r3 (ALL Opus, high thinking; this account has NO Fable) **Name:** Shipped features · **Catego…",
+ "startedAt": "2026-11-05T03:06:21.655Z",
+ "endedAt": "2026-11-05T03:06:50.177Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/shipped-features-r3",
+  "repo": "",
+  "branch": "claude/shipped-features-r3"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T03:06:44.312Z",
+   "kind": "prompt",
+   "text": "# Build: shipped-features-r3 (ALL Opus, high thinking; this account has NO Fable) **Name:** Shipped features · **Category:** Plugin ## Continue, don't restart Branch base: `claude/shipped-features-r2` (draft PR #350). Read `_claude/builds/progress/shipped-features.md` (HANDOFF) and the PR body. Done: s1 feature-ledger@1, s2 deploy-log@1. The previous session stopped at s3/s4 marked 'Blocked on Fable'. Push your work to `claude/shipped-features-r2` so it stays PR #350 (or open a new PR and close #350 as superseded, linking it). ## Brett's override (verbatim intent, Nov 4) Do s3 (conformance ch…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 526,
+    "cacheRead": 12436,
+    "cacheWrite": 54907,
+    "thinking": 12
+   },
+   "costUsd": 0.2876,
+   "costEstimated": false,
+   "seconds": 6,
+   "tools": {
+    "Bash": 2,
+    "Read": 1
+   },
+   "commands": 2,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-cd3ebc7ae6"
+   ],
+   "features": [
+    "pending:shipped-features"
+   ],
+   "output": "You've hit your 5-hour limit · resets 4:50am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-cd3ebc7ae6"
+ ],
+ "features": [
+  "pending:shipped-features"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 526,
+  "cacheRead": 12436,
+  "cacheWrite": 54907,
+  "thinking": 12,
+  "costUsd": 0.2876,
+  "costEstimated": false,
+  "toolCalls": 3,
+  "commands": 2,
+  "filesTouched": 0,
+  "reportedUsd": 0.4523
+ },
+ "ingestedAt": "2026-11-05T03:06:50.791Z"
+}

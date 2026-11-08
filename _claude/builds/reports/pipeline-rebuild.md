@@ -60,6 +60,13 @@ builds-live → main) → session ends → built / Queue (next phase, or a crash
   tick starts and why the rest waits, the dispatcher log; Queue, Back to Pending, Split now. Routes
   `GET /pipeline`, `POST /pipeline/queue | unqueue | split | account | settings`; plugin commands for voice and MCP.
 
+## Screenshots
+
+Pipeline tab from the built console with mocked data (desktop + phone): `pipeline-rebuild/shots/pipeline-desktop.png`,
+`pipeline-rebuild/shots/pipeline-phone.png`. Submitted to UI Review (single option: a table of the console's own cards).
+
+![Pipeline tab, desktop](pipeline-rebuild/shots/pipeline-desktop.png)
+
 ## Files
 
 - `framework/core/build-pipeline.mjs` (+ `.d.mts`), `framework/plan/builds-store-core.mjs`, `builds-merge-core.mjs`,
@@ -100,8 +107,8 @@ setting `builds.maxParallel`), `fablePlans` (['max']), `useConsoleAccount` (true
 2. Fable per account comes from the plan (`max`) until an override or a probe says otherwise; `pipeline.mjs probe
    <account>` costs one tiny call.
 3. The split costs one Opus call per new build. Existing builds with hand-written steps are never re-split by themselves.
-4. UI Review shots for the Pipeline tab are not in this PR (no console build in this session); the tab uses the
-   console's own cards and controls only.
+4. UI Review: desktop + phone shots of the Pipeline tab are in the report and in UI Review as one option (the tab
+   is a table of the console's own cards and controls, no new look).
 5. The unpushed `claude/pipeline-v2` worktree is untouched; delete it when Brett says so.
 6. `_claude/builds/profiles/` came back from the hub through claude-sync in this session (the Nov 7 merge deleted it);
    left uncommitted here — the hub copy needs the same cleanup.

@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-ecab8ba9-2df2-45c6-93de-19ba365306c1",
+ "source": "claude-code",
+ "sessionId": "ecab8ba9-2df2-45c6-93de-19ba365306c1",
+ "project": "other",
+ "title": "# account-failover: builds switch to the next Claude account when one runs out Brett, Nov 5 2026 (voice): asked that bu…",
+ "startedAt": "2026-11-06T00:58:11.581Z",
+ "endedAt": "2026-11-06T00:58:16.322Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/account-failover",
+  "repo": "",
+  "branch": "claude/account-failover"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T00:58:14.241Z",
+   "kind": "prompt",
+   "text": "# account-failover: builds switch to the next Claude account when one runs out Brett, Nov 5 2026 (voice): asked that builds switch accounts on their own when one runs out of credits / hits its limit. \"Make sure five is last\" (five = the Hulu Anthropic API key, pay-as-you-go). \"Send an approval every time it switches accounts. After it switches accounts, send an approval.\" ## Accounts (claude-accounts plugin, VPS /root/.claude-accounts) account-1 brettspend (pro), account-2 mossesx (pro), account-3 hulu0241 (max), account-4 gizmox1111 (pro). Number 5 = the Hulu API key, stored in the ai-keys p…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 2,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-da1d0e54a8"
+   ],
+   "features": [],
+   "output": "You've hit your 5-hour limit · resets 4:30am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-da1d0e54a8"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-06T00:58:16.630Z"
+}

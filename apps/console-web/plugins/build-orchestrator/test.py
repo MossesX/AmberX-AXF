@@ -55,4 +55,52 @@ try:
 except srv.HTTPException as e:
     check(e.status_code == 404, "an unknown build is a 404")
 check("map" in srv.priority_list(), "the tag list answers through the real CLI")
+# ---- the build pipeline routes (Nov 8 2026): the CLI is where the server looks, ids are checked, errors map to codes
+check(srv.PIPELINE_CLI.is_file(), "pipeline.mjs is where the server looks for it")
+for bad in ("", "../x", "A B", "x" * 90):
+    try:
+        srv._build_id(bad)
+        check(False, f"bad build id {bad!r} is refused")
+    except srv.HTTPException as e:
+        check(e.status_code == 400, f"bad build id {bad!r} is a 400")
+check(srv._build_id("my-build.2") == "my-build.2", "a plain build id passes")
+
+
+class _Proc:
+    def __init__(self, out: str, code: int = 0, err: str = "") -> None:
+        self.stdout, self.returncode, self.stderr = out, code, err
+
+
+_calls: list[list[str]] = []
+
+
+def _fake_run(cmd, **kw):  # noqa: ANN001
+    _calls.append(cmd)
+    if "no-such-build" in cmd:
+        return _Proc('{"ok":false,"error":"no build \"no-such-build\""}', 2)
+    if "refused" in cmd:
+        return _Proc('{"ok":false,"error":"refused is complete: only a Pending build can be queued"}', 2)
+    return _Proc('{"ok":true,"table":{"pending":[],"queued":[],"building":[]},"accounts":[],"slots":{"used":0,"cap":3,"free":3},"plan":{"launches":[],"waits":[],"idle":null}}')
+
+
+_real_run = srv.subprocess.run
+srv.subprocess.run = _fake_run
+try:
+    r = srv._pipeline("status")
+    check(r["ok"] and "pipeline.mjs" in _calls[-1][1] and _calls[-1][-1] == "--json", "status runs pipeline.mjs status --json")
+    srv._pipeline("queue", "alpha", "--by", "Brett", who="Brett")
+    check(_calls[-1][2:5] == ["queue", "alpha", "--by"], "queue passes the id and who moved it")
+    try:
+        srv._pipeline("queue", "no-such-build")
+        check(False, "an unknown build is a 404")
+    except srv.HTTPException as e:
+        check(e.status_code == 404, "an unknown build is a 404")
+    try:
+        srv._pipeline("queue", "refused")
+        check(False, "a refused move is a 400")
+    except srv.HTTPException as e:
+        check(e.status_code == 400 and "only a Pending build" in e.detail, "a refused move is a 400 with the reason")
+finally:
+    srv.subprocess.run = _real_run
+
 print(f"build-orchestrator: {n} checks passed")
