@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:46:01.467Z",
+ "updatedAt": "2026-11-08T17:46:49.277Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70769,15 +70769,15 @@
    "title": "Every UI fully API-controllable: rule, CI parity check, audit, deep links",
    "category": "Framework > API",
    "detail": "Builds on full-api-control (unpushed branch claude/full-api-control: api-coverage@1 checker, control@1 console.values/elements, API Browser); merged in so both land as one PR. Adds plugin-view parity (open/state/actions/settings through named API, not only generic element presses), a deep link per plugin view, the audit, and full API for the Demonstration Designer and Book Builder.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-api-parity-rule-r3",
    "pr": "#393",
    "createdAt": "2026-11-08T17:23:21.874Z",
-   "updatedAt": "2026-11-08T17:45:47.403Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T17:46:46.647Z",
+   "builtAt": "2026-11-08T17:46:46.647Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -70915,8 +70915,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:46:46.647Z",
      "note": "",
      "uid": "st-mw83phfl0ehgl5"
     }

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1531,
- "updatedAt": "2026-11-08T17:46:01.467Z",
+ "rev": 1532,
+ "updatedAt": "2026-11-08T17:46:49.277Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -118042,15 +118042,15 @@
    "title": "Every UI fully API-controllable: rule, CI parity check, audit, deep links",
    "category": "Framework > API",
    "detail": "Builds on full-api-control (unpushed branch claude/full-api-control: api-coverage@1 checker, control@1 console.values/elements, API Browser); merged in so both land as one PR. Adds plugin-view parity (open/state/actions/settings through named API, not only generic element presses), a deep link per plugin view, the audit, and full API for the Demonstration Designer and Book Builder.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-api-parity-rule-r3",
    "pr": "#393",
    "createdAt": "2026-11-08T17:23:21.874Z",
-   "updatedAt": "2026-11-08T17:45:47.403Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T17:46:46.647Z",
+   "builtAt": "2026-11-08T17:46:46.647Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -118214,12 +118214,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:46:46.647Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-08T17:23:21.876Z",
-     "updatedAt": "2026-11-08T17:33:30.673Z"
+     "updatedAt": "2026-11-08T17:46:46.862Z"
     }
    ],
    "profiles": [
@@ -118230,7 +118230,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
