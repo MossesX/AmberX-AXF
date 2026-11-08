@@ -44,6 +44,9 @@ import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, D
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { LAYOUT_MODES, LAYOUT_MODE_PRESET, closeTab, containerIsTabs, effectiveLayout, moveTab, openInContainer, parseOpenMap, removeLayout, saveLayout, setContainerTabs, setLayoutMode, snapshotLayout, switchLayout } from '../core/engines/xlayout';
+import { AUTH_KINDS, EFFECTS, KIND_CATEGORY, MOUNT_KINDS, REFUSED_MOUNTS, SEARCH_KIND_MAP, SHELL_SURFACE_CONTRACT, SURFACE_KINDS, SURFACE_LIMITS, categoryOf, mergeSurfaces, normalizeSurface, parseCategory, parseRef, qualify, resolveRef, surfaceCounts, surfaceErrors, surfaceFromCatalog, surfaceFromSearch } from '../core/engines/shell-surface';
+import { MENU_INDEX_CONTRACT, MENU_INDEX_DEFAULTS, buildMenuIndex, fitBar, foldLevel, menuItems, menuNode, menuPath, pruneRefs, pushRecent, searchMenu, toggleFavorite } from '../core/engines/menu-index';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -1796,6 +1799,146 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
     toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
     presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+  });
+}
+// xLayout layout modes (molly-one-shell s5, Nov 8 2026): single / tabs / split / ide, tab-group containers, named
+// layouts, opening a ref in a container, moving tabs between containers (xlayout.json's normalized outputs gain mode / layouts / active / containers).
+{
+  const base = normalizeXLayout({ apps: [{ id: 'console', label: 'Console', url: 'https://console.example' }], ide: { on: true, containers: [{ pane: 1, tabs: true }, { pane: 2 }] } });
+  const modeInputs: Record<string, unknown> = {
+    'no mode, ide off': { apps: [] }, 'no mode, ide on': { apps: [], ide: { on: true } }, 'mode wins over ide.on': { apps: [], mode: 'split', ide: { on: true } },
+    'tabs': { apps: [], mode: 'tabs' }, 'bad mode': { apps: [], mode: 'grid' },
+    'containers cleaned': { apps: [], mode: 'ide', ide: { containers: [{ pane: 2, tabs: true, label: 'Side' }, { pane: 1, tabs: 'yes' }, { pane: 2 }, { pane: 13 }, 'x'] } },
+    'named layouts': { apps: [], mode: 'ide', active: 'Review', layouts: [{ id: 'review', label: 'Review', mode: 'split', containers: [{ pane: 1, tabs: true }], open: { 1: { tabs: ['console:screen:build', 'console:screen:build', 'bad ref', 'axhub:screen:home'], active: 9 }, 13: { tabs: ['a:screen:b'] }, 2: { tabs: [] } } }, { id: 'review', label: 'Again' }, { id: 'Bad Id!' }, { id: 'coding', tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [2, 1] } }] },
+    'active not a layout': { apps: [], layouts: [{ id: 'a' }], active: 'b' },
+  };
+  const modeErrors: Record<string, unknown> = {
+    'bad mode': { apps: [], mode: 'grid' }, 'layouts not a list': { apps: [], layouts: {} },
+    'bad layouts': { apps: [], layouts: [{ id: 'A B' }, 'x', { id: 'a', mode: 'grid', preset: 'Bad!', tree: { kind: '?' }, containers: [{ pane: 0 }, { pane: 1, tabs: 'y' }, { pane: 1 }], open: [] }, { id: 'a' }] },
+    'active unknown': { apps: [], layouts: [{ id: 'a' }], active: 'b' }, 'containers not a list': { apps: [], ide: { containers: {} } },
+  };
+  const R = (n: string) => `console:screen:${n}`;
+  let open = {} as ReturnType<typeof openInContainer>;
+  const steps: { op: string; out: unknown }[] = [];
+  const step = (op: string, next: typeof open) => { open = next; steps.push({ op, out: open }); };
+  step('open a in 1 (tabs)', openInContainer(open, 1, R('a'), true));
+  step('open b in 1 (tabs)', openInContainer(open, 1, R('b'), true));
+  step('open a again (front)', openInContainer(open, 1, R('a'), true));
+  step('open c after a', openInContainer(open, 1, R('c'), true));
+  step('open d in 2 (single)', openInContainer(open, 2, R('d'), false));
+  step('open e in 2 (single replaces)', openInContainer(open, 2, R('e'), false));
+  step('bad ref ignored', openInContainer(open, 1, 'nope', true));
+  step('bad pane ignored', openInContainer(open, 13, R('x'), true));
+  step('move c 1 → 2 (tabs, at 0)', moveTab(open, 1, 2, R('c'), true, 0));
+  step('move a 1 → 3 (single)', moveTab(open, 1, 3, R('a'), false));
+  step('reorder in 2', moveTab(open, 2, 2, R('c'), true, 5));
+  step('move unknown ignored', moveTab(open, 1, 2, R('zz'), true));
+  step('close e', closeTab(open, 2, R('e')));
+  step('close last in 3', closeTab(open, 3, R('a')));
+  const many = Array.from({ length: 45 }, (_, i) => R(`t${i}`)).reduce((o, r) => openInContainer(o, 1, r, true), {} as typeof open);
+  let lay = base;
+  const layoutSteps: { op: string; layouts: string[]; active: string | null; mode: string }[] = [];
+  const ls = (op: string, d: typeof lay) => { lay = d; layoutSteps.push({ op, layouts: d.layouts.map((l) => `${l.id}:${l.mode}`), active: d.active, mode: d.mode }); };
+  ls('save review', saveLayout(lay, { id: 'review', label: 'Review', mode: 'split' }));
+  ls('save coding', saveLayout(lay, snapshotLayout(lay, 'coding', 'Coding', { 1: { tabs: [R('a')], active: 0 } })));
+  ls('switch review', switchLayout(lay, 'review'));
+  ls('switch unknown', switchLayout(lay, 'nope'));
+  ls('replace review', saveLayout(lay, { id: 'review', label: 'Review 2', mode: 'tabs' }));
+  ls('remove review', removeLayout(lay, 'review'));
+  ls('mode tabs', setLayoutMode(lay, 'tabs'));
+  ls('switch default', switchLayout(lay, null));
+  const overflow = Array.from({ length: 22 }, (_, i) => ({ id: `l${i}` })).reduce((d, l) => saveLayout(d, l), base);
+  write('xlayout-modes.json', {
+    modes: LAYOUT_MODES, modePreset: LAYOUT_MODE_PRESET,
+    normalize: Object.entries(modeInputs).map(([name, raw]) => ({ name, raw, out: normalizeXLayout(raw) })),
+    errors: Object.entries(modeErrors).map(([name, raw]) => ({ name, raw, errors: xlayoutErrors(raw) })),
+    effective: { base: effectiveLayout(base), named: effectiveLayout(normalizeXLayout(modeInputs['named layouts'])), tabsMode: effectiveLayout(normalizeXLayout({ apps: [], mode: 'tabs' })) },
+    isTabs: (['single', 'tabs', 'split', 'ide'] as const).flatMap((mode) => [1, 2, 3].map((pane) => ({ mode, pane, tabs: containerIsTabs({ mode, containers: base.ide.containers }, pane) }))),
+    setTabs: [setContainerTabs(base.ide.containers, 2, true), setContainerTabs(base.ide.containers, 4, true), setContainerTabs(base.ide.containers, 1, false), setContainerTabs(base.ide.containers, 0, true)],
+    openSteps: steps, manyTabs: many,
+    openMap: [parseOpenMap({ 1: { tabs: [R('a'), 1, R('a')], active: -2 } }), parseOpenMap('x'), parseOpenMap({ x: { tabs: [R('a')] } })],
+    layoutSteps, overflow: { count: overflow.layouts.length, first: overflow.layouts[0]!.id, active: overflow.active },
+  });
+}
+// Shell surface (shell-surface@1, molly-one-shell s4, Nov 8 2026; core/engines/shell-surface.ts): every app as data + a
+// native mount seam (no frames); adapters from the search index and console-catalog@1; qualified refs.
+const SURF_MOUNT = { kind: 'native', module: '@axf-app/console', export: 'mountSurface', api: 'https://console.example/api/', auth: 'console-token' };
+const SURF_SEARCH = [
+  { id: 'view:home', kind: 'view', label: 'Home', icon: 'home', focus: { kind: 'view', view: 'home' } },
+  { id: 'view:build', kind: 'view', label: 'Build manager', detail: 'Builds', keywords: ['Queue', 'queue', 'orchestrator'], focus: { kind: 'view', view: 'build' } },
+  { id: 'action:theme.next', kind: 'action', label: 'Next theme', focus: { kind: 'action', spec: 'theme.next' }, requires: 'theme.write' },
+  { id: 'settings-tab:appearance', kind: 'settings-tab', label: 'Appearance', focus: { kind: 'setting', tab: 'appearance' } },
+  { id: 'setting:axf.display.fontScale', kind: 'setting', label: 'Font size', focus: { kind: 'setting', tab: 'appearance', anchor: 'axf.display.fontScale' } },
+  { id: 'dialog:about', kind: 'dialog', label: 'About', focus: { kind: 'dialog', id: 'about' } },
+  { id: 'asset:theme:dark', kind: 'asset', label: 'Dark', focus: { kind: 'asset', type: 'theme', id: 'dark' } },
+  { id: 'window:w1', kind: 'window', label: 'Window', focus: { kind: 'window', id: 'w1' } },
+  { id: 'menu:file.save', kind: 'menu', label: 'Save', focus: { kind: 'action', spec: 'file.save' } },
+];
+{
+  const good = { $axf: SHELL_SURFACE_CONTRACT, app: { id: 'Console', label: 'Console', icon: 'terminal', url: 'https://console.example/', description: 'The Dev Console' }, mount: SURF_MOUNT, items: [
+    { kind: 'screen', id: 'build', label: 'Build manager', category: 'Builds > Manager', keywords: ['Queue', 'queue'] }, { kind: 'plugin', id: 'ui-review', label: 'UI Review', plugin: 'ui-review', icon: 'eye' },
+    { kind: 'settings', id: 'appearance', label: 'Appearance' }, { kind: 'setting', id: 'axf.x', label: 'X', parent: 'appearance', effect: 'change' },
+    { kind: 'action', id: 'reset', label: 'Reset', effect: 'destructive', requires: 'admin' }, { kind: 'widget', id: 'clock', label: 'Clock' },
+    { kind: 'screen', id: 'build', label: 'Repeat' }, { kind: 'Bad Kind', id: 'x', label: 'X' }, { kind: 'screen', id: '', label: 'No id' }, { kind: 'screen', id: 'y', label: '' }, 'x',
+  ] };
+  const bad: Record<string, unknown> = {
+    nothing: null, string: 'x', 'empty object': {},
+    'frame mount': { $axf: SHELL_SURFACE_CONTRACT, app: { id: 'axhub', label: 'axHub' }, mount: { kind: 'iframe', module: 'x' }, items: [] },
+    'url mount': { $axf: SHELL_SURFACE_CONTRACT, app: { id: 'axhub', label: 'axHub' }, mount: { kind: 'url', module: 'x' }, items: [] },
+    'bad everything': { $axf: 'shell-surface@2', app: { id: 'Bad App!', label: '', url: 'http://x' }, mount: { kind: 'native', module: ' ', export: '1x', api: 'ftp://x', auth: 'password' }, items: [{ kind: 'screen', id: 'a', label: 'A', effect: 'boom' }, { kind: 'screen', id: 'a', label: 'A' }, 'x', { id: 'b' }] },
+    'items not a list': { $axf: SHELL_SURFACE_CONTRACT, app: { id: 'a', label: 'A' }, mount: { kind: 'native', module: 'a' }, items: {} },
+  };
+  const s = normalizeSurface(good)!;
+  write('shell-surface.json', {
+    contract: SHELL_SURFACE_CONTRACT, kinds: SURFACE_KINDS, kindCategory: KIND_CATEGORY, mounts: MOUNT_KINDS, refused: REFUSED_MOUNTS, auth: AUTH_KINDS, effects: EFFECTS, limits: SURFACE_LIMITS, searchKinds: SEARCH_KIND_MAP,
+    normalize: Object.entries({ good, ...bad, 'no mount': { app: { id: 'a', label: 'A' }, items: [] }, 'mount defaults': { app: { id: 'a' }, mount: { kind: 'native', module: '@axf-app/a' }, items: [] } }).map(([name, raw]) => ({ name, raw, out: normalizeSurface(raw) })),
+    errors: Object.entries({ good, ...bad }).map(([name, raw]) => ({ name, raw, errors: surfaceErrors(raw) })),
+    categories: [['A > B > ', 'x'], [['A', ' B ', '', 'C', 'D', 'E']], [7], ['']].map(([raw]) => ({ raw, out: parseCategory(raw) })),
+    categoryOf: s.items.map((i) => ({ kind: i.kind, id: i.id, path: categoryOf(i) })),
+    refs: { make: s.items.map((i) => qualify(s.app.id, i)), parse: ['console:screen:build', 'console:setting:axf.x:y', 'console::x', ':screen:x', 'Console:screen:x', 'console:screen:', 'console'].map((r) => ({ ref: r, out: parseRef(r) })), resolve: ['console:screen:build', 'console:screen:nope', 'axhub:screen:build', 'bad'].map((r) => ({ ref: r, out: resolveRef([s], r)?.item ?? null })) },
+    fromSearch: { search: SURF_SEARCH, out: surfaceFromSearch({ id: 'console', label: 'Console' }, SURF_MOUNT, SURF_SEARCH as never) },
+    fromCatalog: surfaceFromCatalog({ id: 'console', label: 'Console' }, SURF_MOUNT, { $axf: 'console-catalog@1', app: 'console-web', items: [{ kind: 'screen', id: 'build', label: 'Builds' }, { kind: 'action', id: 'x.reset', label: 'Reset', effect: 'destructive' }, { kind: 'settings', id: 'plugins/ui-review', label: 'UI Review', parent: 'plugins' }] }),
+    merge: mergeSurfaces([good, { ...good, app: { id: 'axhub', label: 'axHub' } }, { ...good, app: { id: 'console', label: 'Console 2' } }, 'junk']).map((m) => ({ app: m.app, items: m.items.length })),
+    counts: surfaceCounts(s),
+  });
+}
+// Menu index (menu-index@1, molly-one-shell s6, Nov 8 2026; core/engines/menu-index.ts): one slim menu over every app
+// (grouped by app and category, letter-range folding), search, favorites, recents, three-dot fit.
+{
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const consoleItems = [
+    ...Array.from({ length: 30 }, (_, i) => ({ kind: 'screen', id: `s${i}`, label: `${letters[i % 26]}${letters[(i * 7) % 26].toLowerCase()} screen ${i}` })),
+    ...Array.from({ length: 15 }, (_, i) => ({ kind: 'action', id: `act${i}`, label: `Sync thing ${i}` })),
+    { kind: 'settings', id: 'appearance', label: 'Appearance' }, { kind: 'setting', id: 'font', label: 'Font size', parent: 'appearance' }, { kind: 'setting', id: 'admin-only', label: 'Admin thing', requires: 'admin', parent: 'appearance' },
+    { kind: 'screen', id: 'merge', label: 'Merge queue', category: ['Builds', 'Landing'] }, { kind: 'plugin', id: 'ui-review', label: 'UI Review', icon: 'eye' },
+  ];
+  const surf = (id: string, label: string, items: unknown[], icon?: string) => normalizeSurface({ $axf: SHELL_SURFACE_CONTRACT, app: { id, label, icon }, mount: { kind: 'native', module: `@axf-app/${id}` }, items })!;
+  const surfaces = [
+    surf('console', 'Console', consoleItems, 'terminal'),
+    surf('axhub', 'axHub', [{ kind: 'screen', id: 'approvals', label: 'Approvals' }, { kind: 'screen', id: 'go-pass', label: 'Go pass' }, { kind: 'dialog', id: 'about', label: 'About axHub' }], 'shield'),
+    surf('amberx', 'AmberX', [], 'sparkles'),
+  ];
+  const favorites = ['axhub:screen:approvals', 'console:screen:merge', 'gone:screen:x'];
+  const recents = ['console:setting:font', 'axhub:screen:go-pass', 'console:screen:merge'];
+  const idx = buildMenuIndex(surfaces, { favorites, recents, allowed: (p) => p !== 'admin' });
+  const nodes = (n: number) => Array.from({ length: n }, (_, i) => ({ kind: 'item' as const, id: `a:screen:${i}`, label: `${letters[(i * 5) % 26]} ${i}`, app: 'a', itemKind: 'screen' }));
+  write('menu-index.json', {
+    contract: MENU_INDEX_CONTRACT, defaults: MENU_INDEX_DEFAULTS,
+    input: { surfaces, favorites, recents, deniedPermission: 'admin' },
+    index: idx,
+    variants: {
+      navOnly: buildMenuIndex(surfaces, { kinds: ['screen', 'plugin'], maxPerLevel: 8 }),
+      ordered: buildMenuIndex(surfaces, { appOrder: ['axhub'], hiddenApps: ['console'] }).roots.map((r) => r.id),
+      tinyMax: buildMenuIndex(surfaces, { maxPerLevel: 1 }).roots.map((r) => (r.kind === 'group' ? [r.id, r.children.length] : r.id)),
+    },
+    fold: [5, 13, 30, 200].map((n) => ({ n, out: foldLevel(nodes(n), 6, 'p') })),
+    paths: ['console:screen:merge', 'console:setting:font', 'console:screen:s3', 'console/Builds', 'nope'].map((id) => ({ id, path: menuPath(idx, id), node: menuNode(idx, id)?.label ?? null })),
+    items: menuItems(idx).map((n) => n.id),
+    search: ['merge', 'screen 1', 'font appearance', 'axhub', 'sync 1', 'zzz', ''].map((q) => ({ q, hits: searchMenu(idx, q, { recents, limit: 5 }) })),
+    favorites: [toggleFavorite([], 'a:screen:x'), toggleFavorite(['a:screen:x', 'a:screen:y'], 'a:screen:x'), toggleFavorite(['1', '2', '3'], '4', 3), toggleFavorite(['a'], '')],
+    recents: [pushRecent([], 'a'), pushRecent(['a', 'b', 'c'], 'c'), pushRecent(['a', 'b', 'c'], 'd', 3)],
+    prune: pruneRefs(favorites, idx),
+    fit: [[[50, 60, 70], 200, 30, 0], [[50, 60, 70], 170, 30, 0], [[50, 60, 70], 100, 30, 4], [[50, 60, 70], 20, 30, 0], [[], 10, 30, 0], [[50, -1, NaN], 60, 30, 0]].map(([w, a, m, g]) => ({ widths: w, available: a, more: m, gap: g, kept: fitBar(w as number[], a as number, m as number, g as number) })),
   });
 }
 // Navigation style (nav-style@1, build molly-nav-submenus, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the
