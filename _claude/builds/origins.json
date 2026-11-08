@@ -3233,6 +3233,18 @@
    "from": "",
    "addenda": []
   },
+  "tabs-api-control": {
+   "said": "Tabs get API control (Brett, urgent)\n\nAgents can open a screen but can't switch its tabs (e.g. Build orchestrator > Pipeline). Fix in the framework so every tab and tab group in every app is API/voice/MCP controllable:\n1. Every tab registers an action (e.g. `tab.open` with screen + tab id/label) and shows in console_list actions; console_open accepts `screen/tab` (\"build-orchestrator/pipeline\") and console_show can target a tab.\n2. Also sub-tabs, settings sections and accordions: open/expand by id or label.\n3. Deep links for screen/tab.\n4. Test on Build orchestrator > Pipeline, Plan Studio, Settings.\n5. CI check: any tab without an action fails.\nKeep it small and land fast: tests, report, PR. Create a build record so it shows in Plan Studio.",
+   "at": "2026-11-08T22:30:52.988Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "tap-to-confirm-switch-in-every-toolbar-s-own-set": {
    "said": "it should be in every toolbar setting.",
    "at": "",
