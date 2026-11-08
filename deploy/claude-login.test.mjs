@@ -85,16 +85,29 @@ ok(read(join(s.dir, '.credentials.json')) === credsOf(SECRET_A), 'credentials: t
 ok(lstatSync(join(s.dir, 'settings.json')).isSymbolicLink() && lstatSync(join(s.dir, 'projects')).isSymbolicLink(), 'settings + transcripts stay shared (symlinks)');
 const g = JSON.parse(read(join(s.dir, '.claude.json')));
 ok(!g.oauthAccount && g.mcpServers?.x, 'global config copied, minus the cached (stale) account');
-ok(read(join(s.dir, 'token.env')).trim() === 'unset CLAUDE_CODE_OAUTH_TOKEN' && mode(join(s.dir, 'token.env')) === 0o600, 'no saved token = token.env unsets the inherited one');
+ok(read(join(s.dir, 'token.env')).trim() === 'unset CLAUDE_CODE_OAUTH_TOKEN ANTHROPIC_API_KEY' && mode(join(s.dir, 'token.env')) === 0o600, 'no saved token = token.env unsets the inherited one');
 const ce = L.childEnv(s, { PATH: '/bin', CLAUDE_CODE_OAUTH_TOKEN: INHERITED });
 ok(ce.CLAUDE_CONFIG_DIR === s.dir && !('CLAUDE_CODE_OAUTH_TOKEN' in ce) && ce.PATH === '/bin', 'childEnv: config dir set, inherited token dropped');
 const sb = L.snapshot({ dir: w, session: 'two', account: 'account-b', env });
 ok(sb.token && L.childEnv(sb, { CLAUDE_CODE_OAUTH_TOKEN: INHERITED }).CLAUDE_CODE_OAUTH_TOKEN === TOKEN_B, 'account with a saved token: that token, never the inherited one');
-ok(/^export CLAUDE_CODE_OAUTH_TOKEN='/.test(read(join(sb.dir, 'token.env'))), 'token.env exports it (0600 file, never printed)');
+ok(/^unset ANTHROPIC_API_KEY\nexport CLAUDE_CODE_OAUTH_TOKEN='/.test(read(join(sb.dir, 'token.env'))), 'token.env exports it and drops any inherited API key (0600 file, never printed)');
+// API-key accounts (workers-api-routing, Nov 8 2026): only the key is exported, billed per token
+mkdirSync(join(A, 'hulu-api'), { recursive: true }); writeFileSync(join(A, 'hulu-api', 'apikey'), 'fake-api-key-hulu\n');
+ok(L.accounts(env).find((a) => a.name === 'hulu-api')?.kind === 'api', 'an apikey file makes an API-key account');
+const sk = L.snapshot({ dir: w, session: 'api-one', account: 'hulu-api', env });
+ok(sk.kind === 'api' && !existsSync(join(sk.dir, '.credentials.json')), 'no subscription login in its copy');
+ok(read(join(sk.dir, 'token.env')) === "unset CLAUDE_CODE_OAUTH_TOKEN\nexport ANTHROPIC_API_KEY='fake-api-key-hulu'\n" && mode(join(sk.dir, 'token.env')) === 0o600, 'token.env exports only the key (0600)');
+const ke = L.childEnv(sk, { CLAUDE_CODE_OAUTH_TOKEN: INHERITED });
+ok(ke.ANTHROPIC_API_KEY === 'fake-api-key-hulu' && !('CLAUDE_CODE_OAUTH_TOKEN' in ke), 'childEnv: the key, never an inherited subscription token');
+ok(!JSON.stringify(L.who({ dir: w, session: 'api-one' })).includes('fake-'), 'its record holds no key');
+const kcli = spawnSync(process.execPath, [join(HERE, 'claude-login.mjs'), 'snapshot', '--dir', w, '--session', 'api-two', '--account', 'hulu-api', '--sh'], { env, encoding: 'utf8' });
+ok(/ login_kind=api$/.test(kcli.stdout.trim()) && !/fake-/.test(kcli.stdout + kcli.stderr), 'CLI --sh says api and never prints the key');
+L.release({ dir: w, session: 'api-one' }); L.release({ dir: w, session: 'api-two' });
+rmSync(join(A, 'hulu-api'), { recursive: true, force: true });
 ok(L.who({ dir: w, session: 'two' })?.account === 'account-b' && L.describe(L.who({ dir: w, session: 'two' })) === 'account-b (b@example.com)', 'who: account + email, nothing else');
 ok(!JSON.stringify(L.who({ dir: w, session: 'two' })).includes('fake-'), 'the record holds no credential');
 const cli = spawnSync(process.execPath, [join(HERE, 'claude-login.mjs'), 'snapshot', '--dir', w, '--session', 'three', '--account', 'account-b', '--sh'], { env, encoding: 'utf8' });
-ok(/^login_dir='.*' login_account='account-b' login_email='b@example.com' login_source=saved login_token=1$/.test(cli.stdout.trim()), `CLI --sh: one line of names: ${cli.stdout.trim()}`);
+ok(/^login_dir='.*' login_account='account-b' login_email='b@example.com' login_source=saved login_token=1 login_kind=subscription$/.test(cli.stdout.trim()), `CLI --sh: one line of names: ${cli.stdout.trim()}`);
 ok(!/fake-/.test(cli.stdout + cli.stderr), 'CLI never prints a credential');
 mkdirSync(join(w, '.axf-claude', 'foreign'));
 ok(!L.release({ dir: w, session: 'foreign' }).released && existsSync(join(w, '.axf-claude', 'foreign')), 'release leaves a folder it didn\'t make alone');
@@ -124,7 +137,7 @@ echo '{"type":"result","result":"done"}'
   chmodSync(join(bin, 'claude'), 0o755);
   const sock = mkdtempSync(join(tmpdir(), 'axf-login-tmux-'));
   const runEnv = { ...env, PATH: `${bin}:${process.env.PATH}`, TMUX_TMPDIR: sock, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off',
-    AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_ACCOUNT_SWITCHES: '0', AXF_HEADLESS_DIR: join(tmp, 'headless'), CLAUDE_CODE_OAUTH_TOKEN: INHERITED };
+    AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_ACCOUNT_SWITCHES: '0', AXF_WORKERS: 'off', /* own login of the active account, not worker routing */ AXF_HEADLESS_DIR: join(tmp, 'headless'), CLAUDE_CODE_OAUTH_TOKEN: INHERITED };
   // HOME is a temp folder too: the launcher puts ~/.local/bin first on PATH, where the real claude lives
   runEnv.HOME = join(tmp, 'home'); mkdirSync(runEnv.HOME);
   for (const k of ['TMUX', 'CLAUDE_CONFIG_DIR', 'AXF_AGENT', 'AXF_AGENT_NAME', 'AXF_AGENT_BOOKED', 'AXF_SESSION', 'AXHUB_TOKEN']) delete runEnv[k];
