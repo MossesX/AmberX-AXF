@@ -4988,14 +4988,14 @@
    "tokens": 174
   },
   {
-   "id": "memory-status/claude-handoff-plugin-oct-22-2026-opus-move-the",
+   "id": "memory-status/claude-handoff-plugin-oct-22-2026-opus-deleted-n",
    "source": "_claude/memory/STATUS.md",
    "section": "Status (as of Oct 21 2026)",
-   "title": "Claude handoff plugin (Oct 22 2026, Opus): move the project to a new Claude account",
+   "title": "Claude handoff plugin (Oct 22 2026, Opus; deleted Nov 8 2026 with _claude/handoff/, bui…",
    "start": 136,
    "end": 136,
    "date": "2026-10-22",
-   "tokens": 2199
+   "tokens": 2212
   },
   {
    "id": "memory-status/gauge-progress-meter-control-assets-oct-22-2026",

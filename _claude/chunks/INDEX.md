@@ -1,6 +1,6 @@
 # Memory chunks (generated)
 
-1183 chunks, about 317928 tokens in all, from 103 files. Do not edit: edit the source and run
+1183 chunks, about 317941 tokens in all, from 103 files. Do not edit: edit the source and run
 `node framework/cli/memory-chunks.mjs build`. Read a chunk at `_claude/chunks/<id>.md`
 (or `memory-chunks.mjs show <id>`); find one with `memory-chunks.mjs find <text>` or by grepping this file.
 
@@ -512,7 +512,7 @@
 - `memory-status/plugins-inherit-the-app-s-style-oct-22-2026-opus` Plugins inherit the app's style (Oct 22 2026, Opus; rule in _claude/rules/RULES.md) (2026-10-22) · 269t
 - `memory-status/build-lists-fixed-times-dollar-costs-oct-23-2026` Build lists: fixed times + dollar costs (Oct 23 2026, Opus) (2026-10-23) · 331t
 - `memory-status/build-queue-shows-expected-time-and-price-oct-22` Build queue shows expected time and price (Oct 22 2026, Opus) (2026-10-22) · 174t
-- `memory-status/claude-handoff-plugin-oct-22-2026-opus-move-the` Claude handoff plugin (Oct 22 2026, Opus): move the project to a new Claude account (2026-10-22) · 2199t
+- `memory-status/claude-handoff-plugin-oct-22-2026-opus-deleted-n` Claude handoff plugin (Oct 22 2026, Opus; deleted Nov 8 2026 with _claude/handoff/, bui… (2026-10-22) · 2212t
 - `memory-status/gauge-progress-meter-control-assets-oct-22-2026` Gauge + progress meter control assets (Oct 22 2026, Opus; web only, Android twin deferred) (2026-10-22) · 355t
 - `memory-status/retired-patches-manages-the-plugins-of-the-apps` [retired] Patches manages the plugins of the apps it hosts — embed@1 take plugins (Oct… (2026-10-21) · 548t
 - `memory-status/todo-manager-plugin-oct-22-2026-opus` Todo manager plugin (Oct 22 2026, Opus) (2026-10-22) · 201t

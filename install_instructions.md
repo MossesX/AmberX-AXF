@@ -424,7 +424,7 @@ Every Claude account, on every surface, needs to start from the same rules. Here
 | --- | --- | --- |
 | Claude Code (VPS, computers) | Loads `CLAUDE.md`, which imports `_claude/shared/rules/RULES.md` and `_claude/rules/RULES.md`. The claude-sync SessionStart hook pulls the latest `_claude/` from the hub first. | `bash deploy/claude-pick.sh --install` once per machine (`claude` then starts on your plan with Opus, no questions), then `claude-sync login` (axHub token) |
 | Claude Code cloud (claude.ai/code) | Loads the repo's `CLAUDE.md` when the session starts in the repo. | Give the Claude GitHub app access to the repo; start sessions **in** `MossesX/AmberX-AXF`, never a fork |
-| claude.ai Project (chats) | Project instructions + knowledge files. It can't read the repo by itself. | Paste `_claude/handoff/INSTRUCTIONS.md` (below its line) into the Project's **Instructions**; upload `_claude/handoff/context/*` as knowledge; refresh them after rule changes |
+| claude.ai Project (chats) | Project instructions + knowledge files. It can't read the repo by itself. | Read the Claude files through axHub (`axhub.memory_read`, project `amberx-axf`); the handoff kit (`_claude/handoff/`) was deleted on Nov 8 2026 and Brett restarts handoff later |
 | Console assistant / Mosses | The plugin's own settings and add-ons | nothing extra |
 
 **Keep them current:** when a rule changes, the session saves it in `_claude/`, runs `claude-sync sync` and
@@ -475,28 +475,10 @@ repo").
 
 ## 11. Handing off sessions
 
-A handoff moves the work to another Claude account (a new subscription, a fresh account, another person) with
-everything it needs.
-
-**From the console:**
-
-1. Open the console → **Tools → Claude handoff** → **Assemble prompt**. The console rebuilds the kit in
-   `_claude/handoff/` (rules, instructions, memory, open threads, secret *names* only, set-up checklist) and
-   records the run on axHub.
-2. It opens the run's page on the hub, `https://axhub.amberxai.com/handoff/<id>`, which shows every step.
-3. Tap **Continue installation and handoff**. Pick the new account's session (likely ones first). It copies the
-   prompt or a ready command and opens it where it can.
-4. Paste it into the new account's Claude (a claude.ai/code session in `MossesX/AmberX-AXF`, or Claude Code on the
-   VPS signed in to that account) and tap **I've sent it**.
-5. The new account's Claude reports each of the 13 handoff steps back (with the one-run key in the prompt), and
-   they tick off on the page.
-6. Make the new account's subscription active in **AI keys** ([section 8](#8-several-claude-accounts)) if it
-   should also drive the VPS.
-
-**What carries over:** the repo (branches, open PRs, `THREADS.md`), `_claude/` (rules, decisions, memory), the
-Codebase changes log (each entry has a **Copy resume prompt**; `changes.mjs resume <id> --prompt`), the pending
-list and build queue on axHub. **What doesn't:** chat history, and secrets. The new account asks for each secret
-by name (`_claude/handoff/SECRETS.md`), and you enter it in its destination yourself.
+The console's Claude handoff (the `claude-handoff` plugin and the `_claude/handoff/` kit) was deleted on Nov 8 2026
+(build `memory-restructure-chunked-claude-md-store-memor`); Brett restarts handoff later. Until then another
+account carries on from the repo: `CLAUDE.md` → `node framework/cli/memory-load.mjs` → `_claude/chunks/INDEX.md`, the
+builds store, and the Codebase changes log's **Copy resume prompt** (`changes.mjs resume <id> --prompt`).
 
 ---
 

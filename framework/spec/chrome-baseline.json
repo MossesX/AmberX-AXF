@@ -5,7 +5,6 @@
     "apps/amberx-droid/src/plugins/walkthrough/web/index.tsx": 1,
     "apps/amberx-droid/src/plugins/walkthrough/web/voice.tsx": 1,
     "apps/console-web/plugins/approvals-banner/web/index.tsx": 3,
-    "apps/console-web/plugins/claude-handoff/web/ui.tsx": 1,
     "apps/console-web/plugins/claude-settings/web/index.tsx": 1,
     "apps/console-web/plugins/console-terminal/web/nav.tsx": 1,
     "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx": 1,
