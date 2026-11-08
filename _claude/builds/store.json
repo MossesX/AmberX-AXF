@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1586,
- "updatedAt": "2026-11-08T21:17:11.390Z",
+ "rev": 1587,
+ "updatedAt": "2026-11-08T21:17:28.440Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124137,9 +124137,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:16:27.221Z",
-   "updatedAt": "2026-11-08T21:16:27.221Z",
+   "updatedAt": "2026-11-08T21:17:27.406Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:17:27.406Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124154,7 +124159,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:17:27.406Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8c2ium04o1bx",
+     "title": "",
+     "text": "Brett: create tons of snappable widgets for title bars, banners and toolbars (dozens to 100+): clock/date, usage meter per account, build status, queue/slots, running agents, cost today/week, approvals waiting, notifications bell, account health, VPS CPU/memory/disk, network, git branch/CI status, UI Review count, search/jump-to, voice mic toggle, follow Amber, theme/skin switcher, layout switcher, profile switcher, weather, timers/alarms, quick actions, favorites, recent, breadcrumbs, title, logo, spacer/separator, etc. Every widget is a snappable registry asset with its OWN settings interface, opened by right-clicking the widget itself or its parent bar (parent shows all its widgets' settings). Widget picker to add/drag widgets onto any bar. Works with the overflow rule (bars drop widgets into three-dot menu when small). Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:17:27.406Z",
+     "updatedAt": "2026-11-08T21:17:27.406Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8c2ium05l70q",
+     "title": "",
+     "text": "Create a shitload of widgets, snappable widgets for title bars. And, um, a shitload of them, like tons of them, all with the, their own, um, Settings interface accessible by right clicking the individual item or the parent itself.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:17:27.406Z",
+     "updatedAt": "2026-11-08T21:17:27.406Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8c2ium06ejj1",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/big-library-of-snappable-title-bar-widgets-each-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/big-library-of-snappable-title-bar-widgets-each-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:17:27.406Z",
+     "updatedAt": "2026-11-08T21:17:27.406Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -124163,7 +124258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124178,7 +124273,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:17:27.406Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
