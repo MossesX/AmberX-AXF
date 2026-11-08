@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T16:59:02.350Z",
+ "updatedAt": "2026-11-08T16:59:14.656Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70210,6 +70210,92 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw82u4zr08aqf6"
+    }
+   ]
+  },
+  {
+   "id": "molly-sign-in-once",
+   "title": "Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens",
+   "category": "Molly",
+   "detail": "Gap found by molly-one-shell. Native screens call each app backend from molly.amberxai.com: the console API takes a bearer token kept in the console origin, axHub uses its own session, Expenses its own. Molly needs one sign-in that hands each native plugin its credentials. No secrets in the repo.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T16:59:02.204Z",
+   "updatedAt": "2026-11-08T16:59:02.204Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-08T16:59:02.204Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Credential seam in Molly host: per-app API base + auth provider (console token, hub session, Expenses session)",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw82u77u04a0wg"
+    },
+    {
+     "id": "s2",
+     "text": "Molly sign-in screen + Settings section for app connections; status in the systems check style",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw82u77u05lksp"
+    },
+    {
+     "id": "s3",
+     "text": "Tests + report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw82u77u06x0a6"
     }
    ]
   }
