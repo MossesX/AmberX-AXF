@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s1 done, → running (all) · orchestrator
 - 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s2 done (all) · orchestrator
 - 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` s3 done, → complete (all) · orchestrator
 - 2026-11-07 11:17 UTC · `gizmo-voice` s3 done, → complete (all) · orchestrator
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 21:13 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` → queued, note (all) · cli
 - 2026-11-08 21:13 UTC · `demonstration-designer-plugin-new-standalone` → queued, note (all) · cli
 - 2026-11-08 21:14 UTC · `nested-menus-for-console-amberx-and-molly-overri` added (0 steps) (all) · pending
+- 2026-11-08 21:14 UTC · `clean-up-plan-studio-simplify-remove-redundancy` added (0 steps) (all) · pending
 
 ## Token passes (log)
 

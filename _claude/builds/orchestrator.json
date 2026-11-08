@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:14:22.793Z",
+ "updatedAt": "2026-11-08T21:14:58.647Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74608,6 +74608,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "clean-up-plan-studio-simplify-remove-redundancy",
+   "title": "Clean up Plan Studio (simplify, remove redundancy)",
+   "category": "",
+   "detail": "Brett: Plan Studio is too redundant and too complicated. Audit every view, panel, button and setting; merge duplicates, cut what's redundant, keep one clear flow (plans list -> plan -> steps with status, estimate, model). Keep it in sync with the orchestrator (see Plan Studio sync item). Every element a snappable registry asset. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "clean-up-plan-studio-simplify-remove-redundancy",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:14:57.057Z",
+   "updatedAt": "2026-11-08T21:14:57.057Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Clean up plant studio too. It's too much like redundant. It's too complicated. Clean uh, clean that up.",
     "at": "",
     "source": "",
     "session": "",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1578,
- "updatedAt": "2026-11-08T21:14:22.793Z",
+ "rev": 1579,
+ "updatedAt": "2026-11-08T21:14:58.647Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123545,6 +123545,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T21:14:21.020Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "clean-up-plan-studio-simplify-remove-redundancy",
+   "title": "Clean up Plan Studio (simplify, remove redundancy)",
+   "category": "",
+   "detail": "Brett: Plan Studio is too redundant and too complicated. Audit every view, panel, button and setting; merge duplicates, cut what's redundant, keep one clear flow (plans list -> plan -> steps with status, estimate, model). Keep it in sync with the orchestrator (see Plan Studio sync item). Every element a snappable registry asset. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "clean-up-plan-studio-simplify-remove-redundancy",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:14:57.057Z",
+   "updatedAt": "2026-11-08T21:14:57.057Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Clean up plant studio too. It's too much like redundant. It's too complicated. Clean uh, clean that up.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 463
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:14:57.057Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}
