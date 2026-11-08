@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1493,
- "updatedAt": "2026-11-08T17:05:44.118Z",
+ "rev": 1494,
+ "updatedAt": "2026-11-08T17:11:06.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117448,14 +117448,14 @@
    "title": "Account failover + phone alerts + one home per login",
    "category": "Claude accounts",
    "detail": "Builds that die on an account's auth (expired/unrefreshable login) or usage limit are moved to the next account at once (workers, then the interactive account; API accounts per routing rules), the account is marked out with why/until, Brett gets an AmberX push saying which account, what failed, where the build went and what to do; each login has exactly one home store that every refresh writes back to; the Claude accounts screen shows out/why/until and the last refresh per login. Absorbs steps 3-5 of running-builds-follow-the-active-claude-account-fail-over-when-it-dies. Branch claude/account-failover-notify, stacked on PR #389 (workers-api-routing).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-08T16:59:53.289Z",
+   "updatedAt": "2026-11-08T17:11:04.073Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -117488,12 +117488,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:11:04.073Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:59:53.290Z",
-     "updatedAt": "2026-11-08T16:59:53.290Z"
+     "updatedAt": "2026-11-08T17:11:04.273Z"
     },
     {
      "id": "s2",
@@ -117592,7 +117592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
