@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1550,
- "updatedAt": "2026-11-08T19:13:50.848Z",
+ "rev": 1551,
+ "updatedAt": "2026-11-08T19:19:39.353Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -18875,17 +18875,89 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T14:46:55.696Z",
-   "updatedAt": "2026-10-25T14:46:55.696Z",
+   "updatedAt": "2026-11-08T19:19:32.433Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:19:32.433Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:19:32.433Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw87uvrm01necw",
+     "title": "",
+     "text": "The copied Handoff Session prompt gets a Threads to recreate part: one first message per open thread (unfinished changes, open PRs, a hand-written list), and tells the other account to start one thread per entry.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:19:32.433Z",
+     "updatedAt": "2026-11-08T19:19:32.433Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw87uvrm02mk8m",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/handoff-session-threads.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/handoff-session-threads.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:19:32.433Z",
+     "updatedAt": "2026-11-08T19:19:32.433Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -18895,7 +18967,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18910,7 +18982,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:19:32.433Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [
@@ -114906,16 +114978,22 @@
    "title": "URGENT: rebuild pipeline — orchestrator IDs, splits, Pending→Queue, slot-driven headless launches",
    "category": "",
    "detail": "Rebuild the build pipeline from scratch:\n1. Everything Brett asks for becomes a build sent to the orchestrator.\n2. Orchestrator assigns a build ID.\n3. Orchestrator uses Claude to split it into steps (<=30 min) and picks a model per step: Fable only when needed, Opus otherwise.\n4. Build goes to Pending. Brett moves Pending -> Queue.\n5. Orchestrator watches the VPS: connected Claude accounts, which have Fable, max parallel and free slots per account.\n6. Whenever a slot opens, the orchestrator grabs the next build in the Queue and starts a headless session on it: Fable steps to an account with Fable, everything else to Opus accounts. Never launches right away, only when a slot is free.\n7. Steps tick off in the progress files per existing rules; a monitor watches them and updates progress live.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-rebuild-pipeline-orchestrator-ids-splits-",
    "branch": "claude/pipeline-rebuild",
    "pr": "#384",
+   "mergedAt": "2026-11-08T19:11:29Z",
    "createdAt": "2026-11-08T00:23:40.524Z",
-   "updatedAt": "2026-11-08T01:05:11.745Z",
+   "updatedAt": "2026-11-08T19:19:30.966Z",
    "builtAt": "2026-11-08T01:05:11.745Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #384 merged",
+     "at": "2026-11-08T19:19:30.966Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -115178,7 +115256,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
