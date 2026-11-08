@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1509,
- "updatedAt": "2026-11-08T17:26:34.889Z",
+ "rev": 1510,
+ "updatedAt": "2026-11-08T17:26:46.596Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117691,16 +117691,21 @@
    "title": "Account failover + phone alerts + one home per login",
    "category": "Claude accounts",
    "detail": "Builds that die on an account's auth (expired/unrefreshable login) or usage limit are moved to the next account at once (workers, then the interactive account; API accounts per routing rules), the account is marked out with why/until, Brett gets an AmberX push saying which account, what failed, where the build went and what to do; each login has exactly one home store that every refresh writes back to; the Claude accounts screen shows out/why/until and the last refresh per login. Absorbs steps 3-5 of running-builds-follow-the-active-claude-account-fail-over-when-it-dies. Branch claude/account-failover-notify, stacked on PR #389 (workers-api-routing).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/account-failover-notify",
+   "pr": "#392",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-08T17:21:37.384Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-08T17:26:36.592Z",
+   "builtAt": "2026-11-08T17:26:34.358Z",
+   "notes": [
+    {
+     "text": "PR #392 (stacked on #389: land #389 first). UI Review r-20261108-d22f9202. Live fix: account-1 excluded from workers.json (dead login) until Brett signs it in.",
+     "at": "2026-11-08T17:26:36.592Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -117819,12 +117824,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:26:34.357Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:59:53.290Z",
-     "updatedAt": "2026-11-08T16:59:53.290Z"
+     "updatedAt": "2026-11-08T17:26:34.486Z"
     }
    ],
    "profiles": [
@@ -117835,26 +117840,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-08T16:59:53.289Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw82vah306qt7z": "2026-11-08T16:59:53.290Z",
-     "st-mw82vah307p2ny": "2026-11-08T16:59:53.290Z",
-     "st-mw82vah308kzpu": "2026-11-08T16:59:53.290Z",
-     "st-mw82vah309d7dp": "2026-11-08T16:59:53.290Z",
-     "st-mw82vah30a41pn": "2026-11-08T16:59:53.290Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-08T16:59:53.290Z",
    "rearranged": false,
