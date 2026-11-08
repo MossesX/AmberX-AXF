@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:23:34.420Z",
+ "updatedAt": "2026-11-08T19:23:48.055Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68405,7 +68405,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-08T00:02:55.315Z",
+   "updatedAt": "2026-11-08T19:23:46.974Z",
    "builtAt": "",
    "notes": [
     {
@@ -68419,6 +68419,10 @@
     {
      "text": "Add a terminal attached to the orchestrator plus a live output window showing all activity, group-chat style. Assign a named employee to every place the orchestrator sends to or receives from (Brownie = orchestrator, Molly = Plan Studio, others named per destination: queue, VPS, AmberX, UI Review, GitHub). Every output log line carries the sender and receiver names.",
      "at": "2026-11-08T00:02:55.315Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:23:46.974Z"
     }
    ],
    "approvals": [],
@@ -68435,7 +68439,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Before the orchestrator launches any headless Claude session, it sends Gizmo an approval dialog (console + AmberX phone) showing the exact brief it is sending: build, steps, model, account, estimate. Session starts only on approve; veto sends it back to re-plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw880c6606uq1x"
+    },
+    {
+     "id": "s2",
+     "text": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw880c66075ovm"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/brief-approval-dialog-before-every-headless-sess.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/brief-approval-dialog-before-every-headless-sess.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw880c6608wpg6"
+    }
+   ]
   },
   {
    "id": "orchestrator-chain-trace-brownie-molly-group-cha",

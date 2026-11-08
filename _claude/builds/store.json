@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1559,
- "updatedAt": "2026-11-08T19:23:34.420Z",
+ "rev": 1560,
+ "updatedAt": "2026-11-08T19:23:48.055Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115465,7 +115465,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-08T00:02:55.315Z",
+   "updatedAt": "2026-11-08T19:23:46.974Z",
    "builtAt": "",
    "notes": [
     {
@@ -115479,6 +115479,10 @@
     {
      "text": "Add a terminal attached to the orchestrator plus a live output window showing all activity, group-chat style. Assign a named employee to every place the orchestrator sends to or receives from (Brownie = orchestrator, Molly = Plan Studio, others named per destination: queue, VPS, AmberX, UI Review, GitHub). Every output log line carries the sender and receiver names.",
      "at": "2026-11-08T00:02:55.315Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:23:46.974Z"
     }
    ],
    "approvals": [],
@@ -115495,7 +115499,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:23:46.974Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw880c6606uq1x",
+     "title": "",
+     "text": "Before the orchestrator launches any headless Claude session, it sends Gizmo an approval dialog (console + AmberX phone) showing the exact brief it is sending: build, steps, model, account, estimate. Session starts only on approve; veto sends it back to re-plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:23:46.974Z",
+     "updatedAt": "2026-11-08T19:23:46.974Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw880c66075ovm",
+     "title": "",
+     "text": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:23:46.974Z",
+     "updatedAt": "2026-11-08T19:23:46.974Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw880c6608wpg6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/brief-approval-dialog-before-every-headless-sess.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/brief-approval-dialog-before-every-headless-sess.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:23:46.974Z",
+     "updatedAt": "2026-11-08T19:23:46.974Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -115504,7 +115598,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115519,7 +115613,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:23:46.974Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
