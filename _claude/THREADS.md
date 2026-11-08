@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 18:45 UTC · `assistant-chat-mode` branch claude/assistant-chat-mode-r4 (current) · builds-live
 - 2026-11-06 18:46 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
 - 2026-11-07 03:28 UTC · `dataset-bar` added (8 steps) (current) · orchestrator
 - 2026-11-07 03:28 UTC · `dataset-bar` → running (current) · orchestrator
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:51 UTC · `molly-one-shell` note (all) · orchestrator
 - 2026-11-08 17:51 UTC · `molly-one-shell` PR #395 (all) · builds-live
 - 2026-11-08 17:52 UTC · `account-health-failover` note (all) · orchestrator
+- 2026-11-08 17:54 UTC · `slot-watchdog` added (7 steps) (all) · orchestrator
 
 ## Token passes (log)
 

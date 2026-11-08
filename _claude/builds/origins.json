@@ -2983,6 +2983,18 @@
     }
    ]
   },
+  "slot-watchdog": {
+   "said": "Assign a crew member (agent profile in the roster, e.g. a 'Slot Warden') whose only job is watching the headless build slots and queue, all the time, in plain code (zero tokens).\n\n1. Every ~30 s: check each running slot in framework/cli/agent-slots.mjs against reality (tmux session alive, claude -p pid alive, log advancing). Today 3 builds died in 1-3 s on bad logins but kept all 3 slots, freezing the queue.\n2. Dead / finished / hung (no log progress past a threshold) -> release the slot, mark the build failed with the reason (auth, limit, crash, hung), tell the orchestrator so it can relaunch/fail over (account-health-failover build), and notify Brett's phone (AmberX notification panel, type 'slot').\n3. Report: a live slot/queue status the console and AmberX show; a log of every intervention.\n4. Also fix the root: claude-headless.sh must always finish/release its slot when Claude exits, even on instant auth failure.\n\nDuplicate guard (Brett): The watchdog and the launcher refuse or stop duplicate builds: same brief/goal running twice (e.g. memory-manager-r2 and -r3 both ran). On launch, compare against running + queued builds (name stem, brief source, build id); keep the furthest-along one, stop/dequeue the other, tell the orchestrator and notify Brett. Reuse the unlanded orchestrator-dup-check branch.",
+   "at": "2026-11-08T17:54:52.704Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "gina",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
    "at": "2026-11-03",
