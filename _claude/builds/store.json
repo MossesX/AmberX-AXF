@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1472,
- "updatedAt": "2026-11-08T16:34:06.469Z",
+ "rev": 1473,
+ "updatedAt": "2026-11-08T16:35:25.125Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116255,9 +116255,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/brief-only-headless",
-   "pr": "",
+   "pr": "#388",
    "createdAt": "2026-11-08T16:14:35.744Z",
-   "updatedAt": "2026-11-08T16:34:02.983Z",
+   "updatedAt": "2026-11-08T16:35:23.711Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -116416,7 +116416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
