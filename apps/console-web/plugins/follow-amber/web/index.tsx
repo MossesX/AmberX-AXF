@@ -275,16 +275,13 @@ function ApprovalDialog({ id }: { id: string }) {
   const left = countdownOf(item);
   const urgent = left !== null && left <= VETO_WARNING_SECONDS;
   const pos = s.queue.findIndex((i) => i.id === item.id);
-  const next = () => {
-    const rest = queueOf(s.queue, decided).filter((i) => i.id !== item.id);
-    if (rest.length) set({ current: rest[0]!.id }); else { set({ current: '' }); rt.closeDialog(); }
-  };
   const tap = async (approve: boolean) => {
     setBusy(approve ? 'approve' : 'deny');
     const r = await tapDecision(item, approve, s.hub);
     setBusy('');
     setResult(r);
-    if (r.ok) next();
+    // Decided: the dialog closes (Brett, Nov 7 2026); the next one waiting pops up by itself.
+    if (r.ok) { set({ current: '' }); rt.closeDialog(); }
   };
   return (
     <div className="fx-stack axp-follow-amber__ask">
@@ -309,7 +306,8 @@ function ApprovalDialog({ id }: { id: string }) {
           <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== '' || !offers(item, true)} aria-label={`Approve: ${item.title}`} onClick={() => void tap(true)} data-axf-one-tap="">Approve</Button>
         </div>
       )}
-      {(route === 'frame' || route === 'open') && !result?.frame && <p className="fx-small fx-muted">This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.</p>}
+      {busy !== '' && <p className="fx-small fx-muted" role="status" aria-live="polite">{busy === 'approve' ? 'Approving' : 'Denying'} on axHub…</p>}
+      {(route === 'frame' || route === 'open') && !result?.frame && busy === '' && <p className="fx-small fx-muted">This page has no way to decide in place. Use Open on axHub below.</p>}
       {result && !result.ok && !result.frame && <Note tone={result.open ? 'info' : 'danger'}>{result.message}</Note>}
       <div className="fx-row fx-row--wrap axp-follow-amber__foot">
         {s.queue.length > 1 && <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => { const n = s.queue[(pos + 1) % s.queue.length]; if (n) set({ current: n.id }); }}>Next</Button>}

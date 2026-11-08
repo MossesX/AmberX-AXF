@@ -36,7 +36,7 @@ import { Button, Icon, Note, useBannerLaunchOpen, BannerIcon } from '@console/ax
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
-import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
+import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS, NOTICE_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { approvalsHost, ApprovalDetailsPanel, ApprovalRow, setApprovalsHost } from '@console/axf/libs/approvals/react';
 import { pluginFetch } from '@console/plugins';
@@ -106,20 +106,27 @@ async function hubUrl(): Promise<string> {
 }
 
 /**
- * Lends the relay to the veto and approvals seams, once, where the console says this browser can use it (AmberX's phone
- * has its own hosts; its forwarded probe answers no).
+ * Lends the relay to the veto and approvals seams, once, unless the app already has its own (AmberX's phone shell).
+ * Lent even when the probe says this browser can't decide (Brett, Nov 7 2026: Approve "does nothing"): the tap then
+ * comes back with the server's exact reason in place (no owner sign-in on the console, not his browser, axHub down)
+ * instead of a button that silently falls back to "open it on axHub".
  */
+const RELAY_TIMEOUT_MS = 25_000;
 const relayPost: RelayPost = async (body) => {
-  const r = await pluginFetch(FOLDER, 'decide', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const r = await pluginFetch(FOLDER, 'decide', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
   return { status: r.status, json: await r.json().catch(() => null) };
 };
 let relayOn = false;
+/** Why this browser can't decide in place ('' = it can, or not known yet); shown under the buttons. */
+let relayReason = '';
 async function installRelay(): Promise<void> {
   if (relayOn || vetoHost().act) return;
   try {
     const r = await pluginFetch(FOLDER, 'relay');
-    if (!r.ok || ((await r.json()) as { relay?: boolean }).relay !== true || vetoHost().act) return;
-  } catch { return; }
+    const j = r.ok ? ((await r.json()) as { relay?: boolean; reason?: string }) : null;
+    relayReason = j?.relay === true ? '' : (typeof j?.reason === 'string' ? j.reason : '');
+  } catch { /* the server answers the tap itself */ }
+  if (relayOn || vetoHost().act) return;
   relayOn = true;
   const h = relayHosts(relayPost);
   setVetoHost(h.veto);
@@ -213,7 +220,7 @@ function HeldRow({ c }: { c: VetoCall }) {
 async function decidePending(p: Pending, d: ApprovalDecision): Promise<DecideResult> {
   const decide = approvalsHost().decide;
   if (!decide) {
-    const message = "This browser can't decide from here: its axHub session didn't reach the console. Sign in to axHub, then tap it again.";
+    const message = 'This page has no way to decide in place yet. Use Open on axHub.';
     runtime?.toast(message, 'warning', 'Approvals');
     return { ok: false, message };
   }
@@ -453,7 +460,8 @@ function StatusPanel() {
         <Button tone="primary" icon="refresh" onClick={() => void checkNow()}>Check now</Button>
         <a className="fx-btn fx-btn--neutral" style={{ textDecoration: 'none' }} href={s.approvalsUrl} target="_blank" rel="noopener noreferrer">Open the approvals page</a>
       </div>
-      <p className="fx-muted fx-small" style={{ margin: 0 }}>Hub: {s.hub}. Your browser reads the list from the hub directly. A tap on Approve or Deny goes through the console's relay with this browser's hub session, stays in the console and is signed as you; nothing else can use it.</p>
+      <p className="fx-muted fx-small" style={{ margin: 0 }}>Hub: {s.hub}. Your browser reads the list from the hub directly. A tap on Approve or Deny goes through the console's relay and stays in the console: with this browser's hub session when it reaches the console, else with the console's own axHub owner sign-in (server-side, logged with your name). Only your signed-in browser can use it; Claude sessions and the console token can't.</p>
+      {relayReason && <Note tone="warning">{relayReason}</Note>}
     </div>
   );
 }
@@ -515,6 +523,16 @@ export const plugin: AxfWebLibrary = {
     onVetoHost(hook);
     hook();
     rt.subscribe(sync);
+    // approvals.notice:<sound|vibrate|repeat|alarm>:<on|off> — how loud the one notice per hold is (Brett, Nov 8 2026:
+    // "Full API + voice control"). Whether notices show at all stays his own click (notify-control guards veto notices).
+    const NOTICE_SWITCHES: Record<string, string> = { sound: ALARM_KEYS.noticeSound, vibrate: ALARM_KEYS.noticeVibrate, repeat: ALARM_KEYS.noticeRepeat, alarm: ALARM_KEYS.enabled };
+    rt.actions.register('approvals.notice', ([what = '', value = '']) => {
+      const key = NOTICE_SWITCHES[what];
+      const on = /^(on|true|yes|1)$/i.test(value) ? true : /^(off|false|no|0)$/i.test(value) ? false : null;
+      if (!key || on === null) { rt.toast(`approvals.notice:<sound|vibrate|repeat|alarm>:<on|off> (got "${what}:${value}")`, 'warning', 'Approvals'); return; }
+      rt.settings.set(key, on);
+      rt.toast(`Veto ${what === 'alarm' ? 'alarm' : `notice ${what}`}: ${on ? 'on' : 'off'}`, 'success', 'Approvals');
+    }, { label: 'Veto notice: sound / vibrate / repeat / alarm on or off (approvals.notice:<what>:<on|off>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
@@ -533,10 +551,10 @@ export const plugin: AxfWebLibrary = {
   },
   settings: [
     {
-      id: 'approvals-banner.alarm', label: 'Veto alarm', icon: 'bell', tab: 'approvals-banner', order: 10,
-      description: 'Rings for a held call until you Deny, Approve or Shelve it (or it ends).',
+      id: 'approvals-banner.alarm', label: 'Veto notices and alarm', icon: 'bell', tab: 'approvals-banner', order: 10,
+      description: 'One normal notice per held call; the alarm (off by default) rings until you Deny, Approve or Shelve it.',
       settings: [
-        { key: ALARM_KEYS.enabled, label: 'Alarm', kind: 'toggle', default: ALARM_DEFAULTS.enabled },
+        { key: ALARM_KEYS.enabled, label: 'Alarm', kind: 'toggle', default: ALARM_DEFAULTS.enabled, description: 'Off by default: a ringing alarm on top of the notice. Its tone, volume, repeats and silent-mode ringing are below.' },
         { key: ALARM_KEYS.startAt, label: 'Starts', kind: 'choice', default: ALARM_DEFAULTS.startAt, options: START_AT.map(({ value, label }) => ({ value, label })) },
         { key: ALARM_KEYS.tone, label: 'Tone', kind: 'choice', default: ALARM_DEFAULTS.tone, options: TONES.map(({ value, label }) => ({ value, label })), description: 'My own sound file: pick it below.' },
         { key: ALARM_KEYS.volume, label: 'Volume', kind: 'slider', default: ALARM_DEFAULTS.volume, min: 0, max: 100, step: 5 },
@@ -547,7 +565,10 @@ export const plugin: AxfWebLibrary = {
         { key: ALARM_KEYS.repeatGapSeconds, label: 'Quiet between rings (seconds)', kind: 'number', default: ALARM_DEFAULTS.repeatGapSeconds, min: 0, max: 300 },
         { key: ALARM_KEYS.vibration, label: 'Vibration', kind: 'choice', default: ALARM_DEFAULTS.vibration, options: VIBRATIONS.map(({ value, label }) => ({ value, label })) },
         { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'AmberX on Android plays it on the alarm channel, which sounds even when the phone is on silent.' },
-        { key: ALARM_KEYS.notices, label: 'Notices (timer started, 30 s left, running)', kind: 'toggle', default: true, description: 'On the phone AmberX raises them with Deny, Approve and Shelve buttons; in a browser, while this page is open.' },
+        { key: ALARM_KEYS.notices, label: 'Notices (one per held call)', kind: 'toggle', default: true, description: 'One normal notification per held call, with Deny, Approve and Shelve (AmberX on the phone; in a browser while this page is open). It updates at 30 s left and when it runs.' },
+        { key: ALARM_KEYS.noticeSound, label: 'Notice sound', kind: 'toggle', default: NOTICE_DEFAULTS.sound, description: "The phone's normal notification sound, once." },
+        { key: ALARM_KEYS.noticeVibrate, label: 'Notice vibration', kind: 'toggle', default: NOTICE_DEFAULTS.vibrate },
+        { key: ALARM_KEYS.noticeRepeat, label: 'Alert again at 30 s left and when it runs', kind: 'toggle', default: NOTICE_DEFAULTS.repeat, description: 'Off: the notice just updates, silently.' },
       ],
     },
   ],

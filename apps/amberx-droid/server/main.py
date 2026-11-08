@@ -22,6 +22,9 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     POST /api/ai/profiles   {kind, label?, key, refresh?, primary?}   add a provider with its key (nothing kept if refused)
     POST /api/ai/primary/{id}                                          active + first in the fallback order
     POST /api/ai/test/{id}
+    GET  /api/approvals/relay             {ok, relay, reason}: can this page decide with its own hub session
+    POST /api/approvals/decide  {id, action, rev?}   approve | decline | deny | approve-now | shelve, with the
+                                          browser's axhub_session cookie (axf_server.approvals_relay)
 
 Who may call: the wall's signed headers count only with a valid signature (axf_server.wall, env AMBERX_TRUST_WALL=1 +
 AMBERX_WALL_SECRET, set by deploy/install.sh); a machine may use `Authorization: Bearer $AMBERX_TOKEN` (optional);
@@ -48,6 +51,7 @@ from pathlib import Path
 from typing import Any
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import approvals_relay as approvals_relay_mod
 from axf_server import wall as wallmod
 from axf_server.console_client import ConsoleClient, ConsoleError, TokenFile
 import httpx
@@ -134,7 +138,7 @@ def console_client() -> ConsoleClient | None:
 DEV = wallmod.Caller("dev", "admin", frozenset({"*"}), "dev")
 
 
-def make_app(router: Router | None = None) -> FastAPI:
+def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransport | None = None) -> FastAPI:
     rt = router or Router(DATA)
 
     @asynccontextmanager
@@ -467,6 +471,37 @@ def make_app(router: Router | None = None) -> FastAPI:
         if isinstance(wt, dict) and isinstance(wt.get("title"), str):
             out["walkthrough"] = wt["title"][:120]
         return out
+
+    # ---- Approve / Deny in place (Brett, Nov 8 2026: "The approve and deny dialogue is still saying open"): the phone's
+    # web view carries his hub session cookie (the hub sets it for the whole domain), so the tap goes to the hub from here,
+    # signed as him. A phone without the native approve (an older APK) or AmberX in a browser uses it. Only his signed-in
+    # browser: the gate already asks for a hub admin and the app's own origin; a token (AMBERX_TOKEN) is refused here.
+
+    @app.get("/api/approvals/relay")
+    def approvals_relay(request: Request) -> dict[str, Any]:
+        c = request.state.caller
+        hub = approvals_relay_mod.hub_base(HUB)
+        ok = bool(c.via == "session" and c.admin and hub and request.cookies.get(approvals_relay_mod.COOKIE))
+        return {"ok": True, "relay": ok, "reason": "" if ok else "This page has no axHub session to decide with: sign in to axHub, then tap it again."}
+
+    @app.post("/api/approvals/decide")
+    async def approvals_decide(request: Request) -> dict[str, Any]:
+        c = request.state.caller
+        if c.via != "session" or not c.admin:
+            raise HTTPException(403, "Only your own signed-in browser can decide")
+        if "application/json" not in (request.headers.get("content-type") or ""):
+            raise HTTPException(415, "Send JSON")
+        req = approvals_relay_mod.check_request(await body_of(request))
+        if isinstance(req, str):
+            raise HTTPException(400, req)
+        hub = approvals_relay_mod.hub_base(HUB)
+        if not hub:
+            raise HTTPException(503, "AmberX has no https hub address (AMBERX_WALL_HUB)")
+        cookie = request.cookies.get(approvals_relay_mod.COOKIE) or ""
+        if not cookie:
+            return {"ok": False, "code": "no_session", "message": "This page has no axHub session to decide with: sign in to axHub, then tap it again."}
+        aid, action, rev = req
+        return await run_in_threadpool(approvals_relay_mod.send, hub, cookie, aid, action, rev, approvals_transport)
 
     # ---- console plugins (AI assistant, Agent manager): same chats, agents and live sessions as the console
 

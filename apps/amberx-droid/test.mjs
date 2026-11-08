@@ -1488,6 +1488,15 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
     const plug = java('AmberxNativePlugin.java');
     ok(/public void quiet\(PluginCall call\)/.test(plug) && /Quiet\.on\(getContext\(\)\)\) \{ call\.resolve\(\); return; \}/.test(plug), 'android: speak says nothing while Quiet');
     ok(/if \(Quiet\.on\(c\)\) return;/.test(java('VetoAlarm.java')), 'android: the alarm never rings while Quiet');
+    { // one normal notice per hold, no alarm (Brett, Nov 8 2026)
+      const va = java('VetoAlerts.java'), al = java('VetoAlarm.java');
+      ok(!/IMPORTANCE_HIGH|CATEGORY_ALARM|PRIORITY_HIGH/.test(va), 'android: veto notices use no high-importance channel and no alarm category');
+      ok(/setOnlyAlertOnce\(!repeats\(cfg\)\)/.test(va) && /!"held"\.equals\(phase\) && !repeats\(cfg\)\) b\.setSilent\(true\)/.test(va), 'android: 30 s left / running update the notice silently unless Repeat is on');
+      ok(/id\.startsWith\("veto2_"\)/.test(va), 'android: the old high-importance veto2_ channels are deleted');
+      ok(/cfg\.has\("noticeSound"\) && cfg\.optBoolean\("enabled", false\)/.test(al), 'android: the alarm is off unless the current plugin settings switch it on');
+      const dn = src('plugins/approvals/web/deny.ts');
+      ok(/\/api\/approvals\/decide/.test(dn) && !/hubOpen/.test(dn), 'Approve / Deny never just open axHub: no native way = AmberX\'s server with the page\'s hub session');
+    }
     ok(/p == null \|\| !p\.hasListeners\("wake"\)/.test(plug) && /\.put\("id", eventId\(\)\)\.put\("at", System\.currentTimeMillis\(\)\)\);/.test(plug), 'android: in-app wake hits are not retained for the next page, and carry id + at');
     const ma = java('MainActivity.java');
     ok(/if \(state == null && !fromHistory\)/.test(ma) && /setIntent\(spent\(intent\)\)/.test(ma), 'android: the launch intent\'s wake sentence is handed over once (not on re-create or an open from Recents)');
