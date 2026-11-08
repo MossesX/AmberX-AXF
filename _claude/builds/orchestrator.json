@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:13:19.538Z",
+ "updatedAt": "2026-11-08T21:13:30.115Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74190,14 +74190,14 @@
    "title": "Demonstration Designer plugin (new, standalone)",
    "category": "",
    "detail": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "demonstration-designer-plugin-new-standalone",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-08T19:26:33.365Z",
+   "updatedAt": "2026-11-08T21:13:19.379Z",
    "builtAt": "",
    "notes": [
     {
@@ -74207,6 +74207,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:26:33.365Z"
+    },
+    {
+     "text": "Queued by cli.",
+     "at": "2026-11-08T21:13:19.379Z"
     }
    ],
    "approvals": [],
