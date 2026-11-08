@@ -750,8 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:00 UTC · `orchestrator-gate` added (4 steps) (current) · builds-live
-- 2026-11-07 05:00 UTC · `voice-ui-edit-library` added (8 steps) (current) · builds-live
 - 2026-11-07 05:00 UTC · `merge-conflict-alerts` added (5 steps) (current) · builds-live
 - 2026-11-07 04:49 UTC · `assistant-chat-mode` → complete, merged, note (current) · reconciler
 - 2026-11-07 04:49 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending, note (current) · reconciler
@@ -1150,6 +1148,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 16:59 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
 - 2026-11-08 16:54 UTC · `memory-restructure-chunked-claude-md-store-memor` branch claude/memory-manager-r2 (all) · orchestrator
 - 2026-11-08 16:54 UTC · `memory-restructure-chunked-claude-md-store-memor` → running (all) · orchestrator
+- 2026-11-08 17:00 UTC · `molly-one-shell` s2 done (all) · orchestrator
+- 2026-11-08 17:00 UTC · `molly-one-shell` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
