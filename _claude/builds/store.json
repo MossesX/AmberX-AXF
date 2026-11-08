@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1584,
- "updatedAt": "2026-11-08T21:16:27.363Z",
+ "rev": 1585,
+ "updatedAt": "2026-11-08T21:16:38.000Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123630,7 +123630,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123642,7 +123642,11 @@
     "createdAt": "2026-11-08T21:14:21.020Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8c0fcs01gbnk": "2026-11-08T21:15:49.563Z",
+     "st-mw8c0fcs02cth8": "2026-11-08T21:15:49.563Z",
+     "st-mw8c0fcs03batm": "2026-11-08T21:15:49.563Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T21:15:49.563Z",
@@ -123784,7 +123788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123796,7 +123800,11 @@
     "createdAt": "2026-11-08T21:14:57.057Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8c0u9404qqgu": "2026-11-08T21:16:08.871Z",
+     "st-mw8c0u9405a9hr": "2026-11-08T21:16:08.871Z",
+     "st-mw8c0u9406a6rm": "2026-11-08T21:16:08.871Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T21:16:08.871Z",
@@ -123938,7 +123946,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123950,7 +123958,11 @@
     "createdAt": "2026-11-08T21:14:58.067Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8c17qg07ysz3": "2026-11-08T21:16:26.344Z",
+     "st-mw8c17qg08rhw7": "2026-11-08T21:16:26.344Z",
+     "st-mw8c17qg09g1x2": "2026-11-08T21:16:26.344Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T21:16:26.344Z",
@@ -124007,6 +124019,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T21:15:44.105Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "big-library-of-snappable-title-bar-widgets-each-",
+   "title": "Big library of snappable title bar widgets, each with its own settings",
+   "category": "",
+   "detail": "Brett: create tons of snappable widgets for title bars, banners and toolbars (dozens to 100+): clock/date, usage meter per account, build status, queue/slots, running agents, cost today/week, approvals waiting, notifications bell, account health, VPS CPU/memory/disk, network, git branch/CI status, UI Review count, search/jump-to, voice mic toggle, follow Amber, theme/skin switcher, layout switcher, profile switcher, weather, timers/alarms, quick actions, favorites, recent, breadcrumbs, title, logo, spacer/separator, etc. Every widget is a snappable registry asset with its OWN settings interface, opened by right-clicking the widget itself or its parent bar (parent shows all its widgets' settings). Widget picker to add/drag widgets onto any bar. Works with the overflow rule (bars drop widgets into three-dot menu when small). Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "big-library-of-snappable-title-bar-widgets-each-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:16:27.221Z",
+   "updatedAt": "2026-11-08T21:16:27.221Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Create a shitload of widgets, snappable widgets for title bars. And, um, a shitload of them, like tons of them, all with the, their own, um, Settings interface accessible by right clicking the individual item or the parent itself.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 466
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "3 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:16:27.221Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}

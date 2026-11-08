@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:16:27.363Z",
+ "updatedAt": "2026-11-08T21:16:38.000Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74890,6 +74890,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "every banner and title bar is snap, has to be snaps. Every banner and title bar and all that has to be snappable assets so nothing overlines. And they all need a settings. Every single one needs its own settings.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "big-library-of-snappable-title-bar-widgets-each-",
+   "title": "Big library of snappable title bar widgets, each with its own settings",
+   "category": "",
+   "detail": "Brett: create tons of snappable widgets for title bars, banners and toolbars (dozens to 100+): clock/date, usage meter per account, build status, queue/slots, running agents, cost today/week, approvals waiting, notifications bell, account health, VPS CPU/memory/disk, network, git branch/CI status, UI Review count, search/jump-to, voice mic toggle, follow Amber, theme/skin switcher, layout switcher, profile switcher, weather, timers/alarms, quick actions, favorites, recent, breadcrumbs, title, logo, spacer/separator, etc. Every widget is a snappable registry asset with its OWN settings interface, opened by right-clicking the widget itself or its parent bar (parent shows all its widgets' settings). Widget picker to add/drag widgets onto any bar. Works with the overflow rule (bars drop widgets into three-dot menu when small). Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "big-library-of-snappable-title-bar-widgets-each-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:16:27.221Z",
+   "updatedAt": "2026-11-08T21:16:27.221Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Create a shitload of widgets, snappable widgets for title bars. And, um, a shitload of them, like tons of them, all with the, their own, um, Settings interface accessible by right clicking the individual item or the parent itself.",
     "at": "",
     "source": "",
     "session": "",
