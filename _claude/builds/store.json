@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1436,
- "updatedAt": "2026-11-08T00:47:20.672Z",
+ "rev": 1437,
+ "updatedAt": "2026-11-08T00:48:54.972Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115585,7 +115585,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:47:19.843Z",
-   "updatedAt": "2026-11-08T00:47:19.843Z",
+   "updatedAt": "2026-11-08T00:48:54.121Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -115612,6 +115612,28 @@
      "rev": 1,
      "createdAt": "2026-11-08T00:47:19.844Z",
      "updatedAt": "2026-11-08T00:47:19.844Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw746ldt01xy7h",
+     "title": "",
+     "text": "Late account binding: no account or session assigned in pending/queue; when the plan's turn comes up, count free slots on every Claude account and assign tracks across all accounts to fill every slot",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:48:54.122Z",
+     "updatedAt": "2026-11-08T00:48:54.209Z"
     },
     {
      "id": "s2",
@@ -115710,7 +115732,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

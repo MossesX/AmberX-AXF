@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T00:47:20.672Z",
+ "updatedAt": "2026-11-08T00:48:54.972Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -69063,7 +69063,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:47:19.843Z",
-   "updatedAt": "2026-11-08T00:47:19.843Z",
+   "updatedAt": "2026-11-08T00:48:54.121Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -69086,6 +69086,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw744kne06otle"
+    },
+    {
+     "id": "s6",
+     "text": "Late account binding: no account or session assigned in pending/queue; when the plan's turn comes up, count free slots on every Claude account and assign tracks across all accounts to fill every slot",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw746ldt01xy7h"
     },
     {
      "id": "s2",
