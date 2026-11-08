@@ -750,10 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:14 UTC · `skins-asset-types` s8 done (current) · foreign-write
-- 2026-11-07 05:14 UTC · `claude-accounts-edit` note (current) · orchestrator
-- 2026-11-07 05:14 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · orchestrator
-- 2026-11-07 05:14 UTC · `console-account-picker` note (current) · orchestrator
 - 2026-11-07 05:14 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · orchestrator
 - 2026-11-07 05:14 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → running, note (current) · orchestrator
 - 2026-11-07 05:15 UTC · `multi-account-headless-workers` branch claude/multi-account-headless-workers, PR #382 (current) · builds-live
@@ -1150,6 +1146,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:23 UTC · `adopt-today-s-direct-launched-builds-record-only` added (0 steps) (all) · foreign-write
 - 2026-11-08 17:23 UTC · `ui-api-parity-rule` added (7 steps) (all) · orchestrator
 - 2026-11-08 17:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
+- 2026-11-08 17:26 UTC · `memory-restructure-chunked-claude-md-store-memor` s9 done, → complete (all) · foreign-write
+- 2026-11-08 17:26 UTC · `orchestrator-checks-shipped-features-before-spli` added (0 steps) (all) · foreign-write
+- 2026-11-08 17:26 UTC · `adopt-today-s-direct-launched-builds-record-only` added (0 steps) (all) · foreign-write
+- 2026-11-08 17:26 UTC · `ui-api-parity-rule` added (7 steps) (all) · foreign-write
 
 ## Token passes (log)
 

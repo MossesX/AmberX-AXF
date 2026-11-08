@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:24:51.934Z",
+ "updatedAt": "2026-11-08T17:26:34.889Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70746,7 +70746,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl082xuk"
+     "uid": "st-mw83tkft01szre"
     },
     {
      "id": "s2",
@@ -70764,7 +70764,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl095f4a"
+     "uid": "st-mw83tkft02mnkk"
     },
     {
      "id": "s3",
@@ -70782,7 +70782,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0abqbb"
+     "uid": "st-mw83tkft035qxo"
     },
     {
      "id": "s4",
@@ -70800,7 +70800,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0byui1"
+     "uid": "st-mw83tkft04ouru"
     },
     {
      "id": "s5",
@@ -70818,7 +70818,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0c1f92"
+     "uid": "st-mw83tkft05epcy"
     },
     {
      "id": "s6",
@@ -70836,10 +70836,136 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0dgqgf"
+     "uid": "st-mw83tkft06syoj"
     },
     {
      "id": "s7",
+     "text": "Tests, report, STATUS, THREADS, push + PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83tkft07tlwh"
+    },
+    {
+     "id": "s8-7",
+     "text": "Bring in full-api-control; rule in RULES.md + brief template + orchestrator brief writer adds the API parity line for UI builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl082xuk"
+    },
+    {
+     "id": "s9-8",
+     "text": "Deep link per plugin view: URL that opens it, registry, MCP/CLI to get + open it on the phone",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl095f4a"
+    },
+    {
+     "id": "s10-9",
+     "text": "CI parity check: every plugin view maps open/state/actions/settings to named API ops; fail on missing, report gaps, ratchet",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0abqbb"
+    },
+    {
+     "id": "s11-10",
+     "text": "Audit: list every UI lacking full API coverage; the rest added as pending builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0byui1"
+    },
+    {
+     "id": "s12-11",
+     "text": "Demonstration Designer: full API (open, state, every action, every setting) via REST/MCP/CLI/voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0c1f92"
+    },
+    {
+     "id": "s13-12",
+     "text": "Book Builder: full API (open, state, every action, every setting) via REST/MCP/CLI/voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0dgqgf"
+    },
+    {
+     "id": "s14-13",
      "text": "Tests, report, STATUS, THREADS, push + PR",
      "model": "Opus",
      "why": "",
