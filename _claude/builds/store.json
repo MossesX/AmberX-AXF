@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1520,
- "updatedAt": "2026-11-08T17:36:56.025Z",
+ "rev": 1521,
+ "updatedAt": "2026-11-08T17:37:34.062Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117027,7 +117027,7 @@
    "branch": "claude/molly-one-shell-r4",
    "pr": "#390",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T17:29:01.948Z",
+   "updatedAt": "2026-11-08T17:37:32.570Z",
    "builtAt": "",
    "notes": [
     {
@@ -117041,9 +117041,24 @@
     {
      "text": "r4 (Janitor Joey, headless, Opus): phase 2 contracts s4-s6 run on Opus as a recorded downgrade (Fable -> Opus passes by itself; the r3 stop at the switch left the build idle). Opus-built foundation work gets a Fable review before it is relied on: added as step s15.",
      "at": "2026-11-08T17:28:52.461Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-08T17:37:32.570Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-08T17:37:32.570Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Brett wants everything in ONE app. Molly becomes the single shell for every app and plugin: Dev Console, axHub web, AmberX, and all future apps. Patches is scrapped. NO embedding: Do NOT embed other apps as pages/iframes (no second file menu/banner/chrome). ONE native app: Molly has the only chrome (one banner, one file menu, one nav, one settings). Every app's screens, plugins, menus and settings load natively into Molly as plugins, merged into Molly's single menu/nav. Menus: Molly's menus reach EVERYTHING from every app: every screen, plugin, action, setting. Grouped by app and category, search/jump-to-anything, favorites and recents, sliding sub menus, three-dot overflow on small screens. Fully voice and API controllable. Layouts: User picks a layout mode. IDE-style is ONE option among others. In the IDE layout, containers dock/split/float/resize, and each container can optionally be a tab group: drag anything from a menu onto a container and it opens there as a new tab; tabs drag between containers. Save/switch named layouts. Reuse framework tab group / drag-to-tab work.",
@@ -117139,12 +117154,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:37:32.570Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:57:58.979Z",
-     "updatedAt": "2026-11-08T16:57:58.979Z"
+     "updatedAt": "2026-11-08T17:37:32.696Z"
     },
     {
      "id": "s5",
@@ -117397,7 +117412,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
