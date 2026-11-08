@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1441,
- "updatedAt": "2026-11-08T00:54:14.051Z",
+ "rev": 1442,
+ "updatedAt": "2026-11-08T00:54:24.909Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114638,10 +114638,19 @@
    "branch": "claude/pipeline-rebuild",
    "pr": "",
    "createdAt": "2026-11-08T00:23:40.524Z",
-   "updatedAt": "2026-11-08T00:54:12.869Z",
+   "updatedAt": "2026-11-08T00:54:15.021Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-08T00:54:15.021Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "You need to start the pipeline over from scratch. From now on, what I say, send a build to the orchestrator. The orchestrator is going to assign an ID. A build ID. He's going to use you to break it up into steps select a model Babel or Opus Babel when it's needed and then he's going to see how many subscriptions are connected to the VPS how many accounts are available How many, what's the max parallel for each one? And uh, if it's a account that has Fable, he'll send the Fable to that. He'll send everything else to Opus. He will, no, he will check the BPS to see what accounts have what slots. Available parallel. Dish out the steps, okay? The steps are marked. We already have the rules for how the steps are marked down into a, in a progress pile and blah blah blah. Updated in real time because you have a monitor watching the progress files. And um, the orchestrator starts starts the head, headless. The orchestrator then sends it to the queue, or he sends it to pending. Yeah, he sends everything to the pending. And I have to send them from pending to queue.",
@@ -114761,12 +114770,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T00:54:13.784Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T00:32:34.818Z",
-     "updatedAt": "2026-11-08T00:32:34.996Z"
+     "updatedAt": "2026-11-08T00:54:13.912Z"
     },
     {
      "id": "s5",
@@ -114788,12 +114797,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T00:54:15.021Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T00:32:34.818Z",
-     "updatedAt": "2026-11-08T00:32:34.996Z"
+     "updatedAt": "2026-11-08T00:54:15.166Z"
     },
     {
      "id": "s6",
@@ -114894,7 +114903,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {

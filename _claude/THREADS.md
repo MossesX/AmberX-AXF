@@ -749,8 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 22:23 UTC · `gizmo-voice` note (current) · orchestrator
-- 2026-11-06 22:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 23:20 UTC · `gizmo-companion` → complete, note (current) · reconciler
 - 2026-11-06 23:40 UTC · `gizmo-voice` → pending, note (current) · reconciler
 - 2026-11-06 23:50 UTC · `gizmo-voice` → pending, note (current) · reconciler
@@ -1149,6 +1147,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 00:47 UTC · `slot-aware-plan-optimizer-pre-launch` added (5 steps) (all) · claude-voice
 - 2026-11-08 00:52 UTC · `real-time-slot-tracking-stale-data-reaper` added (5 steps) (all) · claude-voice
 - 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s3 done (all) · orchestrator
+- 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s4 done (all) · orchestrator
+- 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
