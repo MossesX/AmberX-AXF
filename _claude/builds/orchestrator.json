@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T22:06:16.836Z",
+ "updatedAt": "2026-11-08T22:07:05.367Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74298,15 +74298,15 @@
    "title": "Orchestrator: API rule in every brief + Plan Studio stepped plans, always in sync",
    "category": "",
    "detail": "Brett: for every build the orchestrator handles: (1) every brief it writes includes the rule that anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity; (2) when it splits a build into steps it creates the stepped plan in Plan Studio for that build (same build ID, steps, estimates, models); (3) it keeps Plan Studio synced for all future builds: every step tick, status change, re-split, phase change, land or failure updates the matching Plan Studio plan automatically, and edits made in Plan Studio flow back to the orchestrator. One source of truth (the builds store), Plan Studio and Build Manager are views of it. Tests: new build -> plan appears with steps; tick -> plan updates; brief contains API rule.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-api-rule-in-every-brief-plan-studio",
    "branch": "claude/orchestrator-api-rule-in-every-brief-plan-studio",
    "pr": "",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-08T22:06:15.276Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T22:07:03.823Z",
+   "builtAt": "2026-11-08T22:07:03.823Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -74396,8 +74396,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T22:07:03.823Z",
      "note": "",
      "uid": "st-mw884p3x031fkm"
     }
