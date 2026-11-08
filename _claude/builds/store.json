@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1422,
- "updatedAt": "2026-11-08T00:01:48.412Z",
+ "rev": 1423,
+ "updatedAt": "2026-11-08T00:02:23.418Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114487,12 +114487,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-08T00:01:46.846Z",
+   "updatedAt": "2026-11-08T00:02:21.842Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Make it an on/off setting in orchestrator settings (owner-only), covering headless sessions and anything launched on the VPS.",
      "at": "2026-11-08T00:01:46.846Z"
+    },
+    {
+     "text": "Put the switch in the Debugging plugin (its switches override everything else). Switch: 'Approve every job the orchestrator receives' sends an approval dialog the moment a job arrives, then a live watch view of what the orchestrator does with it (manifest, split, models, VPS launches, handoffs).",
+     "at": "2026-11-08T00:02:21.842Z"
     }
    ],
    "approvals": [],
@@ -114518,7 +114522,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
