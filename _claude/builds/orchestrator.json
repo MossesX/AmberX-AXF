@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:23:06.572Z",
+ "updatedAt": "2026-11-08T19:23:18.904Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68863,17 +68863,61 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:17:40.473Z",
-   "updatedAt": "2026-11-08T00:17:40.473Z",
+   "updatedAt": "2026-11-08T19:23:15.174Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Parked by the launcher: a headless launch (slotstest-2208251-b) carried no orchestrator build id, so it was refused and kept here. Plan its steps and launch it from the orchestrator.",
      "at": "2026-11-07T14:27:31.786Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:23:15.174Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "slotstest-2208251-b",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87znmu0197f9"
+    },
+    {
+     "id": "s2",
+     "text": "Tests green, report _claude/builds/reports/slotstest-2208251-b.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/slotstest-2208251-b.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87znmu02x4v0"
+    }
+   ]
   },
   {
    "id": "urgent-rebuild-pipeline-orchestrator-ids-splits-",
