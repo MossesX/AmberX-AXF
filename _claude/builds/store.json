@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1552,
- "updatedAt": "2026-11-08T19:19:56.431Z",
+ "rev": 1553,
+ "updatedAt": "2026-11-08T19:21:09.947Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -94971,7 +94971,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T02:30:29.394Z",
-   "updatedAt": "2026-11-06T17:41:00.967Z",
+   "updatedAt": "2026-11-08T19:20:13.993Z",
    "builtAt": "",
    "notes": [
     {
@@ -95017,6 +95017,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:20:13.993Z"
     }
    ],
    "approvals": [],
@@ -95033,7 +95037,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:20:13.993Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw87vru105ve73",
+     "title": "",
+     "text": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:20:13.993Z",
+     "updatedAt": "2026-11-08T19:20:13.993Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw87vru106ker2",
+     "title": "",
+     "text": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:20:13.993Z",
+     "updatedAt": "2026-11-08T19:20:13.993Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw87vru107m9rw",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/planner-select-items-and-build-them.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/planner-select-items-and-build-them.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:20:13.993Z",
+     "updatedAt": "2026-11-08T19:20:13.993Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -95043,7 +95137,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95058,7 +95152,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:20:13.993Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
