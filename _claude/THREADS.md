@@ -756,7 +756,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 12:58 UTC · `style-override-rule` s5 done (all) · orchestrator
 - 2026-11-07 13:02 UTC · `amber-chat-asset` s1 done, → running (all) · orchestrator
 - 2026-11-07 13:02 UTC · `amber-chat-asset` s2 done (all) · orchestrator
 - 2026-11-07 13:02 UTC · `amber-chat-asset` branch claude/amber-chat-asset (all) · builds-live
@@ -1156,6 +1155,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · orchestrator
 - 2026-11-08 22:28 UTC · `nested-menus-for-console-amberx-and-molly-overri` → queued, note (all) · cli
 - 2026-11-08 22:32 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` added (0 steps) (all) · pending
+- 2026-11-08 22:33 UTC · `brief-only-headless` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
