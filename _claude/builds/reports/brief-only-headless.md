@@ -97,3 +97,7 @@ stopped after the first one, with this build's own orchestrator brief (3 KB) as 
 - Per-build start tokens are read from build notes in the console (the meters live on the VPS host); a structured field
   on the build record would need a builds@1 change (normBuild drops unknown fields).
 - Kotlin twin: none needed (launcher / CLI only, no engine).
+
+## UI Review
+
+r-20261108-66e8c903 (group "brief-only-headless - Nov 8 4:45 PM"): Claude settings → Headless sessions and the build view's Headless runs, desktop + phone. Single option (no new look). The Claude settings tab's panel list is hard-coded (`GROUP_PANELS`), so the new group was added there too.
