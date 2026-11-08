@@ -750,9 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:34 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
-- 2026-11-07 05:34 UTC · `claude-accounts-edit` note (current) · foreign-write
-- 2026-11-07 05:34 UTC · `skins-asset-types` s8 done, s10 done (current) · foreign-write
 - 2026-11-07 05:34 UTC · `multi-account-headless-workers` s3 done, s5 done, → complete (current) · foreign-write
 - 2026-11-07 05:34 UTC · `molly-ri-court-records` added (4 steps) (current) · foreign-write
 - 2026-11-07 05:34 UTC · `grindr-ai-wingman` added (5 steps) (current) · foreign-write
@@ -1150,6 +1147,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:34 UTC · `ui-api-parity-rule` s2 done (all) · orchestrator
 - 2026-11-08 17:35 UTC · `account-health-failover` s1 done (all) · orchestrator
 - 2026-11-08 17:35 UTC · `account-health-failover` s2 done (all) · orchestrator
+- 2026-11-08 17:27 UTC · `molly-one-shell` → pending, note (all) · reconciler
+- 2026-11-08 17:28 UTC · `molly-one-shell` → running, note (all) · orchestrator
+- 2026-11-08 17:29 UTC · `molly-one-shell` branch claude/molly-one-shell-r4 (all) · builds-live
 
 ## Token passes (log)
 

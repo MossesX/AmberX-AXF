@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:36:03.341Z",
+ "updatedAt": "2026-11-08T17:36:56.025Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70041,15 +70041,23 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/molly-one-shell-r3",
+   "branch": "claude/molly-one-shell-r4",
    "pr": "#390",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T17:01:38.144Z",
+   "updatedAt": "2026-11-08T17:29:01.948Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reuse plan (s1 audit): #328 framework tab-group/dock work -> s10; #341 banner asset part -> s7; #344 drag-to-tab -> s10 (drag from menu onto a container); #322 apps-control-surface + #369 ui-registry-shortcuts -> s4/s6 (every screen/action already registered: shell-surface@1 should read them, not duplicate); #323 app-voice-commands -> s12; #372 settings-sections-everywhere -> s13. Superseded: every Molly frame/embed path (FrameDeck, xLayout's chrome take-over of embedded apps, embed instance). Gaps parked as builds: molly-native-expenses, molly-sign-in-once.",
      "at": "2026-11-08T16:59:27.815Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-08T17:27:44.897Z"
+    },
+    {
+     "text": "r4 (Janitor Joey, headless, Opus): phase 2 contracts s4-s6 run on Opus as a recorded downgrade (Fable -> Opus passes by itself; the r3 stop at the switch left the build idle). Opus-built foundation work gets a Fable review before it is relied on: added as step s15.",
+     "at": "2026-11-08T17:28:52.461Z"
     }
    ],
    "approvals": [],
@@ -70318,6 +70326,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw82su9f0slz7k"
+    },
+    {
+     "id": "s15",
+     "text": "Fable review of the Opus-built contracts (shell-surface@1, xlayout@1 layout modes, menu-index@1): rebuild only what the review flags",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83wqqj013ewq"
     }
    ]
   },
