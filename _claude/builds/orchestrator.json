@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:51:29.558Z",
+ "updatedAt": "2026-11-08T17:52:33.288Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70954,9 +70954,14 @@
    "branch": "claude/account-health-failover",
    "pr": "#394",
    "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-08T17:50:34.729Z",
+   "updatedAt": "2026-11-08T17:52:31.717Z",
    "builtAt": "2026-11-08T17:50:32.552Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Claude account: live (axf-account-health-failover--earl, own login copy)",
+     "at": "2026-11-08T17:52:31.717Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

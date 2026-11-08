@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1538,
- "updatedAt": "2026-11-08T17:51:29.558Z",
+ "rev": 1539,
+ "updatedAt": "2026-11-08T17:52:33.288Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -118273,9 +118273,14 @@
    "branch": "claude/account-health-failover",
    "pr": "#394",
    "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-08T17:50:34.729Z",
+   "updatedAt": "2026-11-08T17:52:31.717Z",
    "builtAt": "2026-11-08T17:50:32.552Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Claude account: live (axf-account-health-failover--earl, own login copy)",
+     "at": "2026-11-08T17:52:31.717Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -118410,7 +118415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
