@@ -27,4 +27,4 @@ for r in "${roots[@]}"; do
     fi
   done
 done
-echo "${apply:+removed}${apply:-would remove} $n stray assets.log ($((bytes / 1024)) KB); $other other assets.log left alone"
+echo "$([[ -n "$apply" ]] && echo removed || echo "would remove") $n stray assets.log ($((bytes / 1024)) KB); $other other assets.log left alone"

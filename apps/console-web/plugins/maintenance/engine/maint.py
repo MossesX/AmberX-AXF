@@ -130,9 +130,10 @@ def load_settings(data_dir: Path = DATA_DIR) -> dict[str, Any]:
 JOBS: dict[str, dict[str, Any]] = {
     "worktrees": {"label": "Finished build worktrees", "safe": False, "icon": "branch",
                   "what": "Build folders in /root/axf-builds and /home/axfbuild/wt-* whose branch is merged into main or "
-                          "fully pushed, with no running tmux session or process and idle for the set hours. A worktree "
-                          "with uncommitted or unpushed work is always kept. Build logs and briefs are moved to "
-                          "/root/axf-builds/_archive first."},
+                          "whose build is complete or archived, with no tmux session or process working in them and idle "
+                          "for the set hours (git worktree remove, then the branch when nothing on it would be lost). A "
+                          "worktree with uncommitted work (hub copies, logs and briefs don't count) is always kept. Build "
+                          "logs and briefs are moved to /root/axf-builds/_archive first."},
     "docker": {"label": "Dangling Docker images and build cache", "safe": True, "icon": "box",
                "what": "Untagged (dangling) images no container uses, and build cache unused for the set hours. "
                        "Never volumes, tagged images or anything a container uses."},
@@ -476,11 +477,108 @@ def _git(ctx: Ctx, wt: Path, *args: str) -> tuple[int, str]:
     return ctx.run(["git", "-C", str(wt), *args], 30)
 
 
-def worktree_state(ctx: Ctx, wt: Path) -> tuple[str, str]:
-    """(state, why): active | recent | dirty | unpushed | finished | merged."""
+# Untracked or changed paths that are never a session's own work: hub copies claude-sync drops into every checkout
+# (_claude/, changes/, sessions/ and the manifest's data.shared files), build logs, briefs, login copies, and the
+# old session logs that were committed by mistake once (their deletion is not work either).
+NOT_WORK = re.compile(r"^(_claude/|changes/|sessions/|\.axf-claude/|\.claude/commands/|[^/]+\.(log|jsonl|out)$|\.axf-[^/]*$|"
+                      r"\.axf-brief\.md$|\.brief\.md$|\.axhub-build\.json$|assets\.log$)")
+
+
+def _shared_paths(wt: Path) -> list[str]:
+    """The manifest's data.shared paths (hub copies, synced into every checkout)."""
+    m = read_json(wt / "project.manifest.json", {}) or {}
+    sh = (m.get("data") or {}).get("shared") if isinstance(m, dict) else None
+    return [x for x in sh if isinstance(x, str) and x] if isinstance(sh, list) else []
+
+
+def real_changes(porcelain: str, shared: list[str] | None = None) -> list[str]:
+    """Paths in `git status --porcelain` output that are a session's own uncommitted work."""
+    out = []
+    for ln in porcelain.splitlines():
+        if len(ln) < 4:
+            continue
+        path = ln[3:].split(" -> ")[-1].strip().strip('"')
+        if NOT_WORK.search(path) or any(path == x or (x.endswith("/") and path.startswith(x)) for x in shared or []):
+            continue
+        out.append(path)
+    return out
+
+
+def _tmux_axf(ctx: "Ctx") -> list[tuple[str, str]]:
+    """(session, folder) for every tmux pane and every axf-* session's @axf_cwd tag."""
+    rows = getattr(ctx, "_panes", None)
+    if rows is None:
+        rows = []
+        code, out = ctx.run(["tmux", "list-panes", "-a", "-F", "#{session_name}\t#{pane_current_path}"], 10)
+        if code == 0:
+            rows += [tuple((ln.split("\t") + [""])[:2]) for ln in out.splitlines() if ln.strip()]
+        code, out = ctx.run(["tmux", "ls", "-F", "#{session_name}\t#{@axf_cwd}"], 10)
+        if code == 0:
+            rows += [tuple((ln.split("\t") + [""])[:2]) for ln in out.splitlines() if ln.strip()]
+        ctx._panes = rows
+    return rows
+
+
+def running_session(ctx: "Ctx", wt: Path) -> str:
+    """The tmux session working in this folder ('' = none): axf-<name>, axf-<name>--<agent>, axf-<name>-<time>, or any
+    pane or tagged session whose folder is inside it."""
     name = wt.name
-    if f"axf-{name}" in ctx.tmux_sessions() or name in ctx.tmux_sessions():
-        return "active", "its tmux session is running"
+    for ses in ctx.tmux_sessions():
+        if ses in (name, f"axf-{name}") or ses.startswith((f"axf-{name}--", f"axf-{name}-")):
+            return ses
+    root = str(wt)
+    for ses, cwd in _tmux_axf(ctx):
+        if cwd and (cwd == root or cwd.startswith(root + "/")):
+            return ses
+    return ""
+
+
+def _common_repo(ctx: "Ctx", wt: Path) -> Path | None:
+    code, out = _git(ctx, wt, "rev-parse", "--path-format=absolute", "--git-common-dir")
+    if code != 0 or not out.strip():
+        return None
+    p = Path(out.strip().splitlines()[-1])
+    return p.parent if p.name == ".git" else p
+
+
+def _fetch_once(ctx: "Ctx", wt: Path) -> None:
+    repo = _common_repo(ctx, wt)
+    key = str(repo or wt)
+    done = ctx.__dict__.setdefault("_fetched", set())
+    if key not in done:
+        done.add(key)
+        _git(ctx, wt, "fetch", "--quiet", "origin", "main")
+
+
+def build_status(ctx: "Ctx", wt: Path, branch: str) -> tuple[str, str]:
+    """(build id, status) of the builds-store record on this branch (or named after the folder); ('', '') = none.
+    Store: AXF_BUILDS_STORE, else <the repository's main checkout>/_claude/builds/store.json."""
+    cache = ctx.__dict__.setdefault("_stores", {})
+    env = os.environ.get("AXF_BUILDS_STORE")
+    repo = None if env else _common_repo(ctx, wt)
+    path = Path(env) if env else (repo / "_claude" / "builds" / "store.json" if repo else None)
+    if path is None:
+        return "", ""
+    if str(path) not in cache:
+        st = read_json(path, {}) or {}
+        cache[str(path)] = [b for b in (st.get("builds") or []) if isinstance(b, dict)] if isinstance(st, dict) else []
+    builds = cache[str(path)]
+    for b in builds:
+        if branch and b.get("branch") == branch:
+            return str(b.get("id") or ""), str(b.get("status") or "")
+    for b in builds:
+        if b.get("id") == wt.name:
+            return str(b.get("id")), str(b.get("status") or "")
+    return "", ""
+
+
+def worktree_state(ctx: Ctx, wt: Path) -> tuple[str, str]:
+    """(state, why): active | recent | dirty | open | finished | merged | done.
+    Removed: merged (branch in origin/main), done (its build is complete/archived) and finished (not a git checkout),
+    each only when idle long enough. Never a folder a tmux session works in or one with real uncommitted work."""
+    ses = running_session(ctx, wt)
+    if ses:
+        return "active", f"tmux session {ses} is running in it"
     if busy(wt, ctx.files, ctx.cwds):
         return "active", "a process is working inside it"
     idle_h = (ctx.now - newest_mtime(wt)) / 3600
@@ -491,18 +589,17 @@ def worktree_state(ctx: Ctx, wt: Path) -> tuple[str, str]:
     code, out = _git(ctx, wt, "status", "--porcelain", "--untracked-files=normal")
     if code != 0:
         return "dirty", "git status failed, kept to be safe"
-    changes = [ln for ln in out.splitlines() if ln.strip() and not re.search(r"(\.log|\.brief\.md|\.out)$", ln.strip())]
+    changes = real_changes(out, _shared_paths(wt))
     if changes:
-        return "dirty", f"{len(changes)} uncommitted change(s)"
-    _git(ctx, wt, "fetch", "--quiet", "origin", "main")
+        return "dirty", f"{len(changes)} uncommitted change(s): {', '.join(changes[:3])}{' …' if len(changes) > 3 else ''}"
+    _fetch_once(ctx, wt)
     if _git(ctx, wt, "merge-base", "--is-ancestor", "HEAD", "origin/main")[0] == 0:
         return "merged", f"merged into main, idle {idle_h:.0f} h"
-    code, out = _git(ctx, wt, "rev-list", "--count", "@{upstream}..HEAD")
-    if code != 0:
-        return "unpushed", "its branch has no upstream, kept to be safe"
-    if out.strip() != "0":
-        return "unpushed", f"{out.strip()} commit(s) not pushed"
-    return "finished", f"fully pushed, idle {idle_h:.0f} h"
+    code, br = _git(ctx, wt, "symbolic-ref", "--quiet", "--short", "HEAD")
+    bid, status = build_status(ctx, wt, br.strip() if code == 0 else "")
+    if status in ("complete", "archived"):
+        return "done", f"build {bid} is {status}, idle {idle_h:.0f} h"
+    return "open", f"not merged{f', build {bid} is {status}' if bid else ', no build record'}; kept"
 
 
 def plan_worktrees(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -511,8 +608,8 @@ def plan_worktrees(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
         state, why = worktree_state(ctx, wt)
         size = du(wt, ctx.run)
         row = {"path": str(wt), "name": wt.name, "size": size, "state": state, "why": why}
-        if state in ("merged", "finished"):
-            items.append(_item("worktrees", str(wt), size, why, path=str(wt)))
+        if state in ("merged", "done", "finished"):
+            items.append(_item("worktrees", str(wt), size, why, path=str(wt), state=state))
         else:
             kept.append(row)
     return items, kept
@@ -767,9 +864,19 @@ def _execute_item(it: dict[str, Any], ctx: Ctx) -> int:
         _archive_build_notes(wt)
         size = it.get("size") or 0
         gitfile = wt / ".git"
-        if gitfile.is_file():  # a linked worktree: let git drop it from its repository's list
+        if gitfile.is_file():  # a linked worktree: let git drop it from its repository's list, then its branch
+            repo = _common_repo(ctx, wt)
+            code, br = _git(ctx, wt, "symbolic-ref", "--quiet", "--short", "HEAD")
+            branch = br.strip() if code == 0 else ""
+            # the branch goes only when nothing on it would be lost: merged into main, or every commit is on a remote
+            safe = _git(ctx, wt, "merge-base", "--is-ancestor", "HEAD", "origin/main")[0] == 0
+            if not safe and branch:
+                code, out = _git(ctx, wt, "branch", "-r", "--contains", "HEAD")
+                safe = code == 0 and bool(out.strip())
             code, out = ctx.run(["git", "-C", str(wt), "worktree", "remove", "--force", str(wt)], 120)
             if code == 0 and not wt.exists():
+                if repo and branch and safe and branch not in ("main", "master"):
+                    ctx.run(["git", "-C", str(repo), "branch", "-D", branch], 30)
                 return size
         return _remove_path(wt, roots, ctx.files, ctx.cwds) or size
     if job == "docker":
@@ -825,6 +932,39 @@ def run_plan(run_id: str, sha: str, data_dir: Path = DATA_DIR, run: Runner = _ru
 
 # ------------------------------------------------------------------ CLI
 
+def _worktrees_cli(apply: bool) -> int:
+    """Operator / script path (Brett, Nov 8 2026): the same rules as the console job, run directly. Dry run prints what
+    would go and the space it frees, and every folder kept for a running session or uncommitted work; --apply then
+    removes them (execute re-checks each one first)."""
+    ctx = Ctx(load_settings())
+    items, kept = plan_worktrees(ctx)
+    print(f"disk {disk('/')['pct']}% · {len(items)} worktree(s) to remove, {human(sum(i.get('size') or 0 for i in items))}")
+    for i in items:
+        print(f"  - {i['ref']}  {human(i['size'])}  ({i['why']})")
+    for state in ("active", "dirty"):
+        rows = [k for k in kept if k["state"] == state]
+        if rows:
+            print(f"kept, {'running' if state == 'active' else 'uncommitted work'} ({len(rows)}):")
+            for k in rows:
+                print(f"  · {k['path']}  {human(k['size'])}  ({k['why']})")
+    other = [k for k in kept if k["state"] not in ("active", "dirty")]
+    if other:
+        print(f"kept, not finished ({len(other)}): " + ", ".join(sorted({k['state'] for k in other})))
+    if not apply or not items:
+        if not apply:
+            print("dry run: nothing removed (--apply removes them)")
+        return 0
+    p = make_plan(f"wt-{time.strftime('%Y%m%d-%H%M%S')}", ["worktrees"], {"worktrees": {"items": items}}, by="cli")
+    res = execute(p, Ctx(load_settings()))
+    write_json(DATA_DIR / "runs" / f"{p['id']}.json", res)
+    print(f"done {res['done']} · skipped {res['skipped']} · failed {res['failed']} · freed {human(res['freed'])} · "
+          f"disk {res['diskBefore']['pct']}% -> {res['diskAfter']['pct']}%")
+    for r in res["results"]:
+        if not r["ok"]:
+            print(f"  {'skip' if r.get('skipped') else 'FAIL'} {r['ref']}: {r.get('error')}")
+    return 0 if res["ok"] else 1
+
+
 def _main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(prog="maint.py", description="AXF maintenance engine (maintenance@1)")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -838,7 +978,11 @@ def _main(argv: list[str]) -> int:
     c.add_argument("id")
     c.add_argument("--sha", required=True)
     sub.add_parser("jobs")
+    w = sub.add_parser("worktrees", help="finished build worktrees: dry run (default), --apply removes them")
+    w.add_argument("--apply", action="store_true")
     args = ap.parse_args(argv)
+    if args.cmd == "worktrees":
+        return _worktrees_cli(args.apply)
     if args.cmd == "jobs":
         print(json.dumps(job_catalog(), indent=1))
         return 0

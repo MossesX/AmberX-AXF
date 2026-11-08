@@ -26,6 +26,9 @@ for d in (DATA, BUILDS, LOGS, TMPS):
 os.environ.update(AXF_MAINT_DATA_DIR=str(DATA), AXF_MAINT_NO_MONITOR="1", AXF_MAINT_BUILD_ROOTS=str(BUILDS),
                   AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_AREAS=f"Logs={LOGS},tmp={TMPS},Builds={BUILDS},Locked=/root/axf-builds", AXF_MAINT_HOST_ROOT="/opt/axf")
 os.environ.pop("AXHUB_TOKEN", None)
+(TMP / "store.json").write_text(json.dumps({"builds": [{"id": "done-build", "branch": "claude/done-build", "status": "complete"},
+                                                       {"id": "hub-copies", "branch": "claude/hub-copies", "status": "running"}]}))
+os.environ["AXF_BUILDS_STORE"] = str(TMP / "store.json")   # the worktree job reads build status from it (line ~356 resets it)
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 
 n = failed = 0
@@ -78,12 +81,12 @@ ok(all(not j["safe"] for j in M.job_catalog() if j["id"] == "worktrees") and set
 
 # ---------------------------------------------------------------- scratch machine
 
-for name in ("old-plain", "new-plain", "dirty", "merged", "active"):
+for name in ("old-plain", "new-plain", "dirty", "merged", "active", "agent-run", "hub-copies", "done-build"):
     d = BUILDS / name
     d.mkdir()
     (d / "work.txt").write_text("x" * 1000)
     (d / "build.log").write_text("log")
-    if name in ("dirty", "merged"):
+    if name in ("dirty", "merged", "agent-run", "hub-copies", "done-build"):
         (d / ".git").mkdir()
     if name != "new-plain":
         age(d)
@@ -118,11 +121,15 @@ def fake(cmd: list[str], timeout: int = 60) -> tuple[int, str]:
     if cmd[:2] == ["du", "-sxb"]:
         return 1, ""  # falls back to the Python walk
     if cmd[0] == "tmux":
-        return 0, "axf-active\n"
+        return 0, "axf-active\naxf-agent-run--vinnie\n" if cmd[1] == "ls" else ""
     if cmd[0] == "git":
         wt, args = cmd[2], cmd[3:]
         if args[0] == "status":
+            if wt.endswith("hub-copies"):  # what claude-sync drops into every checkout: never the session's work
+                return 0, "?? _claude/builds/reports/x.md\n?? changes/2026/11/c.json\n M tracker.json\n D assets.log\n?? run.jsonl\n"
             return 0, " M src/app.ts\n?? build.log\n" if wt.endswith("dirty") else "?? build.log\n"
+        if args[0] == "symbolic-ref":
+            return 0, f"claude/{Path(wt).name}\n"
         if args[0] == "merge-base":
             return (0, "") if wt.endswith("merged") else (1, "")
         return 0, ""
@@ -152,8 +159,11 @@ ctx = M.Ctx(S, fake)
 P = M.plan(ctx, M.JOBS)
 refs = lambda job: {Path(i["ref"]).name if "/" in i["ref"] else i["ref"] for i in P[job]["items"]}  # noqa: E731
 kept = {k["name"]: k["state"] for k in P["worktrees"]["kept"]}
-ok(refs("worktrees") == {"old-plain", "merged"}, f"worktrees: merged + idle plain go ({refs('worktrees')})")
+ok(refs("worktrees") == {"old-plain", "merged", "done-build"}, f"worktrees: merged, build complete and idle plain go ({refs('worktrees')})")
 ok(kept.get("dirty") == "dirty" and kept.get("active") == "active" and kept.get("new-plain") == "recent", f"worktrees: dirty, active and recent are kept ({kept})")
+ok(kept.get("agent-run") == "active", "worktrees: a session named axf-<folder>--<agent> keeps its folder")
+ok(kept.get("hub-copies") == "open", f"worktrees: hub copies, logs and the old assets.log don't make a folder dirty; not merged + no build = kept open ({kept.get('hub-copies')})")
+ok(M.real_changes(" M src/a.ts\n?? _claude/x\n M framework/plan/pending.json\n", ["framework/plan/pending.json"]) == ["src/a.ts"], "real_changes: only the session's own work")
 ok("_archive" not in refs("worktrees") | set(kept), "the _archive folder is never a worktree")
 ok(refs("docker") == {IMG_FREE, "build-cache"}, "docker: only the dangling image no container uses, plus build cache")
 ok(next(i for i in P["docker"]["items"] if i["ref"] == "build-cache")["size"] == 2_000_000_000, "docker: build cache size from system df")

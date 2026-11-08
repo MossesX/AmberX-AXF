@@ -16,7 +16,7 @@ Settings are in **Settings → Plugins → Maintenance**.
 
 | Job | Safe for nightly | What it removes |
 | --- | --- | --- |
-| Finished build worktrees | no | Worktrees merged into main or fully pushed, idle 24 h, no tmux session or process. Logs and briefs are copied to `/root/axf-builds/_archive` first. Uncommitted or unpushed work is always kept. |
+| Finished build worktrees | no | Worktrees merged into main or whose build is complete / archived, idle 24 h, no tmux session (`axf-<name>`, `axf-<name>--<agent>`, or any pane inside it) or process. `git worktree remove`, then the branch when it is merged or on a remote. Logs and briefs are copied to `/root/axf-builds/_archive` first. Real uncommitted work is always kept (hub copies in `_claude/`, `changes/`, `sessions/`, data.shared files, logs and briefs don't count). Direct run: `python3 engine/maint.py worktrees [--apply]`. |
 | Dangling Docker images and build cache | yes | Untagged images no container uses, build cache unused for 24 h. |
 | Old logs | yes | Rotated logs in `/var/log` and build logs older than 14 days, journal beyond 14 days. |
 | /tmp leftovers | yes | Entries in `/tmp` and `/var/tmp` untouched for 7 days. |
