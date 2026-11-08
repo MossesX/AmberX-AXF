@@ -216,6 +216,8 @@ export interface InstalledLibrary {
   builtWith?: { model: string; builtAt?: string };
   /** Where its primary UI opens by default (engines/placement.ts); the setting `axf.placement.<id>` wins. */
   opens?: Placement;
+  /** Where the generated nested menus file its entries (nested-menu@1, engines/menugen.mjs). */
+  menu?: { category?: string; subcategory?: string; keywords?: string[] };
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */
@@ -741,7 +743,8 @@ export class AxfRuntime {
     const active = this.state.active['app-menu'];
     let cache = this.appMenuCache;
     if (!cache || cache.active !== active) {
-      const merged = mergeAppMenu(asset, this.appMenuContributed());
+      // an asset that says `contributions: false` (a generated menu) already holds every library's items
+      const merged = mergeAppMenu(asset, asset.contributions === false ? [] : this.appMenuContributed());
       cache = { rev: this.state.rev, active, merged, reported: 0 };
       this.appMenuCache = cache;
     }
