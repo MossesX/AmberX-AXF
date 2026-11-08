@@ -750,8 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:49 UTC · `multi-account-headless-workers` note (current) · orchestrator
-- 2026-11-07 04:53 UTC · `follow-amber-stay-connected` added (4 steps) (current) · claude-voice
 - 2026-11-07 04:55 UTC · `orchestrator-gate` added (4 steps) (current) · claude-voice
 - 2026-11-07 04:55 UTC · `voice-ui-edit-library` added (8 steps) (current) · claude-voice
 - 2026-11-07 04:56 UTC · `merge-conflict-alerts` added (5 steps) (current) · claude-voice
@@ -1150,6 +1148,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 16:37 UTC · `workers-api-routing` branch claude/workers-api-routing, PR #389 (all) · builds-live
 - 2026-11-08 16:37 UTC · `workers-api-routing` s6 done, → built (all) · orchestrator
 - 2026-11-08 16:42 UTC · `brief-only-headless` s6 done, → built (all) · orchestrator
+- 2026-11-08 16:57 UTC · `molly-one-shell` added (14 steps) (all) · orchestrator
+- 2026-11-08 16:58 UTC · `molly-native-expenses` added (4 steps) (all) · orchestrator
 
 ## Token passes (log)
 

@@ -2073,6 +2073,30 @@
    "from": "",
    "addenda": []
   },
+  "molly-native-expenses": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-08T16:58:59.537Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "molly-one-shell": {
+   "said": "Brett wants everything in ONE app. Molly becomes the single shell for every app and plugin: Dev Console, axHub web, AmberX, and all future apps. Patches is scrapped. NO embedding: Do NOT embed other apps as pages/iframes (no second file menu/banner/chrome). ONE native app: Molly has the only chrome (one banner, one file menu, one nav, one settings). Every app's screens, plugins, menus and settings load natively into Molly as plugins, merged into Molly's single menu/nav. Menus: Molly's menus reach EVERYTHING from every app: every screen, plugin, action, setting. Grouped by app and category, search/jump-to-anything, favorites and recents, sliding sub menus, three-dot overflow on small screens. Fully voice and API controllable. Layouts: User picks a layout mode. IDE-style is ONE option among others. In the IDE layout, containers dock/split/float/resize, and each container can optionally be a tab group: drag anything from a menu onto a container and it opens there as a new tab; tabs drag between containers. Save/switch named layouts. Reuse framework tab group / drag-to-tab work.",
+   "at": "2026-11-08T16:57:58.978Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-opus": {
    "said": "combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
    "at": "2026-11-02",
@@ -2083,6 +2107,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "molly-sign-in-once": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-08T16:59:02.204Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "mosses-build-tools": {
