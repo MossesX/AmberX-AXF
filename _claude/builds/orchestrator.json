@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:23:52.902Z",
+ "updatedAt": "2026-11-08T21:24:15.082Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75259,9 +75259,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:23:51.038Z",
-   "updatedAt": "2026-11-08T21:23:51.038Z",
+   "updatedAt": "2026-11-08T21:24:13.972Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:24:13.972Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -75276,7 +75281,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett: every toolbar has a label, managed in that toolbar's own settings sections: change the label text, its position (left/right/top/inline/tooltip-only), its behavior (always shown, on hover, collapse when narrow, click action), and hide it. Applies to every toolbar in every app; part of the snappable-bar rule. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8cb8k401871e"
+    },
+    {
+     "id": "s2",
+     "text": "toolbar has a label that can be managed in its sections. You can change what the label is, where it is, and its behavior. You can hide it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8cb8k402h5z9"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/toolbar-labels-managed-in-each-toolbar-s-setting.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/toolbar-labels-managed-in-each-toolbar-s-setting.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8cb8k4037lnq"
+    }
+   ]
   }
  ]
 }
