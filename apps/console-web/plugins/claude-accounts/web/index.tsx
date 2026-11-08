@@ -13,6 +13,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
 import { FAILOVER_ASSETS, Failover } from './failover';
+import { AccountChecks, CHECKS_ASSETS, checkOnLoad } from './checks';
 import './claude-accounts.css';
 
 const ID = 'ai.amberx.axf.console.claude-accounts';
@@ -250,6 +251,7 @@ function Page() {
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>
       <Container title="Accounts" icon="key"><Accounts manage /></Container>
+      <Container title="Account checks" icon="check"><AccountChecks /></Container>
       <Container title="Failover & alerts" icon="alert"><Failover /></Container>
       <Container title="Job routing" icon="shuffle"><JobRouting /></Container>
       <Container title="Add a worker account" icon="user"><Workers /></Container>
@@ -282,8 +284,10 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
     rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });
     // the Job routing layouts are settings assets (the UI Review options): in the registry, so the asset library lists them
-    for (const a of [...ROUTING_ASSETS, ...FAILOVER_ASSETS]) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
+    for (const a of [...ROUTING_ASSETS, ...FAILOVER_ASSETS, ...CHECKS_ASSETS]) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
     void loadRouting().catch(() => undefined);
+    // account-health-failover: a console opening asks the host to check every Claude account (skipped inside the gap)
+    checkOnLoad();
     listeners.add((v) => paint(rt, v));
     const tick = () => { if (document.visibilityState === 'visible') void load().catch(() => undefined); };
     tick();
@@ -292,9 +296,10 @@ export const plugin: AxfWebLibrary = {
   views: { 'claude-accounts': { title: 'Claude accounts', icon: 'key', render: () => <Page /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
   dialogs: { [DIALOG]: { title: 'Switch Claude account', icon: 'key', searchable: false, render: () => <Accounts /> } },
-  settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; failover and phone alerts when an account stops a build; last refresh per login; usage per account.' }],
+  settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; account checks (login, usage left, models) on a schedule and when a console opens; failover and phone alerts when an account stops a build; last refresh per login; usage per account.' }],
   settingsPanels: [
     { id: 'claude-accounts.list', tab: VIEW, title: 'Accounts', icon: 'key', order: 1, render: () => <Accounts manage /> },
+    { id: 'claude-accounts.checks', tab: VIEW, title: 'Account checks', icon: 'check', order: 1.2, render: () => <AccountChecks /> },
     { id: 'claude-accounts.failover', tab: VIEW, title: 'Failover & alerts', icon: 'alert', order: 1.5, render: () => <Failover /> },
     { id: 'claude-accounts.routing', tab: VIEW, title: 'Job routing', icon: 'shuffle', order: 2, render: () => <JobRouting /> },
     { id: 'claude-accounts.workers', tab: VIEW, title: 'Add a worker account', icon: 'user', order: 3, render: () => <Workers /> },

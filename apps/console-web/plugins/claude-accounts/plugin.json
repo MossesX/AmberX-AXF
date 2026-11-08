@@ -18,7 +18,9 @@
     "action:claude-accounts.switch",
     "service:axf.claude-accounts@1",
     "settings-panel:claude-accounts.routing",
-    "action:claude-accounts.routing"
+    "action:claude-accounts.routing",
+    "service:axf.account-status@1",
+    "settings-panel:claude-accounts.checks"
   ],
   "requires": [
     "service:axf.headless@1",
@@ -451,7 +453,10 @@
         "title": "Where each Claude login is kept",
         "description": "One home per login: every place a Claude login is kept on the VPS (its home, the live login, each build's copy), whose it is and whether it is in step with its home (behind = would renew with a spent token; foreign = a login no saved account knows). Token hashes only, never a credential.",
         "readOnly": true
-      }
+      },
+      {"route": "GET /checks", "id": "checks", "title": "Claude account checks", "description": "What the last account health check found for every Claude account (subscriptions and API keys): ok / limited / no credits / login expired, 5-hour and weekly use left with reset times, API spend against its caps, the models it can use now, and when it was checked; plus the check settings. Voice: 'how are my Claude accounts', 'which accounts can run Fable'.", "readOnly": true},
+      {"route": "POST /checks", "id": "check", "title": "Check Claude accounts now", "description": "Run the account health check now (it starts on the VPS within a minute; results in Claude accounts → Account checks and on the phone). trigger manual (default) or load; accounts = only these. Costs about a tenth of a cent per account. Voice: 'check my Claude accounts', 'check account 3'.", "input": {"type": "object", "properties": {"trigger": {"type": "string", "enum": ["manual", "load"]}, "accounts": {"type": "array", "items": {"type": "string"}, "description": "saved account names; empty = every account"}, "account": {"type": "string", "description": "one saved account name"}}}},
+      {"route": "POST /checks/settings", "id": "checks-set", "title": "Change the Claude account checks", "description": "enabled (the scheduled check), intervalMin (10-1440), onLoad (check when a console opens), loadGapMin (0-240: no second check within this many minutes), session (prove a subscription with a tiny bare session that also renews its token), apiMessage (prove an API key with a 1-token message), timeoutSec (15-300), notifyRuns (load | all | off: phone notification before and after a check), alertProblems (a phone alert when a check finds an account expired, limited or out of credits). Voice: 'check the Claude accounts every 30 minutes'.", "input": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "intervalMin": {"type": "integer", "minimum": 10, "maximum": 1440}, "onLoad": {"type": "boolean"}, "loadGapMin": {"type": "integer", "minimum": 0, "maximum": 240}, "session": {"type": "boolean"}, "apiMessage": {"type": "boolean"}, "timeoutSec": {"type": "integer", "minimum": 15, "maximum": 300}, "notifyRuns": {"type": "string", "enum": ["load", "all", "off"]}, "alertProblems": {"type": "boolean"}}}}
     ]
   },
   "builtWith": {
@@ -470,6 +475,10 @@
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "deploy/account-alerts.mjs",
+      "deploy/account-health.test.mjs",
+      "deploy/account-status.mjs",
+      "deploy/claude-account-probe.mjs",
+      "deploy/claude-token-save.mjs",
       "deploy/account-failover.test.mjs",
       "deploy/claude-headless.sh",
       "deploy/claude-login.mjs",

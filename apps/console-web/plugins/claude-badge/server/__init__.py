@@ -14,6 +14,8 @@ be read keeps its last numbers with the time they are from, so the list never go
 
 GET /amberx says whether the AmberX phone is connected: axHub's `amberx.recorder_status` through axf.vinny@1, which runs at
 once (no veto, no tokens). Cached for a minute.
+Every usage row also carries the account health check's result (capability axf.account-status@1, the one shared store):
+status, models, when it was checked; a row the host read missed takes the check's newer numbers.
 Nothing here names another plugin: no service = "AI unavailable" / "can't read the VPS".
 """
 from __future__ import annotations
@@ -220,6 +222,41 @@ def merge_usage(prev: dict[str, Any], read: dict[str, Any], now_ms: int) -> list
     return out
 
 
+HEALTH_WORDS = {"ok": "ok", "limited": "limited", "no-credits": "no credits", "expired": "login expired", "unknown": "not checked"}
+
+
+def with_health(accounts: list[dict[str, Any]], store: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """The account health check's shared store (capability axf.account-status@1, account-status@1) on every usage row:
+    its status, models and check time; a row the host read missed takes the check's numbers when they are newer; an
+    API key shows its last-known spend against its cap. No store = the rows as they were."""
+    rows = (store or {}).get("accounts") if isinstance(store, dict) else None
+    if not isinstance(rows, dict):
+        return accounts
+    out = []
+    for a in accounts:
+        h = rows.get(a.get("name"))
+        if not isinstance(h, dict):
+            out.append(a)
+            continue
+        checked = _ms(str(h.get("checkedAt") or ""))
+        b = {**a, "health": {"status": h.get("status") if h.get("status") in HEALTH_WORDS else "unknown", "why": str(h.get("why") or "")[:200],
+                             "models": [m for m in h.get("models") or [] if m in ("opus", "fable")] if isinstance(h.get("models"), list) else None,
+                             "checkedAt": str(h.get("checkedAt") or "")[:40], "warn": bool(h.get("warn"))}}
+        u = h.get("usage") if isinstance(h.get("usage"), dict) else {}
+        if not a.get("fresh") and checked > int(a.get("asOf") or 0) and (u.get("fiveHour") or u.get("weekly")):
+            b.update(asOf=checked, fiveHour=clean_window(u.get("fiveHour")) or a.get("fiveHour"), weekly=clean_window(u.get("weekly")) or a.get("weekly"), why="From the last account check")
+        api = h.get("api") if isinstance(h.get("api"), dict) else None
+        if a.get("type") == "api-key" and api:
+            cap = f" of ${api.get('capDay')}" if api.get("capDay") else ""
+            b["why"] = f"${float(api.get('spendDay') or 0):.2f} today{cap} (an API key has no usage meter)"
+        if h.get("status") in ("expired", "no-credits"):
+            b["status"] = "limit"
+        elif b.get("status") != a.get("status") or b.get("fiveHour") is not a.get("fiveHour"):
+            b["status"] = account_status(b)
+        out.append(b)
+    return out
+
+
 def meter_state(active: dict[str, Any] | None) -> str:
     """The badge: ok, warn from 80% of either window, error when one is full, off when there is nothing to read."""
     if not active or active["status"] == "no-meter":
@@ -259,6 +296,11 @@ def read_usage(refresh: bool = False) -> dict[str, Any]:
             accounts = [{**a, "fresh": False, "fiveHour": settle(a.get("fiveHour"), now_ms), "weekly": settle(a.get("weekly"), now_ms)} for a in prev.values()]
             for a in accounts:
                 a["status"] = account_status(a)
+        hs = plugin_services.get("axf.account-status@1")   # the account checks' shared store, when that plugin is on
+        try:
+            accounts = with_health(accounts, hs.status() if hs is not None else None)
+        except Exception:  # noqa: BLE001 — the meter never breaks on the store
+            pass
         active = next((a for a in accounts if a.get("active")), None)
         value = {"at": now_ms, "ready": bool(accounts), "why": "" if accounts else str(r.get("why") or "Couldn't read the accounts on the VPS")[:200],
                  "active": active["name"] if active else "", "state": meter_state(active), "accounts": accounts}

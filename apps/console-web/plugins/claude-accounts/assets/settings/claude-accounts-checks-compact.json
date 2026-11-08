@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Claude accounts plugin",
+  "id": "claude-accounts-checks-compact",
+  "name": "Account checks: compact",
+  "description": "One line per account (status, 5-hour and weekly left, models); the settings sit below, closed. Best on a phone.",
+  "tags": [
+    "claude-accounts",
+    "account-checks",
+    "ui-choices:claude-accounts-checks"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.checks": "basic"
+    },
+    "view": "compact",
+    "order": [
+      "status",
+      "notify",
+      "schedule"
+    ],
+    "open": [
+      "status"
+    ]
+  }
+}

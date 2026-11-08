@@ -130,7 +130,7 @@ ok(names == [f"account-{i}" for i in range(1, 7)], "token and API-key accounts a
 ok(active == "account-6" and kinds["account-2"] == "login" and kinds["account-3"] == "token" and kinds["account-5"] == "api-key", "each row keeps its type")
 ok(not any(x == "bad" for x in names), "an unknown tag is still malformed")
 svc = plugin_services.get("axf.claude-accounts@1")
-ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs", "home"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits, usage and last refresh, nothing else")
+ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs", "home", "models", "health"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits, usage, last refresh and the account check, nothing else")
 
 print("use")
 reset()
@@ -316,5 +316,41 @@ host.out = json.dumps([{"kind": "home", "owner": "account-1", "token": "01234567
 lg = c.get("/p/logins").json()
 ok(lg["behind"] == 1 and lg["logins"][1]["state"] == "behind" and "file" not in lg["logins"][0], "logins: every place a login is kept, behind counted, no paths")
 ok(SECRET not in json.dumps(lg) and host.commands[-1] == mod.LOGINS_COMMAND, "one fixed read command, no credential")
+
+print("account checks (account-health-failover)")
+import time as _t  # noqa: E402
+now_iso = _t.strftime("%Y-%m-%dT%H:%M:%SZ", _t.gmtime())
+ok(c.get("/p/checks").json()["settings"] == mod.PROBE_DEFAULTS and mod.account_health()["status"] == "unknown", "no check yet: defaults (hourly, on console load), systems check unknown")
+r = c.post("/p/checks", json={"trigger": "load"}).json()
+req = json.loads((data / "account-probe-request.json").read_text())
+ok(r["queued"] and req["trigger"] == "load" and req["accounts"] == [] and req["$axf"] == "account-probe-request@1", "console load: a request file for the host's sweep (nothing runs here)")
+ok(c.post("/p/checks", json={"trigger": "load"}).json()["skipped"] == "a check is already asked for", "a second console opening doesn't ask twice")
+ok(c.post("/p/checks", json={"trigger": "rm"}).status_code == 400 and c.post("/p/checks", json={"trigger": "manual", "accounts": ["../x"]}).status_code == 400, "bad trigger or name refused")
+r = c.post("/p/checks", json={"trigger": "manual", "account": "account-3"}).json()
+ok(r["queued"] and json.loads((data / "account-probe-request.json").read_text())["accounts"] == ["account-3"], "Check now for one account")
+(data / "account-probe-request.json").unlink()
+(data / "account-status.json").write_text(json.dumps({"$axf": "account-status@1", "updatedAt": now_iso,
+    "run": {"id": "r1", "trigger": "load", "state": "done", "startedAt": now_iso, "finishedAt": now_iso},
+    "accounts": {"account-1": {"status": "ok", "checkedAt": now_iso, "models": ["opus"], "label": "Moses X", "usage": {"weekly": {"used": 61, "left": 39}}},
+                 "account-2": {"status": "expired", "checkedAt": now_iso, "source": "probe", "why": "login expired and could not be renewed"},
+                 "account-3": {"status": "limited", "checkedAt": now_iso, "until": "2099-01-01T00:00:00Z"},
+                 "Bad Name": {"status": "ok"}, "account-4": {"status": "weird", "token": SECRET}}}))
+ok(c.post("/p/checks", json={"trigger": "load"}).json()["skipped"].startswith("checked 0 min ago"), "console load right after a check: skipped (15 min gap)")
+g = c.get("/p/checks").json()
+ok(set(g["store"]["accounts"]) == {"account-1", "account-2", "account-3", "account-4"} and g["store"]["accounts"]["account-4"]["status"] == "unknown", "the store: bad names dropped, unknown statuses unknown")
+ok(g["summary"]["text"] == "1 ok, 1 limited, 1 login expired, 1 not checked", f"summary: {g['summary']['text']}")
+svc = plugin_services.get("axf.account-status@1")
+ok(svc.able("account-1", "opus")["ok"] and not svc.able("account-1", "fable")["ok"], "capability: account-1 takes Opus jobs, not Fable (not on its model list)")
+ok(not svc.able("account-2")["ok"] and not svc.able("account-3")["ok"] and svc.able("account-9")["ok"], "expired / limited = no; never checked = not blocked")
+h = mod.account_health()
+ok(h["status"] == "error" and "account-2: login expired" in h["summary"], f"systems check names the dead login: {h['summary']}")
+host.out = f"* account-1 (active)\n  account-2\n{mod.SEP}\n{status()}\n{mod.SEP2}\n{{}}\n"
+mod._forget_read()
+acc = {a["name"]: a for a in c.get("/p/accounts").json()["accounts"]}
+ok(acc["account-2"]["health"]["status"] == "expired", "the accounts screen carries each account's health")
+r = c.post("/p/checks/settings", json={"intervalMin": 30, "notifyRuns": "all", "onLoad": False})
+ok(r.status_code == 200 and r.json()["settings"]["intervalMin"] == 30 and json.loads((data / "workers.json").read_text())["probe"]["notifyRuns"] == "all", "settings: written to workers.json (the host reads them there)")
+ok(c.post("/p/checks/settings", json={"intervalMin": 1}).status_code == 400 and c.post("/p/checks/settings", json={"notifyRuns": "loud"}).status_code == 400, "out of range refused")
+ok(c.post("/p/checks", json={"trigger": "load"}).json()["skipped"] == "checking on console load is off", "on-load checks off = skipped")
 
 print(f"\nclaude-accounts: {checks} checks passed")

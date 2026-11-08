@@ -26,6 +26,15 @@ argv, JSON on stdin, never a shell), the same code the launcher uses, so the pre
 Raising or removing a spend cap (or adding an API account without both caps) is Brett's own signed-in click: the
 console token (sessions, MCP, voice) may lower a cap but never raise one.
 
+Account health check (build account-health-failover, Nov 8 2026): deploy/claude-account-probe.mjs checks every account
+on the host (a tiny bare session + free usage / models reads) and writes the ONE shared store account-status@1
+(account-status.json in this plugin's data folder; deploy/account-status.mjs documents it). The console never runs it
+itself: it writes account-probe-request.json there and the host's minute sweep starts the check (within a minute).
+  GET  checks            { store (account-status@1), settings, request (waiting), summary }
+  POST checks            { trigger: load|manual, accounts?: [names] }: ask for a check (load = skipped within the gap)
+  POST checks/settings   { enabled?, intervalMin?, onLoad?, loadGapMin?, session?, apiMessage?, timeoutSec?, notifyRuns?, alertProblems? }
+Capability axf.account-status@1 hands the store to other plugins (the usage badge): status(), able(name, model).
+
 Capability axf.claude-accounts@1 gives other plugins the same view and the same held switch (AI keys lists these accounts
 beside its own keys); it hands out names, types, emails and plans, never a credential.
 
@@ -173,6 +182,7 @@ def parse_workers(text: str) -> dict[str, dict[str, Any]]:
                           "running": [str(s)[:80] for s in a.get("running") or []][:20], "runsToday": int(a.get("runsToday") or 0),
                           "costToday": float(a.get("costToday") or 0), "costWeek": float(a.get("costWeek") or 0),
                           "email": str(a.get("email") or "")[:200], "plan": str(a.get("plan") or "")[:40],
+                          "models": [m for m in a.get("models") or [] if m in ("opus", "fable")] if isinstance(a.get("models"), list) else None,
                           "recent": [{k: r.get(k) for k in ("session", "name", "agent", "model", "at", "end", "exit", "costUsd")} for r in (a.get("recent") or [])[:5] if isinstance(r, dict)]}
     return out
 
@@ -278,7 +288,7 @@ def view() -> dict[str, Any]:
     if active and login.get("email") and not changed:
         _remember(active, login)
         seen[active] = login
-    idle = {"limited": None, "home": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": [], "label": "", "queued": 0, "building": 0, "queue": 0, "spend": None, "why": "", "takesJobs": False}
+    idle = {"limited": None, "home": None, "models": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": [], "label": "", "queued": 0, "building": 0, "queue": 0, "spend": None, "why": "", "takesJobs": False}
 
     def row(n: str) -> dict[str, Any]:
         host = v["host"].get(n, {})
@@ -291,6 +301,9 @@ def view() -> dict[str, Any]:
 
     names = names + [n for n in v["host"] if n not in names]   # API worker slots whose key isn't saved yet
     rows = [row(n) for n in names]
+    store = health_store()
+    for r in rows:
+        r["health"] = store["accounts"].get(r["name"])
     return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE,
             "checked": v["checked"], "expiresAt": v["expiresAt"], "events": v.get("events") or [], "failover": failover_settings()}
 
@@ -784,6 +797,213 @@ def api_health() -> dict[str, Any]:
     return {"status": worst, "summary": "; ".join(a["text"] for a in alerts)[:300]}
 
 
+# ── Account health check (account-status@1) ──────────────────────────────────────────────────────────────────────
+
+STATUSES = ("ok", "limited", "no-credits", "expired", "unknown")
+STATUS_LABELS = {"ok": "ok", "limited": "limited", "no-credits": "no credits", "expired": "login expired", "unknown": "not checked"}
+PROBE_DEFAULTS = {"enabled": True, "intervalMin": 60, "onLoad": True, "loadGapMin": 15, "session": True, "apiMessage": True, "timeoutSec": 60,
+                  "notifyRuns": "load", "alertProblems": True}   # = worker-routing.mjs PROBE_DEFAULTS
+PROBE_RANGES = {"intervalMin": (10, 1440), "loadGapMin": (0, 240), "timeoutSec": (15, 300)}
+PROBE_BOOLS = ("enabled", "onLoad", "session", "apiMessage", "alertProblems")
+NOTIFY_RUNS = ("load", "all", "off")
+MAX_AGE_S = 6 * 3600   # = account-status.mjs MAX_AGE_MS
+
+
+def probe_settings() -> dict[str, Any]:
+    """The account check settings with defaults filled in (normProbe in deploy/worker-routing.mjs)."""
+    raw = _raw_config().get("probe")
+    raw = raw if isinstance(raw, dict) else {}
+    out = dict(PROBE_DEFAULTS)
+    for k in PROBE_BOOLS:
+        out[k] = raw.get(k) is not False
+    for k, (lo, hi) in PROBE_RANGES.items():
+        try:
+            out[k] = min(hi, max(lo, int(round(float(raw[k])))))
+        except (KeyError, TypeError, ValueError):
+            pass
+    out["notifyRuns"] = raw.get("notifyRuns") if raw.get("notifyRuns") in NOTIFY_RUNS else PROBE_DEFAULTS["notifyRuns"]
+    return out
+
+
+def health_store() -> dict[str, Any]:
+    """account-status.json as every reader sees it (bad rows dropped). Never holds a credential."""
+    try:
+        v = json.loads((_data() / "account-status.json").read_text())
+    except (OSError, ValueError):
+        v = {}
+    v = v if isinstance(v, dict) else {}
+    accounts = {}
+    for n, e in (v.get("accounts") or {}).items() if isinstance(v.get("accounts"), dict) else []:
+        if isinstance(n, str) and NAME.fullmatch(n) and isinstance(e, dict):
+            accounts[n] = {**e, "name": n, "status": e.get("status") if e.get("status") in STATUSES else "unknown"}
+    run = v.get("run") if isinstance(v.get("run"), dict) else None
+    return {"$axf": "account-status@1", "updatedAt": str(v.get("updatedAt") or ""), "run": run, "accounts": accounts}
+
+
+def _iso_s(v: Any) -> float:
+    try:
+        from datetime import datetime  # noqa: PLC0415
+        return datetime.fromisoformat(str(v).replace("Z", "+00:00")).timestamp()
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def able(entry: dict[str, Any] | None, model: str = "", now: float | None = None) -> dict[str, Any]:
+    """Can this account take a job (with this model)? The same answer as ableFor in deploy/account-status.mjs (login
+    changes are checked on the host; here an expired login stays expired until the next check or a sign-in)."""
+    now = time.time() if now is None else now
+    if not entry or not entry.get("checkedAt"):
+        return {"ok": True, "why": "not checked yet", "status": "unknown"}
+    age = now - _iso_s(entry["checkedAt"])
+    st = entry.get("status")
+    if st == "expired":
+        if entry.get("source") == "probe" and age > MAX_AGE_S:
+            return {"ok": True, "why": "expired at the last check, a while ago", "status": "unknown"}
+        return {"ok": False, "why": f"login expired ({entry.get('why') or 'checked ' + entry['checkedAt']})", "status": st}
+    if st in ("limited", "no-credits"):
+        back = _iso_s(entry.get("until"))
+        if back and back <= now:
+            return {"ok": True, "why": f"{STATUS_LABELS[st]} until {entry['until']}, should be back", "status": "unknown"}
+        if not back and age > MAX_AGE_S:
+            return {"ok": True, "why": f"{STATUS_LABELS[st]} at the last check, a while ago", "status": "unknown"}
+        return {"ok": False, "why": f"{STATUS_LABELS[st]}{' until ' + entry['until'] if entry.get('until') else ''}", "status": st}
+    m = str(model or "").lower()
+    if m and isinstance(entry.get("models"), list) and age <= MAX_AGE_S and m not in entry["models"]:
+        return {"ok": False, "why": f"can't use {m} now", "status": st, "model": True}
+    return {"ok": True, "why": "ok at the last check" if st == "ok" else "not checked yet", "status": st}
+
+
+def health_summary(store: dict[str, Any] | None = None) -> dict[str, Any]:
+    store = store or health_store()
+    counts: dict[str, int] = {}
+    for e in store["accounts"].values():
+        counts[e["status"]] = counts.get(e["status"], 0) + 1
+    text = ", ".join(f"{counts[s]} {STATUS_LABELS[s]}" for s in STATUSES if counts.get(s))
+    return {"counts": counts, "total": len(store["accounts"]), "text": text or "no account checked yet"}
+
+
+def _request_file() -> Path:
+    return _data() / "account-probe-request.json"
+
+
+def request_check(trigger: str, accounts: list[str], by: str, now: float | None = None) -> dict[str, Any]:
+    """Ask the host for a check (it starts within a minute). A console load inside the gap is skipped."""
+    now = time.time() if now is None else now
+    if trigger not in ("load", "manual"):
+        raise HTTPException(400, "trigger is load or manual.")
+    bad = [a for a in accounts if not isinstance(a, str) or not NAME.fullmatch(a)]
+    if bad:
+        raise HTTPException(400, f"not an account name: {bad[0]!r}"[:120])
+    cfg = probe_settings()
+    run = health_store()["run"] or {}
+    if trigger == "load":
+        if not cfg["onLoad"]:
+            return {"ok": True, "queued": False, "skipped": "checking on console load is off"}
+        last = max(_iso_s(run.get("finishedAt")), _iso_s(run.get("startedAt")))
+        if last and now - last < cfg["loadGapMin"] * 60:
+            return {"ok": True, "queued": False, "skipped": f"checked {int((now - last) // 60)} min ago"}
+        if _request_file().exists():
+            return {"ok": True, "queued": False, "skipped": "a check is already asked for"}
+    if run.get("state") == "running" and now - _iso_s(run.get("startedAt")) < cfg["timeoutSec"] + 60:
+        return {"ok": True, "queued": False, "skipped": "a check is running now"}
+    _data().mkdir(parents=True, exist_ok=True)
+    req = {"$axf": "account-probe-request@1", "trigger": trigger, "accounts": accounts[:20], "by": by[:60],
+           "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(now))}
+    tmp = _request_file().with_suffix(f".{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(req))
+    tmp.replace(_request_file())
+    who = ", ".join(accounts) if accounts else "every Claude account"
+    return {"ok": True, "queued": True, "message": f"Checking {who}: it starts within a minute, results land here and on your phone."}
+
+
+@router.get("/checks")
+def get_checks(request: Request) -> dict[str, Any]:
+    """The account health store, the check settings and whether a check is waiting to start."""
+    _who(request)
+    store = health_store()
+    req = None
+    try:
+        req = json.loads(_request_file().read_text())
+    except (OSError, ValueError):
+        pass
+    return {"ok": True, "store": store, "settings": probe_settings(), "summary": health_summary(store),
+            "request": {k: str(req.get(k) or "")[:60] for k in ("trigger", "at", "by")} if isinstance(req, dict) else None,
+            "labels": STATUS_LABELS}
+
+
+@router.post("/checks")
+async def post_checks(request: Request) -> dict[str, Any]:
+    """{ trigger: load|manual, accounts?: [names] }: check accounts now (console load, Check now, voice, MCP)."""
+    by = _who(request)
+    b = _body_dict(await _body(request))
+    names = b.get("accounts") if isinstance(b.get("accounts"), list) else ([b["account"]] if isinstance(b.get("account"), str) and b["account"] else [])
+    return await run_in_threadpool(request_check, str(b.get("trigger") or "manual"), names, by)
+
+
+@router.post("/checks/settings")
+async def set_checks(request: Request) -> dict[str, Any]:
+    """{ enabled?, intervalMin?, onLoad?, loadGapMin?, session?, apiMessage?, timeoutSec?, notifyRuns?, alertProblems? }"""
+    by = _who(request)
+    b = _body_dict(await _body(request))
+
+    def change() -> dict[str, Any]:
+        cfg = _raw_config()
+        f = dict(probe_settings())
+        for k in PROBE_BOOLS:
+            if k in b:
+                if not isinstance(b[k], bool):
+                    raise HTTPException(400, f"{k} is true or false.")
+                f[k] = b[k]
+        for k, (lo, hi) in PROBE_RANGES.items():
+            if k in b:
+                try:
+                    n = int(b[k])
+                except (TypeError, ValueError):
+                    raise HTTPException(400, f"{k} is a whole number from {lo} to {hi}.") from None
+                if not lo <= n <= hi:
+                    raise HTTPException(400, f"{k} is a whole number from {lo} to {hi}.")
+                f[k] = n
+        if "notifyRuns" in b:
+            if b["notifyRuns"] not in NOTIFY_RUNS:
+                raise HTTPException(400, "notifyRuns is load, all or off.")
+            f["notifyRuns"] = b["notifyRuns"]
+        return _save_config({**cfg, "probe": f}, by, _owner(request)).get("probe") or f
+
+    return {"ok": True, "settings": await run_in_threadpool(change)}
+
+
+def account_health() -> dict[str, Any]:
+    """Systems check: what the last account check found."""
+    store = health_store()
+    if not store["accounts"]:
+        return {"status": "unknown", "summary": "No Claude account checked yet: the first check runs within the hour, or Claude accounts → Check now."}
+    bad = [e for e in store["accounts"].values() if not able(e)["ok"]]
+    when = str((store["run"] or {}).get("finishedAt") or store["updatedAt"])[:16].replace("T", " ")
+    s = health_summary(store)
+    if not bad:
+        return {"status": "ok", "summary": f"Claude accounts: {s['text']} (checked {when} UTC)."}
+    worst = "error" if any(e["status"] in ("expired", "no-credits") for e in bad) else "warn"
+    names = "; ".join(f"{e.get('label') or e['name']}: {STATUS_LABELS[e['status']]}" for e in bad)
+    return {"status": worst, "summary": f"{names} (checked {when} UTC). Builds go to the other accounts."[:300]}
+
+
+class AccountStatusService:
+    """axf.account-status@1: the one shared store of what every Claude account can do now (the usage badge reads it)."""
+    version = 1
+
+    def status(self) -> dict[str, Any]:
+        return health_store()
+
+    def able(self, name: str, model: str = "") -> dict[str, Any]:
+        return able(health_store()["accounts"].get(clean_name(name)), model)
+
+    def summary(self) -> dict[str, Any]:
+        return health_summary()
+
+
+plugin_services.provide("axf.account-status@1", AccountStatusService(), FOLDER)
+
+
 class AccountsService:
     """axf.claude-accounts@1: the accounts on the VPS (no credentials) and the one held switch."""
 
@@ -806,6 +1026,10 @@ def _register_health(tries: int = 12) -> None:
         svc.register({"id": "claude-logins", "label": "Claude logins", "run": login_health, "severity": "error", "service": "claude", "order": 61,
                       "breaks": "A Claude account whose login died takes no builds until it is signed in again; the others carry its work.",
                       "instructions": ["Builds → Claude accounts → that account → Sign in (or tell Amber \"sign <account> in\"). It comes back by itself once the new login is saved, and its phone alert closes."]}, owner=FOLDER)
+        svc.register({"id": "claude-account-health", "label": "Claude account checks", "run": account_health, "severity": "warn", "service": "claude", "order": 60,
+                      "breaks": "An account the check finds expired, limited or out of credits gets no builds until it works again; the others take them.",
+                      "instructions": ["Builds → Claude accounts → Account checks shows each account's last check. Check now runs one (within a minute).",
+                                       "Login expired: sign that account in again. No credits: top it up, or wait for its reset."]}, owner=FOLDER)
         svc.register({"id": "claude-api-spend", "label": "Claude API accounts", "run": api_health, "severity": "warn", "service": "claude", "order": 63,
                       "breaks": "An API account at its daily or weekly cap takes no more jobs; one without a key takes none at all.",
                       "instructions": ["Settings → Plugins → Claude accounts → Job routing shows each API account's spend and caps. Only your own click raises a cap.",

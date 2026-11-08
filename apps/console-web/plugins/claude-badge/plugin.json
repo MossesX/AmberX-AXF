@@ -24,7 +24,8 @@
     "service:axf.claude-accounts@1",
     "service:axf.ai-keys@1",
     "service:axf.headless@1",
-    "service:axf.vinny@1"
+    "service:axf.vinny@1",
+    "service:axf.account-status@1"
   ],
   "scopes": [
     "ROUTES"

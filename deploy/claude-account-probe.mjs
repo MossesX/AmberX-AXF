@@ -23,7 +23,8 @@
  * notification goes before the check ("checking 4 accounts") and after it (one line per account), type account-status.
  *
  *   node deploy/claude-account-probe.mjs run [--trigger load|schedule|manual] [--account a,b] [--background] [--json] [--no-notify]
- *   node deploy/claude-account-probe.mjs due        the minute sweep: starts a scheduled check in the background when one is due
+ *   node deploy/claude-account-probe.mjs due        the minute sweep: starts a check the console asked for (account-probe-request.json),
+ *                                                   else a scheduled one when it is due, in the background
  *   node deploy/claude-account-probe.mjs show [--json]   the store (same as account-status.mjs show)
  *
  * Exit 0 ok (also: skipped, with why), 2 bad usage. Never prints a credential. Paths: claude-login.mjs / claude-workers.mjs
@@ -324,6 +325,21 @@ export function due(cfg, store, now = Date.now()) {
   return left <= 0 ? { due: true, why: last ? `last check ${Math.round((now - at) / 60e3)} min ago` : 'never checked' } : { due: false, why: `next in ${Math.ceil(left / 60e3)} min` };
 }
 
+/**
+ * A check the console asked for (console load, Check now, voice, MCP): it writes account-probe-request.json in the
+ * shared folder (it never runs anything on the host itself) and the minute sweep starts it. Taken = the file is gone.
+ */
+export const requestFile = (env = process.env) => join(Health.dir(env), 'account-probe-request.json');
+export function takeRequest(env = process.env, now = Date.now()) {
+  const f = requestFile(env);
+  const r = readJson(f);
+  if (!r) return null;
+  try { unlinkSync(f); } catch { return null; }   // another sweep took it
+  if (now - Date.parse(r.at || 0) > 30 * 60e3) return null;   // stale: the console asked half an hour ago
+  const names = (Array.isArray(r.accounts) ? r.accounts : []).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)).slice(0, 20);
+  return { trigger: ['load', 'manual'].includes(r.trigger) ? r.trigger : 'manual', names: names.length ? names : null, by: String(r.by || '').slice(0, 60) };
+}
+
 /** Start `run` detached (the console and the sweep never wait for it). */
 export function background(args, env = process.env) {
   const log = join(env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless', 'account-probe.log');
@@ -356,6 +372,12 @@ if (process.argv[1] && resolve(process.argv[1]) === SELF) {
       }
     } else if (cmd === 'due') {
       const W = await import('./claude-workers.mjs');
+      const req = takeRequest();
+      if (req) {
+        background(['--trigger', req.trigger, ...(req.names ? ['--account', req.names.join(',')] : [])]);
+        console.log(`${new Date().toISOString()} account check started (${req.trigger}${req.by ? ` by ${req.by}` : ''})`);
+        process.exit(0);
+      }
       const d = due(W.loadConfig().probe, Health.read());
       if (d.due) { background(['--trigger', 'schedule']); console.log(`${new Date().toISOString()} account check started (${d.why})`); }
       else if (json) console.log(JSON.stringify(d));

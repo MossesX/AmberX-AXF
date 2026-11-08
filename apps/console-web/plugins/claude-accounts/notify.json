@@ -8,10 +8,32 @@
       "app": "console",
       "source": "Claude accounts",
       "description": "A Claude account stopped a build: its login expired, it hit its limit or ran out of credits. Says which account, where the build moved and what to do (e.g. sign it in again). Resolved when the account works again.",
-      "match": { "source": "claude-accounts", "keyPrefix": "claude-accounts:account:" },
-      "channels": { "amberx": true },
+      "match": {
+        "source": "claude-accounts",
+        "keyPrefix": "claude-accounts:account:"
+      },
+      "channels": {
+        "amberx": true
+      },
       "push": true,
       "priority": "high"
+    },
+    {
+      "id": "account-status",
+      "label": "Claude account checks",
+      "group": "builds",
+      "app": "console",
+      "source": "Claude accounts",
+      "description": "The account health check: one notification when it starts (\"checking 4 Claude accounts\") and one with the result, a line per account: ok, limited, no credits or login expired, usage or credits left and the models it can use, then what to do. Sent when a console opens and when Brett checks by hand (Settings \u2192 Plugins \u2192 Claude accounts \u2192 Account checks \u2192 Notify).",
+      "match": {
+        "source": "claude-accounts",
+        "keyPrefix": "claude-accounts:status:"
+      },
+      "channels": {
+        "amberx": true
+      },
+      "push": true,
+      "priority": "normal"
     }
   ]
 }

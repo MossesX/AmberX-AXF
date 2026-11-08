@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Claude accounts plugin",
+  "id": "claude-accounts-checks-cards",
+  "name": "Account checks: cards",
+  "description": "Each account as a card first (status chip, usage left, models, last check), then the schedule and notification settings in collapsible sections, closed.",
+  "tags": [
+    "claude-accounts",
+    "account-checks",
+    "ui-choices:claude-accounts-checks"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.checks": "basic"
+    },
+    "view": "cards",
+    "order": [
+      "status",
+      "schedule",
+      "notify"
+    ],
+    "open": [
+      "status"
+    ]
+  }
+}

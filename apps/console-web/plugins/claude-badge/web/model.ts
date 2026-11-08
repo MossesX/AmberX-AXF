@@ -115,7 +115,10 @@ export function tapPlan(read: Read, kind: BadgeKind): TapPlan {
 }
 
 export interface UsageWindow { used: number; resetsAt: string; locked: boolean }
-export interface UsageAccount { name: string; type: string; active: boolean; plan: string; fresh: boolean; asOf: number; status: string; why: string; fiveHour: UsageWindow | null; weekly: UsageWindow | null }
+/** The account health check's word on an account (account-status@1, through the server). */
+export interface UsageHealth { status: 'ok' | 'limited' | 'no-credits' | 'expired' | 'unknown'; why: string; models: string[] | null; checkedAt: string; warn: boolean }
+export interface UsageAccount { name: string; type: string; active: boolean; plan: string; fresh: boolean; asOf: number; status: string; why: string; fiveHour: UsageWindow | null; weekly: UsageWindow | null; health?: UsageHealth }
+export const HEALTH_WORD: Record<UsageHealth['status'], string> = { ok: 'Checked: ok', limited: 'Checked: limited', 'no-credits': 'Checked: no credits', expired: 'Checked: login expired', unknown: 'Not checked' };
 export interface UsageResult { at: number; ready: boolean; why: string; active: string; state: BadgeState; cached?: boolean; age?: number; accounts: UsageAccount[] }
 
 const pct = (w: UsageWindow | null) => (w ? `${Math.round(w.used)}%` : '–');

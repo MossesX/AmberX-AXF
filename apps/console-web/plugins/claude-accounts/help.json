@@ -328,7 +328,18 @@
         "title": "Failover & alerts",
         "text": "Which Claude accounts are out, why and until when, what moved where, each login's last token refresh, and what happens when an account stops a build: move it, wait for an account, phone alerts.",
         "kind": "card"
-      }
+      },
+      {"target": "settings-panel:claude-accounts.checks", "title": "Account checks", "text": "What the last health check found for every Claude account: ok, limited, no credits or login expired; 5-hour and weekly use left with resets; API spend against its caps; the models it can use now. Builds only go to an account this says can take them. Checks run on a schedule and when a console opens.", "kind": "card"},
+      {"target": "check-now", "title": "Check now", "text": "Asks the VPS to check every Claude account now. It starts within a minute (the host's minute sweep picks it up); the result lands here and on your phone. About a tenth of a cent per account.", "kind": "button"},
+      {"target": "check", "title": "Check", "text": "Checks just this account now (starts within a minute).", "kind": "button"},
+      {"target": "check-every-account-on-a-schedule", "title": "Check every account on a schedule", "text": "On: the VPS checks every account at the interval below, a tiny bare session per subscription and the free usage and models reads. Off: only console openings, Check now and failed builds update the status.", "kind": "toggle"},
+      {"target": "check-when-a-console-opens", "title": "Check when a console opens", "text": "Opening the console asks for a check, unless the last one is newer than the gap. Sends the before and after phone notifications when those are on.", "kind": "toggle"},
+      {"target": "check-every-minutes", "title": "Check every (minutes)", "text": "Minutes between scheduled checks, 10 to 1440. Default 60.", "kind": "field"},
+      {"target": "gap-after-a-check-minutes", "title": "Gap after a check (minutes)", "text": "A console opening within this many minutes of the last check doesn't start another. 0 to 240, default 15.", "kind": "field"},
+      {"target": "prove-each-subscription-login-with-a-tiny-session", "title": "Prove each subscription login with a tiny session", "text": "A one-line headless Claude session with no rules, no CLAUDE.md, no MCP and no tools: about 360 tokens, nothing extra on a subscription. It is the only way to catch a login that died, and it renews the login's token into its one home.", "kind": "toggle"},
+      {"target": "prove-each-api-key-with-a-1-token-message", "title": "Prove each API key with a 1-token message", "text": "About $0.0001 per key. Anthropic has no balance API, so this is how an API key that is out of credits shows up. Off: only the free models list (catches a revoked key).", "kind": "toggle"},
+      {"target": "phone-notification-before-and-after-a-check", "title": "Phone notification before and after a check", "text": "AmberX gets \"checking 4 Claude accounts\" when a check starts and one line per account when it ends, plus what to do (sign an account in, top one up). Type account-status in the Notifications panel.", "kind": "field"},
+      {"target": "alert-when-a-check-finds-an-account-down", "title": "Alert when a check finds an account down", "text": "One phone alert per problem (login expired, limited, no credits), the same alert a failed build raises. It closes by itself when the account works again.", "kind": "toggle"}
     ]
   }
 }

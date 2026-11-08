@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Claude accounts plugin",
+  "id": "claude-accounts-checks-sections",
+  "name": "Account checks: sections",
+  "description": "Three collapsible sections, all open: account status, when to check, phone notifications. Good on a wide screen.",
+  "tags": [
+    "claude-accounts",
+    "account-checks",
+    "ui-choices:claude-accounts-checks"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.checks": "basic"
+    },
+    "view": "sections",
+    "order": [
+      "status",
+      "schedule",
+      "notify"
+    ],
+    "open": [
+      "status",
+      "schedule",
+      "notify"
+    ]
+  }
+}

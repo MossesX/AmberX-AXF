@@ -8,7 +8,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 
 import { ASSET_ID as HUB_ASSET, COUNTER as HUB_COUNTER } from '@console/axf/libs/hubstatus';
-import { BADGES, CHIPS, ICONS, KINDS, STATE_IDS, STATE_NAMES, TAPS, TONES, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, statusWord, tapPlan, typeWord } from './model';
+import { BADGES, CHIPS, HEALTH_WORD, ICONS, KINDS, STATE_IDS, STATE_NAMES, TAPS, TONES, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, statusWord, tapPlan, typeWord } from './model';
 import type { BadgeKind, BadgeState, BadgeTone, UsageAccount, UsageResult, UsageWindow } from './model';
 import './badges.css';
 
@@ -243,6 +243,11 @@ function AccountRow({ a }: { a: UsageAccount }) {
       {(a.fresh || a.asOf > 0) && <><WindowMeter name="5-hour" w={a.fiveHour} /><WindowMeter name="Weekly" w={a.weekly} /></>}
       {!a.fresh && a.asOf > 0 && <span className="fx-small fx-muted">As of {new Date(a.asOf).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>}
       {a.why && <span className="fx-small fx-muted">{a.why}</span>}
+      {a.health && (
+        <span className="fx-small fx-muted" data-health={a.health.status}>
+          {HEALTH_WORD[a.health.status]}{a.health.models ? ` · models ${a.health.models.length ? a.health.models.join(', ') : 'none'}` : ''}{a.health.checkedAt ? ` · ${new Date(a.health.checkedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : ''}{a.health.status !== 'ok' && a.health.why ? ` · ${a.health.why}` : ''}
+        </span>
+      )}
     </div>
   );
 }

@@ -154,6 +154,16 @@ H.update((s) => { s.run = { ...s.run, state: 'running', startedAt: new Date(now 
 r = await P.run({ trigger: 'manual' }, env, { ...deps, now: now + 63.5 * 60e3 });
 ok(/already running/.test(r.skipped || ''), 'never two checks at once');
 
+console.log('a check the console asked for');
+writeFileSync(P.requestFile(env), JSON.stringify({ trigger: 'load', at: new Date(now).toISOString(), accounts: ['w1', 'BAD;rm'], by: 'Brett' }));
+const q = P.takeRequest(env, now + 30e3);
+ok(q && q.trigger === 'load' && q.names.join() === 'w1' && q.by === 'Brett', 'the sweep takes it: trigger, names (bad ones dropped), who');
+ok(P.takeRequest(env, now) === null, 'taken once');
+writeFileSync(P.requestFile(env), JSON.stringify({ trigger: 'rm -rf', at: new Date(now).toISOString() }));
+ok(P.takeRequest(env, now).trigger === 'manual', 'an unknown trigger = manual');
+writeFileSync(P.requestFile(env), JSON.stringify({ trigger: 'load', at: new Date(now - 3600e3).toISOString() }));
+ok(P.takeRequest(env, now) === null, 'an hour-old request is dropped');
+
 console.log('due + settings');
 const c2 = R.normProbe({ intervalMin: 5, notifyRuns: 'loud', timeoutSec: 9999, onLoad: false });
 ok(c2.intervalMin === 10 && c2.notifyRuns === 'load' && c2.timeoutSec === 300 && c2.onLoad === false, 'settings clamp to their ranges');

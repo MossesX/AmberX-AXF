@@ -247,6 +247,16 @@ check(locked["status"] == "limit", "a locked window is a limit too")
 check(mod.meter_state({"status": "ok", "fiveHour": w(80), "weekly": None}) == "warn", "80% is a warning")
 check(mod.meter_state({"status": "ok", "fiveHour": w(79), "weekly": w(1)}) == "ok", "under 80% is fine")
 check(mod.meter_state(None) == "off" and mod.meter_state({"status": "no-meter"}) == "off", "nothing to read is off")
+# account checks (account-health-failover): the shared store on every usage row
+iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(now / 1000 + 60))
+store = {"accounts": {"a": {"status": "ok", "models": ["opus", "fable", "sonnet"], "checkedAt": iso, "why": "answered"},
+                      "b": {"status": "expired", "checkedAt": iso, "why": "login expired and could not be renewed", "usage": {"weekly": {"used": 30, "resetsAt": future}}},
+                      "c": {"status": "ok", "checkedAt": iso, "api": {"spendDay": 2.5, "capDay": 10}}}}
+hm = {x["name"]: x for x in mod.with_health(m, store)}
+check(hm["a"]["health"]["status"] == "ok" and hm["a"]["health"]["models"] == ["opus", "fable"] and hm["a"]["fiveHour"] is None, "a fresh row keeps its own numbers and gets the check (policy models only)")
+check(hm["b"]["status"] == "limit" and hm["b"]["weekly"]["used"] == 30 and hm["b"]["why"] == "From the last account check", "a row the host read missed takes the newer check; an expired login is a limit")
+check(hm["c"]["why"].startswith("$2.50 today of $10"), "an API key shows its last-known spend against its cap")
+check(mod.with_health(m, None) == m and mod.with_health(m, {"accounts": "x"}) == m, "no store (plugin off) = the rows as they were")
 check(mod.clean_window({"used": 250}) == {"used": 100.0, "resetsAt": "", "locked": False} and mod.clean_window({"used": "x"}) is None, "a bad number can't get through")
 check("SECRET" not in mod.usage_command() and "usage_host" not in mod.usage_command().split("b64decode")[0], "the command is the script, base64, nothing else")
 
