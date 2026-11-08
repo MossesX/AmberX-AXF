@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1590,
- "updatedAt": "2026-11-08T21:22:48.371Z",
+ "rev": 1591,
+ "updatedAt": "2026-11-08T21:23:31.792Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124457,9 +124457,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:22:46.709Z",
-   "updatedAt": "2026-11-08T21:22:46.709Z",
+   "updatedAt": "2026-11-08T21:23:30.649Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:23:30.649Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124474,7 +124479,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:23:30.649Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8cab4p016xp8",
+     "title": "",
+     "text": "Brett: tap-to-confirm (first tap shows tooltip, second tap runs) must be switchable from each toolbar's OWN settings (right-click the toolbar -> its settings dialog: inherit / on / off + arm window), not only Settings > Plugins > Toolbars > All toolbars. Applies to every toolbar in every app; fits the rule that every bar is a snappable asset with its own settings. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:23:30.649Z",
+     "updatedAt": "2026-11-08T21:23:30.649Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8cab4p02qhd0",
+     "title": "",
+     "text": "it should be in every toolbar setting.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:23:30.649Z",
+     "updatedAt": "2026-11-08T21:23:30.649Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8cab4p0334yl",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/tap-to-confirm-switch-in-every-toolbar-s-own-set.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/tap-to-confirm-switch-in-every-toolbar-s-own-set.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:23:30.649Z",
+     "updatedAt": "2026-11-08T21:23:30.649Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -124483,7 +124578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124498,7 +124593,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:23:30.649Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
