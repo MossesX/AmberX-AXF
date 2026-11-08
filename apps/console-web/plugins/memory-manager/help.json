@@ -1,0 +1,267 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "memory-manager-help",
+  "name": "Memory Manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Memory Manager plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:memory-manager",
+    "entries": [
+      {
+        "target": "view:memory-manager",
+        "title": "Memory Manager",
+        "text": "Every Markdown file in one place: pick a file on the left and it opens as a tab you can float, split and drag anywhere.",
+        "kind": "screen"
+      },
+      {
+        "target": "view",
+        "title": "View",
+        "text": "Browse (big file column), Read (slim column, wide reading), Write (editor and live preview side by side) or IDE (dense tree, editor tabs, outline and references docked on the right)."
+      },
+      {
+        "target": "pane-layouts",
+        "title": "Pane layouts",
+        "text": "Lays the open tabs out on one of the layout presets (two side by side, three columns, a grid…), with a preview first."
+      },
+      {
+        "target": "reload-the-file-list",
+        "title": "Reload the file list",
+        "text": "Reads the files again, to pick up files another session just saved."
+      },
+      {
+        "target": "column",
+        "title": "Column",
+        "text": "Files lists every .md file by scope; Snippets are ready pieces to drag into a file; Wizards make new Claude files."
+      },
+      {
+        "target": "find-files",
+        "title": "Find files",
+        "text": "Shows only files whose name or path has every word you type."
+      },
+      {
+        "target": "search-inside-files",
+        "title": "Search inside files",
+        "text": "Also matches the words inside each file, with a snippet of where."
+      },
+      {
+        "target": "references",
+        "title": "References",
+        "text": "The files this one points to (imports, links and paths). Tap one to open it beside this file."
+      },
+      {
+        "target": "edit",
+        "title": "Edit",
+        "text": "Lets you change this file. Off = read only, so nothing changes by accident."
+      },
+      {
+        "target": "show",
+        "title": "Show",
+        "text": "Preview renders the file; Split shows the editor and the live preview side by side (one at a time on a phone); Edit shows only the editor."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves now. It only saves when nobody else changed the file since you opened it; otherwise it asks you to reload first."
+      },
+      {
+        "target": "find-and-replace",
+        "title": "Find and replace",
+        "text": "Finds text in this file and replaces one match or all of them."
+      },
+      {
+        "target": "version-history",
+        "title": "Version history",
+        "text": "Every save keeps the text it replaced. View an older version or restore it (the current text is kept too, so a restore can be undone)."
+      },
+      {
+        "target": "context-view-tokens-per-part",
+        "title": "Context view",
+        "text": "This file and everything it references, as branches, with about how many tokens each part costs and the share of the whole."
+      },
+      {
+        "target": "reload-from-disk",
+        "title": "Reload from disk",
+        "text": "Reads the file again (drops unsaved changes after asking)."
+      },
+      {
+        "target": "markdown",
+        "title": "Markdown toolbar",
+        "text": "Headings, bold, italic, strikethrough, code, lists, checklists, quotes, links, code blocks, tables and dividers. Ctrl+B, Ctrl+I, Ctrl+E, Ctrl+K, Ctrl+S and Ctrl+F work too."
+      },
+      {
+        "target": "depth",
+        "title": "Depth",
+        "text": "How many levels of references the context view follows."
+      },
+      {
+        "target": "what-for",
+        "title": "What for",
+        "text": "Shows only the wizards for one purpose: instructions, rules, persona, tracking, skills or docs."
+      },
+      {
+        "target": "scope",
+        "title": "Scope",
+        "text": "Where the new file goes: Project (an app's folder), Claude (the hub's Claude files) or Repo."
+      },
+      {
+        "target": "hub-project",
+        "title": "Hub project",
+        "text": "Which project's Claude files the new file joins; Shared reaches every project."
+      },
+      {
+        "target": "create",
+        "title": "Create",
+        "text": "Makes the file (never over one that already exists) and opens it ready to edit."
+      },
+      {
+        "target": "files",
+        "title": "Files",
+        "text": "Every .md file by scope and category. Tap a file to open it; the arrow before it shows what it references.",
+        "kind": "tab"
+      },
+      {
+        "target": "snippets",
+        "title": "Snippets",
+        "text": "Ready pieces of Markdown (rules, threads rows, build steps, lists, code). Drag one into an editor or tap it.",
+        "kind": "tab"
+      },
+      {
+        "target": "wizards",
+        "title": "Wizards",
+        "text": "Make a new Claude file (CLAUDE.md, rules, persona, threads log, skill, instructions, decision, README) from a short form.",
+        "kind": "tab"
+      },
+      {
+        "target": "all-wizards",
+        "title": "All wizards",
+        "text": "Back to the list of wizards.",
+        "kind": "button"
+      },
+      {
+        "target": "reload-drops-your-changes",
+        "title": "Reload",
+        "text": "Someone saved this file after you opened it. Reload reads their version (your unsaved text goes, so copy it first).",
+        "kind": "button"
+      },
+      {
+        "target": "copy-my-text",
+        "title": "Copy my text",
+        "text": "Copies your unsaved text, so you can paste it back after reloading.",
+        "kind": "button"
+      },
+      {
+        "target": "replace-with",
+        "title": "Replace with",
+        "text": "The text that replaces each match.",
+        "kind": "field"
+      },
+      {
+        "target": "replace-all",
+        "title": "Replace all",
+        "text": "Replaces every match in this file at once.",
+        "kind": "button"
+      },
+      {
+        "target": "close-find",
+        "title": "Close find",
+        "text": "Hides the find and replace bar.",
+        "kind": "button"
+      },
+      {
+        "target": "what-claude-loads",
+        "title": "What Claude loads",
+        "text": "Follows only @imports, the files Claude actually loads with this one, so the token count is what a session pays.",
+        "kind": "tab"
+      },
+      {
+        "target": "every-reference",
+        "title": "Every reference",
+        "text": "Also follows links and file paths mentioned in the text.",
+        "kind": "tab"
+      },
+      {
+        "target": "context-view",
+        "title": "Context view",
+        "text": "This file and everything it references, with token counts per part.",
+        "kind": "button"
+      },
+      {
+        "target": "action:memory-manager.open-right",
+        "title": "Open in vertical split",
+        "text": "Opens the file in a new pane beside the current one.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:memory-manager.open-below",
+        "title": "Open in horizontal split",
+        "text": "Opens the file in a new pane below the current one.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:memory-manager.toggle-edit",
+        "title": "Edit / lock",
+        "text": "Makes the file editable, or read only again.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:memory-manager.context",
+        "title": "Context view",
+        "text": "Opens the file's context view: what it pulls in and what each part costs in tokens.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "autosave",
+        "title": "Autosave",
+        "text": "Saves editable files a moment after you stop typing, never over someone else's newer save.",
+        "kind": "field"
+      },
+      {
+        "target": "autosave-after-seconds",
+        "title": "Autosave after (seconds)",
+        "text": "How long Memory Manager waits after your last keystroke before it saves.",
+        "kind": "field"
+      },
+      {
+        "target": "context-view-depth",
+        "title": "Context view depth",
+        "text": "How many levels of references the context view follows by default.",
+        "kind": "field"
+      },
+      {
+        "target": "memory-manager",
+        "title": "Memory Manager",
+        "text": "A Markdown browser and editor for every .md file: project docs, Claude files, repo docs and notes.",
+        "kind": "tab"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "memory-manager",
+        "title": "Memory Manager",
+        "steps": [
+          {
+            "say": "Every Markdown file is on the left, by scope: Project, Claude, Repo and your Notes.",
+            "target": "column"
+          },
+          {
+            "say": "Tap a file to open it as a tab. Long-press it to open it in a split; drag a tab onto another pane's edge to split it yourself.",
+            "target": ""
+          },
+          {
+            "say": "Switch Edit on to change a file. Saves never overwrite someone else's newer save, and Version history can bring back older text.",
+            "target": "edit"
+          },
+          {
+            "say": "The view switch changes how everything is laid out: Browse, Read, Write or IDE.",
+            "target": "view"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.memory-manager",
+  "name": "Memory Manager",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Memory Manager: every place Claude memory lives in AmberX-AXF (CLAUDE.md and its rules, THREADS.md, STATUS.md, decisions, memory docs, the chunked store, session logs, build reports, the hub copy, ~/.claude) in one list, with what reads and what writes each file (the audit map plus a code scan you can refresh). Full management: view, edit, move, delete, version history with restore, search inside every file, filter by category, kind, root, writer and loaded-at-start, rebuild the chunks, and see what a session loads at start. Includes its own copy of MD Studio's Markdown editor (dock tabs, split, preview, conflict-safe saves) so MD Studio can be removed later.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:memory-manager",
+    "settings-tab:memory-manager"
+  ],
+  "dependsOn": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "service:axf.notes@1"
+  ],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/memory-manager",
+    "env": [
+      "AXF_ROOT",
+      "AXHUB_PROJECTS_DIR",
+      "AXF_MEMORY_MANAGER_DATA_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /files",
+        "id": "list-files",
+        "title": "List Markdown files",
+        "description": "Every .md file by scope (Project, Claude, Repo, Notes) and category. q filters by name or path; content=true also searches inside the files."
+      },
+      {
+        "route": "GET /file",
+        "id": "read-file",
+        "title": "Read a Markdown file",
+        "description": "One file by id (repo:<path>, hub:<project>/<path>, notes:<folder>/<name>.md): its text, version, token count and references."
+      },
+      {
+        "route": "PUT /file",
+        "id": "save-file",
+        "title": "Save a Markdown file",
+        "description": "Write a file: {id, content, if_version}. if_version \"\" creates only; the version from read-file saves only if nobody changed it since. The replaced text is kept in the version history."
+      },
+      {
+        "route": "GET /history",
+        "id": "file-history",
+        "title": "Version history of a file"
+      },
+      {
+        "route": "GET /version",
+        "id": "file-version",
+        "title": "Read a kept version of a file"
+      },
+      {
+        "route": "POST /restore",
+        "id": "restore-version",
+        "title": "Restore a kept version",
+        "confirm": true
+      },
+      {
+        "route": "GET /chain",
+        "id": "context-chain",
+        "title": "Context chain with token counts",
+        "description": "A file and everything it references (imports, links, paths) as a tree, with about how many tokens each part costs and the total."
+      },
+      {
+        "route": "GET /refs",
+        "id": "file-refs",
+        "title": "References of a file"
+      },
+      {
+        "action": "memory-manager.open",
+        "id": "open-file",
+        "title": "Open a file in Memory Manager",
+        "description": "Opens a Markdown file as a tab in the open console (args: an id or a path such as CLAUDE.md, notes/plans/x.md)."
+      },
+      {
+        "action": "memory-manager.edit",
+        "id": "edit-file",
+        "title": "Open a file to edit in Memory Manager"
+      },
+      {
+        "action": "memory-manager.context",
+        "id": "open-context",
+        "title": "Open the context view of a file in Memory Manager"
+      },
+      {
+        "route": "GET /memory",
+        "id": "list-memory",
+        "title": "List memory files",
+        "description": "Every Claude memory file with its location, category, kind, whether it loads at start, and what reads and writes it. Filters: q, category, kind (memory|builds|log|generated), root (repo|hub|user), writer, loaded=true."
+      },
+      {
+        "route": "POST /scan",
+        "id": "rescan",
+        "title": "Refresh the memory scan",
+        "description": "Scan the code again for readers and writers of memory files, then list every memory file."
+      },
+      {
+        "route": "GET /memory/file",
+        "id": "memory-file",
+        "title": "Memory file details",
+        "description": "One memory file's location, readers and writers (id = repo:<path> or hub:<project>/<path>)."
+      },
+      {
+        "route": "GET /search",
+        "id": "search-memory",
+        "title": "Search inside memory files",
+        "description": "Every memory file whose text has all the words, with hit counts and a snippet."
+      },
+      {
+        "route": "POST /move",
+        "id": "move-file",
+        "title": "Move or rename a memory file",
+        "description": "{id, to, if_version}: within its scope; the old text is kept in the version history.",
+        "confirm": true
+      },
+      {
+        "route": "POST /delete",
+        "id": "delete-file",
+        "title": "Delete a memory file",
+        "description": "{id, if_version}: the text is kept as a version, so restore brings it back.",
+        "confirm": true
+      },
+      {
+        "route": "GET /chunks",
+        "id": "list-chunks",
+        "title": "List memory chunks",
+        "description": "The chunked store's index (_claude/chunks): id, source, title, tokens, date; q and source filter."
+      },
+      {
+        "route": "POST /chunks/build",
+        "id": "build-chunks",
+        "title": "Rebuild the memory chunks",
+        "description": "Regenerate _claude/chunks from CLAUDE.md, THREADS, STATUS, decisions and the memory docs."
+      },
+      {
+        "route": "GET /load",
+        "id": "session-load",
+        "title": "What a session loads at start",
+        "description": "Builds started in the last N hours (hours, default 24) that stopped unfinished, and the chunk index."
+      },
+      {
+        "route": "GET /audit",
+        "id": "memory-audit",
+        "title": "Memory audit",
+        "description": "Every place memory lives and every part of the app that reads or writes it (memory-map@1)."
+      },
+      {
+        "route": "GET /settings",
+        "id": "settings",
+        "title": "Memory Manager settings",
+        "description": "Settings by category (Scan, List, Safety, Chunks) with defaults and choices."
+      },
+      {
+        "route": "PUT /settings",
+        "id": "set-settings",
+        "title": "Change Memory Manager settings",
+        "description": "{\"scan.includeChunks\": true, …}"
+      },
+      {
+        "action": "memory-manager.show",
+        "id": "show",
+        "title": "Open Memory Manager",
+        "description": "Opens the Memory Manager page."
+      },
+      {
+        "action": "memory-manager.memory",
+        "id": "show-memory",
+        "title": "Show the memory list",
+        "description": "Opens the Memory tab (args: a filter such as a category or a word)."
+      },
+      {
+        "action": "memory-manager.files",
+        "id": "show-files",
+        "title": "Show the Markdown files",
+        "description": "Opens the Files tab (MD Studio's file browser)."
+      },
+      {
+        "action": "memory-manager.rescan",
+        "id": "refresh",
+        "title": "Refresh the memory scan",
+        "description": "Scans the code again for readers and writers."
+      },
+      {
+        "action": "memory-manager.search",
+        "id": "search",
+        "title": "Search memory",
+        "description": "Opens the Memory tab searching inside files (args: the words)."
+      },
+      {
+        "action": "memory-manager.filter",
+        "id": "filter",
+        "title": "Filter the memory list",
+        "description": "args: category:<name> | kind:<kind> | root:<root> | writer:<name> | loaded | clear."
+      },
+      {
+        "action": "memory-manager.details",
+        "id": "details",
+        "title": "Show who reads and writes a file",
+        "description": "args: an id or a path such as _claude/THREADS.md."
+      },
+      {
+        "action": "memory-manager.move",
+        "id": "move",
+        "title": "Move a memory file",
+        "description": "args: from-path and to-path (asks before moving)."
+      },
+      {
+        "action": "memory-manager.delete",
+        "id": "delete",
+        "title": "Delete a memory file",
+        "description": "args: an id or a path (asks first; the text is kept as a version)."
+      },
+      {
+        "action": "memory-manager.history",
+        "id": "history",
+        "title": "Version history of a file",
+        "description": "Opens the file with its version history (args: an id or a path)."
+      },
+      {
+        "action": "memory-manager.chunks",
+        "id": "chunks",
+        "title": "Show the memory chunks",
+        "description": "Opens the Chunks tab (args: a filter)."
+      },
+      {
+        "action": "memory-manager.build-chunks",
+        "id": "rebuild-chunks",
+        "title": "Rebuild the memory chunks",
+        "description": "Regenerates _claude/chunks."
+      },
+      {
+        "action": "memory-manager.load",
+        "id": "load",
+        "title": "What a session loads at start",
+        "description": "Opens the Session start tab."
+      },
+      {
+        "action": "memory-manager.setting",
+        "id": "setting",
+        "title": "Change a Memory Manager setting",
+        "description": "args: key and value, e.g. scan.includeChunks on."
+      },
+      {
+        "action": "memory-manager.settings",
+        "id": "open-settings",
+        "title": "Open Memory Manager settings",
+        "description": "Opens Settings → Plugins → Memory Manager."
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-08",
+    "branch": "claude/memory-manager-r2"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
