@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T18:30:32.092Z",
+ "updatedAt": "2026-11-08T18:40:23.095Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73310,6 +73310,37 @@
      "uid": "st-mw84u0bo0ebnfi"
     }
    ]
+  },
+  {
+   "id": "standing-rule-every-ui-ships-with-full-api-contr",
+   "title": "Standing rule: every UI ships with full API control",
+   "category": "",
+   "detail": "Orchestrator standing rule for every build it splits and briefs: anything with a UI gets API functions covering everything the UI can do (open via deep link, read state, every action, every setting), plus voice/MCP/CLI parity. Write it into the orchestrator's brief template and step splitter so every UI step includes its API step; reject/flag a build plan that adds UI without API. Also backfill: Demonstration Designer, Book Builder and every UI built today that lacks API get it, with deep links so agents can open any screen on the phone.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "standing-rule-every-ui-ships-with-full-api-contr",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T18:40:19.876Z",
+   "updatedAt": "2026-11-08T18:40:19.876Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Now make sure the orchestrator knows that. Everything gets the API.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

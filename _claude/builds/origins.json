@@ -3041,6 +3041,18 @@
    "from": "detail",
    "addenda": []
   },
+  "standing-rule-every-ui-ships-with-full-api-contr": {
+   "said": "Now make sure the orchestrator knows that. Everything gets the API.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "style-override-rule": {
    "said": "# Style override rule (Brett, Nov 7) — contract + enforcement\n\nThe rule:\n1. Main apps — Dev Console, axHub web, AmberX, Patches — SHARE one style/theme/design. Their override switch is OFF by default.\n2. Every plugin and every UI asset has its own override switch, ON by default. On first install it stores its own copy seeded from the shared style, so everything looks the same until someone changes it.\n3. A plugin/asset override changes ONLY that plugin/asset. It never changes the app it belongs to, other plugins, or the shared style.\n4. Turning a plugin's override OFF makes it follow its app's (shared) style live.\n5. Turning an app's override ON gives that app its own style; its plugins keep their own copies.\n\nDo:\n- Find the existing pieces (app-style-override branch/build, apply-all-levels, appearance-asset-tokens, skins, theme engine, settings assets) and reuse them; finish app-style-override if it fits.\n- Implement the resolution order in the shared theme/style engine (both web and Android twins where they exist): asset own copy (if override on) → app (if app override on) → shared main style.\n- Switch in each app's and each plugin's settings (settings asset, no hard-coded UI). Migration: existing plugins get override ON with a copy of the current shared style; apps OFF.\n- Write the rule to RULES.md and the brief template so every build follows it. CI check: every UI asset/plugin declares the override field.\n- UI Review: submit the switch UI with three options (--choices).\n- Tests for each rule above. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
    "at": "2026-11-07T12:36:38.545Z",

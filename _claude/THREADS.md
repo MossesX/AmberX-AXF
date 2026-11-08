@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 03:42 UTC · `dataset-bar` s2 done (current) · orchestrator
 - 2026-11-07 03:42 UTC · `dataset-bar` s3 done (current) · orchestrator
 - 2026-11-07 03:59 UTC · `icon-browser-manager` s4 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-07 03:59 UTC · `dataset-bar` s4 done (current) · orchestrator
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 18:00 UTC · `molly-one-shell` s15 done, note (all) · reconciler
 - 2026-11-08 18:20 UTC · `amberx-notify-panel` → pending, note (all) · reconciler
 - 2026-11-08 18:30 UTC · `molly-one-shell` → pending, note (all) · reconciler
+- 2026-11-08 18:40 UTC · `standing-rule-every-ui-ships-with-full-api-contr` added (0 steps) (all) · pending
 
 ## Token passes (log)
 
