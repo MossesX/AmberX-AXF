@@ -32,7 +32,7 @@ export const RECORD = 'build-event@1';
 export const VERSION = 1;
 export const EVENTS = ['created', 'steps-added', 'step-done', 'status', 'pr-opened', 'pr-merged', 'addendum', 'cancelled', 'restored'];
 /** builds@1 statuses, mirrored so a port does not need the store core. */
-export const BUILD_STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+export const BUILD_STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 export const REPOS = ['amberx-axf', 'axhub'];
 /** GitHub repo → ledger repo id (the PR URL is the one sure sign of where a build lives). */
 export const GITHUB_REPOS = Object.freeze({ 'mossesx/amberx-axf': 'amberx-axf', 'mossesx/axhub': 'axhub' });

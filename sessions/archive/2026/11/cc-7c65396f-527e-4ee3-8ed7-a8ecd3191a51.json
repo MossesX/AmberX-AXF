@@ -1,0 +1,82 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-7c65396f-527e-4ee3-8ed7-a8ecd3191a51",
+ "source": "claude-code",
+ "sessionId": "7c65396f-527e-4ee3-8ed7-a8ecd3191a51",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-06T19:18:20.558Z",
+ "endedAt": "2026-11-06T19:18:25.336Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-FB2Ts9/two",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T19:18:21.691Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/md-chain-default/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a ste…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 310,
+    "cacheRead": 39839,
+    "cacheWrite": 17264,
+    "thinking": 68
+   },
+   "costUsd": 0.1005,
+   "costEstimated": false,
+   "seconds": 3,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-6f617dceda"
+   ],
+   "features": [],
+   "output": "Hi, Amber here. There's no task in your message, so tell me what you want done. The tracker entry `chg-20261106-6f617dceda` is still open. I tried to close it as \"no change\", but the command needs approval and didn't run. It will sit open in the Build manager until it's approved or reused for real …"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-6f617dceda"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 310,
+  "cacheRead": 39839,
+  "cacheWrite": 17264,
+  "thinking": 68,
+  "costUsd": 0.1005,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.1523
+ },
+ "ingestedAt": "2026-11-06T19:18:25.520Z"
+}

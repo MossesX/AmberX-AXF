@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-cc299498-60c5-4380-8c6a-b9bf1e0eb1e9",
+ "source": "claude-code",
+ "sessionId": "cc299498-60c5-4380-8c6a-b9bf1e0eb1e9",
+ "project": "other",
+ "title": "# Build: usage-meter-r2 (Opus; NO Fable on this account) Restart: the first run (`/root/axf-builds/usage-meter`) quit a…",
+ "startedAt": "2026-11-05T11:36:24.442Z",
+ "endedAt": "2026-11-05T11:36:27.174Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/usage-meter-r2",
+  "repo": "",
+  "branch": "claude/usage-meter-r2"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T11:36:26.436Z",
+   "kind": "prompt",
+   "text": "# Build: usage-meter-r2 (Opus; NO Fable on this account) Restart: the first run (`/root/axf-builds/usage-meter`) quit after one turn overnight when the account hit its 5-hour limit, so no work was done. **The full spec is `/root/axf-builds/usage-meter/.brief.md`. Read it and build exactly that** (banner chip + page with weekly and 5-hour session usage per saved account, reset times, burn-rate projection, alerts at 50/80/95% and 'out of credits'), and register the chip through the banner widget registry from #352 (compact by default). Brett, Nov 5: account-2 'ran out of its five-hour session l…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-892caf567a"
+   ],
+   "features": [],
+   "output": "You've hit your 5-hour limit · resets 4pm (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-892caf567a"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-05T11:36:27.342Z"
+}

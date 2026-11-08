@@ -1,0 +1,3398 @@
+{
+ "$axf": "feature-matrix@1",
+ "updatedAt": "2026-10-29T18:34:17.880Z",
+ "matrices": [
+  {
+   "id": "all:orchestrator:home-cards",
+   "ref": {
+    "kind": "orchestrator",
+    "id": "home-cards"
+   },
+   "profile": "all",
+   "title": "Console Home cards: card@1 asset plugins carry, Home detects/shows/hides every card (always rendered), card layouts, cards for every data plugin",
+   "createdAt": "2026-10-29T18:34:15.414Z",
+   "updatedAt": "2026-10-29T18:34:15.414Z",
+   "version": 2,
+   "appliedVersion": 2,
+   "appliedAt": "2026-10-29T18:34:17.880Z",
+   "items": [
+    {
+     "id": "s1",
+     "name": "card@1 asset type in framework/schemas/asset-types.json (+ axf schemas): id, owner (plugin id or \"console\"), title, icon, kind (stat | list | meter | chart | feed | status | actions | custom), size (s | m | l | wide | tall), data {service (plugin_services capability), path, refreshSec, live:boolean}",
+     "why": "",
+     "group": "Contract",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s1"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s2",
+     "name": "plugin@1 gets `cards: [\"cards/<id>.json\", …]` (card assets ship inside the plugin folder, so plugin-lifecycle@1 removes them on uninstall); plugin-inventory@1 engine lists each plugin's cards (framework/core/engines/plugins.ts + server/engine.py twin) so anything can detect them; future card SDK att",
+     "why": "",
+     "group": "Contract",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s2"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s3",
+     "name": "home-cards@1 engine (TS reference, framework/core/engines/cards.ts): collects every card from enabled plugins + console-owned cards, applies saved visibility/order/size, level and role; hidden cards stay in the output with `hidden: true` so Home ALWAYS renders (mounts) every card and only hides it (",
+     "why": "",
+     "group": "Engine",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s3"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s4",
+     "name": "card-layout@1 asset type: columns per window class (compact/medium/expanded), gap + density tokens, grouping (none | plugin | category), \"show all / hide all\" default, sort (manual | category | plugin). 3 starter layouts: grid-auto, two-column-dashboard, compact-list. Hot-swap via runtime.swap('card",
+     "why": "",
+     "group": "Engine",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s4"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s5",
+     "name": "Placeholders for the future card SDK: `axf.cards@1` capability service (list/register/unregister cards at runtime), extension point `home.cards`, typed NotImplemented card designer entry, so a designer plugin can later author card assets and attach them to any plugin without kernel changes.",
+     "why": "",
+     "group": "Engine",
+     "minutes": 20,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s5"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s6",
+     "name": "Home renders from the home-cards engine. The 5 cards already there become console-owned card assets: Plan summary, Build summary, Coverage, Project, Recent installs & imports. Same look at the default theme.",
+     "why": "",
+     "group": "Home",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s6"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s7",
+     "name": "Card layout toolbar on Home (hideable): Show all · Hide all · layout picker (card-layout assets) · group by · a Cards checklist popover with one switch per detected card. Right-click a card: Hide card · Card size · Open plugin · Plugin settings. Drag to reorder. Saved per user in settings (synced th",
+     "why": "",
+     "group": "Home",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s7"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s8",
+     "name": "Settings → Home cards tab (with the level toolbar rule): every detected card grouped by plugin, switch + size + order, layout default; a card whose plugin is disabled shows greyed \"plugin off\".",
+     "why": "",
+     "group": "Home",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s8"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s9",
+     "name": "Cards — Build orchestrator: next step + model chip, approvals waiting (one-tap), phase progress bar per open build. Build manager: remaining work split Fable/Opus, hours + cost left, top 3 builds. Build profiles: active profile chip + pending/queue/orchestrator counts for each profile, switch button",
+     "why": "",
+     "group": "Cards: builds",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s9"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s10",
+     "name": "Cards — Feature matrix: kept vs skipped minutes per build, matrices with unapplied changes (Apply button). Fable rebuilds: parked count, Fable hours left, next rebuild. Changes & features grid: latest 5 changes/features with state dots.",
+     "why": "",
+     "group": "Cards: builds",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s10"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s11",
+     "name": "Cards — Codebase changes: live/running entries with heartbeat age and current step. Activity: running/queued CI runs and deploys as a feed. Push banner: branches not on main per repo with PR CI dots. Main build status: last main CI result + sparkline of the last 10 runs.",
+     "why": "",
+     "group": "Cards: live",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s11"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s12",
+     "name": "Cards — Approvals: calls waiting with title + one-tap Approve/Deny, veto countdowns. Systems check: pass/warn/fail meter + top 3 issues with Auto fix. Alerts bell: unread by source (CI, deploys, builds, crashes). Claude badge: AI connection state, active model, last check time.",
+     "why": "",
+     "group": "Cards: live",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s12"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s13",
+     "name": "Cards — AI assistant: live sessions + last message, Open chat. Agent manager: agents (Mosses, Vinny, Molly…) with running/idle state. Molly guide: recent walkthroughs + Ask Molly. AI keys: active key per kind (masked) and how many saved.",
+     "why": "",
+     "group": "Cards: AI",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s13"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s14",
+     "name": "Cards — Todo manager: overdue / due today / open by list, quick add. Voice notes: listener state + latest 3 notes. Session check-in: active Claude sessions with machine and repo. Snapshot manager: latest snapshots with one-tap Restore.",
+     "why": "",
+     "group": "Cards: work",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s14"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s15",
+     "name": "Cards — Plugin Manager: enabled/disabled/unhealthy counts. Plugin Update: updates available (Update all). Container access: master switch state + containers up/down. axHub sync: red/green live badge (hubLive rule), last sync. MCP client: connected servers + tool counts.",
+     "why": "",
+     "group": "Cards: system",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s15"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s16",
+     "name": "Cards — Brand library: logo of the day (animated, tap to roll). Theme manager: current colour/style/layout + Roll button. Context menu designer: saved menus + chunks count. Project wizard: recent projects. Claude handoff: kit freshness. Terminal: open tabs and their connections. Feature assistant: l",
+     "why": "",
+     "group": "Cards: design",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s16"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s17",
+     "name": "Lifecycle: every plugin's cards/ listed in plugin.json and removed by uninstall.mjs --all; plugin-lifecycle check --after-uninstall for each touched plugin; theme checks (check-theme, theme-swap) over every card.",
+     "why": "",
+     "group": "Ship",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s17"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s18",
+     "name": "Tests (engine vs fixture, hidden cards stay mounted, show/hide all, plugin off), docs (_claude/memory/docs/home-cards.md, plugins README → Cards, STATUS), before/after Home screenshots at 412 and 1280 px, re-bake console.",
+     "why": "",
+     "group": "Ship",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s18"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-10-29T18:34:15.414Z",
+     "action": "created",
+     "by": "feature-matrix"
+    },
+    {
+     "at": "2026-10-29T18:34:15.414Z",
+     "action": "seeded",
+     "to": "18",
+     "by": "feature-matrix"
+    },
+    {
+     "at": "2026-10-29T18:34:17.880Z",
+     "action": "applied",
+     "to": "2",
+     "by": "feature-matrix"
+    }
+   ],
+   "fromProfile": "angel"
+  },
+  {
+   "id": "all:orchestrator:refactor-all",
+   "ref": {
+    "kind": "orchestrator",
+    "id": "refactor-all"
+   },
+   "profile": "all",
+   "title": "Refactor: everything left to build, one build (Oct 28 2026)",
+   "createdAt": "2026-10-28T19:31:15.654Z",
+   "updatedAt": "2026-10-29T07:10:00.000Z",
+   "version": 1,
+   "appliedVersion": 0,
+   "appliedAt": "2026-10-29T01:35:00.000Z",
+   "items": [
+    {
+     "id": "arch-foundation-s1",
+     "name": "Gap audit: map attachment items 1-3 onto what exists (asset@1 layout, color/style themes, plugin@1, AxfWebLibrary, settings, embed); write _claude/memory/docs/a",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 20,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s1"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s2",
+     "name": "Layout & component tree contract (TS): page → widget/plugin nodes with unique ids, dimensions, bounding boxes, asset dependencies; additive to layout@ assets; f",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s2"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s3",
+     "name": "Theme contract additions: component-specific overrides on top of color/style themes (tokens only); fixture.",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s3"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s4",
+     "name": "plugin@1 manifest additions: declared assets, default settings, layout entry points (optional fields, old manifests still valid); schema + validators.",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s4"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s5",
+     "name": "Pydantic v2 models mirroring items 1-3 + migration engine (@model_validator(mode=\"before\")): up-cast legacy versions, fill missing fields, sanitise; never crash",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s5"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s6",
+     "name": "Ingestion namespace engine: prefix every harvested plugin key as plugin_id:property (state + assets), idempotent, collision report; same rules in TS + Python, o",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s6"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s7",
+     "name": "Lifecycle event broker (TS): onInit / onStateChange / onThemeUpdate / onContextMenuOpen / onDestroy, typed message passing, plugins never touch global state; fi",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s7"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "trim-asset-s1",
+     "name": "`trim` in asset-types.json + JSON schema ({layout, colorTheme}: id or inline); design-package accepts `trim` in place of layout + colour; validators (ts + mjs),",
+     "why": "",
+     "group": "New asset type: trim (a layout + a colour theme in one asset)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s8"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "trim-asset-s2",
+     "name": "core/engines/trim.ts: resolve a trim into layout + colour swaps; rt trim slot; design-package engine resolves trim refs; roll/hide rules; fixtures spec/fixtures",
+     "why": "",
+     "group": "New asset type: trim (a layout + a colour theme in one asset)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s9"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "style-package-fable-s1",
+     "name": "Review the Opus style-package@1 contract (members registry, slots, tone) against design-package@1 and interface@1; decide what changes; write the decision into",
+     "why": "",
+     "group": "Style packages — Fable rebuild of style-package@1",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s10"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "style-package-fable-s2",
+     "name": "Rebuild the engine + runtime apply paths (swap, swapAll, design-package extras, interfaces, roller): pure fixture spec/fixtures/style-package.json replayed by c",
+     "why": "",
+     "group": "Style packages — Fable rebuild of style-package@1",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s11"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "style-package-fable-s3",
+     "name": "Re-tune the 25 starter control sets against DESIGN-LANGUAGE.md (distinct, coherent with the colour/style themes they pair with) and regenerate fixtures.",
+     "why": "",
+     "group": "Style packages — Fable rebuild of style-package@1",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s12"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "style-package-fable-s4",
+     "name": "Differences report _claude/memory/docs/rebuilds/style-package-fable.md + LOG.md line; re-bake the five web apps; checks green.",
+     "why": "",
+     "group": "Style packages — Fable rebuild of style-package@1",
+     "minutes": 15,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s13"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "apply-all-levels-fable-s1",
+     "name": "look@1 fixture + reference engine review, replace the Opus engine",
+     "why": "",
+     "group": "Look tokens + settings levels (Fable rebuild)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s14"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "apply-all-levels-fable-s2",
+     "name": "Banner Apply to all on the reviewed engine",
+     "why": "",
+     "group": "Look tokens + settings levels (Fable rebuild)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s15"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "apply-all-levels-fable-s4",
+     "name": "Re-bake every app, before/after shots, differences report",
+     "why": "",
+     "group": "Look tokens + settings levels (Fable rebuild)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s16"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s6",
+     "name": "Window engine (windows.ts + WindowHost): resize from all 8 edges/corners with touch, maximize/restore, and a frameless option (WindowSpec.frame: the content dra",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s17"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s7",
+     "name": "Window engine: snapping — screen edges, half/quarter snap zones, window-to-window snap, no-overlap option, drop a window on another to split; fixture",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s18"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s8",
+     "name": "lib-workspace floating panes use the same physics (resize handles, snap, minimize/maximize; no keep-on-screen)",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s19"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s9",
+     "name": "settings-ui@1 levels → Simple / Basic / Developer / Administrator (Pro→Administrator, Advanced→Developer migration; Administrator shows all) + per-interface vis",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s20"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s10",
+     "name": "Level toolbar on every settings interface (default on, hideable): level picker, Available settings in a collapsible container, the rest in another",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s21"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s11",
+     "name": "Level editor dialog (switch in settings): left sortable categorized tree coloured available/not, multi-select, toolbar + right-click Add to visible / Remove; ri",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s22"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "windows-terminal-s12",
+     "name": "Re-bake apps (skip Patches), before/after shots, differences report; tick apply-all-levels-fable s3",
+     "why": "",
+     "group": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/r",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s23"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s1",
+     "name": "feature-matrix@1 contract: one dataset (matrix per build ref + profile; items: id, name, why, group, minutes, model, state keep|skip, addedAt, history; never de",
+     "why": "",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-28T23:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s24"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      },
+      {
+       "at": "2026-10-28T23:10:00.000Z",
+       "action": "done",
+       "to": "Done: ticked in refactor-all (s24)"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s2",
+     "name": "Apply engine: project a matrix onto every list (orchestrator steps skip flags + estimate, pending item, build-queue step, build manager entry, plan) idempotentl",
+     "why": "",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-28T23:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s25"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      },
+      {
+       "at": "2026-10-28T23:10:00.000Z",
+       "action": "done",
+       "to": "Done: ticked in refactor-all (s25)"
+      }
+     ]
+    },
+    {
+     "id": "amberx-handsfree-s4",
+     "name": "Tests (test.mjs), README, CI green, PR + merge approval",
+     "why": "",
+     "group": "AmberX: hands-free listening on screen + in background, ActiveX-style detection ",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s26"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "basic-filter-s7",
+     "name": "Checks (typecheck, build, check-theme, check-controls, menu-reach, plugins --check, lifecycle check), docs, THREADS, PR + merge approval",
+     "why": "",
+     "group": "Basic filter plugin: search + filter dialog attachable to any dataset, with a co",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-28T23:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s27"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-28T23:10:00.000Z",
+       "action": "done",
+       "to": "Done Oct 28: PR #155 merged (Basic filter plugin live)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s27",
+     "name": "Brand library console plugin 1/3: view with tabs Logos · Animated logos · Icon packs · Branding packages, virtualised grid, search, filters.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s28"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s28",
+     "name": "Brand library 2/3: preview pane (light/dark, sizes, animation play), Apply / Set as brand, copy id.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s29"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s29",
+     "name": "Brand library 3/3: settings tab, lifecycle panel, menu, tests.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s30"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s31",
+     "name": "AmberX app 1/3: banner, toolbar, nav and app menu on the new design language + branding.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s31"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s32",
+     "name": "AmberX app 2/3: windows, floating windows, dialogs, containers, tab groups.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s32"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s33",
+     "name": "AmberX app 3/3: pages (Approvals, Settings, Plugins, voice, monitor) polished; test.mjs green.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s33"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s34",
+     "name": "Console shell refactor: frame, menu bar, nav, page heads, cards, empty states.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s34"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s35",
+     "name": "Console: refactor the enabled plugins 1/3.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s35"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s36",
+     "name": "Console: refactor the enabled plugins 2/3.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s36"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s37",
+     "name": "Console: refactor the enabled plugins 3/3.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s37"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s38",
+     "name": "Console: refactor every banner plugin (activity, build manager, codebase changes, push, approvals, systems check, keys, handoff).",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s38"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s39",
+     "name": "Re-bake the web apps, defaults + manifests name a design package and branding; before/after web shots.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s39"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "enterprise-branding-s40",
+     "name": "CI checks for every new checker, PORTING.md (Android twins deferred), rebuild report, CLAUDE.md status, THREADS.md.",
+     "why": "",
+     "group": "Enterprise design + hot-swappable branding: branding engine, design packages, be",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s40"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "interface-roller-s11",
+     "name": "Interface roller console plugin 1/2: Roll, lock parts, roll again, preview in a new tab, undo.",
+     "why": "",
+     "group": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s41"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "interface-roller-s12",
+     "name": "Roller 2/2: save as an interface@1 asset, apply to one tab or the whole app, export / import, settings tab + lifecycle.",
+     "why": "",
+     "group": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s42"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "interface-roller-s13",
+     "name": "Harvest it as framework library lib-interface-roller so every AXF web app can install it (console, AmberX, axHub web, Patches web, Walkthrough Studio); library@",
+     "why": "",
+     "group": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s43"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "interface-roller-s14",
+     "name": "Install the library in the AmberX app and the other web apps; check each one builds and rolls.",
+     "why": "",
+     "group": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s44"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "interface-roller-s15",
+     "name": "Tests for every checker, before/after shots of the three tabs, rebuild report, PORTING.md (Android deferred), CLAUDE.md, THREADS.md.",
+     "why": "",
+     "group": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s45"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s8",
+     "name": "React PluginBoundary: error boundary around every mounted plugin (layout + context-menu hooks), isolate the widget, themed fallback stub, report to rt.diagnosti",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s46"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s9",
+     "name": "Architecture spec: add the new contracts to CLAUDE.md status + a reference layout tree in framework/spec/ARCH-FOUNDATION.md (no second .claude.md: CLAUDE.md is",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s47"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s10",
+     "name": "Developer guide part 1: build a new plugin (manifest, layout/theme hooks, lifecycle hooks) in apps/console-web/plugins/README.md.",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s48"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s11",
+     "name": "Developer guide part 2: how harvesting works + how live sync works (hub appearance@1, migrations) in framework/spec/.",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s49"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "arch-foundation-s12",
+     "name": "Tests in CI for the new checkers + Python test; THREADS.md + PORTING.md (Android twins deferred).",
+     "why": "",
+     "group": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrat",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s50"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "trim-asset-s3",
+     "name": "Settings → Appearance Trim picker, theme manager Save as trim, 6 starter trims from existing layouts + colour themes, defaults.json",
+     "why": "",
+     "group": "New asset type: trim (a layout + a colour theme in one asset)",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s51"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "trim-asset-s4",
+     "name": "Tests, screenshots, docs, CLAUDE.md status, THREADS.md",
+     "why": "",
+     "group": "New asset type: trim (a layout + a colour theme in one asset)",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s52"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "tools-plugin-s1",
+     "name": "Tools plugin skeleton: plugin@1, lifecycle, install/uninstall, nav section + `tools` app menu, capability service",
+     "why": "",
+     "group": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches w",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s53"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "tools-plugin-s2",
+     "name": "Move Claude handoff onto it: `requires` the service, contributes its entries through it, lifecycle check passes both ways",
+     "why": "",
+     "group": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches w",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s54"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "tools-plugin-s4",
+     "name": "Tests, menu-reach, check-controls/theme, docs (CLAUDE.md status, plugins README)",
+     "why": "",
+     "group": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches w",
+     "minutes": 15,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s55"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "pending-grid-view-s1",
+     "name": "pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged excep",
+     "why": "",
+     "group": "Pending builds: grid view with sortable columns, expandable rows, toolbar and do",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s56"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "pending-grid-view-s2",
+     "name": "Grid view toggle next to Reload in Pending builds: rows with 1-line summary, date added, total time estimate, cost estimate; every column sortable (framework Da",
+     "why": "",
+     "group": "Pending builds: grid view with sortable columns, expandable rows, toolbar and do",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s57"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "pending-grid-view-s3",
+     "name": "Rows expand to the full card content they show today (steps, notes, actions).",
+     "why": "",
+     "group": "Pending builds: grid view with sortable columns, expandable rows, toolbar and do",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s58"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "pending-grid-view-s4",
+     "name": "Toolbar: Archive, Delete, Hide, Unhide (greyed when nothing selected), Open in (tooltip dialog: Build manager, Build queue, Plan), all in focus where they open.",
+     "why": "",
+     "group": "Pending builds: grid view with sortable columns, expandable rows, toolbar and do",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s59"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "pending-grid-view-s5",
+     "name": "Select hook: hover tooltip \"activate multi select with double click\"; double-click flashes the top item's hover style 3 times, tooltip \"select items\", then sing",
+     "why": "",
+     "group": "Pending builds: grid view with sortable columns, expandable rows, toolbar and do",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s60"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "pending-grid-view-s6",
+     "name": "Tests (pending-core cases + view build), screenshots, THREADS.md.",
+     "why": "",
+     "group": "Pending builds: grid view with sortable columns, expandable rows, toolbar and do",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s61"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s3",
+     "name": "Console plugin feature-matrix: server API (list dataset, get/add item, keep/skip, edit, apply; no delete), data in its lifecycle dataDir mirrored to the hub; se",
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s62"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s4",
+     "name": "Matrix view (like the windows-terminal scope list): groups, tick keep / untick skip, add item, totals + Fable/Opus split, Apply lights up when changed",
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s63"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s5",
+     "name": "Matrices grid: one row per build, expandable to its matrix; columns build, profile, date added, time cost (from the matrix), kept/skipped, status, last applied",
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s64"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s6",
+     "name": "Hooks in every builds grid (orchestrator, pending, build queue, build manager, changes grid, plan): row button + right-click 'Feature matrix' opening that entry",
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s65"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s7",
+     "name": "Import the windows-terminal scope list (artifact db scope/selection) as the first matrix; seed matrices for every open build",
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s66"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "feature-matrix-s8",
+     "name": "Lifecycle install/uninstall, tests, before/after shots, report, THREADS, PR + merge approval",
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
+     "group": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s67"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "tools-plugin-s3",
+     "name": "Patches web: Tools tab in the app tab group (patches-tabs nav-menu + AppTabs), a Tools page run by Patches",
+     "why": "Patches is paused globally (Oct 28)",
+     "group": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches w",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "apply-all-levels-fable-s3",
+     "name": "settings-ui@1 levels review + Sliders",
+     "why": "Folded into windows-terminal s9 (levels)",
+     "group": "Look tokens + settings levels (Fable rebuild)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s1",
+     "name": "grid-attach@1 contract: every lib-datagrid DataGrid registers in a runtime grid registry (id, label, app/page, columns, row count) and accepts a view layer (que",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s2",
+     "name": "Share Search attachment schema: per attachment toolbar asset (items[] look/behaviour/action, search bar mode + live per keystroke + debounce, appearance.inherit",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s3",
+     "name": "Plugin scaffold apps/console-web/plugins/share-search: plugin.json (builtWith Opus), install.mjs/uninstall.mjs, lifecycle dataDir, server store of attachments",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s4",
+     "name": "Toolbar widget on each attached grid: search bar (Search vs Filter, real time per keystroke) + 5 default buttons (Sort, Quick filter, Columns, Expand/collapse a",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s5",
+     "name": "Advanced search & filter dialog: multi-condition rules per column, AND/OR, sort stack, saved presets per attachment",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s6",
+     "name": "Settings → Plugins → Share Search: tab per attachment; Items group (look/behaviour/action per item); Search group (Filter/Search switch); Appearance collapsible",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s7",
+     "name": "Launch attach prompt: when unattached, dialog listing every registered grid in a DataGrid with expanding rows, multi-attach; toolbar context menu 'Share Search",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "share-search-s8",
+     "name": "Install on the Console unattached and check the attach prompt; tests, plugin-lifecycle check --after-uninstall, check-theme + theme-swap, screenshots; docs, THR",
+     "why": "Held by Brett: \"send to orchestrator and hold off on build\"",
+     "group": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + ",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "approval-costs-s1",
+     "name": "axHub: approval record gains cost + wait fields (checks, tokens, USD, waited seconds, session/surface/machine, buildRef, result); API to list/filter history; mi",
+     "why": "Held/queued by Brett, not started",
+     "group": "Approval history with costs: every approval recorded with details + cost, browsa",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "approval-costs-s3",
+     "name": "Session cost capture: hooks/claude.ai path report tokens + checks spent per approval (from transcript, model-pricing.json) to the hub record",
+     "why": "Held/queued by Brett, not started",
+     "group": "Approval history with costs: every approval recorded with details + cost, browsa",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "approval-costs-s4",
+     "name": "History browsers: console approvals-banner History view (DataGrid, expanding rows, filters, totals) + axHub approvals page history tab with costs; Approve stays",
+     "why": "Held/queued by Brett, not started",
+     "group": "Approval history with costs: every approval recorded with details + cost, browsa",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "approval-costs-s5",
+     "name": "Update shared retry rule to one wait call (after Brett confirms); tests, lifecycle check, theme-swap, screenshots; THREADS; PRs (AXF + axHub) + merge approvals",
+     "why": "Held/queued by Brett, not started",
+     "group": "Approval history with costs: every approval recorded with details + cost, browsa",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "veto-window-s1",
+     "name": "axHub: 'veto' tool policy + held-job queue (countdown, Block, Run now, expire to run), job states held/blocked/ran; API + audit log; per-tool countdown field (d",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
+     "group": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX rin",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "veto-window-s2",
+     "name": "Notify: AmberX push on hold (title, call, Block / Run now actions) + axHub web approvals page section 'About to run' with countdown",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
+     "group": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX rin",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "veto-window-s3",
+     "name": "Console banner: about-to-run items with live countdown, Block, Run now (approvals banner); framework controls only; snaps, never overlaps",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
+     "group": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX rin",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "veto-window-s5",
+     "name": "Urgent alarm at zero: countdown ends unblocked → red banner entry + loud ringing AmberX alert (full-screen, rings through Do Not Disturb if allowed), then 1-min",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
+     "group": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX rin",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "veto-window-s4",
+     "name": "Brett picks which tools move to veto (card); session rule: veto calls don't poll, read result once at the end; tests, docs, THREADS; PRs (axHub + AXF) + merge a",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
+     "group": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX rin",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "axhub-github-write-s1",
+     "name": "axHub GitHub service: add write operations (repos/create-or-update-file-contents, repos/delete-file, git/create-ref + update-ref, git/create-blob, create-tree,",
+     "why": "Held/queued by Brett; lives in the MossesX/axHub repo",
+     "group": "axHub GitHub service: file, branch and commit write tools (each needs approval)",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "axhub-github-write-s2",
+     "name": "Check the fine-grained token has Contents: read and write on MossesX repos (test call with approval); if not, a systems check banner item with Auto fix that tel",
+     "why": "Held/queued by Brett; lives in the MossesX/axHub repo",
+     "group": "axHub GitHub service: file, branch and commit write tools (each needs approval)",
+     "minutes": 15,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "axhub-github-write-s3",
+     "name": "Test: commit a file to a scratch branch through the hub and delete the branch; docs (axHub service list, shared RULES note on committing through the hub), THREA",
+     "why": "Held/queued by Brett; lives in the MossesX/axHub repo",
+     "group": "axHub GitHub service: file, branch and commit write tools (each needs approval)",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "postponed-gestures-s1",
+     "name": "Drag a window from anywhere: gesture contract in the gesture engine (Alt+drag, long-press-drag), window engine hook, opt-out for content that needs the pointer",
+     "why": "On the postponed gesture list; start only when Brett says",
+     "group": "Postponed gestures (held list): drag a window from anywhere",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "manual",
+      "id": ""
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:31:15.654Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s1",
+     "name": "Design plugin-theme@1 override contract: which tokens (layout, colour, style, behaviour/animation from look@1), stored per plugin (setting axf.plugin.<id>.look,",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s68"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s2",
+     "name": "Engine: compile a plugin override to CSS vars scoped to the plugin's UI root (data-axf-plugin=<id>) incl. motion vars; normalise/validate; fixture spec/fixtures",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s69"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s3",
+     "name": "React layer: every plugin UI root (views, dialogs, floating windows, tab-group tabs, settings page mode) carries data-axf-plugin and applies its override live (",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s70"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s7-s8",
+     "name": "Merge PR #161 (built + CI green on c10129f2, branch claude/plugin-theme-override, marked WIP by the STOP ORDER): Plugins ▸ All plugins ▸ <plugin> ▸ Interface ·",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 15,
+     "model": "Opus",
+     "state": "skip",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-28T23:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s71"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      },
+      {
+       "at": "2026-10-28T23:10:00.000Z",
+       "action": "done",
+       "to": "Done Oct 28: PR #161 merged (Plugins ladder, Disable item, submenu flip)"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s4",
+     "name": "Appearance tab for every plugin (Settings → Plugins → <plugin> → Appearance) with a Theme override switch; when on, a collapsible container with every layout/co",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s72"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s5",
+     "name": "Override editing views: token tree (tri-state, search), grouped form (sliders, colour pickers, choices), raw JSON, copy from another plugin / a theme asset, res",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s73"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s6",
+     "name": "Switch a plugin's theme override from right-click (every plugin UI's context menu), a toolbar action and the application menu (Plugins ladder)",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s74"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "plugin-theme-override-s9",
+     "name": "Checks (tsc, build, check-theme, check-controls, menu-reach, theme-swap, lifecycle), docs (STATUS, README, PORTING deferred), THREADS, PR + merge approval",
+     "why": "",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s75"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T19:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "assistant-approvals-s1",
+     "name": "approval-badge@1 contract: shared feed of open axHub approvals + assistant title-bar slot (badge, popover, Approve/Decline, toast); fixture + check",
+     "why": "cross-app contract, console + AmberX",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "skip",
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s76"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T23:25:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T07:10:00.000Z",
+       "action": "state",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "assistant-approvals-s2",
+     "name": "framework/libs/approvals: shared library over the feed (hub session, live updates, approve/decline), tests",
+     "why": "",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s77"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T23:25:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "assistant-approvals-s3",
+     "name": "Dev Console AI assistant window: title-bar badge + popover, click Approve runs it, snaps never overlaps",
+     "why": "",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s78"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T23:25:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "assistant-approvals-s4",
+     "name": "AmberX app assistant: same badge + popover in its title bar, tap Approve from the phone, push opens it",
+     "why": "",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s79"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T23:25:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "assistant-approvals-s5",
+     "name": "Checks, before/after shots of both title bars, docs, THREADS, PR + merge approval",
+     "why": "",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s80"
+     },
+     "history": [
+      {
+       "at": "2026-10-28T23:25:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "veto-approvals-s1",
+     "name": "axHub: veto policy (hold 180 s then run unless denied), Deny API, Vinnie agent module + job stream, approval page countdown + Deny",
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oc",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s81"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T01:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "veto-approvals-s2",
+     "name": "axHub: Vinnie pushes hold / time-running-out / running to the AmberX app with Deny action; feed fields; docs, tests, PR",
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oc",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s82"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T01:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "veto-approvals-s3",
+     "name": "AmberX app: held-call notification with Deny; settings for notification sound, vibration, time-running-out sound, running sound",
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oc",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s83"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T01:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "veto-approvals-s4",
+     "name": "AmberX terminal: tab opens on timer start with countdown + Deny, then attaches to the running command's output",
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oc",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s84"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T01:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "veto-approvals-s5",
+     "name": "Console approvals banner + AXHub web approval page: countdown + Deny, no Approve for veto calls",
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oc",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s85"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T01:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "veto-approvals-s6",
+     "name": "Shared rule (send once, never poll), docs, shots, THREADS, PRs + merge approvals",
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oc",
+     "minutes": 20,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "updatedAt": "2026-10-29T03:30:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s86"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T01:50:00.000Z",
+       "action": "added"
+      },
+      {
+       "at": "2026-10-29T03:30:00.000Z",
+       "action": "done",
+       "to": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+      }
+     ]
+    },
+    {
+     "id": "amberx-voice-wake-s1",
+     "name": "Silent offline wake listener (Vosk, trigger phrases like ActiveX) in the hands-free service; no system tone",
+     "why": "",
+     "group": "AmberX voice wake: silent Vosk idle, Google after the trigger, no tone (Brett, O",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T05:20:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s87"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T05:20:00.000Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "amberx-voice-wake-s2",
+     "name": "Google recognizer only after the trigger, one utterance, back to silent idle; tones muted (setting)",
+     "why": "",
+     "group": "AmberX voice wake: silent Vosk idle, Google after the trigger, no tone (Brett, O",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T05:20:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s88"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T05:20:00.000Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "amberx-voice-wake-s3",
+     "name": "Voice settings: trigger phrases, sensitivity, tone switch; tests, docs, PR + merge approval",
+     "why": "",
+     "group": "AmberX voice wake: silent Vosk idle, Google after the trigger, no tone (Brett, O",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T05:20:00.000Z",
+     "updatedAt": "2026-10-29T07:10:00.000Z",
+     "source": {
+      "kind": "step",
+      "id": "s89"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T05:20:00.000Z",
+       "action": "added"
+      }
+     ]
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-10-28T19:31:15.654Z",
+     "action": "created"
+    },
+    {
+     "at": "2026-10-29T07:10:00.000Z",
+     "action": "imported",
+     "from": "feature-matrix@0",
+     "to": "feature-matrix@1"
+    }
+   ],
+   "fromProfile": "refactor"
+  }
+ ]
+}

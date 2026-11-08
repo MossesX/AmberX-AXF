@@ -46,11 +46,16 @@
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
+import { normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
-/** `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged. */
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+/**
+ * `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged.
+ * `queued` (Nov 8 2026, pipeline rebuild) = Brett moved it from Pending to the Queue: the dispatcher starts it when a slot
+ * is free; `running` is the pipeline's Building (framework/core/build-pipeline.mjs).
+ */
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 /** Statuses that count as finished work (progress, Pending list). */
 export const FINISHED = ['built', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
@@ -156,6 +161,7 @@ export function normBuild(b, ctx = {}) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
+    ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     steps,
     profiles,
     order,
@@ -597,7 +603,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
     b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
-    if (['pending', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
+    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
   }
   if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }

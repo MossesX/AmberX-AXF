@@ -1,37 +1,55 @@
 #!/usr/bin/env node
 /**
- * claude-workers.mjs — headless worker accounts (build multi-account-headless-workers, Nov 7 2026).
+ * claude-workers.mjs — headless worker accounts (builds multi-account-headless-workers, Nov 7 2026, and
+ * workers-api-routing, Nov 8 2026).
  *
- * The console stays on one Claude subscription (the active account, ~/.claude-accounts/.active). Accounts marked as
- * workers are never made active: they only run headless jobs. Each job already runs on a private copy of its login
- * (deploy/claude-login.mjs), so several subscriptions work at once without touching the console's login. This file
- * decides which worker takes a job and keeps what each one did.
+ * The console stays on one Claude subscription (the active account, ~/.claude-accounts/.active). Every other saved
+ * subscription login is a worker (Brett, Nov 8 2026: "All subscription logins are workers"; Stop worker takes one out),
+ * and the console's own account takes headless jobs too, after the workers (setting interactiveTakesJobs, default on).
+ * Each job runs on a private copy of its login (deploy/claude-login.mjs), so several subscriptions work at once without
+ * touching the console's login. API-key accounts (~/.claude-accounts/<name>/apikey) work only once they are set up as
+ * API workers, and only on the jobs a routing rule sends them (they bill per token), under daily and weekly spend caps.
+ * Which account takes a job is deploy/worker-routing.mjs (pure; the console runs the same code for its preview).
  *
- *   node deploy/claude-workers.mjs route [--exclude a,b]       prints the worker for a new job; nothing = no worker free
- *   node deploy/claude-workers.mjs limit <name> --kind usage|auth [--log <file>]   take a worker out until it can work again
- *   node deploy/claude-workers.mjs hit --log <file> --exit <n> prints usage or auth when that log ended on one
- *   node deploy/claude-workers.mjs status [--json]             every account: role, limit, running, runs and cost
- *   node deploy/claude-workers.mjs signin <name>               sign an account in, in its own folder, in a tmux session
- *   node deploy/claude-workers.mjs remove <name>               set a saved account aside (never deleted)
- *   node deploy/claude-workers.mjs note <session>              one line for the build: runs and cost per account
+ *   node deploy/claude-workers.mjs claim --session s [--name n] [--brief f] [--model m] [--priority p] [--exclude a,b]
+ *                                       → "run <account> <kind>" | "queue <account> <position>" | "none <why>"
+ *   node deploy/claude-workers.mjs release --session s           the job ended (or moved): its claim goes
+ *   node deploy/claude-workers.mjs route [--exclude a,b]         the account a new job would run on now ('' = none)
+ *   node deploy/claude-workers.mjs test [--job '{json}' | --name n --model m --priority p --steps n --type t --profile p]
+ *   node deploy/claude-workers.mjs limit <name> --kind usage|auth [--log <file>]   take an account out until it can work again
+ *   node deploy/claude-workers.mjs hit --log <file> --exit <n>  prints usage or auth when that log ended on one
+ *   node deploy/claude-workers.mjs status [--json]              every account: role, kind, limit, running/queued, cost, caps
+ *   node deploy/claude-workers.mjs alerts [--json]              API accounts near/over a cap or without a key
+ *   node deploy/claude-workers.mjs config [--json]              the routing config (defaults filled in)
+ *   node deploy/claude-workers.mjs set <key> <value>            interactiveTakesJobs on|off · building N · queue N
+ *   node deploy/claude-workers.mjs worker <name> on|off         Make worker / Stop worker (subscription logins)
+ *   node deploy/claude-workers.mjs label <name> <text>          a display name (Hulu, Moses X…)
+ *   node deploy/claude-workers.mjs api add <name> --label L --daily N --weekly N [--alert 0.8]   an API worker slot
+ *   node deploy/claude-workers.mjs api on|off|remove <name>     · api caps <name> --daily N --weekly N (lower only)
+ *   node deploy/claude-workers.mjs rule add --json '{rule}' [--at i] · rule update <id> --json '{…}' · rule remove <id>
+ *   node deploy/claude-workers.mjs rule move <id> up|down|<index> · rule on|off <id> · rules
+ *   node deploy/claude-workers.mjs signin <name> · remove <name> · note <session>
  *
- * claude-workers@1 (workers.json, next to the plugin's seen.json; the console writes it): { workers: [names, in order] }.
- * worker-state.json (written here): { limits: { name: { at, until, kind, reason } } }. A limit ends by itself at `until`.
- * Neither holds a credential, and nothing here prints one.
+ * A session may lower a spend cap but never raise or remove one: that is Brett's own click in the console (Settings →
+ * Plugins → Claude accounts → Job routing), which writes workers.json itself.
  *
- * Routing: workers that are saved, not active, not limited; fewest running jobs first, then the order in workers.json.
- * API-key accounts are never workers (they bill per token). Paths: AXF_CLAUDE_WORKERS (folder of the two files),
- * AXF_HEADLESS_DIR (events.jsonl and meters), and claude-login.mjs's AXF_CLAUDE_ACCOUNTS / AXF_CLAUDE_SEEN.
+ * claude-workers@1 (workers.json, next to the plugin's seen.json; worker-routing.mjs documents every field).
+ * worker-state.json (written here, under worker-state.lock): { limits: { name: { at, until, kind, reason } },
+ * claims: { session: { account, state: run|queue, at } } }. A limit ends by itself at `until`; a claim goes with its
+ * session (release, or the tmux session is gone). Neither file holds a credential, and nothing here prints one.
+ * Paths: AXF_CLAUDE_WORKERS (folder of the files), AXF_HEADLESS_DIR (events.jsonl and meters), and claude-login.mjs's
+ * AXF_CLAUDE_ACCOUNTS / AXF_CLAUDE_SEEN. AXF_WORKERS_ALIVE (comma list) stands in for tmux in tests.
  * Exit 0 ok, 2 bad usage or refused.
  */
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { accounts, paths as loginPaths } from './claude-login.mjs';
+import { NAME_RE, SCHEMA, alerts as routingAlerts, decide, normConfig, normJob, normRule, raisedCaps, roster } from './worker-routing.mjs';
 
-export const SCHEMA = 'claude-workers@1';
-const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
+export { SCHEMA };
+const HERE = dirname(fileURLToPath(import.meta.url));
 const HOUR = 3600e3;
 const DAY = 24 * HOUR;
 /** No reset time in the message: 5 hours (the shortest subscription window). A dead login gets another try sooner. */
@@ -49,17 +67,48 @@ export function paths(env = process.env) {
 }
 
 export function loadConfig(env = process.env) {
-  const c = readJson(paths(env).config);
-  const list = Array.isArray(c?.workers) ? c.workers : [];
-  return { $axf: SCHEMA, workers: [...new Set(list.filter((n) => typeof n === 'string' && NAME_RE.test(n)))] };
+  return normConfig(readJson(paths(env).config));
 }
 
-const loadState = (env) => { const s = readJson(paths(env).state); return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {} }; };
-function saveState(state, env) {
-  const f = paths(env).state;
+const atomic = (f, v) => {
   mkdirSync(dirname(f), { recursive: true });
-  writeFileSync(`${f}.${process.pid}.tmp`, JSON.stringify(state, null, 1));
+  writeFileSync(`${f}.${process.pid}.tmp`, JSON.stringify(v, null, 1));
   renameSync(`${f}.${process.pid}.tmp`, f);
+};
+
+/** Write the config. A session may never raise or remove a spend cap (`allowRaise` is the console's owner click). */
+export function saveConfig(next, env = process.env, { allowRaise = false } = {}) {
+  const cfg = normConfig(next);
+  const raised = raisedCaps(loadConfig(env), cfg);
+  if (raised.length && !allowRaise) throw Object.assign(new Error(`raising a spend cap is Brett's own click in the console (${raised.join('; ')})`), { code: 2 });
+  atomic(paths(env).config, cfg);
+  return cfg;
+}
+
+/** Read the config, change it, write it (under the state lock, so two writers never lose each other's change). */
+export function editConfig(fn, env = process.env, opts = {}) {
+  return withLock(env, () => { const c = loadConfig(env); const out = fn(c) ?? c; return saveConfig(out, env, opts); });
+}
+
+const loadState = (env) => {
+  const s = readJson(paths(env).state);
+  return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {} };
+};
+const saveState = (state, env) => atomic(paths(env).state, state);
+
+/** One writer at a time on worker-state.json (claims must never hand the last slot to two jobs). Stale after 10 s. */
+export function withLock(env, fn) {
+  const f = `${paths(env).state}.lock`;
+  mkdirSync(dirname(f), { recursive: true });
+  const until = Date.now() + 15_000;
+  for (;;) {
+    try { closeSync(openSync(f, 'wx')); break; } catch {
+      try { if (Date.now() - statSync(f).mtimeMs > 10_000) { rmSync(f, { force: true }); continue; } } catch { continue; }
+      if (Date.now() > until) throw Object.assign(new Error('worker state is locked'), { code: 2 });
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 40);
+    }
+  }
+  try { return fn(); } finally { rmSync(f, { force: true }); }
 }
 
 /** "resets 3pm (UTC)", "resets Nov 10, 2:30am": when the limit ends, ms; 0 when the text doesn't say. Times are UTC. */
@@ -84,10 +133,12 @@ export function hitOf(text, exit = 0) {
 export function markLimit(name, { kind = 'usage', text = '' } = {}, env = process.env, now = Date.now()) {
   if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
   const until = (kind === 'usage' ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
-  const state = loadState(env);
-  state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? 'hit its limit' : 'login failed' };
-  saveState(state, env);
-  return state.limits[name];
+  return withLock(env, () => {
+    const state = loadState(env);
+    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of credits/i.test(text) ? 'out of API credit' : 'hit its limit') : 'login failed' };
+    saveState(state, env);
+    return state.limits[name];
+  });
 }
 
 const limitOf = (state, name, now) => { const l = state.limits[name]; return l && Date.parse(l.until) > now ? l : null; };
@@ -133,33 +184,112 @@ export function ledger(events, { cost = () => 0, alive = null } = {}) {
 
 const emailIn = (p, name) => String(readJson(join(p.accounts, name, '.claude.json'))?.oauthAccount?.emailAddress || '');
 
-/** Every saved account with its role, limit, jobs and cost. No credential. */
-export function status(env = process.env, now = Date.now()) {
+function aliveSet(env) {
+  if (env.AXF_WORKERS_ALIVE !== undefined) return new Set(env.AXF_WORKERS_ALIVE.split(',').filter(Boolean));
+  return liveSessions();
+}
+
+/** Claims whose session is still there (no tmux to ask = a claim lives 12 hours). */
+function liveClaims(state, alive, now) {
+  return Object.entries(state.claims).filter(([s, c]) => c && (alive ? alive.has(s) : now - Date.parse(c.at) < 12 * HOUR));
+}
+
+/** Every saved account with its role, kind, limit, jobs, cost and spend caps. No credential. */
+export function status(env = process.env, now = Date.now(), { forSession = '' } = {}) {
   const p = paths(env);
   const cfg = loadConfig(env);
   const state = loadState(env);
   const seen = readJson(p.seen) ?? {};
-  const led = ledger(readEvents(env), { cost: (s) => meterCost(env, s), alive: liveSessions() });
+  const alive = aliveSet(env);
+  const led = ledger(readEvents(env), { cost: (s) => meterCost(env, s), alive });
+  const claims = liveClaims(state, alive, now);
+  const mine = state.claims[forSession];
   const sum = (runs, since) => +runs.filter((r) => now - Date.parse(r.end || r.at) < since).reduce((n, r) => n + r.costUsd, 0).toFixed(2);
-  const rows = accounts(env).map((a) => {
+  const base = accounts(env).map((a) => {
     const l = led[a.name] ?? { running: [], runs: [] };
+    const running = [...new Set([...l.running, ...claims.filter(([s, c]) => c.account === a.name && c.state === 'run').map(([s]) => s)])].filter((s) => s !== forSession);
+    // a job asking for a slot sees the jobs queued before it as already holding one, so the oldest waiter goes first
+    const queue = claims.filter(([s, c]) => c.account === a.name && c.state === 'queue' && s !== forSession);
+    const ahead = queue.filter(([, c]) => !mine || mine.state !== 'queue' || Date.parse(c.at) < Date.parse(mine.at)).length;
     return {
-      name: a.name, role: a.active ? 'interactive' : cfg.workers.includes(a.name) ? 'worker' : 'saved', email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
-      limited: limitOf(state, a.name, now), running: l.running, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
+      name: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', active: a.active, hasKey: a.kind === 'api' ? true : undefined,
+      email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
+      limited: limitOf(state, a.name, now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
     };
   });
-  const free = rows.filter((r) => r.role === 'worker' && !r.limited).length;
-  return { $axf: SCHEMA, workers: cfg.workers, free, accounts: rows, at: new Date(now).toISOString() };
+  // API worker slots set up before their key is saved still show (no key yet)
+  for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
+  const ro = roster(cfg, base);
+  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why }));
+  const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
+  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
 }
 
-/** The worker for a new job, or '' (no workers set up, or every one is limited or excluded). */
+/** Rows as the router sees them for one job: queued-ahead jobs count as running. */
+const routingRows = (s) => s.accounts.map((a) => ({ ...a, running: a.running.length + (a.ahead || 0) }));
+
+/** Where a job would go right now (nothing recorded). */
+export function preview(job = {}, { exclude = [], forSession = '' } = {}, env = process.env, now = Date.now()) {
+  const s = status(env, now, { forSession });
+  return decide(s.config, routingRows(s).filter((a) => !exclude.includes(a.name)), job);
+}
+
+/** The account a new job would run on now, or '' (none free). Kept for older callers. */
 export function route({ exclude = [] } = {}, env = process.env, now = Date.now()) {
-  const s = status(env, now);
-  const order = (n) => s.workers.indexOf(n);
-  const pick = s.accounts.filter((a) => a.role === 'worker' && !a.limited && !exclude.includes(a.name))
-    .sort((a, b) => a.running.length - b.running.length || order(a.name) - order(b.name))[0];
-  return pick?.name ?? '';
+  const d = preview({}, { exclude }, env, now);
+  return d.state === 'run' ? d.account : '';
+}
+
+/** Decide and record it: the job holds a slot (run) or a place in line (queue) on that account until release. */
+export function claim(session, job = {}, { exclude = [] } = {}, env = process.env, now = Date.now()) {
+  if (!session) throw Object.assign(new Error('--session is required'), { code: 2 });
+  return withLock(env, () => {
+    const d = preview(job, { exclude, forSession: session }, env, now);
+    const state = loadState(env);
+    const alive = aliveSet(env);
+    state.claims = Object.fromEntries(liveClaims(state, alive, now).filter(([s]) => s !== session));
+    if (d.state !== 'none') {
+      const was = loadState(env).claims[session];
+      const at = was && was.state === 'queue' && was.account === d.account && d.state === 'queue' ? was.at : new Date(now).toISOString();
+      state.claims[session] = { account: d.account, state: d.state, at, rule: d.rule || undefined };
+      if (d.state === 'queue') d.position = Object.values(state.claims).filter((c) => c.account === d.account && c.state === 'queue' && Date.parse(c.at) <= Date.parse(at)).length;
+    }
+    saveState(state, env);
+    return d;
+  });
+}
+
+export function release(session, env = process.env) {
+  return withLock(env, () => {
+    const state = loadState(env);
+    const had = !!state.claims[session];
+    delete state.claims[session];
+    saveState(state, env);
+    return had;
+  });
+}
+
+/** Minutes in an estimate: 30, "20 min", "1.5 h". */
+const minutesOf = (e) => { const m = /([\d.]+)\s*(h|hour)?/i.exec(String(e ?? '')); return m ? Math.round(Number(m[1]) * (m[2] ? 60 : 1)) || 0 : 0; };
+
+/** The job a launch is, as the rules see it: model, priority, profile, type, and the build's steps / minutes left. */
+export async function jobFor({ name = '', brief = '', model = '', priority = '', jobType = '', profile = '' } = {}, env = process.env) {
+  const job = { name, model, priority, jobType: jobType || env.AXF_JOB_TYPE || (env.AXF_SURFACE === 'agent-job' ? 'agent-job' : 'build'), profile: profile || env.AXF_BUILD_PROFILE || 'all' };
+  try {
+    const { resolveBuild } = await import('../framework/core/build-priority.mjs');
+    const store = readJson(join(HERE, '..', '_claude', 'builds', 'store.json'));
+    let text = ''; try { text = readFileSync(brief, 'utf8'); } catch { /* no brief */ }
+    const id = /^\s*(?:build|id)\s*[:=]\s*`?([a-z0-9][a-z0-9-]+)/im.exec(text)?.[1];
+    const b = resolveBuild(store?.builds ?? [], id || name.replace(/^axf-/, '').replace(/--.*$/, ''));
+    if (b) {
+      const left = (b.steps ?? []).filter((x) => !x.done && !x.skip);
+      Object.assign(job, { build: b.id, steps: left.length, minutes: left.reduce((n, x) => n + minutesOf(x.estimate), 0) });
+      if (!job.priority && b.priority) job.priority = b.priority;
+      if (!job.model && left[0]?.model) job.model = left[0].model;
+    }
+  } catch { /* no store here: the rules see what the launch said */ }
+  return normJob(job);
 }
 
 /** Sign an account in, in its own folder, so the live login and the console's account are never touched. */
@@ -200,21 +330,101 @@ export function noteFor(session, env = process.env) {
 
 const tail = (f, lines = 40) => { try { return readFileSync(f, 'utf8').split('\n').slice(-lines).join('\n'); } catch { return ''; } };
 
-const main = () => {
+const ON = new Set(['on', 'true', '1', 'yes']); const OFF = new Set(['off', 'false', '0', 'no']);
+const onOff = (v) => { const x = String(v ?? '').toLowerCase(); if (ON.has(x)) return true; if (OFF.has(x)) return false; throw Object.assign(new Error(`on or off, not "${v}"`), { code: 2 }); };
+const nameOk = (n) => { if (!NAME_RE.test(n || '')) throw Object.assign(new Error(`not an account name: ${n}`), { code: 2 }); return n; };
+const ruleIdx = (c, id) => { const i = c.rules.findIndex((r) => r.id === id); if (i < 0) throw Object.assign(new Error(`no rule ${id} (rules: ${c.rules.map((r) => r.id).join(', ') || 'none'})`), { code: 2 }); return i; };
+const parseJson = (t, what) => { try { return JSON.parse(t); } catch { throw Object.assign(new Error(`${what} is not JSON`), { code: 2 }); } };
+const usd = (n) => `$${Number(n || 0).toFixed(2)}`;
+
+/** One line per account, for people. */
+export function statusLines(s) {
+  return s.accounts.map((a) => {
+    const lim = a.limited ? ` · out until ${a.limited.until}` : '';
+    const cap = a.spend ? ` · caps ${a.spend.dayCap ? usd(a.spend.dayCap) : 'none'}/day ${a.spend.weekCap ? usd(a.spend.weekCap) : 'none'}/week${a.spend.state !== 'ok' ? ` (${a.spend.state})` : ''}` : '';
+    return `${a.role.padEnd(11)} ${a.name}${a.label ? ` "${a.label}"` : ''}${a.email ? ` (${a.email})` : ''}${lim} · ${a.running.length}/${a.building} running · ${a.queued}/${a.queue} queued · ${usd(a.costToday)} today · ${usd(a.costWeek)} week${cap}${a.why && !a.limited ? ` · ${a.why}` : ''}`;
+  });
+}
+
+const decisionLine = (d) => `${d.state === 'run' ? `→ ${d.account}${d.label ? ` "${d.label}"` : ''} (${d.kind})` : d.state === 'queue' ? `→ waits for ${d.account} (position ${d.position})` : '→ no account'}: ${d.why}`;
+
+const main = async () => {
   const [cmd, ...rest] = process.argv.slice(2);
   const flag = (n, d = '') => { const i = rest.indexOf(`--${n}`); return i >= 0 && rest[i + 1] !== undefined ? rest[i + 1] : d; };
+  const has = (n) => rest.includes(`--${n}`);
+  const json = has('json') && !['rule', 'test'].includes(cmd);
+  const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
+  const jobArgs = async () => {
+    if (flag('job')) return normJob(parseJson(flag('job'), '--job'));
+    const j = await jobFor({ name: flag('name'), brief: flag('brief'), model: flag('model'), priority: flag('priority'), jobType: flag('type'), profile: flag('profile') });
+    if (flag('steps')) j.steps = Number(flag('steps')) || 0;
+    if (flag('minutes')) j.minutes = Number(flag('minutes')) || 0;
+    return j;
+  };
+  const exclude = flag('exclude').split(',').filter(Boolean);
   try {
-    if (cmd === 'route') console.log(route({ exclude: flag('exclude').split(',').filter(Boolean) }));
-    else if (cmd === 'hit') console.log(hitOf(tail(flag('log')), Number(flag('exit', '0'))));
+    if (cmd === 'route') console.log(route({ exclude }));
+    else if (cmd === 'claim') {
+      const d = claim(flag('session'), await jobArgs(), { exclude });
+      console.log(d.state === 'run' ? `run ${d.account} ${d.kind}` : d.state === 'queue' ? `queue ${d.account} ${d.position}` : `none ${d.why}`);
+      if (has('why')) console.error(decisionLine(d));
+    } else if (cmd === 'release') out({ released: release(flag('session')) }, 'released');
+    else if (cmd === 'test' || cmd === 'preview') {
+      const d = preview(await jobArgs(), { exclude });
+      if (rest.includes('--json')) console.log(JSON.stringify(d));
+      else { console.log(decisionLine(d)); for (const c of d.considered) console.log(`  ${c.match ? '✓' : '·'} ${c.name}: ${c.why}`); }
+    } else if (cmd === 'hit') console.log(hitOf(tail(flag('log')), Number(flag('exit', '0'))));
     else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out until ${l.until} (${l.reason})`); }
-    else if (cmd === 'status') {
-      const s = status();
-      if (rest.includes('--json')) console.log(JSON.stringify(s));
-      else for (const a of s.accounts) console.log(`${a.role.padEnd(11)} ${a.name}${a.email ? ` (${a.email})` : ''}${a.limited ? ` · out until ${a.limited.until}` : ''} · ${a.running.length} running · $${a.costToday} today · $${a.costWeek} week`);
+    else if (cmd === 'status') { const s = status(); out(s, statusLines(s).join('\n')); }
+    else if (cmd === 'alerts') { const a = status().alerts; out(a, a.map((x) => `${x.level} ${x.text}`).join('\n') || 'no alerts'); }
+    else if (cmd === 'config' || cmd === 'rules') {
+      const c = loadConfig();
+      if (cmd === 'rules') out(c.rules, c.rules.map((r, i) => `${i + 1}. ${r.enabled ? 'on ' : 'off'} ${r.id} → ${r.to}${r.accounts.length ? ` (${r.accounts.join(', ')})` : ''} · ${JSON.stringify(r.when)}`).join('\n') || 'no rules: API accounts take nothing');
+      else out(c, JSON.stringify(c, null, 1));
+    } else if (cmd === 'set') {
+      const [key, val] = rest;
+      const c = editConfig((x) => {
+        if (key === 'interactiveTakesJobs' || key === 'interactive') x.interactiveTakesJobs = onOff(val);
+        else if (key === 'building' || key === 'queue') x.limits[key] = Number(val);
+        else throw Object.assign(new Error('set interactiveTakesJobs on|off | building N | queue N'), { code: 2 });
+      });
+      out(c, `interactive takes jobs: ${c.interactiveTakesJobs ? 'on' : 'off'} · building ${c.limits.building} · queue ${c.limits.queue}`);
+    } else if (cmd === 'worker') {
+      const n = nameOk(rest[0]); const on = onOff(rest[1] ?? 'on');
+      const row = status().accounts.find((a) => a.name === n);
+      if (row?.kind === 'api') throw Object.assign(new Error(`${n} is an API key: use "api on|off ${n}"`), { code: 2 });
+      editConfig((x) => { x.excluded = on ? x.excluded.filter((y) => y !== n) : [...x.excluded, n]; if (on && !x.workers.includes(n)) x.workers.push(n); });
+      out({ name: n, worker: on }, on ? `${n} takes headless jobs` : `${n} no longer takes headless jobs`);
+    } else if (cmd === 'label') {
+      const n = nameOk(rest[0]); const label = rest.slice(1).join(' ').trim();
+      editConfig((x) => { if (x.api[n]) x.api[n].label = label; else { x.perAccount[n] = { ...(x.perAccount[n] ?? {}), label }; } });
+      out({ name: n, label }, `${n} is shown as "${label}"`);
+    } else if (cmd === 'api') {
+      const [op, n0] = rest; const n = nameOk(n0);
+      const c = editConfig((x) => {
+        if (op === 'add') x.api[n] = { label: flag('label', x.api[n]?.label || n), enabled: true, dailyCapUsd: Number(flag('daily', '0')), weeklyCapUsd: Number(flag('weekly', '0')), alertAt: Number(flag('alert', '0.8')) };
+        else if (op === 'on' || op === 'off') { if (!x.api[n]) throw Object.assign(new Error(`${n} is not an API worker (api add first)`), { code: 2 }); x.api[n].enabled = op === 'on'; }
+        else if (op === 'remove') delete x.api[n];
+        else if (op === 'caps') { if (!x.api[n]) throw Object.assign(new Error(`${n} is not an API worker`), { code: 2 }); if (flag('daily')) x.api[n].dailyCapUsd = Number(flag('daily')); if (flag('weekly')) x.api[n].weeklyCapUsd = Number(flag('weekly')); if (flag('alert')) x.api[n].alertAt = Number(flag('alert')); }
+        else throw Object.assign(new Error('api add|on|off|remove|caps <name>'), { code: 2 });
+      });
+      out(c.api[n] ?? null, c.api[n] ? `${n}: ${c.api[n].enabled ? 'on' : 'off'} · ${usd(c.api[n].dailyCapUsd)}/day · ${usd(c.api[n].weeklyCapUsd)}/week` : `${n} is no longer an API worker`);
+    } else if (cmd === 'rule') {
+      const [op, id] = rest;
+      const c = editConfig((x) => {
+        if (op === 'add') { const r = normRule(parseJson(flag('json'), '--json'), x.rules.length); const at = flag('at') === '' ? x.rules.length : Number(flag('at')); x.rules.splice(Math.max(0, Math.min(x.rules.length, at)), 0, r); }
+        else if (op === 'update') { const i = ruleIdx(x, id); const p = parseJson(flag('json'), '--json'); x.rules[i] = normRule({ ...x.rules[i], ...p, when: { ...x.rules[i].when, ...(p.when ?? {}) }, id }, i); }
+        else if (op === 'remove') x.rules.splice(ruleIdx(x, id), 1);
+        else if (op === 'on' || op === 'off' || op === 'enable' || op === 'disable') x.rules[ruleIdx(x, id)].enabled = op === 'on' || op === 'enable';
+        else if (op === 'move') { const i = ruleIdx(x, id); const to = rest[2] === 'up' ? i - 1 : rest[2] === 'down' ? i + 1 : Number(rest[2]) - 1; const [r] = x.rules.splice(i, 1); x.rules.splice(Math.max(0, Math.min(x.rules.length, Number.isFinite(to) ? to : i)), 0, r); }
+        else throw Object.assign(new Error('rule add|update|remove|move|on|off'), { code: 2 });
+      });
+      if (rest.includes('--json') && op !== 'add' && op !== 'update') console.log(JSON.stringify(c.rules));
+      else console.log(c.rules.map((r, i) => `${i + 1}. ${r.enabled ? 'on ' : 'off'} ${r.id} → ${r.to}`).join('\n') || 'no rules');
     } else if (cmd === 'signin') console.log(`started ${signin(rest[0])}: finish the sign-in in the console's Terminal`);
     else if (cmd === 'remove') console.log(`set aside in ${remove(rest[0])}`);
     else if (cmd === 'note') console.log(noteFor(rest[0]));
-    else { console.error('usage: claude-workers.mjs route [--exclude a,b] | limit <name> --kind usage|auth [--log f] | hit --log f --exit n | status [--json] | signin <name> | remove <name> | note <session>'); process.exit(2); }
+    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
   } catch (e) { console.error(`claude-workers: ${e.message}`); process.exit(2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

@@ -53,6 +53,48 @@
         "title": "Approve upgrade",
         "text": "Approves the waiting model upgrade request for this phase. Only Brett's own click counts; it is recorded with his name.",
         "kind": "button"
+      },
+      {
+        "target": "queue",
+        "title": "Queue",
+        "text": "Sends this Pending build to the Queue. The dispatcher starts it when a VPS slot and a Claude account for its next step's model are free; it never starts right away.",
+        "kind": "button"
+      },
+      {
+        "target": "back-to-pending",
+        "title": "Back to Pending",
+        "text": "Takes a queued build out of the Queue before it starts.",
+        "kind": "button"
+      },
+      {
+        "target": "split-now",
+        "title": "Split now",
+        "text": "Asks the orchestrator to split this build into steps of 30 minutes or less (Fable only where needed, Opus otherwise). Done by the dispatcher within a minute.",
+        "kind": "button"
+      },
+      {
+        "target": "toggle-fable",
+        "title": "Toggle Fable",
+        "text": "Says by hand whether this Claude account can run Fable: on, off, or back to auto (the plan, or a probe).",
+        "kind": "button"
+      },
+      {
+        "target": "more-parallel",
+        "title": "More parallel",
+        "text": "Lets one more build run on this account at once.",
+        "kind": "button"
+      },
+      {
+        "target": "less-parallel",
+        "title": "Less parallel",
+        "text": "One fewer build at once on this account.",
+        "kind": "button"
+      },
+      {
+        "target": "toggle-use",
+        "title": "Toggle use",
+        "text": "Takes this account out of the pipeline, or puts it back.",
+        "kind": "button"
       }
     ],
     "intros": []

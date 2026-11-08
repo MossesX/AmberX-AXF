@@ -7,3 +7,11 @@
 .axp-ca-save { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
 .axp-ca-save > :first-child { flex: 1 1 14em; }
 .axp-ca-help { margin: 0; color: var(--fx-muted); }
+/* Job routing (workers-api-routing): layout only. */
+.axp-ca-row--off { opacity: var(--fx-opacity-muted); }
+.axp-ca-spend { display: grid; gap: var(--fx-dens-gap-sm); margin-top: var(--fx-dens-gap-sm); max-width: 28em; }
+.axp-ca-checks { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
+.axp-ca-rule-form { padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-ca-considered { list-style: none; margin: var(--fx-dens-gap-sm) 0 0; padding-left: calc(var(--fx-space) * 4); }
+.axp-ca-cards { display: grid; gap: var(--fx-dens-gap-md); }
+.axp-ca-grid { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 30em), 1fr)); align-items: start; }

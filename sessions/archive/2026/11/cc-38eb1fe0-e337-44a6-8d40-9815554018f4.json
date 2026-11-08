@@ -1,0 +1,87 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-38eb1fe0-e337-44a6-8d40-9815554018f4",
+ "source": "claude-code",
+ "sessionId": "38eb1fe0-e337-44a6-8d40-9815554018f4",
+ "project": "other",
+ "title": "# Lander D — make finished builds landable For each build below, in order, work in its folder /root/axf-builds/<name> (…",
+ "startedAt": "2026-11-07T09:46:39.523Z",
+ "endedAt": "2026-11-07T10:17:22.592Z",
+ "minutes": 31,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/lander-d",
+  "repo": "",
+  "branch": "claude/lander-d"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T09:46:59.372Z",
+   "kind": "prompt",
+   "text": "# Lander D — make finished builds landable For each build below, in order, work in its folder /root/axf-builds/<name> (if missing, try /home/axfbuild/wt-<name>; if still missing, log it and skip): 1. `git checkout -- _claude/builds/` and `git clean -fd _claude/builds/` (those are auto-synced data, never real work). Keep any other uncommitted change: commit it as `<name>: commit leftover work`. 2. `git fetch origin && git merge origin/main`. Resolve clashes keeping BOTH sides' intent; for _claude/builds/** JSON take main's version. 3. Run the tests/checks for the touched area (and `node framew…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 290,
+    "output": 64030,
+    "cacheRead": 23212506,
+    "cacheWrite": 238506,
+    "thinking": 12132
+   },
+   "costUsd": 7.1165,
+   "costEstimated": false,
+   "seconds": 1823,
+   "tools": {
+    "Bash": 145,
+    "Write": 1
+   },
+   "commands": 145,
+   "files": [
+    "/root/axf-builds/lander-d/.axf-claude/axf-lander-d--rhonda/projects/-opt-axf/memory/merge-main-baked-locks.md"
+   ],
+   "changeIds": [
+    "chg-20261107-04a6323e6f"
+   ],
+   "features": [],
+   "output": "Ten of eleven are done, kid. Each has main merged in, its checks green, and is committed locally. Nothing pushed, like you said. One got skipped. **READY (merged, green, committed):** - **build-optimizer, fable-packager**: conflicts in the orchestrator tests and the store's field list. Kept both si…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/lander-d/.axf-claude/axf-lander-d--rhonda/projects/-opt-axf/memory/merge-main-baked-locks.md"
+ ],
+ "changeIds": [
+  "chg-20261107-04a6323e6f"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 290,
+  "output": 64030,
+  "cacheRead": 23212506,
+  "cacheWrite": 238506,
+  "thinking": 12132,
+  "costUsd": 7.1165,
+  "costEstimated": false,
+  "toolCalls": 146,
+  "commands": 145,
+  "filesTouched": 1,
+  "reportedUsd": 7.8323
+ },
+ "ingestedAt": "2026-11-07T10:17:22.884Z"
+}

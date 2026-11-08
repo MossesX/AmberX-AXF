@@ -1,0 +1,93 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-76660cc9-cb18-4b31-be9f-9ba95aac84dd",
+ "source": "claude-code",
+ "sessionId": "76660cc9-cb18-4b31-be9f-9ba95aac84dd",
+ "project": "other",
+ "title": "# Build: readme-rule-every-build (Opus, low thinking; tiny rules change) ## What Brett said (verbatim, Nov 4 2026, voic…",
+ "startedAt": "2026-11-04T19:52:33.343Z",
+ "endedAt": "2026-11-04T19:57:13.486Z",
+ "minutes": 5,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/readme-rule-every-build",
+  "repo": "",
+  "branch": "claude/readme-rule-every-build"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T19:52:47.098Z",
+   "kind": "prompt",
+   "text": "# Build: readme-rule-every-build (Opus, low thinking; tiny rules change) ## What Brett said (verbatim, Nov 4 2026, voice) \"We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\" Asked whether every future build should include a basic Markdown readme: \"Yeah.\" Book to a free named agent. ## Do - Add a standing rule to `_claude/rules/RULES.md`, `CLAUDE.md` and every build-brief template/boilerplate the orchestrator and build_start use: **every build ships a basic Markdown readme for what it adds or changes, in the same PR**: `docs…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 62,
+    "output": 17023,
+    "cacheRead": 2539399,
+    "cacheWrite": 84191,
+    "thinking": 2308
+   },
+   "costUsd": 1.2698,
+   "costEstimated": false,
+   "seconds": 265,
+   "tools": {
+    "Bash": 29,
+    "Write": 2
+   },
+   "commands": 29,
+   "files": [
+    "/root/axf-builds/readme-rule-every-build/framework/cli/check-docs-readme.mjs",
+    "/root/axf-builds/readme-rule-every-build/_claude/builds/reports/readme-rule-every-build.md"
+   ],
+   "changeIds": [
+    "chg-20261104-c44a21ee80"
+   ],
+   "features": [
+    "plan:readme-rule-every-build"
+   ],
+   "output": "Done, boss. **PR #337** is open and will merge itself once CI goes green. **What's in it:** - **The rule** is now in `_claude/rules/RULES.md` and `CLAUDE.md`. Every build has to ship a plain Markdown `docs/README.md` in its plugin, app or module folder, in the same PR. It covers what the thing does…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/readme-rule-every-build/framework/cli/check-docs-readme.mjs",
+  "/root/axf-builds/readme-rule-every-build/_claude/builds/reports/readme-rule-every-build.md"
+ ],
+ "changeIds": [
+  "chg-20261104-c44a21ee80"
+ ],
+ "features": [
+  "plan:readme-rule-every-build"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 62,
+  "output": 17023,
+  "cacheRead": 2539399,
+  "cacheWrite": 84191,
+  "thinking": 2308,
+  "costUsd": 1.2698,
+  "costEstimated": false,
+  "toolCalls": 31,
+  "commands": 29,
+  "filesTouched": 2,
+  "reportedUsd": 1.5221
+ },
+ "ingestedAt": "2026-11-04T19:57:13.826Z"
+}

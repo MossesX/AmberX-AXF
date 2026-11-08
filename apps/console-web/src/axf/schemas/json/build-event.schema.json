@@ -64,6 +64,7 @@
         "status": {
           "enum": [
             "pending",
+            "queued",
             "running",
             "waiting",
             "blocked",

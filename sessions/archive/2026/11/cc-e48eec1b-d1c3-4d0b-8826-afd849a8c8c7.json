@@ -1,0 +1,82 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-e48eec1b-d1c3-4d0b-8826-afd849a8c8c7",
+ "source": "claude-code",
+ "sessionId": "e48eec1b-d1c3-4d0b-8826-afd849a8c8c7",
+ "project": "other",
+ "title": "# ai-keys-new-format-r2 (resume; r1 died at launch on a usage limit) Read and follow the full brief in /root/axf-builds…",
+ "startedAt": "2026-11-05T21:03:37.093Z",
+ "endedAt": "2026-11-05T21:03:55.370Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/ai-keys-new-format-r2",
+  "repo": "",
+  "branch": "claude/ai-keys-new-format-r2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T21:03:39.032Z",
+   "kind": "prompt",
+   "text": "# ai-keys-new-format-r2 (resume; r1 died at launch on a usage limit) Read and follow the full brief in /root/axf-builds/ai-keys-new-format/.brief.md. Summary: Brett, Nov 5 2026: \"Put someone else on it.\" The console's AI keys page (plugin `ai-keys`, Manage Claude accounts) rejects real Anthropic API keys from console.anthropic.com/settings/keys with \"unknown key type\": new keys start `sk-ant-usr`, not `sk-ant-api03`. Grep the whole repo for Anthropic key classification. Accept every API key prefix Anthropic issues (table + 'unknown sk-ant-' fallback that is accepted and verified live with one…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 10,
+    "output": 916,
+    "cacheRead": 272748,
+    "cacheWrite": 64126,
+    "thinking": 11
+   },
+   "costUsd": 0.3936,
+   "costEstimated": false,
+   "seconds": 16,
+   "tools": {
+    "Bash": 6
+   },
+   "commands": 6,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-056eae7795"
+   ],
+   "features": [],
+   "output": "Not logged in · Please run /login"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-056eae7795"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 10,
+  "output": 916,
+  "cacheRead": 272748,
+  "cacheWrite": 64126,
+  "thinking": 11,
+  "costUsd": 0.3936,
+  "costEstimated": false,
+  "toolCalls": 6,
+  "commands": 6,
+  "filesTouched": 0,
+  "reportedUsd": 0.5859
+ },
+ "ingestedAt": "2026-11-05T21:03:55.737Z"
+}

@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-bdba2d32-458e-4b2b-b41a-fc6b09d47667",
+ "source": "claude-code",
+ "sessionId": "bdba2d32-458e-4b2b-b41a-fc6b09d47667",
+ "project": "axhub",
+ "title": "Smoke test only. Do not change, commit or push anything. Run `git status` and `node --version`, print which Claude acco…",
+ "startedAt": "2026-11-06T04:48:50.624Z",
+ "endedAt": "2026-11-06T04:48:53.058Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/vps-smoke-test",
+  "repo": "",
+  "branch": "claude/vps-smoke-test"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T04:48:52.146Z",
+   "kind": "prompt",
+   "text": "Smoke test only. Do not change, commit or push anything. Run `git status` and `node --version`, print which Claude account/email you are running as if visible, then reply 'SMOKE TEST OK' and stop. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docke…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-6e189c4f77"
+   ],
+   "features": [],
+   "output": "Failed to authenticate: OAuth session expired and could not be refreshed"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-6e189c4f77"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-06T04:48:53.270Z"
+}
