@@ -280,6 +280,8 @@ export interface AppMenuData {
   menus: { id: string; label: string; items: MenuItem[]; /** placement (default 100), see engines/appmenu.ts */ order?: number }[];
   density?: ChromeDensity;
   surface?: ChromeSurface;
+  /** false = this asset's menus show only its own items (no library / plugin contributions: a generated menu already holds them); default true */
+  contributions?: boolean;
 }
 
 export interface ToolbarItem {
@@ -362,6 +364,8 @@ export interface NavMenuData {
   showIcons?: boolean;
   /** Opt in to nav-style@1 (core/engines/navstyle.ts): sub menus that slide open, styled and timed by the nav-style asset in force. Default false. */
   navStyle?: boolean;
+  /** false = only this asset's sections (no sections libraries / plugins add: a generated nav already holds their pages); default true */
+  contributions?: boolean;
 }
 
 export interface ContextMenuData {

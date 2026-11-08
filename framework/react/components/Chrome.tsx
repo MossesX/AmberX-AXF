@@ -286,12 +286,14 @@ export function NavMenu({ views }: { views: ViewMap }) {
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
   // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
   const navStyle = rt.navStyleData();
-  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
+  // a nav that says `contributions: false` (a generated nav) already holds the pages libraries would add
+  const extras = nav.data.contributions === false ? [] : rt.navExtras;
+  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...extras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
-      {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
+      {mergeNavSections([...nav.data.sections, ...extras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
         if (!items.length) return null;
         return (

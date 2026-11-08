@@ -221,7 +221,8 @@
         "density": "compact | regular (default) | roomy — menubar height",
         "surface": "flat (default) | raised | glass",
         "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
-        "items[].provider|badge|checked|order|before|after": "see menuItems"
+        "items[].provider|badge|checked|order|before|after": "see menuItems",
+        "contributions": "boolean — false = this asset's menus show only their own items (no library / plugin contributions; a generated menu, nested-menu@1, already holds them); default true"
       },
       "hideable": true
     },
@@ -311,7 +312,8 @@
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
         "showIcons": "boolean, default true",
         "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
-        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
+        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true",
+        "contributions": "boolean — false = only this asset's sections (no sections libraries / plugins add; a generated nav already holds their pages); default true"
       },
       "hideable": true
     },

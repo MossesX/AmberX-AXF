@@ -31,6 +31,10 @@ override the shared."
   `menus.get`, `menus.outline`, `menus.generate`, `menus.recents.clear`, `menus.favorites.clear`, `menus.settings`, declared
   as plugin-commands@1 items → REST `/api/control/nested-menus/<cmd>`, MCP `nested-menus_<cmd>`, CLI `axf nested-menus <cmd>`;
   voice reads the same actions bus (AmberX voice plugin). Every setting is a field of `menus.set`.
+- **New asset field `contributions: false`** on `app-menu` and `nav-menu` data (the context-menu asset already had it):
+  the runtime then merges no library contributions into that menu and the nav appends no library sections. The
+  generated assets set it, because they already hold every contribution; without it the first screenshots showed a
+  16-menu bar (the generated menus plus every contributed menu) and duplicate rows.
 - **Offline twin:** `node framework/cli/menu-gen.mjs <appDir> [--outline|--nav] [--style list|rail|pills] [--out dir]`
   generates the same menus from the files (manifests' `provides` + the shared assets). Used for the UI Review options,
   the tests and this report.

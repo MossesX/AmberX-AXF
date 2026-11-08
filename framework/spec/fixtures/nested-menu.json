@@ -506,7 +506,8 @@
      ]
     }
    ],
-   "density": "compact"
+   "density": "compact",
+   "contributions": false
   },
   "navMenu": {
    "style": "list",
@@ -744,7 +745,8 @@
     }
    ],
    "navStyle": true,
-   "density": "compact"
+   "density": "compact",
+   "contributions": false
   }
  },
  "apps": {

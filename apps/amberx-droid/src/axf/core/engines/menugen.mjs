@@ -154,10 +154,10 @@ export function normalizeSources(list) {
     if (!prev.hint && s.hint) prev.hint = s.hint;
     if (!prev.hintId && s.hintId) prev.hintId = s.hintId;
   }
-  // the same label twice from one module as a page and as its settings entry (Settings / app.settings): the page stays
+  // the same label as a page and as an action or settings entry (Alerts / alerts.open, Settings / app.settings): the page stays
   const all = [...out.values()];
-  const pages = new Set(all.filter((s) => s.kind === 'page').map((s) => `${s.module}|${s.label.toLowerCase()}`));
-  return all.filter((s) => !((s.kind === 'settings' || s.kind === 'action') && pages.has(`${s.module}|${s.label.toLowerCase()}`)));
+  const pages = new Set(all.filter((s) => s.kind === 'page' || s.kind === 'app').map((s) => s.label.toLowerCase()));
+  return all.filter((s) => !((s.kind === 'settings' || s.kind === 'action') && pages.has(s.label.toLowerCase())));
 }
 
 /* ---------------- categories ---------------- */
@@ -422,7 +422,7 @@ export function toAppMenu(tree, opts = {}) {
     menus.push({ id: c.id, label: c.label, order, items });
     order += 10;
   }
-  return { menus, density: 'compact' };
+  return { menus, density: 'compact', contributions: false };
 }
 
 const pageNodes = (nodes) => nodes.map((n) => (n.group ? { ...n, items: pageNodes(n.items) } : n)).filter((n) => (n.group ? n.items.length > 0 : n.src.kind === 'page'));
@@ -459,7 +459,7 @@ export function toNavMenu(tree, opts = {}) {
     top.push({ id: `group:${c.id}`, label: c.label, icon: c.icon, view: '', items });
   }
   if (top.length) sections.push({ items: top });
-  return { style: o.style, header: o.header, sections, navStyle: true, density: 'compact' };
+  return { style: o.style, header: o.header, sections, navStyle: true, density: 'compact', contributions: false };
 }
 
 /** Both assets (asset@1 envelopes, ids `<app>-generated`) plus the index and stats, from raw sources in one call. */

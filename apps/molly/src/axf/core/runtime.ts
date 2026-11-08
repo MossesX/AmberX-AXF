@@ -743,7 +743,8 @@ export class AxfRuntime {
     const active = this.state.active['app-menu'];
     let cache = this.appMenuCache;
     if (!cache || cache.active !== active) {
-      const merged = mergeAppMenu(asset, this.appMenuContributed());
+      // an asset that says `contributions: false` (a generated menu) already holds every library's items
+      const merged = mergeAppMenu(asset, asset.contributions === false ? [] : this.appMenuContributed());
       cache = { rev: this.state.rev, active, merged, reported: 0 };
       this.appMenuCache = cache;
     }
