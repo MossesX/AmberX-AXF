@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1623,
- "updatedAt": "2026-11-08T23:27:56.403Z",
+ "rev": 1624,
+ "updatedAt": "2026-11-08T23:49:41.904Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123186,14 +123186,14 @@
    "title": "Nested menus for console, AmberX and Molly (override the shared menus)",
    "category": "",
    "detail": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "nested-menus-for-console-amberx-and-molly-overri",
    "branch": "claude/nested-menus-for-console-amberx-and-molly-overri",
    "pr": "#399",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T23:27:55.306Z",
+   "updatedAt": "2026-11-08T23:49:40.741Z",
    "builtAt": "",
    "notes": [
     {
@@ -123257,12 +123257,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T23:49:40.741Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T21:15:49.563Z",
-     "updatedAt": "2026-11-08T21:15:49.563Z"
+     "updatedAt": "2026-11-08T23:49:40.863Z"
     },
     {
      "id": "s2",
@@ -123320,7 +123320,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
