@@ -30,3 +30,12 @@ button.oc-model { cursor: pointer }
 .oc-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
 .oc-bar__pick { width: auto; min-width: 0; flex: 0 1 auto; max-width: 100%; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-sm) }
 :where([data-fx-small]) .oc-bar__pick { flex: 1 1 calc(var(--fx-font-size) * 9) }
+
+/* Pipeline tab (Nov 8 2026): layout only; every control is a framework control */
+.pl-strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
+.pl-stat { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm) }
+.pl-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 20), 1fr)); gap: var(--fx-dens-gap-xl); align-items: start }
+.pl-cols--accounts { grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 16), 1fr)) }
+.pl-col { min-width: 0 }
+.pl-acct.is-off { opacity: var(--fx-opacity-muted) }
+.pd-card.is-running { border-color: var(--fx-accent) }

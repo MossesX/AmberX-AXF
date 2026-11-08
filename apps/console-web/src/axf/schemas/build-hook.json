@@ -15,6 +15,7 @@
   ],
   "buildStatuses": [
     "pending",
+    "queued",
     "running",
     "waiting",
     "blocked",
