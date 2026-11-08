@@ -508,6 +508,7 @@
       }
     ],
     "navStyle": true,
-    "density": "compact"
+    "density": "compact",
+    "contributions": false
   }
 }
