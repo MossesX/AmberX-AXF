@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:40 UTC · `glossary-index-demos` added (6 steps) (current) · foreign-write
 - 2026-11-07 04:40 UTC · `assistant-chat-mode` → complete, merged, note (current) · reconciler
 - 2026-11-07 04:40 UTC · `claude-badge-vps` → complete, merged, note (current) · reconciler
 - 2026-11-07 04:45 UTC · `assistant-chat-mode` note (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 16:24 UTC · `terminal-header-responsive` s1 done (all) · orchestrator
 - 2026-11-08 16:24 UTC · `terminal-header-responsive` s2 done (all) · orchestrator
 - 2026-11-08 16:24 UTC · `terminal-header-responsive` s3 done (all) · orchestrator
+- 2026-11-08 16:26 UTC · `brief-only-headless` s4 done (all) · orchestrator
 
 ## Token passes (log)
 

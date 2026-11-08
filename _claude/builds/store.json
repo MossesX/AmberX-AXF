@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1468,
- "updatedAt": "2026-11-08T16:24:34.890Z",
+ "rev": 1469,
+ "updatedAt": "2026-11-08T16:26:33.844Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116230,11 +116230,11 @@
     "all"
    ],
    "order": {
-    "all": 438
+    "all": 439
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -116257,7 +116257,7 @@
    "branch": "claude/brief-only-headless",
    "pr": "",
    "createdAt": "2026-11-08T16:14:35.744Z",
-   "updatedAt": "2026-11-08T16:23:15.559Z",
+   "updatedAt": "2026-11-08T16:26:32.631Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -116356,12 +116356,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:26:32.631Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:14:35.745Z",
-     "updatedAt": "2026-11-08T16:14:35.745Z"
+     "updatedAt": "2026-11-08T16:26:32.770Z"
     },
     {
      "id": "s5",
@@ -116416,7 +116416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -116572,11 +116572,11 @@
     "all"
    ],
    "order": {
-    "all": 437
+    "all": 438
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
