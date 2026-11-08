@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:34 UTC · `auto-switch-claude-account-when-the-active-one-r` note (current) · foreign-write
 - 2026-11-07 05:34 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
 - 2026-11-07 05:34 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · foreign-write
 - 2026-11-07 05:34 UTC · `claude-accounts-edit` note (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:29 UTC · `account-health-failover` s1 undone (all) · orchestrator
 - 2026-11-08 17:33 UTC · `ui-api-parity-rule` s1 done, → running (all) · orchestrator
 - 2026-11-08 17:34 UTC · `ui-api-parity-rule` s2 done (all) · orchestrator
+- 2026-11-08 17:35 UTC · `account-health-failover` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
