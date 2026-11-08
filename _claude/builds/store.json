@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1500,
- "updatedAt": "2026-11-08T17:20:36.377Z",
+ "rev": 1501,
+ "updatedAt": "2026-11-08T17:21:19.653Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -89182,14 +89182,14 @@
    "title": "Molly's banner = the console's banner asset; embedded apps hide their own",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banner-match-r2",
    "pr": "#341",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-08T16:59:17.927Z",
+   "updatedAt": "2026-11-08T17:21:06.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -89223,6 +89223,10 @@
     {
      "text": "molly-one-shell (Nov 8 2026): superseded in part. 'Molly's banner = the console's banner asset' still holds and is kept; 'embedded apps hide their own' goes away because nothing is embedded any more (Molly draws the console's banners natively). Follow Amber's one approval pop-up inside Molly stays useful. Do not land #341 on its own; molly-one-shell s7 takes the banner part.",
      "at": "2026-11-08T16:59:17.927Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-08T17:21:06.886Z"
     }
    ],
    "approvals": [],
@@ -89360,7 +89364,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
