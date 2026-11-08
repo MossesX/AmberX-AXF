@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T18:00:49.431Z",
+ "updatedAt": "2026-11-08T18:20:27.165Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73027,16 +73027,21 @@
    "title": "AmberX notification panel",
    "category": "AmberX",
    "detail": "Console plugin notify-panel (targets console + AmberX): typed kinds registry over the alert hub, one send API (POST /send, capability axf.notify-panel@1), history/read/clear/pin, live status (accounts, running builds, queue), approvals feed merged in with Deny / Run now through lib-approvals' decideApproval. AmberX push: console alert notifications get action buttons from notify.actions.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-notify-panel",
    "pr": "",
    "createdAt": "2026-11-08T17:50:26.084Z",
-   "updatedAt": "2026-11-08T17:57:09.673Z",
+   "updatedAt": "2026-11-08T18:20:25.915Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-08T18:20:25.915Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
