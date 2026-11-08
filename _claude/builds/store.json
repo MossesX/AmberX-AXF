@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1622,
- "updatedAt": "2026-11-08T22:48:22.202Z",
+ "rev": 1623,
+ "updatedAt": "2026-11-08T23:27:56.403Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123186,14 +123186,14 @@
    "title": "Nested menus for console, AmberX and Molly (override the shared menus)",
    "category": "",
    "detail": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "nested-menus-for-console-amberx-and-molly-overri",
    "branch": "claude/nested-menus-for-console-amberx-and-molly-overri",
-   "pr": "",
+   "pr": "#399",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T22:48:12.252Z",
+   "updatedAt": "2026-11-08T23:27:55.306Z",
    "builtAt": "",
    "notes": [
     {
@@ -123230,12 +123230,12 @@
    "pipeline": {
     "queuedAt": "2026-11-08T22:28:21.210Z",
     "queuedBy": "cli",
-    "account": "account-3",
-    "session": "axf-nested-menus-for-console-amberx-and-molly-overri--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-08T22:48:08.918Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
