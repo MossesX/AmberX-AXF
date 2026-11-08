@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:23:31.792Z",
+ "updatedAt": "2026-11-08T21:23:52.902Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75246,6 +75246,37 @@
      "uid": "st-mw8cab4p0334yl"
     }
    ]
+  },
+  {
+   "id": "toolbar-labels-managed-in-each-toolbar-s-setting",
+   "title": "Toolbar labels managed in each toolbar's settings",
+   "category": "",
+   "detail": "Brett: every toolbar has a label, managed in that toolbar's own settings sections: change the label text, its position (left/right/top/inline/tooltip-only), its behavior (always shown, on hover, collapse when narrow, click action), and hide it. Applies to every toolbar in every app; part of the snappable-bar rule. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "toolbar-labels-managed-in-each-toolbar-s-setting",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:23:51.038Z",
+   "updatedAt": "2026-11-08T21:23:51.038Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "toolbar has a label that can be managed in its sections. You can change what the label is, where it is, and its behavior. You can hide it.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

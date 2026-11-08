@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1591,
- "updatedAt": "2026-11-08T21:23:31.792Z",
+ "rev": 1592,
+ "updatedAt": "2026-11-08T21:23:52.902Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124578,7 +124578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124590,10 +124590,73 @@
     "createdAt": "2026-11-08T21:22:46.709Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8cab4p016xp8": "2026-11-08T21:23:30.649Z",
+     "st-mw8cab4p02qhd0": "2026-11-08T21:23:30.649Z",
+     "st-mw8cab4p0334yl": "2026-11-08T21:23:30.649Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T21:23:30.649Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbar-labels-managed-in-each-toolbar-s-setting",
+   "title": "Toolbar labels managed in each toolbar's settings",
+   "category": "",
+   "detail": "Brett: every toolbar has a label, managed in that toolbar's own settings sections: change the label text, its position (left/right/top/inline/tooltip-only), its behavior (always shown, on hover, collapse when narrow, click action), and hide it. Applies to every toolbar in every app; part of the snappable-bar rule. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "toolbar-labels-managed-in-each-toolbar-s-setting",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:23:51.038Z",
+   "updatedAt": "2026-11-08T21:23:51.038Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "toolbar has a label that can be managed in its sections. You can change what the label is, where it is, and its behavior. You can hide it.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 469
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "45 min",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T21:23:51.038Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

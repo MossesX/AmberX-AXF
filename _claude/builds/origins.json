@@ -3356,6 +3356,18 @@
    "from": "",
    "addenda": []
   },
+  "toolbar-labels-managed-in-each-toolbar-s-setting": {
+   "said": "toolbar has a label that can be managed in its sections. You can change what the label is, where it is, and its behavior. You can hide it.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "toolbar-tap-confirm": {
    "said": "every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.",
    "at": "2026-11-03",
