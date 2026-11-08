@@ -24,7 +24,7 @@ let last: Walkthrough | null = null;
 
 /* ---------------- speaking, highlighting, listening ---------------- */
 
-function speak(text: string, onEnd?: () => void) {
+export function speak(text: string, onEnd?: () => void) {
   if (!runtime || runtime.settings.get(DEMO_KEYS.speak) === false || !text) { onEnd?.(); return; }
   try {
     const s = globalThis.speechSynthesis;
@@ -37,13 +37,13 @@ function speak(text: string, onEnd?: () => void) {
     s.speak(u);
   } catch { set({ speaking: false }); onEnd?.(); }
 }
-const hush = () => { try { globalThis.speechSynthesis?.cancel(); } catch { /* fine */ } set({ speaking: false }); };
+export const hush = () => { try { globalThis.speechSynthesis?.cancel(); } catch { /* fine */ } set({ speaking: false }); };
 
-function clearHighlight() {
+export function clearHighlight() {
   if (typeof document === 'undefined') return;
   document.querySelectorAll(`.${HIGHLIGHT}`).forEach((el) => { el.classList.remove(HIGHLIGHT); el.removeAttribute('data-axp-highlight'); });
 }
-function highlight(target: string, label = '') {
+export function highlight(target: string, label = '') {
   clearHighlight();
   if (typeof document === 'undefined' || !target) return;
   for (const sel of targetSelectors(target)) {

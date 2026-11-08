@@ -221,3 +221,124 @@ ok('every demo command in plugin.json has a route in the server part', () => {
 });
 
 console.log(`glossary demos: store, generator, books, clips, docs and hook checked`);
+
+/* ---------------- glossary walkthroughs (investor demos): request → brief → chain → saved, versioned, playable ---------------- */
+
+const W = await import('./walkthrough-rules.mjs');
+const walks = await import('./walkthroughs.mjs');
+const pick = await import('./web/walkthrough-pick.ts');
+const SAMPLE = ['concept:orchestrator', 'plugin:build-orchestrator', 'concept:priority-tag'];
+const PROMPT = 'Run a chain to demonstrate and explain these features.';
+
+ok('walkthrough request: defaults, de-duplicated terms, errors named', () => {
+  const r = W.normalizeRequest({ terms: [SAMPLE[0], SAMPLE[0], SAMPLE[1]], prompt: PROMPT, extra: 1 });
+  assert.deepEqual(r.terms, SAMPLE.slice(0, 2));
+  assert.equal(r.audience, 'investors'); assert.equal(r.depth, 'standard'); assert.equal(r.tryIt, true); assert.equal(r.$axf, 'glossary-walkthrough-request@1');
+  assert.equal((r as Record<string, unknown>).extra, undefined);
+  assert.ok(W.requestErrors({ terms: [] }).some((e: string) => /at least one/.test(e)));
+  assert.ok(W.requestErrors({ terms: ['nope'] }).some((e: string) => /not glossary entry ids/.test(e)));
+  assert.ok(W.requestErrors({ terms: SAMPLE, audience: 'aliens' }).some((e: string) => /audience/.test(e)));
+  assert.deepEqual(W.requestErrors({ terms: SAMPLE, prompt: PROMPT }), []);
+});
+
+ok('picker: kind, category, picked only, select all with the cap, order moves', () => {
+  const concepts = pick.pickerEntries(entries, { q: '', kind: 'concept', category: '', selectedOnly: false }, []);
+  assert.ok(concepts.length > 5 && concepts.every((e: { kind: string }) => e.kind === 'concept'));
+  const top = pick.topCategories(entries);
+  assert.ok(top.length > 3 && top.every((c: { count: number }) => c.count > 0));
+  const inCat = pick.pickerEntries(entries, { q: '', kind: '', category: top[0].value, selectedOnly: false }, []);
+  assert.ok(inCat.every((e: { category: string }) => e.category.split('›')[0].trim() === top[0].value));
+  assert.deepEqual(pick.pickerEntries(entries, { q: '', kind: '', category: '', selectedOnly: true }, SAMPLE).map((e: { id: string }) => e.id).sort(), [...SAMPLE].sort());
+  const r = pick.selectAll([], entries.slice(0, 70).map((e: { id: string }) => e.id));
+  assert.equal(r.selected.length, pick.MAX_TERMS); assert.equal(r.skipped, 70 - pick.MAX_TERMS);
+  assert.deepEqual(pick.moveTerm(['a', 'b', 'c'], 2, -1), ['a', 'c', 'b']);
+  assert.deepEqual(pick.toggleTerm(['a'], 'a', false), []);
+});
+
+const planned = walks.plan({ terms: SAMPLE, prompt: PROMPT, title: 'Build pipeline tour' });
+
+ok('brief: the prompt word for word, every feature with its summary, the answer format', () => {
+  assert.equal(planned.id, 'build-pipeline-tour');
+  assert.ok(planned.brief.includes(`> ${PROMPT}`));
+  for (const id of SAMPLE) assert.ok(planned.brief.includes(id), id);
+  assert.ok(planned.brief.includes('"steps"'));
+  assert.equal(planned.features.length, 3);
+  const msg = planned.features[1].prompt.messages[0].content as string;
+  assert.ok(msg.includes('nav:build-orchestrator') && msg.includes(PROMPT));
+  assert.match(planned.features[1].prompt.system, /ONE JSON object/);
+});
+
+ok('chain replies: fenced JSON parsed, invented screens dropped, junk falls back', () => {
+  const t = planned.features[1].template;
+  const reply = W.parseFeatureReply('Sure!\n```json\n{"headline":"Every build in bite-size steps","points":["Steps of 30 minutes or less"],"steps":[{"kind":"show","title":"Open it","say":"This is the orchestrator.","do":"nav:build-orchestrator","target":""},{"kind":"show","say":"Invented.","do":"nav:made-up","target":"#nothing"},{"kind":"try","title":"Try it","say":"Open it yourself.","do":"nav:build-orchestrator"}]}\n```', { template: t });
+  assert.equal(reply.ok, true); assert.equal(reply.steps.length, 3);
+  assert.equal(reply.steps[1].do, ''); assert.equal(reply.steps[1].target, '');
+  assert.equal(reply.steps[2].kind, 'try');
+  assert.equal(W.parseFeatureReply('no json here', { template: t }).ok, false);
+  assert.equal(W.parseFeatureReply('{"steps":[]}', { template: t }).ok, false);
+});
+
+let v1: Record<string, any>;
+ok('assemble: one part by Claude, the rest by template, saved as 1.0.0 with demos + book assets', () => {
+  const replies = { 'plugin:build-orchestrator': '{"headline":"Every build in bite-size steps","points":["Steps of 30 minutes or less, each on Fable or Opus"],"steps":[{"kind":"show","title":"Open it","say":"This is the build orchestrator.","do":"nav:build-orchestrator"},{"kind":"try","title":"Try it","say":"Open it yourself.","do":"nav:build-orchestrator"}]}' };
+  v1 = walks.assemble({ terms: SAMPLE, prompt: PROMPT, title: 'Build pipeline tour', mode: 'claude' }, replies, { model: 'claude-opus-5-5' });
+  assert.deepEqual(W.bundleErrors(v1), []);
+  assert.equal(v1.version, '1.0.0');
+  assert.deepEqual(v1.features.map((f: { source: string }) => f.source), ['template', 'claude', 'template']);
+  assert.equal(v1.generator.mode, 'claude'); assert.equal(v1.generator.model, 'claude-opus-5-5');
+  assert.equal(v1.generator.chain[0].error, 'no reply');
+  for (const f of v1.features) { assert.equal(f.steps.at(-1).kind, 'try', `${f.term} ends with try it`); assert.ok(f.docs.headline && f.docs.summary, `${f.term} docs`); }
+  assert.ok(!v1.features[0].docs.related.some((x: { id: string }) => x.id.startsWith('demonstration:')), 'related never names generated demos');
+  assert.equal(v1.request.prompt, PROMPT);
+  for (const f of v1.features) assert.equal(demos.get('demonstration', f.demonstration)?.data.about, f.entry);
+  const book = demos.get('book', 'build-pipeline-tour');
+  assert.equal(book.data.plan.style, 'tour'); assert.equal(book.data.chapters.length, 3);
+  assert.ok(walks.list().some((w: { id: string }) => w.id === 'build-pipeline-tour'));
+});
+
+ok('versions: regenerate bumps, diff says what changed, restore saves a new version, stale demos go', () => {
+  const v2 = walks.assemble({ terms: SAMPLE.slice(0, 2), prompt: PROMPT, title: 'Build pipeline tour', mode: 'template' }, {});
+  assert.equal(v2.version, '1.1.0'); assert.equal(v2.createdAt, v1.createdAt);
+  assert.equal(demos.get('demonstration', 'build-pipeline-tour-f3'), null, 'the third part demo is gone');
+  const vs = walks.versions('build-pipeline-tour');
+  assert.deepEqual(vs.map((v: { version: string }) => v.version), ['1.1.0', '1.0.0']);
+  assert.deepEqual(vs[0].diff.removed, ['Priority tag']);
+  assert.ok(vs[0].diff.changed.includes('Build orchestrator'), 'the part Claude wrote changed back to the template');
+  const v3 = walks.restore('build-pipeline-tour', '1.0.0');
+  assert.equal(v3.version, '1.2.0'); assert.equal(v3.features.length, 3);
+  assert.equal(v3.history[0].note, 'Restored 1.0.0'); assert.equal(v3.history.length, 3);
+  assert.equal(walks.get('build-pipeline-tour', '1.0.0').version, '1.0.0');
+});
+
+ok('player model: flat steps with intro / outro, part starts, try-it hit test, walkthrough@1', () => {
+  const b = walks.current('build-pipeline-tour');
+  const steps = W.playSteps(b);
+  assert.equal(steps[0].feature, -1); assert.equal(steps.at(-1).feature, -1);
+  assert.equal(steps.length, 2 + b.features.reduce((n: number, f: { steps: unknown[] }) => n + f.steps.length, 0));
+  const starts = W.featureStarts(b);
+  assert.equal(starts.length, 3); assert.equal(starts[0], 1); assert.equal(steps[starts[1]].feature, 1);
+  const tryStep = { kind: 'try', target: 'approve', say: 'x' };
+  const closest = (el: { sel: string }, sel: string) => el.sel === sel;
+  assert.equal(W.tryHit(tryStep, { sel: '[data-axf-id="approve"]' }, (t: string) => [`[data-axf-id="${t}"]`], closest), true);
+  assert.equal(W.tryHit(tryStep, { sel: '#other' }, (t: string) => [`[data-axf-id="${t}"]`], closest), false);
+  assert.equal(W.tryHit({ ...tryStep, kind: 'show' }, { sel: '[data-axf-id="approve"]' }, (t: string) => [`[data-axf-id="${t}"]`], closest), false);
+  const wt = W.bundleToWalkthrough(b);
+  assert.equal(wt.$axf, 'walkthrough@1'); assert.equal(wt.steps.length, steps.length);
+  assert.equal(W.safeSrc('walkthroughs/demo.walkthrough.json'), 'walkthroughs/demo.walkthrough.json');
+  for (const bad of ['https://evil.example/x.json', '//evil/x.json', '../x.json', 'a/../../x.json', 'x.js']) assert.equal(W.safeSrc(bad), '', bad);
+});
+
+ok('export → import: the sandbox file carries the walkthrough, its demos and book', () => {
+  const x = walks.exportBundle('build-pipeline-tour');
+  assert.equal(x.$axf, 'glossary-walkthrough-export@1');
+  assert.equal(x.assets.length, 4);
+  assert.ok(walks.remove('build-pipeline-tour'));
+  assert.equal(walks.current('build-pipeline-tour'), null);
+  assert.equal(demos.get('demonstration', 'build-pipeline-tour-f1'), null);
+  const back = walks.importBundle(JSON.parse(JSON.stringify(x)));
+  assert.equal(back.version, '1.2.0'); assert.equal(back.features.length, 3);
+  assert.equal(demos.get('demonstration', 'build-pipeline-tour-f2')?.data.steps[0].say, 'This is the build orchestrator.');
+  assert.throws(() => walks.importBundle({ $axf: 'glossary-walkthrough@1', id: 'x' }), /version|feature/);
+});
+
+console.log(`glossary walkthroughs: request, picker, brief, chain replies, versions, player model, export/import checked (${n} checks in all)`);

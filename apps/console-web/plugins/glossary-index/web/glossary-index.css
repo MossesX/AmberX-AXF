@@ -136,3 +136,28 @@
 /* the highlight a step puts on its target (the label is the step's highlight text) */
 .axp-glossary-index-target { position: relative; outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm); box-shadow: 0 0 0 calc(var(--fx-border-w) * 6) color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-glossary-index-target[data-axp-highlight]::after { content: attr(data-axp-highlight); position: absolute; inset-block-end: 100%; inset-inline-start: 0; margin-block-end: var(--fx-dens-gap-xs); padding: 0 var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-scale-xs); font-weight: var(--fx-type-weights-strong); white-space: nowrap; pointer-events: none; z-index: 1 }
+
+/* Walkthrough Generator + walkthrough player (layout only; every control is a framework control) */
+.axp-glossary-index__wt-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-lg); align-items: start }
+:where([data-fx-narrow]) .axp-glossary-index__wt-grid { grid-template-columns: minmax(0, 1fr) }
+.axp-glossary-index__wt-picker { min-width: 0 }
+.axp-glossary-index__wt-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-glossary-index__wt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-row-h) * 16); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-sm) }
+.axp-glossary-index__wt-list li { padding: var(--fx-dens-gap-xs); border-radius: var(--fx-radius-sm); overflow-wrap: anywhere }
+.axp-glossary-index__wt-list li.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-glossary-index__wt-order { margin: 0; padding-inline-start: calc(var(--fx-dens-gap-lg) * 1.5); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-glossary-index__wt-order li { display: list-item }
+.axp-glossary-index__wt-order-term { overflow-wrap: anywhere }
+.axp-glossary-index__wt-order-tools { display: inline-flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); margin-inline-start: var(--fx-dens-gap-sm); vertical-align: middle }
+.axp-glossary-index__wt-job, .axp-glossary-index__wt-brief { padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-glossary-index__wt-brief summary { cursor: pointer; font-weight: var(--fx-type-weights-strong) }
+.axp-glossary-index__wt-log, .axp-glossary-index__wt-versions, .axp-glossary-index__wt-saved { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-glossary-index__wt-log { font-size: var(--fx-type-scale-xs) }
+.axp-glossary-index__wt-saved > li { padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-glossary-index__wt-saved-head { overflow-wrap: anywhere }
+.axp-glossary-index__wt-versions li { overflow-wrap: anywhere; font-size: var(--fx-type-scale-sm) }
+.axp-glossary-index__wt-try { margin: 0; padding: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); font-weight: var(--fx-type-weights-strong) }
+.axp-glossary-index__wt-try[data-state='done'] { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-glossary-index__wt-docs { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding-top: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-glossary-index__wt-docs p, .axp-glossary-index__wt-docs h4 { margin: 0 }
+.axp-glossary-index__wt-points { margin: 0; padding-inline-start: calc(var(--fx-dens-gap-lg) * 1.5); font-size: var(--fx-type-scale-sm) }

@@ -10,6 +10,10 @@ Demonstrations, books, clips and docs (demonstration@1, book@1, clip@1, docs@1; 
 same data folder): GET demos · GET demo · POST demo · DELETE demo · POST demo/generate · GET demo/walkthrough ·
 POST book/new · POST book/change · GET book/outline · POST book/record · POST clip/register · POST clip/from-demo ·
 POST docs/generate · GET docs/file.
+Glossary walkthroughs (investor demos; walkthroughs.mjs + walkthrough-rules.mjs, glossary-walkthrough@1): GET walkthroughs ·
+GET walkthrough · POST walkthrough/plan · POST walkthrough/generate (the chain runs in the background through axf.llm@1,
+one call per feature; GET walkthrough/job follows it) · GET walkthrough/versions · POST walkthrough/restore ·
+DELETE walkthrough · GET walkthrough/export · POST walkthrough/import · GET walkthrough/play (walkthrough@1).
 Capability glossary@1: lookup(id), search(q), rebuild(reason, build), demos(type), demo(type, id), generate(entry)
 for other plugins (a plugin that wants a demonstration of itself asks here).
 """
@@ -34,6 +38,7 @@ ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console
 CLI = HERE / "catalog.mjs"
 DEMOS = HERE / "demos.mjs"
 DOCS = HERE / "docs.mjs"
+WALKS = HERE / "walkthroughs.mjs"
 SELF = "glossary@1"
 DEMO_TYPES = ("demonstration", "book", "clip", "docs")
 _SAFE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{1,47}$")
@@ -331,6 +336,151 @@ def get_docs_file(id: str, path: str = "index.html") -> FileResponse:  # noqa: A
     return FileResponse(str(target), media_type=_MEDIA.get(target.suffix.lower(), "application/octet-stream"))
 
 
+# ---------------------------------------------------------------- glossary walkthroughs (investor demos)
+
+_jobs: dict[str, dict[str, Any]] = {}
+_jobs_lock = threading.Lock()
+
+
+def _tmp_named(value: Any, name: str) -> Path:
+    d = data_dir() / "tmp"
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / f"{name}-{os.getpid()}-{threading.get_ident()}.json"
+    f.write_text(json.dumps(value))
+    return f
+
+
+def _llm() -> Any:
+    return plugin_services.get("axf.llm@1")
+
+
+@router.get("/walkthroughs")
+def get_walkthroughs() -> dict[str, Any]:
+    return {"items": _node_json(WALKS, "list") or [], "ai": bool(_llm())}
+
+
+@router.get("/walkthrough")
+def get_walkthrough_bundle(id: str, version: str = "") -> dict[str, Any]:  # noqa: A002
+    args = ["get", _check_id(id)] + (["--version", version[:20]] if version else [])
+    return _node_json(WALKS, *args)
+
+
+@router.post("/walkthrough/plan")
+def post_walkthrough_plan(body: dict[str, Any]) -> dict[str, Any]:
+    """The brief and the per-feature prompts of a request (nothing is generated or saved)."""
+    f = _tmp_named((body or {}).get("request") or body or {}, "wt-request")
+    return _node_json(WALKS, "plan", "--request", str(f))
+
+
+def _set_job(job_id: str, **kw: Any) -> None:
+    with _jobs_lock:
+        _jobs[job_id].update(kw)
+
+
+def _run_chain(job_id: str, request: dict[str, Any]) -> None:
+    """The chain: plan → one axf.llm@1 call per feature (template when there is no model or a call fails) → assemble."""
+    import time
+    t0 = time.time()
+    try:
+        plan = _node_json(WALKS, "plan", "--request", str(_tmp_named(request, f"wt-plan-{job_id}")))
+        feats = plan.get("features") or []
+        _set_job(job_id, total=len(feats), title=plan.get("title", ""), id=plan.get("id", ""), brief=plan.get("brief", ""))
+        svc = _llm() if request.get("mode", "claude") == "claude" else None
+        replies: dict[str, str] = {}
+        chain_ms: dict[str, int] = {}
+        model = ""
+        for i, f in enumerate(feats):
+            if _jobs[job_id].get("cancel"):
+                raise RuntimeError("cancelled")
+            _set_job(job_id, step=i + 1, doing=f.get("term", ""))
+            if not svc:
+                continue
+            t = time.time()
+            try:
+                out = svc.complete(f["prompt"]["messages"], system=f["prompt"]["system"], params={"max_tokens": 1800})
+                replies[f["entry"]] = out.get("text") or ""
+                model = out.get("model") or model
+            except Exception as e:  # noqa: BLE001 — the template stands in, the log says why
+                _jobs[job_id]["log"].append(f"{f.get('term')}: the model failed ({str(e)[:160]}); template used")
+            chain_ms[f["entry"]] = int((time.time() - t) * 1000)
+        if request.get("mode", "claude") == "claude" and not svc:
+            _jobs[job_id]["log"].append("No AI provider (axf.llm@1): every feature uses the zero-token template.")
+        rf = _tmp_named(request, f"wt-req-{job_id}")
+        pf = _tmp_named({"replies": replies, "chainMs": chain_ms, "model": model, "ms": int((time.time() - t0) * 1000)}, f"wt-replies-{job_id}")
+        result = _node_json(WALKS, "assemble", "--request", str(rf), "--replies", str(pf), timeout=300)
+        _set_job(job_id, state="done", result=result, doing="")
+    except HTTPException as e:
+        _set_job(job_id, state="failed", error=str(e.detail), doing="")
+    except Exception as e:  # noqa: BLE001 — shown to the person
+        _set_job(job_id, state="failed", error=str(e)[:400], doing="")
+
+
+@router.post("/walkthrough/generate")
+def post_walkthrough_generate(body: dict[str, Any]) -> dict[str, Any]:
+    """Start the chain for a request (glossary-walkthrough-request@1); answers the job to follow with GET walkthrough/job."""
+    import uuid
+    request = (body or {}).get("request") or body or {}
+    if not isinstance(request, dict) or not request.get("terms"):
+        raise HTTPException(400, "pick at least one glossary entry (request.terms)")
+    job_id = uuid.uuid4().hex[:12]
+    with _jobs_lock:
+        for k in [k for k, v in _jobs.items() if v.get("state") != "running"][:-20]:
+            _jobs.pop(k, None)
+        _jobs[job_id] = {"job": job_id, "state": "running", "step": 0, "total": len(request.get("terms") or []), "doing": "planning", "log": [], "ai": bool(_llm()), "mode": request.get("mode", "claude")}
+    threading.Thread(target=_run_chain, args=(job_id, request), daemon=True).start()
+    return dict(_jobs[job_id])
+
+
+@router.get("/walkthrough/job")
+def get_walkthrough_job(id: str) -> dict[str, Any]:  # noqa: A002
+    j = _jobs.get(id)
+    if not j:
+        raise HTTPException(404, f"no walkthrough job {id}")
+    return dict(j)
+
+
+@router.post("/walkthrough/job/cancel")
+def post_walkthrough_cancel(body: dict[str, Any]) -> dict[str, Any]:
+    j = _jobs.get(str((body or {}).get("id") or ""))
+    if not j:
+        raise HTTPException(404, "no such walkthrough job")
+    j["cancel"] = True
+    return dict(j)
+
+
+@router.get("/walkthrough/versions")
+def get_walkthrough_versions(id: str) -> list[dict[str, Any]]:  # noqa: A002
+    return _node_json(WALKS, "versions", _check_id(id)) or []
+
+
+@router.post("/walkthrough/restore")
+def post_walkthrough_restore(body: dict[str, Any]) -> dict[str, Any]:
+    b = body or {}
+    return _node_json(WALKS, "restore", _check_id(str(b.get("id") or "")), str(b.get("version") or "")[:20])
+
+
+@router.delete("/walkthrough")
+def delete_walkthrough(id: str) -> dict[str, Any]:  # noqa: A002
+    return _node_json(WALKS, "delete", _check_id(id))
+
+
+@router.get("/walkthrough/export")
+def get_walkthrough_export(id: str) -> dict[str, Any]:  # noqa: A002
+    """The self-contained file the demo sandbox imports (the walkthrough, its demonstrations and its book)."""
+    return _node_json(WALKS, "export", _check_id(id))
+
+
+@router.post("/walkthrough/import")
+def post_walkthrough_import(body: dict[str, Any]) -> dict[str, Any]:
+    return _node_json(WALKS, "import", str(_tmp_named(body or {}, "wt-import")))
+
+
+@router.get("/walkthrough/play")
+def get_walkthrough_play(id: str) -> dict[str, Any]:  # noqa: A002
+    """As walkthrough@1 (Molly's guide and the recorder play this shape)."""
+    return _node_json(WALKS, "walkthrough", _check_id(id))
+
+
 class Service:
     """glossary@1 for other plugins: entries by id, ranked search, rebuild after a build lands, demonstrations."""
 
@@ -351,6 +501,12 @@ class Service:
 
     def generate(self, entry: str, save: bool = True) -> dict[str, Any]:
         return post_generate({"entry": entry, "save": save})
+
+    def walkthroughs(self) -> list[dict[str, Any]]:
+        return get_walkthroughs()["items"]
+
+    def walkthrough(self, id: str, version: str = "") -> dict[str, Any]:  # noqa: A002
+        return get_walkthrough_bundle(id, version)
 
 
 plugin_services.provide(SELF, Service(), HERE.name)

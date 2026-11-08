@@ -468,6 +468,114 @@
         "title": "Read each step out loud",
         "text": "On: the player speaks every step with the browser's voice. Off: words on screen only.",
         "kind": "toggle"
+      },
+      {
+        "target": "view:walkthrough-generator",
+        "title": "Walkthrough Generator",
+        "text": "Pick features from the glossary, write a prompt, and Claude writes a guided, interactive walkthrough (investor demos): each part shows a feature working, explains it with a docs card and ends with a step the viewer tries. Saved and versioned; plays back with no live Claude, here or in the demo sandbox.",
+        "kind": "screen"
+      },
+      {
+        "target": "walkthrough-generator",
+        "title": "Walkthrough Generator",
+        "text": "Open the Walkthrough Generator to pick a walkthrough to play or generate a new one from glossary entries.",
+        "kind": "button"
+      },
+      {
+        "target": "wait-for-the-viewer-on-try-it-steps",
+        "title": "Wait for the viewer on try-it steps",
+        "text": "On: a try-it step waits until the viewer taps the highlighted control (or Next). Off: it moves on when the voice finishes, like any other step.",
+        "kind": "field"
+      },
+      {
+        "target": "show-the-docs-card-while-playing",
+        "title": "Show the docs card while playing",
+        "text": "Show each part's documentation (headline, points, API, where it appears, related entries) under its steps in the walkthrough player. The player's Docs button still hides it.",
+        "kind": "field"
+      },
+      {
+        "target": "part",
+        "title": "Part",
+        "text": "Jump to any part of the walkthrough: the introduction or one of the features, in the order they were picked.",
+        "kind": "field"
+      },
+      {
+        "target": "search-the-glossary",
+        "title": "Search the glossary",
+        "text": "Find entries to put in the walkthrough: every word must match the term, summary, keywords or category.",
+        "kind": "field"
+      },
+      {
+        "target": "picked-only",
+        "title": "Picked only",
+        "text": "List only the entries already picked, to check or untick them.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pick-all-shown",
+        "title": "Pick all shown",
+        "text": "Pick every entry the list shows right now, in list order, up to 60 per walkthrough.",
+        "kind": "button"
+      },
+      {
+        "target": "prompt",
+        "title": "Prompt",
+        "text": "What the walkthrough should do with the picked features, for example: run a chain to demonstrate and explain these features. Saved word for word with the walkthrough and sent to Claude with every part.",
+        "kind": "field"
+      },
+      {
+        "target": "audience",
+        "title": "Audience",
+        "text": "Who it is for: investors (value first, no jargon), customers, developers (API and contracts) or the team. Changes how Claude writes each part.",
+        "kind": "field"
+      },
+      {
+        "target": "style",
+        "title": "Style",
+        "text": "Showcase, tour, tutorial or deep dive: the tone and pace of the walkthrough.",
+        "kind": "field"
+      },
+      {
+        "target": "writer",
+        "title": "Writer",
+        "text": "Claude writes each part (one call per feature through the AI assistant; the template stands in for any part it does not answer), or the zero-token template writes them all from the glossary.",
+        "kind": "field"
+      },
+      {
+        "target": "try-it-end-every-part-with-a-step-the-viewer-does",
+        "title": "Try it",
+        "text": "End every part with a try-it step: the player highlights the control and waits for the viewer to tap it themselves.",
+        "kind": "toggle"
+      },
+      {
+        "target": "show-brief",
+        "title": "Show brief",
+        "text": "Show the brief Claude gets: the prompt word for word, the audience and shape, every picked feature with what the glossary says about it, and the answer format. Nothing is generated.",
+        "kind": "button"
+      },
+      {
+        "target": "generate-walkthrough",
+        "title": "Generate walkthrough",
+        "text": "Run the chain: one Claude call per feature in the background, then save the walkthrough as a new version (plus a demonstration per part and a book) and show Play it.",
+        "kind": "button"
+      },
+      {
+        "target": "play-it",
+        "title": "Play it",
+        "text": "Play the walkthrough that was just generated in the walkthrough player.",
+        "kind": "button"
+      },
+      {
+        "target": "versions",
+        "title": "Versions",
+        "text": "Every saved version of this walkthrough with when, who wrote it and what changed (parts added, removed, rewritten); play any of them or restore one (restoring saves it as a new version, nothing is lost).",
+        "kind": "button"
+      },
+      {
+        "target": "pick-these-again",
+        "title": "Pick these again",
+        "text": "Put this walkthrough's features back into the picker, in their order, to regenerate it with another prompt or more parts.",
+        "kind": "button"
       }
     ],
     "intros": [
@@ -520,6 +628,24 @@
           },
           {
             "say": "Preview plays the whole book; Record video and Generate documentation make the outputs."
+          }
+        ]
+      },
+      {
+        "screen": "walkthrough-generator",
+        "title": "Walkthrough Generator",
+        "steps": [
+          {
+            "say": "Search the glossary and tick the features you want to show; they become the parts of the walkthrough, in the order on the right.",
+            "target": ""
+          },
+          {
+            "say": "Write what the walkthrough should do in Prompt, pick the audience, and tap Show brief to see exactly what Claude gets.",
+            "target": ""
+          },
+          {
+            "say": "Generate walkthrough runs the chain and saves it. Play it here, or open it in the demo sandbox: it plays with no live Claude.",
+            "target": ""
           }
         ]
       }

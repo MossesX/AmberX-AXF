@@ -9,5 +9,6 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
     { id: 'demo-designer', label: 'Demonstration Designer', icon: 'play', action: 'nav:demo-designer' },
     { id: 'book-builder', label: 'Book Builder', icon: 'file', action: 'nav:book-builder' },
     { id: 'book-new', label: 'New book…', icon: 'plus', action: 'book.new' },
+    { id: 'walkthrough-generator', label: 'Walkthrough Generator', icon: 'zap', action: 'nav:walkthrough-generator' },
   ] },
 ];

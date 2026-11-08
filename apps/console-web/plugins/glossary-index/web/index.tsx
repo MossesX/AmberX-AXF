@@ -26,6 +26,9 @@ import { DEMO_KEYS, FOLDER, generateDemo, loadCatalog as load, loadDemos, rebuil
 import { DesignerPage, openInDesigner } from './designer';
 import { ADD_TO_BOOK_DIALOG, AddToBook, BookWizard, BooksPage, WIZARD_DIALOG, openBook } from './books';
 import { PLAYER_TAB, PlayerWindow, playAsset, registerPlayer } from './player';
+import { WalkthroughGeneratorPage } from './walkthroughs';
+import { WT_PLAYER_TAB, WalkthroughPlayerWindow, registerWalkthroughPlayer } from './walkthrough-player';
+import { WT_KEYS } from './walkthroughs-core';
 
 const ID = 'ai.amberx.axf.console.glossary-index';
 
@@ -306,17 +309,14 @@ export const plugin: AxfWebLibrary = {
     'glossary-index': { title: 'Glossary & Index', icon: 'list', render: () => <GlossaryPage /> },
     'demo-designer': { title: 'Demonstration Designer', icon: 'play', render: () => <DesignerPage /> },
     'book-builder': { title: 'Book Builder', icon: 'file', render: () => <BooksPage /> },
+    'walkthrough-generator': { title: 'Walkthrough Generator', icon: 'zap', render: () => <WalkthroughGeneratorPage /> },
   },
   dialogs: {
     [WIZARD_DIALOG]: { title: 'New book', icon: 'file', render: (_props, close) => <BookWizard close={close} /> },
     [ADD_TO_BOOK_DIALOG]: { title: 'Add to a book', icon: 'file', searchable: false, render: (props, close) => <AddToBook props={props} close={close} /> },
   },
-  tabs: { [PLAYER_TAB]: () => <PlayerWindow /> },
-  nav: { label: 'Plugins', items: [
-    { id: 'glossary-index', label: 'Glossary & Index', icon: 'list', view: 'glossary-index' },
-    { id: 'demo-designer', label: 'Demonstration Designer', icon: 'play', view: 'demo-designer' },
-    { id: 'book-builder', label: 'Book Builder', icon: 'file', view: 'book-builder' },
-  ] },
+  tabs: { [PLAYER_TAB]: () => <PlayerWindow />, [WT_PLAYER_TAB]: () => <WalkthroughPlayerWindow /> },
+  nav: { label: 'Plugins', items: [{ id: 'glossary-index', label: 'Glossary & Index', icon: 'list', view: 'glossary-index' }, { id: 'demo-designer', label: 'Demonstration Designer', icon: 'play', view: 'demo-designer' }, { id: 'book-builder', label: 'Book Builder', icon: 'file', view: 'book-builder' }, { id: 'walkthrough-generator', label: 'Walkthrough Generator', icon: 'zap', view: 'walkthrough-generator' }] },
   settingsTabs: [{ id: 'glossary-index', label: 'Glossary & Index', icon: 'list', order: 92, parent: 'plugins' }],
   settings: [{
     id: 'glossary-index.display', label: 'Display', icon: 'eye', tab: FOLDER, order: 10,
@@ -334,9 +334,19 @@ export const plugin: AxfWebLibrary = {
       { key: DEMO_KEYS.auto, label: 'Advance by itself', kind: 'toggle', default: true, description: 'Go to the next step when the voice finishes; off = Next by hand (or by voice).' },
       { key: DEMO_KEYS.voice, label: 'Voice control on by default', kind: 'toggle', default: false, description: 'Start listening when a demonstration plays: say next, back, repeat or stop (the browser asks for the microphone).' },
     ],
+  }, {
+    id: 'glossary-index.walkthroughs', label: 'Walkthroughs', icon: 'zap', tab: FOLDER, order: 30,
+    settings: [
+      { key: WT_KEYS.tryWait, label: 'Wait for the viewer on try-it steps', kind: 'toggle', default: true, description: 'A try-it step waits until the viewer taps the highlighted control (or Next) instead of moving on when the voice finishes.' },
+      { key: WT_KEYS.docsOpen, label: 'Show the docs card while playing', kind: 'toggle', default: true, description: 'The walkthrough player shows each part\'s documentation (headline, points, API, related) under its steps; the Docs button still hides it.' },
+      { key: WT_KEYS.mode, label: 'Writer', kind: 'choice', default: 'claude', options: [{ value: 'claude', label: 'Claude (one call per part)' }, { value: 'template', label: 'Template only (zero tokens)' }], description: 'Who writes a new walkthrough: Claude through the AI assistant (the template stands in for any part it does not answer), or the zero-token template.' },
+      { key: WT_KEYS.audience, label: 'Audience', kind: 'choice', default: 'investors', options: [{ value: 'investors', label: 'Investors' }, { value: 'customers', label: 'Customers' }, { value: 'developers', label: 'Developers' }, { value: 'team', label: 'The team' }], description: 'Who new walkthroughs are written for (the generator page can change it per walkthrough).' },
+      { key: WT_KEYS.depth, label: 'Depth', kind: 'choice', default: 'standard', options: [{ value: 'brief', label: 'Brief' }, { value: 'standard', label: 'Standard' }, { value: 'deep', label: 'Deep' }], description: 'About 3, 5 or 8 steps per part.' },
+    ],
   }],
   register(rt) {
     registerPlayer(rt);
+    registerWalkthroughPlayer(rt);
     // ?axf-view=<id>: open that view on load (the generated docs' live frames and Watch live deep-link the console this way)
     try { const v = new URLSearchParams(globalThis.location?.search ?? '').get('axf-view'); if (v && /^[a-z][a-z0-9-]*$/.test(v)) setTimeout(() => rt.navigate(v), 0); } catch { /* no window */ }
     rt.actions.register('demo.generate', ([entry]) => { if (!entry) { rt.navigate('demo-designer'); return; } void generateDemo(decodeURIComponent(entry), true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => rt.toast(e.message, 'danger', 'Demonstration')); }, { label: 'Generate a demonstration of a glossary entry', params: true });

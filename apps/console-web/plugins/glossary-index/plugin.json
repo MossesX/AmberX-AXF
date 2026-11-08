@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.glossary-index",
   "name": "Glossary, Index & Demos",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "An encyclopedia of AmberX AXF and the demonstrations written from it. Glossary (A–Z definitions), Index (a categorized tree, like the back of a book) and Grid views of every plugin, feature, screen, control, setting, command, asset, asset type, CLI tool, build option, job type and core concept, built from what the repo registers (plugin manifests, help entries, framework assets, the feature tracker, the UI registry) so it stays complete with no hand-kept list; every entry shows what it is, what it does, where it appears, its API (REST, MCP, CLI), what it links to and what links to it. From any entry, Generate demonstration writes a narrated demo (demonstration@1) with zero tokens; the Demonstration Designer edits its steps, narration, highlights and actions, plays it against the live UI (voice-controlled, chainable into tours) and keeps every recorded clip as a tagged asset (clip@1); the Book Builder writes books of chapters (book@1) from dragged-in entries, demonstrations and clips, with a live sandbox preview, a whole-book preview, the walkthrough video and generated documentation up to interactive HTML + TypeScript (docs@1). Rebuilt after every build (build-hook@1); CI fails when something registered has no entry. Also over REST, the MCP tools glossary_index_* and `axf glossary-index …`. No model, no tokens.",
+  "description": "An encyclopedia of AmberX AXF and the demonstrations written from it. Glossary (A–Z definitions), Index (a categorized tree, like the back of a book) and Grid views of every plugin, feature, screen, control, setting, command, asset, asset type, CLI tool, build option, job type and core concept, built from what the repo registers (plugin manifests, help entries, framework assets, the feature tracker, the UI registry) so it stays complete with no hand-kept list; every entry shows what it is, what it does, where it appears, its API (REST, MCP, CLI), what it links to and what links to it. From any entry, Generate demonstration writes a narrated demo (demonstration@1) with zero tokens; the Demonstration Designer edits its steps, narration, highlights and actions, plays it against the live UI (voice-controlled, chainable into tours) and keeps every recorded clip as a tagged asset (clip@1); the Book Builder writes books of chapters (book@1) from dragged-in entries, demonstrations and clips, with a live sandbox preview, a whole-book preview, the walkthrough video and generated documentation up to interactive HTML + TypeScript (docs@1). The Walkthrough Generator (investor demos) picks any number of entries, takes a prompt, and a chain of Claude calls (axf.llm@1, one per entry; the zero-token template stands in) writes a guided, interactive walkthrough with a docs card and a try-it step per feature, saved and versioned (glossary-walkthrough@1) and played back with no live Claude, here or in the demo sandbox (?axf-walkthrough=<id>, or an exported file). Rebuilt after every build (build-hook@1); CI fails when something registered has no entry. Also over REST, the MCP tools glossary_index_* and `axf glossary-index …`. The catalog, demonstrations, books and template walkthroughs need no model.",
   "targets": [
     "axf-console"
   ],
@@ -17,10 +17,14 @@
     "dialog:glossary-index.book-wizard",
     "dialog:glossary-index.add-to-book",
     "tab:glossary-index.player",
+    "view:walkthrough-generator",
+    "tab:glossary-index.walkthrough-player",
     "settings-tab:glossary-index",
     "service:glossary@1"
   ],
-  "optional": [],
+  "optional": [
+    "service:axf.llm@1"
+  ],
   "scopes": [
     "ROUTES"
   ],
@@ -36,7 +40,9 @@
     "mentions": [
       "_claude/memory/STATUS.md",
       ".github/workflows/android.yml",
-      "framework/spec/PORTING.md"
+      "framework/spec/PORTING.md",
+      "_claude/THREADS.md",
+      "_claude/rules/RULES.md"
     ]
   },
   "commands": {
@@ -479,6 +485,323 @@
           ]
         },
         "output": "the file"
+      },
+      {
+        "id": "walkthroughs",
+        "route": "GET /walkthroughs",
+        "title": "Saved glossary walkthroughs",
+        "description": "Every saved walkthrough (investor demos): name, version, parts, steps, how many parts Claude wrote, audience, prompt, versions; and whether an AI provider is there to write new ones.",
+        "readOnly": true,
+        "output": "{ items: [{ id, name, version, features, steps, claude, terms, prompt, audience, versions, updatedAt }], ai }"
+      },
+      {
+        "id": "walkthrough",
+        "route": "GET /walkthrough",
+        "title": "One glossary walkthrough",
+        "description": "A saved walkthrough (glossary-walkthrough@1): its request, brief, generator facts, intro, parts (each with steps, docs card and try-it) and version history; any older version by number.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the walkthrough id"
+            },
+            "version": {
+              "type": "string",
+              "description": "an older version (1.2.0); default the live one"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "the walkthrough"
+      },
+      {
+        "id": "walkthrough-plan",
+        "route": "POST /walkthrough/plan",
+        "title": "Brief for a walkthrough",
+        "description": "The brief and the per-part prompts a request would send to Claude (the prompt word for word, audience, every picked entry with what the glossary says, the answer format). Nothing is generated or saved.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "object",
+              "description": "glossary-walkthrough-request@1",
+              "properties": {
+                "terms": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "glossary entry ids, in walkthrough order (1 to 60)"
+                },
+                "prompt": {
+                  "type": "string",
+                  "description": "what the walkthrough should do, saved word for word"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "the walkthrough name (default: from the terms)"
+                },
+                "id": {
+                  "type": "string",
+                  "description": "the walkthrough id to (re)generate (default: from the title)"
+                },
+                "audience": {
+                  "type": "string",
+                  "description": "investors | customers | developers | team"
+                },
+                "style": {
+                  "type": "string",
+                  "description": "showcase | tour | tutorial | deep-dive"
+                },
+                "depth": {
+                  "type": "string",
+                  "description": "brief | standard | deep (about 3, 5, 8 steps a part)"
+                },
+                "mode": {
+                  "type": "string",
+                  "description": "claude (one call per part through axf.llm@1) | template (zero tokens)"
+                },
+                "tryIt": {
+                  "type": "boolean",
+                  "description": "end every part with a try-it step (default true)"
+                }
+              },
+              "required": [
+                "terms"
+              ]
+            }
+          },
+          "required": [
+            "request"
+          ]
+        },
+        "output": "{ id, title, brief, request, features: [{ entry, term, template, prompt }], missing }"
+      },
+      {
+        "id": "walkthrough-generate",
+        "route": "POST /walkthrough/generate",
+        "title": "Generate a glossary walkthrough",
+        "description": "Runs the chain in the background: one Claude call per picked entry through the AI assistant (the zero-token template stands in for any part without a usable answer), then saves the walkthrough as a new version with a demonstration per part and a book. Follow it with walkthrough-job.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "object",
+              "description": "glossary-walkthrough-request@1",
+              "properties": {
+                "terms": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "glossary entry ids, in walkthrough order (1 to 60)"
+                },
+                "prompt": {
+                  "type": "string",
+                  "description": "what the walkthrough should do, saved word for word"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "the walkthrough name (default: from the terms)"
+                },
+                "id": {
+                  "type": "string",
+                  "description": "the walkthrough id to (re)generate (default: from the title)"
+                },
+                "audience": {
+                  "type": "string",
+                  "description": "investors | customers | developers | team"
+                },
+                "style": {
+                  "type": "string",
+                  "description": "showcase | tour | tutorial | deep-dive"
+                },
+                "depth": {
+                  "type": "string",
+                  "description": "brief | standard | deep (about 3, 5, 8 steps a part)"
+                },
+                "mode": {
+                  "type": "string",
+                  "description": "claude (one call per part through axf.llm@1) | template (zero tokens)"
+                },
+                "tryIt": {
+                  "type": "boolean",
+                  "description": "end every part with a try-it step (default true)"
+                }
+              },
+              "required": [
+                "terms"
+              ]
+            }
+          },
+          "required": [
+            "request"
+          ]
+        },
+        "output": "{ job, state, step, total, doing, log }"
+      },
+      {
+        "id": "walkthrough-job",
+        "route": "GET /walkthrough/job",
+        "title": "Walkthrough generation progress",
+        "description": "Where a generation is: running (part N of M and which), done (the saved walkthrough) or failed (why), with the chain log.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the job id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ job, state, step, total, doing, log, result?, error? }"
+      },
+      {
+        "id": "walkthrough-cancel",
+        "route": "POST /walkthrough/job/cancel",
+        "title": "Cancel a walkthrough generation",
+        "description": "Stops a running generation before its next part; nothing is saved.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the job id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "the job"
+      },
+      {
+        "id": "walkthrough-versions",
+        "route": "GET /walkthrough/versions",
+        "title": "Versions of a walkthrough",
+        "description": "Every saved version, newest first: when, template or Claude (and the model), how many parts, the note, and what changed from the one before (parts added, removed, rewritten).",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the walkthrough id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "[{ version, at, mode, model, features, note, current, diff }]"
+      },
+      {
+        "id": "walkthrough-restore",
+        "route": "POST /walkthrough/restore",
+        "title": "Restore a walkthrough version",
+        "description": "Makes an older version the live one again by saving it as a new version (nothing is lost); its demonstrations and book follow.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the walkthrough id"
+            },
+            "version": {
+              "type": "string",
+              "description": "the version to restore (1.0.0)"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ]
+        },
+        "output": "the walkthrough summary"
+      },
+      {
+        "id": "walkthrough-delete",
+        "route": "DELETE /walkthrough",
+        "title": "Delete a walkthrough",
+        "description": "Removes a walkthrough, every version of it, its demonstrations and its book.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the walkthrough id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ removed }"
+      },
+      {
+        "id": "walkthrough-export",
+        "route": "GET /walkthrough/export",
+        "title": "Export a walkthrough for the demo sandbox",
+        "description": "The self-contained file (glossary-walkthrough-export@1: the walkthrough, its demonstrations and its book) a demo sandbox imports or serves beside the console (?axf-walkthrough-src=<file>).",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the walkthrough id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ $axf, exportedAt, walkthrough, assets }"
+      },
+      {
+        "id": "walkthrough-import",
+        "route": "POST /walkthrough/import",
+        "title": "Import a walkthrough file",
+        "description": "Loads an exported walkthrough file (or a bare walkthrough) into this console: saved as it is, with its demonstrations and book.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "description": "the exported file"
+        },
+        "output": "the walkthrough summary"
+      },
+      {
+        "id": "walkthrough-play",
+        "route": "GET /walkthrough/play",
+        "title": "A walkthrough as walkthrough@1",
+        "description": "The walkthrough flattened into walkthrough@1 steps (say, do, target): what Molly's guide and the walkthrough recorder play.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the walkthrough id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "walkthrough@1"
       }
     ]
   },
