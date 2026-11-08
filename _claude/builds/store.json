@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1548,
- "updatedAt": "2026-11-08T19:10:17.237Z",
+ "rev": 1549,
+ "updatedAt": "2026-11-08T19:12:16.558Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -121556,9 +121556,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-08T19:10:13.866Z",
+   "updatedAt": "2026-11-08T19:12:15.011Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PURPOSE (Brett): it's for PITCHING the product. Keep it dead simple. Main flow = three picks: (1) plugin or topic, (2) length in minutes, (3) narrator voice; then ONE Generate button. Generate writes a pitch script (hook up front, benefits not specs, closing call to action), picks the best screens, and plays a polished demo on real data: highlights, smooth zooms/pans, captions, background music, logo intro/outro. After: optional script tweak, preview, export video (MP4) or share link. Advanced editing (timeline, record-by-doing) stays tucked behind an Advanced section, never in the main flow.",
+     "at": "2026-11-08T19:12:15.011Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -121582,7 +121587,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {

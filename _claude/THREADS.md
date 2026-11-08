@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 03:59 UTC · `dataset-bar` s4 done (current) · orchestrator
 - 2026-11-07 03:59 UTC · `dataset-bar` s5 done (current) · orchestrator
 - 2026-11-07 03:59 UTC · `dataset-bar` s6 done (current) · orchestrator
 - 2026-11-07 04:02 UTC · `dataset-bar` s1 undone, s1 undone, note (current) · foreign-write
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 18:40 UTC · `standing-rule-every-ui-ships-with-full-api-contr` added (0 steps) (all) · pending
 - 2026-11-08 18:47 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` added (0 steps) (all) · pending
 - 2026-11-08 19:10 UTC · `demonstration-designer-plugin-new-standalone` added (0 steps) (all) · pending
+- 2026-11-08 19:12 UTC · `demonstration-designer-plugin-new-standalone` note (all) · pending
 
 ## Token passes (log)
 
