@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1605,
- "updatedAt": "2026-11-08T22:27:45.242Z",
+ "rev": 1606,
+ "updatedAt": "2026-11-08T22:27:56.851Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124418,14 +124418,14 @@
    "title": "URGENT: AmberX veto notice alarm too loud + Approve must go straight through",
    "category": "",
    "detail": "Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
-   "branch": "",
+   "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
    "pr": "",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:27:44.270Z",
+   "updatedAt": "2026-11-08T22:27:51.860Z",
    "builtAt": "",
    "notes": [
     {
@@ -124435,6 +124435,14 @@
     {
      "text": "Queued by cli.",
      "at": "2026-11-08T22:27:44.270Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny.",
+     "at": "2026-11-08T22:27:50.388Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny, own login copy)",
+     "at": "2026-11-08T22:27:51.860Z"
     }
    ],
    "approvals": [],
@@ -124445,8 +124453,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "urgent-amberx-veto-notice-alarm-too-loud-approve",
+    "brief": "# Build: urgent-amberx-veto-notice-alarm-too-loud-approve\n\n## Brett said (verbatim)\n> The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\n\n## What to build\nContinue build \"URGENT: AmberX veto notice alarm too loud + Approve must go straight through\" (urgent-amberx-veto-notice-alarm-too-loud-approve) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.\n[ ] s2 (~30 min) The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-amberx-veto-notice-alarm-too-loud-approve <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link urgent-amberx-veto-notice-alarm-too-loud-approve --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step urgent-amberx-veto-notice-alarm-too-loud-approve <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-amberx-veto-notice-alarm-too-loud-approve \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -124454,12 +124462,12 @@
    "pipeline": {
     "queuedAt": "2026-11-08T22:27:44.014Z",
     "queuedBy": "cli",
-    "account": "",
-    "session": "",
+    "account": "account-3",
+    "session": "axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-08T22:27:50.181Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-08T22:23:20.536Z",
@@ -124550,7 +124558,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
