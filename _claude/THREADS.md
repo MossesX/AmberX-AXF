@@ -750,26 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 20:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 20:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 21:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 21:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 21:20 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 21:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 21:40 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 21:50 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 22:00 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 22:10 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 22:16 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 22:23 UTC · `gizmo-voice` note (current) · orchestrator
-- 2026-11-06 22:30 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
-- 2026-11-06 23:20 UTC · `gizmo-companion` → complete, note (current) · reconciler
-- 2026-11-06 23:40 UTC · `gizmo-voice` → pending, note (current) · reconciler
-- 2026-11-06 23:50 UTC · `gizmo-voice` → pending, note (current) · reconciler
-- 2026-11-07 00:20 UTC · `gizmo-voice` → pending, note (current) · reconciler
-- 2026-11-07 00:28 UTC · `claude-settings-tabs-veto` s1 done, s2 done (current) · foreign-write
-- 2026-11-07 00:29 UTC · `claude-settings-tabs-veto` s3 done, s5 done (current) · foreign-write
-- 2026-11-07 00:29 UTC · `gizmo-voice` → pending, note (current) · reconciler
 - 2026-11-07 00:31 UTC · `claude-settings-tabs-veto` s6 done (current) · foreign-write
 - 2026-11-07 00:40 UTC · `gizmo-voice` → pending, note (current) · reconciler
 - 2026-11-07 00:45 UTC · `amberx-open-any-url-apk` added (2 steps) (current) · amberx-open-any-url
@@ -1150,6 +1130,26 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 00:01 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:02 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:23 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` added (0 steps) (all) · pending
+- 2026-11-08 00:32 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → running (all) · orchestrator
+- 2026-11-08 00:32 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` branch claude/pipeline-rebuild (all) · builds-live
+- 2026-11-08 00:37 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s1 done (all) · orchestrator
+- 2026-11-08 00:44 UTC · `demo-sandbox-system-sandbox-settings-panel` added (6 steps) (all) · claude-voice
+- 2026-11-08 00:44 UTC · `glossary-walkthrough-generator-investor-demos` added (6 steps) (all) · claude-voice
+- 2026-11-08 00:45 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s2 done (all) · orchestrator
+- 2026-11-08 00:45 UTC · `orchestrator-full-api-control` added (5 steps) (all) · claude-voice
+- 2026-11-08 00:46 UTC · `universal-voice-api-control-everything-controllable` added (6 steps) (all) · claude-voice
+- 2026-11-08 00:47 UTC · `slot-aware-plan-optimizer-pre-launch` added (5 steps) (all) · claude-voice
+- 2026-11-08 00:52 UTC · `real-time-slot-tracking-stale-data-reaper` added (5 steps) (all) · claude-voice
+- 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s3 done (all) · orchestrator
+- 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s4 done (all) · orchestrator
+- 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s5 done (all) · orchestrator
+- 2026-11-08 00:59 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s6 done (all) · orchestrator
+- 2026-11-08 00:59 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s7 done (all) · orchestrator
+- 2026-11-08 01:00 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · orchestrator
+- 2026-11-08 01:00 UTC · `idle-alert-phone-flag-when-nothing-is-building` → complete (all) · orchestrator
+- 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` s1 done, → running (all) · orchestrator
+- 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` s2 done, → complete (all) · orchestrator
+- 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · orchestrator
 
 ## Token passes (log)
 
