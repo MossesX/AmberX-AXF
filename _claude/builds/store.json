@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1421,
- "updatedAt": "2026-11-08T00:01:27.677Z",
+ "rev": 1422,
+ "updatedAt": "2026-11-08T00:01:48.412Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114487,9 +114487,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-07T23:59:35.398Z",
+   "updatedAt": "2026-11-08T00:01:46.846Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Make it an on/off setting in orchestrator settings (owner-only), covering headless sessions and anything launched on the VPS.",
+     "at": "2026-11-08T00:01:46.846Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -114513,7 +114518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
