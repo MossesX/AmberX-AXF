@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:34 UTC · `skins` s11 done, → complete (main-framework) · orchestrator
 - 2026-11-07 05:34 UTC · `skins` note (main-framework) · orchestrator
 - 2026-11-07 05:35 UTC · `skins` branch claude/skins-asset-types (main-framework) · builds-live
 - 2026-11-07 05:46 UTC · `skins-asset-types` PR #383 (current) · builds-live
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:45 UTC · `full-api-control` → built, branch claude/ui-api-parity-rule-r3, PR #393 (all) · builds-live
 - 2026-11-08 17:45 UTC · `full-api-control` note (all) · orchestrator
 - 2026-11-08 17:46 UTC · `ui-api-parity-rule` s7 done, → built (all) · orchestrator
+- 2026-11-08 17:50 UTC · `amberx-notify-panel` added (5 steps) (all) · orchestrator
 
 ## Token passes (log)
 

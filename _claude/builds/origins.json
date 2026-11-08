@@ -241,6 +241,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-notify-panel": {
+   "said": "AmberX notification panel (Brett): A real notification panel inside the AmberX phone app that receives every kind of notification and status from the console, orchestrator, axHub and builds. 1. Typed notifications: build started/done/failed, approvals and veto holds (with Deny / Run now), account status (checks starting/done, expired, limit, no credits), UI Review items, alerts, info. Extensible type registry. 2. Panel: list grouped by type/source, filters, unread counts, search, mark read, clear, pin; tap opens the related screen; action buttons per type. 3. Live status area: current account statuses, running builds, queue. 4. Also delivered as Android push notifications with actions; panel keeps history. 5. One send API every plugin uses (console, orchestrator, axHub); reuse existing notifications/alert hub code (notifications-control-panel groups/triggers/actions) where it exists. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (per-type on/off, sound, priority); 3 UI options to UI Review; phone screenshots; tests; report, STATUS, THREADS.",
+   "at": "2026-11-08T17:50:26.084Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "build:amberx-notify-panel",
+   "brief": "Launched directly from voice (no record); text is the launch brief.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-open-any-url": {
    "said": "\"We need a plugin that will let AmberX open up any website I tell her to.\"\n(Context: amberx.open_url refused www.hostinger.com: \"open_url only opens Brett's own sites (amberxai.com)\".)\n\n1. amberx.open_url (axHub device service) opens any http/https URL on Brett's paired phone, not only amberxai.com. Block non-http(s) schemes (intent:, file:, javascript:). Audit-log every open.\n2. Setting in axHub (owner-only): mode = own sites only / allowlist / any site (default: any site, per Brett). Allowlist editable.\n3. AmberX app: opens external sites in the phone's default browser; own sites keep opening in AmberX.\n4. Tests, docs (decisions), PR to the merge queue. Do NOT land directly. If the AmberX APK needs a change, note it for an AmberX-AXF follow-up.\n\nOne session, lean chain.",
    "at": "",
