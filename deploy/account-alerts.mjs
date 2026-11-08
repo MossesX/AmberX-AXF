@@ -96,6 +96,16 @@ function send(path, payload, env) {
   return false;
 }
 
+/**
+ * Any alert from the claude-accounts source (the account health check's before / after notifications, type
+ * account-status). Same delivery as the problem alerts: the console's alert hub, or the outbox when it can't be reached.
+ */
+export function postAlert(alert, env = process.env) {
+  if (!alert || alert.source !== SOURCE) throw Object.assign(new Error(`source must be ${SOURCE}`), { code: 2 });
+  return send('/api/alerts', alert, env);
+}
+export const resolveKeys = (keys, env = process.env) => send('/api/alerts/resolve', { keys }, env);
+
 /** One line in the account events log (the console's Claude accounts screen shows them). */
 export function logEvent(ev, env = process.env) {
   try {

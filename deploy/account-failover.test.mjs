@@ -33,7 +33,7 @@ const seed = () => {
   put(join(SH, '.credentials.json'), 'console-0');
   writeFileSync(join(SH, 'settings.json'), '{}');
   writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: 'claude-workers@1', workers: ['w1', 'w2'] }));
-  rmSync(join(W, 'worker-state.json'), { force: true }); rmSync(ALERTS, { force: true }); rmSync(join(W, 'account-events.jsonl'), { force: true });
+  rmSync(join(W, 'worker-state.json'), { force: true }); rmSync(join(W, 'account-status.json'), { force: true }); rmSync(ALERTS, { force: true }); rmSync(join(W, 'account-events.jsonl'), { force: true });
 };
 const ENV = { AXF_CLAUDE_ACCOUNTS: A, AXF_CLAUDE_HOME: SH, AXF_CLAUDE_GLOBAL: join(tmp, 'g.json'), AXF_CLAUDE_SEEN: join(W, 'seen.json'), AXF_CLAUDE_WORKERS: W, AXF_HEADLESS_DIR: HD, AXF_ACCOUNT_ALERTS: `file:${ALERTS}`, AXF_CLAUDE_BUILDS: tmp, AXF_WORKERS_ALIVE: '' };
 Object.assign(process.env, ENV);

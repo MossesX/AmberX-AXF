@@ -22,11 +22,17 @@
  *                                   subs: any|busy } }
  *                         subs "busy" = the rule only applies while no subscription account can start the job now
  *                         (all limited, full or missing): the fallback rule.
+ *   failover              see normFailover
+ *   probe                 the account health check, see normProbe
  *
  * Decision: { account, kind: subscription|api|'', state: run|queue|none, rule, position, why, considered: [...] }.
  *   rule to api   → the least busy matching API account under its caps with a free building slot; none → falls through
  *   otherwise     → the least busy subscription worker with a free slot (workers in order, the interactive account last);
  *                   all full → queue on the account with the shortest queue that still has room; none → state none.
+ *
+ * Models (account-health-failover, Nov 8 2026): an account row may carry `models` (from the shared account-status@1 store:
+ * the policy models it can use now). A job only runs or queues on an account whose list holds its model; null = not
+ * known, no filter.
  *
  * Spend: an API account at or over a cap takes nothing more; at alertAt (default 0.8) of a cap its state is "warn".
  * Caps count the last 24 h / 7 days of that account's runs (the same windows as the cost columns).
@@ -104,7 +110,29 @@ export function normConfig(c) {
     while (seen.has(id)) id = `${x.id}-${k++}`;
     seen.add(id); return { ...x, id };
   });
-  return { $axf: SCHEMA, workers: names(src.workers), excluded: names(src.excluded), interactiveTakesJobs: src.interactiveTakesJobs !== false, limits, perAccount, api, rules, failover: normFailover(src.failover) };
+  return { $axf: SCHEMA, workers: names(src.workers), excluded: names(src.excluded), interactiveTakesJobs: src.interactiveTakesJobs !== false, limits, perAccount, api, rules, failover: normFailover(src.failover), probe: normProbe(src.probe) };
+}
+
+/**
+ * Account health check (build account-health-failover, Nov 8 2026): deploy/claude-account-probe.mjs checks every account
+ * and writes the shared account-status@1 store. enabled (the scheduled check) · intervalMin (minutes between scheduled
+ * checks) · onLoad (check when a console opens) · loadGapMin (a console opening within this many minutes of the last
+ * check doesn't start another) · session (prove a subscription login with a tiny bare `claude -p`, which also renews its
+ * token; off = only the free usage read) · apiMessage (prove an API key with a 1-token message, about $0.0001; off = only
+ * the free models list) · timeoutSec · notifyRuns (phone notification before and after a check: load = console opens and
+ * by-hand checks, all = scheduled ones too, off) · alertProblems (a phone alert when a check finds an account expired,
+ * limited or out of credits; once per problem).
+ */
+export const PROBE_DEFAULTS = Object.freeze({ enabled: true, intervalMin: 60, onLoad: true, loadGapMin: 15, session: true, apiMessage: true, timeoutSec: 60, notifyRuns: 'load', alertProblems: true });
+export const PROBE_RANGES = Object.freeze({ intervalMin: [10, 1440], loadGapMin: [0, 240], timeoutSec: [15, 300] });
+export const NOTIFY_RUNS = ['load', 'all', 'off'];
+export function normProbe(p) {
+  const x = p && typeof p === 'object' ? p : {};
+  const out = {};
+  for (const k of ['enabled', 'onLoad', 'session', 'apiMessage', 'alertProblems']) out[k] = x[k] !== false;
+  for (const [k, [lo, hi]] of Object.entries(PROBE_RANGES)) out[k] = int(x[k], lo, hi, PROBE_DEFAULTS[k]);
+  out.notifyRuns = NOTIFY_RUNS.includes(x.notifyRuns) ? x.notifyRuns : PROBE_DEFAULTS.notifyRuns;
+  return out;
 }
 
 /**
@@ -190,7 +218,8 @@ export function roster(config, accounts) {
     const can = takes && !limited && !capped;
     if (!why && limited) why = `out until ${limited.until}${limited.reason ? ` (${limited.reason})` : ''}`;
     if (!why && capped) why = spend.why;
-    return { name: a.name, label: pa.label || api?.label || '', kind, role, active: !!a.active, running, queued, building, queue, limited, spend,
+    const models = Array.isArray(a.models) ? a.models.map(normModel).filter(Boolean) : null;   // account-status@1: null = not known
+    return { name: a.name, label: pa.label || api?.label || '', kind, role, active: !!a.active, running, queued, building, queue, limited, spend, models,
       takesJobs: takes, canRun: can && running < building, canQueue: can && running >= building && queued < queue, order: role === 'interactive' ? 2e3 : order(a.name), why };
   });
 }
@@ -201,7 +230,10 @@ const byLoad = (a, b) => (a.role === 'interactive') - (b.role === 'interactive')
 /** Which account takes `job`. */
 export function decide(config, accounts, job) {
   const cfg = normConfig(config); const j = normJob(job);
-  const rows = roster(cfg, accounts);
+  // account-health-failover: an account the health check says can't use the job's model now (e.g. its weekly Fable cap
+  // is spent) takes no slot for this job; it still takes jobs on the models it can use
+  const rows = roster(cfg, accounts).map((r) => (!r.models || r.models.includes(j.model) ? r
+    : { ...r, canRun: false, canQueue: false, why: r.why || `can't use ${j.model} now (account check)` }));
   const subs = rows.filter((r) => r.kind === 'subscription' && r.takesJobs);
   const subsFree = subs.filter((r) => r.canRun);
   const considered = [];

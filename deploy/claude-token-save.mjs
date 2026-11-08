@@ -200,6 +200,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const rv = spawnSync(process.execPath, [join(here, 'claude-workers.mjs'), 'revive'], { encoding: 'utf8', timeout: 30_000 });
     if (/^back: /.test(rv.stdout || '')) console.log(`${new Date().toISOString()} Claude accounts ${rv.stdout.trim()}`);
     spawnSync(process.execPath, [join(here, 'account-alerts.mjs'), 'flush'], { encoding: 'utf8', timeout: 60_000 });
+    // account-health-failover: the scheduled account health check (it starts in the background when one is due, so the
+    // sweep never waits for it; interval and on/off in Settings → Plugins → Claude accounts → Account checks)
+    const pr = spawnSync(process.execPath, [join(here, 'claude-account-probe.mjs'), 'due'], { encoding: 'utf8', timeout: 20_000 });
+    if ((pr.stdout || '').trim()) console.log(pr.stdout.trim());
   } else {
     console.error('usage: claude-token-save.mjs watch --copy <dir> [--parent <pid>] [--every <ms>] | sweep');
     process.exit(2);

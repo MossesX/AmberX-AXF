@@ -75,7 +75,7 @@ X.markLimit('w2', { kind: 'usage' }, env, now); X.markLimit('w3', { kind: 'usage
 ok(X.route({}, env, now) === 'console', 'every worker out = the console\'s own account');
 X.markLimit('console', { kind: 'usage' }, env, now);
 ok(X.route({}, env, now) === '', 'every account out = nothing free');
-rmSync(join(W, 'worker-state.json'));
+rmSync(join(W, 'worker-state.json')); rmSync(join(W, 'account-status.json'), { force: true });
 
 console.log('claims: 3 building per account, then a queue of 5, oldest first');
 writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'], excluded: ['w3'], interactiveTakesJobs: false, limits: { building: 2, queue: 1 } }));
@@ -93,7 +93,7 @@ ok(X.claim('j5', {}, {}, envA, now + 9).state === (q5.account === 'w1' ? 'run' :
 process.env.AXF_WORKERS_ALIVE = 'j2';
 ok(X.status({ ...process.env }, now).accounts.find((a) => a.name === 'w1').running.length === 0, 'a claim goes with its session');
 delete process.env.AXF_WORKERS_ALIVE;
-rmSync(join(W, 'worker-state.json'));
+rmSync(join(W, 'worker-state.json')); rmSync(join(W, 'account-status.json'), { force: true });
 
 console.log('config: rules, API workers, spend caps');
 const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), ...a], { env: process.env, encoding: 'utf8' });

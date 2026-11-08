@@ -54,6 +54,7 @@ import { fileURLToPath } from 'node:url';
 import { accounts, paths as loginPaths } from './claude-login.mjs';
 import { meta as homeMeta, tokenHash } from './claude-home.mjs';
 import { readEvents as accountEvents } from './account-alerts.mjs';
+import * as Health from './account-status.mjs';
 import { NAME_RE, SCHEMA, alerts as routingAlerts, decide, normConfig, normJob, normRule, raisedCaps, roster } from './worker-routing.mjs';
 
 export { SCHEMA };
@@ -166,18 +167,41 @@ export function markLimit(name, { kind = 'usage', text = '' } = {}, env = proces
   const dead = kind === 'auth' && DEAD_LOGIN_RE.test(text);
   const until = dead ? now + SIGNIN_HOLD : ((kind === 'usage' || kind === 'credits') ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
   const reason = dead ? (/could not be refreshed|expired/i.test(text) ? 'login expired and could not be renewed' : 'signed out') : REASONS[kind] ?? REASONS.usage;
-  return withLock(env, () => {
+  const out = withLock(env, () => {
     const state = loadState(env);
     state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason,
       ...(dead ? { untilSignin: true, login: loginHashOf(name, env).slice(0, 16) } : {}) };
     saveState(state, env);
     return state.limits[name];
   });
+  // account-health-failover: the one shared status store says so at once, so every reader (routing, the console, the
+  // usage badge) sees the account out before the next health check
+  try { Health.fromFailover(name, { kind, reason, until: out.until, loginHash: out.login || loginHashOf(name, env).slice(0, 16) }, env, now); } catch { /* the limit still holds */ }
+  return out;
 }
 
 /** Bring an account back by hand (Brett signed it in, or topped it up). */
 export function clearLimit(name, env = process.env) {
-  return withLock(env, () => { const state = loadState(env); const had = !!state.limits[name]; delete state.limits[name]; saveState(state, env); return had; });
+  const had = withLock(env, () => { const state = loadState(env); const had = !!state.limits[name]; delete state.limits[name]; saveState(state, env); return had; });
+  try { const e = Health.read(env).accounts[name]; if (e && e.status !== 'ok') Health.clear(name, env); } catch { /* no store yet */ }
+  return had;
+}
+
+/**
+ * What the shared status store (account-status@1) adds for one account: a limit when it says the account can't work
+ * now, and the models it can use. A fresh limit in worker-state.json always wins (it has the build's own words).
+ */
+export function healthOf(name, store, env = process.env, now = Date.now()) {
+  const e = store?.accounts?.[name];
+  if (!e) return { limit: null, models: null, health: null };
+  const fresh = e.checkedAt && now - Date.parse(e.checkedAt) <= Health.MAX_AGE_MS;
+  const loginHash = e.status === 'expired' ? loginHashOf(name, env).slice(0, 16) : '';
+  return {
+    limit: Health.limitFor(e, { now, loginHash }),
+    models: fresh && Array.isArray(e.models) ? e.models : null,
+    health: { status: e.status, why: e.why, warn: e.warn, checkedAt: e.checkedAt, source: e.source, until: e.until, models: e.models,
+      fiveHour: e.usage?.fiveHour ?? null, weekly: e.usage?.weekly ?? null, perModel: e.usage?.perModel ?? [], api: e.api },
+  };
 }
 
 /** Out right now: past its time = back; a dead login is back as soon as the account holds a different login. */
@@ -249,6 +273,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   const led = ledger(readEvents(env), { cost: (s) => meterCost(env, s), alive });
   const claims = liveClaims(state, alive, now);
   const mine = state.claims[forSession];
+  let health = null; try { health = Health.read(env); } catch { /* no store yet */ }
   const sum = (runs, since) => +runs.filter((r) => now - Date.parse(r.end || r.at) < since).reduce((n, r) => n + r.costUsd, 0).toFixed(2);
   const base = accounts(env).map((a) => {
     const l = led[a.name] ?? { running: [], runs: [] };
@@ -256,10 +281,11 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
     // a job asking for a slot sees the jobs queued before it as already holding one, so the oldest waiter goes first
     const queue = claims.filter(([s, c]) => c.account === a.name && c.state === 'queue' && s !== forSession);
     const ahead = queue.filter(([, c]) => !mine || mine.state !== 'queue' || Date.parse(c.at) < Date.parse(mine.at)).length;
+    const h = healthOf(a.name, health, env, now);
     return {
       name: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', active: a.active, hasKey: a.kind === 'api' ? true : undefined,
       email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
-      limited: limitOf(state, a.name, now, env), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
+      limited: limitOf(state, a.name, now, env) || h.limit, models: h.models, health: h.health, running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
       home: homeOf(a.name, env),
     };
