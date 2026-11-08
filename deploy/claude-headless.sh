@@ -63,6 +63,11 @@
 # (deploy/claude-workers.mjs route); no worker free = the console's account, with a note. A worker that hits its limit or
 # loses its login is taken out, and the run moves to the next worker. The console's active account never changes for it.
 # Each move and the end of the run write the cost to events.jsonl per account. AXF_WORKERS=off skips the routing.
+# Lean sessions (Brett, Nov 8 2026: headless sessions read ONLY the brief the orchestrator writes): the run exports
+# CLAUDE_CODE_DISABLE_CLAUDE_MDS=1 + CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 (no CLAUDE.md / @import / rules / auto-memory chain)
+# and AXF_LEAN_HEADLESS=1: the own-login copy drops SessionStart hooks (claude-sync's _claude chain, session check-in),
+# the project hook skips its builds-live sync (the launcher runs it first, quietly) and the changes hook prints one line.
+# Tool permissions and the other hooks are unchanged. The brief is the whole start context. AXF_LEAN=off loads it all.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -222,6 +227,10 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     node "$SLOTS" bind "$slot" --pid "$$" --session "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" >/dev/null 2>&1 || true
   fi
   [[ -n "${AXF_AGENT:-}" ]] && agent_line="# agent ${AXF_AGENT} · ${AXF_AGENT_NAME:-${AXF_AGENT}}"  # axf-plugin:agent-swarm
+  if [[ "${AXF_LEAN:-on}" != off ]]; then
+    export CLAUDE_CODE_DISABLE_CLAUDE_MDS=1 CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 AXF_LEAN_HEADLESS=1
+    command -v node >/dev/null && [[ -f "$HERE/../framework/cli/builds-live.mjs" ]] && node "$HERE/../framework/cli/builds-live.mjs" sync --quiet >/dev/null 2>&1 || true
+  fi
   printf '\033[2m# headless Claude Code · %s · %s%s\033[0m\n\n' "$(pwd)" "$(date '+%Y-%m-%d %H:%M')" "${AXF_AGENT:+ · agent ${AXF_AGENT_NAME:-$AXF_AGENT}}"
   # Activity banner hooks (Oct 31 2026): add whatever event is missing from this user's ~/.claude/settings.json (an old
   # install without PostToolUse left every push/pull/merge/delete/build line open as a ghost). Never blocks the run.
@@ -255,7 +264,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   while :; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
-      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
+      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --brief "$brief")
       claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
       claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
@@ -357,6 +366,7 @@ elif slots_on; then
   slot="$slot_id"
 fi
 if ! command -v tmux >/dev/null; then
+  [[ "${AXF_LEAN:-on}" != off ]] && export CLAUDE_CODE_DISABLE_CLAUDE_MDS=1 CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 AXF_LEAN_HEADLESS=1
   login_session="$session"; own_login "${account:-active}"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
   nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$(cat "$brief")" &
@@ -366,7 +376,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_LEAN; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux

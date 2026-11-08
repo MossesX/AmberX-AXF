@@ -321,7 +321,9 @@ const minutesBetween = (a, b) => { const x = Date.parse(a), y = Date.parse(b); r
 /* ---------------- Claude Code hook ---------------- */
 
 const cmd = (s) => `node "${SCRIPT}" ${s}`;
-export function hookContext(id, kind) {
+export function hookContext(id, kind, env = process.env) {
+  // Lean headless runs read only their brief (Brett, Nov 8 2026): the entry is still kept, the session gets one line.
+  if (env.AXF_LEAN_HEADLESS === '1') return `[Codebase changes] Entry ${id} (${kind}) is open; the hooks keep it current.`;
   return [
     `[Build manager / Codebase changes] Entry ${id} (${kind}) is open on axHub and shows live in the console's Build manager.`,
     'Before you start building, record what it is and your estimates (the build it belongs to, model, minutes, files/folders you will touch):',

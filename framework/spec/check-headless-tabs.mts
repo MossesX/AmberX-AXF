@@ -47,6 +47,7 @@ check(rel.join(' | ') === 'user memory:/home/.claude/CLAUDE.md | import:/home/hu
   'memory chain: user memory, imports depth-first, outermost folder first, .claude/rules; an import cycle is read once');
 
 // ---- the meter: cost per message once, reconciled to the result, chain from Reads
+delete process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS;   // these checks run inside lean headless builds too
 let t = 1_000_000;
 const m = createMeter({ session: 'axf-x', name: 'x', agent: 'Vinnie', model: 'opus', cwd: proj, home, pricing, now: () => t });
 check(m.snapshot().chainCount === 5 && m.snapshot().status === 'starting', 'meter starts with the memory chain loaded, status starting');
@@ -72,6 +73,10 @@ check(Math.abs(m2.snapshot().costUsd - 0.27) < 1e-6 && m2.snapshot().runs === 2 
 const m3 = createMeter({ session: 'axf-y', model: 'opus', cwd: proj, home, pricing });
 m3.add({ type: 'assistant', message: { id: 'q', usage: usage(10), content: [] } }); m3.end();
 check(m3.snapshot().status === 'failed' && m3.snapshot().ended, 'stream ended without a result = failed');
+const lean = createMeter({ session: 'axf-lean', model: 'opus', cwd: sub, home, pricing, memory: false, brief: '.brief.md' });
+lean.add({ type: 'assistant', message: { id: 'r', usage: usage(1), content: [{ type: 'tool_use', id: 'r1', name: 'Read', input: { file_path: join(sub, 'deep', 'file.ts') } }] } });
+const leanItems = lean.chain().items.map((i: ChainItem) => `${i.via}:${i.rel}`).join(' | ');
+check(leanItems === 'brief:.brief.md | read:deep/file.ts', `lean headless run: the chain is the brief, then what it reads, no memory (${leanItems})`);
 const m4 = createMeter({ session: 'axf-z', model: 'mystery-model', cwd: proj, home, pricing });
 m4.add({ type: 'assistant', message: { id: 'q', model: 'mystery-model', usage: usage(10), content: [] } });
 check(m4.snapshot().priced === false && m4.snapshot().costUsd === 0, 'a model without a price is flagged, never guessed');

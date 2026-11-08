@@ -46,6 +46,7 @@ const ENV = { AXF_CLAUDE_ACCOUNTS: A, AXF_CLAUDE_HOME: SH, AXF_CLAUDE_GLOBAL: G,
 Object.assign(process.env, ENV);
 const L = await import('./claude-login.mjs');
 const env = { ...process.env, ...ENV };
+delete env.AXF_LEAN_HEADLESS;   // the shared-settings checks below run inside lean headless builds too
 
 console.log('which account');
 let p = L.pick('active', env);
@@ -83,6 +84,12 @@ ok(mode(join(w, '.axf-claude')) === 0o700 && mode(s.dir) === 0o700, 'both folder
 ok(mode(join(s.dir, '.credentials.json')) === 0o600 && !lstatSync(join(s.dir, '.credentials.json')).isSymbolicLink(), 'credentials: a real 0600 file');
 ok(read(join(s.dir, '.credentials.json')) === credsOf(SECRET_A), 'credentials: the active account\'s login');
 ok(lstatSync(join(s.dir, 'settings.json')).isSymbolicLink() && lstatSync(join(s.dir, 'projects')).isSymbolicLink(), 'settings + transcripts stay shared (symlinks)');
+writeFileSync(join(SH, 'settings.json'), JSON.stringify({ model: 'opus', hooks: { SessionStart: [{ hooks: [{ type: 'command', command: 'claude-sync start' }] }], PreToolUse: [{ hooks: [{ type: 'command', command: 'log' }] }] } }));
+const sl = L.snapshot({ dir: w, session: 'lean', env: { ...env, AXF_LEAN_HEADLESS: '1' } });
+const ls = JSON.parse(read(join(sl.dir, 'settings.json')));
+ok(!lstatSync(join(sl.dir, 'settings.json')).isSymbolicLink() && !ls.hooks.SessionStart && ls.hooks.PreToolUse && ls.model === 'opus', 'lean headless: settings copied without SessionStart hooks (they only add context), the rest kept');
+ok(JSON.parse(read(join(SH, 'settings.json'))).hooks.SessionStart, 'lean headless: the shared settings are untouched');
+writeFileSync(join(SH, 'settings.json'), '{"hooks":{}}');
 const g = JSON.parse(read(join(s.dir, '.claude.json')));
 ok(!g.oauthAccount && g.mcpServers?.x, 'global config copied, minus the cached (stale) account');
 ok(read(join(s.dir, 'token.env')).trim() === 'unset CLAUDE_CODE_OAUTH_TOKEN' && mode(join(s.dir, 'token.env')) === 0o600, 'no saved token = token.env unsets the inherited one');

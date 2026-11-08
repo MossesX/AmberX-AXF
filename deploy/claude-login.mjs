@@ -22,6 +22,9 @@
  *                       `unset CLAUDE_CODE_OAUTH_TOKEN`, so an inherited token never beats the snapshot
  *   build-login.json    build-login@1: { account, email, source, at } — never a credential
  *   token-chain.json    token-chain@1: hashes of the refresh tokens this copy has held + where its stores are
+ *   settings.json       lean headless runs (AXF_LEAN_HEADLESS=1, set by deploy/claude-headless.sh): a real copy of the
+ *                       shared settings without SessionStart hooks, which only print context (claude-sync's _claude
+ *                       chain, session check-in); the brief is the whole start context. Other hooks stay.
  *   everything else     symlinks to the shared config dir (settings.json + hooks, CLAUDE.md, projects/ transcripts,
  *                       plugins, skills…), so a build behaves exactly as before apart from whose login it uses
  *
@@ -119,6 +122,19 @@ export function pick(want = 'active', env = process.env) {
   return liveIs(a) ? fromLive(a) : saved(a);
 }
 
+/** Lean headless settings: the shared settings minus SessionStart hooks (they only add context). False = link it as before. */
+export function leanSettings(json) {
+  if (!json || typeof json !== 'object' || Array.isArray(json)) return null;
+  const out = { ...json };
+  if (out.hooks && typeof out.hooks === 'object') { out.hooks = { ...out.hooks }; delete out.hooks.SessionStart; }
+  return out;
+}
+function writeLeanSettings(from, to) {
+  const lean = leanSettings(readJson(from));
+  if (!lean) return false;
+  try { writeFileSync(to, JSON.stringify(lean, null, 2) + '\n', { mode: 0o600 }); return true; } catch { return false; }
+}
+
 export const loginDir = (dir, session) => join(resolve(dir), FOLDER, slug(session));
 
 /**
@@ -154,6 +170,7 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
   let names = []; try { names = readdirSync(shared); } catch { /* no shared dir */ }
   for (const n of names) {
     if (SKIP.has(n) || n === FOLDER) continue;
+    if (n === 'settings.json' && env.AXF_LEAN_HEADLESS === '1' && writeLeanSettings(join(shared, n), join(out, n))) continue;
     let target = join(shared, n); try { target = realpathSync(target); } catch { continue; }
     try { symlinkSync(target, join(out, n)); } catch { /* raced or exists */ }
   }

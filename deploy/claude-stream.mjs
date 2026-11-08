@@ -64,7 +64,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let meter = null;
   if (o.meter) {
     try {
-      meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null });
+      meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null, brief: o.brief ?? '' });
     } catch { meter = null; }
   }
   let dirty = false; let chainAt = -1;

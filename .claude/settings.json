@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && node framework/cli/builds-live.mjs sync --quiet; node framework/cli/builds-reconcile.mjs --apply --brief 2>&1 | sed 's/^/[builds] /' | head -40; true",
+            "command": "[ \"$AXF_LEAN_HEADLESS\" = 1 ] && exit 0; cd \"$CLAUDE_PROJECT_DIR\" && node framework/cli/builds-live.mjs sync --quiet; node framework/cli/builds-reconcile.mjs --apply --brief 2>&1 | sed 's/^/[builds] /' | head -40; true",
             "timeout": 90
           }
         ]
