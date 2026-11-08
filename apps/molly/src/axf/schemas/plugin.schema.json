@@ -228,6 +228,16 @@
       "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
       "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
     },
+    "menu": {
+      "type": "object",
+      "description": "Where the generated nested menus (nested-menu@1, framework/core/engines/menugen.mjs) file this plugin's pages, dialogs and settings tab: a category id (start, work, builds, ai, plugins, framework, look, apps, system, account, help, more, or one the app adds), an optional sub menu label, and extra words the categoriser and search match. Without it the plugin's words decide.",
+      "additionalProperties": false,
+      "properties": {
+        "category": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,39}$" },
+        "subcategory": { "type": "string", "maxLength": 60 },
+        "keywords": { "type": "array", "items": { "type": "string", "maxLength": 60 }, "maxItems": 24 }
+      }
+    },
     "help": {
       "type": "string",
       "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."

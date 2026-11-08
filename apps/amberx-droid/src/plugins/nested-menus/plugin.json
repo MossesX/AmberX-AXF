@@ -1,0 +1,25 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.nested-menus",
+  "name": "Nested menus",
+  "version": "0.1.0",
+  "description": "AmberX's application menu and navigation generated from its registry (nested-menu@1, the same generator the Dev Console and Molly use): approvals, every plugin's pages, dialogs and settings, as categories and sub menus with at most 12 rows per level, Favourites and Recent on top and Jump to…. Overrides the shared app-menu and nav-menu assets (on by default). Settings → Plugins → Menus.",
+  "menu": { "category": "look", "keywords": ["menus", "navigation", "generated"] },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "jump", "title": "Jump to a menu entry", "action": "menus.jump", "input": { "type": "object", "properties": { "query": { "type": "string" } } } },
+      { "id": "open", "title": "Open a menu entry by id", "action": "menus.open", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
+      { "id": "favorite", "title": "Pin or unpin a favourite", "action": "menus.favorite", "input": { "type": "object", "properties": { "id": { "type": "string" }, "state": { "type": "string", "enum": ["on", "off", "toggle"] } } } },
+      { "id": "override", "title": "Generated menus on / off", "action": "menus.override", "input": { "type": "object", "properties": { "state": { "type": "string", "enum": ["on", "off", "toggle"] } } } },
+      { "id": "set", "title": "Change one menu setting", "description": "Fields: maxPerLevel (4-30), recentsMax (0-24), showFavorites, showRecents, groupByPlugin, style (list|rail|pills), hidden (ids), favorites (ids).", "action": "menus.set", "input": { "type": "object", "properties": { "field": { "type": "string" }, "value": { "type": ["string", "number", "boolean"] } }, "required": ["field", "value"] } },
+      { "id": "get", "title": "Menu generator status", "action": "menus.get", "readOnly": true, "output": "{ stats, settings, assets }" },
+      { "id": "outline", "title": "The generated menu tree", "action": "menus.outline", "readOnly": true, "output": "text" },
+      { "id": "generate", "title": "Regenerate the menus now", "action": "menus.generate" },
+      { "id": "settings", "title": "Open Menu settings", "action": "menus.settings" }
+    ],
+    "noReads": "no data folder: favourites, recents and the settings are per-device settings (axf.menus.*)"
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-08" }
+}

@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-nested-menus-help",
+  "name": "Nested menus help (Molly)",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Nested menus plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:nested-menus",
+    "entries": [
+      {
+        "target": "app-menu",
+        "title": "Generated menu bar",
+        "text": "Molly's menus generated from what it holds: Start (Favourites, Recent, Jump to…), the apps, their pages and every plugin, filed by category with at most 12 rows per level. Right-click the bar for Menu settings or the shared menus."
+      },
+      {
+        "target": "nav",
+        "title": "Generated navigation",
+        "text": "Favourites and recent pages first, then one row per category that slides open; each app opens its own pages under it. Right-click a page to pin it."
+      },
+      {
+        "target": "action:menus.jump",
+        "title": "Jump to…",
+        "text": "Type a word from an app, page, setting or action and press Enter to open the first match."
+      },
+      {
+        "target": "settings-tab:menus",
+        "title": "Menu settings",
+        "text": "General, Categories, Favourites, Recent and a Preview of the tree, each a collapsible section. Every setting is also a command (menus.set)."
+      }
+    ]
+  }
+}

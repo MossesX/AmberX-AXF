@@ -75,6 +75,8 @@ export interface AxfWebLibrary {
   opens?: Placement | false;
   /** Which UI moves (`view:<id>` / `dialog:<id>`); default its first page, else its first dialog. */
   opensUi?: string;
+  /** Where the generated nested menus (nested-menu@1, core/engines/menugen.mjs) file this library's entries: a category id, an optional sub menu label, extra words. */
+  menu?: { category?: string; subcategory?: string; keywords?: string[] };
 }
 
 /** Content for a named slot; `props` are what the view passes to `<Slot name=… props=… />`. */
@@ -127,6 +129,7 @@ export function installedLibraryRecord(l: AxfWebLibrary): InstalledLibrary {
     ...(l.uiEditor?.length ? { uiEditor: [...l.uiEditor] } : {}),
     ...(l.builtWith?.model ? { builtWith: { ...l.builtWith } } : {}),
     ...(isPlacement(l.opens) ? { opens: l.opens } : {}),
+    ...(l.menu ? { menu: { ...l.menu } } : {}),
     contributes: [...views.map((v) => `view:${v.id}`), ...dialogs.map((d) => `dialog:${d.id}`), ...tabs.map((t) => `settings-tab:${t.id}`)],
     ui: {
       views, dialogs, settingsTabs: tabs,

@@ -264,6 +264,48 @@
         "text": "Opens the banner settings.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "jump-to",
+        "title": "Jump to",
+        "text": "Type a word from any page, dialog, setting or action. Favourites and recent pages show first; Enter opens the first match, Esc closes.",
+        "kind": "field"
+      },
+      {
+        "target": "regenerate-now",
+        "title": "Regenerate now",
+        "text": "Reads the registry again and rebuilds the generated menus at once. A new plugin or page does this by itself.",
+        "kind": "button"
+      },
+      {
+        "target": "pin-the-current-page",
+        "title": "Pin the current page",
+        "text": "Adds the page you are on to the Favourites list at the top of the menus and the navigation.",
+        "kind": "button"
+      },
+      {
+        "target": "action:menus.favorite",
+        "title": "Pin / unpin in Favourites",
+        "text": "Adds this page to Favourites, or takes it out again when it is already there.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:menus.settings",
+        "title": "Menu settings",
+        "text": "Opens Settings → Plugins → Menus: the override, rows per level, categories, favourites, recents and a preview of the tree.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:menus.generate",
+        "title": "Regenerate menus",
+        "text": "Rebuilds the generated menus from everything installed right now.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "menus",
+        "title": "Menus",
+        "text": "The generated nested menus’ settings: General, Categories, Favourites, Recent and Preview, each a collapsible section.",
+        "kind": "tab"
       }
     ],
     "intros": []

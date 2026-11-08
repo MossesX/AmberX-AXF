@@ -1,0 +1,52 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "nested-menus-help",
+  "name": "Nested menus help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Nested menus plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:nested-menus",
+    "entries": [
+      {
+        "target": "app-menu",
+        "title": "Generated menu bar",
+        "text": "Every page, dialog, setting and action, filed by category: Start, Work, Builds, AI & agents, Plugins, Framework, Look & layout, Apps, System, Account, Help. At most 12 rows per level; the rest sits in sub menus. Start holds Favourites, Recent and Jump to…. Right-click the bar for Menu settings or to go back to the shared menus."
+      },
+      {
+        "target": "nav",
+        "title": "Generated navigation",
+        "text": "Favourites and recently opened pages first, then one row per category that slides open. Right-click a page to pin it to Favourites."
+      },
+      {
+        "target": "action:menus.jump",
+        "title": "Jump to…",
+        "text": "Type a word from a page, plugin, setting or action and press Enter to open the first match. Ctrl+Shift+K opens it anywhere."
+      },
+      {
+        "target": "action:menus.override",
+        "title": "Generated nested menus",
+        "text": "On: the generated menus replace the shared app-menu and nav-menu assets for this app. Off: the shared menus come back. The generated ones stay registered as assets either way."
+      },
+      {
+        "target": "action:menus.favorite",
+        "title": "Pin to Favourites",
+        "text": "Pins (or unpins) the current page in the Favourites list at the top of the menus. Favourites rank first in Jump to… too."
+      },
+      {
+        "target": "action:menus.generate",
+        "title": "Regenerate",
+        "text": "Reads the registry again and rebuilds the menus. Normally not needed: a plugin installed or a page added regenerates them by itself."
+      },
+      {
+        "target": "settings-tab:nested-menus",
+        "title": "Menu settings",
+        "text": "General (override, rows per level, grouping, navigation style), Categories (switch any off), Favourites, Recent (how many are kept) and a Preview of the tree. Every setting is also a command: menus.set <field> <value>."
+      }
+    ]
+  }
+}

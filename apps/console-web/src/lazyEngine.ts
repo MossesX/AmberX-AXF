@@ -44,6 +44,8 @@ export const CORE_PLUGINS: Record<string, Exclude<LazyMode, 'off'>> = {
   'console-commands': 'start',
   'console-terminal': 'open',
   'systems-check': 'start',
+  // the generated nested menus are the menu bar and the navigation: they must be there before anything opens
+  'nested-menus': 'start',
 };
 
 /**

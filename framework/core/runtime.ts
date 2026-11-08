@@ -216,6 +216,8 @@ export interface InstalledLibrary {
   builtWith?: { model: string; builtAt?: string };
   /** Where its primary UI opens by default (engines/placement.ts); the setting `axf.placement.<id>` wins. */
   opens?: Placement;
+  /** Where the generated nested menus file its entries (nested-menu@1, engines/menugen.mjs). */
+  menu?: { category?: string; subcategory?: string; keywords?: string[] };
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */

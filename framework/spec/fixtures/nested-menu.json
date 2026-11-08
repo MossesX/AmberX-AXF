@@ -1,0 +1,887 @@
+{
+ "$axf": "nested-menu@1",
+ "defaults": {
+  "maxPerLevel": 12,
+  "maxDepth": 4,
+  "recentsMax": 8,
+  "showFavorites": true,
+  "showRecents": true,
+  "groupByPlugin": true,
+  "style": "list"
+ },
+ "fields": {
+  "override": {
+   "kind": "boolean",
+   "default": true,
+   "title": "Override the shared menus",
+   "text": "Show the generated menus instead of the app’s shared app-menu and nav-menu assets."
+  },
+  "maxPerLevel": {
+   "kind": "number",
+   "min": 4,
+   "max": 30,
+   "default": 12,
+   "title": "Rows per level",
+   "text": "The most rows a menu or sub menu shows before the rest goes into sub menus."
+  },
+  "recentsMax": {
+   "kind": "number",
+   "min": 0,
+   "max": 24,
+   "default": 8,
+   "title": "Recents kept",
+   "text": "How many recently opened pages and dialogs the Recent list keeps (0 hides it)."
+  },
+  "showFavorites": {
+   "kind": "boolean",
+   "default": true,
+   "title": "Favourites on top",
+   "text": "A Favourites list first in the navigation and in the Start menu."
+  },
+  "showRecents": {
+   "kind": "boolean",
+   "default": true,
+   "title": "Recent on top",
+   "text": "A Recent list after Favourites."
+  },
+  "groupByPlugin": {
+   "kind": "boolean",
+   "default": true,
+   "title": "Group by plugin",
+   "text": "When a category is over the cap, a plugin with several entries becomes its own sub menu."
+  },
+  "style": {
+   "kind": "enum",
+   "options": [
+    "list",
+    "rail",
+    "pills"
+   ],
+   "default": "list",
+   "title": "Navigation style",
+   "text": "How the generated navigation is drawn."
+  },
+  "hidden": {
+   "kind": "list",
+   "default": [],
+   "title": "Hidden",
+   "text": "Category ids or entry ids left out of the generated menus."
+  },
+  "favorites": {
+   "kind": "list",
+   "default": [],
+   "title": "Favourites",
+   "text": "Entry ids pinned to the Favourites list, in order."
+  }
+ },
+ "keys": {
+  "override": "axf.menus.override",
+  "maxPerLevel": "axf.menus.maxPerLevel",
+  "recentsMax": "axf.menus.recentsMax",
+  "favorites": "axf.menus.favorites",
+  "recents": "axf.menus.recents",
+  "hidden": "axf.menus.hidden",
+  "style": "axf.menus.style",
+  "showFavorites": "axf.menus.showFavorites",
+  "showRecents": "axf.menus.showRecents",
+  "groupByPlugin": "axf.menus.groupByPlugin",
+  "previous": "axf.menus.previous"
+ },
+ "categories": [
+  {
+   "id": "start",
+   "label": "Start",
+   "icon": "home"
+  },
+  {
+   "id": "work",
+   "label": "Work",
+   "icon": "check-circle"
+  },
+  {
+   "id": "builds",
+   "label": "Builds",
+   "icon": "play"
+  },
+  {
+   "id": "ai",
+   "label": "AI & agents",
+   "icon": "sparkles"
+  },
+  {
+   "id": "plugins",
+   "label": "Plugins",
+   "icon": "package"
+  },
+  {
+   "id": "framework",
+   "label": "Framework",
+   "icon": "layers"
+  },
+  {
+   "id": "look",
+   "label": "Look & layout",
+   "icon": "palette"
+  },
+  {
+   "id": "apps",
+   "label": "Apps",
+   "icon": "grid"
+  },
+  {
+   "id": "system",
+   "label": "System",
+   "icon": "terminal"
+  },
+  {
+   "id": "account",
+   "label": "Account",
+   "icon": "shield"
+  },
+  {
+   "id": "help",
+   "label": "Help",
+   "icon": "help"
+  },
+  {
+   "id": "more",
+   "label": "More",
+   "icon": "more"
+  }
+ ],
+ "categorize": [
+  {
+   "label": "Plan",
+   "action": "nav:plan",
+   "category": "builds"
+  },
+  {
+   "label": "Agent manager",
+   "action": "nav:agent-manager",
+   "category": "ai"
+  },
+  {
+   "label": "Users",
+   "action": "console.open:axhub-users",
+   "category": "account"
+  },
+  {
+   "label": "Zzz",
+   "action": "x.unknown",
+   "category": "more"
+  },
+  {
+   "label": "Theme editor",
+   "action": "nav:theme-editor",
+   "category": "look"
+  },
+  {
+   "label": "Plugin Manager",
+   "action": "nav:plugin-manager",
+   "category": "plugins"
+  },
+  {
+   "label": "Output terminal",
+   "action": "terminal.open",
+   "category": "system"
+  },
+  {
+   "label": "Approvals",
+   "action": "nav:approvals",
+   "category": "work"
+  }
+ ],
+ "synthetic": {
+  "outline": "Favourites ▸ Plan\nRecent ▸ Home, Tracker\nStart (1)\n  Home\nBuilds (31)\n  Build queue\n  Pending builds\n  Plan\n  Tracker\n  Open pending items (live list)\n  More… ▸\n    build delta 00\n    build delta 01\n    build epsilon 00\n    build epsilon 01\n  Exports ▸\n    Sub one\n    Sub two\n  Plugin alpha ▸\n    build alpha 00\n    build alpha 01\n    build alpha 02\n    build alpha 03\n    build alpha 04\n  Plugin beta ▸\n    build beta 00\n    build beta 01\n    build beta 02\n    build beta 03\n  Plugin gamma ▸\n    build gamma 00\n    build gamma 01\n    build gamma 02\n  Settings ▸\n    build alpha 00 settings\n    build alpha 01 settings\n    build alpha 02 settings\n    build alpha 03 settings\n    build alpha 04 settings\n    build alpha 05 settings\n    build beta 00 settings\n    build beta 01 settings\nFramework (1)\n  Brand library\nLook & layout (1)\n  Theme editor\nHelp (1)\n  About",
+  "stats": {
+   "sources": 35,
+   "hidden": 0,
+   "shown": 35,
+   "placed": 35,
+   "unplaced": 0,
+   "categories": 5,
+   "groups": 6,
+   "deepest": 2,
+   "widest": 11,
+   "maxPerLevel": 12,
+   "favorites": 1,
+   "recents": 2,
+   "perCategory": {
+    "start": 1,
+    "builds": 31,
+    "framework": 1,
+    "look": 1,
+    "help": 1
+   }
+  },
+  "appMenu": {
+   "menus": [
+    {
+     "id": "start",
+     "label": "Start",
+     "order": 10,
+     "items": [
+      {
+       "id": "favorites",
+       "label": "Favourites",
+       "icon": "star",
+       "items": [
+        {
+         "id": "page:plan",
+         "label": "Plan",
+         "action": "nav:plan"
+        }
+       ]
+      },
+      {
+       "id": "recents",
+       "label": "Recent",
+       "icon": "clock",
+       "items": [
+        {
+         "id": "page:home",
+         "label": "Home",
+         "icon": "home",
+         "action": "nav:home"
+        }
+       ]
+      },
+      {
+       "id": "jump",
+       "label": "Jump to…",
+       "icon": "search",
+       "action": "menus.jump",
+       "shortcut": "Ctrl+Shift+K"
+      },
+      {
+       "id": "start-sep",
+       "separator": true
+      },
+      {
+       "id": "page:home",
+       "label": "Home",
+       "icon": "home",
+       "action": "nav:home"
+      }
+     ]
+    },
+    {
+     "id": "builds",
+     "label": "Builds",
+     "order": 20,
+     "items": [
+      {
+       "id": "page:build",
+       "label": "Build queue",
+       "action": "nav:build"
+      },
+      {
+       "id": "page:pending",
+       "label": "Pending builds",
+       "action": "nav:pending"
+      },
+      {
+       "id": "page:plan",
+       "label": "Plan",
+       "action": "nav:plan"
+      },
+      {
+       "id": "page:tracker",
+       "label": "Tracker",
+       "action": "nav:tracker"
+      },
+      {
+       "id": "list:console.pending",
+       "label": "Open pending items",
+       "provider": "console.pending"
+      },
+      {
+       "id": "group:builds/more",
+       "label": "More…",
+       "icon": "more",
+       "items": [
+        {
+         "id": "page:delta-0",
+         "label": "build delta 00",
+         "action": "nav:delta-0"
+        },
+        {
+         "id": "page:delta-1",
+         "label": "build delta 01",
+         "action": "nav:delta-1"
+        },
+        {
+         "id": "page:epsilon-0",
+         "label": "build epsilon 00",
+         "action": "nav:epsilon-0"
+        },
+        {
+         "id": "page:epsilon-1",
+         "label": "build epsilon 01",
+         "action": "nav:epsilon-1"
+        }
+       ]
+      },
+      {
+       "id": "group:builds/exports",
+       "label": "Exports",
+       "icon": "folder",
+       "items": [
+        {
+         "id": "page:sub1",
+         "label": "Sub one",
+         "action": "nav:sub1"
+        },
+        {
+         "id": "page:sub2",
+         "label": "Sub two",
+         "action": "nav:sub2"
+        }
+       ]
+      },
+      {
+       "id": "group:builds/plugin-ai-test-alpha",
+       "label": "Plugin alpha",
+       "icon": "package",
+       "items": [
+        {
+         "id": "page:alpha-0",
+         "label": "build alpha 00",
+         "action": "nav:alpha-0"
+        },
+        {
+         "id": "page:alpha-1",
+         "label": "build alpha 01",
+         "action": "nav:alpha-1"
+        },
+        {
+         "id": "page:alpha-2",
+         "label": "build alpha 02",
+         "action": "nav:alpha-2"
+        },
+        {
+         "id": "page:alpha-3",
+         "label": "build alpha 03",
+         "action": "nav:alpha-3"
+        },
+        {
+         "id": "page:alpha-4",
+         "label": "build alpha 04",
+         "action": "nav:alpha-4"
+        }
+       ]
+      },
+      {
+       "id": "group:builds/plugin-ai-test-beta",
+       "label": "Plugin beta",
+       "icon": "package",
+       "items": [
+        {
+         "id": "page:beta-0",
+         "label": "build beta 00",
+         "action": "nav:beta-0"
+        },
+        {
+         "id": "page:beta-1",
+         "label": "build beta 01",
+         "action": "nav:beta-1"
+        },
+        {
+         "id": "page:beta-2",
+         "label": "build beta 02",
+         "action": "nav:beta-2"
+        },
+        {
+         "id": "page:beta-3",
+         "label": "build beta 03",
+         "action": "nav:beta-3"
+        }
+       ]
+      },
+      {
+       "id": "group:builds/plugin-ai-test-gamma",
+       "label": "Plugin gamma",
+       "icon": "package",
+       "items": [
+        {
+         "id": "page:gamma-0",
+         "label": "build gamma 00",
+         "action": "nav:gamma-0"
+        },
+        {
+         "id": "page:gamma-1",
+         "label": "build gamma 01",
+         "action": "nav:gamma-1"
+        },
+        {
+         "id": "page:gamma-2",
+         "label": "build gamma 02",
+         "action": "nav:gamma-2"
+        }
+       ]
+      },
+      {
+       "id": "group:builds/kind-settings",
+       "label": "Settings",
+       "icon": "settings",
+       "items": [
+        {
+         "id": "settings:alpha-0",
+         "label": "build alpha 00 settings",
+         "action": "settings.open:alpha-0"
+        },
+        {
+         "id": "settings:alpha-1",
+         "label": "build alpha 01 settings",
+         "action": "settings.open:alpha-1"
+        },
+        {
+         "id": "settings:alpha-2",
+         "label": "build alpha 02 settings",
+         "action": "settings.open:alpha-2"
+        },
+        {
+         "id": "settings:alpha-3",
+         "label": "build alpha 03 settings",
+         "action": "settings.open:alpha-3"
+        },
+        {
+         "id": "settings:alpha-4",
+         "label": "build alpha 04 settings",
+         "action": "settings.open:alpha-4"
+        },
+        {
+         "id": "settings:alpha-5",
+         "label": "build alpha 05 settings",
+         "action": "settings.open:alpha-5"
+        },
+        {
+         "id": "settings:beta-0",
+         "label": "build beta 00 settings",
+         "action": "settings.open:beta-0"
+        },
+        {
+         "id": "settings:beta-1",
+         "label": "build beta 01 settings",
+         "action": "settings.open:beta-1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "framework",
+     "label": "Framework",
+     "order": 30,
+     "items": [
+      {
+       "id": "page:z2",
+       "label": "Brand library",
+       "action": "nav:z2"
+      }
+     ]
+    },
+    {
+     "id": "look",
+     "label": "Look & layout",
+     "order": 40,
+     "items": [
+      {
+       "id": "page:z1",
+       "label": "Theme editor",
+       "action": "nav:z1"
+      }
+     ]
+    },
+    {
+     "id": "help",
+     "label": "Help",
+     "order": 50,
+     "items": [
+      {
+       "id": "page:about",
+       "label": "About",
+       "action": "nav:about"
+      }
+     ]
+    }
+   ],
+   "density": "compact"
+  },
+  "navMenu": {
+   "style": "list",
+   "header": "Test",
+   "sections": [
+    {
+     "label": "Favourites",
+     "items": [
+      {
+       "id": "page:plan",
+       "label": "Plan",
+       "icon": "layout",
+       "view": "plan"
+      }
+     ]
+    },
+    {
+     "label": "Recent",
+     "items": [
+      {
+       "id": "page:home",
+       "label": "Home",
+       "icon": "home",
+       "view": "home"
+      }
+     ]
+    },
+    {
+     "items": [
+      {
+       "id": "page:home",
+       "label": "Home",
+       "icon": "home",
+       "view": "home"
+      },
+      {
+       "id": "group:builds",
+       "label": "Builds",
+       "icon": "play",
+       "view": "",
+       "items": [
+        {
+         "id": "page:build",
+         "label": "Build queue",
+         "icon": "layout",
+         "view": "build"
+        },
+        {
+         "id": "page:pending",
+         "label": "Pending builds",
+         "icon": "layout",
+         "view": "pending"
+        },
+        {
+         "id": "page:plan",
+         "label": "Plan",
+         "icon": "layout",
+         "view": "plan"
+        },
+        {
+         "id": "page:tracker",
+         "label": "Tracker",
+         "icon": "layout",
+         "view": "tracker"
+        },
+        {
+         "id": "group:builds/more",
+         "label": "More…",
+         "icon": "more",
+         "view": "",
+         "items": [
+          {
+           "id": "page:delta-0",
+           "label": "build delta 00",
+           "icon": "layout",
+           "view": "delta-0"
+          },
+          {
+           "id": "page:delta-1",
+           "label": "build delta 01",
+           "icon": "layout",
+           "view": "delta-1"
+          },
+          {
+           "id": "page:epsilon-0",
+           "label": "build epsilon 00",
+           "icon": "layout",
+           "view": "epsilon-0"
+          },
+          {
+           "id": "page:epsilon-1",
+           "label": "build epsilon 01",
+           "icon": "layout",
+           "view": "epsilon-1"
+          }
+         ]
+        },
+        {
+         "id": "group:builds/exports",
+         "label": "Exports",
+         "icon": "folder",
+         "view": "",
+         "items": [
+          {
+           "id": "page:sub1",
+           "label": "Sub one",
+           "icon": "layout",
+           "view": "sub1"
+          },
+          {
+           "id": "page:sub2",
+           "label": "Sub two",
+           "icon": "layout",
+           "view": "sub2"
+          }
+         ]
+        },
+        {
+         "id": "group:builds/plugin-ai-test-alpha",
+         "label": "Plugin alpha",
+         "icon": "package",
+         "view": "",
+         "items": [
+          {
+           "id": "page:alpha-0",
+           "label": "build alpha 00",
+           "icon": "layout",
+           "view": "alpha-0"
+          },
+          {
+           "id": "page:alpha-1",
+           "label": "build alpha 01",
+           "icon": "layout",
+           "view": "alpha-1"
+          },
+          {
+           "id": "page:alpha-2",
+           "label": "build alpha 02",
+           "icon": "layout",
+           "view": "alpha-2"
+          },
+          {
+           "id": "page:alpha-3",
+           "label": "build alpha 03",
+           "icon": "layout",
+           "view": "alpha-3"
+          },
+          {
+           "id": "page:alpha-4",
+           "label": "build alpha 04",
+           "icon": "layout",
+           "view": "alpha-4"
+          }
+         ]
+        },
+        {
+         "id": "group:builds/plugin-ai-test-beta",
+         "label": "Plugin beta",
+         "icon": "package",
+         "view": "",
+         "items": [
+          {
+           "id": "page:beta-0",
+           "label": "build beta 00",
+           "icon": "layout",
+           "view": "beta-0"
+          },
+          {
+           "id": "page:beta-1",
+           "label": "build beta 01",
+           "icon": "layout",
+           "view": "beta-1"
+          },
+          {
+           "id": "page:beta-2",
+           "label": "build beta 02",
+           "icon": "layout",
+           "view": "beta-2"
+          },
+          {
+           "id": "page:beta-3",
+           "label": "build beta 03",
+           "icon": "layout",
+           "view": "beta-3"
+          }
+         ]
+        },
+        {
+         "id": "group:builds/plugin-ai-test-gamma",
+         "label": "Plugin gamma",
+         "icon": "package",
+         "view": "",
+         "items": [
+          {
+           "id": "page:gamma-0",
+           "label": "build gamma 00",
+           "icon": "layout",
+           "view": "gamma-0"
+          },
+          {
+           "id": "page:gamma-1",
+           "label": "build gamma 01",
+           "icon": "layout",
+           "view": "gamma-1"
+          },
+          {
+           "id": "page:gamma-2",
+           "label": "build gamma 02",
+           "icon": "layout",
+           "view": "gamma-2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "page:z2",
+       "label": "Brand library",
+       "icon": "layout",
+       "view": "z2"
+      },
+      {
+       "id": "page:z1",
+       "label": "Theme editor",
+       "icon": "layout",
+       "view": "z1"
+      },
+      {
+       "id": "page:about",
+       "label": "About",
+       "icon": "layout",
+       "view": "about"
+      }
+     ]
+    }
+   ],
+   "navStyle": true,
+   "density": "compact"
+  }
+ },
+ "apps": {
+  "apps/console-web": {
+   "stats": {
+    "sources": 206,
+    "hidden": 0,
+    "shown": 206,
+    "placed": 206,
+    "unplaced": 0,
+    "categories": 12,
+    "groups": 17,
+    "deepest": 3,
+    "widest": 12,
+    "maxPerLevel": 12,
+    "favorites": 0,
+    "recents": 0,
+    "perCategory": {
+     "start": 8,
+     "work": 10,
+     "builds": 43,
+     "ai": 51,
+     "plugins": 13,
+     "framework": 19,
+     "look": 32,
+     "apps": 2,
+     "system": 14,
+     "account": 4,
+     "help": 5,
+     "more": 5
+    }
+   },
+   "menus": [
+    "Start (12)",
+    "Work (10)",
+    "Builds (12)",
+    "AI & agents (4)",
+    "Plugins (9)",
+    "Framework (12)",
+    "Look & layout (12)",
+    "Apps (2)",
+    "System (8)",
+    "Account (4)",
+    "Help (5)",
+    "More (5)"
+   ],
+   "navRows": [
+    "Home",
+    "Settings",
+    "Work",
+    "Builds",
+    "AI & agents",
+    "Plugins",
+    "Framework",
+    "Look & layout",
+    "System",
+    "Account",
+    "Ui review"
+   ]
+  },
+  "apps/molly": {
+   "stats": {
+    "sources": 19,
+    "hidden": 0,
+    "shown": 19,
+    "placed": 19,
+    "unplaced": 0,
+    "categories": 5,
+    "groups": 0,
+    "deepest": 1,
+    "widest": 8,
+    "maxPerLevel": 12,
+    "favorites": 0,
+    "recents": 0,
+    "perCategory": {
+     "start": 3,
+     "look": 8,
+     "apps": 5,
+     "account": 1,
+     "more": 2
+    }
+   },
+   "menus": [
+    "Start (7)",
+    "Look & layout (8)",
+    "Apps (5)",
+    "Account (1)",
+    "More (2)"
+   ],
+   "navRows": [
+    "Molly",
+    "Settings",
+    "Account",
+    "xLayout"
+   ]
+  },
+  "apps/amberx-droid": {
+   "stats": {
+    "sources": 44,
+    "hidden": 0,
+    "shown": 44,
+    "placed": 44,
+    "unplaced": 0,
+    "categories": 8,
+    "groups": 2,
+    "deepest": 2,
+    "widest": 12,
+    "maxPerLevel": 12,
+    "favorites": 0,
+    "recents": 0,
+    "perCategory": {
+     "start": 3,
+     "work": 5,
+     "builds": 4,
+     "ai": 13,
+     "plugins": 1,
+     "look": 16,
+     "apps": 1,
+     "help": 1
+    }
+   },
+   "menus": [
+    "Start (7)",
+    "Work (5)",
+    "Builds (4)",
+    "AI & agents (8)",
+    "Plugins (1)",
+    "Look & layout (12)",
+    "Apps (1)",
+    "Help (1)"
+   ],
+   "navRows": [
+    "Settings",
+    "Approvals",
+    "Builds",
+    "AI & agents"
+   ]
+  }
+ }
+}

@@ -5,7 +5,7 @@ is `plugin.json` + `web/index.tsx` exporting `library` (an `AxfWebLibrary`), plu
 bundle runs in the browser and inside the Android shell (`android/`), so a plugin that needs a native piece reaches it
 through `src/native.ts` (Capacitor bridge, with a browser fallback), never through Capacitor directly.
 
-- **Bundled:** `voice` (voice control) and `monitor` (background monitoring) ship with the app.
+- **Bundled:** `voice` (voice control), `monitor` (background monitoring) and `nested-menus` (the menu bar and navigation generated from the registry with the framework's nested-menu@1 generator, the same code the console and Molly use; overrides the shared menus; Settings → Plugins → Menus; commands `menus.*`) ship with the app. <!-- axf-plugin:nested-menus -->
 - **Install one:** `node framework/cli/plugin-catalog.mjs app-install amberx <folder> --publish` /
   `app-uninstall amberx <folder> --publish` (commits just that folder to GitHub).
 - **Publish one:** `AXF_TOKEN=… node framework/cli/plugin-catalog.mjs publish apps/amberx-droid/src/plugins/<folder> --kind amberx --console https://console.amberxai.com`

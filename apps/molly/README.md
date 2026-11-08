@@ -34,3 +34,5 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
 npm install && npm run dev      # :5173
 docker build -t molly . && docker run -p 7490:8080 molly
 ```
+
+- **Nested menus** (`plugins/nested-menus`, Nov 8 2026): Molly's menu bar and navigation generated from its registry with the framework's nested-menu@1 generator (the same code as the console's and AmberX's): categories and sub menus with at most 12 rows per level, Favourites and Recent on top, Jump to…; overrides the shared `molly` app-menu / nav-menu while the setting is on. Settings → Plugins → Menus; commands `menus.*`. <!-- axf-plugin:nested-menus -->

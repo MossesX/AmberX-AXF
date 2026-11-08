@@ -1,0 +1,193 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.nested-menus",
+  "name": "Nested menus",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Generated nested menus (nested-menu@1): the console's application menu and side navigation generated from every page, dialog, settings tab, menu action and live list the console and its plugins register, as categories and sub categories with at most 12 rows per level, sub menus that slide open, Favourites and Recent on top and a Jump to\u2026 search. Overrides the shared app-menu and nav-menu assets (per app, on by default) and regenerates when a plugin is installed. Settings \u2192 Plugins \u2192 Menus: General, Categories, Favourites, Recent, Preview.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:menus.jump",
+    "settings-tab:nested-menus",
+    "action:menus.jump",
+    "action:menus.override",
+    "action:menus.favorite"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "menu": {
+    "category": "look",
+    "keywords": [
+      "menus",
+      "navigation",
+      "generated"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "jump",
+        "title": "Jump to a menu entry",
+        "description": "Search every page, dialog, setting and action; one clear match opens at once, otherwise the Jump to\u2026 dialog opens with the words typed in.",
+        "action": "menus.jump",
+        "input": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "open",
+        "title": "Open a menu entry by id",
+        "description": "Opens one generated-menu entry (page:<view>, dialog:<id>, settings:<tab>, action:<spec>).",
+        "action": "menus.open",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "favorite",
+        "title": "Pin or unpin a favourite",
+        "description": "Toggles an entry in Favourites (the current page without an id); on / off sets it.",
+        "action": "menus.favorite",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "on",
+                "off",
+                "toggle"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "override",
+        "title": "Generated menus on / off",
+        "description": "Show the generated nested menus instead of the shared app-menu and nav-menu assets (on, off or toggle).",
+        "action": "menus.override",
+        "input": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "on",
+                "off",
+                "toggle"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "set",
+        "title": "Change one menu setting",
+        "description": "Fields: maxPerLevel (4-30), recentsMax (0-24), showFavorites, showRecents, groupByPlugin, style (list|rail|pills), hidden (ids), favorites (ids).",
+        "action": "menus.set",
+        "input": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            }
+          },
+          "required": [
+            "field",
+            "value"
+          ]
+        }
+      },
+      {
+        "id": "get",
+        "title": "Menu generator status",
+        "description": "Entries placed, categories, the cap, the override state and the generated asset ids.",
+        "action": "menus.get",
+        "readOnly": true,
+        "output": "{ stats, settings, assets }"
+      },
+      {
+        "id": "outline",
+        "title": "The generated menu tree",
+        "description": "The whole tree as indented text.",
+        "action": "menus.outline",
+        "readOnly": true,
+        "output": "text"
+      },
+      {
+        "id": "generate",
+        "title": "Regenerate the menus now",
+        "action": "menus.generate"
+      },
+      {
+        "id": "recents-clear",
+        "title": "Clear the Recent list",
+        "action": "menus.recents.clear"
+      },
+      {
+        "id": "favorites-clear",
+        "title": "Clear Favourites",
+        "action": "menus.favorites.clear",
+        "destructive": true
+      },
+      {
+        "id": "settings",
+        "title": "Open Menu settings",
+        "action": "menus.settings"
+      }
+    ],
+    "noReads": "no data folder: favourites, recents and the settings are per-device settings (axf.menus.*)"
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-08",
+    "branch": "claude/nested-menus-for-console-amberx-and-molly-overri"
+  },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/nested-menus",
+    "env": [],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml",
+      "apps/molly/README.md",
+      "apps/amberx-droid/src/plugins/README.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": "dialog",
+  "opensUi": "dialog:menus.jump"
+}

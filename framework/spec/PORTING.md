@@ -143,3 +143,6 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+## Deferred: generated nested menus (Nov 8 2026)
+
+`framework/core/engines/menugen.mjs` (nested-menu@1: an app's UI registry → categories / sub categories / caps / favourites / recents / jump-to index → app-menu + nav-menu data, fixture `spec/fixtures/nested-menu.json`, check `spec/check-nested-menu.mjs`) and `framework/react/generatedMenus.tsx` (the library the Dev Console, Molly and AmberX install: live registry, override swap, `menus.*` actions, Jump to… dialog, settings sections) are web only. Android work is on hold; a Kotlin twin (`MenuGenEngine.kt` replaying the fixture, a Compose nav with sliding categories) comes when the Android side resumes.
