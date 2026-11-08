@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:34 UTC · `molly-ri-court-records` added (4 steps) (current) · foreign-write
 - 2026-11-07 05:34 UTC · `grindr-ai-wingman` added (5 steps) (current) · foreign-write
 - 2026-11-07 05:34 UTC · `new-app-wizard` added (5 steps) (current) · foreign-write
 - 2026-11-07 05:31 UTC · `new-app-wizard` added (5 steps) (current) · claude-voice
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:28 UTC · `molly-one-shell` → running, note (all) · orchestrator
 - 2026-11-08 17:29 UTC · `molly-one-shell` branch claude/molly-one-shell-r4 (all) · builds-live
 - 2026-11-08 17:37 UTC · `molly-one-shell` s4 done, note (all) · orchestrator
+- 2026-11-08 17:37 UTC · `ui-api-parity-rule` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
