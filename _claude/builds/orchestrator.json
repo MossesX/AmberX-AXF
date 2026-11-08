@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:21:23.217Z",
+ "updatedAt": "2026-11-08T19:21:45.669Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14153,7 +14153,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-08T17:50:38.766Z",
+   "updatedAt": "2026-11-08T19:21:44.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -14171,6 +14171,10 @@
     {
      "text": "Overlap: account-health-failover (PR #394) adds the shared account-status@1 store and capability axf.account-status@1 (able(name, model)): use it to pick the account to switch to instead of a new check.",
      "at": "2026-11-08T17:50:38.766Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:21:44.715Z"
     }
    ],
    "approvals": [],
@@ -14187,7 +14191,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Console + axHub detect the active Claude account has no working connection (limit hit, auth dead) and switch to the next saved account in priority order by plain script, zero tokens, no AI session involved. Reuse ai-keys switch logic and account order. Running builds keep their account; new launches use the new active one. Log each switch + banner notice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87xpu304l79c"
+    },
+    {
+     "id": "s2",
+     "text": "And yeah, I make it automatically do it through the through the um, app hub though and through the console. You do not use AI to fucking use this remote to change accounts. That, it, that the console has to recognize there's no active connection and then connect to the next one without AI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87xpu305xr4o"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/auto-switch-claude-account-when-the-active-one-r.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/auto-switch-claude-account-when-the-active-one-r.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87xpu3064n0k"
+    }
+   ]
   },
   {
    "id": "console-approvals-in-place",

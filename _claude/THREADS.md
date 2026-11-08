@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 04:42 UTC · `dataset-bar` s1 done, s2-1 done, s3-2 done, s4-3 done, s5-4 done, s6-5 done, s7-6 done, s8-7 done, → built (current) · orchestrator
 - 2026-11-07 04:42 UTC · `dataset-bar` note (current) · orchestrator
 - 2026-11-06 19:16 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → pending, note (current) · reconciler
 - 2026-11-06 19:16 UTC · `headless-progress-file-lean-claude-md-chain` → pending, note (current) · reconciler
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 19:20 UTC · `planner-select-items-and-build-them` note (all) · orchestrator
 - 2026-11-08 19:21 UTC · `partial-land-ship-completed-steps-of-a-build` note (all) · orchestrator
 - 2026-11-08 19:21 UTC · `partial-land-ship-completed-steps-of-a-build` note (all) · builds-live
+- 2026-11-08 19:21 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
 
 ## Token passes (log)
 

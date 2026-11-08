@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1554,
- "updatedAt": "2026-11-08T19:21:23.217Z",
+ "rev": 1555,
+ "updatedAt": "2026-11-08T19:21:45.669Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -95955,7 +95955,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-08T17:50:38.766Z",
+   "updatedAt": "2026-11-08T19:21:44.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -95973,6 +95973,10 @@
     {
      "text": "Overlap: account-health-failover (PR #394) adds the shared account-status@1 store and capability axf.account-status@1 (able(name, model)): use it to pick the account to switch to instead of a new check.",
      "at": "2026-11-08T17:50:38.766Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:21:44.715Z"
     }
    ],
    "approvals": [],
@@ -95989,7 +95993,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:21:44.715Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw87xpu304l79c",
+     "title": "",
+     "text": "Console + axHub detect the active Claude account has no working connection (limit hit, auth dead) and switch to the next saved account in priority order by plain script, zero tokens, no AI session involved. Reuse ai-keys switch logic and account order. Running builds keep their account; new launches use the new active one. Log each switch + banner notice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:21:44.715Z",
+     "updatedAt": "2026-11-08T19:21:44.715Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw87xpu305xr4o",
+     "title": "",
+     "text": "And yeah, I make it automatically do it through the through the um, app hub though and through the console. You do not use AI to fucking use this remote to change accounts. That, it, that the console has to recognize there's no active connection and then connect to the next one without AI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:21:44.715Z",
+     "updatedAt": "2026-11-08T19:21:44.715Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw87xpu3064n0k",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/auto-switch-claude-account-when-the-active-one-r.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/auto-switch-claude-account-when-the-active-one-r.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:21:44.715Z",
+     "updatedAt": "2026-11-08T19:21:44.715Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -95999,7 +96093,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -96014,7 +96108,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:21:44.715Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
