@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:00 UTC · `dataset-bar` → built, branch claude/dataset-bar, PR #380, note (current) · reconciler
 - 2026-11-07 05:00 UTC · `library-harvest` branch claude/library-harvest, PR #378, note (current) · reconciler
 - 2026-11-07 05:02 UTC · `multi-account-headless-workers` s1 done, → running (current) · orchestrator
 - 2026-11-07 05:02 UTC · `multi-account-headless-workers` s1 done (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:13 UTC · `account-failover-notify` s2 done (all) · orchestrator
 - 2026-11-08 17:13 UTC · `account-failover-notify` s3 done (all) · orchestrator
 - 2026-11-08 17:14 UTC · `memory-restructure-chunked-claude-md-store-memor` s7 done (all) · orchestrator
+- 2026-11-08 17:14 UTC · `memory-restructure-chunked-claude-md-store-memor` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
