@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1597,
- "updatedAt": "2026-11-08T21:59:19.916Z",
+ "rev": 1598,
+ "updatedAt": "2026-11-08T22:04:32.821Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117175,16 +117175,22 @@
    "title": "Workers + API accounts + routing rules",
    "category": "Builds > Claude accounts",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/workers-api-routing",
    "pr": "#389",
+   "mergedAt": "2026-11-08T21:56:21Z",
    "createdAt": "2026-11-08T16:15:21.028Z",
-   "updatedAt": "2026-11-08T16:37:59.282Z",
+   "updatedAt": "2026-11-08T21:59:37.789Z",
    "builtAt": "2026-11-08T16:37:59.282Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #389 merged",
+     "at": "2026-11-08T21:59:37.789Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -117341,7 +117347,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
