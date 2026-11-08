@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
 - 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
 - 2026-11-07 10:50 UTC · `build-pipeline-v2` added (15 steps) (all) · orchestrator
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 19:22 UTC · `slotstest-2208251-a` note (all) · orchestrator
 - 2026-11-08 19:23 UTC · `rebase-land-approve-button-fix-approve-goes-stra` added (0 steps) (all) · pending
 - 2026-11-08 19:23 UTC · `slotstest-2208251-b` note (all) · orchestrator
+- 2026-11-08 19:23 UTC · `investor-demo-player-shell-with-login-gate-skins` note (all) · orchestrator
 
 ## Token passes (log)
 

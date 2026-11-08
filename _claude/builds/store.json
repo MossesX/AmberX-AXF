@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1558,
- "updatedAt": "2026-11-08T19:23:18.904Z",
+ "rev": 1559,
+ "updatedAt": "2026-11-08T19:23:34.420Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115037,9 +115037,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T21:39:31.022Z",
-   "updatedAt": "2026-11-07T21:39:31.022Z",
+   "updatedAt": "2026-11-08T19:23:33.247Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:23:33.247Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -115054,7 +115059,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:23:33.247Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8801kv03zsf6",
+     "title": "",
+     "text": "Investor demo player shell (React + TypeScript, single page). Spec: https://claude.ai/artifact/AQMctEfS7mNkdktYxsP4LP, section 0 Global Shell. Login gate with a Guest login button (no account needed) plus a normal sign-in. After login: player shell with glossary rail, scene index, narration toggle, playback speed, event ticker. All UI from live design tokens, no hard-coded styles. Skin switcher with 5 complete skins that make it look like an entirely different app. One-click enterprise branding switcher (logo, app name, colours, fonts, icons) with several fictional company brands. Live theme panel to edit tokens while running. Roadmap features carry an 'On the Roadmap' badge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:23:33.247Z",
+     "updatedAt": "2026-11-08T19:23:33.247Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8801kv04ecrv",
+     "title": "",
+     "text": "Oh, let's build that section. Let's build the the view the viewer with um, behind a login gate uh, with a guest login.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:23:33.247Z",
+     "updatedAt": "2026-11-08T19:23:33.247Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8801kv05lkmg",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/investor-demo-player-shell-with-login-gate-skins.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/investor-demo-player-shell-with-login-gate-skins.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:23:33.247Z",
+     "updatedAt": "2026-11-08T19:23:33.247Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -115063,7 +115158,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115078,7 +115173,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:23:33.247Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
