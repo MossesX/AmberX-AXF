@@ -79,6 +79,26 @@
         "output": "{ id, title, priority, label, waiting: [{ kind, id, title, why }] }"
       },
       {
+        "id": "headless-runs",
+        "route": "GET /headless/{build}",
+        "title": "Headless runs and start tokens",
+        "description": "A build's headless runs: start tokens (the context of the first request), cost, brief only or full chain, tools and MCP servers loaded. Say 'what did skins start with'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ build, runs: [{ session, briefOnly, startTokens, startCostUsd, costUsd, at }] }"
+      },
+      {
         "id": "priority-set",
         "route": "POST /priority",
         "title": "Set build priority",

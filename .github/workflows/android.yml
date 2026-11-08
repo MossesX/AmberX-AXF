@@ -265,6 +265,7 @@ jobs:
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-demo.mts                   # demonstration@1 / book@1 / clip@1 / docs@1: registry, fixture replay (generator, book plan, moves, clip tags, docs plan), validators agree, starters, schemas
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
+            node framework/spec/check-headless-context.mjs             # headless-context@1: brief-only launch plan, lean hooks, rule snippets by tag, brief budget, start tokens
             npx -y tsx framework/spec/check-claude-session.mts         # claude-session lib: Terminal reads it, companion helpers (Gizmo)
             npx -y tsx framework/spec/check-listeners.mts              # listeners lib (listener@1): cases.json replay (= Android ListenerRules), policy keys, backoff + give-up, silent restarts, yield, one mic owner, device doc, baked copies
             npx -y tsx framework/spec/check-terminal-nav.mts           # terminal sessions nav: search / filter / sort, mirror vs jump in, chat link guard

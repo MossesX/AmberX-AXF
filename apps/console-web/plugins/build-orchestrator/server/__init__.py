@@ -158,6 +158,23 @@ def brief(build_id: str) -> dict[str, Any]:
     return _run("brief", build_id)
 
 
+CONTEXT_CLI = ROOT / "framework" / "cli" / "headless-context.mjs"
+
+
+@router.get("/headless/{build}")
+def headless_runs(build: str) -> dict[str, Any]:
+    """A build's headless runs with their start tokens and cost (headless-context@1): the live meters where this host
+    can read them, else the end-of-run notes the launcher wrote on the build."""
+    if len(build) > 80 or not build.replace("-", "").replace("_", "").replace(".", "").isalnum():
+        raise HTTPException(400, "bad build id")
+    proc = subprocess.run(["node", str(CONTEXT_CLI), "runs", "--build", build, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
 @router.post("/act")
 async def act(request: Request) -> dict[str, Any]:
     body = await request.body()
