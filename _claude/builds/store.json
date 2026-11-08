@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1575,
- "updatedAt": "2026-11-08T21:12:21.781Z",
+ "rev": 1576,
+ "updatedAt": "2026-11-08T21:13:19.538Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123004,14 +123004,14 @@
    "title": "Orchestrator: API rule in every brief + Plan Studio stepped plans, always in sync",
    "category": "",
    "detail": "Brett: for every build the orchestrator handles: (1) every brief it writes includes the rule that anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity; (2) when it splits a build into steps it creates the stepped plan in Plan Studio for that build (same build ID, steps, estimates, models); (3) it keeps Plan Studio synced for all future builds: every step tick, status change, re-split, phase change, land or failure updates the matching Plan Studio plan automatically, and edits made in Plan Studio flow back to the orchestrator. One source of truth (the builds store), Plan Studio and Build Manager are views of it. Tests: new build -> plan appears with steps; tick -> plan updates; brief contains API rule.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-api-rule-in-every-brief-plan-studio",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-08T21:12:20.115Z",
+   "updatedAt": "2026-11-08T21:13:18.475Z",
    "builtAt": "",
    "notes": [
     {
@@ -123021,6 +123021,10 @@
     {
      "text": "Verified Nov 8: the orchestrator/pipeline code has NO Plan Studio link today, so new builds do not reach Plan Studio. Required: every new build (including all items already in pending, e.g. the Agent Manager build) gets its Plan Studio plan automatically. Add a verification check that the Plan Studio plan's steps match the orchestrator's split EXACTLY (same step ids, order, text, estimates, models); a CI/runtime check fails and notifies Brett on any mismatch. Backfill plans for everything currently pending.",
      "at": "2026-11-08T21:12:20.115Z"
+    },
+    {
+     "text": "Queued by cli.",
+     "at": "2026-11-08T21:13:18.475Z"
     }
    ],
    "approvals": [],
@@ -123038,8 +123042,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-08T21:13:18.191Z",
+    "queuedBy": "cli",
     "account": "",
     "session": "",
     "slot": "",
@@ -123055,7 +123059,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them"
+    "note": ""
    },
    "steps": [
     {
@@ -123136,7 +123140,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
