@@ -72,3 +72,91 @@ No code changed in this phase (rules, docs and builds data only). Checks run: `b
 ## Cost
 
 Phase 1 on Opus, about 30 minutes.
+
+---
+
+# Phase 2 + 3a (r4, Nov 8 2026)
+
+Run r4, headless, agent Janitor Joey, branch `claude/molly-one-shell-r4` (r3's phase 1 merged in). Steps s4–s6 are
+pinned to Fable; this run built them on **Opus as a recorded downgrade** (a downgrade passes by itself; r3 had stopped
+at the switch and the build sat idle). Opus-built foundation work gets a Fable review before anything leans on it, so
+**s15 (Fable) reviews the three contracts** and rebuilds only what it flags. The note is on the build.
+
+## s4 shell-surface@1 (`framework/core/engines/shell-surface.ts`)
+
+Every app as data: `app` (id, label, icon, description, standalone url), a **native mount seam** (`module`, `export`
+default `mountSurface`, `api`, `auth` none | console-token | hub-session | app-session) and `items` (screen, plugin,
+action, settings, setting, dialog, menu; an open list). A `frame` / `iframe` / `embed` / `webview` / `url` mount is
+refused **by name** (no embedding). Qualified refs `<app>:<kind>:<id>` (`qualify`, `parseRef`, `resolveRef`),
+`mergeSurfaces` (one per app), and two adapters so nothing is written by hand per app: `surfaceFromSearch` (an AXF
+app's own search index: views, actions, settings tabs, settings, dialogs, menu items, plugins' too) and
+`surfaceFromCatalog` (console-catalog@1, what an open console already reports). This is where #322 / #369's registries
+plug in when they land (s7/s8).
+
+## s5 layout modes on xlayout@1 (`framework/core/engines/xlayout.ts`)
+
+Extended, no new asset type: `mode` single | tabs | split | ide (absent = ide when `ide.on`, so every existing asset
+reads the same), `ide.containers` (a pane is a tab group or not), named `layouts` + `active`, and pure operations:
+`effectiveLayout`, `containerIsTabs`, `setContainerTabs`, `openInContainer` (a tab group gains a tab after the front
+one; any other container shows only the new thing; 40-tab cap), `closeTab`, `moveTab` (between containers or reorder),
+`saveLayout` / `switchLayout` / `removeLayout` (20 at most), `setLayoutMode`, `snapshotLayout`. The pane mechanics
+(dock / split / float / resize) stay dock@1's. The guest / embed fields (merge `guest`, `guestUrl`, `guestUserAgent`)
+are **not dropped yet**: Molly's frames still use them; they go with the frames in s11. Asset type + JSON schemas updated.
+
+## s6 menu-index@1 (`framework/core/engines/menu-index.ts`)
+
+One menu over every surface: Favorites, Recent, then app → category (nested as items say; a setting sits under its
+settings tab, which leads its group) → items. **Slim**: no level holds more than `maxPerLevel` (default 12); longer
+levels fold into letter-range sub menus (`A–F`, `S 1` / `S 2` when one letter overflows, nested again past 144).
+UAC filter, kind filter (a nav can show screens + plugins only), app order and hidden apps. `searchMenu` scores with
+the search engine's `scoreEntry`, favorites then recents break ties; `menuPath` / `menuNode` for jumping into sliding
+menus; `toggleFavorite` / `pushRecent` / `pruneRefs`; `fitBar` for the three-dot overflow.
+
+Fixtures `framework/spec/fixtures/shell-surface.json`, `menu-index.json`, `xlayout-modes.json` (and `xlayout.json`'s
+normalized outputs gained the new fields); `framework/spec/check-shell-surface.mts` (271 checks: replay plus
+properties: every allowed item reachable exactly once, no level over the max, unique group ids, denied items gone, a
+newly registered screen appears with no menu edit, saved layouts round-trip). In CI next to `check-xlayout.mts`.
+PORTING.md: Kotlin twins deferred (Android on hold).
+
+## s9 (+ parts of s10, s12, s13): Molly's One shell plugin (`apps/molly/plugins/shell`) <!-- axf-plugin:shell -->
+
+- **Go** in the application menu: the index as nested sub menus (live provider, built on open) + *Go to anything…*.
+- **Go to anything** (`Ctrl+K`, the Go menu, right-click anywhere): search every app, slide into groups (Back),
+  star favorites, open in the main area, a pane or a floating window; items are draggable (`text/x-axf-ref`).
+- **Layout modes** (View menu, settings, voice): one at a time, tabs, side by side, IDE; tabs / split / IDE lay out on
+  the dock with their preset through a new seam on Molly's layout plugin (`mode` / `setMode` / `snapshot` / `restore`
+  on its capability). **Named layouts**: save what's on screen (mode, preset, dock arrangement), switch, remove.
+- Capability **`axf.shell@1`**: `register(surface, opener)` for native mounts (s7/s8), `surfaces`, `index`, `open`.
+- Actions `shell.go | find | open | favorite | recents.clear | list | surfaces | mode | layout.save | layout.switch |
+  layout.remove | settings` and matching plugin commands.
+- Settings → Plugins → One shell: Layout, Named layouts, Menus (level length, apps shown), Favorites and recent, Apps in
+  Molly (native vs still through the frames), Install & uninstall.
+- **Where the items come from today:** Molly's own surface is its live search index (117 places in the shots). The
+  four apps are always listed with their home screen; their pages, menus and toolbar join from the chrome Molly's
+  layout plugin already receives, and open through it. That is the **stopgap**: it still rides the frames, and goes in
+  s11 once s7/s8 register native surfaces.
+
+Shots (not for approval) in UI Review → Screenshots, group "molly-one-shell - Nov 8 5:50 PM" (desktop + phone: Go
+to anything, the Molly group, search "layout", One shell settings).
+
+## Not done yet (honest list)
+
+| Step | What's left |
+|---|---|
+| s7 / s8 | No app mounts natively yet: console, axHub web and AmberX still show in frames. They need a `mountSurface` entry each, registered through `axf.shell@1` (start after #322 / #369 land). Expenses stays a gap (`molly-native-expenses`). |
+| s10 | Drag from a menu onto a container (items are draggable; no drop target takes them yet) and the per-container tab-group switch in the IDE UI (the engine has it). |
+| s11 | FrameDeck, embed paths, the stopgap and the layout asset's guest fields still there (on purpose until s7/s8). |
+| s12 | Actions and plugin commands exist; Molly's plugins aren't in the console's plugin-commands domain (MCP / CLI) yet. |
+| s13 | One shell's settings are sections; the level toolbar on them isn't wired. |
+| s14 | Formal UI Review with 3 options as assets not submitted; the PR is held until it is. |
+| s15 | Fable review of the three contracts. |
+| — | On a phone the pane / floating-window buttons hide through `pointer: coarse`; the headless phone shot still shows them (the dialog sits outside the narrow-layout wrapper). |
+
+## Tests (r4)
+
+- `npx -y tsx framework/spec/check-shell-surface.mts`: 271 checks pass (new).
+- `npx -y tsx framework/spec/check-xlayout.mts`: 199 checks pass (fixture regenerated, unchanged behaviour).
+- `apps/molly`: `tsc --noEmit` clean, `vite build` ok.
+- `check-theme`, `check-controls`, `check-chrome-assets`, `check-toolbars`, `help-coverage --check`,
+  `check-plugin-commands`, glossary `catalog.mjs --check`, `tracker.mjs --check`, `axf validate apps/molly` and
+  `--framework`, plugin-lifecycle for shell + xlayout: all pass.
