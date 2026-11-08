@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T02:52:51.293Z",
+ "updatedAt": "2026-11-08T02:53:04.943Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68713,12 +68713,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/glossary-walkthrough-generator",
    "pr": "",
    "createdAt": "2026-11-08T00:44:49.752Z",
-   "updatedAt": "2026-11-08T02:52:49.901Z",
+   "updatedAt": "2026-11-08T02:52:57.869Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "s1-s5 done on claude/glossary-walkthrough-generator (built on glossary-index-demos r3, merged in): Walkthrough Generator view (picker + request + brief), chain runner (axf.llm@1 per feature, template fallback), glossary-walkthrough@1 bundle with versions/restore/diff + demonstration@1 per part + book@1, walkthrough player (chapters, docs card, try-it waits for the viewer's tap), sandbox hooks ?axf-walkthrough=<id> / ?axf-walkthrough-src=<file>, export/import. Tests: test.mts 28, test.py 20.",
+     "at": "2026-11-08T02:52:56.904Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -68735,8 +68740,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T02:52:51.097Z",
      "note": "",
      "uid": "st-mw741cu807jrpb"
     },
@@ -68753,8 +68758,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T02:52:52.297Z",
      "note": "",
      "uid": "st-mw741cu808rsjn"
     },
@@ -68771,8 +68776,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T02:52:53.517Z",
      "note": "",
      "uid": "st-mw741cu809pyol"
     },
@@ -68789,8 +68794,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T02:52:54.614Z",
      "note": "",
      "uid": "st-mw741cu80azzxo"
     },
@@ -68807,8 +68812,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T02:52:55.878Z",
      "note": "",
      "uid": "st-mw741cu80bbz1o"
     },
