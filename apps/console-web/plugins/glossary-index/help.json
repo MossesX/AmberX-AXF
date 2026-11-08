@@ -468,6 +468,12 @@
         "title": "Read each step out loud",
         "text": "On: the player speaks every step with the browser's voice. Off: words on screen only.",
         "kind": "toggle"
+      },
+      {
+        "target": "glossary-and-index-settings",
+        "title": "Glossary and Index settings",
+        "text": "Opens the plugin's settings (Settings → Plugins → Glossary & Index): which view the glossary opens in, sorting, page size, drafts, and how demonstrations play (read aloud, move the console, advance by itself, voice control).",
+        "kind": "button"
       }
     ],
     "intros": [

@@ -219,6 +219,18 @@ async function main(argv) {
     console.log(`ui-parity: wrote ${BASELINE} (${Object.keys(next.areas).length} areas with gaps)`);
     return 0;
   }
+  if (cmd === 'audit') {
+    // the audit table: every UI area lacking full API parity, worst first (markdown; build ui-api-parity-rule)
+    const rows = model.areas.filter((a) => !a.full && a.gaps.length).sort((x, y) => y.gaps.length - x.gaps.length);
+    const lines = ['| UI area | Views / dialogs | Controls | Gaps (actions · state) | Mapped | Deep links |', '|---|---|---|---|---|---|'];
+    for (const a of rows) {
+      const act = a.gaps.filter((g) => g.what === 'action').length; const st = a.gaps.filter((g) => g.what === 'state').length;
+      lines.push(`| ${a.kind === 'plugin' ? `\`${a.id}\` ${a.name}` : `**${a.name}**`} | ${a.views.map((v) => v.id).join(', ') || '—'} | ${a.controls} | ${a.gaps.length} (${act} · ${st}) | ${a.views.filter((v) => v.mapped).length}/${a.views.length} | ${a.views.length ? 'yes' : '—'} |`);
+    }
+    const full = model.areas.filter((a) => a.full).map((a) => `\`${a.id}\``);
+    out({ rows: rows.map((a) => ({ id: a.id, gaps: a.gaps.length })), full }, `${rows.length} UI areas lack full API parity (${rows.reduce((n, a) => n + a.gaps.length, 0)} gaps); at full parity: ${full.join(', ') || 'none'}.\n\n${lines.join('\n')}`);
+    return 0;
+  }
   if (cmd === 'gaps') {
     const areas = model.areas.filter((a) => !arg || a.id === arg);
     out(areas.map((a) => ({ id: a.id, gaps: a.gaps })), areas.filter((a) => a.gaps.length).map((a) => `${a.id} (${a.gaps.length})\n${a.gaps.map((g) => `  ${g.what.padEnd(6)} ${g.view ? `[${g.view}] ` : ''}${g.label}${g.file ? `  ${g.file}` : ''}`).join('\n')}`).join('\n') || 'no gaps');

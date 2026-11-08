@@ -151,6 +151,41 @@ ok('a demonstration is generated from any entry, saved, indexed and plays as wal
   assert.throws(() => demos.generate('nope:nothing'), /no glossary entry/);
 });
 
+ok('ui-api@1: the API does everything the Demonstration Designer editor does (new, set, steps, chain, find)', () => {
+  const a = demos.newDemo({ name: 'Parity tour' });
+  assert.equal(a.id, 'parity-tour'); assert.equal(a.data.steps.length, 1);
+  assert.equal(demos.newDemo({ name: 'Parity tour' }).id, 'parity-tour-2', 'a taken id gets -2, never overwrites');
+  let d = demos.changeDemo(a.id, { op: 'add-step', step: { say: 'Second', do: 'nav:builds', wait: 99999 } });
+  assert.deepEqual(d.data.steps.map((s: { say: string }) => s.say), ['Say what this step shows.', 'Second']);
+  assert.equal(d.data.steps[1].wait, 30000, 'wait is clamped like the editor clamps it');
+  d = demos.changeDemo(a.id, { op: 'move-step', index: 1, dir: -1 });
+  assert.equal(d.data.steps[0].say, 'Second');
+  d = demos.changeDemo(a.id, { op: 'set-step', index: 1, step: { say: 'First no more', highlight: 'Here' } });
+  assert.equal(d.data.steps[1].highlight, 'Here');
+  d = demos.changeDemo(a.id, { op: 'set', name: 'Parity tour!', speed: 1.25, surface: 'preview', about: 'plugin:ui-review' });
+  assert.equal(d.name, 'Parity tour!'); assert.equal(d.data.voice.speed, 1.25); assert.equal(d.data.surface, 'preview'); assert.ok(d.data.entries.includes('plugin:ui-review'));
+  d = demos.changeDemo(a.id, { op: 'chain-add', id: 'parity-tour-2' });
+  assert.deepEqual(d.data.chain, ['parity-tour-2']);
+  assert.throws(() => demos.changeDemo(a.id, { op: 'chain-add', id: a.id }), /cannot chain itself/);
+  d = demos.changeDemo(a.id, { op: 'chain-remove', id: 'parity-tour-2' });
+  assert.deepEqual(d.data.chain, []);
+  d = demos.changeDemo(a.id, { op: 'remove-step', index: 0 });
+  assert.equal(d.data.steps.length, 1);
+  assert.throws(() => demos.changeDemo(a.id, { op: 'remove-step', index: 0 }), /at least one step/);
+  assert.throws(() => demos.changeDemo(a.id, { op: 'set-step', index: 7, step: {} }), /no step 7/);
+  assert.throws(() => demos.changeDemo(a.id, { op: 'explode' }), /unknown demonstration change/);
+  assert.ok(demos.find('demonstration', { q: 'parity' }).some((s: { id: string }) => s.id === a.id), 'find = the designer search');
+  assert.ok(demos.find('demonstration', { generated: true }).every((s: { generated: string }) => s.generated === 'glossary'), 'find generated = Only generated');
+});
+
+ok('ui-api@1: every control of the Demonstration Designer and the Book Builder maps to a real op (plugin.json ui)', () => {
+  const pj = JSON.parse(readFileSync(new URL('./plugin.json', import.meta.url), 'utf8'));
+  const ids = new Set(pj.commands.items.map((c: { id: string }) => c.id));
+  for (const id of ['demo-new', 'demo-change']) assert.ok(ids.has(id), `${id} is a command (REST, MCP, CLI)`);
+  assert.equal(pj.ui.$axf, 'ui-api@1');
+  for (const v of ['demo-designer', 'book-builder']) assert.ok(Object.keys(pj.ui.views[v].actions).length > 30 && pj.ui.views[v].state.length >= 4, v);
+});
+
 ok('a book comes out of the wizard, takes items, moves them and previews as one walkthrough', () => {
   const b = demos.newBook({ title: 'Test book', totalMinutes: 9, chapterMinutes: 3, docs: { enabled: true, depth: 'deep', format: 'interactive-html-ts', interactive: 'examples' } });
   assert.equal(b.data.chapters.length, 3);

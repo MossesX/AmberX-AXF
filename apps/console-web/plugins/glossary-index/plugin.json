@@ -36,7 +36,9 @@
     "mentions": [
       "_claude/memory/STATUS.md",
       ".github/workflows/android.yml",
-      "framework/spec/PORTING.md"
+      "framework/spec/PORTING.md",
+      "_claude/rules/RULES.md",
+      "_claude/THREADS.md"
     ]
   },
   "commands": {

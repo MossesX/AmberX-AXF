@@ -299,6 +299,77 @@
         }
       },
       "additionalProperties": false
+    },
+    "ui": {
+      "type": "object",
+      "description": "ui-api@1 (build ui-api-parity-rule, Nov 8 2026): how each view and dialog this plugin provides is fully API-controllable — open (its deep link, deep-link@1), state, every action, every setting. Checked by framework/cli/ui-parity.mjs.",
+      "required": [
+        "$axf",
+        "views"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "ui-api@1"
+        },
+        "note": {
+          "type": "string"
+        },
+        "views": {
+          "type": "object",
+          "description": "keyed by a view or dialog id from provides",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "files": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "plugin-relative sources whose controls belong to this view"
+              },
+              "state": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "<command id> · <plugin folder>/<command id> · action:<console action> · value:<setting key> · view:<id> · dialog:<id> · settings:<tab id>"
+                },
+                "description": "refs that read what is on screen"
+              },
+              "actions": {
+                "type": "object",
+                "description": "control label → ref or refs",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "<command id> · <plugin folder>/<command id> · action:<console action> · value:<setting key> · view:<id> · dialog:<id> · settings:<tab id>"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "<command id> · <plugin folder>/<command id> · action:<console action> · value:<setting key> · view:<id> · dialog:<id> · settings:<tab id>"
+                      }
+                    }
+                  ]
+                }
+              },
+              "uiOnly": {
+                "type": "object",
+                "description": "control label → why the API needs no op",
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 8
+                }
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap, useOptionalRuntime } from './AxfProvider';
 export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppShell';
+export { applyDeepLink, installDeepLinks, type DeepLinkResult } from './deepLinks';
 export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { BuildOrigin, originSubtitle, originSearch, originWhen } from './components/BuildOrigin';
