@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1555,
- "updatedAt": "2026-11-08T19:21:45.669Z",
+ "rev": 1556,
+ "updatedAt": "2026-11-08T19:22:09.889Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -113637,17 +113637,89 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:17:39.669Z",
-   "updatedAt": "2026-11-08T00:17:39.669Z",
+   "updatedAt": "2026-11-08T19:22:08.834Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Parked by the launcher: a headless launch (slotstest-2208251-a) carried no orchestrator build id, so it was refused and kept here. Plan its steps and launch it from the orchestrator.",
      "at": "2026-11-07T14:27:31.162Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:22:08.834Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:22:08.834Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw87y8g207u0d6",
+     "title": "",
+     "text": "slotstest-2208251-a",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:22:08.834Z",
+     "updatedAt": "2026-11-08T19:22:08.834Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw87y8g208bgm5",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/slotstest-2208251-a.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/slotstest-2208251-a.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:22:08.834Z",
+     "updatedAt": "2026-11-08T19:22:08.834Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -113656,7 +113728,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -113671,7 +113743,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:22:08.834Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
