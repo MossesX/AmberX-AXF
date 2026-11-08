@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:09:30.224Z",
+ "updatedAt": "2026-11-08T21:10:40.336Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74483,12 +74483,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:08:45.566Z",
-   "updatedAt": "2026-11-08T21:09:29.290Z",
+   "updatedAt": "2026-11-08T21:10:38.666Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T21:09:29.290Z"
+    },
+    {
+     "text": "Brett additions: (1) HUNDREDS of pre-made skills and dozens and dozens of agent templates, not ~20. (2) Skills sortable/filterable by agent type (builder, reviewer, lander, watchdog, designer, writer, data, ops, etc.), plus search and tags. (3) Drag-and-drop agent designer: drag skills, tools and a persona onto an agent card to build it. (4) ONE new Agent Manager interface that merges and REPLACES the existing agent/crew screens (skills, tools, personas, roster); remove the old UI (keep code for harvesting). Clean, nice design. (5) Include a RAG database: agents get a retrieval knowledge base (index docs/code/memory, embeddings, search) with RAG skills; manageable in the Agent Manager. Estimate grows accordingly; split into steps.",
+     "at": "2026-11-08T21:10:38.666Z"
     }
    ],
    "approvals": [],
