@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:03 UTC · `merge-conflict-alerts` → running (current) · merge-conflict-alerts
 - 2026-11-07 05:12 UTC · `skins-asset-types` s8 done (current) · foreign-write
 - 2026-11-07 05:14 UTC · `skins-asset-types` s8 done (current) · foreign-write
 - 2026-11-07 05:14 UTC · `claude-accounts-edit` note (current) · orchestrator
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:23 UTC · `account-failover-notify` s4 done (all) · foreign-write
 - 2026-11-08 17:23 UTC · `orchestrator-checks-shipped-features-before-spli` added (0 steps) (all) · foreign-write
 - 2026-11-08 17:23 UTC · `adopt-today-s-direct-launched-builds-record-only` added (0 steps) (all) · foreign-write
+- 2026-11-08 17:23 UTC · `ui-api-parity-rule` added (7 steps) (all) · orchestrator
 
 ## Token passes (log)
 
