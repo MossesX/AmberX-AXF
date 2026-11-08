@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1460,
- "updatedAt": "2026-11-08T16:18:42.924Z",
+ "rev": 1461,
+ "updatedAt": "2026-11-08T16:20:10.745Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116068,14 +116068,14 @@
    "title": "Workers + API accounts + routing rules",
    "category": "Builds > Claude accounts",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:15:21.028Z",
-   "updatedAt": "2026-11-08T16:15:21.028Z",
+   "updatedAt": "2026-11-08T16:20:07.845Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -116108,12 +116108,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:20:07.845Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:15:21.029Z",
-     "updatedAt": "2026-11-08T16:15:21.029Z"
+     "updatedAt": "2026-11-08T16:20:08.103Z"
     },
     {
      "id": "s2",
@@ -116230,7 +116230,7 @@
     "all"
    ],
    "order": {
-    "all": 438
+    "all": 437
    },
    "kind": "build",
    "planRef": "",
