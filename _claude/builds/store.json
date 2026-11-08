@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1574,
- "updatedAt": "2026-11-08T21:11:39.082Z",
+ "rev": 1575,
+ "updatedAt": "2026-11-08T21:12:21.781Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123011,12 +123011,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-08T19:27:10.365Z",
+   "updatedAt": "2026-11-08T21:12:20.115Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:27:10.365Z"
+    },
+    {
+     "text": "Verified Nov 8: the orchestrator/pipeline code has NO Plan Studio link today, so new builds do not reach Plan Studio. Required: every new build (including all items already in pending, e.g. the Agent Manager build) gets its Plan Studio plan automatically. Add a verification check that the Plan Studio plan's steps match the orchestrator's split EXACTLY (same step ids, order, text, estimates, models); a CI/runtime check fails and notifies Brett on any mismatch. Backfill plans for everything currently pending.",
+     "at": "2026-11-08T21:12:20.115Z"
     }
    ],
    "approvals": [],
@@ -123132,7 +123136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {

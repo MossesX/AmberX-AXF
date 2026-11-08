@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:11:39.082Z",
+ "updatedAt": "2026-11-08T21:12:21.781Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74295,12 +74295,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-08T19:27:10.365Z",
+   "updatedAt": "2026-11-08T21:12:20.115Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:27:10.365Z"
+    },
+    {
+     "text": "Verified Nov 8: the orchestrator/pipeline code has NO Plan Studio link today, so new builds do not reach Plan Studio. Required: every new build (including all items already in pending, e.g. the Agent Manager build) gets its Plan Studio plan automatically. Add a verification check that the Plan Studio plan's steps match the orchestrator's split EXACTLY (same step ids, order, text, estimates, models); a CI/runtime check fails and notifies Brett on any mismatch. Backfill plans for everything currently pending.",
+     "at": "2026-11-08T21:12:20.115Z"
     }
    ],
    "approvals": [],
