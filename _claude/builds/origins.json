@@ -3431,6 +3431,18 @@
    "from": "detail",
    "addenda": []
   },
+  "workers-api-routing": {
+   "said": "All subscription logins are workers: account-1 (brettspend), account-3 (hulu0241, 'Hulu'), mossesx-max- (Moses X). The interactive/active account can also take headless jobs (setting, default on). Fix whatever left cfg.workers empty and make sure the orchestrator actually routes across all workers in parallel (per-account queue max default 5, building default 3). Allow API-key accounts as workers: add 'Hulu API' and 'Moses X API' slots (keys from the vault; never print or commit keys). API accounts are billed per token, so they only get jobs that match routing rules. Orchestrator settings interface: rules for which jobs go to API accounts vs subscription accounts. Rules on job type, model, size/estimated steps, priority, profile, when subscriptions are limited/busy (fallback), and daily/weekly spend caps per API account with alerts. Rule order, enable/disable, test-a-job preview showing which account it would go to. Show per-account status in the console: role, running, limit, cost today/week.",
+   "at": "2026-11-08T16:15:21.028Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "xlayout": {
    "said": "Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
    "at": "2026-11-02",
