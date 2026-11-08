@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1452,
- "updatedAt": "2026-11-08T02:45:16.274Z",
+ "rev": 1453,
+ "updatedAt": "2026-11-08T02:45:55.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -65650,14 +65650,14 @@
    "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice): \"Where do I view items at git status? ... what needs to be pulled, merged ... I want to be able to view everything in grids with expandable rows.\" Replaces pending batch-manager (batch grid + badges, PR sub-grid + Fix, dense phone pass, PR browser rows with plain-English lead, Merge/Hold, left click review, right-click menu). Predicted shots live in ui-review-predicted. Built by Snap Sully (session).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "git-status-board",
    "branch": "claude/git-status-board",
    "pr": "#291",
    "createdAt": "2026-11-03T21:10:39.295Z",
-   "updatedAt": "2026-11-08T02:45:14.060Z",
+   "updatedAt": "2026-11-08T02:45:53.726Z",
    "builtAt": "",
    "notes": [
     {
@@ -65814,7 +65814,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
