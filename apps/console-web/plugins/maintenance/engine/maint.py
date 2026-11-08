@@ -296,10 +296,12 @@ def busy(path: Path, files: set[str], cwds: set[str]) -> bool:
     return any(f == p or f.startswith(pre) for f in files) or any(c == p or c.startswith(pre) for c in cwds)
 
 
-def newest_mtime(path: Path, depth: int = 2, limit: int = 4000) -> float:
-    """Latest mtime of a path and what's under it, a few levels deep (bounded, links not followed)."""
+def newest_mtime(path: Path, depth: int = 2, limit: int = 4000, skip: Callable[[str], bool] | None = None) -> float:
+    """Latest mtime of a path and what's under it, a few levels deep (bounded, links not followed). With `skip`
+    (relative path, folders ending in /), skipped entries don't count and neither do folders' own mtimes (a folder's
+    mtime moves whenever something drops or deletes a file in it)."""
     try:
-        best = os.lstat(path).st_mtime
+        best = 0.0 if skip else os.lstat(path).st_mtime
     except OSError:
         return 0.0
     if not isdir(path) or path.is_symlink():
@@ -312,11 +314,15 @@ def newest_mtime(path: Path, depth: int = 2, limit: int = 4000) -> float:
             with os.scandir(d) as it:
                 for e in it:
                     seen += 1
+                    is_dir = e.is_dir(follow_symlinks=False)
+                    if skip and skip(os.path.relpath(e.path, path) + ("/" if is_dir else "")):
+                        continue
                     try:
                         st = e.stat(follow_symlinks=False)
                     except OSError:
                         continue
-                    best = max(best, st.st_mtime)
+                    if not (skip and is_dir):
+                        best = max(best, st.st_mtime)
                     if lvl + 1 < depth and e.is_dir(follow_symlinks=False) and e.name not in ("node_modules", ".git"):
                         stack.append((Path(e.path), lvl + 1))
         except OSError:
@@ -480,7 +486,7 @@ def _git(ctx: Ctx, wt: Path, *args: str) -> tuple[int, str]:
 # Untracked or changed paths that are never a session's own work: hub copies claude-sync drops into every checkout
 # (_claude/, changes/, sessions/ and the manifest's data.shared files), build logs, briefs, login copies, and the
 # old session logs that were committed by mistake once (their deletion is not work either).
-NOT_WORK = re.compile(r"^(_claude/|changes/|sessions/|\.axf-claude/|\.claude/commands/|[^/]+\.(log|jsonl|out)$|\.axf-[^/]*$|"
+NOT_WORK = re.compile(r"^(_claude/|apps/[^/]+/_claude/|\.claude-sync-hold$|changes/|sessions/|\.axf-claude/|\.pnpm-store/|\.git$|\.claude/commands/|[^/]+\.(log|jsonl|out)$|\.axf-[^/]*$|"
                       r"\.axf-brief\.md$|\.brief\.md$|\.axhub-build\.json$|assets\.log$)")
 
 
@@ -491,6 +497,10 @@ def _shared_paths(wt: Path) -> list[str]:
     return [x for x in sh if isinstance(x, str) and x] if isinstance(sh, list) else []
 
 
+def _not_work(path: str, shared: list[str] | None = None) -> bool:
+    return bool(NOT_WORK.search(path)) or any(path == x or (x.endswith("/") and path.startswith(x)) for x in shared or [])
+
+
 def real_changes(porcelain: str, shared: list[str] | None = None) -> list[str]:
     """Paths in `git status --porcelain` output that are a session's own uncommitted work."""
     out = []
@@ -498,7 +508,7 @@ def real_changes(porcelain: str, shared: list[str] | None = None) -> list[str]:
         if len(ln) < 4:
             continue
         path = ln[3:].split(" -> ")[-1].strip().strip('"')
-        if NOT_WORK.search(path) or any(path == x or (x.endswith("/") and path.startswith(x)) for x in shared or []):
+        if _not_work(path, shared):
             continue
         out.append(path)
     return out
@@ -581,7 +591,8 @@ def worktree_state(ctx: Ctx, wt: Path) -> tuple[str, str]:
         return "active", f"tmux session {ses} is running in it"
     if busy(wt, ctx.files, ctx.cwds):
         return "active", "a process is working inside it"
-    idle_h = (ctx.now - newest_mtime(wt)) / 3600
+    shared = _shared_paths(wt)
+    idle_h = (ctx.now - newest_mtime(wt, depth=3, skip=lambda rel: _not_work(rel, shared))) / 3600
     if idle_h < ctx.s["worktreeIdleHours"]:
         return "recent", f"changed {idle_h:.0f} h ago (needs {ctx.s['worktreeIdleHours']} h idle)"
     if not (wt / ".git").exists():

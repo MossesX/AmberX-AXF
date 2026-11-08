@@ -88,6 +88,8 @@ for name in ("old-plain", "new-plain", "dirty", "merged", "active", "agent-run",
     (d / "build.log").write_text("log")
     if name in ("dirty", "merged", "agent-run", "hub-copies", "done-build"):
         (d / ".git").mkdir()
+    if name == "hub-copies":
+        (d / "project.manifest.json").write_text(json.dumps({"data": {"shared": ["tracker.json", "changes/"]}}))
     if name != "new-plain":
         age(d)
 (BUILDS / "_archive").mkdir()
