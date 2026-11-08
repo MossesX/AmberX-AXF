@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 11:09 UTC · `build-pipeline-v2` s6 done (all) · orchestrator
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s8 done (all) · orchestrator
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s9 done (all) · orchestrator
 - 2026-11-07 11:09 UTC · `build-pipeline-v2` s10 done (all) · orchestrator
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 21:08 UTC · `agent-profile-schema-skills-personas-with-a-big-` added (0 steps) (all) · pending
 - 2026-11-08 21:09 UTC · `agent-profile-schema-skills-personas-with-a-big-` note (all) · orchestrator
 - 2026-11-08 21:10 UTC · `agent-profile-schema-skills-personas-with-a-big-` note (all) · pending
+- 2026-11-08 21:11 UTC · `agent-profile-schema-skills-personas-with-a-big-` note (all) · pending
 
 ## Token passes (log)
 

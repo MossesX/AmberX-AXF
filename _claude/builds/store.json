@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1572,
- "updatedAt": "2026-11-08T21:10:40.336Z",
+ "rev": 1573,
+ "updatedAt": "2026-11-08T21:11:14.143Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123327,7 +123327,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:08:45.566Z",
-   "updatedAt": "2026-11-08T21:10:38.666Z",
+   "updatedAt": "2026-11-08T21:11:12.661Z",
    "builtAt": "",
    "notes": [
     {
@@ -123337,6 +123337,10 @@
     {
      "text": "Brett additions: (1) HUNDREDS of pre-made skills and dozens and dozens of agent templates, not ~20. (2) Skills sortable/filterable by agent type (builder, reviewer, lander, watchdog, designer, writer, data, ops, etc.), plus search and tags. (3) Drag-and-drop agent designer: drag skills, tools and a persona onto an agent card to build it. (4) ONE new Agent Manager interface that merges and REPLACES the existing agent/crew screens (skills, tools, personas, roster); remove the old UI (keep code for harvesting). Clean, nice design. (5) Include a RAG database: agents get a retrieval knowledge base (index docs/code/memory, embeddings, search) with RAG skills; manageable in the Agent Manager. Estimate grows accordingly; split into steps.",
      "at": "2026-11-08T21:10:38.666Z"
+    },
+    {
+     "text": "Brett: every employee is an agent and lives in the Agent Manager. One employee list = the agent list (whole roster, job titles, crew/ID cards, HR info), each with its persona, skills, tools and RAG knowledge. No separate crew/HR list elsewhere; Crew and HR views read this one list.",
+     "at": "2026-11-08T21:11:12.661Z"
     }
    ],
    "approvals": [],
@@ -123452,7 +123456,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
