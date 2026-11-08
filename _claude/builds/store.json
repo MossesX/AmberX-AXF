@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1459,
- "updatedAt": "2026-11-08T16:17:19.414Z",
+ "rev": 1460,
+ "updatedAt": "2026-11-08T16:18:42.924Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116230,11 +116230,11 @@
     "all"
    ],
    "order": {
-    "all": 437
+    "all": 438
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -116250,14 +116250,14 @@
    "title": "Headless sessions get the brief only",
    "category": "Builds",
    "detail": "Headless builds (deploy/claude-headless.sh, claude -p) load no CLAUDE.md chain, memory, rules files or settings-injected context; MCP servers only when the job needs them (default none); the orchestrator writes self-contained briefs (rule snippets by tag, template, size budget); start tokens measured before/after and shown per build in the console. Reuses rules-brief@1 from claude/token-optimize (PR #360).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/brief-only-headless",
    "pr": "",
    "createdAt": "2026-11-08T16:14:35.744Z",
-   "updatedAt": "2026-11-08T16:14:35.744Z",
+   "updatedAt": "2026-11-08T16:18:41.853Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -116290,12 +116290,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:18:41.853Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:14:35.745Z",
-     "updatedAt": "2026-11-08T16:14:35.745Z"
+     "updatedAt": "2026-11-08T16:18:41.954Z"
     },
     {
      "id": "s2",
@@ -116416,7 +116416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
