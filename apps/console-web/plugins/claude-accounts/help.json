@@ -107,6 +107,18 @@
         "title": "New account name",
         "text": "The name for the new account: lower-case letters, digits and dashes.",
         "kind": "field"
+      },
+      {
+        "target": "action:claude-accounts.routing",
+        "title": "Claude job routing settings",
+        "text": "Opens Settings → Plugins → Claude accounts, where Job routing decides which account takes each headless job.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "settings-panel:claude-accounts.routing",
+        "title": "Job routing",
+        "text": "Every saved subscription login takes headless jobs unless you stop it; the console's account takes jobs after them when its switch is on. At most 3 jobs build and 5 wait per account. API keys bill per token, so they only take jobs a routing rule sends them, and nothing once a daily or weekly spend cap is reached. Rules are checked in order and the first switched-on match decides. Test a job shows where a job would go right now.",
+        "kind": "panel"
       }
     ]
   }

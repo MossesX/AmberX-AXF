@@ -11,6 +11,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
 import './claude-accounts.css';
 
 const ID = 'ai.amberx.axf.console.claude-accounts';
@@ -23,11 +24,13 @@ const COUNTER = 'claude-accounts.active';
 const NAME = /^[a-z0-9-]{1,32}$/;
 
 type Op = 'use' | 'save' | 'signin' | 'remove';
-type Role = 'interactive' | 'worker' | 'saved';
+type Role = 'interactive' | 'worker' | 'saved' | 'api-worker' | 'api-off';
 interface Run { session: string; name: string; agent?: string; model?: string; at: string; end: string; exit: number | null; costUsd: number }
 interface Account {
-  name: string; active: boolean; email: string; plan: string; type: string; role: Role;
-  limited: { until: string; kind: string; reason: string } | null; running: string[]; runsToday: number; costToday: number; costWeek: number; recent: Run[];
+  name: string; active: boolean; email: string; plan: string; type: string; kind: 'subscription' | 'api'; role: Role; label: string; hasKey: boolean;
+  limited: { until: string; kind: string; reason: string } | null; running: string[]; queued: number; building: number; queue: number;
+  runsToday: number; costToday: number; costWeek: number; recent: Run[];
+  spend: { day: number; week: number; dayCap: number; weekCap: number; state: 'ok' | 'warn' | 'capped'; why: string } | null;
 }
 interface Pending { op: Op; name: string; by: string }
 interface View {
@@ -77,9 +80,12 @@ const when = (iso: string) => new Date(iso).toLocaleString([], { month: 'short',
 const usd = (n: number) => `$${n.toFixed(2)}`;
 
 function usageLine(a: Account): string {
-  const jobs = a.running.length ? [`${a.running.length} running`] : [];
-  return [...jobs, `${a.runsToday} run${a.runsToday === 1 ? '' : 's'} today`, `${usd(a.costToday)} today`, `${usd(a.costWeek)} this week`].join(' · ');
+  const jobs = a.building ? [`${a.running.length}/${a.building} running`, `${a.queued ?? 0}/${a.queue} waiting`] : a.running.length ? [`${a.running.length} running`] : [];
+  const caps = a.spend && (a.spend.dayCap || a.spend.weekCap) ? [`caps ${a.spend.dayCap ? usd(a.spend.dayCap) : 'none'}/day · ${a.spend.weekCap ? usd(a.spend.weekCap) : 'none'}/week`] : [];
+  return [...jobs, `${a.runsToday} run${a.runsToday === 1 ? '' : 's'} today`, `${usd(a.costToday)} today`, `${usd(a.costWeek)} this week`, ...caps].join(' · ');
 }
+
+const ROLE_CHIP: Record<Role, string> = { interactive: 'Console', worker: 'Worker', saved: 'Stopped', 'api-worker': 'API worker', 'api-off': 'API · not used' };
 
 function Row({ a, view, onDone, manage }: { a: Account; view: View; onDone: (m: string, bad?: boolean) => void; manage: boolean }) {
   const [busy, setBusy] = useState(false);
@@ -87,23 +93,25 @@ function Row({ a, view, onDone, manage }: { a: Account; view: View; onDone: (m: 
   const sub = [a.email, a.plan].filter(Boolean).join(' · ');
   const run = (p: Promise<string>) => { setBusy(true); p.then((m) => onDone(m), (e: Error) => onDone(e.message, true)).finally(() => setBusy(false)); };
   const isWorker = a.role === 'worker';
+  const isApi = a.kind === 'api' || a.type === 'api-key';
   const held = busy || !!view.pending;
   return (
     <div className="axp-ca-row" data-account={a.name}>
       <div className="axp-ca-row__who">
-        <b>{a.name}</b>
+        <b>{a.label || a.name}</b>{a.label && <span className="axp-ca-row__sub"> · {a.name}</span>}
         {sub && <p className="axp-ca-row__sub">{sub}</p>}
-        {(isWorker || a.runsToday > 0 || a.costWeek > 0) && <p className="axp-ca-row__sub">{usageLine(a)}</p>}
+        <p className="axp-ca-row__sub">{usageLine(a)}</p>
       </div>
       <div className="axp-ca-row__actions">
-      {a.active && <Chip tone="success"><Icon name="check" size={12} /> Active</Chip>}
-      {isWorker && <Chip tone="accent">Worker</Chip>}
+      {a.active ? <Chip tone="success"><Icon name="check" size={12} /> Console</Chip> : <Chip tone={isWorker || a.role === 'api-worker' ? 'accent' : undefined}>{ROLE_CHIP[a.role] ?? a.role}</Chip>}
+      {isApi && a.hasKey === false && <Chip tone="warning">No key</Chip>}
       {a.limited && <Chip tone="warning">Out until {when(a.limited.until)}</Chip>}
+      {a.spend && a.spend.state !== 'ok' && <Chip tone={a.spend.state === 'capped' ? 'danger' : 'warning'}>{a.spend.state === 'capped' ? 'Capped' : 'Near cap'}</Chip>}
       {waiting && <Chip tone="warning">Waiting for approval</Chip>}
-      {!a.active && !isWorker && <Button tone="primary" icon="refresh" busy={busy} disabled={held} onClick={() => run(ask('use', a.name))}>Switch</Button>}
-      {manage && !a.active && a.type !== 'api-key' && <Button icon="user" busy={busy} disabled={busy} onClick={() => run(ask('role', a.name, isWorker ? 'saved' : 'worker'))}>{isWorker ? 'Stop worker' : 'Make worker'}</Button>}
-      {manage && a.type !== 'api-key' && <Button icon="key" busy={busy} disabled={held} onClick={() => run(ask('signin', a.name))}>Sign in</Button>}
-      {manage && !a.active && <Button tone="danger" icon="trash" busy={busy} disabled={held || a.running.length > 0} confirm={`Set ${a.name} aside? Its saved login moves out of the list. Nothing is deleted.`} onClick={() => run(ask('remove', a.name))}>Remove</Button>}
+      {!a.active && !isApi && <Button tone="primary" icon="refresh" busy={busy} disabled={held} onClick={() => run(ask('use', a.name))}>Switch</Button>}
+      {manage && !a.active && !isApi && <Button icon="user" busy={busy} disabled={busy} onClick={() => run(ask('role', a.name, isWorker ? 'saved' : 'worker'))}>{isWorker ? 'Stop worker' : 'Make worker'}</Button>}
+      {manage && !isApi && <Button icon="key" busy={busy} disabled={held} onClick={() => run(ask('signin', a.name))}>Sign in</Button>}
+      {manage && !a.active && a.hasKey !== false && <Button tone="danger" icon="trash" busy={busy} disabled={held || a.running.length > 0} confirm={`Set ${a.name} aside? Its saved login moves out of the list. Nothing is deleted.`} onClick={() => run(ask('remove', a.name))}>Remove</Button>}
       </div>
     </div>
   );
@@ -179,8 +187,8 @@ function AddWorker({ view }: { view: View | null }) {
   };
   return (
     <div className="fx-stack">
-      <p className="axp-ca-help">The console stays on the active account. Workers only run headless jobs: each new job goes to the least busy one, and when one hits its limit the job moves to the next.</p>
-      <p className="axp-ca-help">Sign in runs in that account's own folder, so the active login isn't touched. It opens in the Terminal once approved. Then tap Make worker on the new row.</p>
+      <p className="axp-ca-help">The console stays on the active account. Every other saved subscription login is a worker: each new job goes to the least busy one, and when one hits its limit the job moves to the next.</p>
+      <p className="axp-ca-help">Sign in runs in that account's own folder, so the active login isn't touched. It opens in the Terminal once approved, and the new account takes jobs as soon as it is saved.</p>
       <div className="axp-ca-save">
         <TextField label="New account name" value={name} hint="Lower-case letters, digits and dashes, up to 32." disabled={busy} onChange={(v) => setName(v.trim().toLowerCase())} />
         <Button tone="primary" icon="key" busy={busy} disabled={busy || !valid || exists || !!view?.pending} onClick={() => void go()}>Add and sign in</Button>
@@ -233,11 +241,12 @@ function Page() {
         <div>
           <p className="fx-eyebrow">Plugins · Claude accounts</p>
           <h1>Claude accounts</h1>
-          <p className="fx-muted">One account runs the console; workers only run headless jobs. Every switch, save, sign-in or removal waits for your approval.</p>
+          <p className="fx-muted">One account runs the console; every other subscription login runs headless jobs, and API keys take only the jobs a routing rule sends them. Every switch, save, sign-in or removal waits for your approval.</p>
         </div>
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>
       <Container title="Accounts" icon="key"><Accounts manage /></Container>
+      <Container title="Job routing" icon="shuffle"><JobRouting /></Container>
       <Container title="Add a worker account" icon="user"><Workers /></Container>
       <Container title="Recent headless runs" icon="clock"><Runs /></Container>
       <Container title="Add an account" icon="plus"><Save /></Container>
@@ -266,6 +275,10 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('claude-accounts.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude accounts settings' });
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
+    rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });
+    // the Job routing layouts are settings assets (the UI Review options): in the registry, so the asset library lists them
+    for (const a of ROUTING_ASSETS) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
+    void loadRouting().catch(() => undefined);
     listeners.add((v) => paint(rt, v));
     const tick = () => { if (document.visibilityState === 'visible') void load().catch(() => undefined); };
     tick();
@@ -274,10 +287,11 @@ export const plugin: AxfWebLibrary = {
   views: { 'claude-accounts': { title: 'Claude accounts', icon: 'key', render: () => <Page /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
   dialogs: { [DIALOG]: { title: 'Switch Claude account', icon: 'key', searchable: false, render: () => <Accounts /> } },
-  settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers: list, switch, sign in, usage per account.' }],
+  settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; usage per account.' }],
   settingsPanels: [
     { id: 'claude-accounts.list', tab: VIEW, title: 'Accounts', icon: 'key', order: 1, render: () => <Accounts manage /> },
-    { id: 'claude-accounts.workers', tab: VIEW, title: 'Add a worker account', icon: 'user', order: 2, render: () => <Workers /> },
+    { id: 'claude-accounts.routing', tab: VIEW, title: 'Job routing', icon: 'shuffle', order: 2, render: () => <JobRouting /> },
+    { id: 'claude-accounts.workers', tab: VIEW, title: 'Add a worker account', icon: 'user', order: 3, render: () => <Workers /> },
     { id: 'claude-accounts.runs', tab: VIEW, title: 'Recent headless runs', icon: 'clock', order: 3, render: () => <Runs /> },
     { id: 'claude-accounts.add', tab: VIEW, title: 'Add an account', icon: 'plus', order: 4, render: () => <Save /> },
     { id: 'claude-accounts.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
