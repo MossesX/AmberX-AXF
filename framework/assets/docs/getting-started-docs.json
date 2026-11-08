@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "docs",
+  "id": "getting-started-docs",
+  "name": "Getting started (documentation)",
+  "version": "1.0.0",
+  "description": "The starter documentation record: what generating standard HTML docs for the starter book produces (an index and one page per chapter, the theme-token stylesheet). The files themselves are written into the plugin's data folder when the docs are generated.",
+  "author": "AmberX AXF",
+  "tags": [
+    "docs",
+    "starter"
+  ],
+  "data": {
+    "source": { "kind": "book", "id": "getting-started", "entries": [] },
+    "depth": "standard",
+    "format": "html",
+    "interactive": "none",
+    "files": [
+      { "path": "index.html", "kind": "index", "title": "Contents" },
+      { "path": "chapters/assets.html", "kind": "page", "title": "Everything is an asset" },
+      { "path": "chapters/console.html", "kind": "page", "title": "The Dev Console" },
+      { "path": "chapters/builds.html", "kind": "page", "title": "Builds and landing" },
+      { "path": "docs.css", "kind": "style", "title": "Styles (theme tokens)" }
+    ],
+    "generatedAt": "2026-11-07T00:00:00Z",
+    "sourceHash": "",
+    "build": "glossary-index-demos",
+    "keywords": [ "docs", "documentation", "getting started", "book", "html" ]
+  }
+}

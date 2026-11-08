@@ -1,0 +1,105 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-e698e544-e133-47a1-bdcd-3bc1c889743a",
+ "source": "claude-code",
+ "sessionId": "e698e544-e133-47a1-bdcd-3bc1c889743a",
+ "project": "other",
+ "title": "# amberx-slim-queue-r2 (pending amberx-slim-down-voice-queue; plan amberx-slim-down-voice-queue-maintenance-k74v). Supe…",
+ "startedAt": "2026-11-06T02:30:58.442Z",
+ "endedAt": "2026-11-06T02:43:29.780Z",
+ "minutes": 13,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/amberx-slim-queue-r2",
+  "repo": "",
+  "branch": "claude/amberx-slim-queue-r2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T02:31:00.767Z",
+   "kind": "prompt",
+   "text": "# amberx-slim-queue-r2 (pending amberx-slim-down-voice-queue; plan amberx-slim-down-voice-queue-maintenance-k74v). Supersedes amberx-slim-queue. Brett verbatim: \"I want you to fucking scrap a lot of shit in Amber X. It's too bloated, don't work. All I want Amber X to have the to-do, the notes, the task manager... the session recorder... screen recording... Gizmo chat, the agent chat.\" / \"Amberex needs to be able to run the maintenance too.\" / \"I need another thing in Amber X. Which is accessible from the console that I can view the screen recordings from Amberx and listen to their audio recor…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 156,
+    "output": 67999,
+    "cacheRead": 9709083,
+    "cacheWrite": 192410,
+    "thinking": 15010
+   },
+   "costUsd": 4.2644,
+   "costEstimated": false,
+   "seconds": 749,
+   "tools": {
+    "Bash": 72,
+    "Write": 8
+   },
+   "commands": 72,
+   "files": [
+    "/root/axf-builds/amberx-slim-queue-r2/apps/amberx-droid/src/plugins/voice/web/queue.ts",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/amberx-droid/src/plugins/voice/web/queuestore.ts",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/amberx-droid/src/plugins/voice/web/QueueView.tsx",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/web/core.ts",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/web/render.ts",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/test.mts",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/server/__init__.py",
+    "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/web/store.ts"
+   ],
+   "changeIds": [
+    "chg-20261106-e3328db7e6"
+   ],
+   "features": [
+    "pending:amberx-slim-down-voice-queue"
+   ],
+   "output": "You've hit your 5-hour limit · resets 7am (UTC)"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/amberx-slim-queue-r2/apps/amberx-droid/src/plugins/voice/web/queue.ts",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/amberx-droid/src/plugins/voice/web/queuestore.ts",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/amberx-droid/src/plugins/voice/web/QueueView.tsx",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/web/core.ts",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/web/render.ts",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/test.mts",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/server/__init__.py",
+  "/root/axf-builds/amberx-slim-queue-r2/apps/console-web/plugins/media-studio/web/store.ts"
+ ],
+ "changeIds": [
+  "chg-20261106-e3328db7e6"
+ ],
+ "features": [
+  "pending:amberx-slim-down-voice-queue"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 156,
+  "output": 67999,
+  "cacheRead": 9709083,
+  "cacheWrite": 192410,
+  "thinking": 15010,
+  "costUsd": 4.2644,
+  "costEstimated": false,
+  "toolCalls": 80,
+  "commands": 72,
+  "filesTouched": 8,
+  "reportedUsd": 4.8417
+ },
+ "ingestedAt": "2026-11-06T02:43:30.022Z"
+}

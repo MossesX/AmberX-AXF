@@ -1,0 +1,25 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261105-1ab568f957",
+  "createdAt": "2026-11-05T23:29:27.306Z",
+  "updatedAt": "2026-11-05T23:29:27.306Z",
+  "kind": "fix",
+  "title": "Auto fix: Claude Code hooks report to the Activity banner",
+  "asked": "Systems check auto-fix (Re-register the hooks on the VPS) for activity-hooks, by health.",
+  "repos": [],
+  "model": "",
+  "who": {
+    "user": "systems-check"
+  },
+  "steps": [],
+  "result": {
+    "state": "failed",
+    "summary": "the fix itself failed: Auto fix goes through Mosses: install him (Agent manager \u2192 Add-on agents \u2192 coder).",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "failed",
+  "status": "failed"
+}

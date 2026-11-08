@@ -1,0 +1,42 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-ab61a91e95",
+  "createdAt": "2026-11-06T18:50:33.312Z",
+  "updatedAt": "2026-11-06T18:51:12.487Z",
+  "kind": "build",
+  "title": "# Build demo: step s1 of 3 (fresh session) Handoff: 0/3 steps done.",
+  "asked": "# Build demo: step s1 of 3 (fresh session) Handoff: 0/3 steps done. - note: session axf-md-chain-control--earl started ## Do this now - s1 [opus] edit src/a.ts ## Files for this step Read these; do not explore the repo beyond them unless one of them sends you there. - src/b.ts - src/a.ts Do only that, commit, mark it done with `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line for the next session>\"`, then finish. The next step gets its own fresh session. ## The build's brief (for context) # brief Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Progress: this build's progress file is the console's view of where you are. After each step run `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"` (and `step <next> running` when you start one; `note \"…\"`, `link --branch <b> --pr <n>`, `status blocked --note \"why\"` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=demo is set for you.",
+  "repos": [],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "9af76821-e52",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "cancelled",
+    "summary": "no change: launcher test of md-chain-control reached the real claude in a scratch folder by mistake",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "surface": "headless",
+  "startedAt": "2026-11-06T18:50:33.312Z",
+  "finishedAt": "2026-11-06T18:51:04.010Z",
+  "lastSeenAt": "2026-11-06T18:51:03.793Z",
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.2392,
+    "inputTokens": 14,
+    "outputTokens": 3213,
+    "cacheReadTokens": 220370,
+    "cacheWriteTokens": 26171,
+    "source": "transcript"
+  },
+  "costEstimated": false
+}
