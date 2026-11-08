@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1563,
- "updatedAt": "2026-11-08T19:24:55.485Z",
+ "rev": 1564,
+ "updatedAt": "2026-11-08T19:25:13.543Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -119021,9 +119021,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:22:54.809Z",
-   "updatedAt": "2026-11-08T17:22:54.809Z",
+   "updatedAt": "2026-11-08T19:25:12.237Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:25:12.237Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -119038,7 +119043,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:25:12.237Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8825yl07z35h",
+     "title": "",
+     "text": "These builds were launched directly from voice, skipping the orchestrator, so they have no build IDs and don't show in Plan Studio. Give each a build record/ID, link its branch and folder, set its real status (running, queued, done, failed, duplicate). DO NOT launch, relaunch or queue anything. Builds: glossary-index-demos-r3 (landed), veto-notify-autorun, workers-api-routing, brief-only-headless, terminal-header-responsive, ui-api-parity-rule (+r2, r3), memory-manager (+r2, r3 duplicate stopped), molly-one-shell (+r2, r3, r4), account-failover-notify, account-health-failover, amberx-notify-panel, slot-watchdog, glossary-r3-land (carrier, discard). Mark dead/duplicate ones accordingly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:25:12.237Z",
+     "updatedAt": "2026-11-08T19:25:12.237Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8825yl08igbm",
+     "title": "",
+     "text": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:25:12.237Z",
+     "updatedAt": "2026-11-08T19:25:12.237Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8825yl09grj4",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/adopt-today-s-direct-launched-builds-record-only.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/adopt-today-s-direct-launched-builds-record-only.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:25:12.237Z",
+     "updatedAt": "2026-11-08T19:25:12.237Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -119047,7 +119142,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119062,7 +119157,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:25:12.237Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
