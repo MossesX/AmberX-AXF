@@ -13,6 +13,18 @@
    "from": "",
    "addenda": []
   },
+  "account-health-failover": {
+   "said": "Account health probe + failover + phone alerts (Brett). A. Health probe (new): On console load and on a schedule, the orchestrator probes EVERY Claude account (subscriptions + API keys): a tiny headless session with a minimal brief, NO rules, NO CLAUDE.md, no MCP. It checks: login valid, credits/usage available (5-hour + weekly used/left, reset times; API: balance or last-known spend vs cap), which models it can use (opus/fable/etc.). It saves each account's status in ONE shared store all plugins read (status: ok / limited / no credits / login expired; credits left; models; checked at). Usage badge, Claude accounts screen and routing all read it. Keep probe cost near zero. The orchestrator only sends a job to an account that the store says can take it, with the model it needs. B. Failover: If a build still fails on auth or limit, mark the account out, update the store, and relaunch the same build on the next able account. Today 5 builds died in 1-3 s on account-1 (expired) and account-3 Hulu (no credits) and nothing retried. C. Phone alerts (AmberX): Notify on every account problem: which account, what (expired / limit / no credits), which build moved where, what Brett must do. D. One home per login: Each account's credentials live in exactly ONE store; every token refresh from any build/console/session writes back there. Audit claude-login.mjs, claude-token-save.mjs, claude-headless.sh, console AI keys for duplicate copies; find why account-1's refresh failed and report. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (probe interval, alerts); tests; report, STATUS, THREADS. E. Probe notifications (Brett): When the console loads: send a phone notification that the account checks are about to run; when done, send another with the result per account (ok / limited / no credits / expired, credits left, models). Uses the AmberX notification panel (build amberx-notify-panel) as its type 'account-status'.",
+   "at": "2026-11-08T17:24:55.214Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "adopt-today-s-direct-launched-builds-record-only": {
    "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
    "at": "",

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:27:09.895Z",
+ "updatedAt": "2026-11-08T17:29:14.204Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70755,7 +70755,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft01szre"
+     "uid": "st-mw83q21e01qqiz"
     },
     {
      "id": "s2",
@@ -70773,7 +70773,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft02mnkk"
+     "uid": "st-mw83q21e021om1"
     },
     {
      "id": "s3",
@@ -70791,7 +70791,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft035qxo"
+     "uid": "st-mw83q21e03yp7k"
     },
     {
      "id": "s4",
@@ -70809,7 +70809,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft04ouru"
+     "uid": "st-mw83q21e04pixu"
     },
     {
      "id": "s5",
@@ -70827,7 +70827,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft05epcy"
+     "uid": "st-mw83q21e0544df"
     },
     {
      "id": "s6",
@@ -70845,7 +70845,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft06syoj"
+     "uid": "st-mw83q21e06wn4p"
     },
     {
      "id": "s7",
@@ -70863,7 +70863,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83tkft07tlwh"
+     "uid": "st-mw83q21e07mgai"
     },
     {
      "id": "s8-7",
@@ -70881,7 +70881,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl082xuk"
+     "uid": "st-mw83tkft01szre"
     },
     {
      "id": "s9-8",
@@ -70899,7 +70899,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl095f4a"
+     "uid": "st-mw83tkft02mnkk"
     },
     {
      "id": "s10-9",
@@ -70917,7 +70917,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0abqbb"
+     "uid": "st-mw83tkft035qxo"
     },
     {
      "id": "s11-10",
@@ -70935,7 +70935,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0byui1"
+     "uid": "st-mw83tkft04ouru"
     },
     {
      "id": "s12-11",
@@ -70953,7 +70953,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0c1f92"
+     "uid": "st-mw83tkft05epcy"
     },
     {
      "id": "s13-12",
@@ -70971,7 +70971,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw83phfl0dgqgf"
+     "uid": "st-mw83tkft06syoj"
     },
     {
      "id": "s14-13",
@@ -70989,7 +70989,255 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "uid": "st-mw83tkft07tlwh"
+    },
+    {
+     "id": "s15-14",
+     "text": "Bring in full-api-control; rule in RULES.md + brief template + orchestrator brief writer adds the API parity line for UI builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl082xuk"
+    },
+    {
+     "id": "s16-15",
+     "text": "Deep link per plugin view: URL that opens it, registry, MCP/CLI to get + open it on the phone",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl095f4a"
+    },
+    {
+     "id": "s17-16",
+     "text": "CI parity check: every plugin view maps open/state/actions/settings to named API ops; fail on missing, report gaps, ratchet",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0abqbb"
+    },
+    {
+     "id": "s18-17",
+     "text": "Audit: list every UI lacking full API coverage; the rest added as pending builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0byui1"
+    },
+    {
+     "id": "s19-18",
+     "text": "Demonstration Designer: full API (open, state, every action, every setting) via REST/MCP/CLI/voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0c1f92"
+    },
+    {
+     "id": "s20-19",
+     "text": "Book Builder: full API (open, state, every action, every setting) via REST/MCP/CLI/voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83phfl0dgqgf"
+    },
+    {
+     "id": "s21-20",
+     "text": "Tests, report, STATUS, THREADS, push + PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
      "uid": "st-mw83phfl0ehgl5"
+    }
+   ]
+  },
+  {
+   "id": "account-health-failover",
+   "title": "Account health probe + failover + phone alerts",
+   "category": "Claude accounts",
+   "detail": "A (new): probe every Claude account (subscriptions + API keys) on console load and on a schedule with a tiny headless session (no rules, no CLAUDE.md, no MCP): login valid, usage left (5-hour + weekly, resets; API balance/spend vs cap), models it can use. One shared account-status store every plugin reads (usage badge, Claude accounts screen, routing); routing only sends a job to an account the store says can take it with the model it needs. E: phone notification before and after the probe (type account-status). B/C/D are built by account-failover-notify (same branch line); this build stacks on it.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T17:24:55.214Z",
+   "updatedAt": "2026-11-08T17:24:55.214Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Account health probe + failover + phone alerts (Brett). A. Health probe (new): On console load and on a schedule, the orchestrator probes EVERY Claude account (subscriptions + API keys): a tiny headless session with a minimal brief, NO rules, NO CLAUDE.md, no MCP. It checks: login valid, credits/usage available (5-hour + weekly used/left, reset times; API: balance or last-known spend vs cap), which models it can use (opus/fable/etc.). It saves each account's status in ONE shared store all plugins read (status: ok / limited / no credits / login expired; credits left; models; checked at). Usage badge, Claude accounts screen and routing all read it. Keep probe cost near zero. The orchestrator only sends a job to an account that the store says can take it, with the model it needs. B. Failover: If a build still fails on auth or limit, mark the account out, update the store, and relaunch the same build on the next able account. Today 5 builds died in 1-3 s on account-1 (expired) and account-3 Hulu (no credits) and nothing retried. C. Phone alerts (AmberX): Notify on every account problem: which account, what (expired / limit / no credits), which build moved where, what Brett must do. D. One home per login: Each account's credentials live in exactly ONE store; every token refresh from any build/console/session writes back there. Audit claude-login.mjs, claude-token-save.mjs, claude-headless.sh, console AI keys for duplicate copies; find why account-1's refresh failed and report. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (probe interval, alerts); tests; report, STATUS, THREADS. E. Probe notifications (Brett): When the console loads: send a phone notification that the account checks are about to run; when done, send another with the result per account (ok / limited / no credits / expired, credits left, models). Uses the AmberX notification panel (build amberx-notify-panel) as its type 'account-status'.",
+    "at": "2026-11-08T17:24:55.214Z",
+    "source": "console",
+    "session": "",
+    "link": "",
+    "by": "headless",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Account status store (account-status@1, one file in the claude-accounts data dir) + reader/writer lib; routing only picks an account the store says can take the job with the model it needs; failover writes the store; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83rhes06xkri"
+    },
+    {
+     "id": "s2",
+     "text": "Probe runner: tiny headless session per subscription (bare: no rules, no CLAUDE.md, no MCP) reading login, 5-hour/weekly usage + resets, models; API keys via the free models list + last-known spend vs cap; on console load + schedule; near-zero cost; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83rhes07toju"
+    },
+    {
+     "id": "s3",
+     "text": "Probe notifications (E): before/after push through axf.notify@1 type account-status (AmberX notification panel), per-account result lines; status-change alerts; notify.json; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83rhes08vxyv"
+    },
+    {
+     "id": "s4",
+     "text": "Console: status store on the Claude accounts screen + usage badge, routes, MCP/voice/CLI commands (probe, status), settings sections (probe interval, alerts); tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83rhes098zy5"
+    },
+    {
+     "id": "s5",
+     "text": "UI Review (3 options as assets), report, STATUS, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw83rhes0ap05c"
     }
    ]
   }

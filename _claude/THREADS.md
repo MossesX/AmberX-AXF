@@ -750,10 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:15 UTC · `multi-account-headless-workers` s5 done, → built (current) · orchestrator
-- 2026-11-07 05:14 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
-- 2026-11-07 05:14 UTC · `claude-accounts-edit` note (current) · foreign-write
-- 2026-11-07 05:14 UTC · `console-account-picker` note (current) · foreign-write
 - 2026-11-07 05:20 UTC · `molly-ri-court-records` added (4 steps) (current) · claude-voice
 - 2026-11-07 05:27 UTC · `skins-asset-types` s10 done (current) · foreign-write
 - 2026-11-07 05:30 UTC · `grindr-ai-wingman` added (5 steps) (current) · claude-voice
@@ -1150,6 +1146,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:26 UTC · `account-failover-notify` → built, branch claude/account-failover-notify, PR #392 (all) · builds-live
 - 2026-11-08 17:26 UTC · `account-failover-notify` note (all) · orchestrator
 - 2026-11-08 17:27 UTC · `account-failover-notify` note (all) · orchestrator
+- 2026-11-08 17:23 UTC · `ui-api-parity-rule` added (7 steps) (all) · foreign-write
+- 2026-11-08 17:24 UTC · `account-health-failover` added (5 steps) (all) · headless
+- 2026-11-08 17:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
+- 2026-11-08 17:24 UTC · `account-health-failover` added (5 steps) (all) · headless
 
 ## Token passes (log)
 
