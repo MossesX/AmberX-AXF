@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 00:40 UTC · `gizmo-voice` → pending, note (current) · reconciler
 - 2026-11-07 00:45 UTC · `amberx-open-any-url-apk` added (2 steps) (current) · amberx-open-any-url
 - 2026-11-07 00:45 UTC · `plan-studio-backfill-12h` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-07 00:58 UTC · `notes-tasks-calendar` note (current) · orchestrator
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` s2 done, → complete (all) · orchestrator
 - 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · orchestrator
 - 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` PR #384 (all) · builds-live
+- 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s8 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

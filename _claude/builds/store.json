@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1447,
- "updatedAt": "2026-11-08T01:05:11.948Z",
+ "rev": 1448,
+ "updatedAt": "2026-11-08T01:05:23.596Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114641,15 +114641,15 @@
    "title": "URGENT: rebuild pipeline — orchestrator IDs, splits, Pending→Queue, slot-driven headless launches",
    "category": "",
    "detail": "Rebuild the build pipeline from scratch:\n1. Everything Brett asks for becomes a build sent to the orchestrator.\n2. Orchestrator assigns a build ID.\n3. Orchestrator uses Claude to split it into steps (<=30 min) and picks a model per step: Fable only when needed, Opus otherwise.\n4. Build goes to Pending. Brett moves Pending -> Queue.\n5. Orchestrator watches the VPS: connected Claude accounts, which have Fable, max parallel and free slots per account.\n6. Whenever a slot opens, the orchestrator grabs the next build in the Queue and starts a headless session on it: Fable steps to an account with Fable, everything else to Opus accounts. Never launches right away, only when a slot is free.\n7. Steps tick off in the progress files per existing rules; a monitor watches them and updates progress live.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-rebuild-pipeline-orchestrator-ids-splits-",
    "branch": "claude/pipeline-rebuild",
    "pr": "#384",
    "createdAt": "2026-11-08T00:23:40.524Z",
-   "updatedAt": "2026-11-08T01:05:10.823Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T01:05:11.745Z",
+   "builtAt": "2026-11-08T01:05:11.745Z",
    "notes": [],
    "approvals": [
     {
@@ -114897,12 +114897,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T01:05:11.745Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T00:32:34.818Z",
-     "updatedAt": "2026-11-08T00:32:34.996Z"
+     "updatedAt": "2026-11-08T01:05:11.890Z"
     }
    ],
    "profiles": [
@@ -114913,7 +114913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
