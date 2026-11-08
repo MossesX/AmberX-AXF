@@ -3197,6 +3197,18 @@
    "from": "detail",
    "addenda": []
   },
+  "style-rule-every-design-element-overrides-axhub-": {
+   "said": "All design elements override X hubs except for the color theme.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "tab-group-assets": {
    "said": "Looking at UI Review's row (Design packs, Whole apps, Screens and pages, Settings interfaces, Dialogs, Menus), which switches the list = a tab group: \"If it's a tab group, why can't I get to the tab group settings by right-clicking on it?\" ... \"Needs to be. Yeah, all tab groups are supposed to be assets. With a settings interface, that's also an asset.\"\n\nAddendum 1 (voice, Nov 4): \"Right now, I want to make sure that navigation menus, toolbars, banners, are all asset types, and they all have a settings interface, which is an asset, and we can get to their settings by right-clicking all of them.\"\n\nAddendum 2 (voice, Nov 4): \"Every asset type that has the settings interface, there's going to be a default settings interface for all, used by default. And then there will be another one that will make a customized one for every app. And by default, the custom one will be selected.\"\n\nAddendum 3 (voice, Nov 4, correction): \"No, actually, by default, it uses the default one.\"",
    "at": "2026-11-04T12:00:00.000Z",
