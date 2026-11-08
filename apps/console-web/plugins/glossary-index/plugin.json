@@ -610,5 +610,308 @@
   },
   "help": "help.json",
   "opens": "main",
-  "buildHooks": "build-hooks.mjs"
+  "buildHooks": "build-hooks.mjs",
+  "ui": {
+    "$axf": "ui-api@1",
+    "note": "Every control of every view and dialog → the API op that does the same (build ui-api-parity-rule). What is on screen is console.values keys (value:…); edits are this plugin's commands (REST /api/plugins/glossary-index/…, MCP glossary_index_*, CLI axf glossary-index …); moving around is console actions (voice).",
+    "views": {
+      "glossary-index": {
+        "files": [
+          "web/index.tsx",
+          "web/menu.ts"
+        ],
+        "state": [
+          "stats",
+          "search",
+          "entry",
+          "value:glossary.view",
+          "value:glossary.sort",
+          "value:glossary.kind",
+          "value:glossary.showDrafts"
+        ],
+        "actions": {
+          "{expr}": [
+            "entry",
+            "search"
+          ],
+          "term entry plugin}": "entry",
+          "Play": "action:demo.play",
+          "Open in Book Builder": "action:book.open",
+          "Open in the designer": "action:demo.edit",
+          "Play demonstration": "action:demo.play",
+          "Edit demonstration": "action:demo.edit",
+          "Generate demonstration": [
+            "demo-generate",
+            "action:demo.generate"
+          ],
+          "Add to book…": [
+            "action:book.add",
+            "book-change"
+          ],
+          "Search": "search",
+          "Kind": [
+            "value:glossary.kind",
+            "search"
+          ],
+          "Sort": "value:glossary.sort",
+          "Drafts": "value:glossary.showDrafts",
+          "Rebuild now": "rebuild"
+        },
+        "uiOnly": {
+          "Expand all": "only how the index tree is drawn; search answers the same entries",
+          "Collapse all": "only how the index tree is drawn; search answers the same entries",
+          "Only undescribed": "a page filter; stats counts the undescribed entries and every search row carries its generic flag",
+          "Show more": "draws more rows; search takes a limit",
+          "Close details": "closes the side panel; entry reads any entry"
+        }
+      },
+      "demo-designer": {
+        "files": [
+          "web/designer.tsx",
+          "web/player.tsx"
+        ],
+        "state": [
+          "demos",
+          "demo",
+          "value:glossary.designer.open",
+          "value:glossary.designer.tab",
+          "value:glossary.designer.mode",
+          "value:glossary.designer.onlyGenerated"
+        ],
+        "actions": {
+          "Open": [
+            "action:demo.edit",
+            "value:glossary.designer.open"
+          ],
+          "{expr}": [
+            "demo-change",
+            "action:demo.edit"
+          ],
+          "Title": "demo-change",
+          "Say": "demo-change",
+          "Do": "demo-change",
+          "Target": "demo-change",
+          "Highlight label": "demo-change",
+          "Wait (ms)": "demo-change",
+          "Play": [
+            "action:demo.play",
+            "action:demo.play-step"
+          ],
+          "Up": "demo-change",
+          "Down": "demo-change",
+          "Remove": "demo-change",
+          "Save": [
+            "demo-save",
+            "demo-change"
+          ],
+          "Regenerate": "demo-generate",
+          "Record clip…": "clip-from-demo",
+          "Delete": "demo-delete",
+          "Video": [
+            "clip-from-demo",
+            "clip-register"
+          ],
+          "Seconds": [
+            "clip-from-demo",
+            "clip-register"
+          ],
+          "Register clip": "clip-from-demo",
+          "Name": [
+            "demo-change",
+            "clip-register"
+          ],
+          "Id": [
+            "demo-new",
+            "demo-save"
+          ],
+          "App": "demo-change",
+          "Runs on": "demo-change",
+          "Voice speed": "demo-change",
+          "Narrator voice": "demo-change",
+          "Description": "demo-change",
+          "Clear": "demo-change",
+          "Add step": "demo-change",
+          "Add to the chain": "demo-change",
+          "Add": "demo-change",
+          "Play transcript": "action:demo.play",
+          "Kind": "clip-register",
+          "Source": "clip-register",
+          "Which one": "clip-register",
+          "Register": "clip-register",
+          "Generate from an entry": [
+            "action:demo.designer",
+            "demo-generate"
+          ],
+          "Blank": [
+            "action:demo.designer",
+            "demo-new"
+          ],
+          "Register a clip": [
+            "action:demo.designer",
+            "clip-register"
+          ],
+          "Search": "demos",
+          "Only generated": [
+            "value:glossary.designer.onlyGenerated",
+            "demos"
+          ],
+          "Glossary and Index settings": "settings:glossary-index",
+          "Demonstration Designer": "view:demo-designer",
+          "Replay": "action:demo.replay",
+          "Back": "action:demo.prev",
+          "Repeat": "action:demo.repeat",
+          "Next": "action:demo.next",
+          "Stop": "action:demo.stop",
+          "Voice control": [
+            "action:demo.listen",
+            "value:glossary.demo.voiceControl"
+          ]
+        },
+        "uiOnly": {
+          "Revert": "throws away unsaved edits in the editor; API edits (demo-change) are saved one at a time, so there is no draft to revert",
+          "Open video": "opens the clip's video in a browser tab; demo answers its address (data.media.video)",
+          "Refresh": "reloads the list on screen; every API read is fresh already"
+        }
+      },
+      "book-builder": {
+        "files": [
+          "web/books.tsx"
+        ],
+        "state": [
+          "demos",
+          "demo",
+          "book-outline",
+          "value:glossary.books.open",
+          "value:glossary.books.chapter",
+          "value:glossary.books.tab",
+          "value:glossary.books.pickerKind"
+        ],
+        "actions": {
+          "Also generate documentation": [
+            "book-new",
+            "book-change"
+          ],
+          "How deep": [
+            "book-new",
+            "book-change"
+          ],
+          "Format": [
+            "book-new",
+            "book-change"
+          ],
+          "How interactive": [
+            "book-new",
+            "book-change"
+          ],
+          "Include every item's API (REST, MCP, CLI)": [
+            "book-new",
+            "book-change"
+          ],
+          "Include the screens (live frames in interactive docs)": [
+            "book-new",
+            "book-change"
+          ],
+          "Title": [
+            "book-new",
+            "book-change"
+          ],
+          "What it is about": [
+            "book-new",
+            "book-change"
+          ],
+          "Rough total length (minutes)": "book-new",
+          "Minutes per chapter": [
+            "book-new",
+            "book-change"
+          ],
+          "Chapters": "book-new",
+          "Narrator voice": [
+            "book-new",
+            "book-change"
+          ],
+          "Narration speed": [
+            "book-new",
+            "book-change"
+          ],
+          "Look while recording": [
+            "book-new",
+            "book-change"
+          ],
+          "Narrated walkthrough video": [
+            "book-new",
+            "book-change"
+          ],
+          "One clip per chapter": [
+            "book-new",
+            "book-change"
+          ],
+          "Create book": "book-new",
+          "Book": "book-change",
+          "Chapter": "book-change",
+          "Add": "book-change",
+          "New book…": [
+            "action:book.new",
+            "book-new"
+          ],
+          "Search": [
+            "search",
+            "demos"
+          ],
+          "Kind": [
+            "value:glossary.books.pickerKind",
+            "search"
+          ],
+          "{expr}": [
+            "action:book.preview",
+            "action:book.chapter",
+            "book-change"
+          ],
+          "Up": "book-change",
+          "Down": "book-change",
+          "Remove": "book-change",
+          "Minutes": "book-change",
+          "Intro (what the narrator says first)": "book-change",
+          "Save chapter text": "book-change",
+          "Note": "book-change",
+          "Preview": "action:book.preview",
+          "Play": "action:demo.play",
+          "Generate documentation": "docs-generate",
+          "Open": "docs-file",
+          "Preview book": "action:demo.play",
+          "Add chapter": "book-change",
+          "Record video": "book-record",
+          "Delete": "demo-delete",
+          "Total minutes": "book-change",
+          "Open the clips": [
+            "view:demo-designer",
+            "demos"
+          ]
+        },
+        "uiOnly": {
+          "Cancel": "closes the dialog without saving anything; nothing to undo over the API",
+          "Show more left": "draws more rows of the content picker; search takes a limit",
+          "Refresh": "reloads the list on screen; every API read is fresh already"
+        }
+      },
+      "glossary-index.book-wizard": {
+        "files": [],
+        "state": [
+          "demos",
+          "book-outline"
+        ],
+        "actions": {},
+        "uiOnly": {},
+        "note": "its fields live in web/books.tsx and are mapped under book-builder (book-new)"
+      },
+      "glossary-index.add-to-book": {
+        "files": [],
+        "state": [
+          "book-outline"
+        ],
+        "actions": {},
+        "uiOnly": {},
+        "note": "its fields live in web/books.tsx and are mapped under book-builder (book-change add-item)"
+      }
+    }
+  }
 }

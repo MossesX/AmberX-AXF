@@ -311,7 +311,7 @@ export function DesignerPage() {
                     <ul className="axp-glossary-index__rows" aria-label={tab === 'clip' ? 'Clips' : 'Demonstrations'}>
                       {list.map((s) => (
                         <li key={s.id} className={`axp-glossary-index__row${selected?.id === s.id && selected.type === tab ? ' is-selected' : ''}`}>
-                          <button type="button" data-fx-row className="axp-glossary-index__row-btn" onClick={() => pick(tab, s.id)}>
+                          <button type="button" data-fx-row className="axp-glossary-index__row-btn" aria-label={`Open ${s.name}`} onClick={() => pick(tab, s.id)}>
                             <strong>{s.name}</strong>
                             <span className="fx-muted">{tab === 'clip' ? `${s.kind} · ${fmtSeconds(s.seconds ?? 0)} · ${s.keywords} keywords` : `${s.steps} steps · ${fmtSeconds(s.seconds ?? 0)}${s.generated === 'glossary' ? ' · generated' : ''}${s.chain?.length ? ` · +${s.chain.length} chained` : ''}`}</span>
                           </button>
@@ -337,7 +337,7 @@ export function DesignerPage() {
             </div>
           )}
       </TabGroup>
-      <p className="fx-muted axp-glossary-index__note"><Icon name="info" size={12} /> Voice: say "play the demonstration of …" to AmberX, or use the console actions demo.play, demo.next, demo.prev and demo.stop. Settings: <button type="button" data-fx-row className="axp-glossary-index__link" onClick={() => rt.dispatch('settings.open:glossary-index')}>Glossary &amp; Index</button>.</p>
+      <p className="fx-muted axp-glossary-index__note"><Icon name="info" size={12} /> Voice: say "play the demonstration of …" to AmberX, or use the console actions demo.play, demo.next, demo.prev and demo.stop. Settings: <button type="button" data-fx-row className="axp-glossary-index__link" aria-label="Glossary and Index settings" onClick={() => rt.dispatch('settings.open:glossary-index')}>Glossary &amp; Index</button>.</p>
     </div>
   );
 }

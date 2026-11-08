@@ -119,6 +119,7 @@ export function registerPlayer(rt: AxfRuntime) {
   rt.actions.register('demo.prev', () => show(st.at - 1), { label: 'Demonstration: previous step', searchable: false });
   rt.actions.register('demo.repeat', () => show(st.at), { label: 'Demonstration: say it again', searchable: false });
   rt.actions.register('demo.stop', () => stop(), { label: 'Demonstration: stop', searchable: false });
+  rt.actions.register('demo.listen', ([on]) => listen(on !== 'off' && on !== 'false'), { label: 'Demonstration: voice control on or off (demo.listen:on|off)', params: true, searchable: false });
 }
 
 /* ---------------- the window ---------------- */
