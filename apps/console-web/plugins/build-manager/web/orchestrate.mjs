@@ -163,6 +163,12 @@ export function planStart({ row, rows = [], features = [], queue = null, running
 /** Asset conformance (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"), in every brief. */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
 
+/**
+ * Every brief carries the API rule (Brett, Nov 8 2026: "the orchestrator is going to include in the briefs, everything
+ * comes with an API"; build orchestrator-api-rule-in-every-brief-plan-studio).
+ */
+export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.';
+
 export function briefFor({ row, model, branch, areas, deps, dontTouch, live, verify, rules, reportCmd }) {
   const steps = (row.steps ?? []).map((s, i) => `${i + 1}. ${s.done ? '[done] ' : ''}${s.text}${s.estimateText ? ` (~${s.estimateText})` : ''}`);
   const ref = `${row.source}:${row.id}`;
@@ -184,6 +190,7 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
     '- Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold).',
     '- Screenshots that are not a planned UI for approval (checking a screen, live captures, PR before/after) go to UI Review → Screenshots with `node framework/cli/shot.mjs <file> --name "…" --app <app> --screen <route> --group "<build name>"` (`axf shot`; ui-review-item@1: a name, app, screen and group, the session is detected), never the review queue.',
     `- ${ASSET_RULE}`,
+    `- ${API_RULE}`,
     ...rules.map((r) => `- ${r}`),
     '- Watch live: whenever you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` so Brett\'s live preview scrolls to and outlines it.',
     '\n## Report to the Build manager (axHub) as you go',

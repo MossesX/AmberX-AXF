@@ -18,7 +18,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 CONSOLE = HERE.parents[1]
 scratch = Path(tempfile.mkdtemp(prefix="plan-studio-py-"))
-os.environ.update({"AXF_PLANS_DIR": str(scratch / "store"), "AXF_ORCH_FILE": str(scratch / "orch.json"), "AXF_DATA_DIR": str(scratch / "data")})
+os.environ.update({"AXF_PLANS_DIR": str(scratch / "store"), "AXF_ORCH_FILE": str(scratch / "orch.json"), "AXF_DATA_DIR": str(scratch / "data"),
+                   "AXF_BUILDS_STORE": str(scratch / "builds" / "store.json"), "AXF_BUILDS_LIVE": "0", "AXF_BUILD_HOOKS": "off"})
 sys.path.insert(0, str(CONSOLE / "server"))
 ok = 0
 
@@ -76,6 +77,9 @@ hist = c.post("/p/api", json={"op": "get", "id": "docs-studio"}).json()["history
 check(hist[-1]["note"] == "AI, from: figure out the rocket fuel", 'history says "AI, from: …"')
 svc = plugin_services.get("plans@1")
 check(svc is not None and svc.park("Later thing")["plan"]["status"] == "parked", 'plans@1: "put it in a plan for later" parks a plan')
+pr = mod.mirror_probe()
+check(pr["status"] == "ok", f"build-mirror@1 health: an empty builds store is in sync ({pr})")
+check(mod.mirror_fix()["state"] == "done", "build-mirror@1 auto-fix re-mirrors")
 check(len(c.get("/p/catalog").json()["entries"]) > 20, "catalog: every plugin, app and library")
 
 shutil.rmtree(scratch, ignore_errors=True)

@@ -22,6 +22,8 @@
  *   … ai "<plain English>" [--plan <id>] [--reply-file f] [--apply]   rules first; --reply-file = a fixed model reply (tests)
  *   … categories                      the category tree
  *   … api '<json {op,…}>'             everything the console page does (the server calls this); also reads stdin
+ *   … mirror-builds [<build id>…]     build-mirror@1: make / update the stepped plan of these builds (none = backfill every open build)
+ *   … check-builds [--all]            every open build has a plan whose steps match its split exactly (exit 1 + the mismatches)
  *   … where                           the store folder
  *   --json on any command prints one JSON line.
  */
@@ -31,7 +33,10 @@ import { fileURLToPath } from 'node:url';
 import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
 import { discover, readMatrices, writeBack } from './catalog.mjs';
+import * as bm from './web/build-mirror.mjs';
 import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
+import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -108,7 +113,12 @@ export function savePlan(raw, meta = {}) {
   if (plan.category && !categories().paths.includes(plan.category)) writeJson(P('categories.json'), pc.normCategories({ ...categories(), paths: [...categories().paths, plan.category] }));
   let wroteBack = [];
   try { if (plan.features.length) wroteBack = writeBack(plan, dataPath('framework/catalog/status.json')); } catch { /* the tracker path is optional */ }
-  return { ok: true, plan, created: !before, wroteBack };
+  // build-mirror@1: an edit of a build's plan (anything but the mirror itself) flows back to the builds store
+  let toBuild = null;
+  if (plan.build?.id && !MIRROR_KINDS.has(meta.kind) && process.env.AXF_PLANS_WRITEBACK !== 'off') {
+    try { toBuild = pushToBuild(plan, { by: meta.by || 'plan-studio' }); } catch (e) { toBuild = { ok: false, error: e.message }; }
+  }
+  return { ok: true, plan, created: !before, wroteBack, ...(toBuild ? { toBuild } : {}) };
 }
 export function deletePlan(id) {
   if (!getPlan(id)) throw new Error(`no plan ${id}`);
@@ -129,6 +139,60 @@ const orchFile = (profile) => (process.env.AXF_ORCH_FILE ? process.env.AXF_ORCH_
 export function profiles() { try { return readProfiles().profiles?.map((p) => ({ id: p.id, label: p.label ?? p.name ?? p.id })) ?? []; } catch { return []; } }
 export function orchBuilds(profile) { return readJson(orchFile(profile), { builds: [] }).builds ?? []; }
 
+/* ------------------------------------------------------------------ build-mirror@1: the builds store ↔ Plan Studio */
+
+/** Saves that come from the mirror (or replay history) never flow back to the store. */
+const MIRROR_KINDS = new Set(['build', 'seed', 'restore']);
+const storeBuilds = () => (loadStore().builds ?? []).filter((b) => b && b.id);
+
+/**
+ * Bring the plans of these builds (ids; null = every build that needs one) up to date with the builds store.
+ * A build without a plan gets one while it is open (named builds; `backfill` = every open build already there).
+ * Returns { created, updated, unchanged }.
+ */
+export function mirrorBuilds(ids = null, { backfill = false, by = 'orchestrator' } = {}) {
+  const want = ids ? new Set(ids) : null;
+  const plans = loadPlans();
+  const out = { created: [], updated: [], unchanged: 0 };
+  for (const b of storeBuilds()) {
+    if (want && !want.has(b.id)) continue;
+    const existing = bm.findPlan(plans, b);
+    // a build without a plan gets one while it is open (a new build always is; a catch-up replay of old events never
+    // fills Plan Studio with long-finished builds); the full backfill (`mirror-builds`) does every open build
+    if (!existing && (!(want || backfill) || !bm.BACKFILL_STATUSES.includes(b.status) || b.deleted || b.hidden)) continue;
+    const r = savePlan(bm.planFromBuild(b, existing), { by, kind: 'build', note: existing ? `Build ${b.id}: ${b.status}` : `Stepped plan for build ${b.id}`, force: true });
+    if (r.unchanged) out.unchanged += 1; else (r.created ? out.created : out.updated).push(r.plan.id);
+  }
+  return out;
+}
+/** Every build whose plan's steps don't match its split exactly: [{ build, plan, problems }]. */
+export function checkBuilds({ all = false } = {}) {
+  const plans = loadPlans();
+  const out = [];
+  for (const b of storeBuilds()) {
+    const p = bm.findPlan(plans, b);
+    if (!p && !(bm.BACKFILL_STATUSES.includes(b.status) && !b.deleted && !b.hidden) && !all) continue;
+    if (!p && b.deleted) continue;
+    const problems = bm.compare(p, b);
+    if (problems.length) out.push({ build: b.id, plan: p?.id ?? null, problems });
+  }
+  return out;
+}
+/** A Plan Studio edit of a build's plan, written to the builds store (the mirror then brings the plan back in line). */
+export function pushToBuild(plan, { by = 'plan-studio' } = {}) {
+  const b = storeBuilds().find((x) => x.id === plan.build.id);
+  if (!b) return { ok: false, error: `no build ${plan.build.id}` };
+  const edits = bm.editsFor(plan, b);
+  if (!bm.hasEdits(edits)) return { ok: true, unchanged: true };
+  const prof = activeProfile().id;
+  withStore((s) => {
+    const state = projectOrchestrator(s, prof);
+    state.builds = (state.builds ?? []).map((x) => (x.id === b.id ? bm.applyEdits(x, edits) : x));
+    return absorbOrchestrator(s, prof, state, { by });
+  }, { by, action: 'plan-studio:edit', note: b.id });
+  return { ok: true, build: b.id, edits };
+}
+
 /** Turn a plan into a build: preview (no write) or add it to the profile's orchestrator and link both ways. */
 export function turnIntoBuild(id, { profile, buildId, preview = false, by = '', said = '' } = {}) {
   const plan = getPlan(id);
@@ -136,32 +200,26 @@ export function turnIntoBuild(id, { profile, buildId, preview = false, by = '', 
   const prof = profile || plan.profile || activeProfile().id;
   const change = pc.toBuild(plan, { profile: prof, id: buildId, said, by });
   if (preview) return { ok: true, preview: true, change, profile: prof, minutes: change.steps.reduce((m, s) => m + pc.minutesOf(s.estimate), 0) };
-  const f = orchFile(prof);
-  const st = readJson(f, { $axf: 'orchestrator@1', builds: [] });
-  st.builds = st.builds ?? [];
-  if (st.builds.some((b) => b.id === change.id)) throw new Error(`"${change.id}" is already in the ${prof} orchestrator: pick another build id`);
+  if (storeBuilds().some((b) => b.id === change.id)) throw new Error(`"${change.id}" is already in the orchestrator: pick another build id`);
+  // one source of truth: the build goes into the builds store (the orchestrator file is a read-only export)
   const now = new Date().toISOString();
-  st.builds.push({
+  withStore((store) => {
+    const st = projectOrchestrator(store, prof);
+    st.builds = st.builds ?? [];
+    st.builds.push({
     id: change.id, title: change.title, category: change.category, detail: change.detail, status: 'pending', hidden: false, source: 'plan-studio', pendingId: '', branch: '', pr: '',
     createdAt: now, updatedAt: now, builtAt: '', notes: [{ text: `Plan Studio plan: ${plan.id} (${plan.title})`, at: now }], approvals: [], ...(change.origin ? { origin: change.origin } : {}),
     steps: change.steps.map((s, i) => ({ id: `s${i + 1}`, text: s.text, model: s.model, why: '', phase: s.phase, group: '', estimate: s.estimate, files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' })),
   });
-  writeJson(f, st);
+    return absorbOrchestrator(store, prof, st, { by: by || 'plan-studio' });
+  }, { by: by || 'plan-studio', action: 'plan-studio:build', note: change.id });
   const saved = savePlan(pc.linkBuild(plan, { profile: prof, id: change.id }), { by, kind: 'build', note: `Turned into build ${prof}:${change.id}`, force: true });
   return { ok: true, build: { profile: prof, id: change.id }, plan: saved.plan };
 }
-/** Live progress: every plan with a build reads its build; changed plans are saved. */
+/** Live progress: every plan with a build is mirrored from the builds store (build-mirror@1); returns the changed plan ids. */
 export function syncBuilds() {
-  const changed = [];
-  const cache = new Map();
-  for (const p of loadPlans()) {
-    if (!p.build) continue;
-    if (!cache.has(p.build.profile)) cache.set(p.build.profile, orchBuilds(p.build.profile));
-    const b = cache.get(p.build.profile).find((x) => x.id === p.build.id);
-    const r = pc.syncBuild(p, b);
-    if (r.changed) { savePlan(r.plan, { by: 'orchestrator', kind: 'build', note: b?.status === 'complete' ? 'Build complete' : 'Build progress', force: true }); changed.push(p.id); }
-  }
-  return changed;
+  const r = mirrorBuilds(null);
+  return [...r.created, ...r.updated];
 }
 
 /* ------------------------------------------------------------------ catalog */
@@ -258,6 +316,8 @@ export async function api(req) {
     }
     case 'build': return turnIntoBuild(r.id, { profile: r.profile, buildId: r.buildId, preview: !!r.preview, by, said: typeof r.said === 'string' ? r.said : '' });
     case 'sync-builds': return { ok: true, changed: syncBuilds() };
+    case 'mirror-builds': return { ok: true, ...mirrorBuilds(Array.isArray(r.ids) && r.ids.length ? r.ids : null, { backfill: r.backfill !== false, by: by || 'orchestrator' }) };
+    case 'check-builds': { const bad = checkBuilds({ all: !!r.all }); return { ok: !bad.length, mismatches: bad }; }
     case 'ai': return aiTurn(r.text, { planId: r.plan, reply: r.reply ?? null, apply: !!r.apply, by: by || 'AI' });
     case 'ai-apply': { // apply edits the page already showed as a diff
       const plans = loadPlans(); const plan = r.plan ? plans.find((p) => p.id === r.plan) ?? null : null;
@@ -322,6 +382,15 @@ async function main(argv) {
     const reply = typeof f['reply-file'] === 'string' ? readFileSync(f['reply-file'], 'utf8') : null;
     const r = await aiTurn(rest.join(' '), { planId: typeof f.plan === 'string' ? f.plan : '', reply, apply: !!f.apply, by: 'AI (cli)' });
     return out(r, r.ok ? `${r.say}${r.applied ? ' (applied)' : r.ops?.some((o) => !['answer', 'ask'].includes(o.op)) ? ' (not applied: add --apply)' : ''}` : `✗ ${r.error}`);
+  }
+  if (cmd === 'mirror-builds') {
+    const r = mirrorBuilds(rest.length ? rest : null, { backfill: true, by: 'cli' });
+    return out({ ok: true, ...r }, `created ${r.created.length}${r.created.length ? ` (${r.created.join(', ')})` : ''} · updated ${r.updated.length} · unchanged ${r.unchanged}`);
+  }
+  if (cmd === 'check-builds') {
+    const bad = checkBuilds({ all: !!f.all });
+    if (bad.length) process.exitCode = 1;
+    return out({ ok: !bad.length, mismatches: bad }, bad.length ? bad.map((m) => `✗ ${m.build} → ${m.plan ?? '(no plan)'}: ${m.problems.slice(0, 4).map((p) => `${p.step || '-'} ${p.field} (plan ${JSON.stringify(p.plan)} ≠ build ${JSON.stringify(p.build)})`).join('; ')}${m.problems.length > 4 ? ` +${m.problems.length - 4}` : ''}`).join('\n') : 'every build has its plan, steps in sync');
   }
   if (cmd === 'sync-builds') { const c = syncBuilds(); return out({ ok: true, changed: c }, c.length ? `updated ${c.join(', ')}` : 'nothing changed'); }
   throw new Error(`unknown command ${cmd}`);

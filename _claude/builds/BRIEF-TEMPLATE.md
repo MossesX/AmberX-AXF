@@ -12,6 +12,10 @@ Source: voice · At: 2026-11-03T14:05:00Z · Session: <session or conversation i
 
 ## What to build
 Your paraphrase, the plan, the steps (s1 …), checks.
+Every brief also carries the API rule (Brett, Nov 8 2026: "everything comes with an API"): anything with a UI gets a
+deep link, readable state and every action and setting through REST, MCP, the CLI and voice. The orchestrator adds it
+(`API_RULE` in `apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs`). The build's stepped plan
+appears in Plan Studio by itself and stays in sync both ways (build-mirror@1).
 
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:

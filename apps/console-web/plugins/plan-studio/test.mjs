@@ -4,7 +4,7 @@
 // store on scratch folders (the repo and the hub are never written), the plain-English parser with fixed model
 // replies (no live model), and the voice turn loop with fake speech in/out, mic-lease handoff and undo by voice.
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -290,7 +290,10 @@ await t('voice: silence ends it; intents', async () => {
 
 // ---------------------------------------------------------------- the CLI + store on scratch folders
 const scratch = mkdtempSync(join(tmpdir(), 'plan-studio-'));
-const env = { ...process.env, AXF_PLANS_DIR: join(scratch, 'store'), AXF_ORCH_FILE: join(scratch, 'orch.json'), AXF_DATA_DIR: join(scratch, 'data') };
+const env = { ...process.env, AXF_PLANS_DIR: join(scratch, 'store'), AXF_ORCH_FILE: join(scratch, 'orch.json'), AXF_DATA_DIR: join(scratch, 'data'), AXF_BUILDS_STORE: join(scratch, 'builds', 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILD_PROFILE: 'all' };
+// the in-process half (the mirror listener, store writes) uses the same scratch folders
+for (const k of ['AXF_PLANS_DIR', 'AXF_ORCH_FILE', 'AXF_DATA_DIR', 'AXF_BUILDS_STORE', 'AXF_BUILDS_LIVE', 'AXF_BUILD_HOOKS', 'AXF_BUILD_PROFILE']) process.env[k] = env[k];
+const readStoreFile = () => JSON.parse(readFileSync(env.AXF_BUILDS_STORE, 'utf8'));
 const node = (args) => { let out; try { out = execFileSync('node', args, { env, encoding: 'utf8' }); } catch (e) { out = e.stdout ?? ''; } return JSON.parse(out.trim().split('\n').at(-1)); };
 const cli = (...a) => node([join(here, 'plans.mjs'), ...a, '--json']);
 const apiCall = (o) => node([join(here, 'plans.mjs'), 'api', JSON.stringify(o)]);
@@ -338,17 +341,65 @@ await t('API: versions, restore, delete (history kept), bulk, categories, templa
   const tp = apiCall({ op: 'template-save', template: { label: 'Mine', plan: { status: 'idea' } } }); assert.equal(tp.templates.all.length, 8);
   const v = apiCall({ op: 'view-save', view: { label: 'Urgent', layout: 'board', filter: { priorities: ['P0'] } } }); assert.equal(v.views.items[0].id, 'urgent');
 });
-await t('API: turn into a build (preview, add to the orchestrator file, link both ways, live progress)', () => {
+await t('API: turn into a build (preview, add to the builds store, link both ways, live progress)', async () => {
   const id = apiCall({ op: 'save', plan: { title: 'Buildable', steps: [{ text: 'Do A', model: 'Opus', minutes: 20 }, { text: 'Do B', model: 'Fable', minutes: 30 }] }, force: true }).plan.id;
-  const pre = apiCall({ op: 'build', id, profile: 'all', preview: true }); assert.equal(pre.minutes, 50); assert.equal(existsSync(env.AXF_ORCH_FILE), false, 'preview writes nothing');
+  const pre = apiCall({ op: 'build', id, profile: 'all', preview: true }); assert.equal(pre.minutes, 50); assert.equal(existsSync(env.AXF_BUILDS_STORE), false, 'preview writes nothing');
   const r = apiCall({ op: 'build', id, profile: 'all' }); assert.ok(r.ok); assert.equal(r.plan.status, 'building');
-  const orch = JSON.parse(readFileSync(env.AXF_ORCH_FILE, 'utf8')); const b = orch.builds.find((x) => x.id === r.build.id);
+  const b = readStoreFile().builds.find((x) => x.id === r.build.id);
   assert.equal(b.source, 'plan-studio'); assert.equal(b.steps.length, 2); assert.match(b.notes[0].text, new RegExp(`Plan Studio plan: ${id}`));
   assert.equal(apiCall({ op: 'build', id, profile: 'all' }).ok, false, 'the same build twice is refused');
-  b.steps[0].done = true; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
+  const { withStore } = await import('../../../../framework/cli/builds-store.mjs');
+  withStore((st) => { const x = st.builds.find((y) => y.id === r.build.id); x.steps[0].done = true; x.steps[0].doneAt = new Date().toISOString(); return st; }, { by: 'test' });
   assert.deepEqual(apiCall({ op: 'sync-builds' }).changed, [id]); assert.equal(apiCall({ op: 'get', id }).plan.build.progress, 50);
-  b.steps[1].done = true; b.status = 'complete'; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
+  withStore((st) => { const x = st.builds.find((y) => y.id === r.build.id); x.steps[1].done = true; x.status = 'complete'; return st; }, { by: 'test' });
   apiCall({ op: 'sync-builds' }); assert.equal(apiCall({ op: 'get', id }).plan.status, 'done');
+});
+await t('build-mirror@1: a new build gets its stepped plan, ticks / re-splits / status reach it, Plan Studio edits flow back, check-builds catches drift', async () => {
+  const bm = await import('./web/build-mirror.mjs');
+  const { withStore } = await import('../../../../framework/cli/builds-store.mjs');
+  const core = await import('../../../../framework/plan/builds-store-core.mjs');
+  const { default: onBuildEvents } = await import('./build-sync.mjs');
+  const add = (b) => withStore((st) => { const o = core.projectOrchestrator(st, 'all'); o.builds.push(b); return core.absorbOrchestrator(st, 'all', o, { by: 'test' }); }, { by: 'test' });
+  const step = (id, text, model, estimate) => ({ id, text, model, estimate, why: '', phase: '', group: '', files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' });
+  const now = new Date().toISOString();
+  add({ id: 'mirror-me', title: 'Mirror me', category: 'Console', detail: 'what it does', status: 'pending', source: 'test', notes: [], approvals: [], createdAt: now, updatedAt: now, origin: { said: 'make it so', source: 'voice', at: now }, steps: [step('s1', 'Contract', 'Fable', '25 min'), step('s2', 'Wiring', 'Opus', '30 min')] });
+  // the store's build-hook event reaches the listener: the plan appears with the same steps
+  const ev = await onBuildEvents([{ event: 'created', build: { id: 'mirror-me' } }]);
+  assert.deepEqual(ev.created, ['mirror-me']);
+  let p = apiCall({ op: 'get', id: 'mirror-me' }).plan;
+  assert.deepEqual(p.steps.map((s) => [s.id, s.text, s.model, s.minutes, s.done]), [['s1', 'Contract', 'Fable', 25, false], ['s2', 'Wiring', 'Opus', 30, false]]);
+  assert.equal(p.status, 'parked'); assert.equal(p.build.id, 'mirror-me'); assert.equal(p.origin.said, 'make it so'); assert.equal(p.category, 'Builds > Console');
+  assert.ok(p.links.some((l) => l.kind === 'build' && l.ref === 'all:mirror-me'));
+  assert.deepEqual(apiCall({ op: 'check-builds' }).mismatches, [], 'in sync');
+  // tick + status + re-split reach the plan
+  withStore((st) => { const x = st.builds.find((y) => y.id === 'mirror-me'); x.status = 'running'; x.steps[0].done = true; x.steps[0].doneAt = now; x.steps.push(core.normStep(step('s3', 'Tests', 'Opus', '15 min'), 2)); return st; }, { by: 'test' });
+  await onBuildEvents([{ event: 'step-done', build: { id: 'mirror-me' } }]);
+  p = apiCall({ op: 'get', id: 'mirror-me' }).plan;
+  assert.equal(p.status, 'building'); assert.equal(p.steps.length, 3); assert.equal(p.steps[0].done, true); assert.equal(p.build.progress, 33);
+  // a Plan Studio edit flows back to the store (text, model, a new step), then the mirror agrees with it
+  const edited = { ...p, steps: [...p.steps.map((s) => (s.id === 's2' ? { ...s, text: 'Wiring + API', model: 'Fable' } : s)), { text: 'Docs', model: 'Opus', minutes: 10 }] };
+  const sv = apiCall({ op: 'save', plan: edited });
+  assert.ok(sv.toBuild?.ok, JSON.stringify(sv.toBuild));
+  const b = readStoreFile().builds.find((x) => x.id === 'mirror-me');
+  assert.deepEqual(b.steps.map((s) => [s.id, s.text, s.model]), [['s1', 'Contract', 'Fable'], ['s2', 'Wiring + API', 'Fable'], ['s3', 'Tests', 'Opus'], ['s4', 'Docs', 'Opus']]);
+  await onBuildEvents([{ event: 'steps-added', build: { id: 'mirror-me' } }]);
+  assert.deepEqual(apiCall({ op: 'check-builds' }).mismatches, [], 'back in sync');
+  // removing an open step in Plan Studio removes it from the build (kept in removedSteps); a done step is never removed
+  p = apiCall({ op: 'get', id: 'mirror-me' }).plan;
+  apiCall({ op: 'save', plan: { ...p, steps: p.steps.filter((s) => s.id !== 's3' && s.id !== 's1') } });
+  const b2 = readStoreFile().builds.find((x) => x.id === 'mirror-me');
+  assert.deepEqual(b2.steps.map((s) => s.id), ['s1', 's2', 's4']); assert.equal(b2.removedSteps.at(-1).step.id, 's3');
+  // drift is caught: a hand-edited plan (bypassing the store) fails the check
+  writeFileSync(join(env.AXF_PLANS_DIR, 'plans', 'mirror-me.json'), JSON.stringify({ ...p, steps: p.steps.slice(1) }));
+  const chk = spawnSync('node', [join(here, 'plans.mjs'), 'check-builds'], { env, encoding: 'utf8' });
+  assert.equal(chk.status, 1, chk.stdout); assert.match(chk.stdout, /mirror-me .*s1 id/);
+  // mirror-builds puts it right (and backfills every open build without a plan)
+  add({ id: 'old-open', title: 'Old open build', status: 'pending', source: 'test', notes: [], approvals: [], createdAt: now, updatedAt: now, steps: [step('s1', 'Only step', 'Opus', '20 min')] });
+  add({ id: 'old-done', title: 'Old done build', status: 'complete', source: 'test', notes: [], approvals: [], createdAt: now, updatedAt: now, steps: [] });
+  const mb = cli('mirror-builds'); assert.ok(mb.created.includes('old-open')); assert.ok(!mb.created.includes('old-done'), 'finished builds are not backfilled'); assert.ok(mb.updated.includes('mirror-me'));
+  assert.equal(spawnSync('node', [join(here, 'plans.mjs'), 'check-builds'], { env, encoding: 'utf8' }).status, 0);
+  // the pure check names the field that drifted
+  assert.deepEqual(bm.compare({ steps: [{ id: 's1', text: 'Only step', model: 'Fable', minutes: 20 }] }, { steps: [step('s1', 'Only step', 'Opus', '20 min')] }).map((x) => x.field), ['model']);
 });
 await t('API: AI turn with a fixed reply; AI edits recorded in history as "AI, from: …"', () => {
   const id = apiCall({ op: 'save', plan: { title: 'AI target' }, force: true }).plan.id;

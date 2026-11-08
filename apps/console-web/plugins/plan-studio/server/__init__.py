@@ -4,7 +4,7 @@ claude.ai sessions (axHub memory_write on the same files) and the AmberX app sha
 
   GET  state        plans, categories, templates, saved views, build profiles (+ live build progress synced)
   POST api          {op, …} one change: get | save | delete | restore | bulk | category | template-save | template-delete
-                    | view-save | view-delete | import | export | catalog | feature | plan-feature | build | sync-builds
+                    | view-save | view-delete | import | export | catalog | feature | plan-feature | build | sync-builds | mirror-builds | check-builds
                     | ai-apply
   GET  catalog      every plugin / app / library / module / axHub with its features (have / partial / planned / idea)
   GET  ai/status    is an AI provider there (axf.llm@1, the AI assistant's providers)?
@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -130,3 +131,59 @@ class PlansService:
 
 
 plugin_services.provide("plans@1", PlansService(), FOLDER)
+
+
+# build-mirror@1 (Brett, Nov 8 2026): every open orchestrator build has its stepped plan here, steps matching the split
+# exactly. A mismatch is a systems check item (red, pushed once) whose auto-fix re-mirrors the plans from the store.
+HEALTH_ID = "plan-studio-build-mirror"
+_health_done = False
+
+
+def mirror_probe() -> dict[str, Any]:
+    r = run({"op": "check-builds"}, timeout=120)
+    if "mismatches" not in r:
+        return {"status": "warn", "summary": f"Plan Studio couldn't check the build plans: {r.get('error') or 'no answer'}."}
+    bad = r["mismatches"]
+    if not bad:
+        return {"status": "ok", "summary": "Every open build has its stepped plan in Plan Studio, steps in sync."}
+    names = ", ".join(m["build"] for m in bad[:4])
+    return {"status": "error", "summary": f"{len(bad)} build(s) out of sync with their Plan Studio plan: {names}.",
+            "details": [f"{m['build']} → {m.get('plan') or '(no plan)'}: " + "; ".join(f"{p.get('step') or '-'} {p.get('field')}" for p in m["problems"][:6]) for m in bad[:40]]}
+
+
+def mirror_fix() -> dict[str, Any]:
+    r = run({"op": "mirror-builds", "by": "systems-check"}, timeout=300)
+    if not r.get("ok"):
+        return {"state": "failed", "message": r.get("error") or "mirror failed"}
+    return {"state": "done", "message": f"Re-mirrored the plans: {len(r.get('created', []))} made, {len(r.get('updated', []))} updated."}
+
+
+def ensure_health() -> bool:
+    """Registers the check on the systems check once it provides axf.health@1 (plugins load in any order)."""
+    global _health_done
+    if _health_done:
+        return True
+    reg = plugin_services.get("axf.health@1")
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": HEALTH_ID, "label": "Plan Studio plans match the builds", "service": "console", "order": 63, "severity": "error",
+                      "run": mirror_probe,
+                      "autoFix": {"label": "Re-mirror the plans", "run": mirror_fix},
+                      "breaks": "Plan Studio shows a build's steps that differ from what the orchestrator will build.",
+                      "instructions": ["Run `node apps/console-web/plugins/plan-studio/plans.mjs check-builds` to see the drift.",
+                                       "`plans.mjs mirror-builds` rebuilds every open build's plan from the builds store."]}, FOLDER)
+    except Exception:  # noqa: BLE001 — Plan Studio works without its health item
+        return False
+    _health_done = True
+    return True
+
+
+def _register_later(tries: int = 12) -> None:
+    if not ensure_health() and tries > 1:
+        t = threading.Timer(5.0, _register_later, args=(tries - 1,))
+        t.daemon = True
+        t.start()
+
+
+_register_later()
