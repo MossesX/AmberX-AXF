@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1616,
- "updatedAt": "2026-11-08T22:46:11.963Z",
+ "rev": 1617,
+ "updatedAt": "2026-11-08T22:46:22.114Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124777,7 +124777,7 @@
    "title": "Tabs get API control (every tab, sub-tab, section: action + console_open screen/tab + deep links + CI)",
    "category": "Framework > Console control",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -124785,7 +124785,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T22:30:52.988Z",
-   "updatedAt": "2026-11-08T22:30:59.815Z",
+   "updatedAt": "2026-11-08T22:46:16.233Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -124818,12 +124818,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T22:46:16.233Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T22:30:52.990Z",
-     "updatedAt": "2026-11-08T22:30:52.990Z"
+     "updatedAt": "2026-11-08T22:46:16.347Z"
     },
     {
      "id": "s2",
@@ -124900,7 +124900,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
