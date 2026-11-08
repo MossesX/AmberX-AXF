@@ -1,5 +1,7 @@
 # Banners live in Patches (Oct 21 2026, Opus)
 
+> **Retired (Nov 3 2026).** The Patches wrapper app is gone (`kill-patches-pilot`). Kept as history only. Molly is the one shell (build `molly-one-shell`); "Patches" now names the build orchestrator crew member.
+
 Brett: "Disable all banner plugins from console and enable them in Patches so they are always there regardless what
 app you are in. Put a _ underneath the x on codebase changes to minimize banner. Replace the x with an _ for the 2
 building banners and any error banners. All banners launch expanded."
