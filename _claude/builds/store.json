@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1483,
- "updatedAt": "2026-11-08T17:00:13.138Z",
+ "rev": 1484,
+ "updatedAt": "2026-11-08T17:00:33.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -95688,7 +95688,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-07T05:14:19.001Z",
+   "updatedAt": "2026-11-08T16:59:58.430Z",
    "builtAt": "",
    "notes": [
     {
@@ -95706,6 +95706,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Steps 3-5 (failover on limit/auth death, save rotated token back, banner/alert when no account is left) are built in account-failover-notify (branch claude/account-failover-notify). Steps 1-2 (switching the active account re-signs the VPS login; running builds follow the switch) remain.",
+     "at": "2026-11-08T16:59:58.429Z"
     }
    ],
    "approvals": [],
@@ -95941,7 +95945,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

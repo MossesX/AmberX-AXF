@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:00:13.138Z",
+ "updatedAt": "2026-11-08T17:00:33.081Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14547,7 +14547,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-07T05:14:19.001Z",
+   "updatedAt": "2026-11-08T16:59:58.430Z",
    "builtAt": "",
    "notes": [
     {
@@ -14565,6 +14565,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Steps 3-5 (failover on limit/auth death, save rotated token back, banner/alert when no account is left) are built in account-failover-notify (branch claude/account-failover-notify). Steps 1-2 (switching the active account re-signs the VPS login; running builds follow the switch) remain.",
+     "at": "2026-11-08T16:59:58.429Z"
     }
    ],
    "approvals": [],
