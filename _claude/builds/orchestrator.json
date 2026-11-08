@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:59:07.510Z",
+ "updatedAt": "2026-11-08T21:59:19.916Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74292,14 +74292,14 @@
    "title": "Orchestrator: API rule in every brief + Plan Studio stepped plans, always in sync",
    "category": "",
    "detail": "Brett: for every build the orchestrator handles: (1) every brief it writes includes the rule that anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity; (2) when it splits a build into steps it creates the stepped plan in Plan Studio for that build (same build ID, steps, estimates, models); (3) it keeps Plan Studio synced for all future builds: every step tick, status change, re-split, phase change, land or failure updates the matching Plan Studio plan automatically, and edits made in Plan Studio flow back to the orchestrator. One source of truth (the builds store), Plan Studio and Build Manager are views of it. Tests: new build -> plan appears with steps; tick -> plan updates; brief contains API rule.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-api-rule-in-every-brief-plan-studio",
-   "branch": "",
+   "branch": "claude/orchestrator-api-rule-in-every-brief-plan-studio",
    "pr": "",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-08T21:59:06.601Z",
+   "updatedAt": "2026-11-08T21:59:09.647Z",
    "builtAt": "",
    "notes": [
     {
@@ -74313,6 +74313,14 @@
     {
      "text": "Queued by cli.",
      "at": "2026-11-08T21:13:18.475Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-api-rule-in-every-brief-plan-studio--rhonda.",
+     "at": "2026-11-08T21:59:08.015Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-api-rule-in-every-brief-plan-studio--rhonda, own login copy)",
+     "at": "2026-11-08T21:59:09.647Z"
     }
    ],
    "approvals": [],
