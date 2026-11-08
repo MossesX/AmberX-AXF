@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1585,
- "updatedAt": "2026-11-08T21:16:38.000Z",
+ "rev": 1586,
+ "updatedAt": "2026-11-08T21:17:11.390Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123983,9 +123983,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:15:44.105Z",
-   "updatedAt": "2026-11-08T21:15:44.105Z",
+   "updatedAt": "2026-11-08T21:17:10.348Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:17:10.348Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124000,7 +124005,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:17:10.348Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8c25os01s53b",
+     "title": "",
+     "text": "Brett standing rule: every banner, title bar and toolbar in every app (console, AmberX, Molly, axHub web) and every item on them is a snappable registry asset, and every single one has its own settings (in a dialog, categorized collapsible sections). They measure their width and drop items into a three-dot overflow by priority so nothing ever overlaps at any size. Audit all existing banners/title bars/toolbars and convert them; add a CI check that fails on any bar or bar item that isn't a snappable asset or lacks settings. Folds in the Terminal toolbar item. Full API + voice + MCP/CLI control. Shots at 3 widths; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:17:10.348Z",
+     "updatedAt": "2026-11-08T21:17:10.348Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8c25os028b1w",
+     "title": "",
+     "text": "every banner and title bar is snap, has to be snaps. Every banner and title bar and all that has to be snappable assets so nothing overlines. And they all need a settings. Every single one needs its own settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:17:10.348Z",
+     "updatedAt": "2026-11-08T21:17:10.348Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8c25os03e519",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/every-banner-title-bar-and-toolbar-snappable-ass.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/every-banner-title-bar-and-toolbar-snappable-ass.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:17:10.348Z",
+     "updatedAt": "2026-11-08T21:17:10.348Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -124009,7 +124104,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124024,7 +124119,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:17:10.348Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
