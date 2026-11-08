@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1470,
- "updatedAt": "2026-11-08T16:32:45.725Z",
+ "rev": 1471,
+ "updatedAt": "2026-11-08T16:32:58.817Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116432,15 +116432,15 @@
    "title": "Terminal window header: responsive overflow",
    "category": "Console > Terminal",
    "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/terminal-header-responsive",
+   "pr": "#387",
    "createdAt": "2026-11-08T16:15:18.411Z",
-   "updatedAt": "2026-11-08T16:32:44.170Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-08T16:32:47.208Z",
+   "builtAt": "2026-11-08T16:32:45.756Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -116560,12 +116560,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T16:32:45.753Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:15:18.413Z",
-     "updatedAt": "2026-11-08T16:15:18.413Z"
+     "updatedAt": "2026-11-08T16:32:46.126Z"
     }
    ],
    "profiles": [
@@ -116576,7 +116576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
