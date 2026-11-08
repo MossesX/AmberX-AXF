@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1444,
- "updatedAt": "2026-11-08T00:59:16.835Z",
+ "rev": 1445,
+ "updatedAt": "2026-11-08T01:00:49.048Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114238,9 +114238,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:36:16.273Z",
-   "updatedAt": "2026-11-07T23:36:16.273Z",
+   "updatedAt": "2026-11-08T01:00:47.777Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Built by urgent-rebuild-pipeline-orchestrator-ids-splits- (branch claude/pipeline-rebuild): the dispatcher's idle alert (pipeline.idle, AmberX push) with the reason; marked complete there.",
+     "at": "2026-11-08T01:00:47.777Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -114264,7 +114269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {

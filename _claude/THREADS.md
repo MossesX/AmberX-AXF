@@ -749,7 +749,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-06 23:50 UTC · `gizmo-voice` → pending, note (current) · reconciler
 - 2026-11-07 00:20 UTC · `gizmo-voice` → pending, note (current) · reconciler
 - 2026-11-07 00:28 UTC · `claude-settings-tabs-veto` s1 done, s2 done (current) · foreign-write
 - 2026-11-07 00:29 UTC · `claude-settings-tabs-veto` s3 done, s5 done (current) · foreign-write
@@ -1149,6 +1148,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 00:54 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s5 done (all) · orchestrator
 - 2026-11-08 00:59 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s6 done (all) · orchestrator
 - 2026-11-08 00:59 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s7 done (all) · orchestrator
+- 2026-11-08 01:00 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · orchestrator
 
 ## Token passes (log)
 
