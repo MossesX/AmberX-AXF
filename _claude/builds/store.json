@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1440,
- "updatedAt": "2026-11-08T00:52:08.299Z",
+ "rev": 1441,
+ "updatedAt": "2026-11-08T00:54:14.051Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114638,7 +114638,7 @@
    "branch": "claude/pipeline-rebuild",
    "pr": "",
    "createdAt": "2026-11-08T00:23:40.524Z",
-   "updatedAt": "2026-11-08T00:45:08.008Z",
+   "updatedAt": "2026-11-08T00:54:12.869Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -114733,12 +114733,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T00:54:12.869Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T00:32:34.818Z",
-     "updatedAt": "2026-11-08T00:32:34.996Z"
+     "updatedAt": "2026-11-08T00:54:12.977Z"
     },
     {
      "id": "s4",
@@ -114894,7 +114894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
