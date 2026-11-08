@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1540,
- "updatedAt": "2026-11-08T17:54:54.008Z",
+ "rev": 1541,
+ "updatedAt": "2026-11-08T17:55:07.225Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116193,9 +116193,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-08T00:52:07.400Z",
+   "updatedAt": "2026-11-08T17:54:59.048Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlap: slot-watchdog (branch claude/slot-watchdog) builds the stale reaper part (s3 dead/hung sessions released, s4 running-with-no-session reconciled on a 30 s timer). s1/s2 (per-account slot registry, heartbeats) stay here.",
+     "at": "2026-11-08T17:54:59.048Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -116318,7 +116323,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120975,10 +120980,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/slot-watchdog",
    "pr": "",
    "createdAt": "2026-11-08T17:54:52.704Z",
-   "updatedAt": "2026-11-08T17:54:52.704Z",
+   "updatedAt": "2026-11-08T17:54:58.259Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -121159,7 +121164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

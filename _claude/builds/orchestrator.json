@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:54:54.008Z",
+ "updatedAt": "2026-11-08T17:55:07.225Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -69480,9 +69480,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-08T00:52:07.400Z",
+   "updatedAt": "2026-11-08T17:54:59.048Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlap: slot-watchdog (branch claude/slot-watchdog) builds the stale reaper part (s3 dead/hung sessions released, s4 running-with-no-session reconciled on a 30 s timer). s1/s2 (per-account slot registry, heartbeats) stay here.",
+     "at": "2026-11-08T17:54:59.048Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -73140,10 +73145,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/slot-watchdog",
    "pr": "",
    "createdAt": "2026-11-08T17:54:52.704Z",
-   "updatedAt": "2026-11-08T17:54:52.704Z",
+   "updatedAt": "2026-11-08T17:54:58.259Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
