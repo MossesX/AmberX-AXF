@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1621,
- "updatedAt": "2026-11-08T22:48:08.632Z",
+ "rev": 1622,
+ "updatedAt": "2026-11-08T22:48:22.202Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123186,14 +123186,14 @@
    "title": "Nested menus for console, AmberX and Molly (override the shared menus)",
    "category": "",
    "detail": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "nested-menus-for-console-amberx-and-molly-overri",
-   "branch": "",
+   "branch": "claude/nested-menus-for-console-amberx-and-molly-overri",
    "pr": "",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T22:48:07.446Z",
+   "updatedAt": "2026-11-08T22:48:12.252Z",
    "builtAt": "",
    "notes": [
     {
@@ -123203,6 +123203,14 @@
     {
      "text": "Queued by cli.",
      "at": "2026-11-08T22:28:21.427Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Fable, Phase 1): axf-nested-menus-for-console-amberx-and-molly-overri--sully.",
+     "at": "2026-11-08T22:48:09.227Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-nested-menus-for-console-amberx-and-molly-overri--sully, own login copy)",
+     "at": "2026-11-08T22:48:12.251Z"
     }
    ],
    "approvals": [],
@@ -123222,12 +123230,12 @@
    "pipeline": {
     "queuedAt": "2026-11-08T22:28:21.210Z",
     "queuedBy": "cli",
-    "account": "",
-    "session": "",
+    "account": "account-3",
+    "session": "axf-nested-menus-for-console-amberx-and-molly-overri--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-08T22:48:08.918Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -123312,7 +123320,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {

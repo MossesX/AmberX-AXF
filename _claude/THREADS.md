@@ -756,9 +756,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 13:13 UTC · `plan-blueprints` branch claude/plan-blueprints (all) · builds-live
-- 2026-11-07 13:32 UTC · `plan-blueprints` s1 done (all) · gina
-- 2026-11-07 13:32 UTC · `plan-blueprints` s2 done (all) · gina
 - 2026-11-07 13:32 UTC · `orchestrator-gate` branch claude/orchestrator-vps-gate (all) · orchestrator
 - 2026-11-07 13:32 UTC · `orchestrator-gate` → running (all) · orchestrator
 - 2026-11-07 13:36 UTC · `plan-blueprints` s3 done (all) · gina
@@ -1156,6 +1153,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 22:46 UTC · `tabs-api-control` s3 done (all) · orchestrator
 - 2026-11-08 22:46 UTC · `tabs-api-control` s4 done, → complete (all) · orchestrator
 - 2026-11-08 22:46 UTC · `tabs-api-control` → built, PR #398 (all) · builds-live
+- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` → running, note (all) · pipeline
+- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` branch claude/nested-menus-for-console-amberx-and-molly-overri (all) · pipeline
+- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` note (all) · orchestrator
 
 ## Token passes (log)
 
