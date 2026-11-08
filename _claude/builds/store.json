@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1581,
- "updatedAt": "2026-11-08T21:15:45.596Z",
+ "rev": 1582,
+ "updatedAt": "2026-11-08T21:15:55.801Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123509,9 +123509,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T21:14:21.020Z",
+   "updatedAt": "2026-11-08T21:15:49.563Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:15:49.563Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -123526,7 +123531,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:15:49.563Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8c0fcs01gbnk",
+     "title": "",
+     "text": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:15:49.563Z",
+     "updatedAt": "2026-11-08T21:15:49.563Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8c0fcs02cth8",
+     "title": "",
+     "text": "You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:15:49.563Z",
+     "updatedAt": "2026-11-08T21:15:49.563Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8c0fcs03batm",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/nested-menus-for-console-amberx-and-molly-overri.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/nested-menus-for-console-amberx-and-molly-overri.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:15:49.563Z",
+     "updatedAt": "2026-11-08T21:15:49.563Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -123535,7 +123630,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123550,7 +123645,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:15:49.563Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T21:15:45.596Z",
+ "updatedAt": "2026-11-08T21:15:55.801Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74601,9 +74601,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T21:14:21.020Z",
+   "updatedAt": "2026-11-08T21:15:49.563Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:15:49.563Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -74618,7 +74623,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8c0fcs01gbnk"
+    },
+    {
+     "id": "s2",
+     "text": "You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8c0fcs02cth8"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/nested-menus-for-console-amberx-and-molly-overri.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/nested-menus-for-console-amberx-and-molly-overri.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8c0fcs03batm"
+    }
+   ]
   },
   {
    "id": "clean-up-plan-studio-simplify-remove-redundancy",
