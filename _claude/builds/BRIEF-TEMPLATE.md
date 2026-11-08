@@ -17,6 +17,9 @@ Every UI it adds is controllable by the API (rule "The API controls everything",
 accessible name, each action is registered, each setting is declared, each server route is a plugin command, and
 anything only Brett may tap carries `data-axf-person-only`. Check: `node framework/cli/api-coverage.mjs check`
 (then `api-coverage.mjs write` and commit `apps/console-web/api-coverage.json`).
+UI = API (ui-api@1, Nov 8 2026): everything the UI does is also an API op — open (deep link `?axf-view=<view>`), read
+state, every action, every setting — over REST/MCP/CLI and voice. Map it in the plugin's plugin.json `ui` block; check
+`node framework/cli/ui-parity.mjs check`.
 
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:

@@ -196,9 +196,34 @@ def post_rebuild(body: dict[str, Any] | None = None) -> dict[str, Any]:
 
 
 @router.get("/demos")
-def get_demos(type: str = "") -> dict[str, Any]:  # noqa: A002 - the query parameter is called type
+def get_demos(type: str = "", q: str = "", generated: bool = False) -> dict[str, Any]:  # noqa: A002 - the query parameter is called type
+    if q or generated:  # the designer's search and "Only generated" switch, over the API
+        args = ["find"] + ([_check_type(type)] if type else []) + (["--q", q[:200]] if q else []) + (["--generated"] if generated else [])
+        return {"items": _node_json(DEMOS, *args) or []}
     args = ["list"] + ([_check_type(type)] if type else [])
     return {"items": _node_json(DEMOS, *args) or []}
+
+
+@router.post("/demo/new")
+def post_demo_new(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    f = _tmp_json(body or {})
+    try:
+        return _node_json(DEMOS, "demo", "new-from", str(f))
+    finally:
+        f.unlink(missing_ok=True)
+
+
+@router.post("/demo/change")
+def post_demo_change(body: dict[str, Any]) -> dict[str, Any]:
+    demo_id = _check_id(str(body.get("id") or ""))
+    change = body.get("change")
+    if not isinstance(change, dict) or not change.get("op"):
+        raise HTTPException(400, "change is { op, … }")
+    f = _tmp_json(change)
+    try:
+        return _node_json(DEMOS, "demo", demo_id, "change", str(f))
+    finally:
+        f.unlink(missing_ok=True)
 
 
 @router.get("/demo")

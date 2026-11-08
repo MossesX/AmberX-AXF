@@ -113,7 +113,7 @@ export function stop() { hush(); clearHighlight(); listen(false); set({ walk: nu
 
 export function registerPlayer(rt: AxfRuntime) {
   runtime = rt;
-  rt.actions.register('demo.play', ([type, id]) => { if (type && id) void playAsset(type as DemoType, id); else if (last) playWalkthrough(last); else openWindow(); }, { label: 'Play a demonstration', params: true });
+  rt.actions.register('demo.play', ([type, id]) => { if (type && id) void playAsset(type as DemoType, id); else if (last) playWalkthrough(last); else openWindow(); }, { label: 'Play a demonstration, clip or book (demo.play:<type>:<id>)', params: true, effect: 'navigate' });
   rt.actions.register('demo.replay', () => { if (last) playWalkthrough(last); else openWindow(); }, { label: 'Replay the last demonstration' });
   rt.actions.register('demo.next', () => show(st.at + 1), { label: 'Demonstration: next step', searchable: false });
   rt.actions.register('demo.prev', () => show(st.at - 1), { label: 'Demonstration: previous step', searchable: false });

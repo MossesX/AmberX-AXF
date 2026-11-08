@@ -6,19 +6,38 @@
  * source, media, transcript and the auto-tagged keyword set, and registers a new one.
  */
 import { useEffect, useMemo, useState } from 'react';
-import type { DemoStep, DemonstrationData } from '@console/axf/core';
+import type { AxfRuntime, DemoStep, DemonstrationData } from '@console/axf/core';
 import { demonstrationSeconds } from '@console/axf/core';
 import { Button, Chip, Icon, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { filterEntries, type Entry } from './core';
-import { APPS, CLIP_KINDS, DEMO_KEYS, SPEEDS, SURFACES, type ClipAsset, type DemoAsset, type Summary, blankDemo, clipFromDemo, deleteAsset, emptyStep, fmtSeconds, generateDemo, getAsset, loadCatalog, loadDemos, moveStep, registerClip, removeAt, replaceAt, saveAsset, useCatalog, useDemoStore } from './demos-core';
+import { APPS, CLIP_KINDS, DEMO_KEYS, SPEEDS, SURFACES, type ClipAsset, type DemoAsset, type DesignerMode, type Summary, clipFromDemo, deleteAsset, emptyStep, fmtSeconds, generateDemo, getAsset, loadCatalog, loadDemos, moveStep, newDemo, parseOpen, registerClip, removeAt, replaceAt, saveAsset, useCatalog, useDemoStore } from './demos-core';
 import { playAsset, playStep, playWalkthrough } from './player';
 
-/* ---------------- selection shared with the glossary page ("Generate demonstration" lands here) ---------------- */
+/* ---------------- what is open: settings values, so the API reads and sets it (ui-api@1) ---------------- */
 
-let wanted: { type: 'demonstration' | 'clip'; id: string } | null = null;
-const wantSubs = new Set<() => void>();
-export function openInDesigner(type: 'demonstration' | 'clip', id: string) { wanted = { type, id }; wantSubs.forEach((f) => f()); }
+// bumped whenever something asks to open an item again (demo.edit after an API change): the editor reloads it
+let reloads = 0;
+const reloadSubs = new Set<() => void>();
+const useReloads = () => { const [, tick] = useState(0); useEffect(() => { const f = () => tick((t) => t + 1); reloadSubs.add(f); return () => { reloadSubs.delete(f); }; }, []); return reloads; };
+
+/** Open a demonstration or clip in the designer (the glossary page, the demo.edit action, a deep link). */
+export function openInDesigner(rt: AxfRuntime, type: 'demonstration' | 'clip', id: string, navigate = true) {
+  rt.settings.set(DEMO_KEYS.designerTab, type);
+  rt.settings.set(DEMO_KEYS.designerMode, 'edit');
+  rt.settings.set(DEMO_KEYS.designerOpen, `${type}/${id}`);
+  reloads++; reloadSubs.forEach((f) => f());
+  if (navigate) rt.navigate('demo-designer');
+}
+
+/** Switch the designer to a mode (generate / register forms, or back to the editor); `blank` makes a new demonstration. */
+export async function designerMode(rt: AxfRuntime, mode: DesignerMode | 'blank', name = '') {
+  if (mode === 'blank') { const a = await newDemo({ name: name || 'New demonstration' }); openInDesigner(rt, 'demonstration', a.id); return; }
+  rt.settings.set(DEMO_KEYS.designerTab, mode === 'register' ? 'clip' : 'demonstration');
+  rt.settings.set(DEMO_KEYS.designerMode, mode);
+  if (mode !== 'edit') rt.settings.set(DEMO_KEYS.designerOpen, '');
+  rt.navigate('demo-designer');
+}
 
 function useSetting<T extends string | boolean>(key: string, fallback: T): [T, (v: T) => void] {
   const rt = useRuntime();
@@ -239,28 +258,29 @@ export function DesignerPage() {
   const rt = useRuntime();
   const [tab, setTab] = useSetting<'demonstration' | 'clip'>(DEMO_KEYS.designerTab, 'demonstration');
   const [q, setQ] = useState('');
-  const [selected, setSelected] = useState<{ type: 'demonstration' | 'clip'; id: string } | null>(null);
+  // the open item, the mode and the switch are settings values: console.values reads and sets them (ui-api@1)
+  const [openKey, setOpenKey] = useSetting<string>(DEMO_KEYS.designerOpen, '');
+  const selected = useMemo(() => parseOpen(openKey), [openKey]);
+  const setSelected = (v: { type: 'demonstration' | 'clip'; id: string } | null) => setOpenKey(v ? `${v.type}/${v.id}` : '');
+  const [modeRaw, setMode] = useSetting<string>(DEMO_KEYS.designerMode, 'edit');
+  const mode: DesignerMode = modeRaw === 'generate' || modeRaw === 'register' ? modeRaw : 'edit';
+  const [onlyGenerated, setOnlyGenerated] = useSetting<boolean>(DEMO_KEYS.designerGenerated, false);
   const [asset, setAsset] = useState<DemoAsset | ClipAsset | null>(null);
-  const [mode, setMode] = useState<'edit' | 'generate' | 'register'>('edit');
   const [msg, setMsg] = useState('');
-  const [onlyGenerated, setOnlyGenerated] = useState(false);
+  const reload = useReloads();
   useEffect(() => { void loadDemos(); void loadCatalog(); }, []);
-  useEffect(() => {
-    const take = () => { if (wanted) { setTab(wanted.type); setSelected(wanted); setMode('edit'); wanted = null; } };
-    take(); wantSubs.add(take); return () => { wantSubs.delete(take); };
-  }, [setTab]);
   useEffect(() => {
     if (!selected) { setAsset(null); return; }
     let live = true;
     getAsset<DemonstrationData>(selected.type, selected.id).then((a) => { if (live) setAsset(a as DemoAsset | ClipAsset); }, (e: Error) => { if (live) { setMsg(e.message); setAsset(null); } });
     return () => { live = false; };
-  }, [selected]);
+  }, [selected?.type, selected?.id, reload]);
   const list: Summary[] = useMemo(() => {
     const words = q.toLowerCase().split(/\s+/).filter(Boolean);
     return items[tab].filter((s) => (!onlyGenerated || s.generated === 'glossary') && words.every((w) => `${s.name} ${s.description} ${s.about ?? ''} ${s.id} ${(s.entries ?? []).join(' ')}`.toLowerCase().includes(w)));
   }, [items, tab, q, onlyGenerated]);
   const pick = (type: 'demonstration' | 'clip', id: string) => { setSelected({ type, id }); setMode('edit'); setMsg(''); };
-  const newBlank = () => { const a = blankDemo(`New demonstration ${items.demonstration.length + 1}`); setSelected(null); setAsset(a); setMode('edit'); };
+  const newBlank = () => { designerMode(rt, 'blank', `New demonstration ${items.demonstration.length + 1}`).catch((e: Error) => setMsg(e.message)); };
 
   return (
     <div className="fx-stack fx-stack--lg axp-glossary-index">
@@ -271,7 +291,7 @@ export function DesignerPage() {
           <p className="fx-muted">Generate a demonstration from any glossary entry, edit its steps, narration, highlights and actions, play it against the live UI or the preview, chain demonstrations into tours, and keep every recorded clip as a tagged asset.</p>
         </div>
       </header>
-      <TabGroup<'demonstration' | 'clip'> id="glossary.designer" label="Designer views" value={tab} onChange={(v) => { setTab(v); setSelected(null); setAsset(null); setMode('edit'); }}
+      <TabGroup<'demonstration' | 'clip'> id="glossary.designer" label="Designer views" value={tab} onChange={(v) => { setTab(v); setSelected(null); setMode('edit'); }}
         tabs={[{ value: 'demonstration', label: 'Demonstrations', icon: 'play' }, { value: 'clip', label: 'Clips', icon: 'monitor' }]}
         extra={<span className="fx-muted axp-glossary-index__found">{list.length.toLocaleString()} shown</span>}>
         {error ? <EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => void loadDemos(true) }}>{error}</EmptyState>
@@ -280,8 +300,8 @@ export function DesignerPage() {
             <div className="axp-glossary-index__designer">
               <aside className="axp-glossary-index__list" aria-label={tab === 'clip' ? 'Clips' : 'Demonstrations'}>
                 <div role="toolbar" aria-label={tab === 'clip' ? 'Clip list tools' : 'Demonstration list tools'} className="axp-glossary-index__toolbar">
-                  {tab === 'demonstration' ? <><Button size="sm" tone="primary" icon="sparkles" onClick={() => { setMode('generate'); setSelected(null); setAsset(null); }}>Generate from an entry</Button><Button size="sm" icon="plus" onClick={newBlank}>Blank</Button></>
-                    : <Button size="sm" tone="primary" icon="plus" onClick={() => { setMode('register'); setSelected(null); setAsset(null); }}>Register a clip</Button>}
+                  {tab === 'demonstration' ? <><Button size="sm" tone="primary" icon="sparkles" onClick={() => { setMode('generate'); setSelected(null); }}>Generate from an entry</Button><Button size="sm" icon="plus" onClick={newBlank}>Blank</Button></>
+                    : <Button size="sm" tone="primary" icon="plus" onClick={() => { setMode('register'); setSelected(null); }}>Register a clip</Button>}
                   <Button size="sm" icon="refresh" onClick={() => void loadDemos(true)}>Refresh</Button>
                 </div>
                 <TextField label="Search" value={q} onChange={setQ} placeholder={tab === 'clip' ? 'Name, source, entries' : 'Name, entry, id'} />
@@ -311,8 +331,8 @@ export function DesignerPage() {
                   </div>
                 ) : mode === 'register' ? <RegisterClipForm onDone={(c) => { setSelected({ type: 'clip', id: c.id }); setMode('edit'); }} />
                 : !asset ? <EmptyState icon={tab === 'clip' ? 'monitor' : 'play'}>{tab === 'clip' ? 'Pick a clip to see its source, media, transcript and keywords.' : 'Pick a demonstration to edit it, or generate one from any glossary entry.'}</EmptyState>
-                : asset.type === 'clip' ? <ClipDetail clip={asset as ClipAsset} onDeleted={() => { setSelected(null); setAsset(null); }} />
-                : <DemoEditor asset={asset as DemoAsset} onSaved={(a) => { setAsset(a); setSelected({ type: 'demonstration', id: a.id }); }} onDeleted={() => { setSelected(null); setAsset(null); }} />}
+                : asset.type === 'clip' ? <ClipDetail clip={asset as ClipAsset} onDeleted={() => setSelected(null)} />
+                : <DemoEditor asset={asset as DemoAsset} onSaved={(a) => { setAsset(a); setSelected({ type: 'demonstration', id: a.id }); }} onDeleted={() => setSelected(null)} />}
               </section>
             </div>
           )}

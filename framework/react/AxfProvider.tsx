@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalS
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
+import { installDeepLinks } from './deepLinks';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
 
@@ -127,6 +128,9 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     document.addEventListener('keydown', leave, true);
     return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', leave, true); document.removeEventListener('keydown', leave, true); };
   }, [runtime]);
+
+  // deep-link@1: ?axf-view= / axf-dialog= / axf-settings= / axf-do= opens that UI once the page is up (deepLinks.ts)
+  useEffect(() => installDeepLinks(runtime), [runtime]);
 
   // Tap-to-confirm on every toolbar (framework/react/tapConfirm.ts): touch arms first, a second tap runs; mouse clicks once.
   useEffect(() => {

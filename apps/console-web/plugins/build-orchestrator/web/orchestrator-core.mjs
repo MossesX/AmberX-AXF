@@ -35,6 +35,10 @@ export const MODEL_GUIDE = {
  * asset system"): code a build writes, by hand or generated, takes every look value from hot-swappable assets.
  */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
+/** ui-api@1: what every brief for a build that touches UI says (build ui-api-parity-rule). Short on purpose. */
+export const API_PARITY_RULE = 'UI = API (ui-api@1, Brett Nov 8 2026: "anything with a UI must have API functions that can do everything the UI can"): every view, dialog and control this build adds or changes can also be opened (deep link ?axf-view=<view>), read and driven over the API: open, read state, every action, every setting (plugin commands = REST/MCP/CLI, console actions = voice, console.values). Map them in plugin.json `ui` (ui-api@1); `node framework/cli/ui-parity.mjs check` must pass.';
+/** Does a build touch UI (its title, detail, steps or files)? Then its brief carries API_PARITY_RULE. */
+export const touchesUi = (build) => /\b(ui|gui|screens?|views?|pages?|dialogs?|pop-?ups?|menus?|toolbars?|banners?|buttons?|tabs?|panels?|cards?|widgets?|chips?|layouts?|themes?|look|designer|builder|editor|grid|tree|settings? (interface|tab|page|screen))\b|\.tsx\b|\/web\//i.test([build?.title, build?.detail, ...(build?.steps ?? []).flatMap((s) => [s.text, s.title, ...(s.files ?? [])])].filter(Boolean).join(' '));
 
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
@@ -228,6 +232,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     switchRule(),
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
     `Look: ${ASSET_RULE}`,
+    touchesUi(build) ? `API: ${API_PARITY_RULE}` : '',
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),

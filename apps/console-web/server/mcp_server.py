@@ -924,7 +924,7 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh",
-                 "console_value", "console_elements", "console_press")
+                 "console_value", "console_elements", "console_press", "console_link")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -994,6 +994,24 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """Reload the open console page, so it picks up a deploy or a stuck screen. hard=true clears its caches first.
         to="all" reloads every open console. Reloading loses nothing saved; an unsaved form on screen is gone."""
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
+
+    @mcp.tool(annotations=READ)
+    async def console_link(view: str = "", dialog: str = "", settings: str = "", do: list[str] | None = None) -> dict[str, Any]:
+        """The URL that opens a console view, dialog or settings tab (deep-link@1), with console actions to run after it
+        (`do`, e.g. ["demo.edit:demonstration:tour"]; only navigate / read actions run from a link). Open it on Brett's
+        phone with axHub amberx.open_url. No arguments = every plugin view, dialog and settings tab with its link."""
+        root = Path(os.environ.get("AXF_ROOT") or Path(__file__).resolve().parents[3])
+        cli = root / "framework" / "cli" / "deep-links.mjs"
+        args = ["url"] if (view or dialog or settings or do) else ["list"]
+        for flag, v in (("--view", view), ("--dialog", dialog), ("--settings", settings)):
+            if v:
+                args += [flag, v]
+        for spec in do or []:
+            args += ["--do", spec]
+        r = await anyio.to_thread.run_sync(lambda: subprocess.run(["node", str(cli), *args, "--json"], capture_output=True, text=True, timeout=30))
+        if r.returncode != 0:
+            raise ToolError(f"invalid_input: {(r.stderr or r.stdout).strip().splitlines()[-1][-300:] if (r.stderr or r.stdout).strip() else 'deep-links failed'}")
+        return json.loads(r.stdout)
 
     @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:

@@ -136,6 +136,14 @@
             "type": {
               "type": "string",
               "description": "demonstration, book, clip or docs"
+            },
+            "q": {
+              "type": "string",
+              "description": "only rows matching every word (name, description, entry, id) — the designer's Search"
+            },
+            "generated": {
+              "type": "boolean",
+              "description": "only demonstrations generated from the glossary — the designer's Only generated switch"
             }
           }
         },
@@ -215,6 +223,119 @@
           ]
         },
         "output": "{ removed }"
+      },
+      {
+        "id": "demo-new",
+        "route": "POST /demo/new",
+        "title": "New blank demonstration",
+        "description": "Makes a blank demonstration with one placeholder step and saves it at once (the Demonstration Designer's Blank button); the id comes from the name and never overwrites an existing one.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string",
+              "description": "lowercase id (default: from the name)"
+            },
+            "description": {
+              "type": "string"
+            },
+            "about": {
+              "type": "string",
+              "description": "the glossary entry it demonstrates"
+            },
+            "app": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "the stored demonstration asset"
+      },
+      {
+        "id": "demo-change",
+        "route": "POST /demo/change",
+        "title": "Change a demonstration",
+        "description": "One edit to a demonstration, saved at once — everything the Demonstration Designer's editor does: set (name, description, app, surface, speed, narrator, about), add-step, set-step (title, say, do, target, highlight, wait), move-step (dir -1/1 or to), remove-step, chain-add, chain-remove. Steps are numbered from 0.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the demonstration id"
+            },
+            "change": {
+              "type": "object",
+              "description": "{ op, … }",
+              "properties": {
+                "op": {
+                  "enum": [
+                    "set",
+                    "add-step",
+                    "set-step",
+                    "move-step",
+                    "remove-step",
+                    "chain-add",
+                    "chain-remove"
+                  ]
+                },
+                "index": {
+                  "type": "integer"
+                },
+                "dir": {
+                  "enum": [
+                    -1,
+                    1
+                  ]
+                },
+                "to": {
+                  "type": "integer"
+                },
+                "step": {
+                  "type": "object"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "app": {
+                  "type": "string"
+                },
+                "surface": {
+                  "enum": [
+                    "live",
+                    "preview",
+                    "recorder"
+                  ]
+                },
+                "speed": {
+                  "type": "number"
+                },
+                "narrator": {
+                  "type": "string"
+                },
+                "about": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "op"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "change"
+          ]
+        },
+        "output": "the stored demonstration asset"
       },
       {
         "id": "demo-generate",

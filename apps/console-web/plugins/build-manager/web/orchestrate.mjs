@@ -162,6 +162,8 @@ export function planStart({ row, rows = [], features = [], queue = null, running
 
 /** Asset conformance (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"), in every brief. */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
+/** ui-api@1 (build ui-api-parity-rule; the same words as the orchestrator's API_PARITY_RULE). */
+export const API_PARITY_RULE = 'UI = API (ui-api@1, Brett Nov 8 2026: "anything with a UI must have API functions that can do everything the UI can"): every view, dialog and control this build adds or changes can also be opened (deep link ?axf-view=<view>), read and driven over the API: open, read state, every action, every setting (plugin commands = REST/MCP/CLI, console actions = voice, console.values). Map them in plugin.json `ui` (ui-api@1); `node framework/cli/ui-parity.mjs check` must pass.';
 
 export function briefFor({ row, model, branch, areas, deps, dontTouch, live, verify, rules, reportCmd }) {
   const steps = (row.steps ?? []).map((s, i) => `${i + 1}. ${s.done ? '[done] ' : ''}${s.text}${s.estimateText ? ` (~${s.estimateText})` : ''}`);
@@ -184,6 +186,7 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
     '- Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold).',
     '- Screenshots that are not a planned UI for approval (checking a screen, live captures, PR before/after) go to UI Review → Screenshots with `node framework/cli/shot.mjs <file> --name "…" --app <app> --screen <route> --group "<build name>"` (`axf shot`; ui-review-item@1: a name, app, screen and group, the session is detected), never the review queue.',
     `- ${ASSET_RULE}`,
+    `- ${API_PARITY_RULE}`,
     ...rules.map((r) => `- ${r}`),
     '- Watch live: whenever you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` so Brett\'s live preview scrolls to and outlines it.',
     '\n## Report to the Build manager (axHub) as you go',

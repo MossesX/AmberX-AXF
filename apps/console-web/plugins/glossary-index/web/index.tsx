@@ -22,10 +22,10 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './glossary-index.css';
 import { KEYS, PAGE_SIZES, SORTS, VIEWS, apiGroups, byKind, byLetter, filterEntries, indexTree, plural, sortEntries, type Catalog, type Entry, type IndexNode, type SortBy, type View } from './core';
 import { appMenu } from './menu';
-import { DEMO_KEYS, FOLDER, generateDemo, loadCatalog as load, loadDemos, rebuildCatalog as rebuild, useCatalog, useDemoStore } from './demos-core';
-import { DesignerPage, openInDesigner } from './designer';
-import { ADD_TO_BOOK_DIALOG, AddToBook, BookWizard, BooksPage, WIZARD_DIALOG, openBook } from './books';
-import { PLAYER_TAB, PlayerWindow, playAsset, registerPlayer } from './player';
+import { BOOK_TABS, DEMO_KEYS, DESIGNER_MODES, FOLDER, type BookTab, type DemoAsset, type DesignerMode, generateDemo, getAsset, loadCatalog as load, loadDemos, rebuildCatalog as rebuild, useCatalog, useDemoStore } from './demos-core';
+import { DesignerPage, designerMode, openInDesigner } from './designer';
+import { ADD_TO_BOOK_DIALOG, AddToBook, BookWizard, BooksPage, WIZARD_DIALOG, openBook, previewRef } from './books';
+import { PLAYER_TAB, PlayerWindow, playAsset, playStep, registerPlayer } from './player';
 
 const ID = 'ai.amberx.axf.console.glossary-index';
 
@@ -59,7 +59,7 @@ function Detail({ entry, cat, onOpen }: { entry: Entry; cat: Catalog; onOpen: (i
   const demoId = entry.id.replace(/^[a-z-]+:/, '');
   const existing = items.demonstration.find((d) => d.about === entry.id);
   const bookRef = isDemoKind ? (entry.kind === 'book' || entry.kind === 'docs' ? '' : `${entry.kind}/${demoId}`) : entry.id;
-  const generate = () => { setBusy(true); setNote(''); generateDemo(entry.id, true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => setNote(e.message)).finally(() => setBusy(false)); };
+  const generate = () => { setBusy(true); setNote(''); generateDemo(entry.id, true).then((a) => openInDesigner(rt, 'demonstration', a.id), (e: Error) => setNote(e.message)).finally(() => setBusy(false)); };
   const link = (id: string) => {
     const e = byId.get(id);
     return e ? <li key={id}><button type="button" data-fx-row className="axp-glossary-index__link" onClick={() => onOpen(id)}>{e.term}</button> <KindChip kind={e.kind} kinds={cat.kinds} /></li> : null;
@@ -96,11 +96,11 @@ function Detail({ entry, cat, onOpen }: { entry: Entry; cat: Catalog; onOpen: (i
         {isDemoKind
           ? <>
             {entry.kind !== 'docs' && <Button size="sm" tone="primary" icon="play" onClick={() => void playAsset(entry.kind as 'demonstration' | 'book' | 'clip', demoId)}>Play</Button>}
-            {entry.kind === 'book' && <Button size="sm" icon="edit" onClick={() => { openBook(demoId); rt.navigate('book-builder'); }}>Open in Book Builder</Button>}
-            {(entry.kind === 'demonstration' || entry.kind === 'clip') && <Button size="sm" icon="edit" onClick={() => { openInDesigner(entry.kind as 'demonstration' | 'clip', demoId); rt.navigate('demo-designer'); }}>Open in the designer</Button>}
+            {entry.kind === 'book' && <Button size="sm" icon="edit" onClick={() => openBook(rt, demoId)}>Open in Book Builder</Button>}
+            {(entry.kind === 'demonstration' || entry.kind === 'clip') && <Button size="sm" icon="edit" onClick={() => openInDesigner(rt, entry.kind as 'demonstration' | 'clip', demoId)}>Open in the designer</Button>}
           </>
           : existing
-            ? <><Button size="sm" tone="primary" icon="play" onClick={() => void playAsset('demonstration', existing.id)}>Play demonstration</Button><Button size="sm" icon="edit" onClick={() => { openInDesigner('demonstration', existing.id); rt.navigate('demo-designer'); }}>Edit demonstration</Button></>
+            ? <><Button size="sm" tone="primary" icon="play" onClick={() => void playAsset('demonstration', existing.id)}>Play demonstration</Button><Button size="sm" icon="edit" onClick={() => openInDesigner(rt, 'demonstration', existing.id)}>Edit demonstration</Button></>
             : <Button size="sm" tone="primary" icon="sparkles" busy={busy} onClick={generate}>Generate demonstration</Button>}
         {bookRef && <Button size="sm" icon="file" onClick={() => rt.openDialog(ADD_TO_BOOK_DIALOG, { ref: bookRef })}>Add to book…</Button>}
         <Button size="sm" icon="copy" onClick={() => { void navigator.clipboard?.writeText(entry.id); setCopied(true); setTimeout(() => setCopied(false), 1500); }}>{copied ? 'Copied' : 'Copy entry id'}</Button>
@@ -337,11 +337,18 @@ export const plugin: AxfWebLibrary = {
   }],
   register(rt) {
     registerPlayer(rt);
-    // ?axf-view=<id>: open that view on load (the generated docs' live frames and Watch live deep-link the console this way)
-    try { const v = new URLSearchParams(globalThis.location?.search ?? '').get('axf-view'); if (v && /^[a-z][a-z0-9-]*$/.test(v)) setTimeout(() => rt.navigate(v), 0); } catch { /* no window */ }
-    rt.actions.register('demo.generate', ([entry]) => { if (!entry) { rt.navigate('demo-designer'); return; } void generateDemo(decodeURIComponent(entry), true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => rt.toast(e.message, 'danger', 'Demonstration')); }, { label: 'Generate a demonstration of a glossary entry', params: true });
+    rt.actions.register('demo.generate', ([entry]) => { if (!entry) { rt.navigate('demo-designer'); return; } void generateDemo(decodeURIComponent(entry), true).then((a) => openInDesigner(rt, 'demonstration', a.id), (e: Error) => rt.toast(e.message, 'danger', 'Demonstration')); }, { label: 'Generate a demonstration of a glossary entry', params: true });
     rt.actions.register('book.new', () => rt.openDialog(WIZARD_DIALOG), { label: 'New book…' });
-    rt.actions.register('book.open', ([id]) => { if (id) openBook(id); rt.navigate('book-builder'); }, { label: 'Open a book in the Book Builder', params: true });
+    rt.actions.register('book.open', ([id, chapter, tab]) => openBook(rt, id ?? '', { chapter, tab: tab as BookTab }), { label: 'Open a book in the Book Builder (book.open:<book>[:<chapter>[:<tab>]])', params: true, effect: 'navigate' });
+    // ui-api@1: everything the Demonstration Designer and the Book Builder do on screen, as actions (voice, console.actions,
+    // deep links: ?axf-view=demo-designer&axf-do=demo.edit:demonstration:<id>). Edits go through the plugin's commands.
+    const toast = (e: Error) => rt.toast(e.message, 'danger', 'Glossary & Index');
+    rt.actions.register('demo.edit', ([type, id]) => { if ((type === 'demonstration' || type === 'clip') && id) openInDesigner(rt, type, id); else rt.navigate('demo-designer'); }, { label: 'Open a demonstration or clip in the designer (demo.edit:<demonstration|clip>:<id>)', params: true, effect: 'navigate' });
+    rt.actions.register('demo.designer', ([mode, name]) => { const m = (DESIGNER_MODES as readonly string[]).includes(mode ?? '') || mode === 'blank' ? mode as DesignerMode | 'blank' : 'edit'; designerMode(rt, m, name ? decodeURIComponent(name) : '').catch(toast); }, { label: 'Demonstration Designer: editor, generate form, register-a-clip form or a new blank demonstration (demo.designer:<edit|generate|register|blank>[:<name>])', params: true });
+    rt.actions.register('demo.play-step', ([id, n]) => { if (!id) return; void getAsset<DemoAsset['data']>('demonstration', id).then((a) => playStep({ $axf: 'walkthrough@1', id: a.id, title: a.name, app: a.data.app, steps: a.data.steps.map((st) => ({ say: st.say, do: st.do, target: st.target, highlight: st.highlight })) }, Math.max(0, Number(n) || 0)), toast); }, { label: 'Play one step of a demonstration (demo.play-step:<id>:<step from 0>)', params: true, effect: 'navigate' });
+    rt.actions.register('book.chapter', ([book, chapter]) => { if (book) openBook(rt, book, { chapter: chapter ?? '', tab: 'chapters' }); }, { label: 'Show a chapter in the Book Builder (book.chapter:<book>:<chapter>)', params: true, effect: 'navigate' });
+    rt.actions.register('book.tab', ([tab]) => { if ((BOOK_TABS as readonly string[]).includes(tab ?? '')) openBook(rt, '', { tab: tab as BookTab }); }, { label: 'Book Builder tab: chapters, plan, docs or outputs (book.tab:<tab>)', params: true, effect: 'navigate' });
+    rt.actions.register('book.preview', ([...ref]) => { const r = decodeURIComponent(ref.join(':')); if (r) previewRef(rt, r); }, { label: 'Preview a book item or glossary entry: play it, or open its real screen in a floating window (book.preview:<ref>)', params: true, effect: 'navigate' });
     rt.actions.register('book.add', ([ref]) => { if (ref) rt.openDialog(ADD_TO_BOOK_DIALOG, { ref: decodeURIComponent(ref) }); }, { label: 'Add an entry to a book…', params: true });
   },
   settingsPanels: [

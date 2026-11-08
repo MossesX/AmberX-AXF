@@ -31,7 +31,23 @@ export interface Summary {
 export const DEMO_KEYS = {
   speak: 'glossary.demo.speak', run: 'glossary.demo.runSteps', voice: 'glossary.demo.voiceControl', auto: 'glossary.demo.autoAdvance',
   designerTab: 'glossary.designer.tab', booksPicker: 'glossary.books.pickerKind',
+  // what is on screen, as values the API reads and sets (console.values; ui-api@1 in plugin.json): the open item
+  // ("demonstration/<id>" | "clip/<id>"), the designer's mode, its Only generated switch; the open book, chapter and tab
+  designerOpen: 'glossary.designer.open', designerMode: 'glossary.designer.mode', designerGenerated: 'glossary.designer.onlyGenerated',
+  booksOpen: 'glossary.books.open', booksChapter: 'glossary.books.chapter', booksTab: 'glossary.books.tab',
 } as const;
+
+/** Designer modes (glossary.designer.mode): the editor, the Generate from an entry form, the Register a clip form. */
+export const DESIGNER_MODES = ['edit', 'generate', 'register'] as const;
+export type DesignerMode = typeof DESIGNER_MODES[number];
+/** Book Builder tabs (glossary.books.tab). */
+export const BOOK_TABS = ['chapters', 'plan', 'docs', 'outputs'] as const;
+export type BookTab = typeof BOOK_TABS[number];
+/** "demonstration/<id>" | "clip/<id>" → its parts (null for anything else). */
+export function parseOpen(v: unknown): { type: 'demonstration' | 'clip'; id: string } | null {
+  const m = /^(demonstration|clip)\/([a-z0-9][a-z0-9-]{1,47})$/.exec(String(v ?? ''));
+  return m ? { type: m[1] as 'demonstration' | 'clip', id: m[2]! } : null;
+}
 
 export const APPS = [{ value: 'console', label: 'Dev Console' }, { value: 'axhub-web', label: 'axHub web' }, { value: 'amberx-droid', label: 'AmberX' }];
 export const SURFACES = [{ value: 'live', label: 'Live UI' }, { value: 'preview', label: 'Preview window' }, { value: 'recorder', label: 'Recorder' }];
@@ -90,6 +106,8 @@ export async function saveAsset<T>(type: DemoType, asset: Asset<T>): Promise<Ass
 export async function deleteAsset(type: DemoType, id: string) { await api.del(`demo?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`); await loadDemos(true); }
 export async function generateDemo(entry: string, save = true): Promise<DemoAsset> { const a = await api.post('demo/generate', { entry, save }) as DemoAsset; if (save) await loadDemos(true); return a; }
 export const walkthroughOf = (type: DemoType, id: string) => api.call<Walkthrough>(`demo/walkthrough?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`);
+export async function newDemo(fields: { name?: string; id?: string; about?: string; description?: string } = {}): Promise<DemoAsset> { const a = await api.post('demo/new', fields) as DemoAsset; await loadDemos(true); return a; }
+export async function changeDemo(id: string, change: Record<string, unknown>): Promise<DemoAsset> { const a = await api.post('demo/change', { id, change }) as DemoAsset; await loadDemos(true); return a; }
 export async function newBook(wizard: Record<string, unknown>): Promise<BookAsset> { const a = await api.post('book/new', wizard) as BookAsset; await loadDemos(true); return a; }
 export async function changeBook(id: string, change: Record<string, unknown>): Promise<BookAsset> { const a = await api.post('book/change', { id, change }) as BookAsset; await loadDemos(true); return a; }
 export const recordBook = (id: string, dryRun = false) => api.post('book/record', { id, dryRun }) as Promise<{ file: string; job: Record<string, unknown> | null; dryRun: boolean }>;

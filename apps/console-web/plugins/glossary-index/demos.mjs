@@ -10,6 +10,9 @@
  *   node …/demos.mjs generate <entry id> [--save] [--build <id>]                       a demonstration from a glossary entry (zero tokens)
  *   node …/demos.mjs save <type> <file.json>                                           validate + store an asset
  *   node …/demos.mjs delete <type> <id>
+ *   node …/demos.mjs find [type] [--q words] [--generated]                             list rows filtered like the designer's search
+ *   node …/demos.mjs demo new "<name>" [--id x] [--about entry] | new-from <file.json>  a blank demonstration (saved)
+ *   node …/demos.mjs demo <id> change <file.json>                                      one editor change (set, add-step, set-step, move-step, remove-step, chain-add, chain-remove)
  *   node …/demos.mjs walkthrough <type> <id>                                           as walkthrough@1 (what Molly's guide plays)
  *   node …/demos.mjs book new "<title>" [--minutes N] [--chapter-minutes N] [--chapters N] [--style s] [--docs depth,format,interactive]
  *   node …/demos.mjs book <id> add <chapter> <ref> [index] | move <chapter> <i> <chapter> <j> | move-chapter <i> <j>
@@ -122,7 +125,68 @@ export function generate(entryId, { save: store = false, build = '', at = new Da
   return store ? save('demonstration', a, { reason: 'generated' }) : a;
 }
 
-/** What a book item plays: a demonstration's steps, a clip's transcript, a chapter of another book, or a generated demo of an entry. */
+/**
+ * A blank demonstration (the designer's Blank button): one placeholder step, saved at once so the API can change it.
+ * `id` is made from the name when not given; an id already in use gets -2, -3 … (never overwrites).
+ */
+export function newDemo({ name = '', id = '', description = '', about = '', app = 'console' } = {}) {
+  const title = String(name ?? '').trim().slice(0, 120) || 'New demonstration';
+  let base = ID.test(id ?? '') ? id : R.slugify(title, 'demonstration');
+  if (!ID.test(base)) base = `${base}-demo`.slice(0, 48);
+  let cid = base; for (let n = 2; get('demonstration', cid); n++) cid = `${base.slice(0, 44)}-${n}`;
+  const data = { about, entries: [], app, surface: 'live', steps: [{ say: 'Say what this step shows.', do: '', target: '' }], voice: { narrator: '', speed: 1 }, chain: [], keywords: [], generated: { from: 'manual', at: '', build: '' }, editable: true };
+  return save('demonstration', envelope('demonstration', { id: cid, name: title, description, data, tags: ['demonstration'] }), { reason: 'created' });
+}
+
+/** The step fields a change may set (DemoStep); anything else is ignored. */
+const STEP_FIELDS = ['title', 'say', 'do', 'target', 'highlight', 'wait'];
+const stepFrom = (s = {}) => Object.fromEntries(STEP_FIELDS.filter((k) => s[k] !== undefined).map((k) => [k, k === 'wait' ? Math.max(0, Math.min(30000, Number(s[k]) || 0)) : String(s[k])]));
+
+/**
+ * One change to a demonstration — everything the Demonstration Designer's editor does, so the API (REST, MCP, CLI,
+ * voice) can do it too (ui-api@1, Brett Nov 8 2026: "API functions that can do everything the UI can"):
+ *   { op: 'set', name?, description?, app?, surface?, speed?, narrator?, about? }   the editor's fields ('' clears about)
+ *   { op: 'add-step', step?, index? }   { op: 'set-step', index, step }   { op: 'move-step', index, dir: -1|1 | to }
+ *   { op: 'remove-step', index }   { op: 'chain-add', id }   { op: 'chain-remove', id }
+ * Saved at once (the editor's Save after the same edits). Returns the stored asset.
+ */
+export function changeDemo(id, change) {
+  const a = get('demonstration', id);
+  if (!a) throw new Error(`no demonstration ${id}`);
+  const d = R.normalizeDemonstration(a.data);
+  const c = change ?? {};
+  const next = { ...a };
+  const at = (i) => { if (!Number.isInteger(i) || i < 0 || i >= d.steps.length) throw new Error(`no step ${i} (0 to ${d.steps.length - 1})`); return i; };
+  switch (c.op) {
+    case 'set': {
+      if (c.name !== undefined) next.name = String(c.name).trim().slice(0, 120) || a.name;
+      if (c.description !== undefined) next.description = String(c.description).slice(0, 600);
+      if (c.app !== undefined) d.app = String(c.app);
+      if (c.surface !== undefined) d.surface = String(c.surface);
+      if (c.speed !== undefined) d.voice = { ...d.voice, speed: Number(c.speed) };
+      if (c.narrator !== undefined) d.voice = { ...d.voice, narrator: String(c.narrator) };
+      if (c.about !== undefined) { d.about = String(c.about); if (d.about) d.entries = [...new Set([d.about, ...d.entries])]; }
+      break;
+    }
+    case 'add-step': { const s = { say: '', do: '', target: '', ...stepFrom(c.step) }; if (!s.say.trim()) s.say = 'Say what this step shows.'; d.steps.splice(Number.isInteger(c.index) ? Math.max(0, Math.min(d.steps.length, c.index)) : d.steps.length, 0, s); break; }
+    case 'set-step': { const i = at(c.index); d.steps[i] = { ...d.steps[i], ...stepFrom(c.step) }; break; }
+    case 'move-step': { const i = at(c.index); const j = Number.isInteger(c.to) ? c.to : i + (c.dir === -1 || c.dir === 'up' ? -1 : 1); if (j < 0 || j >= d.steps.length) throw new Error(`step ${i} can't move to ${j}`); const [s] = d.steps.splice(i, 1); d.steps.splice(j, 0, s); break; }
+    case 'remove-step': { const i = at(c.index); if (d.steps.length === 1) throw new Error('a demonstration keeps at least one step'); d.steps.splice(i, 1); break; }
+    case 'chain-add': { const cid = String(c.id ?? ''); if (cid === a.id) throw new Error('a demonstration cannot chain itself'); if (!get('demonstration', cid)) throw new Error(`no demonstration ${cid}`); if (!d.chain.includes(cid)) d.chain.push(cid); break; }
+    case 'chain-remove': d.chain = d.chain.filter((x) => x !== c.id); break;
+    default: throw new Error(`unknown demonstration change "${c.op}" (set, add-step, set-step, move-step, remove-step, chain-add, chain-remove)`);
+  }
+  next.data = d;
+  return save('demonstration', next, { reason: c.op });
+}
+
+/** List rows filtered the way the designer's search and "Only generated" switch filter them. */
+export function find(type, { q = '', generated = false } = {}) {
+  const words = String(q).toLowerCase().split(/\s+/).filter(Boolean);
+  return list(type).map(summarize).filter((s) => (!generated || s.generated === 'glossary') && words.every((w) => `${s.name} ${s.description} ${s.about ?? ''} ${s.id} ${(s.entries ?? []).join(' ')}`.toLowerCase().includes(w)));
+}
+
+/** What a book item plays:a demonstration's steps, a clip's transcript, a chapter of another book, or a generated demo of an entry. */
 export function resolveRef(ref, depth = 0) {
   const r = R.parseRef(ref);
   if (!r) return null;
@@ -244,6 +308,14 @@ async function main(argv) {
   const flag = (name, d = '') => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] ?? d : d; };
   const has = (name) => rest.includes(name);
   const json = (v) => process.stdout.write(`${JSON.stringify(v, null, has('--json') ? 0 : 2)}\n`);
+  if (cmd === 'demo') {
+    const [id, op, file] = rest;
+    if (id === 'new-from') { json(newDemo(readJson(op))); return 0; }
+    if (id === 'new') { json(newDemo({ name: op, id: flag('--id'), about: flag('--about') })); return 0; }
+    if (op === 'change') { json(changeDemo(id, readJson(file))); return 0; }
+    console.error('usage: demos.mjs demo new "<name>" [--id x] [--about entry] | new-from <file.json> | <id> change <file.json>'); return 2;
+  }
+  if (cmd === 'find') { json(find(rest[0] && !rest[0].startsWith('--') ? rest[0] : undefined, { q: flag('--q'), generated: has('--generated') })); return 0; }
   if (!cmd || cmd === 'list') { const items = list(rest[0] && !rest[0].startsWith('--') ? rest[0] : undefined).map(summarize); if (has('--json')) json(items); else for (const a of items) console.log(`${a.type.padEnd(14)} ${a.id.padEnd(40)} ${a.name}`); return 0; }
   if (cmd === 'get') { const a = get(rest[0], rest[1]); if (!a) { console.error(`demos: no ${rest[0]} ${rest[1]}`); return 2; } json(a); return 0; }
   if (cmd === 'generate') { json(generate(rest[0], { save: has('--save'), build: flag('--build') })); return 0; }

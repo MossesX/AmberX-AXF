@@ -7,14 +7,14 @@
  * Preview plays the whole book; Record video hands it to the walkthrough recorder; Generate docs writes the documentation.
  */
 import { useEffect, useMemo, useState } from 'react';
-import type { BookData, DocsOptions } from '@console/axf/core';
+import type { AxfRuntime, BookData, DocsOptions } from '@console/axf/core';
 import { DOCS_DEPTH_ABOUT, PLACED_VIEW_TAB, bookMinutes, parseRef, viewOf } from '@console/axf/core';
 import { Button, Checkbox, ChoiceGrid, Chip, Icon, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { TreeView, type TreeBranch } from '@console/axf/libs/tree';
 import { registerZone, startDrag, type DragPayload } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { filterEntries } from './core';
-import { DEMO_KEYS, DEPTHS, FORMATS, INTERACTIVES, STYLES, type BookAsset, type DemoType, type DocsAsset, api, changeBook, deleteAsset, docsFileUrl, fmtMinutes, generateDocs, getAsset, loadCatalog, loadDemos, newBook, recordBook, refLabel, refOf, useCatalog, useDemoStore } from './demos-core';
+import { BOOK_TABS, DEMO_KEYS, DEPTHS, FORMATS, INTERACTIVES, STYLES, type BookAsset, type BookTab, type DemoType, type DocsAsset, api, changeBook, deleteAsset, docsFileUrl, entryOf, fmtMinutes, generateDocs, getAsset, loadCatalog, loadDemos, newBook, recordBook, refLabel, refOf, useCatalog, useDemoStore } from './demos-core';
 import { playAsset } from './player';
 
 export const WIZARD_DIALOG = 'glossary-index.book-wizard';
@@ -23,9 +23,32 @@ const ZONE = 'glossary-index-book';
 const ENTRY_DRAG = 'glossary-index:entry';
 const ITEM_DRAG = 'glossary-index:item';
 
-let wantedBook: string | null = null;
-const wantSubs = new Set<() => void>();
-export function openBook(id: string) { wantedBook = id; wantSubs.forEach((f) => f()); }
+/** Open a book (and optionally a chapter / a tab) in the Book Builder: settings values the API reads and sets (ui-api@1). */
+export function openBook(rt: AxfRuntime, id: string, { chapter, tab, navigate = true }: { chapter?: string; tab?: BookTab; navigate?: boolean } = {}) {
+  if (id) rt.settings.set(DEMO_KEYS.booksOpen, id);
+  if (chapter !== undefined) rt.settings.set(DEMO_KEYS.booksChapter, chapter);
+  if (tab && (BOOK_TABS as readonly string[]).includes(tab)) rt.settings.set(DEMO_KEYS.booksTab, tab);
+  if (navigate) rt.navigate('book-builder');
+}
+
+/**
+ * Preview a book item or any glossary entry: a demonstration, clip or book plays; an entry with a screen opens that
+ * real screen, with real data, in a floating window (the live sandbox); anything else shows the glossary.
+ */
+export function previewRef(rt: AxfRuntime, ref: string) {
+  const r = parseRef(ref);
+  if (!r) return false;
+  if (r.kind === 'demonstration' || r.kind === 'clip' || r.kind === 'book') { void playAsset(r.kind, r.id); return true; }
+  const e = entryOf(r.id);
+  const view = e ? viewOf(e, (id) => entryOf(id)) : '';
+  if (view) {
+    rt.windows.openFloating([{ id: `glossary-sandbox-${view}-${Date.now()}`, title: e?.term ?? view, kind: PLACED_VIEW_TAB, payload: view, icon: 'monitor' }], e?.term ?? view, 'floating', 760, 540);
+    return true;
+  }
+  rt.navigate('glossary-index');
+  rt.toast(e ? `${e.term}: ${e.summary}` : ref, 'info', 'Glossary');
+  return true;
+}
 
 function useSetting<T extends string | boolean>(key: string, fallback: T): [T, (v: T) => void] {
   const rt = useRuntime();
@@ -100,7 +123,7 @@ export function BookWizard({ close }: { close: () => void }) {
       {msg && <p className="fx-muted" role="status">{msg}</p>}
       <div className="fx-row fx-row--end">
         <Button onClick={close}>Cancel</Button>
-        <Button tone="primary" icon="plus" busy={busy} disabled={title.trim().length < 2} onClick={() => { setBusy(true); setMsg(''); newBook({ title, about, totalMinutes: Number(total) || 0, chapterMinutes: Number(per) || 5, count: Number(count) || 0, style, theme, narrator, speed: Number(speed) || 1, docs, outputs: { video, chapterClips: clips } }).then((b) => { openBook(b.id); close(); rt.navigate('book-builder'); }, (e: Error) => setMsg(e.message)).finally(() => setBusy(false)); }}>Create book</Button>
+        <Button tone="primary" icon="plus" busy={busy} disabled={title.trim().length < 2} onClick={() => { setBusy(true); setMsg(''); newBook({ title, about, totalMinutes: Number(total) || 0, chapterMinutes: Number(per) || 5, count: Number(count) || 0, style, theme, narrator, speed: Number(speed) || 1, docs, outputs: { video, chapterClips: clips } }).then((b) => { close(); openBook(rt, b.id, { chapter: b.data.chapters[0]?.id ?? '', tab: 'chapters' }); }, (e: Error) => setMsg(e.message)).finally(() => setBusy(false)); }}>Create book</Button>
       </div>
     </div>
   );
@@ -128,7 +151,7 @@ export function AddToBook({ props, close }: { props: Record<string, unknown>; cl
       <div className="fx-row fx-row--end">
         <Button icon="plus" onClick={() => { close(); rt.openDialog(WIZARD_DIALOG); }}>New book…</Button>
         <Button onClick={close}>Cancel</Button>
-        <Button tone="primary" icon="check" disabled={!book || !chapter} onClick={() => changeBook(book, { op: 'add-item', chapter, ref }).then(() => { openBook(book); close(); rt.navigate('book-builder'); }, (e: Error) => setMsg(e.message))}>Add</Button>
+        <Button tone="primary" icon="check" disabled={!book || !chapter} onClick={() => changeBook(book, { op: 'add-item', chapter, ref }).then(() => { close(); openBook(rt, book, { chapter, tab: 'chapters' }); }, (e: Error) => setMsg(e.message))}>Add</Button>
       </div>
     </div>
   );
@@ -281,17 +304,19 @@ export function BooksPage() {
   const { items, loaded, loading, error } = useDemoStore();
   const { cat } = useCatalog();
   const rt = useRuntime();
-  const [bookId, setBookId] = useState('');
+  // the open book, chapter and tab are settings values: console.values reads and sets them (ui-api@1)
+  const [bookId, setBookId] = useSetting<string>(DEMO_KEYS.booksOpen, '');
   const [book, setBook] = useState<BookAsset | null>(null);
-  const [chapterId, setChapterId] = useState('');
-  const [tab, setTab] = useState<'chapters' | 'plan' | 'docs' | 'outputs'>('chapters');
+  const [chapterId, setChapterIdRaw] = useSetting<string>(DEMO_KEYS.booksChapter, '');
+  const setChapterId = (v: string | ((c: string) => string)) => setChapterIdRaw(typeof v === 'function' ? v(chapterId) : v);
+  const [tabRaw, setTab] = useSetting<string>(DEMO_KEYS.booksTab, 'chapters');
+  const tab: BookTab = (BOOK_TABS as readonly string[]).includes(tabRaw) ? tabRaw as BookTab : 'chapters';
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
   const [docs, setDocs] = useState<DocsAsset | null>(null);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   useEffect(() => { void loadDemos(); void loadCatalog(); }, []);
-  useEffect(() => { const take = () => { if (wantedBook) { setBookId(wantedBook); wantedBook = null; } }; take(); wantSubs.add(take); return () => { wantSubs.delete(take); }; }, []);
-  useEffect(() => { if (!bookId && items.book[0]) setBookId(items.book[0].id); }, [items.book, bookId]);
+  useEffect(() => { if (loaded && (!bookId || !items.book.some((b) => b.id === bookId)) && items.book[0]) setBookId(items.book[0].id); }, [items.book, bookId, loaded]);
   useEffect(() => {
     if (!bookId) { setBook(null); return; }
     let live = true;
@@ -302,21 +327,7 @@ export function BooksPage() {
   }, [bookId, items.docs]);
 
   const change = async (c: Record<string, unknown>) => { if (!book) return; setBusy(true); setMsg(''); try { const a = await changeBook(book.id, c); setBook(a); if (c.op === 'add-chapter') setChapterId(a.data.chapters.at(-1)?.id ?? ''); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
-  const preview = (ref: string) => {
-    const r = parseRef(ref);
-    if (!r) return;
-    if (r.kind === 'demonstration' || r.kind === 'clip') { void playAsset(r.kind, r.id); return; }
-    if (r.kind === 'book') { void playAsset('book', r.id); return; }
-    const e = cat?.entries.find((x) => x.id === r.id);
-    const view = e ? viewOf(e, (id) => cat?.entries.find((x) => x.id === id)) : '';
-    if (view && rt.getState().view !== undefined) {
-      // the live sandbox: the real screen, with real data, in a floating window
-      rt.windows.openFloating([{ id: `glossary-sandbox-${view}-${Date.now()}`, title: e?.term ?? view, kind: PLACED_VIEW_TAB, payload: view, icon: 'monitor' }], e?.term ?? view, 'floating', 760, 540);
-      return;
-    }
-    rt.navigate('glossary-index');
-    rt.toast(e ? `${e.term}: ${e.summary}` : ref, 'info', 'Glossary');
-  };
+  const preview = (ref: string) => { previewRef(rt, ref); };
   const tree: TreeBranch[] = useMemo(() => items.book.map((b) => {
     const full = book && book.id === b.id ? book : null;
     return {
@@ -380,10 +391,10 @@ export function BooksPage() {
                       <Button tone="primary" icon="play" onClick={() => void playAsset('book', book.id)}>Preview book</Button>
                       <Button icon="plus" busy={busy} onClick={() => void change({ op: 'add-chapter' })}>Add chapter</Button>
                       <Button icon="monitor" busy={busy} onClick={() => { setBusy(true); setMsg(''); recordBook(book.id).then((r) => setMsg(r.job && (r.job as { ok?: boolean }).ok !== false ? `Handed to the walkthrough recorder (${r.file}).` : `Recorder: ${JSON.stringify(r.job ?? {}).slice(0, 200)}`), (e: Error) => setMsg(e.message)).finally(() => setBusy(false)); }}>Record video</Button>
-                      <Button tone="danger" icon="trash" confirm={`Delete the book "${book.name}"?`} onClick={() => void deleteAsset('book', book.id).then(() => { setBookId(''); setBook(null); })}>Delete</Button>
+                      <Button tone="danger" icon="trash" confirm={`Delete the book "${book.name}"?`} onClick={() => void deleteAsset('book', book.id).then(() => { setBookId(''); setChapterId(''); setBook(null); })}>Delete</Button>
                     </div>
                   </header>
-                  <TabGroup<'chapters' | 'plan' | 'docs' | 'outputs'> id="glossary.book" label="Book parts" value={tab} onChange={setTab}
+                  <TabGroup<BookTab> id="glossary.book" label="Book parts" value={tab} onChange={setTab}
                     tabs={[{ value: 'chapters', label: 'Chapters', icon: 'list' }, { value: 'plan', label: 'Plan', icon: 'sliders' }, { value: 'docs', label: 'Documentation', icon: 'code' }, { value: 'outputs', label: 'Outputs', icon: 'monitor' }]}>
                     {tab === 'chapters' && (
                       <div className="axp-glossary-index__chapters">

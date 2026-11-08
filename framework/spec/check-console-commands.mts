@@ -214,6 +214,6 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action',
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
-eq(CONSOLE_TOOLS.length, 12, 'twelve MCP shortcut tools (value, elements, press since full-api-control)');
+eq(CONSOLE_TOOLS.length, 13, 'thirteen MCP shortcut tools (value, elements, press since full-api-control; link since ui-api-parity-rule)');
 
 console.log(`✓ console commands — ${n} checks`);

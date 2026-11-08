@@ -135,6 +135,13 @@ t('every brief carries the asset-conformance rule', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
   assert.ok(c.brief(b2).includes(c.ASSET_RULE));
 });
+t('a build that touches UI carries the UI = API rule (ui-api@1); one that does not, does not', () => {
+  const ui = c.normalizeState({ builds: [{ id: 'ui-x', title: 'New settings dialog for the Terminal', steps: [{ text: 'Dialog + toolbar', model: 'Opus', estimate: 20 }] }] }).builds[0];
+  const eng = c.normalizeState({ builds: [{ id: 'eng-x', title: 'Kernel fixture regen', steps: [{ text: 'Regenerate fixtures', model: 'Opus', estimate: 20 }] }] }).builds[0];
+  assert.ok(c.brief(ui).includes(c.API_PARITY_RULE)); assert.ok(!c.brief(eng).includes(c.API_PARITY_RULE));
+  assert.ok(c.touchesUi({ steps: [{ text: 'x', files: ['apps/console-web/plugins/x/web/index.tsx'] }] }));
+  assert.match(c.API_PARITY_RULE, /ui-parity\.mjs check/);
+});
 // Fable upgrades need my approval = off (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable."): upgrades run by themselves, recorded
 t('approvals off: an upgrade phase is clear, ticking it records the switch (approvals + a build note)', () => {
   c.setUpgradePolicy({ approvalRequired: false, source: 'test' });
