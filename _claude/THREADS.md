@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 10:50 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 10:50 UTC · `build-pipeline-v2` s1 done, → running (all) · orchestrator
 - 2026-11-07 10:53 UTC · `build-pipeline-v2` s2 done (all) · orchestrator
 - 2026-11-07 11:00 UTC · `multi-account-headless-workers` → complete, merged, note (all) · reconciler
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 19:23 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · orchestrator
 - 2026-11-08 19:24 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` note (all) · orchestrator
 - 2026-11-08 19:24 UTC · `approve-button-fix` branch claude/approve-button-fix, note (all) · reconciler
+- 2026-11-08 19:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
 
 ## Token passes (log)
 

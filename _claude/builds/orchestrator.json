@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T19:24:43.577Z",
+ "updatedAt": "2026-11-08T19:24:55.485Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71307,12 +71307,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-08T17:24:49.918Z",
+   "updatedAt": "2026-11-08T19:24:43.797Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Conflict flow (Brett): a conflicting step is moved to a special Conflicts section and removed from the build; the other steps still build. Brett gets an AmberX notification-panel item that explains the conflict and offers suggested resolutions; he taps a suggestion or types a prompt, which goes to the orchestrator, and the orchestrator makes a new build from it. Then test it: Brett will send a 3-4 step build that deliberately overlaps existing shipped features to confirm the orchestrator catches it.",
      "at": "2026-11-08T17:24:49.918Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:24:43.797Z"
     }
    ],
    "approvals": [],
@@ -71329,7 +71333,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw881k0l04w3j0"
+    },
+    {
+     "id": "s2",
+     "text": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw881k0l05pr9h"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw881k0l063dsm"
+    }
+   ]
   },
   {
    "id": "adopt-today-s-direct-launched-builds-record-only",
