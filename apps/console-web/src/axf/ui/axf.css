@@ -162,9 +162,11 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 [data-fx-wsize]:has(> .fx-banner__pop):not([data-fx-narrow] *) { max-width: none !important; } /* a pop-out needs room beside its widget: the size cap would squash the widget and spill it over the neighbours. Not on a phone: there the room isn't there and the wider item would push every widget into the More menu */
 [data-fx-wshow='icon'] :where(.fx-widget-status > span:last-child:not(.fx-widget-status__dot), .fx-widget-counter__label, .fx-widget-button > span, .fx-widget-theme > span, .fx-banner__badge-label), [data-fx-wshow='icon'] .fx-widget-link:has(svg) > span { display: none; }
 [data-fx-wshow='text'] :where(.fx-widget-status__dot, .fx-widget-counter > svg, .fx-widget-button > svg, .fx-widget-link > svg, .fx-widget-theme > svg) { display: none; }
+/* the ⋯ overflow control (Overflow.tsx): every bar's More menu, the banner's included */
+.fx-overflow__btn { position: relative; display: inline-flex; flex: none; }
+.fx-overflow { position: fixed; z-index: 70; display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 20); max-width: calc(100vw - var(--fx-space) * 2); max-height: 70vh; overflow-y: auto; padding: var(--fx-dens-gap-lg); font-size: var(--fx-type-root-sm); }
+.fx-overflow__item { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-height: var(--fx-row-h); max-width: 100%; }
 .fx-banner__more-btn { position: relative; }
-.fx-banner__more { position: fixed; z-index: 70; display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 20); max-width: calc(100vw - var(--fx-space) * 2); max-height: 70vh; overflow-y: auto; padding: var(--fx-dens-gap-lg); font-size: var(--fx-type-root-sm); }
-.fx-banner__more-item { display: flex; align-items: center; min-height: var(--fx-row-h); max-width: 100%; }
 .fx-banner__more-item > [data-fx-wsize] { max-width: 100% !important; }
 .fx-banner-widgets { display: grid; gap: var(--fx-dens-gap-xl); min-width: 0; }
 .fx-banner-widgets__preview { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }

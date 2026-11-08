@@ -15,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon, Segmented } from '@console/axf/react';
 import { call, type Settings } from './api';
 import { meterOf, useMeters } from './meters';
+import { MenuRow, useHeaderBar, type BarItem } from './header';
 import { chainTree, replay, revealTick, shownOf, treeOrder, REVEAL0, type ChainItem, type ChainNode, type Reveal, type Speed } from './headless-core';
 
 export type { ChainItem, ChainNode, ChainRule, Speed } from './headless-core';
@@ -123,19 +124,31 @@ export function ChainPane({ session, settings, scale = 100 }: { session: string;
     );
   };
 
+  // the bar's items (terminal-header-responsive, Nov 8 2026): the framework's ⋯ overflow control, title first
+  const speedCtl = <Segmented size="sm" label="Reveal speed" value={speed} onChange={setSpeed}
+    options={[{ value: 'slow', label: 'Slow' }, { value: 'normal', label: 'Normal' }, { value: 'fast', label: 'Fast' }, { value: 'instant', label: 'All' }]} />;
+  const foldLabel = anyFolded ? 'Open every file' : 'Fold every file';
+  const foldFn = () => setCollapsed(anyFolded ? new Set() : new Set(parents));
+  const barItems: BarItem[] = [
+    { key: 'chain.title', bar: <span className={`${P}__titlegrp`}><Icon name="branch" size={14} /><strong className={`${P}__title`}>Context chain</strong></span> },
+    { key: 'chain.count', bar: <span className={`${P}__count`}>{seen.current.size}/{items.length} files · {seenRules}/{totalRules} rules</span> },
+    { key: 'chain.speed', bar: speedCtl, menu: <div className="axp-wt__morerow fx-row"><span className="fx-grow">Speed</span>{speedCtl}</div> },
+    { key: 'chain.fold', bar: <button type="button" className="fx-iconbtn" title={foldLabel} aria-label={foldLabel} disabled={!parents.length} onClick={foldFn}><Icon name={anyFolded ? 'list' : 'minus'} size={13} /></button>,
+      menu: <MenuRow icon={<Icon name={anyFolded ? 'list' : 'minus'} size={13} />} label={foldLabel} disabled={!parents.length} onClick={foldFn} /> },
+    { key: 'chain.play', bar: <button type="button" className="fx-iconbtn" title={paused ? 'Play' : 'Pause'} aria-label={paused ? 'Play' : 'Pause'} disabled={done} onClick={() => setPaused(!paused)}><Icon name={paused ? 'play' : 'pause'} size={13} /></button>,
+      menu: <MenuRow icon={<Icon name={paused ? 'play' : 'pause'} size={13} />} label={paused ? 'Play' : 'Pause'} disabled={done} onClick={() => setPaused(!paused)} /> },
+    { key: 'chain.skip', bar: <button type="button" className="fx-iconbtn" title="Skip to the end" aria-label="Skip to the end" disabled={done} onClick={allDone}><Icon name="arrow-right" size={13} /></button>,
+      menu: <MenuRow icon={<Icon name="arrow-right" size={13} />} label="Skip to the end" disabled={done} onClick={allDone} /> },
+  ];
+  const hb = useHeaderBar('chain', barItems, settings);
+
   return (
     <section className={P} aria-label="Context chain" style={{ ['--axp-chain-scale' as string]: scale / 100 }}>
-      <header className={`${P}__bar`} role="toolbar" aria-label="Context chain">
-        <Icon name="branch" size={14} />
-        <strong className={`${P}__title`}>Context chain</strong>
-        <span className={`${P}__count`}>{seen.current.size}/{items.length} files · {seenRules}/{totalRules} rules</span>
+      <header ref={hb.ref} className={`${P}__bar axp-wt__hbar is-${hb.style}`} role="toolbar" aria-label="Context chain">
+        {hb.items.filter((i) => i.key === 'chain.title' || i.key === 'chain.count').map((i) => hb.draw(i.key))}
         <span className="fx-grow" />
-        <Segmented size="sm" label="Reveal speed" value={speed} onChange={setSpeed}
-          options={[{ value: 'slow', label: 'Slow' }, { value: 'normal', label: 'Normal' }, { value: 'fast', label: 'Fast' }, { value: 'instant', label: 'All' }]} />
-        <button type="button" className="fx-iconbtn" title={anyFolded ? 'Open every file' : 'Fold every file'} aria-label={anyFolded ? 'Open every file' : 'Fold every file'} disabled={!parents.length}
-          onClick={() => setCollapsed(anyFolded ? new Set() : new Set(parents))}><Icon name={anyFolded ? 'list' : 'minus'} size={13} /></button>
-        <button type="button" className="fx-iconbtn" title={paused ? 'Play' : 'Pause'} aria-label={paused ? 'Play' : 'Pause'} disabled={done} onClick={() => setPaused(!paused)}><Icon name={paused ? 'play' : 'pause'} size={13} /></button>
-        <button type="button" className="fx-iconbtn" title="Skip to the end" aria-label="Skip to the end" disabled={done} onClick={allDone}><Icon name="arrow-right" size={13} /></button>
+        {hb.items.filter((i) => i.key !== 'chain.title' && i.key !== 'chain.count').map((i) => hb.draw(i.key))}
+        {hb.more}
       </header>
       <div ref={box} className={`${P}__list`} onScroll={(e) => { const el = e.currentTarget; stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24; }}>
         {err && !items.length && <p className={`${P}__empty`}>{err}</p>}

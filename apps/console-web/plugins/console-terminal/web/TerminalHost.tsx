@@ -32,9 +32,12 @@ import { SplitView, type Split } from './SplitView';
 import { ChainPane } from './ChainPane';
 import { markClosed } from './headless';
 import { FeedPane, SessionsRail } from './nav';
+import { MenuRow, useHeaderBar, type BarItem } from './header';
 import { isPhone, onSizeMemory, pinchSteps, resolveSize, setSizeMemory, sizeMemory, stepSize, type Pane } from './textsize';
 
 const P = 'axp-wt';
+/** toolbar items drawn before the spacer (the rest sit at the end) */
+const LEAD = ['toolbar.claude', 'toolbar.session', 'toolbar.status'];
 const ICONS: Record<string, string> = { console: 'terminal', vps: 'monitor', claude: 'sparkles', container: 'box', axhub: 'zap', feed: 'sparkles' };
 export const iconFor = (o: Open) => ICONS[o.kind] ?? 'terminal';
 
@@ -206,8 +209,44 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
       <Icon name={icon} size={13} /> <span className="fx-grow">{label}</span>{opts.hint && <span className={`${P}__hint`}>{opts.hint}</span>}
     </button>
   );
-  const at = (x: number, y: number, w = 240, hgt = 360) => ({ left: Math.max(4, Math.min(x, innerWidth - w)), top: Math.max(4, Math.min(y, innerHeight - hgt)) });
+  // the command toolbar's items (terminal-header-responsive, Nov 8 2026): measured by the framework's ⋯ overflow
+  // control; what doesn't fit goes into ⋯, lowest priority first, pinned ones never (header-core.ts)
   const target = front?.open ? describe(front.open) : '';
+  const frontHl = front ? headlessOf(front) : ''; const frontSt = frontHl ? statusOf(meterOf(frontHl)) : '';
+  const sizeCtl = (() => { const chain = paneFocus === 'chain' && chainShown(front); const where = chain ? 'context chain' : 'terminal text'; const now = chain ? `${chainSize(front)}%` : c ? `${c.fontSize}` : '';
+    return { chain, where, now, off: !c && !chain }; })();
+  const sizeGroup = (
+    <span className={`${P}__sizegrp`} role="group" aria-label={`Text size of the ${sizeCtl.where}`}>
+      <button type="button" className="fx-iconbtn" title={`Smaller ${sizeCtl.where} (Ctrl+-)`} aria-label={`Smaller ${sizeCtl.where}`} disabled={sizeCtl.off} onClick={() => zoomPane(-1)}>A−</button>
+      <button type="button" className={`fx-btn fx-btn--ghost ${P}__size`} title={`Text size of the ${sizeCtl.where}: ${sizeCtl.now}${sizeCtl.chain ? '' : ' px'}. Tap to go back to the default (Ctrl+0)`} aria-label={`Reset ${sizeCtl.where} size`} disabled={sizeCtl.off} onClick={() => zoomPane('reset')}>{sizeCtl.now}</button>
+      <button type="button" className="fx-iconbtn" title={`Bigger ${sizeCtl.where} (Ctrl+=)`} aria-label={`Bigger ${sizeCtl.where}`} disabled={sizeCtl.off} onClick={() => zoomPane(1)}>A+</button>
+    </span>
+  );
+  const ib = (key: string, icon: string, label: string, fn: () => void, o: { disabled?: boolean; active?: boolean; title?: string } = {}) => ({
+    key,
+    bar: <button type="button" className={`fx-iconbtn ${o.active ? 'is-active' : ''}`} aria-pressed={o.active === undefined ? undefined : o.active} title={o.title ?? label} aria-label={label} disabled={o.disabled} onClick={fn}><Icon name={icon} size={14} /></button>,
+    menu: <MenuRow icon={<Icon name={icon} size={14} />} label={label} active={o.active} disabled={o.disabled} onClick={fn} />,
+  });
+  const tbItems: BarItem[] = [
+    { key: 'toolbar.claude', bar: <span className={`${P}__lead`}><button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab: pick a connection" aria-label="New Claude Code tab" onClick={() => pick('claude')}><Icon name="sparkles" size={14} /> <span className={`${P}__lbl`}>Claude Code</span></button><span className={`${P}__sep`} /></span>,
+      menu: <MenuRow icon={<Icon name="sparkles" size={14} />} label="New Claude Code tab" onClick={() => pick('claude')} /> },
+    { key: 'toolbar.session', bar: (
+      <button type="button" className={`fx-chip ${P}__conn`} data-axf-overflow-flex="" title={`This tab's connection: ${target || 'no tab'}`} disabled={!front} onClick={() => { if (front) manage(front.id); }}>
+        <Icon name={front ? iconFor(front.open) : 'terminal'} size={13} /> <span className={`${P}__connname`}>{target || 'No tab'}</span>
+        {c?.info?.badge && <strong className={`${P}__flag`}>{c.info.badge}</strong>}
+      </button>) },
+    ...(frontSt ? [{ key: 'toolbar.status', bar: <span className={`${P}__status`} title={`Session ${frontSt}`}><span className={`${P}__state is-${frontSt}`} role="img" aria-label={frontSt} /><span className={`${P}__lbl`}>{frontSt}</span></span> }] : []),
+    ib('toolbar.find', 'search', 'Find', () => c?.search(), { disabled: !c, title: 'Find (Ctrl+Shift+F)' }),
+    { key: 'toolbar.size', bar: sizeGroup, menu: <div className={`${P}__morerow fx-row`}><span className="fx-grow">Text size</span>{sizeGroup}</div> },
+    ib('toolbar.mouse', 'monitor', 'Mouse mode', () => c?.setMouse(!c.mouse), { disabled: !c, active: !!c?.mouse, title: 'Mouse mode: a click moves the cursor' }),
+    ib('toolbar.mosh', 'zap', 'Mosh mode', () => c?.setMosh(!c.mosh), { disabled: !c, active: !!c?.mosh, title: 'Mosh mode: the session lives on the server and survives dropped signal' }),
+    ib('toolbar.copy', 'copy', 'Copy', () => c?.copy(), { disabled: !c, title: 'Copy (Ctrl+Shift+C)' }),
+    ib('toolbar.paste', 'paste', 'Paste', () => c?.paste(false), { disabled: !c, title: 'Paste (Ctrl+Shift+V)' }),
+    ib('toolbar.settings', 'settings', 'Terminal settings', openSettings),
+    ib('toolbar.hide', 'chevron-up', 'Hide this toolbar', () => setToolbar(false), { title: 'Hide this toolbar (right-click a tab to show it again)' }),
+  ];
+  const tb = useHeaderBar('toolbar', tbItems, settings);
+  const at = (x: number, y: number, w = 240, hgt = 360) => ({ left: Math.max(4, Math.min(x, innerWidth - w)), top: Math.max(4, Math.min(y, innerHeight - hgt)) });
 
   return (
     <div ref={root} className={`${P} ${settings?.mica === false ? '' : `${P}--mica`} ${settings?.windowsLook === false ? `${P}--plain` : ''} ${P}--tabs-${settings?.tabWidth ?? 'equal'}`} data-fx-ctx-ignore>
@@ -260,27 +299,11 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
       {showNav && <SessionsRail hostId={tab.id} drawer={drawer} onDrawer={setDrawer} />}
       <div className={`${P}__pane`}>
       {toolbar && (
-        <div className={`${P}__toolbar`} role="toolbar" aria-label="Terminal commands" onContextMenu={(e) => { if ((e.target as HTMLElement).closest('button')) return; e.preventDefault(); e.stopPropagation(); setWinMenu({ x: e.clientX, y: e.clientY }); }}>
-          <button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab: pick a connection" onClick={() => pick('claude')}><Icon name="sparkles" size={14} /> Claude Code</button>
-          <span className={`${P}__sep`} />
-          <button type="button" className={`fx-chip ${P}__conn`} title="This tab's connection" disabled={!front} onClick={() => { if (front) manage(front.id); }}>
-            <Icon name={front ? iconFor(front.open) : 'terminal'} size={13} /> {target || 'No tab'}
-            {c?.info?.badge && <strong className={`${P}__flag`}>{c.info.badge}</strong>}
-          </button>
+        <div ref={tb.ref} className={`${P}__toolbar ${P}__hbar is-${tb.style}`} role="toolbar" aria-label="Terminal commands" onContextMenu={(e) => { if ((e.target as HTMLElement).closest('button')) return; e.preventDefault(); e.stopPropagation(); setWinMenu({ x: e.clientX, y: e.clientY }); }}>
+          {tb.items.filter((i) => LEAD.includes(i.key)).map((i) => tb.draw(i.key))}
           <span className="fx-grow" />
-          <button type="button" className="fx-iconbtn" title="Find (Ctrl+Shift+F)" disabled={!c} onClick={() => c?.search()}><Icon name="search" size={14} /></button>
-          {(() => { const chain = paneFocus === 'chain' && chainShown(front); const where = chain ? 'context chain' : 'terminal text'; const now = chain ? `${chainSize(front)}%` : c ? `${c.fontSize}` : '';
-            return <>
-              <button type="button" className="fx-iconbtn" title={`Smaller ${where} (Ctrl+-)`} aria-label={`Smaller ${where}`} disabled={!c && !chain} onClick={() => zoomPane(-1)}>A−</button>
-              <button type="button" className={`fx-btn fx-btn--ghost ${P}__size`} title={`Text size of the ${where}: ${now}${chain ? '' : ' px'}. Tap to go back to the default (Ctrl+0)`} aria-label={`Reset ${where} size`} disabled={!c && !chain} onClick={() => zoomPane('reset')}>{now}</button>
-              <button type="button" className="fx-iconbtn" title={`Bigger ${where} (Ctrl+=)`} aria-label={`Bigger ${where}`} disabled={!c && !chain} onClick={() => zoomPane(1)}>A+</button>
-            </>; })()}
-          <button type="button" className={`fx-iconbtn ${c?.mouse ? 'is-active' : ''}`} aria-pressed={!!c?.mouse} title="Mouse mode: a click moves the cursor" disabled={!c} onClick={() => c?.setMouse(!c.mouse)}><Icon name="monitor" size={14} /></button>
-          <button type="button" className={`fx-iconbtn ${c?.mosh ? 'is-active' : ''}`} aria-pressed={!!c?.mosh} title="Mosh mode: the session lives on the server and survives dropped signal" disabled={!c} onClick={() => c?.setMosh(!c.mosh)}><Icon name="zap" size={14} /></button>
-          <button type="button" className="fx-iconbtn" title="Copy (Ctrl+Shift+C)" disabled={!c} onClick={() => c?.copy()}><Icon name="copy" size={14} /></button>
-          <button type="button" className="fx-iconbtn" title="Paste (Ctrl+Shift+V)" disabled={!c} onClick={() => c?.paste(false)}><Icon name="paste" size={14} /></button>
-          <button type="button" className="fx-iconbtn" title="Terminal settings" onClick={openSettings}><Icon name="settings" size={14} /></button>
-          <button type="button" className="fx-iconbtn" title="Hide this toolbar (right-click a tab to show it again)" onClick={() => setToolbar(false)}><Icon name="chevron-up" size={14} /></button>
+          {tb.items.filter((i) => !LEAD.includes(i.key)).map((i) => tb.draw(i.key))}
+          {tb.more}
         </div>
       )}
 

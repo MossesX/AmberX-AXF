@@ -279,6 +279,42 @@ def put_new_session(body: dict[str, Any]) -> dict[str, Any]:
     return {"newSession": s["newSession"], "choices": list(store.CHOICES["newSession"])}
 
 
+def _header() -> dict[str, Any]:
+    s = store.settings()
+    return {"style": s.get("headerStyle", "priority"), "styles": list(store.CHOICES["headerStyle"]), "pinned": s.get("headerPins", []),
+            "items": list(store.HEADER_IDS)}
+
+
+@router.get("/header")
+def get_header() -> dict[str, Any]:
+    """The Terminal header bars: pinned items (never go into the ⋯ menu), the style and every item id."""
+    return _header()
+
+
+@router.put("/header")
+def put_header(body: dict[str, Any]) -> dict[str, Any]:
+    """Set the pinned list (`pinned`), pin or unpin one item (`pin` + `on`), and/or the style (`style`)."""
+    try:
+        patch: dict[str, Any] = {}
+        if "pinned" in body:
+            patch["headerPins"] = body["pinned"]
+        if body.get("pin"):
+            item = str(body["pin"])
+            if item not in store.HEADER_IDS:
+                raise ValueError(f"unknown header item {item}: one of {', '.join(store.HEADER_IDS)}")
+            cur = list(patch.get("headerPins", store.settings().get("headerPins", [])))
+            on = body.get("on", True) is not False
+            patch["headerPins"] = [*cur, item] if on else [x for x in cur if x != item]
+        if "style" in body:
+            patch["headerStyle"] = body["style"]
+        if not patch:
+            raise ValueError("send pinned, pin (+ on) or style")
+        store.save_settings(patch)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+    return _header()
+
+
 @router.get("/settings")
 def get_settings() -> dict[str, Any]:
     return {**store.settings(), "publicKey": store.public_key()}

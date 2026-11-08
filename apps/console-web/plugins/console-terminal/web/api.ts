@@ -41,6 +41,8 @@ export interface Settings {
   persistTabs: boolean; splitDefault: 'side' | 'stacked' | 'none'; chainSpeed: 'slow' | 'normal' | 'fast' | 'instant'; showChain: boolean;
   // sessions nav (Nov 3 2026)
   sessionsNav: boolean;
+  // header overflow (terminal-header-responsive, Nov 8 2026): items that never leave the bar, and how the bar gives way
+  headerPins: string[]; headerStyle: 'priority' | 'compact' | 'menu';
 }
 /** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
 export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }

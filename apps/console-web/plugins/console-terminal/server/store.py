@@ -44,13 +44,20 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                             # terminal-no-focus (Nov 4 2026): what a new headless session does to the Terminal. nothing = no
                             # tab by itself (the sessions nav still lists it), quiet = a tab in the background + a count on
                             # the Terminal toolbar icon, front = open it and bring the window to the front (the old way)
-                            "newSession": "quiet"}
+                            "newSession": "quiet",
+                            # header overflow (terminal-header-responsive, Nov 8 2026): items that never leave the header
+                            # bars for the ⋯ menu, and how the bars give way (web/header-core.ts is the reference)
+                            "headerPins": ["toolbar.session", "toolbar.status", "chain.title"], "headerStyle": "priority"}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
                                       "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
                                       "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant"),
-                                      "newSession": ("nothing", "quiet", "front")}
+                                      "newSession": ("nothing", "quiet", "front"), "headerStyle": ("priority", "compact", "menu")}
+# the header bars' items, in bar order (mirror of HEADER_IDS in web/header-core.ts; test.mts checks they agree)
+HEADER_IDS: tuple[str, ...] = ("toolbar.session", "toolbar.status", "toolbar.settings", "toolbar.find", "toolbar.size", "toolbar.claude",
+                               "toolbar.copy", "toolbar.paste", "toolbar.mouse", "toolbar.mosh", "toolbar.hide",
+                               "chain.title", "chain.count", "chain.play", "chain.skip", "chain.fold", "chain.speed")
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 
@@ -139,6 +146,14 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain", "sessionsNav"):
             if k in patch:
                 s[k] = bool(patch[k])
+        if "headerPins" in patch:
+            pins = patch["headerPins"]
+            if not isinstance(pins, list):
+                raise ValueError("headerPins is a list of header item ids")
+            bad = [str(x) for x in pins if str(x) not in HEADER_IDS]
+            if bad:
+                raise ValueError(f"unknown header item {bad[0]}: one of {', '.join(HEADER_IDS)}")
+            s["headerPins"] = [i for i in HEADER_IDS if i in {str(x) for x in pins}]
         if "user" in patch:
             u = str(patch["user"]).strip()
             if u and not re.match(r"^[A-Za-z0-9_.-]{1,32}(:[A-Za-z0-9_.-]{1,32})?$", u):

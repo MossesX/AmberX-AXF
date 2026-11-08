@@ -719,7 +719,7 @@
     "src/axf/react/components/BannerGroup.tsx": "bf29c024591b48c3",
     "src/axf/react/components/BannerSettings.tsx": "d5343ff3c6163566",
     "src/axf/react/components/BannerStrip.tsx": "12f40c2a4d0150b4",
-    "src/axf/react/components/BannerWidgets.tsx": "3d1566a3c0e1db91",
+    "src/axf/react/components/BannerWidgets.tsx": "ef2188f4bb759736",
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
     "src/axf/react/components/BuildOrigin.tsx": "3bb7209320577a40",
     "src/axf/react/components/Chrome.tsx": "0c65e508a44d341c",
@@ -737,6 +737,7 @@
     "src/axf/react/components/ModelBadge.tsx": "c47fb07ddd5584b2",
     "src/axf/react/components/NavStyleSettings.tsx": "611d1ac127c314cd",
     "src/axf/react/components/NavTree.tsx": "5acf47bba5e98154",
+    "src/axf/react/components/Overflow.tsx": "fbac0eea2e805d6b",
     "src/axf/react/components/Overlays.tsx": "88972b0d76084284",
     "src/axf/react/components/PriorityTag.tsx": "dd92370c4246cbcc",
     "src/axf/react/components/RefText.tsx": "fc367771ed39849a",
@@ -750,7 +751,7 @@
     "src/axf/react/components/menuFit.ts": "04c0539214743de1",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "fa8fa7abcd3d8298",
+    "src/axf/react/index.ts": "94a355345b236da7",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -867,6 +868,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "3bc11b40439a63cd"
+    "src/axf/ui/axf.css": "d4bc33e19dadd1cc"
   }
 }

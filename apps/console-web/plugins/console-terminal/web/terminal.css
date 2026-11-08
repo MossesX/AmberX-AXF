@@ -255,3 +255,17 @@
 .axp-terminal__probe { position: absolute; visibility: hidden; pointer-events: none; font-size: var(--fx-type-root-md) }
 .axp-terminal__probe--phone { font-size: var(--fx-type-root-sm) }
 .axp-wt__size { min-width: calc(var(--fx-space) * 4); font-size: var(--fx-type-root-xs); font-variant-numeric: tabular-nums; color: var(--fx-muted); text-align: center }
+
+/* header bars on the framework's ⋯ overflow control (terminal-header-responsive, Nov 8 2026): one row, never wraps or
+   overlaps; what doesn't fit is in ⋯ (header.tsx), and if the pinned items alone are wider the bar scrolls sideways */
+.axp-wt__hbar { display: flex; flex-wrap: nowrap; align-items: center; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity }
+.axp-wt__hitem { display: inline-flex; align-items: center; flex: none; min-width: 0; scroll-snap-align: start }
+.axp-wt__hitem:has(> .axp-wt__conn) { flex: 0 1 auto }
+.axp-wt__conn { display: inline-flex; align-items: center; min-width: calc(var(--fx-space) * 7) }
+.axp-wt__connname { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-wt__lead, .axp-wt__sizegrp, .axp-chain__titlegrp { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axp-chain__titlegrp { gap: var(--fx-dens-gap-md) }
+.axp-wt__status { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-xs); color: var(--fx-muted); white-space: nowrap }
+.axp-wt__hbar.is-compact :is(.axp-wt__lbl, .axp-chain__title) { display: none }
+.axp-wt__more .fx-overflow__item { align-self: stretch }
+.axp-wt__morerow { width: 100%; gap: var(--fx-dens-gap-md) }

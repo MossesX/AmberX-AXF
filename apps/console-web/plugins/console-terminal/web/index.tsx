@@ -5,7 +5,7 @@ import { findHost, newTab, openFromContext } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
 import { getSettings } from './api';
 import { applyProfile } from './profiles';
-import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from './look';
+import { AppearancePanel, BehaviourPanel, HeaderPanel, HeadlessPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
@@ -71,6 +71,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Windows-style terminal: appearance, tabs, Claude Code profiles and connections, the VPS host key, Mosh / Moshi, open sessions and the session log.' }],
   settingsPanels: [
     { id: 'terminal.appearance', tab: 'terminal', title: 'Appearance', icon: 'palette', order: 4, render: () => <AppearancePanel /> },
+    { id: 'terminal.header', tab: 'terminal', title: 'Header', icon: 'more', order: 5, render: () => <HeaderPanel /> },
     { id: 'terminal.behaviour', tab: 'terminal', title: 'Tabs & behaviour', icon: 'layout', order: 6, render: () => <BehaviourPanel /> },
     { id: 'terminal.headless', tab: 'terminal', title: 'Headless tabs', icon: 'sparkles', order: 7, render: () => <HeadlessPanel /> },
     { id: 'terminal.profiles', tab: 'terminal', title: 'Claude Code profiles', icon: 'sparkles', order: 8, render: () => <ProfilesPanel /> },

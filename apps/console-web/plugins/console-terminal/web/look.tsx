@@ -5,9 +5,10 @@
  * windows-terminal s9–s11). Framework controls only, so the app's style applies.
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button, Icon, SelectField, Slider, Switch, TextField } from '@console/axf/react';
+import { Button, Container, Icon, SelectField, Slider, Switch, TextField } from '@console/axf/react';
 import { SCHEMES, getSettings, onSettings, saveSettings, type ClaudeProfile, type Settings } from './api';
 import { blankProfile } from './profiles';
+import { HEADER_ITEMS, HEADER_STYLES, HEADER_STYLE_LABEL, headerStyle, normPins, type HeaderBar } from './header-core';
 
 export type Level = 'simple' | 'basic' | 'developer' | 'administrator';
 /** Every terminal setting's level (what the level toolbar shows at Simple, Basic, Developer; Administrator = all). */
@@ -16,6 +17,7 @@ export const LEVELS: Record<string, Level> = {
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
+  headerStyle: 'basic', headerPins: 'developer',
   persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple', newSession: 'simple',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
@@ -77,6 +79,36 @@ export function BehaviourPanel() {
       <L k="mouseDefault"><Switch label="New tabs start in mouse mode" checked={s.mouseDefault} onChange={(v) => save({ mouseDefault: v })} /></L>
       <L k="moshDefault"><Switch label="New tabs start in Mosh mode" checked={s.moshDefault} onChange={(v) => save({ moshDefault: v })} /></L>
       <p className="fx-small fx-muted">Keys: Ctrl+Shift+T new tab · Ctrl+Shift+W close · Ctrl+Shift+D duplicate · Ctrl+Tab / Ctrl+Shift+Tab next / previous · Ctrl+Alt+1…9 jump · Ctrl+= / Ctrl+- text size · Ctrl+Shift+F find · Ctrl+Shift+C / V copy, paste.</p>
+      <span className="fx-small">{msg}</span>
+    </div>
+  );
+}
+
+/**
+ * Header (terminal-header-responsive, Nov 8 2026): the command toolbar and the context chain bar move what doesn't fit
+ * into the ⋯ menu, lowest priority first; pinned items never leave. One collapsible section per bar, items listed in
+ * priority order (what stays longest first).
+ */
+const BARS: { bar: HeaderBar; title: string; icon: string }[] = [{ bar: 'toolbar', title: 'Command toolbar', icon: 'layout' }, { bar: 'chain', title: 'Context chain bar', icon: 'branch' }];
+
+export function HeaderPanel() {
+  const { s, msg, save } = useLive();
+  if (!s) return <p className="fx-muted">{msg || 'Loading…'}</p>;
+  const pins = normPins(s.headerPins);
+  const pin = (id: string, on: boolean) => save({ headerPins: on ? normPins([...pins, id]) : pins.filter((x) => x !== id) });
+  return (
+    <div className="fx-stack axp-terminal-settings">
+      <L k="headerStyle"><SelectField label="When the header runs out of room" value={headerStyle(s.headerStyle)} options={HEADER_STYLES.map((v) => ({ value: v, label: HEADER_STYLE_LABEL[v] }))} onChange={(v) => save({ headerStyle: v as Settings['headerStyle'] })} /></L>
+      {BARS.map(({ bar, title, icon }) => (
+        <Container key={bar} collapsible defaultOpen title={title} icon={icon}>
+          <div className="fx-stack" data-axf-setting={`terminal.headerPins.${bar}`}>
+            {[...HEADER_ITEMS].filter((i) => i.bar === bar).sort((a, b) => b.priority - a.priority).map((i) => (
+              <L key={i.id} k="headerPins"><Switch label={`Pin: ${i.label}`} hint={pins.includes(i.id) ? 'Always on the bar' : `Moves into ⋯ when there is no room (priority ${i.priority})`} checked={pins.includes(i.id)} onChange={(v) => pin(i.id, v)} /></L>
+            ))}
+          </div>
+        </Container>
+      ))}
+      <p className="fx-small fx-muted">Each bar measures its own width, so a narrow window or split pane gives way even on a big screen. Voice, MCP and CLI: header-get / header-set.</p>
       <span className="fx-small">{msg}</span>
     </div>
   );

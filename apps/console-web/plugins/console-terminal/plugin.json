@@ -3,11 +3,11 @@
   "id": "ai.amberx.axf.console.terminal",
   "lazy": { "core": "open" },
   "name": "Terminal",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a command toolbar and Windows keys. Claude Code tabs open on any connection (console container, VPS root, any container, axHub) through a connection picker; right-click a tab for its Connection manager. Claude Code profiles (model, permissions, flags, folder, first prompt, colour, default connection). Live settings: colour schemes, font, cursor, line height, padding, bell, scrollback, startup, tab width. Mouse mode, Mosh mode, copy/paste, phone key row, idle timeout and a session log. Settings → Plugins → Terminal. Persistent tabs: VPS and console tabs live in tmux sessions that survive reloads, sleep and restarts (Open in Moshi copies the attach command; closing detaches, Kill session ends one). Headless builds open their own tab with the agent, model, live cost and status, split into the session and its context chain. Sessions nav (left rail, collapsible): My sessions (Brett's own tmux / Claude Code sessions, mirrored read-only with Jump in; claude.ai chat and voice sessions as a live feed of their console_session_note lines and console MCP calls), Agents (headless builds with agent, model, live cost, status), Connections and Recent, live over a websocket.",
+  "description": "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a command toolbar and Windows keys. Claude Code tabs open on any connection (console container, VPS root, any container, axHub) through a connection picker; right-click a tab for its Connection manager. Claude Code profiles (model, permissions, flags, folder, first prompt, colour, default connection). Live settings: colour schemes, font, cursor, line height, padding, bell, scrollback, startup, tab width. Mouse mode, Mosh mode, copy/paste, phone key row, idle timeout and a session log. Settings → Plugins → Terminal. Persistent tabs: VPS and console tabs live in tmux sessions that survive reloads, sleep and restarts (Open in Moshi copies the attach command; closing detaches, Kill session ends one). Headless builds open their own tab with the agent, model, live cost and status, split into the session and its context chain. Sessions nav (left rail, collapsible): My sessions (Brett's own tmux / Claude Code sessions, mirrored read-only with Jump in; claude.ai chat and voice sessions as a live feed of their console_session_note lines and console MCP calls), Agents (headless builds with agent, model, live cost, status), Connections and Recent, live over a websocket. Header overflow (Nov 8 2026): the command toolbar and the context chain bar measure their own width and move what doesn't fit into the framework's ⋯ menu (the banner's), session name and status first; pinned items and the header style in Terminal settings → Header, or header-get / header-set.",
   "targets": [
     "axf-console"
   ],
@@ -196,6 +196,46 @@
           "required": [
             "newSession"
           ]
+        }
+      },
+      {
+        "route": "GET /header",
+        "id": "header-get",
+        "title": "Terminal header: pinned items and style",
+        "description": "The Terminal window's header bars (command toolbar and context chain bar): which items are pinned (never move into the ⋯ overflow menu when the window is narrow), the style (priority | compact | menu) and every item id."
+      },
+      {
+        "route": "PUT /header",
+        "id": "header-set",
+        "title": "Pin or unpin a Terminal header item, or set the header style",
+        "description": "Pinned items stay on the Terminal header at any width; the rest move into the ⋯ menu when space runs out, lowest priority first. Send pin (an item id like toolbar.find or chain.speed) with on true/false, or pinned (the whole list), and/or style: priority (least important into ⋯ first, the default), compact (labels become icons first) or menu (only pinned items on the bar).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pin": {
+              "type": "string",
+              "description": "header item id, e.g. toolbar.status, toolbar.find, chain.speed"
+            },
+            "on": {
+              "type": "boolean",
+              "description": "true = pin (default), false = unpin"
+            },
+            "pinned": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "the whole pinned list"
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "priority",
+                "compact",
+                "menu"
+              ]
+            }
+          }
         }
       },
       {

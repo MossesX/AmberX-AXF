@@ -6,10 +6,9 @@
  * drawn at once. Also here: the ⋯ menu that takes the widgets that don't fit. Rules: core/engines/bannerwidgets.ts.
  * Theme tokens only.
  */
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type RefObject } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useState, type PointerEvent, type ReactNode, type RefObject } from 'react';
 import { BANNER_SIDES, type PlacedAttachment } from '../../core/engines/banner';
-import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, bannerWidgetCapCss, overflowWidgets, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
+import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, bannerWidgetCapCss, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
 import { BANNER_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Banner } from './Banner';
@@ -17,6 +16,7 @@ import { bannerLabel, isBannerHidden, setBannerHide, useBannerHideTick, useKnown
 import { Button, IconButton } from './Controls';
 import { Checkbox, Note, SelectField, Switch, TextField } from './Forms';
 import { Icon } from './Icon';
+import { OverflowMore, useOverflow } from './Overflow';
 import type { DialogMap } from './Overlays';
 
 const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compact: 'Compact', normal: 'Normal', wide: 'Wide' };
@@ -31,76 +31,31 @@ export function bannerItemAttrs(rt: AxfRuntime, key: string): Record<string, unk
 }
 
 /**
- * Which widgets don't fit on a bar right now. Widths are kept from when each one was last drawn, so a widget in the ⋯ menu
- * comes back as soon as the bar has room for it, and the answer doesn't depend on what is drawn this moment.
+ * Which widgets don't fit on a bar right now: the framework's ⋯ overflow control (Overflow.tsx), fed the widgets'
+ * priorities and ⋯-menu switches. The search bar gives way first (down to its minimum), so only that much counts as
+ * taken; the logo takes its room off the top.
  */
 export function useBannerOverflow(root: RefObject<HTMLElement | null>, items: readonly Pick<PlacedAttachment, 'key'>[], on: boolean): string[] {
   const rt = useRuntime();
-  const widths = useRef(new Map<string, number>());
-  const [out, setOut] = useState<string[]>([]);
-  const rank = items.map((p) => { const v = rt.bannerWidgetView(p.key); return `${p.key}=${v.priority}${v.overflow ? '' : '!'}`; }).join('|');
-  useLayoutEffect(() => {
-    const el = root.current;
-    if (!el || !on || typeof ResizeObserver === 'undefined') { setOut((p) => (p.length ? [] : p)); return; }
-    const nodes = () => [...el.querySelectorAll<HTMLElement>('[data-axf-banner-item]')];
-    const measure = () => {
-      for (const n of nodes()) {
-        const k = n.getAttribute('data-axf-banner-item')!;
-        // the search bar gives way first (down to its minimum), so only that much counts as taken
-        const search = n.querySelector<HTMLElement>('.fx-widget-search');
-        widths.current.set(k, search ? parseFloat(getComputedStyle(search).minWidth) || n.offsetWidth : n.offsetWidth);
-      }
+  const entries = items.map((p) => { const v = rt.bannerWidgetView(p.key); return { key: p.key, priority: v.priority, overflow: v.overflow }; });
+  return useOverflow(root, entries, on, {
+    attr: 'data-axf-banner-item',
+    widthOf: (n) => { const search = n.querySelector<HTMLElement>('.fx-widget-search'); return search ? parseFloat(getComputedStyle(search).minWidth) || n.offsetWidth : n.offsetWidth; },
+    gap: (el) => { const side = el.querySelector<HTMLElement>('.fx-banner__side'); return side ? parseFloat(getComputedStyle(side).columnGap) || 0 : 0; },
+    available: (el) => {
       const cs = getComputedStyle(el);
       const side = el.querySelector<HTMLElement>('.fx-banner__side');
       const gap = side ? parseFloat(getComputedStyle(side).columnGap) || 0 : 0;
       const logo = el.querySelector<HTMLElement>('.fx-banner__logo')?.offsetWidth ?? 0;
-      const available = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (logo ? logo + gap : 0);
-      const list = items
-        .map((p) => { const v = rt.bannerWidgetView(p.key); return { key: p.key, width: widths.current.get(p.key) ?? 0, priority: v.priority, overflow: v.overflow }; })
-        .filter((i) => i.width > 0);
-      const next = overflowWidgets(list, available, el.clientHeight, gap);
-      setOut((p) => (p.join('|') === next.join('|') ? p : next));
-    };
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    for (const n of nodes()) ro.observe(n);
-    measure();
-    return () => ro.disconnect();
-  }, [root, rt, rank, on, out.join('|')]);
-  return on ? out : [];
+      return el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (logo ? logo + gap : 0);
+    },
+  });
 }
 
-/** The ⋯ button and its menu: the widgets that didn't fit, still live, nothing lost. */
+/** The banner's ⋯ button and its menu: the framework's OverflowMore in the banner's look. */
 export function BannerMore({ keys, draw }: { keys: string[]; draw: (key: string) => ReactNode }) {
-  const btn = useRef<HTMLSpanElement>(null);
-  const box = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<CSSProperties | null>(null);
-  useEffect(() => {
-    if (!pos) return;
-    const down = (e: Event) => { if (!box.current?.contains(e.target as Node) && !btn.current?.contains(e.target as Node)) setPos(null); };
-    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') setPos(null); };
-    document.addEventListener('pointerdown', down);
-    document.addEventListener('keydown', key);
-    return () => { document.removeEventListener('pointerdown', down); document.removeEventListener('keydown', key); };
-  }, [pos]);
-  useEffect(() => { if (!keys.length) setPos(null); }, [keys.length]);
-  if (!keys.length) return null;
-  const toggle = () => {
-    if (pos) { setPos(null); return; }
-    const r = btn.current!.getBoundingClientRect();
-    setPos({ top: r.bottom, right: Math.max(0, document.documentElement.clientWidth - r.right) });
-  };
-  return (
-    <span ref={btn} className="fx-banner__item fx-banner__more-btn">
-      <IconButton icon="more" label={`${keys.length} more banner widget${keys.length === 1 ? '' : 's'}`} title={`${keys.length} more`} aria-expanded={!!pos} onClick={toggle} />
-      {pos && createPortal(
-        <div ref={box} className="fx-popover fx-banner__more" style={pos} data-fx-overlay="" data-fx-ctx-target="banner" data-axf-search="off">
-          {keys.map((k) => <div key={k} className="fx-banner__more-item" data-axf-banner-more={k}>{draw(k)}</div>)}
-        </div>,
-        document.body,
-      )}
-    </span>
-  );
+  return <OverflowMore keys={keys} draw={draw} label={`banner widget${keys.length === 1 ? '' : 's'}`} className="fx-banner__item fx-banner__more-btn"
+    menuClassName="fx-banner__more" itemClassName="fx-banner__more-item" itemAttr="data-axf-banner-more" menuAttrs={{ 'data-fx-ctx-target': 'banner', 'data-axf-search': 'off' }} />;
 }
 
 /** Size, what it shows, width, hide when empty, ⋯ menu, priority and region for one widget. */
