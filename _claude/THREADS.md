@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:31 UTC · `new-app-wizard` added (5 steps) (current) · claude-voice
 - 2026-11-07 05:34 UTC · `merge-conflict-alerts` note (current) · foreign-write
 - 2026-11-07 05:34 UTC · `skins-asset-types` s6 done (current) · foreign-write
 - 2026-11-07 05:34 UTC · `skins-asset-types` s9 done (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:37 UTC · `ui-api-parity-rule` s3 done (all) · orchestrator
 - 2026-11-08 17:37 UTC · `ui-api-parity-rule` s5 done (all) · orchestrator
 - 2026-11-08 17:37 UTC · `ui-api-parity-rule` s6 done (all) · orchestrator
+- 2026-11-08 17:38 UTC · `ui-api-parity-builds` added (14 steps) (all) · orchestrator
 
 ## Token passes (log)
 

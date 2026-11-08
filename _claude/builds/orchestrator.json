@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:38:00.984Z",
+ "updatedAt": "2026-11-08T17:38:36.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71027,6 +71027,332 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw83rhes0ap05c"
+    }
+   ]
+  },
+  {
+   "id": "ui-api-parity-builds",
+   "title": "UI = API parity: builds, plans and orchestration screens",
+   "category": "Framework > API",
+   "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 437 gaps across 13 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T17:38:35.326Z",
+   "updatedAt": "2026-11-08T17:38:35.327Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+    "at": "2026-11-08T17:38:35.326Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Build manager banner (build-manager): 38 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show build-manager",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770fvety"
+    },
+    {
+     "id": "s2",
+     "text": "Build orchestrator (build-orchestrator): 34 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show build-orchestrator",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770grbpw"
+    },
+    {
+     "id": "s3",
+     "text": "Builds (builds-page): 25 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show builds-page",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770hn4xf"
+    },
+    {
+     "id": "s4",
+     "text": "Build Breaker (build-breaker): 14 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show build-breaker",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770iwwo4"
+    },
+    {
+     "id": "s5",
+     "text": "Build profiles (build-profiles): 18 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show build-profiles",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770jp4za"
+    },
+    {
+     "id": "s6",
+     "text": "Changes & features grid (changes-grid): 8 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show changes-grid",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770ks454"
+    },
+    {
+     "id": "s7",
+     "text": "Codebase changes banner (codebase-changes): 23 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show codebase-changes",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770lqkyg"
+    },
+    {
+     "id": "s8",
+     "text": "Feature matrix (feature-matrix): 21 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show feature-matrix",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770mwovh"
+    },
+    {
+     "id": "s9",
+     "text": "Feature assistant (feature-assist): 26 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show feature-assist",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770nu1zk"
+    },
+    {
+     "id": "s10",
+     "text": "Plan Studio (plan-studio): part 1/2 of 113 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show plan-studio",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770o04a4"
+    },
+    {
+     "id": "s11",
+     "text": "Plan Studio (plan-studio): part 2/2 of 113 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show plan-studio",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770p5lg8"
+    },
+    {
+     "id": "s12",
+     "text": "Shipped features (shipped-features): 15 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show shipped-features",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770qzvsf"
+    },
+    {
+     "id": "s13",
+     "text": "Push banner (push-banner): 46 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show push-banner",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770r1kll"
+    },
+    {
+     "id": "s14",
+     "text": "Todo manager (todo-manager): 56 gaps → map every view in plugin.json ui (ui-api@1), add the missing ops (commands, console actions, on-screen state as console.values keys), lower the baseline",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [
+      "node framework/cli/ui-parity.mjs show todo-manager",
+      "node framework/cli/ui-parity.mjs check"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8492770szweq"
     }
    ]
   }
