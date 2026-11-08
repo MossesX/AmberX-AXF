@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1583,
- "updatedAt": "2026-11-08T21:16:13.289Z",
+ "rev": 1584,
+ "updatedAt": "2026-11-08T21:16:27.363Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123817,9 +123817,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:58.067Z",
-   "updatedAt": "2026-11-08T21:14:58.067Z",
+   "updatedAt": "2026-11-08T21:16:26.344Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:16:26.344Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -123834,7 +123839,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T21:16:26.344Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8c17qg07ysz3",
+     "title": "",
+     "text": "Brett: the Terminal toolbar items overlap when the window gets small. Make the toolbar measure its width and drop items into a three-dot overflow (same framework overflow control as the top banner) by priority; never overlap at any width. Every toolbar item is a snappable registry asset (can be moved, docked, reordered, hidden). Check the unlanded terminal-header-responsive branch and reuse it. Full API + voice + MCP/CLI control. Shots at 3 widths; tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:16:26.344Z",
+     "updatedAt": "2026-11-08T21:16:26.344Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8c17qg08rhw7",
+     "title": "",
+     "text": "And clean up the toolbar on the terminal. It's, uh, it's overlaps each other. When it gets too small, it needs to drop things. So make sure everything is a snappable asset.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:16:26.344Z",
+     "updatedAt": "2026-11-08T21:16:26.344Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8c17qg09g1x2",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/terminal-toolbar-responsive-overflow-every-item-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/terminal-toolbar-responsive-overflow-every-item-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T21:16:26.344Z",
+     "updatedAt": "2026-11-08T21:16:26.344Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -123843,7 +123938,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123858,7 +123953,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T21:16:26.344Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

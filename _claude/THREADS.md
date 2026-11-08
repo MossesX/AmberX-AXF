@@ -751,7 +751,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 11:17 UTC · `amberx-voice-echo-fix` note (all) · orchestrator
 - 2026-11-07 11:29 UTC · `build-pipeline-v2` s7 done (all) · orchestrator
 - 2026-11-07 11:29 UTC · `build-pipeline-v2` s12 done (all) · orchestrator
 - 2026-11-07 11:30 UTC · `build-pipeline-v2` s13 done (all) · orchestrator
@@ -1151,6 +1150,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 21:15 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` added (0 steps) (all) · builds-live
 - 2026-11-08 21:15 UTC · `nested-menus-for-console-amberx-and-molly-overri` note (all) · orchestrator
 - 2026-11-08 21:16 UTC · `clean-up-plan-studio-simplify-remove-redundancy` note (all) · orchestrator
+- 2026-11-08 21:16 UTC · `terminal-toolbar-responsive-overflow-every-item-` note (all) · orchestrator
 
 ## Token passes (log)
 
