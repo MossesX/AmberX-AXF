@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T00:02:23.418Z",
+ "updatedAt": "2026-11-08T00:02:57.521Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67839,7 +67839,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-08T00:02:21.842Z",
+   "updatedAt": "2026-11-08T00:02:55.315Z",
    "builtAt": "",
    "notes": [
     {
@@ -67849,6 +67849,10 @@
     {
      "text": "Put the switch in the Debugging plugin (its switches override everything else). Switch: 'Approve every job the orchestrator receives' sends an approval dialog the moment a job arrives, then a live watch view of what the orchestrator does with it (manifest, split, models, VPS launches, handoffs).",
      "at": "2026-11-08T00:02:21.842Z"
+    },
+    {
+     "text": "Add a terminal attached to the orchestrator plus a live output window showing all activity, group-chat style. Assign a named employee to every place the orchestrator sends to or receives from (Brownie = orchestrator, Molly = Plan Studio, others named per destination: queue, VPS, AmberX, UI Review, GitHub). Every output log line carries the sender and receiver names.",
+     "at": "2026-11-08T00:02:55.315Z"
     }
    ],
    "approvals": [],
