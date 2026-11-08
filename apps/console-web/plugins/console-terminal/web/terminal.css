@@ -269,3 +269,5 @@
 .axp-wt__hbar.is-compact :is(.axp-wt__lbl, .axp-chain__title) { display: none }
 .axp-wt__more .fx-overflow__item { align-self: stretch }
 .axp-wt__morerow { width: 100%; gap: var(--fx-dens-gap-md) }
+.axp-wt__hbar > .fx-grow { flex: 1 1 auto }
+.axp-wt__hbar .axp-wt__conn { max-width: min(calc(var(--fx-space) * 64), 50vw) }

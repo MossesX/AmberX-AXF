@@ -2,7 +2,9 @@
  * Terminal window header bars on the framework's ⋯ overflow control (terminal-header-responsive, Nov 8 2026): the bar
  * measures its own width (ResizeObserver on the bar and its items, never the viewport) and the items that don't fit go
  * into the ⋯ menu, lowest priority first, pinned ones never (header-core.ts). Same control as the top banner's ⋯.
- * Each item draws itself twice: on the bar, and as a row in the menu (icon + its name, still live).
+ * Each item draws itself twice: on the bar, and as a row in the menu (icon + its name, still live), in bar order.
+ * The session chip counts at its full width, so lower-priority items leave before the session name shortens; it only
+ * shrinks (ellipsis, full name in its tooltip) when the pinned items alone are wider than the bar.
  */
 import { useRef, type ReactNode, type RefObject } from 'react';
 import { OverflowMore, useOverflow } from '@console/axf/react';
@@ -36,7 +38,7 @@ export function useHeaderBar(bar: HeaderBar, items: readonly BarItem[], settings
     ref, style,
     draw: (k) => { const it = byKey.get(k); return it ? <span key={k} className="axp-wt__hitem" data-axf-overflow-item={k} data-axp-pinned={pins.includes(k) ? '' : undefined}>{it.bar}</span> : null; },
     items: items.filter((i) => !out.includes(i.key)),
-    more: <OverflowMore keys={out} draw={drawMenu} label={label} menuClassName="axp-wt__more" menuAttrs={{ 'data-axp-header-more': bar }} />,
+    more: <OverflowMore keys={keys.filter((k) => out.includes(k))} draw={drawMenu} label={label} menuClassName="axp-wt__more" menuAttrs={{ 'data-axp-header-more': bar }} />,
   };
 }
 

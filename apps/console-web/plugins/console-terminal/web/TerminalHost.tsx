@@ -231,7 +231,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
     { key: 'toolbar.claude', bar: <span className={`${P}__lead`}><button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab: pick a connection" aria-label="New Claude Code tab" onClick={() => pick('claude')}><Icon name="sparkles" size={14} /> <span className={`${P}__lbl`}>Claude Code</span></button><span className={`${P}__sep`} /></span>,
       menu: <MenuRow icon={<Icon name="sparkles" size={14} />} label="New Claude Code tab" onClick={() => pick('claude')} /> },
     { key: 'toolbar.session', bar: (
-      <button type="button" className={`fx-chip ${P}__conn`} data-axf-overflow-flex="" title={`This tab's connection: ${target || 'no tab'}`} disabled={!front} onClick={() => { if (front) manage(front.id); }}>
+      <button type="button" className={`fx-chip ${P}__conn`} title={`This tab's connection: ${target || 'no tab'}`} disabled={!front} onClick={() => { if (front) manage(front.id); }}>
         <Icon name={front ? iconFor(front.open) : 'terminal'} size={13} /> <span className={`${P}__connname`}>{target || 'No tab'}</span>
         {c?.info?.badge && <strong className={`${P}__flag`}>{c.info.badge}</strong>}
       </button>) },

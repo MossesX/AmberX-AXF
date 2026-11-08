@@ -1,3 +1,4 @@
+// @ts-nocheck: a Node test, not part of the console's build
 /*
  * Pure-part self-test for the Terminal plugin's header overflow (terminal-header-responsive, Nov 8 2026):
  *   node --experimental-strip-types apps/console-web/plugins/console-terminal/test.mts
