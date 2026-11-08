@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1609,
- "updatedAt": "2026-11-08T22:33:35.275Z",
+ "rev": 1610,
+ "updatedAt": "2026-11-08T22:33:47.850Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124619,9 +124619,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-08T22:32:08.043Z",
+   "updatedAt": "2026-11-08T22:33:35.426Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T22:33:35.426Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124636,7 +124641,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T22:33:35.426Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8esfk2012nyu",
+     "title": "",
+     "text": "SKIP PENDING: put straight in the queue. On the approvals / waiting page (console banner approvals and axHub approvals): an Auto-approve control with 1 hour, 2 hours, and Until I turn it off; shows remaining time; turned off from the same container. Uses axHub passes (axhub.pass_grant/revoke) covering every tool Brett allows, incl. veto vps.run if axHub permits; if destructive tools can't be passed, say so on the control. Waiting approvals grouped in collapsible containers (by service/tool/build). Full API + voice + MCP/CLI control. Tests; report; Plan Studio plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T22:33:35.426Z",
+     "updatedAt": "2026-11-08T22:33:35.426Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8esfk202sq17",
+     "title": "",
+     "text": "Add a slot and approve everything automatically. Add one hour, two hours, and until I turn it off, and it needs to be able to be turned off on that same container. And um, it also we need collapsible campaigns on the approval page. The w rating page.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T22:33:35.426Z",
+     "updatedAt": "2026-11-08T22:33:35.426Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8esfk203qlg4",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/approvals-page-auto-approve-toggle-1-h-2-h-until.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/approvals-page-auto-approve-toggle-1-h-2-h-until.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T22:33:35.426Z",
+     "updatedAt": "2026-11-08T22:33:35.426Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -124645,7 +124740,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124660,7 +124755,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T22:33:35.426Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
