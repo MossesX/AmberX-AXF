@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1510,
- "updatedAt": "2026-11-08T17:26:46.596Z",
+ "rev": 1511,
+ "updatedAt": "2026-11-08T17:27:09.895Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117698,12 +117698,16 @@
    "branch": "claude/account-failover-notify",
    "pr": "#392",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-08T17:26:36.592Z",
+   "updatedAt": "2026-11-08T17:27:08.719Z",
    "builtAt": "2026-11-08T17:26:34.358Z",
    "notes": [
     {
      "text": "PR #392 (stacked on #389: land #389 first). UI Review r-20261108-d22f9202. Live fix: account-1 excluded from workers.json (dead login) until Brett signs it in.",
      "at": "2026-11-08T17:26:36.592Z"
+    },
+    {
+     "text": "Worker accounts: account-3: 1 run, $12.90",
+     "at": "2026-11-08T17:27:08.719Z"
     }
    ],
    "approvals": [],
@@ -117840,7 +117844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

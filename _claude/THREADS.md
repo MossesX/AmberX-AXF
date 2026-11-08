@@ -750,7 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:15 UTC · `multi-account-headless-workers` s3 done (current) · orchestrator
 - 2026-11-07 05:15 UTC · `multi-account-headless-workers` s5 done, → built (current) · orchestrator
 - 2026-11-07 05:14 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
 - 2026-11-07 05:14 UTC · `claude-accounts-edit` note (current) · foreign-write
@@ -1150,6 +1149,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:26 UTC · `account-failover-notify` s5 done, → complete (all) · orchestrator
 - 2026-11-08 17:26 UTC · `account-failover-notify` → built, branch claude/account-failover-notify, PR #392 (all) · builds-live
 - 2026-11-08 17:26 UTC · `account-failover-notify` note (all) · orchestrator
+- 2026-11-08 17:27 UTC · `account-failover-notify` note (all) · orchestrator
 
 ## Token passes (log)
 

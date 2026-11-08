@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:26:46.596Z",
+ "updatedAt": "2026-11-08T17:27:09.895Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70523,12 +70523,16 @@
    "branch": "claude/account-failover-notify",
    "pr": "#392",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-08T17:26:36.592Z",
+   "updatedAt": "2026-11-08T17:27:08.719Z",
    "builtAt": "2026-11-08T17:26:34.358Z",
    "notes": [
     {
      "text": "PR #392 (stacked on #389: land #389 first). UI Review r-20261108-d22f9202. Live fix: account-1 excluded from workers.json (dead login) until Brett signs it in.",
      "at": "2026-11-08T17:26:36.592Z"
+    },
+    {
+     "text": "Worker accounts: account-3: 1 run, $12.90",
+     "at": "2026-11-08T17:27:08.719Z"
     }
    ],
    "approvals": [],
