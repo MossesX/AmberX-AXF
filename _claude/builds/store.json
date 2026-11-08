@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1598,
- "updatedAt": "2026-11-08T22:04:32.821Z",
+ "rev": 1599,
+ "updatedAt": "2026-11-08T22:04:48.320Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122721,7 +122721,7 @@
    "branch": "claude/orchestrator-api-rule-in-every-brief-plan-studio",
    "pr": "",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-08T21:59:09.647Z",
+   "updatedAt": "2026-11-08T22:04:32.311Z",
    "builtAt": "",
    "notes": [
     {
@@ -122762,12 +122762,12 @@
    "pipeline": {
     "queuedAt": "2026-11-08T21:13:18.191Z",
     "queuedBy": "cli",
-    "account": "account-3",
-    "session": "axf-orchestrator-api-rule-in-every-brief-plan-studio--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-08T21:59:07.756Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-08T19:27:10.365Z",
@@ -122795,12 +122795,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T22:04:32.311Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:27:10.365Z",
-     "updatedAt": "2026-11-08T19:27:10.365Z"
+     "updatedAt": "2026-11-08T22:04:32.424Z"
     },
     {
      "id": "s2",
