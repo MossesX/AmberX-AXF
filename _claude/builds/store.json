@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1427,
- "updatedAt": "2026-11-08T00:23:41.856Z",
+ "rev": 1428,
+ "updatedAt": "2026-11-08T00:32:36.146Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -114638,7 +114638,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:23:40.524Z",
-   "updatedAt": "2026-11-08T00:23:40.524Z",
+   "updatedAt": "2026-11-08T00:32:34.816Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -114655,7 +114655,237 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw73lltg01jljq",
+     "title": "",
+     "text": "Contract: add the `queued` status to builds@1 / orchestrator@1 / build-hook@1 (Pending → Queued → Building = running), a `pipeline` record on every build (account, session, runs, split, last run) kept across orchestrator writes, pending@1 shows queued as pending, derivedStatus keeps queued; fixtures and check-builds-store updated",
+     "model": "Fable",
+     "why": "shared build contract across store, orchestrator, hooks and ports",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/plan/builds-store-core.mjs",
+      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+      "framework/core/build-hook.mjs",
+      "framework/spec/check-builds-store.mjs"
+     ],
+     "checks": [
+      "node framework/spec/check-builds-store.mjs",
+      "node apps/console-web/plugins/build-orchestrator/test.mjs"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw73lltg02n685",
+     "title": "",
+     "text": "pipeline-core.mjs (pure): account capabilities (which account has Fable, max parallel each, limits), the queue order, pick the account for a queued build's next phase, slot-open launch decision, session-end outcome (requeue / back to Pending / failed), idle reasons, the split prompt + step parser (≤30 min, Fable only where needed) and a rules-based fallback split",
+     "model": "Fable",
+     "why": "the dispatcher's rules are a contract every port reads",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs"
+     ],
+     "checks": [
+      "node framework/spec/check-pipeline.mjs"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw73lltg03fkeh",
+     "title": "",
+     "text": "pipeline.mjs CLI (IO): status | queue | unqueue | split | intake | accounts | tick; store writes under the lock (queue/unqueue/pipeline record/steps from the split); splitter providers (claude -p on a login copy, AXF_PIPELINE_SPLITTER for tests, rules fallback); intake splits every new build with no steps",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "deploy/claude-login.mjs",
+      "deploy/claude-workers.mjs"
+     ],
+     "checks": [
+      "node apps/console-web/plugins/build-orchestrator/pipeline.mjs status"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw73lltg044ydb",
+     "title": "",
+     "text": "Dispatcher tick: read VPS accounts + agent slots, when a slot is free take the next Queue build, make its worktree + brief (Brett said block + phase brief), launch deploy/claude-headless.sh --account on a Fable account for Fable phases / Opus otherwise, mark running + account + session; monitor events.jsonl + slots for session end → built / requeue / Pending / failed, relaunch cap; dispatcher state file for the console; cron line in deploy/install-console.sh",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "deploy/install-console.sh",
+      "deploy/claude-headless.sh"
+     ],
+     "checks": [
+      "node framework/spec/check-pipeline.mjs"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw73lltg05go3p",
+     "title": "",
+     "text": "Idle alert + notifications: notify.json types (pipeline.idle, pipeline.launched, pipeline.ended, pipeline.failed) raised through the console alerts API from the host (AmberX push for idle: nothing running while the Queue has work, with the reason), keyed and resolved when a build runs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [
+      "python3 apps/console-web/plugins/notify-control/test.py"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw73lltg069bcc",
+     "title": "",
+     "text": "Console: Pipeline tab on the Build orchestrator page (Pending / Queue / Building columns, accounts strip with Fable + parallel + running, dispatcher status, Queue / Back to Pending / Split now, live refresh while visible); server routes GET /pipeline, POST /pipeline/queue | unqueue | split; plugin commands for voice/MCP (queue a build, pipeline status); help entries; Launch builds without asking ON = new builds queue by themselves",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+      "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "apps/console-web/plugins/build-orchestrator/help.json"
+     ],
+     "checks": [
+      "cd apps/console-web && npx tsc --noEmit -p .",
+      "node framework/cli/check-theme.mjs"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw73lltg07lfwz",
+     "title": "",
+     "text": "Tests: check-pipeline.mjs end to end on a scratch store with a fake launcher, fake splitter and fake accounts (intake → Pending → Queue → launch on the right account → session end → built / requeue / failed, idle alert once, slot cap respected); python route test; CI wiring; plugin-lifecycle check; existing suites green",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/spec/check-pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/test.py",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [
+      "node framework/spec/check-pipeline.mjs",
+      "python3 apps/console-web/plugins/build-orchestrator/test.py",
+      "node framework/cli/plugin-lifecycle.mjs check build-orchestrator"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw73lltg08qbfb",
+     "title": "",
+     "text": "Close out: report _claude/builds/reports/pipeline-rebuild.md, _claude/builds/README.md Pipeline section, rules + decisions lines, THREADS row, fold the overlapping builds (idle-alert-phone-flag-when-nothing-is-building, orchestrator-start-a-build-through-the-api-mcp-and-cli) as complete with this PR, commit, push, PR, link the build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/pipeline-rebuild.md",
+      "_claude/builds/README.md",
+      "_claude/THREADS.md",
+      "_claude/rules/RULES.md",
+      "_claude/memory/decisions.md"
+     ],
+     "checks": [
+      "node framework/cli/builds-store.mjs verify"
+     ],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T00:32:34.818Z",
+     "updatedAt": "2026-11-08T00:32:34.996Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -114664,7 +114894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114679,7 +114909,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T00:32:34.818Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
