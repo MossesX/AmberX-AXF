@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:22:58.914Z",
+ "updatedAt": "2026-11-08T17:23:15.102Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70652,6 +70652,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "adopt-today-s-direct-launched-builds-record-only",
+   "title": "Adopt today's direct-launched builds (record only, do NOT launch)",
+   "category": "",
+   "detail": "These builds were launched directly from voice, skipping the orchestrator, so they have no build IDs and don't show in Plan Studio. Give each a build record/ID, link its branch and folder, set its real status (running, queued, done, failed, duplicate). DO NOT launch, relaunch or queue anything. Builds: glossary-index-demos-r3 (landed), veto-notify-autorun, workers-api-routing, brief-only-headless, terminal-header-responsive, ui-api-parity-rule (+r2, r3), memory-manager (+r2, r3 duplicate stopped), molly-one-shell (+r2, r3, r4), account-failover-notify, account-health-failover, amberx-notify-panel, slot-watchdog, glossary-r3-land (carrier, discard). Mark dead/duplicate ones accordingly.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "adopt-today-s-direct-launched-builds-record-only",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T17:22:54.809Z",
+   "updatedAt": "2026-11-08T17:22:54.809Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
     "at": "",
     "source": "",
     "session": "",

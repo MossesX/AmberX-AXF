@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1504,
- "updatedAt": "2026-11-08T17:22:58.914Z",
+ "rev": 1505,
+ "updatedAt": "2026-11-08T17:23:15.102Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117910,6 +117910,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T17:22:53.861Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "adopt-today-s-direct-launched-builds-record-only",
+   "title": "Adopt today's direct-launched builds (record only, do NOT launch)",
+   "category": "",
+   "detail": "These builds were launched directly from voice, skipping the orchestrator, so they have no build IDs and don't show in Plan Studio. Give each a build record/ID, link its branch and folder, set its real status (running, queued, done, failed, duplicate). DO NOT launch, relaunch or queue anything. Builds: glossary-index-demos-r3 (landed), veto-notify-autorun, workers-api-routing, brief-only-headless, terminal-header-responsive, ui-api-parity-rule (+r2, r3), memory-manager (+r2, r3 duplicate stopped), molly-one-shell (+r2, r3, r4), account-failover-notify, account-health-failover, amberx-notify-panel, slot-watchdog, glossary-r3-land (carrier, discard). Mark dead/duplicate ones accordingly.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "adopt-today-s-direct-launched-builds-record-only",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T17:22:54.809Z",
+   "updatedAt": "2026-11-08T17:22:54.809Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 445
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "30 min",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T17:22:54.809Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}
