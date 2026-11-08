@@ -16,8 +16,14 @@
  *   node deploy/claude-workers.mjs release --session s           the job ended (or moved): its claim goes
  *   node deploy/claude-workers.mjs route [--exclude a,b]         the account a new job would run on now ('' = none)
  *   node deploy/claude-workers.mjs test [--job '{json}' | --name n --model m --priority p --steps n --type t --profile p]
- *   node deploy/claude-workers.mjs limit <name> --kind usage|auth [--log <file>]   take an account out until it can work again
- *   node deploy/claude-workers.mjs hit --log <file> --exit <n>  prints usage or auth when that log ended on one
+ *   node deploy/claude-workers.mjs limit <name> --kind usage|credits|auth [--log <file>]   take an account out until it can work again
+ *   node deploy/claude-workers.mjs clear <name>                 bring it back by hand (its phone alert is resolved)
+ *   node deploy/claude-workers.mjs hit --log <file> --exit <n>  prints usage, credits or auth when that log ended on one
+ *   node deploy/claude-workers.mjs failover --session s --account a --log f --exit n [--moves n] [--build b] [--name n --brief f --model m]
+ *        → "move <account> <kind> <hit>" | "queue <account> <position> <hit>" | "wait <minutes> <hit>" | "stop <hit> <why>" | "none"
+ *   node deploy/claude-workers.mjs revive                       accounts that are back leave the limits (minute sweep)
+ *   node deploy/claude-workers.mjs events [--max n] [--json]    account events: out, moved, back
+ *   node deploy/claude-workers.mjs failover-set enabled|alerts|alertOnLimit on|off · maxMoves N · waitMinutes N
  *   node deploy/claude-workers.mjs status [--json]              every account: role, kind, limit, running/queued, cost, caps
  *   node deploy/claude-workers.mjs alerts [--json]              API accounts near/over a cap or without a key
  *   node deploy/claude-workers.mjs config [--json]              the routing config (defaults filled in)
@@ -46,6 +52,7 @@ import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, re
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { accounts, paths as loginPaths } from './claude-login.mjs';
+import { tokenHash } from './claude-home.mjs';
 import { NAME_RE, SCHEMA, alerts as routingAlerts, decide, normConfig, normJob, normRule, raisedCaps, roster } from './worker-routing.mjs';
 
 export { SCHEMA };
@@ -53,9 +60,18 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const HOUR = 3600e3;
 const DAY = 24 * HOUR;
 /** No reset time in the message: 5 hours (the shortest subscription window). A dead login gets another try sooner. */
-const COOLDOWN = { usage: 5 * HOUR, auth: 10 * 60e3 };
-const LIMIT_RE = /hit your (?:weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low/i;
-const AUTH_RE = /invalid api key|please run \/login|oauth token (?:has )?expired|authentication_error|not logged in/i;
+const COOLDOWN = { usage: 5 * HOUR, credits: 5 * HOUR, auth: 10 * 60e3 };
+/** A dead login that only a new sign-in fixes stays out this long at most (it comes back the moment it is signed in). */
+const SIGNIN_HOLD = 30 * DAY;
+const LIMIT_RE = /hit your (?:weekly |daily |session |5-hour )?limit|usage limit reached|rate_limit_error.*(?:weekly|daily)/i;
+const CREDITS_RE = /out of credits|credit balance is too low|insufficient (?:credit|balance)|no credits left/i;
+// Nov 8 2026: Claude Code 2.1.319 says "Failed to authenticate: OAuth session expired and could not be refreshed";
+// the old pattern only knew "oauth token expired", so three builds died on account-1 and none moved.
+const AUTH_RE = /failed to authenticate|invalid api key|please run \/login|oauth (?:token|session) (?:has )?expired|could not be refreshed|authentication_error|not logged in|invalid_grant|token (?:has been )?revoked/i;
+/** Auth failures no retry fixes: the account stays out until it is signed in again. */
+const DEAD_LOGIN_RE = /could not be refreshed|oauth (?:token|session) (?:has )?expired|invalid_grant|revoked|please run \/login|not logged in|invalid api key/i;
+/** Said at the very start of a run, before any work: an account problem even when claude exits 0. */
+const AUTH_START_RE = /^\s*Failed to authenticate:/m;
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
@@ -124,24 +140,52 @@ export function parseReset(text, now = Date.now()) {
   return at;
 }
 
-/** What stopped a run: 'usage', 'auth' or ''. A dead login only counts on a failed exit: a build may print those words. */
+/**
+ * What stopped a run: 'usage', 'credits', 'auth' or ''. A dead login counts on a failed exit (a build may print those
+ * words), or when the run opened with "Failed to authenticate:" before doing anything.
+ */
 export function hitOf(text, exit = 0) {
+  if (CREDITS_RE.test(text)) return 'credits';
   if (LIMIT_RE.test(text)) return 'usage';
-  return exit !== 0 && AUTH_RE.test(text) ? 'auth' : '';
+  return (exit !== 0 && AUTH_RE.test(text)) || AUTH_START_RE.test(text) ? 'auth' : '';
 }
+
+/** The account's login right now, as a hash (OAuth refresh token, saved token or API key): a new sign-in changes it. */
+export function loginHashOf(name, env = process.env) {
+  const d = join(loginPaths(env).accounts, name);
+  const rt = readJson(join(d, '.credentials.json'))?.claudeAiOauth?.refreshToken;
+  const t = (f) => { try { return readFileSync(join(d, f), 'utf8').trim(); } catch { return ''; } };
+  return tokenHash(rt || t('token') || t('apikey'));
+}
+
+const REASONS = { usage: 'hit its usage limit', credits: 'ran out of credits', auth: 'login failed' };
 
 export function markLimit(name, { kind = 'usage', text = '' } = {}, env = process.env, now = Date.now()) {
   if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const until = (kind === 'usage' ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
+  const dead = kind === 'auth' && DEAD_LOGIN_RE.test(text);
+  const until = dead ? now + SIGNIN_HOLD : ((kind === 'usage' || kind === 'credits') ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
+  const reason = dead ? (/could not be refreshed|expired/i.test(text) ? 'login expired and could not be renewed' : 'signed out') : REASONS[kind] ?? REASONS.usage;
   return withLock(env, () => {
     const state = loadState(env);
-    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of credits/i.test(text) ? 'out of API credit' : 'hit its limit') : 'login failed' };
+    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason,
+      ...(dead ? { untilSignin: true, login: loginHashOf(name, env).slice(0, 16) } : {}) };
     saveState(state, env);
     return state.limits[name];
   });
 }
 
-const limitOf = (state, name, now) => { const l = state.limits[name]; return l && Date.parse(l.until) > now ? l : null; };
+/** Bring an account back by hand (Brett signed it in, or topped it up). */
+export function clearLimit(name, env = process.env) {
+  return withLock(env, () => { const state = loadState(env); const had = !!state.limits[name]; delete state.limits[name]; saveState(state, env); return had; });
+}
+
+/** Out right now: past its time = back; a dead login is back as soon as the account holds a different login. */
+const limitOf = (state, name, now, env = process.env) => {
+  const l = state.limits[name];
+  if (!l || Date.parse(l.until) <= now) return null;
+  if (l.untilSignin && l.login && loginHashOf(name, env).slice(0, 16) !== l.login) return null;
+  return l;
+};
 
 /** Every line of events.jsonl, oldest first. */
 function readEvents(env) {
@@ -214,7 +258,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
     return {
       name: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', active: a.active, hasKey: a.kind === 'api' ? true : undefined,
       email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
-      limited: limitOf(state, a.name, now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
+      limited: limitOf(state, a.name, now, env), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
     };
   });
@@ -268,6 +312,61 @@ export function release(session, env = process.env) {
     saveState(state, env);
     return had;
   });
+}
+
+/**
+ * A run ended: was it the account (login, limit, credits)? If so the account is taken out, Brett gets a phone alert,
+ * and the run is moved (build account-failover-notify, Nov 8 2026: "No build should die and stay dead because of one
+ * account."). The next account comes from the same rules as a new job (workers, then the console's account, API
+ * accounts only where a rule sends the job). Returns
+ *   { action: 'none' }                                  not an account problem: the run ends as it did
+ *   { action: 'move', to, kind, hit }                   start again on `to` (a slot there is claimed for this session)
+ *   { action: 'queue', to, position, hit }              every account busy: wait in `to`'s queue (claim again to move up)
+ *   { action: 'wait', minutes, hit }                    every account out: wait for one to come back (claim again)
+ *   { action: 'stop', hit, why }                        failover off, or this run moved too many times
+ */
+export async function failover({ session, account = '', text = '', exit = 0, moves = 0, build = '', job = {} } = {}, env = process.env, now = Date.now()) {
+  const hit = hitOf(text, Number(exit) || 0);
+  if (!hit) return { action: 'none' };
+  const A = await import('./account-alerts.mjs');
+  const cfg = loadConfig(env).failover;
+  const named = NAME_RE.test(account) && account !== 'live';
+  const l = named ? markLimit(account, { kind: hit, text }, env, now) : { reason: hit, until: '' };
+  const row = named ? status(env, now).accounts.find((a) => a.name === account) : null;
+  const ev = { account: named ? account : 'live', kind: hit, reason: l.reason, build: build || session, until: l.until, untilSignin: !!l.untilSignin, email: row?.email || '' };
+  const stop = (why) => { if (named) A.raise({ ...ev, stopped: true }, env); return { action: 'stop', hit, why }; };
+  if (!cfg.enabled) return stop('failover is off (Claude accounts → Job routing → Failover)');
+  if (moves >= cfg.maxMoves) return stop(`this run already moved ${moves} times (most ${cfg.maxMoves})`);
+  const d = claim(session, job, { exclude: named ? [account] : [] }, env, now);
+  if (d.state === 'run') {
+    if (named) A.raise({ ...ev, movedTo: `${d.account}${d.label ? ` "${d.label}"` : ''}` }, env);
+    A.logEvent({ action: 'move', account: ev.account, to: d.account, kind: hit, build: ev.build, session }, env);
+    return { action: 'move', to: d.account, kind: d.kind, hit };
+  }
+  if (d.state === 'queue') {
+    if (named) A.raise({ ...ev, waiting: true }, env);
+    return { action: 'queue', to: d.account, position: d.position, hit };
+  }
+  if (cfg.waitMinutes > 0) {
+    if (named) A.raise({ ...ev, waiting: true, stopped: false }, env);
+    return { action: 'wait', minutes: cfg.waitMinutes, hit };
+  }
+  return stop(`no account can take it: ${d.why}`);
+}
+
+/**
+ * The minute sweep: an account that is back (its time passed, or it was signed in again) leaves the limits and its
+ * phone alert is resolved. Returns the names that came back.
+ */
+export async function revive(env = process.env, now = Date.now()) {
+  const back = withLock(env, () => {
+    const state = loadState(env); const out = [];
+    for (const n of Object.keys(state.limits)) if (!limitOf(state, n, now, env)) { out.push(n); delete state.limits[n]; }
+    if (out.length) saveState(state, env);
+    return out;
+  });
+  if (back.length) { const A = await import('./account-alerts.mjs'); for (const n of back) A.resolveAlerts(n, undefined, env); }
+  return back;
 }
 
 /** Minutes in an estimate: 30, "20 min", "1.5 h". */
@@ -352,7 +451,7 @@ const main = async () => {
   const [cmd, ...rest] = process.argv.slice(2);
   const flag = (n, d = '') => { const i = rest.indexOf(`--${n}`); return i >= 0 && rest[i + 1] !== undefined ? rest[i + 1] : d; };
   const has = (n) => rest.includes(`--${n}`);
-  const json = has('json') && !['rule', 'test'].includes(cmd);
+  const json = has('json') && !['rule', 'test', 'failover'].includes(cmd);
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const jobArgs = async () => {
     if (flag('job')) return normJob(parseJson(flag('job'), '--job'));
@@ -374,7 +473,26 @@ const main = async () => {
       if (rest.includes('--json')) console.log(JSON.stringify(d));
       else { console.log(decisionLine(d)); for (const c of d.considered) console.log(`  ${c.match ? '✓' : '·'} ${c.name}: ${c.why}`); }
     } else if (cmd === 'hit') console.log(hitOf(tail(flag('log')), Number(flag('exit', '0'))));
-    else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out until ${l.until} (${l.reason})`); }
+    else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out ${l.untilSignin ? 'until it is signed in again' : `until ${l.until}`} (${l.reason})`); }
+    else if (cmd === 'clear') { const n = nameOk(rest[0]); const had = clearLimit(n); if (had) { const A = await import('./account-alerts.mjs'); A.resolveAlerts(n); } out({ name: n, cleared: had }, had ? `${n} is back in` : `${n} was not out`); }
+    else if (cmd === 'revive') { const b = await revive(); out({ back: b }, b.length ? `back: ${b.join(', ')}` : 'nobody came back'); }
+    else if (cmd === 'failover') {
+      const r = await failover({ session: flag('session'), account: flag('account'), text: tail(flag('log'), 60), exit: Number(flag('exit', '0')), moves: Number(flag('moves', '0')), build: flag('build'), job: await jobArgs() });
+      // one shell-safe line for the launcher
+      console.log(r.action === 'move' ? `move ${r.to} ${r.kind} ${r.hit}` : r.action === 'queue' ? `queue ${r.to} ${r.position} ${r.hit}` : r.action === 'wait' ? `wait ${r.minutes} ${r.hit}` : r.action === 'stop' ? `stop ${r.hit} ${r.why}` : 'none');
+    }
+    else if (cmd === 'events') { const A = await import('./account-alerts.mjs'); const e = A.readEvents(process.env, Number(flag('max', '30')) || 30); out(e, e.map((x) => `${x.at} ${x.action} ${x.account}${x.kind ? ` ${x.kind}` : ''}${x.to ? ` → ${x.to}` : ''}${x.movedTo ? ` → ${x.movedTo}` : ''}${x.build ? ` (${x.build})` : ''}`).join('\n') || 'no account events'); }
+    else if (cmd === 'failover-set') {
+      const [key, val] = rest;
+      const c = editConfig((x) => {
+        const f = { ...x.failover };
+        if (key === 'enabled' || key === 'alerts' || key === 'alertOnLimit') f[key] = onOff(val);
+        else if (key === 'maxMoves' || key === 'waitMinutes') f[key] = Number(val);
+        else throw Object.assign(new Error('failover-set enabled|alerts|alertOnLimit on|off · maxMoves N · waitMinutes N'), { code: 2 });
+        x.failover = f;
+      });
+      out(c.failover, `failover ${c.failover.enabled ? 'on' : 'off'} · moves ${c.failover.maxMoves} · waits ${c.failover.waitMinutes} min when every account is out · alerts ${c.failover.alerts ? 'on' : 'off'}${c.failover.alertOnLimit ? '' : ' (not for limits)'}`);
+    }
     else if (cmd === 'status') { const s = status(); out(s, statusLines(s).join('\n')); }
     else if (cmd === 'alerts') { const a = status().alerts; out(a, a.map((x) => `${x.level} ${x.text}`).join('\n') || 'no alerts'); }
     else if (cmd === 'config' || cmd === 'rules') {
@@ -424,7 +542,7 @@ const main = async () => {
     } else if (cmd === 'signin') console.log(`started ${signin(rest[0])}: finish the sign-in in the console's Terminal`);
     else if (cmd === 'remove') console.log(`set aside in ${remove(rest[0])}`);
     else if (cmd === 'note') console.log(noteFor(rest[0]));
-    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
+    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|clear|revive|failover|failover-set|events|hit|signin|remove|note (see the header)'); process.exit(2); }
   } catch (e) { console.error(`claude-workers: ${e.message}`); process.exit(2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

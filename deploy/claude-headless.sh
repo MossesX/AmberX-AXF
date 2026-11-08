@@ -66,6 +66,9 @@
 # queue; none can take it = the console's account, with a note. A worker that hits its limit or
 # loses its login is taken out, and the run moves to the next worker. The console's active account never changes for it.
 # Each move and the end of the run write the cost to events.jsonl per account. AXF_WORKERS=off skips the routing.
+# Failover (account-failover-notify, Nov 8 2026): any account, not only workers. A dead login stays out until it is signed
+# in again, every account problem is a phone alert (deploy/account-alerts.mjs), and with every account out the run waits
+# for one instead of dying. Each copy is synced both ways with its login's one home (deploy/claude-home.mjs).
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -268,10 +271,16 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     look_build="$(node "$LOOK" which --name "$name" --brief "$brief" 2>/dev/null)"
     [[ -n "$look_build" ]] && nohup node "$LOOK" follow "$look_build" --worktree "$(pwd)" --parent "$$" > .axf-look-follow.log 2>&1 &
   fi
-  # Several Claude accounts (Nov 2 2026, Brett): when the run stops on a usage limit ("You've hit your weekly limit"),
-  # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
-  # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
-  switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
+  # Failover (build account-failover-notify, Nov 8 2026, Brett: "No build should die and stay dead because of one
+  # account."): whatever account the run is on (a worker, the console's account, or one asked for with --account), a run
+  # that ends on that account's login, limit or credits takes the account out (a dead login until it is signed in again),
+  # sends Brett a phone alert, and starts again on the next account the routing rules allow (claude-workers.mjs
+  # failover). Every account busy or out = it waits for one (Failover settings: waitMinutes) instead of dying.
+  # Without saved accounts (or AXF_WORKERS=off) the older path stays: AI keys switches the VPS login on a usage limit.
+  switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-20}"
+  failover_on=""
+  [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null && \
+    [[ "$(node "$HERE/claude-login.mjs" accounts --json 2>/dev/null)" == '['?*']' ]] && failover_on=1
   while :; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
@@ -282,22 +291,44 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     fi
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
-    if [[ -n "$on_worker" ]]; then   # a worker's run moves to the next worker; the console's account stays where it is
-      hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
-      [[ -n "$hit" ]] || break
+    if [[ -n "$failover_on" ]]; then
+      gone="${login_account:-live}"
+      fo="$(node "$WORKERS_JS" failover --session "$login_session" --account "$gone" --log "$log" --exit "$st" --moves "$switches" --name "$name" --brief "$brief" ${model:+--model "$model"} ${priority:+--priority "$priority"} 2>/dev/null | tail -1)"
+      read -r fo_act fo_a fo_b fo_c <<<"$fo"
+      [[ "$fo_act" =~ ^(move|queue|wait|stop)$ ]] || break   # not an account problem: the run ends as it did
+      hit="$fo_c"; [[ "$fo_act" == wait ]] && hit="$fo_b"; [[ "$fo_act" == stop ]] && hit="$fo_a"
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
-      gone="$login_account"
-      printf '\n\033[1m── worker %s: %s ──\033[0m\n' "$gone" "$(node "$WORKERS_JS" limit "$gone" --kind "$hit" --log "$log" 2>&1)"
       event session-part "$ses"
-      wait_for_worker "$tried_workers"
-      if [[ -z "$worker" ]]; then
-        build_note "Worker $gone stopped ($hit) and no worker is left: the run stopped here"
-        printf 'No worker account left to take over.\n'; break
+      on_worker=1   # this session holds a claim from here on: released when it ends
+      if [[ "$fo_act" == stop ]]; then
+        why="${fo#stop $fo_a }"
+        printf '\n\033[1m── %s: %s · %s ──\033[0m\n' "$gone" "$hit" "$why"
+        build_note "Claude account $gone stopped this run ($hit) and it could not move: $why"
+        break
       fi
-      tried_workers="$tried_workers,$worker"
-      release_login; own_login "$worker"
-      build_note "Worker $gone stopped ($hit): the run moved to $worker"
-      prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
+      next=""
+      if [[ "$fo_act" == move ]]; then next="$fo_a"; worker_kind="$fo_b"
+      else
+        printf '\n\033[1m── %s: %s · every other account is busy or out: waiting for one ──\033[0m\n' "$gone" "$hit"
+        build_note "Claude account $gone stopped this run ($hit); every other account is busy or out, so it waits for one"
+        deadline=$(( $(date +%s) + ${AXF_FAILOVER_WAIT_MIN:-$([[ "$fo_act" == wait ]] && echo "$fo_a" || echo 720)} * 60 ))
+        while (( $(date +%s) < deadline )); do
+          line="$(next_worker "")"; read -r w_state w_acc w_extra <<<"$line"
+          [[ "$w_state" == run ]] && { next="$w_acc"; worker_kind="$w_extra"; break; }
+          sleep "${AXF_WORKER_POLL:-20}"
+        done
+        if [[ -z "$next" ]]; then
+          node "$HERE/account-alerts.mjs" raise --account "$gone" --kind "$hit" --build "$name" --stopped >/dev/null 2>&1 || true
+          build_note "No Claude account came back in time: the run stopped here (relaunch it once an account is back)"
+          printf 'No Claude account came back in time.\n'; break
+        fi
+        [[ "$gone" != live ]] && node "$HERE/account-alerts.mjs" raise --account "$gone" --kind "$hit" --build "$name" --moved-to "$next" >/dev/null 2>&1
+      fi
+      printf '\n\033[1m── %s: %s · moving to %s ──\033[0m\n' "$gone" "$hit" "$next"
+      release_login; own_login "$next"
+      [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
+      build_note "Claude account $gone stopped ($hit): the run moved to $next"
+      prompt="$prompt"$'\n\n'"An account problem cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
       switches=$((switches + 1))
       continue
     fi

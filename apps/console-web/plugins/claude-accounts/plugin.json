@@ -424,6 +424,8 @@
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
+      "deploy/account-alerts.mjs",
+      "deploy/account-failover.test.mjs",
       "deploy/claude-headless.sh",
       "deploy/claude-login.mjs",
       "deploy/claude-workers.mjs",

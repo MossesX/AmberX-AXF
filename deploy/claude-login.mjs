@@ -46,6 +46,7 @@ import { homedir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy } from './claude-token-save.mjs';
+import { ownerOf, syncLive } from './claude-home.mjs';
 
 export { watchCopy };
 export const MARKER = 'build-login.json';
@@ -103,7 +104,9 @@ export function pick(want = 'active', env = process.env) {
   const hasLive = !!liveBuf && isFile(liveCreds);
   const liveToken = hasLive ? refreshHash(liveCreds) : '';
   const isLive = (f) => bytes(f)?.equals(liveBuf) || (!!liveToken && refreshHash(f) === liveToken);
-  const owner = hasLive ? list.find((a) => a.creds && isLive(join(p.accounts, a.name, '.credentials.json'))) || null : null;
+  // who the live login is: identical bytes / the same token, else the lineage its token belongs to (claude-home.mjs)
+  const lineageOwner = liveToken ? ownerOf(liveToken, env) : '';
+  const owner = hasLive ? list.find((a) => a.creds && isLive(join(p.accounts, a.name, '.credentials.json'))) || list.find((a) => a.name === lineageOwner) || null : null;
   const act = list.find((a) => a.active) || null;
   const saved = (a) => ({ account: a.name, email: a.email, source: 'saved', kind: a.kind,
     creds: a.apikey ? '' : a.creds ? join(p.accounts, a.name, '.credentials.json') : '', tokenFile: !a.apikey && a.token ? join(p.accounts, a.name, 'token') : '',
@@ -111,9 +114,12 @@ export function pick(want = 'active', env = process.env) {
   const fromLive = (a) => ({ kind: 'subscription', keyFile: '', account: a ? a.name : 'live', email: a ? a.email : (list.length ? '' : liveEmail(p)), source: 'live',
     creds: hasLive ? liveCreds : '', tokenFile: a?.token ? join(p.accounts, a.name, 'token') : '' });
   // the live login is (still) account `a`: identical bytes, or nothing says it is anyone else
-  const liveIs = (a) => hasLive && a?.kind !== 'api' && (owner ? owner === a : a === act);
+  // One home per login (account-failover-notify, Nov 8 2026): an account with a saved login is always copied from its
+  // home, which the live login was synced into just before (snapshot → syncLive), never from the live login itself:
+  // a build that renewed a copy of the live login used to leave the home behind on a token that copy then spent.
+  const liveIs = (a) => hasLive && a?.kind !== 'api' && !a?.creds && (owner ? owner === a : a === act);
   const w = String(want || 'active').trim().toLowerCase();
-  if (w === 'live') return fromLive(owner);   // unmatched (AI keys wrote another login) = "live"
+  if (w === 'live') return owner?.creds ? saved(owner) : fromLive(owner);   // unmatched (AI keys wrote another login) = "live"
   if (w === 'active' || w === '') {
     if (!act) return fromLive(owner);
     return liveIs(act) ? fromLive(act) : saved(act);
@@ -133,6 +139,8 @@ export const loginDir = (dir, session) => join(resolve(dir), FOLDER, slug(sessio
 export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUNT || 'active', env = process.env } = {}) {
   if (!dir) throw Object.assign(new Error('--dir <build folder> is required'), { code: 2 });
   const p = paths(env);
+  // the live login's newest renewal goes home first (and the home's into it), so the copy starts on the newest token
+  try { const st = join(p.accounts, '.token-state.json'); const r = syncLive(readJson(st) ?? {}, env); if (r.state.live && existsSync(p.accounts)) writeFileSync(st, JSON.stringify(r.state), { mode: 0o600 }); } catch { /* no saved logins */ }
   const choice = pick(account, env);
   const token = choice.tokenFile ? readText(choice.tokenFile) : '';
   const apiKey = choice.keyFile ? readText(choice.keyFile) : '';

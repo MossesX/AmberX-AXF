@@ -104,7 +104,19 @@ export function normConfig(c) {
     while (seen.has(id)) id = `${x.id}-${k++}`;
     seen.add(id); return { ...x, id };
   });
-  return { $axf: SCHEMA, workers: names(src.workers), excluded: names(src.excluded), interactiveTakesJobs: src.interactiveTakesJobs !== false, limits, perAccount, api, rules };
+  return { $axf: SCHEMA, workers: names(src.workers), excluded: names(src.excluded), interactiveTakesJobs: src.interactiveTakesJobs !== false, limits, perAccount, api, rules, failover: normFailover(src.failover) };
+}
+
+/**
+ * Failover (build account-failover-notify, Nov 8 2026): a run that dies on an account's login, limit or credits moves to
+ * the next account the rules allow. enabled · maxMoves (how many times one run may move) · waitMinutes (every account
+ * out: the run waits this long for one to come back instead of dying; 0 = stop) · alerts (phone alert on every account
+ * problem) · alertOnLimit (also for limits that end by themselves).
+ */
+export const FAILOVER_DEFAULTS = Object.freeze({ enabled: true, maxMoves: 6, waitMinutes: 720, alerts: true, alertOnLimit: true });
+export function normFailover(f) {
+  const x = f && typeof f === 'object' ? f : {};
+  return { enabled: x.enabled !== false, maxMoves: int(x.maxMoves, 0, 20, FAILOVER_DEFAULTS.maxMoves), waitMinutes: int(x.waitMinutes, 0, 2880, FAILOVER_DEFAULTS.waitMinutes), alerts: x.alerts !== false, alertOnLimit: x.alertOnLimit !== false };
 }
 
 /** The caps of one account that went up from `before` to `after` (raising a cap is Brett's own call). */

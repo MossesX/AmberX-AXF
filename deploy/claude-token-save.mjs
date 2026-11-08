@@ -27,8 +27,9 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { syncLive, syncMirror } from './claude-home.mjs';
 
 export const CHAIN = 'token-chain.json';
 const CHAIN_MAX = 32;
@@ -116,10 +117,27 @@ export function saveBack(copyDir) {
     writeFileSync(file, JSON.stringify(state), { mode: 0o600 });
   }
   const spent = new Set(state.chain.filter((h) => h !== cur));
+  // One home per login (account-failover-notify): the copy against its account's home, both ways. A newer token goes
+  // home; a home that moved on (another build or the console renewed it) is pulled into the copy, which the running
+  // Claude reloads, so it never renews with a spent token.
+  const account = readJson(join(copyDir, 'build-login.json'))?.account;
+  let home = '';
+  if (account && account !== 'live') {
+    try { home = syncMirror(join(copyDir, '.credentials.json'), account, { chain: [...spent], by: `build ${readJson(join(copyDir, 'build-login.json'))?.session || ''}`.trim() }, envFor(state.places)); } catch { /* the next pass */ }
+    if (home === 'pulled') {
+      const now = tokenHash(readJson(join(copyDir, '.credentials.json'))?.claudeAiOauth?.refreshToken);
+      if (now && !state.chain.includes(now)) { state.chain = [...state.chain, now].slice(-CHAIN_MAX); writeFileSync(file, JSON.stringify(state), { mode: 0o600 }); }
+      return [];
+    }
+  }
   const written = applyRotation(fresh, spent, state.places);
+  if (home === 'saved') written.unshift(join(state.places.accounts, account, '.credentials.json'));
   tellAiKeys(fresh, spent, state.places);
   return written;
 }
+
+/** The environment claude-home.mjs needs for a copy's stores (its chain names them; HOME stays as it is). */
+const envFor = (pl) => ({ ...process.env, AXF_CLAUDE_ACCOUNTS: pl.accounts, AXF_CLAUDE_HOME: dirname(pl.live) });
 
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
@@ -154,11 +172,16 @@ export function sweep(env = process.env) {
   const cur = tokenHash(fresh?.refreshToken);
   if (!cur) return out;   // logged out: the saved copies keep the last login
   const stateFile = join(p.accounts, STATE);
-  const prev = readJson(stateFile)?.live || '';
+  const prevState = readJson(stateFile) ?? {};
+  const prev = prevState.live || '';
   const spent = new Set(prev && prev !== cur ? [prev] : []);
-  out.fromLive = applyRotation(fresh, spent, p).length;
+  // One home per login: the live login against the home of the login it is, both ways (a build that renewed the
+  // console's account is pulled into the live login before the console's session renews with a spent token).
+  const r = syncLive(prevState, { ...env, AXF_CLAUDE_ACCOUNTS: p.accounts, AXF_CLAUDE_HOME: dirname(p.live) });
+  out.fromLive = r.result === 'saved' || r.result === 'pulled' ? 1 : 0;
+  out.live = r.result; out.owner = r.owner || '';
   tellAiKeys(fresh, spent, p);
-  if (prev !== cur && existsSync(p.accounts)) writeAtomic(stateFile, { live: cur, at: new Date().toISOString() });
+  if ((prev !== r.state.live || prevState.email !== r.state.email) && existsSync(p.accounts)) writeAtomic(stateFile, r.state);
   return out;
 }
 

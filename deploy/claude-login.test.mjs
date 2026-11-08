@@ -49,10 +49,10 @@ const env = { ...process.env, ...ENV };
 
 console.log('which account');
 let p = L.pick('active', env);
-ok(p.account === 'account-a' && p.source === 'live' && p.email === 'a@example.com', 'active + live login identical to it = the live (freshest) copy, named and emailed from the store');
+ok(p.account === 'account-a' && p.source === 'saved' && p.email === 'a@example.com', 'active + live login identical to it = the account\'s home (one home per login), named and emailed from the store');
 writeFileSync(join(SH, '.credentials.json'), credsOf('fake-refreshed-A'));
 p = L.pick('active', env);
-ok(p.account === 'account-a' && p.source === 'live', 'live login refreshed since the switch still counts as the active account');
+ok(p.account === 'account-a' && p.source === 'saved', 'live login refreshed since the switch: still the home (the sweep / snapshot brings a renewal home first)');
 writeFileSync(join(SH, '.credentials.json'), credsOf(SECRET_B));
 p = L.pick('active', env);
 ok(p.account === 'account-a' && p.source === 'saved', 'live login identical to ANOTHER saved account = the active account\'s saved copy');
@@ -166,7 +166,7 @@ echo '{"type":"result","result":"done"}'
   ok(read(join(SH, '.credentials.json')) === credsOf(SECRET_B) && read(join(A, 'account-b', '.credentials.json')) === credsOf(SECRET_B), 'and to no other account (the shared login moved to account-b: untouched)');
   ok(await until(() => !existsSync(cfg)), 'the copy is deleted when the session ends');
   const log1 = read(join(d1, 'run.log'));
-  ok(/^# login account-a \(a@example\.com\) · own copy \(live\)$/m.test(log1), 'the log says which account it ran on');
+  ok(/^# login account-a \(a@example\.com\) · own copy \(saved\)$/m.test(log1), 'the log says which account it ran on (copied from its home)');
   const ev = read(join(tmp, 'headless', 'events.jsonl')).split('\n').filter(Boolean).map((l) => JSON.parse(l));
   ok(ev.some((e) => e.event === 'session-login' && e.account === 'account-a' && e.email === 'a@example.com'), 'session-login event names the account');
   ok(!/fake-secret|fake-token|fake-inherited/.test(log1 + read(join(d1, 'run.jsonl')) + r1.stdout + r1.stderr + JSON.stringify(ev)), 'no credential printed anywhere');

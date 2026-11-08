@@ -1,0 +1,17 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "claude-accounts.problem",
+      "label": "Claude account problem",
+      "group": "builds",
+      "app": "console",
+      "source": "Claude accounts",
+      "description": "A Claude account stopped a build: its login expired, it hit its limit or ran out of credits. Says which account, where the build moved and what to do (e.g. sign it in again). Resolved when the account works again.",
+      "match": { "source": "claude-accounts", "keyPrefix": "claude-accounts:account:" },
+      "channels": { "amberx": true },
+      "push": true,
+      "priority": "high"
+    }
+  ]
+}
