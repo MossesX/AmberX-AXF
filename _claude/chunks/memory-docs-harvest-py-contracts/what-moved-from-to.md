@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=7-21 tokens=472 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=472 -->
 ## What moved (from → to)
 
 | Item | From | To | Notes |

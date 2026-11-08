@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=311-316 tokens=373 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=373 -->
 ### UI Review predicted looks (`ui-review-predicted`, Urgent, Opus) — branch `claude/ui-review-predicted`
 - **Asked (Brett, Nov 3 2026, voice):** UI Review shows predicted pictures of what a build will look like before it is built; approve the look before money is spent; setting to wait for look approval (default off); refresh while running, real shots replace it at the end; backfill queued/running UI builds; commands once → REST + MCP + CLI. Agent Snap Sully (booked, source assign).
 - **On the branch:** `framework/core/ui-predict.mjs` (+ .d.mts), `framework/cli/ui-predict.mjs`, `framework/spec/check-ui-predict.mjs` (CI), UI Review `server/predicted.py`, `web/mockup.tsx`, `web/look-settings.tsx`, detail badge + compare, schema field `prediction`, launcher look gate in `deploy/claude-headless.sh`, phone layout fix for the item detail.

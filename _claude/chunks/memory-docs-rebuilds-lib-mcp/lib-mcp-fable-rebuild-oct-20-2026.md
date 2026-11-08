@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=1-5 tokens=73 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=73 -->
 # lib-mcp — Fable rebuild (Oct 20 2026)
 
 Branch `fable/lib-mcp`. Pending item `lib-mcp`, plan epic `x.lib.mcp`. Replaces: the Opus console plugin

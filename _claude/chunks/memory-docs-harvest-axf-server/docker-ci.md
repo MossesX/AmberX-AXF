@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=87-96 tokens=172 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=172 -->
 ## Docker / CI
 
 - `apps/console-web/server/Dockerfile`: `ENV PYTHONPATH=/axf/framework/python` and an import check of every module at

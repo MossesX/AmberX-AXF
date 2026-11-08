@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=70-78 tokens=150 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=150 -->
 ### What changed in the other cores (all additive)
 
 - `orchestrator@1` (`orchestrator-core.mjs`): steps carry `skip`; skipped steps leave `minutesLeft`, `nextUp`, phase

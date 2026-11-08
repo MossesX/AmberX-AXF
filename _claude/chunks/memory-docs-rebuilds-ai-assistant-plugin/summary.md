@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=7-19 tokens=289 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=289 -->
 ## Summary
 
 The assistant is now a **framework contract, `assistant@1`**, with the console plugin as its first host instead of a

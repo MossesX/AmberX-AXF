@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/rules/preferences.md lines=1-7 tokens=218 -->
+<!-- memory-chunk@1 source=_claude/shared/rules/preferences.md tokens=218 -->
 # Preferences (from the claude.ai "AmberX Framework" Project)
 
 - Whenever he asks Claude to build something, first recommend which model to use and why, then let him pick from the top 3 models before starting.

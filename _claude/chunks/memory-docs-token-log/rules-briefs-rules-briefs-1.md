@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/token-log.md lines=12-18 tokens=156 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/token-log.md tokens=156 -->
 ## Rules briefs (rules-briefs@1)
 `framework/core/rules-brief.mjs`, CLI `framework/cli/rules-brief.mjs`, seed `framework/schemas/rules-briefs.json`, live
 document `/projects/_shared/_data/claude/rules-briefs.json`. Claude settings → Rules briefs edits it. Conditions: where it

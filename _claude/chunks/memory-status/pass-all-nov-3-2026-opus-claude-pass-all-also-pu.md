@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=12-12 tokens=248 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=248 -->
 ## Status (as of Oct 21 2026)
 
 - **Pass all (Nov 3 2026, Opus, `claude/pass-all`, also pushed onto `claude/theme-veto-pass` for PR #262; Urgent build `pass-all`):** Brett: "It's 30 minutes to do whatever I tell you." control-pass@1 scope `all` is the default: every write on every control@1 target and every call axHub holds runs without the veto, ordinary deletes without the confirm token; irreversible commands (`CONTROL_TARGETS[t].irreversible`: AmberX item/list removes; axHub marks its own tools) only with `include_irreversible` (signed into axHub's approval). Narrow token scopes stay (CLI word `all` now = everything, `tokens` = the three). `axf pass grant 30 [--scope theme] [--include-irreversible]`; MCP `pass_*` (= `token_pass_*`); REST `pass/check?call=`. Banner chip "Everything: 29:41 left"; undo restores tokens and lists what it can't roll back. axHub side: build `axhub-pass-all` (contract in `framework/spec/CONTROL.md` → Veto passes). <!-- axf-plugin:token-control -->

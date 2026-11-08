@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md lines=6-19 tokens=331 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md tokens=331 -->
 ## Summary
 
 The agent manager keeps every feature, route, id and guard of the Opus build, and its **definition format becomes a

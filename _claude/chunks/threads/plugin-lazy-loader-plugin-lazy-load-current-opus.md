@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=269-274 tokens=422 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=422 -->
 ### Plugin lazy loader (`plugin-lazy-load`, Current, Opus) — branch `claude/plugin-lazy-load`
 - **Asked (Brett, Nov 3 2026, voice):** "The console gets slower as more plugins are installed." "Anytime I hot render … it reloads all the plugins." "Put in the plugin manager plugin all the ways to configure the lazy loader…" Addendum: "banners need to be the very first thing to load." Full brief: orchestrator build `plugin-lazy-load`.
 - **On the branch:** `apps/console-web/src/pluginLoader.tsx` (loader, stand-ins from cached shapes, LazyCall placeholder + retry, use counting), `src/lazyEngine.ts` (pure: defaults, frecency, startup order, idle, LRU), `src/plugins.ts` (library getter), `src/App.tsx` (boot, re-install on loads), `scripts/plugin-chunks.mjs` (Vite: content hashes, `axf-plugin-chunks.json`, per-plugin HMR boundary), plugin-manager `server/lazy.py` + `/lazy` routes + `web/LazyLoader.tsx`, alerts SW `/assets` cache-first from `axf-plugin-chunks`, server immutable `/assets`.

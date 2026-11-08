@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=228-233 tokens=214 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=214 -->
 ### UI Review notifications + session audio (`ui-review-notify-session-audio`)
 - **Asked:** AmberX notification for anything ready in UI Review; console_show must really open or fall back to a tappable notification; every session recorded and transcribed automatically.
 - **Model:** Opus. **Branch:** claude/ui-review-notify-audio, PR #365. All 6 steps built.

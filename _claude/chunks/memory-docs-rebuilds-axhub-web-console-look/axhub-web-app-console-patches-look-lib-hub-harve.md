@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=1-10 tokens=180 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=180 -->
 # axHub web app: console / Patches look + lib-hub harvest (Oct 23 2026, Opus)
 
 Pending item **`axhub-web-console-look`** · branch `claude/project-thread-j1ri9d` · PR #30.

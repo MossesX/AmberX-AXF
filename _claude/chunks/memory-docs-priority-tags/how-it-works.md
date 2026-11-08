@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/priority-tags.md lines=11-18 tokens=395 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/priority-tags.md tokens=395 -->
 ## How it works
 
 - **Stored:** optional `priority` on a build in the store. Unset means worked out on read: Urgent when the id or title says urgent or hotfix, the build is in the Urgent profile, or its brief shouts URGENT / HOTFIX or has a line opening with the word; otherwise Normal. There is no migration write. Rule and waiting-on logic: `framework/core/build-priority.mjs`.

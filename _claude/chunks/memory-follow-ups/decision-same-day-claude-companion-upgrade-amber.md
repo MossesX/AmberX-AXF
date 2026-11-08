@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/follow-ups.md lines=20-25 tokens=186 -->
+<!-- memory-chunk@1 source=_claude/memory/follow-ups.md tokens=186 -->
 ### DECISION (same day): Claude companion = upgrade AmberX's assistant, Gizmo is the face
 - Lives in the **AmberX app** (console is getting full). Not a new standalone app.
 - Harvest the existing AmberX assistant code (voice, overlay, hands-free listening, command center, former agent Molly -> now Gizmo) plus the Terminal's Claude Code session code into a shared library; build the companion plugin on that. Brains stay on the VPS (Claude Code sessions), AmberX talks to them through axHub.

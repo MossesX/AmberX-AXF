@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/instructions/projects-and-sync.md lines=3-16 tokens=266 -->
+<!-- memory-chunk@1 source=_claude/shared/instructions/projects-and-sync.md tokens=266 -->
 ## Where things are
 | What | In a project | On the hub (`/projects`, its own Docker volume) |
 | --- | --- | --- |

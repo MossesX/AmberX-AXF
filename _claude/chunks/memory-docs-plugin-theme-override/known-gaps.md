@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md lines=58-68 tokens=175 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md tokens=175 -->
 ## Known gaps
 
 - Derived tokens declared on `:root` from other tokens (`--fx-card-pad`, `--fx-tab-py/px` = `calc(var(--fx-space) * k)`)

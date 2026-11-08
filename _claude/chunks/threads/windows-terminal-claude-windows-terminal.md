@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=733-740 tokens=285 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=285 -->
 ### windows-terminal (claude/windows-terminal)
 - **Asked (Brett, Oct 28 2026, claude.ai):** see orchestrator build `windows-terminal` detail (full request there).
 - **Model:** Opus s1–s5 (console-terminal upgrade), Fable s6–s12 (window engine physics, settings-ui@1 levels contract, level toolbar + editor). Approval card at the switch.

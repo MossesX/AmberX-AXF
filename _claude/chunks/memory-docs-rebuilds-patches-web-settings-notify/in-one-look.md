@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=12-23 tokens=197 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=197 -->
 ## In one look
 
 | | |

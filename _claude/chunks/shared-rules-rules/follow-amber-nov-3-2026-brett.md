@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=31-31 tokens=214 -->
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md tokens=214 -->
 ## Before building anything
 
 - **Follow Amber (Nov 3 2026, Brett):** when Follow Amber is on in the Dev Console (MCP `console_follow` says `on: true`), every time you mention something in the console (a screen, settings tab, dialog, build, PR, UI Review item, setting, plugin, anything that needs Brett), call `console_show` for it (`{target, highlight?, say?}`; it only navigates, never waits on a veto, and does nothing when the switch is off). Approvals go to the console pop-up: his held / confirm axHub calls pop up there with one-tap Approve and Deny, signed with his own hub session through the console's relay, and the result shows there (never a bounce to axHub, never a new window; Nov 7 2026); never approve anything yourself. Deciding actions are `personOnly`: no console command, session or agent can run them. <!-- axf-plugin:follow-amber -->

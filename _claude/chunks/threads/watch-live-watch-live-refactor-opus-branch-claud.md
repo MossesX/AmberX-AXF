@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=470-474 tokens=285 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=285 -->
 ### Watch live (`watch-live`, Refactor, Opus) — branch `claude/watch-live`
 - **Asked:** Watch live = hot render. Link on each approval row (expanded details) and each running build in the Build manager / orchestrator; pops up (floating window desktop, full-screen sheet phone) the exact screen the session changes, changed element scrolled to + outlined, hot-rendering as files change; every web app, every hot-swappable asset (no reload), Android screens via the web port with a next-APK note. Greyed "No live preview" otherwise.
 - **On the branch:** everything built and tested (`framework/spec/WATCH-LIVE.md`, report `_claude/builds/reports/watch-live.md`).

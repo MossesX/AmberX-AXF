@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding/android.md lines=24-40 tokens=487 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding/android.md tokens=487 -->
 ## axhub-android
 
 | Screen | Before | After |

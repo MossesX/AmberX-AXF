@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=21-32 tokens=283 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=283 -->
 ## Removed
 - The plugin's own copies of the contracts: `normAgent`, `normRoster`, `parseSkill`, `checkRoster`'s rules, `normAgentState`,
   `normState`, `normChat`, `normMsg`, `normChatSettings`, `normCardDesign`, `normCards`, `parseReport`, `emptyUsage`,

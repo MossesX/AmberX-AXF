@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md lines=54-63 tokens=157 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md tokens=157 -->
 ## Tests
 
 - `npx -y tsx apps/axhub-web/test.mjs` — 52 checks over the pure rules: what each status means, malformed projects,

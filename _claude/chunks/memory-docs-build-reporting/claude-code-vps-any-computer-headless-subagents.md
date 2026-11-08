@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-reporting.md lines=12-38 tokens=452 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-reporting.md tokens=452 -->
 ## Claude Code (VPS, any computer, headless, subagents)
 
 One line per machine (needs Node 18+ and a checkout of AmberX-AXF; the hub token from `claude-sync login`, or

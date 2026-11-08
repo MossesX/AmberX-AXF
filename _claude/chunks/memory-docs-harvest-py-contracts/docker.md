@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=85-92 tokens=129 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=129 -->
 ## Docker
 
 `apps/console-web/server/Dockerfile`: one line changed — `ENV … PYTHONPATH=/axf/framework/python` added to the

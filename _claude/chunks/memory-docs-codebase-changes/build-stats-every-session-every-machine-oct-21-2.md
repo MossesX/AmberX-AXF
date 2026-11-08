@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=101-138 tokens=992 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=992 -->
 ## Build stats + every session, every machine (Oct 21 2026)
 
 Brett: anything any Claude session builds (VPS, other computers, claude.ai, console launches, subagents) is reported to

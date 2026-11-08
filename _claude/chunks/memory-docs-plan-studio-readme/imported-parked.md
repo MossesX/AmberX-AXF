@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md lines=40-48 tokens=172 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md tokens=172 -->
 ## Imported (parked)
 
 - **Docs Studio** (`docs-studio`): all 15 steps from `docs-engine-plan.md` on `claude/project-thread-y4x54r` (Fable s1–s3,

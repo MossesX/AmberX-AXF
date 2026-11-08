@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md lines=67-85 tokens=397 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md tokens=397 -->
 ## Tests before → after
 
 | Test | Before | After |

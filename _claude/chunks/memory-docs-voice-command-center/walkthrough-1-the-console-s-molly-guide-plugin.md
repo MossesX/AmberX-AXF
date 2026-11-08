@@ -1,3 +1,3 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/voice-command-center.md lines=17-19 tokens=158 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/voice-command-center.md tokens=158 -->
 ## walkthrough@1 (the console's Molly guide plugin)
 Molly answers "show me how" with one ```walkthrough``` JSON block: `{$axf, id, title, app, steps: [{say, do, target}]}`, 1–20 steps. `do` is a console action spec (no scripts, no links), `target` a data-axf-id / view id / CSS selector (no markup). Cleaned the same way in Python (`server/__init__.py`) and TS (`web/walkthrough.ts`). Kept in the plugin's data folder (last 20, with a sequence); the console window polls `/walkthroughs?after=<seq>` and opens new ones: each step runs its action, highlights its target and is read aloud; Next / Previous / Repeat / Close, arrow keys.

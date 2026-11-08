@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/token-log.md lines=19-25 tokens=141 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/token-log.md tokens=141 -->
 ## Token log (token-turn@1)
 `framework/core/token-log.mjs`, CLI `framework/cli/token-log.mjs`. Store: `/projects/amberx-axf/_data/token-log/<YYYY>/<MM>/<DD>.jsonl`.
 - Headless: `deploy/claude-stream.mjs` writes each turn live.

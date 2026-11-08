@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=92-104 tokens=259 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=259 -->
 ## Docs / CI
 
 - `framework/spec/ASSISTANT.md`: Build Pilot host → **built** (own engine on the baked contract, routes `/api/assistant/*`).

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-reporting.md lines=1-11 tokens=200 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-reporting.md tokens=200 -->
 # Reporting builds to the Build manager (every session, every machine)
 
 Rule (Oct 21 2026, Brett; `_claude/shared/rules/RULES.md` → "Report every build to axHub"): before any session builds,

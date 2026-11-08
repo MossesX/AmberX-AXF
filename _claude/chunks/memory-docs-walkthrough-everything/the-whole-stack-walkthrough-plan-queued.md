@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md lines=1-13 tokens=315 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md tokens=315 -->
 # The whole-stack walkthrough (plan, queued)
 
 **Asked (Brett, Nov 1 2026):** a guided, narrated browser walkthrough like the AmberX app's, but about 90 minutes,

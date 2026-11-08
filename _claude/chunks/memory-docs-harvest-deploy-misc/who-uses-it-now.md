@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=21-29 tokens=127 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=127 -->
 ## Who uses it now
 
 - `deploy/install-console.sh` sources `framework/deploy/axf-deploy.sh` (from the clone it just updated).

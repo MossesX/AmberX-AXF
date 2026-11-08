@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=101-101 tokens=225 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=225 -->
 ## Status (as of Oct 21 2026)
 
 - **GizmoX interface tabs — interface-roller phase 2 (Oct 27 2026, Opus; branch `opus/interface-roller`):** the console's main window is a tab group **Main · GizmoX Night · AmberX Signature** (`apps/console-web/src/interfaceTabs.tsx`: tab row in `app.frame.head`, every page under the tab's `<InterfaceScope>`; settings `console.interfaceTab`, `console.interfaceTabs` = the interface ids shown). Interfaces `framework/assets/interface/gizmox-night.json` and `amberx-signature.json` (+ layout `signature-dock`, two library brands promoted to starters). `framework/cli/app-assets.mjs deps|add <app> <type/id>…` takes framework or brand-library assets into an app with everything they depend on. Framework fixes: scoped runtime state is a stable snapshot, `[data-fx-scope]` re-declares colour/font, `resolveInterface` expands style packages, brand watermark under content.

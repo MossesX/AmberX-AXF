@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding/android.md lines=41-49 tokens=158 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding/android.md tokens=158 -->
 ## patches
 
 | Screen | Before | After |

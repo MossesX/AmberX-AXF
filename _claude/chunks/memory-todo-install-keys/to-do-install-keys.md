@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/todo/install-keys.md lines=1-6 tokens=95 -->
+<!-- memory-chunk@1 source=_claude/memory/todo/install-keys.md tokens=95 -->
 # To-do: Install keys
 
 Goal: Hostinger runs through axHub on the VPS (vault key), then the direct Claude Hostinger connector gets removed. Nov 5 2026.

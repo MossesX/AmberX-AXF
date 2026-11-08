@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=56-75 tokens=418 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=418 -->
 ## Guards kept or tightened
 
 - **Markdown:** both old copies built React elements only and never injected HTML. The shared renderer keeps that,

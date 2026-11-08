@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=33-33 tokens=223 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=223 -->
 ## Status (as of Oct 21 2026)
 
 - **Chrome styling + region slots (Oct 18 2026):** toolbar, nav-menu and app-menu are now component-style engine inputs (optional `density` compact/regular/roomy, `surface` flat/raised/glass, toolbar `divider`, nav `indicator` auto/bar/fill/none + `showIcons`; defaults reproduce the old look exactly). Layouts carry a typed **region slot contract**: `asset-types.json` → `layout.slots` (9 regions + default accepted types); a layout may override with `data.slots`, and a chrome region renders only when its slot accepts its asset type (menubar↔app-menu, toolbar↔toolbar, nav↔nav-menu). Same on both ports (`compileSlots`/`regionAccepts` in `layout.ts`, `Slots` in `LayoutEngine.kt`), validated by all three validators, fixtures in `spec/fixtures/layout-slots.json` + `components.json`. Kotlin side written without a compiler: check the "CI build errors" issue.

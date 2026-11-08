@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=537-543 tokens=504 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=504 -->
 ### AmberX voice notes, lists, tasks + AI router
 - **Asked (Brett, Oct 27 2026, 20:26, with an attachment):** a voice-controlled notes app in AmberX (amberx.amberxai.com): notes in lists with categories and sub-lists for software development; each plugin gets its own list under Plugins when it loads; take, sort, transcribe, organize, rename notes and move them between lists; task manager + todo list; AI for real-time parsing of voice into notes, summaries and storing them in the right place, with a steady connection to Claude (subscription or API, with a switch) and any mainstream LLM; an integrated web component; a section to configure voice commands with predefined commands from the codebase; tabs/containers for the different parts.
 - **Decided (cards):** AI runs on AmberX's own server behind the axHub wall (keys server-side, framework assistant_host providers); notes shared on axHub with the console Voice notes + Voice Vault (`voice-notes/` read-only, AmberX writes `amberx-notes/`); start phase A now, sub-agents allowed.

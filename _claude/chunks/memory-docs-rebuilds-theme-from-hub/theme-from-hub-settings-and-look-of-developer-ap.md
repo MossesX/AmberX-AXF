@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=1-6 tokens=107 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=107 -->
 # theme-from-hub — settings and look of developer apps from the axHub data server (Fable, Oct 21 2026)
 
 Branches `fable/theme-from-hub` in AmberX-AXF, axHub and Build-Pilot. Not a rebuild of an Opus item: a new cross-repo

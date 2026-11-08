@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=64-78 tokens=309 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=309 -->
 ## Added
 - `framework/schemas/ai-providers.json` (`ai-providers@1`).
 - `framework/core/assistant.ts` (exported from `core/index.ts`), `framework/spec/ASSISTANT.md`,

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=130-137 tokens=220 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=220 -->
 ## Known gaps
 
 - Android screenshots ([android.md](patches-wrapper/android.md), run 14): the emulator capture never got past the launcher for **any** app, before or after (every screen `?`, the Android console at the base commit included), so this is a capture-pipeline fault, not Patches'; the APKs themselves built. Worth a look at `rebuild-shots.yml` / `boilerplate-capture.py` on its own (launch intent or demo-mode step). Patches' web tabs would show the waiting screen / sign-in there anyway (no hub session on the emulator).

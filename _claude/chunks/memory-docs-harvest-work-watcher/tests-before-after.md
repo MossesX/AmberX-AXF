@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md lines=65-78 tokens=337 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md tokens=337 -->
 ## Tests before → after
 - Before: `check-hub.mts` 183, `check-widgets` 93, `check-mcp` 210, alerts + plugin-inventory + project fixtures 16 all
   passing; AXHub unit tests 2 (`AlertsTest`); validate --framework 48, tracker/plugins/project/check-theme (208) clean;

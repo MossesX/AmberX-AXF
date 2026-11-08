@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=1-16 tokens=405 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=405 -->
 # Rebuild report — `plugin-manager` (Fable rebuild, Oct 20 2026, branch `fable/plugin-manager`)
 
 **Summary.** The Opus Plugin Manager was a web-console-only plugin whose dependency logic lived in one Python file.

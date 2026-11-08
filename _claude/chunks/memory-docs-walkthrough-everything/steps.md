@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md lines=71-76 tokens=87 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md tokens=87 -->
 ## Steps
 
 In the Build orchestrator as `stack-walkthrough` (Refactor): 25 steps of 10 minutes each, Opus (Brett, Nov 1 22:37:

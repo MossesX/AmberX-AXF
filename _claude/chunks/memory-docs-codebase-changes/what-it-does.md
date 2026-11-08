@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=5-12 tokens=132 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=132 -->
 ## What it does
 
 Every time Claude is asked to build, edit, remove or fix something, an **entry** is opened with what was asked. Claude breaks

@@ -203,7 +203,7 @@ export function MemoryPanel() {
       {list && <p className="fx-small fx-muted">{list.shown} of {list.total} · scanned {list.scannedAt ? list.scannedAt.slice(0, 16).replace('T', ' ') : 'never'}</p>}
       <nav className="axp-memory-manager__tree" aria-label="Memory files" data-axf-nav="memory-manager.memory">
         {[...groups].map(([g, fs]) => (
-          <details key={g} open={groups.size <= 3 || !!filter.category || !!filter.q} className="axp-memory-manager__group">
+          <details key={g} open={groups.size <= 3 || !!filter.category || !!filter.q || fs.some((f) => (f.id || `${f.root}:${f.path}`) === open)} className="axp-memory-manager__group">
             <summary className="fx-small"><strong>{g}</strong> <span className="fx-muted">({fs.length})</span></summary>
             <ul className="axp-memory-manager__plist">
               {fs.map((f) => {

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest-plan.md lines=16-44 tokens=906 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest-plan.md tokens=906 -->
 ## Ranked shortlist (from the read-only survey)
 
 | # | Candidate (sources) | Target | Ports | Model | Effort |

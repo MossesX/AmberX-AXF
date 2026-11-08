@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest-plan.md lines=1-15 tokens=246 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest-plan.md tokens=246 -->
 # Harvest plan — pull libraries, plugins and assets out of AXF apps (Oct 20 2026)
 
 > Build Pilot was retired Nov 3 2026 (`_claude/builds/reports/kill-patches-pilot.md`); its mentions below are history.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=139-139 tokens=183 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=183 -->
 ## Oct 24 2026 — Vinny works without Claude; Auto fix tries Vinny first (Gizmo/Brett)
 
 - **Molly, AmberX's developer agent (Oct 28 2026, Brett):** "She has root vps access she can build and edit in any container. Any vps command goes through approval. She knows the codebase inside out. She can answer any question about the app, give walkthroughs … she can automatically drive the console with a small overlay with next previous buttons that are narrated while she shows you step by step." Built as the agent-manager add-on `molly` (like Mosses and Vinny) + the console plugin `molly-guide` (walkthrough@1). AmberX's voice command center (Developer tab, AI snippets, app help) uses her. Spec: `memory/docs/voice-command-center.md`.

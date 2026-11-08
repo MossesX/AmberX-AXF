@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=169-169 tokens=181 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=181 -->
 ## Status (as of Oct 21 2026)
 
 - **Merge approvals + Approve on the first screen (Oct 27 2026, Opus; rules in `_claude/shared/rules/RULES.md`):** a ready PR goes to Brett as an axHub approval: `vps.run` → `apps/console-web/plugins/push-banner/merge-pr.sh <owner/repo> <number>` (runs the push banner's `POST /merge` inside the `axf-console` container with the token read there; merges only an open, non-draft, mergeable PR whose head CI passed, head commit pinned), reason title `Merge PR #<n>: <title>`. axHub web app `ApprovalDetail`: the status chip and decision buttons (Approve first, `orderActions`) sit in the page head under the title, above What it does and the code; `test.mjs` 179. <!-- axf-plugin:push-banner -->

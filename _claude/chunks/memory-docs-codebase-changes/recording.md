@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=32-63 tokens=677 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=677 -->
 ## Recording
 
 ```bash

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=119-156 tokens=645 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=645 -->
 ## The archive
 
 Every check-in writes one record, `session-log@1`:

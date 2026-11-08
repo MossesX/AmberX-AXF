@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub/android.md lines=41-50 tokens=128 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub/android.md tokens=128 -->
 ## voice-vault
 
 | Screen | Before | After |

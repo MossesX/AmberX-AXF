@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md lines=80-86 tokens=297 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md tokens=297 -->
 ## Data and ticks
 
 - Logic: `web/merge.mjs` (pure; `buildRows`, `timing`, `totalsByModel`, `filterRows`, `sortRows`, `linkRow`, `liveEntries`), estimates parsed by pending-core's `estimateMinutes` / `formatMinutes`.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=71-76 tokens=150 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=150 -->
 ## Left for later
 
 - Python catalog parsers (the console server reads the JSON raw; no Python catalog contract yet) and an Android port of apiclient (placeholder in its library.json).

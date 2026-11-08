@@ -70,7 +70,7 @@ const d2 = diff(dir);
 check(!d2.current && d2.added.length === 1 && d2.removed.length === 1, 'a changed entry = one chunk added, one removed', d2);
 build(dir);
 check(!existsSync(join(dir, '_claude/chunks/memory-status/feature-two-nov-2-2026.md')), 'build removes stale chunks');
-check(readFileSync(join(dir, '_claude/chunks/memory-status/feature-one-nov-1-2026.md'), 'utf8').startsWith('<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines='), 'chunk header names its source and lines');
+check(readFileSync(join(dir, '_claude/chunks/memory-status/feature-one-nov-1-2026.md'), 'utf8').startsWith('<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens='), 'chunk header names its source (no line numbers: edits above a chunk leave it alone)');
 check(indexText([]).includes('0 chunks'), 'empty index');
 rmSync(dir, { recursive: true, force: true });
 

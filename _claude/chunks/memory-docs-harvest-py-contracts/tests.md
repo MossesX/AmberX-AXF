@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=72-84 tokens=304 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=304 -->
 ## Tests
 
 | Suite | Before | After |

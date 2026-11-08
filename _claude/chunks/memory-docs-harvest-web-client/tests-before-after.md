@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=46-59 tokens=318 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=318 -->
 ## Tests before → after
 
 | Check | Before | After |

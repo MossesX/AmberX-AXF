@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md lines=6-28 tokens=380 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md tokens=380 -->
 ## What it is
 
 axHub's own web front end, built on AmberX AXF like the Dev Console: a **developer app**

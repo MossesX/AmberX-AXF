@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md lines=16-46 tokens=649 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md tokens=649 -->
 ## What
 
 | Piece | Where |

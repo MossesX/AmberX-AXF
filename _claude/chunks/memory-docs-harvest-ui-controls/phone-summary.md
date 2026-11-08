@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=6-19 tokens=285 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=285 -->
 ## Phone summary
 
 - The framework now owns the form kit every app and plugin had copied: **Switch, Field, TextField, SelectField,

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=80-90 tokens=198 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=198 -->
 ## Other repos
 
 - **axHub** (PR #2, decision #89): reads the mark by convention; inside a host: no brand; `take=settings` drops the

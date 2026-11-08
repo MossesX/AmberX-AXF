@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=11-20 tokens=155 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=155 -->
 ## Before / after
 
 | | Before | After |

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=105-111 tokens=102 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=102 -->
 ## Screenshots
 
 `app-menu-hooks/shots/`: `before/menubar-build-{phone,desktop}.png` (main, the Build menu open) and

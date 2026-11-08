@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=51-60 tokens=132 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=132 -->
 ### 3. Container (if there is one)
 - **Show:** what the session runs inside. One of:
   - the cloud container, which is temporary and reclaimed when idle

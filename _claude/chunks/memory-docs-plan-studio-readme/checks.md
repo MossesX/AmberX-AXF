@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md lines=49-56 tokens=141 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md tokens=141 -->
 ## Checks
 
 `python3 apps/console-web/plugins/plan-studio/test.py` (15 server checks, then `test.mjs`: 26 checks) · <!-- axf-plugin:plan-studio -->

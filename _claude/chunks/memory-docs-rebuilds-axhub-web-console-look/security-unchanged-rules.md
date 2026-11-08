@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=55-60 tokens=72 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=72 -->
 ## Security (unchanged rules)
 
 No token anywhere; both feeds use the browser's hub session with redirects refused and capped replies; download and

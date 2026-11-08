@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md lines=52-62 tokens=396 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md tokens=396 -->
 ## Guards kept or tightened
 - **Fails closed** everywhere: no lock service → gate never opens by itself and locks at once on leaving; storage read error is `SecretState.Error`, never "missing"; no activity for the sheet / no PIN → stays locked with a note.
 - **Stricter where the copies differed:**

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md lines=80-91 tokens=258 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md tokens=258 -->
 ## Compatibility notes for apps
 
 - Re-baked in this step (framework → `src/axf`): **console-web, axhub-web, walkthrough-studio, amberx-droid, demo** — all

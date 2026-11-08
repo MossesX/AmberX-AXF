@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md lines=1-4 tokens=223 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md tokens=223 -->
 # Fable rebuild: `banner-assets` (Oct 20 2026, branch `fable/banner-widgets`)
 
 Rebuilt together with `widget-assets` (see `widget-assets.md`; the two share the host engine). The banner, badge and clock asset types stay exactly as apps use them. What changed: the banner no longer hardcodes what it takes (the `banner.attach` block in `asset-types.json` is now the one definition read by the engine, every validator and both ports), bad attachments are caught at build time and at run time instead of vanishing, the runtime got one generic host store (banner + toolbar + any host a library registers) with `detachAll`, and the **Android Compose banner that Opus never built is here**: `AxfBanner` sits above the layout in every AXF Android app, with badges, pop-outs, the clock and the search bar, and the Android console shows it. Fixtures `banner.json` are byte-identical to the Opus set.

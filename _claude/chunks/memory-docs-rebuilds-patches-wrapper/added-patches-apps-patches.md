@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=67-90 tokens=608 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=608 -->
 ## Added — Patches (`apps/patches`)
 
 - `axf init apps/patches --template android-compose --developer https://axhub.amberxai.com --libraries hub`: app id

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md lines=1-6 tokens=100 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md tokens=100 -->
 # Walkthrough Studio (Oct 22 2026, Opus)
 
 `apps/walkthrough-studio` — a video walkthrough assembly suite built on AXF (react-ts, **developer app**: look + settings

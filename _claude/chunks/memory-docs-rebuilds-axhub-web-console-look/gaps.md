@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=68-75 tokens=139 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=139 -->
 ## Gaps
 
 - Kotlin twin of the catalog rules (replaying the `apps` section) and the Android AXHub app's Apps tab on them: deferred

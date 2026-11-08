@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md lines=68-74 tokens=113 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md tokens=113 -->
 ## Status (Oct 16 2026)
 
 Written but **not yet compiled** — this sandbox cannot reach maven.google.com / dl.google.com. First build on a

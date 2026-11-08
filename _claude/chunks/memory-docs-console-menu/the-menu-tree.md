@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md lines=16-40 tokens=496 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md tokens=496 -->
 ## The menu tree
 
 ```

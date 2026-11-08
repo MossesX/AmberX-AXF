@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=31-31 tokens=244 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=244 -->
 ## Status (as of Oct 21 2026)
 
 - **Console plugins (Oct 17 2026):** `apps/console-web/plugins/<folder>/` (plugin@1 manifest + `web/index.tsx` exporting an `AxfWebLibrary` + optional `server/__init__.py` router at `/api/plugins/<folder>/`). Server routes always need the console token and 404 when disabled; never exposed via the console MCP. Libraries can now contribute a nav section (`AxfWebLibrary.nav` → `runtime.setNavSection`). Template: `plugins/_template`; guide: `plugins/README.md`. **Modules & packages** lists every framework plugin as installed (built + enabled in this console), built (in the repo, not enabled here) or planned: planned plugins live in `framework/catalog/plugins.json` (`plugin-index@1`; an entry turns built by itself once a plugin@1 manifest with its id exists), served at `GET /api/plugin-index`; CLI `node framework/cli/plugins.mjs [--json|--check]` (`--check` runs in CI). First real plugin planned: the axHub admin tab (`lib-hub-admin`).

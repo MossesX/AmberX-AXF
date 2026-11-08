@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=158-158 tokens=243 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=243 -->
 ## Status (as of Oct 21 2026)
 
 - **Approvals that explain themselves + Go pass (Oct 26 2026, Opus; axHub decision #99, pending `approval-reasons-go-pass`):** every axHub call that needs approval carries `reason {title, description}` (the hub refuses it otherwise). The AXHub web app's approval rows and request page lead with what is being approved (the title), then what it does (the caller's description, labelled as theirs, plus the tool's own description and effect), then **The code that runs** in its own collapsible section (`src/views/ApprovalParts.tsx`). New **Go pass** page (`#/go-pass`): 1 / 4 / 24 h or End; the hub writes `GO-PASS.json` to the `go-pass` branch, so a session that can't load the rules and THREADS.md from axHub works only under a live pass (shared rule). Console callers send reasons: `hubtools.hub_reason` (axhub_call now requires `reason`, takes `description`), Build manager's Start build now. axhub-web test.mjs 174, agent-manager 166.

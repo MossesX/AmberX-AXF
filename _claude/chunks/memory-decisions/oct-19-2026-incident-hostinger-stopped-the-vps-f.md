@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=39-39 tokens=255 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=255 -->
 ## Dev Console
 
 - Oct 19 2026: **Incident — Hostinger stopped the VPS for malware** (Oct 18 23:03 ET). Cause: an `ollama/ollama` container (name `ollama`) published 11434 on all addresses with no auth; from Oct 17 ~11:55 ET botnet IPs abused `POST /api/pull` to plant fake libs (`/dist/.../evil`, `cuda_evil`, `libggml*.so`) that Ollama loads at start, running a miner disguised as `ollama serve` (`/tmp/.systemd-hlp-*`, `/tmp/mgr1`). Container not privileged, only its own volume mounted; host checked with `deploy/forensics.sh` (keys/logins/cron/services/ld.so.preload all accounted for): host not compromised. Oct 17 backup is post-infection; Oct 10 is clean; Hostinger snapshot taken Oct 19 04:53 UTC. Pending (Brett): `docker rm ollama && docker volume rm ollama`, reply to Hostinger, rotate console token + GitHub tokens (precaution, SPA path-traversal fixed Oct 18), split the glued line in root's authorized_keys. Rule: never publish a port for an unauthenticated service; Docker port publishing bypasses ufw.

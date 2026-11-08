@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=34-50 tokens=406 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=406 -->
 ### AmberX framework
 - `core/engines/appearance.ts` + Kotlin `engine/AppearanceEngine.kt`: parse / resolve / merge / serialize / palette /
   retry; fixtures `spec/fixtures/appearance.json`; `spec/check-appearance.mts` (74 checks: fixtures, runtime with a fake

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md lines=6-20 tokens=442 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md tokens=442 -->
 ## What moved
 
 | From | To |

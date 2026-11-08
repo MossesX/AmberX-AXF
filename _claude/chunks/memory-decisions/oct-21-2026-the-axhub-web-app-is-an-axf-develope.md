@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=91-102 tokens=236 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=236 -->
 ## Oct 21 2026 — the axHub web app is an AXF developer app (Opus)
 
 Brett: "the axhub web app … build now with opus but fable later". `apps/axhub-web` is a react-ts **developer app**

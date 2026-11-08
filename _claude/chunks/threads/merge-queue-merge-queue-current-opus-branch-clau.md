@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=237-241 tokens=356 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=356 -->
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
 - **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md lines=80-88 tokens=155 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md tokens=155 -->
 ## Known gaps
 
 - The Java has only had a parse-level `javac` check here (no Android SDK or Maven access). CI compiles it and runs WakeRulesTest.

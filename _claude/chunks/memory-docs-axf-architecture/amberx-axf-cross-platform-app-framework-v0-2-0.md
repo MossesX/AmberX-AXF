@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md lines=1-25 tokens=535 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md tokens=535 -->
 # AmberX AXF — cross-platform app framework (v0.2.0)
 
 AmberX AXF builds apps whose entire UI is made of **hot-swappable assets**. Every theme, layout, menu, toolbar,

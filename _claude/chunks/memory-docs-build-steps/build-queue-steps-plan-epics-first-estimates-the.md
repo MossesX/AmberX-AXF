@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md lines=51-73 tokens=437 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md tokens=437 -->
 ## Build-queue steps (plan epics; first estimates, they had none)
 
 | Step | Estimate | Steps | Model | Note |

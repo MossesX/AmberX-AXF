@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=167-171 tokens=255 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=255 -->
 ## Builds live on main (Nov 3 2026)
 
 - **Every completed step reaches main at once (Brett, Nov 3 2026, voice; build `orch-live-sync`).** The orchestrator on main was stale: sessions wrote the builds store on their feature branches, so dock-engine and token-control (done in open PRs #245, #246, #250) still showed pending with 0 steps, and theme-editor's branch was linked nowhere. Now every store write is published to main as its own status-only commit (`framework/cli/builds-live.mjs`; git plumbing on origin/main, bounded rebase-retry, never forced; newer wins per build and per step), main's newer builds come back into the checkout and the console's checkout (banners), THREADS.md gets a Live build log line per change, a reconciler links PRs/branches to builds every 10 min and at session start, and `built` (awaiting merge) sits between running and complete. This is the only exception to "every change through a PR": status data under `_claude/`, never code. Report: `_claude/builds/reports/orch-live-sync.md`.

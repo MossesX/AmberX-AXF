@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=8-8 tokens=221 -->
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md tokens=221 -->
 ## Before building anything
 
 - **Fix it yourself (Oct 30 2026, Brett: "Why do I have to tell you to fix something when you have the tools to do it?"):** when anything is broken (a dead or expired key, a stuck or crashed build, a failed launch, CI red, a container restarting, missing config) and the tools at hand can fix it, fix it straight away as a veto call (axHub, with a plain `reason`), then tell Brett what was fixed. Never ask him whether to fix it. Ask only when the fix truly needs his hands (making a new token on github.com, paying, a physical device) or a real choice between options; then it goes in a banner item with the exact steps. In AmberX-AXF the console does the same by itself: health@1 checks carry an auto-fix that runs before an item turns red (systems check → Settings → Fix it yourself: on / ask first / off per check). <!-- axf-plugin:systems-check -->

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md lines=142-151 tokens=471 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md tokens=471 -->
 ## Working with Brett (same in every MossesX repo)
 
 - **Where he works:** mostly from his Android phone (Samsung Galaxy S26 Ultra), often through **Moshi** (mosh) into his Hostinger VPS, where Claude Code runs. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.

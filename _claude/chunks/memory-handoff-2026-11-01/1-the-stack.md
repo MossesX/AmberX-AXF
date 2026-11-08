@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md lines=11-16 tokens=369 -->
+<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md tokens=369 -->
 ## 1. The stack
 - **AmberX-AXF** (GitHub MossesX/AmberX-AXF, checkout /opt/axf on the VPS): cross-platform app framework, everything UI is a JSON `asset@1` (themes, layouts, menus, toolbars, dialogs, buttons, uac-policy…). Web port = TypeScript reference engines; Android port = Kotlin/Compose (`framework/android`). Build engine CLI `framework/cli/axf.mjs`. Apps: `apps/console-web` (Dev Console, plugins live in `apps/console-web/plugins/*`), `apps/amberx-droid` (AmberX app: voice notes/tasks, hands-free, overlay, agent Molly; Capacitor Android shell, web host auto-updates every 5 min), Patches, Build Pilot, demo.
 - **axHub** (MossesX/axHub): self-hosted connector hub / remote MCP server for Claude on the VPS. Services: `vps` (check = read-only, run = veto, build_start/build_land/build_stop/build_list = allow), `axhub` (memory_* projects tree), `amberx.recorder_*` (start = straight approval), github, etc.

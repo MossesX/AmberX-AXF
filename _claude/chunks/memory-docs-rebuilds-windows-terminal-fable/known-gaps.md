@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md lines=123-136 tokens=265 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md tokens=265 -->
 ## Known gaps
 
 - **Android twins deferred** (`framework/spec/PORTING.md`): `contract/Windows.kt` fields + functions and the

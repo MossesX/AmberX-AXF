@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=212-217 tokens=139 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=139 -->
 ### approvals-in-place-r2
 
 Asked: Approve / Deny in place in the console (never bounce to axHub), UI Review approve likewise, plus addenda 1-5 (full

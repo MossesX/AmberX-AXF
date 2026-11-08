@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md lines=42-66 tokens=567 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md tokens=567 -->
 ## Guards kept or tightened (stricter rule where copies differed)
 
 - **Token only to the API origin.** Before: `app_ci.apk` and `app_catalog.sync` sent the token to whatever

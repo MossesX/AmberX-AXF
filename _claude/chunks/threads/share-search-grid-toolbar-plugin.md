@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=570-575 tokens=325 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=325 -->
 ### Share Search (grid toolbar plugin)
 - **Asked (Brett, Oct 28 2026, claude.ai):** plugin with a toolbar of programmable actions for filtering, sorting and searching grids, named **Share Search**. Full ask is in orchestrator build `share-search` (detail): settings in Settings → Plugins → Share Search with a tab per attachment; launch prompt to attach when unattached (every grid listed in a grid with expanding rows, multi-attach, each with its own settings/look/actions); search bar = Search or Filter (switch), live per keystroke; Appearance collapsible with Inherit-from-shell switch above (collapsed by default; off → every style token like the main app); 5 view/action buttons + Advanced search & filter dialog; right-click toolbar → settings dialog; install on the Console unattached to test the prompt.
 - **State:** held — Brett said "send to orchestrator and hold off on build". Nothing built.

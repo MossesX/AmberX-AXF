@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=1-11 tokens=195 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=195 -->
 # Patches — differences report (pending `patches-wrapper`, Fable, Oct 21 2026)
 
 **What Brett asked (voice, Oct 21 2026):** take the Console / Pilot / axHub tab group out of the console so the

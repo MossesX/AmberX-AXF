@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=47-71 tokens=624 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=624 -->
 ## Changed
 - **Models (s1, s2):** `requiredTier(step)` = the step's orchestrator pin (any spelling, through `modelKey` + `coerceModel`),
   else the policy's own `modelForWork` (foundation words → Fable, the rest → Opus). Before: a Fable pin only counted when the

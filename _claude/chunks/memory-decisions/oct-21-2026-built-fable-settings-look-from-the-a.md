@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=70-71 tokens=200 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=200 -->
 ## Oct 20 2026 — App catalog on axHub (app-catalog@1)
 
 - **Oct 21 2026 — built (Fable): settings + look from the axHub data server.** `appearance@1` document at `shared/settings/appearance.json` over axHub's new data API (`/data`, `/data-events`; decision #88 there). Developer apps = console web + Android, Build Pilot (Android build inherits via `developer` in its manifest), AXHub phone app, axHub's pages (palette). Opt-in: manifest `developer: { hub }` / `axf init --developer`. Waiting screen when the hub is down, no fallback. Who may read: any signed-in hub account; write: admins or users with hub permission `data.write` (plus the app's own UAC gate). Spec `framework/spec/APPEARANCE-SOURCE.md`, report `_claude/memory/docs/rebuilds/theme-from-hub.md`. Voice Vault stays offline and out.

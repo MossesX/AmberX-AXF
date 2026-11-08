@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=CLAUDE.md lines=1-10 tokens=83 -->
+<!-- memory-chunk@1 source=CLAUDE.md tokens=83 -->
 # AmberX AXF
 
 Cross-platform app framework where every UI piece is a hot-swappable JSON asset (`asset@1`): web port (TypeScript

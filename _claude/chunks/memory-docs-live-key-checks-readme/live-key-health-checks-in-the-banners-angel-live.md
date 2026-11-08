@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md lines=1-9 tokens=133 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md tokens=133 -->
 # Live key + health checks in the banners (Angel `live-key-checks`, Oct 30 2026)
 
 Brett (voice): the console's `GITHUB_TOKEN` went dead (GitHub 401) and nothing told him. "You need to make sure things

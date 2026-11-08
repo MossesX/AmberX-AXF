@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/ui-all-assets.md lines=5-17 tokens=473 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/ui-all-assets.md tokens=473 -->
 ## The three assets (Fable, s1–s2, Oct 30 2026)
 | Type | Owns | Tokens |
 | --- | --- | --- |

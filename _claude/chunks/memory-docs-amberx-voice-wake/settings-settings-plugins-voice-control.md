@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md lines=57-65 tokens=159 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md tokens=159 -->
 ## Settings (Settings → Plugins → Voice control)
 
 - **Trigger phrases** panel: one dense column, a remove button per phrase, Add, suggested phrases one tap away, **Factory phrases**

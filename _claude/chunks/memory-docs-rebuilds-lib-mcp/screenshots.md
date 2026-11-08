@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=149-164 tokens=328 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=328 -->
 ## Screenshots
 
 Web console, same steps before (Opus plugin) and after (library views). Android: pending CI.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=125-132 tokens=145 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=145 -->
 ## Security
 - Every Opus guard kept: console token on every plugin route, 404 while disabled, not on MCP, folder pattern, log level
   whitelist, no symlinks followed, env values never serialised, read-only server part, data dir confined to

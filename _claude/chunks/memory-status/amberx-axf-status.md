@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=1-6 tokens=137 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=137 -->
 # AmberX AXF: Status
 
 Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Read the parts you need (Grep, then read by line range); keep it updated whenever something meaningful changes.

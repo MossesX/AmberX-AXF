@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=435-442 tokens=321 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=321 -->
 ### One look from axHub + shared assets (`claude/hub-look-all-assets`)
 - **Asked (Brett, Nov 1 2026):** "The apps should only get appearance from axhub period." "If you select design package in one app it changes it for all! Any theme change applies to all." "They all gotta ship all assets that can be shared bruh!" "Scrap patches and demo and walkthrough" (from this build).
 - **Model:** built on Opus in claude.ai (Brett picked it; headless Fable was out of weekly credits until Tue Nov 3). Follow-up: Fable review of the contract parts.

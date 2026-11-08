@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=89-94 tokens=147 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=147 -->
 ### 7. Effort level, with a cost estimate
 - **Levels:** `low · medium · high · xhigh · max` (where the client can set effort; otherwise record "client default").
 - **Each option shows the estimated cost of the baseline build** (below) for the chosen model at that effort level.

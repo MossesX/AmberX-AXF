@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=152-182 tokens=679 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=679 -->
 ## Build Pilot adoption (separate repo, read-only here)
 
 Build Pilot is the source these came from, so the swap is mechanical. Its `@axf/react` alias points at its baked

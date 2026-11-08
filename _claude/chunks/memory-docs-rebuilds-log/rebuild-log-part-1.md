@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/LOG.md lines=1-33 tokens=2950 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/LOG.md tokens=2950 -->
 # Rebuild log
 
 Every rebuild (Fable rebuilds and all later ones) gets a line here, newest first, plus a full differences report

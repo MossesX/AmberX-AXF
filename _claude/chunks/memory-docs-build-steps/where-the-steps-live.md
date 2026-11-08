@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md lines=6-24 tokens=438 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md tokens=438 -->
 ## Where the steps live
 
 - **Pending items** (`framework/plan/pending.json`): the sub prompts *are* the steps: `subPrompts[] = { text, at, estimate?, done?, doneAt? }`.

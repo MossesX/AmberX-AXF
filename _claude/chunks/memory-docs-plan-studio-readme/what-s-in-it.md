@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md lines=9-39 tokens=807 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md tokens=807 -->
 ## What's in it
 
 | Part | Where |

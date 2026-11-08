@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=65-78 tokens=277 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=277 -->
 ## Guards kept or tightened
 
 - Strip middleware for all five `X-Auth-*` headers before forwardAuth (both copies had all five).

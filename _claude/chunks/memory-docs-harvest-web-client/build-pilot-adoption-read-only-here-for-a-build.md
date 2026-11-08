@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=77-90 tokens=676 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=676 -->
 ## Build Pilot adoption (read-only here; for a Build Pilot session)
 
 1. Re-bake the framework into `src/axf` (at least `core/sse.ts`, `core/catalog.ts`, `core/assistant.ts`, `core/index.ts`, `libs/apiclient/`). `HttpAssistantClient` then reads streams through the shared reader with no code change.

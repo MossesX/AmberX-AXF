@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md lines=52-60 tokens=162 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md tokens=162 -->
 ## Follow-ups
 - Push banner, auto-merge, branch cleanup, CI helpers: build their client from `axf.github@1` (orchestrator s12, owned
   by `claude/pr-only-merge`; don't edit push-banner from this build).

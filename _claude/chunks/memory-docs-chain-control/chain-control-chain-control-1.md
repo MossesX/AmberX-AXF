@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/chain-control.md lines=1-18 tokens=257 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/chain-control.md tokens=257 -->
 # Chain control (chain-control@1)
 
 One registry for how a headless session is set up. Build `headless-session-efficiency-shared-chain-control`, Nov 6 2026.

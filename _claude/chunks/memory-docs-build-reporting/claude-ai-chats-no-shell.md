@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-reporting.md lines=39-86 tokens=614 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-reporting.md tokens=614 -->
 ## claude.ai chats (no shell)
 
 Write the whole entry with `axhub.memory_write` before starting, then rewrite it (read → change → write) on each step

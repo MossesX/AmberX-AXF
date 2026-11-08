@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=1401-1746 tokens=7952 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=7952 -->
 ### Molly nav sub menus (`molly-nav-submenus`, Current, Opus) — branch `claude/molly-nav-submenus`
 - Asked (verbatim): "I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that."
 - Done: everything in the report `_claude/builds/reports/molly-nav-submenus.md`. Checks: `npx -y tsx framework/spec/check-navstyle.mts`, `check-control.mts`, `check-xlayout.mts`, `check-chrome.mts`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`, `cd apps/molly && npm run build`.

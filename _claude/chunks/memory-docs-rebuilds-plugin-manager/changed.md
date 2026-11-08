@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=41-67 tokens=663 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=663 -->
 ## Changed
 - **Model = framework engine.** `web/model.ts` types now extend the engine's `PluginInventoryItem`; the browser
   re-resolves the server's records together with the bundle's web contributions (view/dialog/settings-tab ids) through

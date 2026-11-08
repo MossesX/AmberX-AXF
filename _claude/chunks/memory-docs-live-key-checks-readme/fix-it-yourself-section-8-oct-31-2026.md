@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md lines=34-51 tokens=392 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md tokens=392 -->
 ## Fix it yourself (section 8, Oct 31 2026)
 - Rule (shared RULES.md, near the top, and CLAUDE.md): fix what the tools can fix, as a veto call with a plain reason,
   then tell Brett; ask only for his hands or a real choice, and then as a banner item with the steps.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=79-89 tokens=255 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=255 -->
 ## Contract / API / settings / fixture changes (old → new)
 - New contract `assistant@1` (no old one). New fixture `spec/fixtures/assistant.json`; `live-session.json` unchanged.
 - `GET /catalog`: `+ protocols[]`. `GET /sessions`: `hosts[]` now from the registry (`describe()`), `active` may be

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md lines=1-15 tokens=292 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md tokens=292 -->
 # windows-terminal — Fable phase (window engine + settings levels)
 
 Orchestrator build `windows-terminal` (Refactor profile), steps s6–s12 = refactor-all s17–s23, Fable, branch

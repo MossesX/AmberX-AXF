@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=15-19 tokens=53 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=53 -->
 ## Removed
 
 Nothing. `MenuList` stays for context menus; every existing app-menu asset renders the same (fixture `developer`

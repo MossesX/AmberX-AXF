@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/instructions/projects-and-sync.md lines=17-24 tokens=144 -->
+<!-- memory-chunk@1 source=_claude/shared/instructions/projects-and-sync.md tokens=144 -->
 ## Session start
 A SessionStart hook runs `claude-sync start`. It never creates a manifest (only projects built with or for AmberX,
 plus axHub, belong on the hub; add one with `axf project init`, or make any folder a Claude project with

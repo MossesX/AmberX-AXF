@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=91-104 tokens=260 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=260 -->
 ## Contract / API / asset / fixture changes
 
 | What | Change | Compatibility |

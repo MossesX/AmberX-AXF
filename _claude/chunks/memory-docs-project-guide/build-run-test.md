@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md lines=56-99 tokens=946 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md tokens=946 -->
 ## Build, run, test
 
 Build engine (Node 22, no install needed):

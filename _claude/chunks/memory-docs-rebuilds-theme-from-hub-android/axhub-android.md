@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub/android.md lines=24-40 tokens=281 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub/android.md tokens=281 -->
 ## axhub-android
 
 | Screen | Before | After |

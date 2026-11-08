@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md lines=11-22 tokens=347 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md tokens=347 -->
 ## What was built
 
 | Part | Where |

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md lines=1-14 tokens=264 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md tokens=264 -->
 # Veto approvals (veto@1), AmberX-AXF side
 
 (Updated Oct 30 2026: see the last section for Approve, Shelve, 90 s and the alarm.)

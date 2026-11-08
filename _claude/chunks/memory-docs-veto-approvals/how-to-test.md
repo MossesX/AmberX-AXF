@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md lines=39-48 tokens=184 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md tokens=184 -->
 ## How to test
 
 - `npx -y tsx apps/amberx-droid/test.mjs` (veto block: feed split, links, countdown, notify plan, push, stream, deny, alert config, store).

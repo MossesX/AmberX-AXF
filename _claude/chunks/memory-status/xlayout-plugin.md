@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=224-224 tokens=183 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=183 -->
 ## xLayout host in Molly (Nov 3 2026, xlayout s4–s12, Opus; branch `claude/xlayout-opus`)
 
 - **xLayout plugin** (`apps/molly/plugins/xlayout`): Molly's frames open with `guestUrl` (embed@1 marker: banner, app menu, nav, context menu, toolbar hidden and taken); the chrome host (`web/host.ts`) keeps each app's `chrome` bundle, merges them with `mergeChrome` into Molly's app menu (a top-level menu per app), navigation (a section per app; each page a Molly view `<app>/<item>`), context menu (per app and target) and badges/checks, routes picks back as `run`, and follows the app's active page. Settings → Plugins → xLayout (IDE mode, pane layout, pane limit, toolbars, apps joined, install/uninstall). <!-- axf-plugin:xlayout -->

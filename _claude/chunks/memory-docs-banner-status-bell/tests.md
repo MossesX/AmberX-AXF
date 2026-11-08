@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md lines=41-53 tokens=154 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md tokens=154 -->
 ## Tests
 
 | check | result |

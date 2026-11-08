@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/token-log.md lines=5-11 tokens=126 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/token-log.md tokens=126 -->
 ## Lean headless launches
 `deploy/claude-headless.sh` sets `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1` and passes the composed rules brief with
 `--append-system-prompt`, so it sits in the cached system prompt and survives compaction. The chain is dropped only once a

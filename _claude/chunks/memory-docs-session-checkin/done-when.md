@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=175-184 tokens=187 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=187 -->
 ## Done when
 
 - A new Claude Code session on the VPS, in the cloud container and on a laptop opens with the check-in, location first, defaults pre-filled from detection.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=138-148 tokens=197 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=197 -->
 ## Known gaps / placeholders
 
 - Kotlin written without a compiler (no Maven here): CI compiles `lib-mcp` and runs its tests; check the "CI build

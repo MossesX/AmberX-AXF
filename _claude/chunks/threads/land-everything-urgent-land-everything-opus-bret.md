@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=86-86 tokens=115 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=115 -->
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |

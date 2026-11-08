@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md lines=53-64 tokens=284 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md tokens=284 -->
 ## Screenshots (web console, before = Opus `d2f58a9`, after = this branch)
 Banner on the home view (logo, Claude badge, search in the centre, clock right); visually unchanged by design — the rebuild is engine/API/Android work.
 

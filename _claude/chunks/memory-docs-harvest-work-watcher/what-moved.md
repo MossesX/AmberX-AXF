@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md lines=7-21 tokens=940 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md tokens=940 -->
 ## What moved
 
 | From (apps/axhub-android `.../watch/ApprovalWatchService.kt`) | To |

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md lines=41-61 tokens=423 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md tokens=423 -->
 ## How it's built
 
 | Piece | Where |

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=27-40 tokens=344 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=344 -->
 ## Kept
 - Plugin id `ai.amberx.axf.console.plugin-manager`, folder `plugin-manager`, actions `plugin-manager.open[:<folder>]`, <!-- axf-plugin:plugin-manager -->
   `plugin-manager.window`, `plugin-manager.layout:<id>`, `plugin-manager.view:<id>`, settings keys

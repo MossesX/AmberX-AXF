@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md lines=44-50 tokens=230 -->
+<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md tokens=230 -->
 ## 6. Parked / plans (on axHub)
 - `plans/product-pivot-dev-environment.md` — DECISION: the product is the dev environment ("build your whole software stack by talking to AI from your phone"); Android/AmberX is the remote client. Open: name, first audience (solo devs first), hosted vs self-hosted, pricing.
 - Cloud rental idea: one small VPS per customer, Stripe, auto-provision, installer at customer.amberxai.com, bring-your-own Claude key. Not built.

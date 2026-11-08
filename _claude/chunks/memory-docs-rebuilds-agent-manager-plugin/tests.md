@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md lines=67-72 tokens=326 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md tokens=326 -->
 ## Tests
 - Before: `python3 apps/console-web/plugins/agent-manager/test.py` → 92 checks passed (run on the Opus build before removal).
 - After: 116 checks passed. New: contract fixture replay (Python = TS reference), `/contract`, `/validate` dry run (+404), SSE workflow run (+404), per-step timing, delegate unlink on agent delete, settings bounds (400 + cap), whole-library export, `store.migrate()` (once, idempotent), memory store overview, hand-added memory kinds, container write tool test never applies, resolved view (dropped/writeMode/dangerous), status allow list + services, add-on listing agents/risks, forward references in bundles, invalid bundle refused with nothing left, imported add-on uninstall, bundled id can't be shadowed.

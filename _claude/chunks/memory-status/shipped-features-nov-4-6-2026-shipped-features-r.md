@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=249-254 tokens=511 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=511 -->
 ## Shipped features (Nov 4–6 2026, shipped-features-r2 + Fable review `shipped-features-fable`; s1–s2 Fable, s3–s15 Opus, contracts Fable-reviewed Nov 6; lands from branch `claude/shipped-features-fable`, which supersedes r2 / r3 / r4 and PR #350) <!-- axf-plugin:shipped-features -->
 Every feature of AmberX-AXF and axHub from planned to live, with later changes as edits: plugin `apps/console-web/plugins/shipped-features` (SQLite ledger, feature-ledger@1; Builds → Shipped features). Planned the moment a build is created: build-hook@1 (`framework/core/build-hook.mjs` + `framework/cli/build-hooks.mjs`) fires from every builds store write. Live dates from the deploy log (deploy-log@1, `axf_deploy_log` in `framework/deploy/axf-deploy.sh`; console + site installers call it, axHub's installer still needs it). Backfill: builds journal, merged PRs, early commits, AI seed file (empty until a model pass). Not deployed yet; on first open the console runs the import. Report `_claude/builds/reports/shipped-features.md`.
 

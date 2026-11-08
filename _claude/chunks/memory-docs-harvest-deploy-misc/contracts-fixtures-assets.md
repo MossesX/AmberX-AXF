@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=79-91 tokens=274 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=274 -->
 ## Contracts, fixtures, assets
 
 - New starter `uac-policy/hub-accounts` (roles admin `*`, themes `assets.swap`+`assets.import`, user none; defaultRole

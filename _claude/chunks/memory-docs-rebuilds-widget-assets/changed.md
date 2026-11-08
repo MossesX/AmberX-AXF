@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md lines=16-27 tokens=543 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md tokens=543 -->
 ## Changed
 - `framework/core/engines/widgets.ts`: `WIDGET_TYPES`, `ATTACHABLE_ASSET_TYPES` and the two hosts are read from `asset-types.json`; new `HostSpec`, `registerHost/hostSpec/hostSpecs/isHost`, `placeHost(host, data, extra, has, requireHost)` (toolbar keeps the "no toolbar → nothing" rule, banner keeps its "run-time entries still place" rule from the first version), `validateHostAttachments`, `searchBarConfig`, `SEARCH_BAR_MAX_RESULTS`. `placeToolbarWidgets` is now a wrapper.
 - `framework/core/runtime.ts`: `attachToToolbar`/`toolbarWidgets` use the generic host store (see banner report).

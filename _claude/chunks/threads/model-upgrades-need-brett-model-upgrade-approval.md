@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=342-346 tokens=429 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=429 -->
 ### Model upgrades need Brett (`model-upgrade-approval`, Urgent, Opus)
 - **Asked (Brett, Nov 3 2026, voice):** a build may switch to a lower model on its own (recorded); switching to a higher model needs Brett's explicit approval (console click or axHub confirm, never veto, never self-approved). Ranking in model-policy (Fable above Opus). Enforce in orchestrator approve/phase logic, console server, launcher/build_start/agent jobs, briefs; axHub approval path; audit; tests; PR.
 - **On the branch:** `framework/core/model-policy.mjs` (`switches`, `modelRank`, `switchKind`), `framework/core/model-switch.mjs`, `framework/cli/model-gate.mjs` (launch gate, audit, mark-self), orchestrator core/CLI/server/UI, console MCP tool `orchestrator_upgrade_approve`, `deploy/claude-headless.sh` gate + brief line, swarm planner gate, rules/decisions/README/CLAUDE.md, tests.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=112-130 tokens=295 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=295 -->
 ## Tests before → after
 
 | Check | Before | After |

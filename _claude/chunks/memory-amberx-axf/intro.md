@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/amberx-axf.md lines=1-21 tokens=978 -->
+<!-- memory-chunk@1 source=_claude/memory/amberx-axf.md tokens=978 -->
 ---
 name: amberx-axf
 description: AmberX-AXF — Brett's cross-platform app framework repo (GitHub MossesX/AmberX-AXF), demo on his Hostinger VPS (axf.amberxai.com)

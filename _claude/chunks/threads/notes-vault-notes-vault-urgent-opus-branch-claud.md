@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=347-351 tokens=187 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=187 -->
 ### Notes vault (`notes-vault`, Urgent, Opus) — branch `claude/notes-vault`
 - Asked: gather Brett's scattered saved notes into one place, a quick notes browser plugin, a Notes section for MD Studio.
 - Done: notes moved on the hub (write new, delete old with versions kept), INDEX, orch-live-sync note, `notes-browser` plugin (server on axHub memory-dir semantics, 28-check `test.py`), md-studio s11, report, UI Review shots.

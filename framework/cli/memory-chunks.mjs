@@ -190,7 +190,7 @@ export function indexText(chunks) {
   return `${L.join('\n').trimEnd()}\n`;
 }
 
-export const chunkText = (c) => `<!-- memory-chunk@1 source=${c.source} lines=${c.start}-${c.end} tokens=${c.tokens} -->\n${c.text}\n`;
+export const chunkText = (c) => `<!-- memory-chunk@1 source=${c.source} tokens=${c.tokens} -->\n${c.text}\n`; // line numbers live in index.json only, so an edit above a chunk does not rewrite it
 
 export function indexJson(chunks) {
   return { $axf: 'memory-chunks@1', count: chunks.length, sources: [...new Set(chunks.map((c) => c.source))], chunks: chunks.map(({ text, ...c }) => c) };

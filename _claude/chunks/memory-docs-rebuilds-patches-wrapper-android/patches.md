@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md lines=41-49 tokens=95 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md tokens=95 -->
 ## patches
 
 | Screen | Before | After |

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=20-37 tokens=592 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=592 -->
 ## What moved (from → to)
 
 | Item | From | To |

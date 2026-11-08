@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md lines=43-53 tokens=192 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md tokens=192 -->
 ## The hub side (axHub decision #90)
 
 `/apps.json` had no CORS, so a browser on another origin could not read the catalog. The hub now answers it like the

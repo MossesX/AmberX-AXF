@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=69-69 tokens=235 -->
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md tokens=235 -->
 ## Sessions
 
 - **Chat and voice sessions post what they do to their mirror (Nov 3 2026, Brett: "each session I'm doing with Claude, so I can mirror it and jump in"):** every claude.ai chat or voice session (Amber) that is connected to the Dev Console through axHub calls the console's MCP tool `console_session_note` whenever it acts (before an axHub call, a build or a change, and when it answers something long): one short line of what it is saying or doing, with the same `session` name every time (the thread name), `source` `claude-ai-text` or `claude-ai-voice`, `agent` when it speaks as one (agent-pick) and `url` = its https://claude.ai/chat/… link when it knows it. The lines and the console tools it calls show live in the Terminal's sessions nav (My sessions), where Brett mirrors it and taps **Jump in** to open the chat. It is allowed (no veto) and costs no tokens on the console's side. <!-- axf-plugin:console-terminal -->

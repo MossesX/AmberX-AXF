@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=134-142 tokens=161 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=161 -->
 ## Known gaps / placeholders
 - `axhub` session host is a `PlaceholderHost` until axHub's workers provide `axf.live-host@1`.
 - Resuming a reply mid-generation after a restart: the text is kept and "Continue" asks the model to carry on; the

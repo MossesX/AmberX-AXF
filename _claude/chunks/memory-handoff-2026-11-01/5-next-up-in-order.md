@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md lines=35-43 tokens=288 -->
+<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md tokens=288 -->
 ## 5. Next up (in order)
 1. Land build-start-fable (or do it by hand) so Fable can be launched.
 2. Write "Opus or Fable only, never Sonnet; Fable for foundation work" into `_claude/shared/rules/RULES.md`.

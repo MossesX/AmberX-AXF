@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-pages.md lines=29-35 tokens=114 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-pages.md tokens=114 -->
 ## Deploy order
 
 The new web app needs the new hub API and the new hub redirects to the new web app. Merge AmberX-AXF first (the web

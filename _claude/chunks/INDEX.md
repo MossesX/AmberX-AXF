@@ -1,6 +1,6 @@
 # Memory chunks (generated)
 
-1183 chunks, about 317941 tokens in all, from 103 files. Do not edit: edit the source and run
+1185 chunks, about 318310 tokens in all, from 103 files. Do not edit: edit the source and run
 `node framework/cli/memory-chunks.mjs build`. Read a chunk at `_claude/chunks/<id>.md`
 (or `memory-chunks.mjs show <id>`); find one with `memory-chunks.mjs find <text>` or by grepping this file.
 
@@ -76,9 +76,10 @@
 
 - `persona/amber-how-claude-talks-to-brett` Amber (how Claude talks to Brett) · 189t
 
-## _claude/THREADS.md (302)
+## _claude/THREADS.md (303)
 
 - `threads/threads-and-builds-log` Threads and builds log · 517t
+- `threads/memory-restructure-memory-manager-memory-restruc` Memory restructure + Memory Manager (memory-restructure-chunked-claude-md-store-memor,… · 118t
 - `threads/worker-accounts-multi-account-headless-workers` Worker accounts (multi-account-headless-workers) (2026-11-07) · 74t
 - `threads/builds-journal-parts-hotfix` Builds journal parts (hotfix) (2026-11-07) · 50t
 - `threads/glossary-index-demonstrations-glossary-index-dem` Glossary, index + demonstrations (glossary-index-demos, s1 Opus, s2–s6 Fable (r3, agent… · 430t
@@ -385,9 +386,10 @@
 
 - `readme/claude-axhub-projects-1` _claude (axhub-projects@1) · 313t
 
-## _claude/memory/STATUS.md (197)
+## _claude/memory/STATUS.md (198)
 
 - `memory-status/amberx-axf-status` AmberX AXF: Status (2026-10-27) · 137t
+- `memory-status/memory-restructure-memory-manager-nov-8-2026-opu` Memory restructure + Memory Manager (Nov 8 2026, Opus, claude/memory-manager-r2, build… (2026-11-08) · 251t
 - `memory-status/worker-accounts-nov-7-2026-opus-claude-multi-acc` Worker accounts (Nov 7 2026, Opus, claude/multi-account-headless-workers, build multi-a… (2026-11-07) · 127t
 - `memory-status/terminal-sessions-nav-nov-3-2026-opus-claude-ter` Terminal sessions nav (Nov 3 2026, Opus, claude/terminal-sessions-nav, PR #286 on #274;… (2026-11-03) · 265t
 - `memory-status/every-layout-parameter-is-a-token-nov-3-2026-fab` Every layout parameter is a token (Nov 3 2026, Fable, claude/token-control, Urgent buil… (2026-11-03) · 554t

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=89-110 tokens=496 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=496 -->
 ## Contracts, APIs, settings, fixtures (old → new)
 
 | What | Old (Opus plugin) | New |

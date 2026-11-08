@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal.md lines=10-47 tokens=769 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal.md tokens=769 -->
 ## Differences
 
 **Removed**

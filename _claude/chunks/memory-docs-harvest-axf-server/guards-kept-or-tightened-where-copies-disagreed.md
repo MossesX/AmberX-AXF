@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=46-71 tokens=660 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=660 -->
 ## Guards kept or tightened (where copies disagreed, the stricter rule won)
 
 - **Atomic writes:** some copies wrote `tmp` then chmod (briefly 0644 under the console's umask 002), some used a fixed

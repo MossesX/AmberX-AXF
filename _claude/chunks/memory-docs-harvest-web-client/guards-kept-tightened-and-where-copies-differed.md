@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=36-45 tokens=403 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=403 -->
 ## Guards kept / tightened (and where copies differed)
 
 - Token only in the Authorization header, never in a URL (alerts stream, all plugin calls) — kept. Token storage wrapped in try/catch everywhere (one copy in `plugins.ts` was; `pluginLifecycle.tsx` was; `api.ts` was) — kept in the store.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=78-84 tokens=139 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=139 -->
 ## Server (console token on every method, 404 when the plugin is off, never on MCP)
 
 `GET entries?open=1|closed=1&kind=&state=&repo=&q=&from=&to=&cursor=&limit=` · `GET entries/{id}` · `POST entries`

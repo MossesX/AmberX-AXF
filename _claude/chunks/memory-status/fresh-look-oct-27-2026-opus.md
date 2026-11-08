@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=163-163 tokens=224 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=224 -->
 ## Status (as of Oct 21 2026)
 
 - **Fresh look (Oct 27 2026, Opus):** the default look is now **`fresh`**: style theme `fresh` (Inter 14 px, radii 6/10/14, comfortable, low two-layer shadows, blur 10, glass 0.86, motion 160 ms), colour themes `fresh-light` (neutral greys, indigo accent) / `fresh-dark`, switch `fresh-day-night`; console also moved to `rounded-solid` buttons, `soft-card` containers, `classic-round` sliders. Default in `framework/defaults.json` and the five web apps (console-web, axhub-web, patches-web, amberx-droid, walkthrough-studio; demo + Android apps untouched). Saved as appearance package **`fresh`** per app (that app's own slots, Super tight); the old look stays as package `amberx` / `glass-orbit`. Developer apps follow axHub's appearance document, so a saved pick there wins until `fresh` is applied. Report + shots `_claude/memory/docs/rebuilds/fresh-look.md`.

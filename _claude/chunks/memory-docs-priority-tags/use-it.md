@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/priority-tags.md lines=19-30 tokens=174 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/priority-tags.md tokens=174 -->
 ## Use it
 
 ```bash

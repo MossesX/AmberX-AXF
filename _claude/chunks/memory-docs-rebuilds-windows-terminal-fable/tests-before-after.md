@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md lines=92-103 tokens=110 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md tokens=110 -->
 ## Tests before → after
 
 | Check | before (`34238fed`) | after |

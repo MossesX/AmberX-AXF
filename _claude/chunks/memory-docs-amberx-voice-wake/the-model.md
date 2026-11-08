@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md lines=47-56 tokens=201 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md tokens=201 -->
 ## The model
 
 - `vosk-model-small-en-us-0.15` (~40 MB zip), from `WakeListener.MODEL_URL` (the only place the address lives).

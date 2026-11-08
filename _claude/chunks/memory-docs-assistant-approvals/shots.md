@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=49-57 tokens=134 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=134 -->
 ## Shots
 
 `_claude/memory/docs/rebuilds/assistant-approvals/shots/{before,after}/` — `assistant-*` (console, via

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md lines=25-32 tokens=136 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md tokens=136 -->
 ## How to read an estimate now
 
 The new total of a split build is its steps added up, and every step is capped at 30 min. That is the honest budget

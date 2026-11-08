@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/chain-control.md lines=22-30 tokens=272 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/chain-control.md tokens=272 -->
 ## What a launch does
 Before each session the launcher runs `chain-control.mjs plan`:
 - **Chain:** `always` files go in the system prompt, `demand` files are named, `never` files are left out. Every file `always` in load order means Claude Code loads its own chain. If no rules at all would reach the run, it loads its own chain too: never rules-free.

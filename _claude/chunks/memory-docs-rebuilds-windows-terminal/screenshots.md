@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal.md lines=64-77 tokens=217 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal.md tokens=217 -->
 ## Screenshots
 Before (v0.2.0) and after, desktop + phone, `AXF_APPEARANCE_HUB=off`:
 

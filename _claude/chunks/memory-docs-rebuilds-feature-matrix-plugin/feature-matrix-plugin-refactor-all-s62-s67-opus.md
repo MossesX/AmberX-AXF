@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/feature-matrix-plugin.md lines=1-15 tokens=535 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/feature-matrix-plugin.md tokens=535 -->
 # Feature matrix plugin (refactor-all s62–s67, Opus, Oct 29 2026) <!-- axf-plugin:feature-matrix -->
 
 New console plugin `apps/console-web/plugins/feature-matrix` on the feature-matrix@1 contract + Apply engine (Fable phase). Contract and plugin details: [feature-matrix.md](../feature-matrix.md). <!-- axf-plugin:feature-matrix -->

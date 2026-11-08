@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md lines=79-89 tokens=207 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md tokens=207 -->
 ## Left for later
 - `axf.work.manager`: the kernel's `WorkScheduler` (`contract/Work.kt`) on WorkManager/AlarmManager (job kinds `once`,
   `constrained`, `alarm`, `chain`).

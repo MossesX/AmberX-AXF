@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md lines=30-41 tokens=377 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md tokens=377 -->
 ## Guards kept or tightened
 Kept: https-only plain-host hub address; links only to the exact hub origin; approval links only for real ids; feed with
 the session cookie only, no redirects, 256 KB cap; never approves via API; web view no JS / file / content / mixed content /

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=317-321 tokens=209 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=209 -->
 ### Claude settings (`claude-settings`, Urgent, Opus) — branch `claude/claude-settings`
 - Asked: Brett, Nov 3 2026 (voice): a Claude plugin with settings for Claude kept on axHub that every session reads and follows; No wait owner-only (standing veto pass), Follow Amber shared, builds/verification/talking/notifications/memory groups, open registry, MCP get/set, owner-only enforced, rule in RULES.md + CLAUDE.md.
 - State: all 7 steps done, PR open, UI Review waiting. Report `_claude/builds/reports/claude-settings.md`.

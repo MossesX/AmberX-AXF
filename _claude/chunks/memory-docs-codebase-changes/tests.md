@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=85-92 tokens=209 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=209 -->
 ## Tests
 
 `python3 apps/console-web/plugins/codebase-changes/test.py` (140: validation incl. build stats, Python = Node validators, routes, close everywhere, <!-- axf-plugin:codebase-changes -->

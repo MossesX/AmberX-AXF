@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding-3.md lines=13-19 tokens=462 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding-3.md tokens=462 -->
 ## Changed
 - **GizmoX:** the console's manifest defaults to branding `gizmox` + design package `fresh`; menu bar, Home title and the browser tab read the brand name ("GizmoX"); `index.html` title. Code ids and URLs unchanged.
 - **Plugins (three thirds):** 1/3 agent-manager, ai-assistant, ai-keys, alerts-bell, basic-filter, build-orchestrator, build-profiles, changes-grid, claude-badge, console-terminal · 2/3 container-access, context-menu-designer, fable-rebuilds, feature-assist, hub-sync, main-build-status, mcp-client, molly-guide, plugin-manager · 3/3 plugin-switches, plugin-update, plugins-menu, project-wizard, session-checkin, snapshot-manager, theme-manager, todo-manager, voice-notes. Section eyebrows + one-sentence page heads, `Loading…` → skeletons, empty lists → `EmptyState`. Plugin Manager's four layouts keep their own heads (`design-ok`).

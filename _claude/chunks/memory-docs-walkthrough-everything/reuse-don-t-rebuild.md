@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md lines=14-20 tokens=119 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md tokens=119 -->
 ## Reuse, don't rebuild
 
 The AmberX walkthrough (`apps/amberx-droid/walkthrough/`, 9:12, walkthrough-video@1) already does the hard parts:

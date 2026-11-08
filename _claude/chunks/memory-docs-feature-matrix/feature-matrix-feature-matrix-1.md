@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=1-13 tokens=236 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=236 -->
 # Feature matrix (feature-matrix@1)
 
 Brett, Oct 28 2026: every build gets a keep/skip **feature matrix** like the windows-terminal scope list. Items are

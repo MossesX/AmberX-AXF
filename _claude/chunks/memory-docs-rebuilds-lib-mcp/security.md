@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=127-137 tokens=226 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=226 -->
 ## Security
 
 Kept: console token on every route, 404 when disabled, not on the console MCP, tokens never to the browser, env-var

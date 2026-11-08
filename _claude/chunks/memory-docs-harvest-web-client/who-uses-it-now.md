@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=17-25 tokens=359 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=359 -->
 ## Who uses it now
 
 - `framework/core/assistant.ts` imports the SSE framing and re-exports it (assistant@1 API unchanged; `readSse(body, onEvent)` of the assistant contract is now `readStreamEvents`; nothing outside the file used the old name).

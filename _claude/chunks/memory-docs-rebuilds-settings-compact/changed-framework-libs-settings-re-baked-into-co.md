@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/settings-compact.md lines=5-13 tokens=373 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/settings-compact.md tokens=373 -->
 ## Changed (framework/libs/settings, re-baked into console, AmberX, axHub web, Walkthrough Studio; Patches skipped — paused)
 - **Navigation:** the `list` layout is now a phone-style list of sections (icon, label, one-line description, chevron). Phone: tap in, back arrow out. Wide screens (≥900 px): list on the left, page on the right. A section with 5+ sub-pages (Plugins) lists them as rows instead of a wall of tab buttons; a sub-page shows `Plugins › Feature matrix` with a back arrow.
 - **Level toolbar:** one line — a Level dropdown, its hint, Edit levels as an icon, the ⋯ menu (was a 4-button segmented bar + Edit levels button).

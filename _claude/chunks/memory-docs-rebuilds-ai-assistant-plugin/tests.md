@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=90-102 tokens=283 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=283 -->
 ## Tests
 - Before: Opus `test.py` 111/111 (fake providers, fake CLI, uvicorn hang-up test).
 - After: `test.py` **137/137** — the 111 kept, plus: catalog = shared registry, protocols, `/contract`, 12 contract

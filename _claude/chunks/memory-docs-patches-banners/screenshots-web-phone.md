@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md lines=39-46 tokens=130 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md tokens=130 -->
 ## Screenshots (web, phone)
 | Console page (no plugin banners) | Strip, expanded | Strip, minimized |
 | --- | --- | --- |

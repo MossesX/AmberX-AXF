@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=27-46 tokens=483 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=483 -->
 ## Kept (unchanged behaviour)
 - Plugin id, folder, `plugin.json` provides (`axf.llm@1`, `axf.live-sessions@1`), actions `ai-assistant.open` and
   `ai.chat.start`, view `ai-assistant`, dialog `ai-assistant.chat`, settings tab `ai-assistant` (sub-tab of Plugins),

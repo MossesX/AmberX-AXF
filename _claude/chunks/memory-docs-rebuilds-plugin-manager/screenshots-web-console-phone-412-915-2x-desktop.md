@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=142-179 tokens=1332 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=1332 -->
 ## Screenshots (web console; phone = 412×915 @2x, desktop = 1366×860)
 The "N keys are needed" / setup banners vary between runs (headless console with no keys) and are not part of the change.
 

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=328-332 tokens=344 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=344 -->
 ### Follow Amber (`follow-amber`, Urgent, Opus) — branch `claude/follow-amber`
 - **Asked (Brett, Nov 3 2026, voice):** one switch "Follow Amber"; on = whatever Amber mentions opens in the console (focused, highlighted) and every axHub held / confirm call pops up there with one-tap Approve / Deny; off = nothing auto-opens. Navigation tools never wait on a veto; `console_show` + `console_follow`; rule in RULES.md + CLAUDE.md.
 - **Done:** plugin `apps/console-web/plugins/follow-amber/` (server, web, tests, help, lifecycle), MCP `console_show` / `console_follow`, nav tools read-only, CONTROL.md, RULES.md, CLAUDE.md, report + shots, UI Review item, PR. <!-- axf-plugin:follow-amber -->

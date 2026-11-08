@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=79-95 tokens=841 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=841 -->
 ## The console plugin (Opus phase, refactor-all s62–s67, Oct 29 2026) <!-- axf-plugin:feature-matrix -->
 
 Plugin `apps/console-web/plugins/feature-matrix` (`ai.amberx.axf.console.feature-matrix`, built on Opus). <!-- axf-plugin:feature-matrix -->

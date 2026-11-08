@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=29-42 tokens=264 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=264 -->
 ## How deciding works (first that applies)
 
 1. The app's host `decide` (`setApprovalsHost`). AmberX: Deny = native `vetoDeny` with the phone's hub session

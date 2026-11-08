@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/projects/amberx-studio.md lines=1-17 tokens=625 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/projects/amberx-studio.md tokens=625 -->
 ---
 name: amberx-studio
 description: AmberX Studio — the project-management / app-building suite Brett is planning on top of his AmberX Android framework (absorbs his Feature Planner and Dev Console artifacts); stated requirements and stack

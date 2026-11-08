@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=418-426 tokens=605 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=605 -->
 ### One default look + design theme precedence — Fable review (`claude/one-look-default-2`, Fable; relaunch of `one-look-default`)
 - **Asked (launcher, Nov 3 2026):** relaunch of the headless build `one-look-default` (brief `/root/axf-builds/one-look-default/.brief.md`: banners didn't compress, new default style + colour theme, default design theme, precedence rule, selection-only Settings) on branch `claude/one-look-default-2`; don't redo what PR #228 (Opus) landed; Fable review of the appearance@1 / precedence contract the Opus build left open.
 - **Model:** Fable (headless VPS). One session, no sub-agents.

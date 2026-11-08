@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=87-109 tokens=543 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=543 -->
 ## Contracts, APIs, assets, routes, settings keys, fixtures (old → new)
 | What | Old | New |
 | --- | --- | --- |

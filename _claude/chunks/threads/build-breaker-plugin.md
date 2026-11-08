@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=501-507 tokens=372 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=372 -->
 ### Build Breaker plugin
 
 - **Asked (Oct 29 2026):** a console plugin "Build Breaker" listing every ask Brett made across the whole project in plain English: page head with totals (asks, built, pending, planned, removed, waiting, time, $ by model); toolbar with search, status (multi) / model / date filters, sort, group-by, expand / collapse all, tabs All · Apps · Plugins · Timeline; an Apps container (a collapsible grid per app) and a Plugins container (a grid per plugin); one-line rows (title, date, time with ≈ when approximate, status badge with icon, time · cost · model badge) that open to the description, his own words, sources, branch / PR links and the Feature matrix; app menu Builds ▸ Build Breaker (Feature matrix already there); a permanent Build item on every context menu with every build page. Model Opus.

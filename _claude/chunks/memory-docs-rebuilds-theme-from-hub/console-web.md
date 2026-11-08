@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=51-59 tokens=199 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=199 -->
 ### Console (web)
 - `src/hubAppearance.tsx`: attaches the source with the hub from `/api/me` (`appearanceHub`: `AXF_APPEARANCE_HUB`,
   default = the wall's hub, `off` = none for local dev); Settings → Appearance → **Look from axHub** panel (state,

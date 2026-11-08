@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md lines=37-79 tokens=996 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md tokens=996 -->
 ## Live, Built, search and Start build now (0.2.0, Oct 21 2026, Opus)
 
 Three tabs under one **search bar** (every word must match; title, id, notes/detail, steps, model, branch, surface,

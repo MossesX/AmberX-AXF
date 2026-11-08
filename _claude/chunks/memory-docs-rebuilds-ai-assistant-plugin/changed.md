@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=47-63 tokens=369 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=369 -->
 ## Changed
 - `providers.py`: catalog loaded from `framework/schemas/ai-providers.json` + `<dataDir>/providers.json` (open
   registry; `reload_catalog()`, `POST /providers/reload`); protocol dispatch through `PROTOCOLS` + `register_protocol`;

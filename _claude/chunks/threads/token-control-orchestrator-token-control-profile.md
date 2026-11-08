@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=385-393 tokens=849 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=849 -->
 ### Token control (orchestrator `token-control`, profile Urgent) — branch `claude/token-control-opus`
 - Asked (Brett Nov 2 2026 21:38 ET, in full in the orchestrator build's detail): a new plugin with a powerful API, MCP and CLI server/client that can change every single token (theme, style, layout; every layout parameter is a token), connected to Claude and axHub; API and MCP control every aspect of AmberX tasks, to-dos and notes and the console planner (Plan Studio + Build orchestrator); extensive interactive documentation; folds in the dead VPS build amberx-full-mcp-api (never relaunch it separately).
 - State (Nov 3 2026): **all 14 steps done**. Fable phase s1-s3 on `claude/token-control` (PR #246); Opus phase s4-s14 on `claude/token-control-opus` (PR #250, which merges main and contains #246). UI Review item `r-20261103-f9cd2905` (group "token-control - Nov 3 7:23 AM") waits for Brett; the push banner merges once CI is green and the review is approved.

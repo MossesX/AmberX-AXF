@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=143-151 tokens=162 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=162 -->
 ## Left for later
 
 - Build Pilot adopts `axf-deploy.sh` (steps in `framework/deploy/README.md`; run a copy of `deploy/dryrun/` on its installer).

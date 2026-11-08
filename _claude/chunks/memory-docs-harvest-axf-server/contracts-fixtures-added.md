@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=35-45 tokens=217 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=217 -->
 ## Contracts / fixtures added
 
 - `framework/spec/fixtures/wall-signature.json` — 19 signature cases (valid, host case-folding, empty perms, 120 s edge,

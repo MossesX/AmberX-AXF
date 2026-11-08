@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=103-114 tokens=261 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=261 -->
 ## Security
 - Every Opus guard kept (see Kept): console token on every route, 404 when disabled, never on MCP; keys 0600 and
   never returned; masked headers; secret redaction (now the shared `SECRET_PATTERN`); CLI env/deny/jail rules;

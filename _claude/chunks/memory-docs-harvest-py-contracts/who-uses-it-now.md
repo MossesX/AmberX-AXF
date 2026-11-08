@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=22-35 tokens=267 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=267 -->
 ## Who uses it now
 
 - `apps/console-web/plugins/ai-assistant/server/__init__.py`: `from axf.assistant_host import providers, sessions`,

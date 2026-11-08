@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md lines=133-141 tokens=182 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md tokens=182 -->
 ## Related repos
 
 - **`MossesX/axHub`**: standalone connector hub at `axhub.amberxai.com`. axHub's server core never depends on AXF; its UI may be built on AXF (axHub decision #93, Oct 23 2026), as static files the hub only hosts. AXF plugs in from its side via `lib-hub` (protocol defined by axHub: AXPP) and the `axhub-adapter-axf` plugin, which lives in **this** repo. axHub's step 3 proxies this console's `/mcp` as its first downstream service.

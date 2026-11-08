@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=96-104 tokens=285 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=285 -->
 ### Row hooks (grid-hook@1, lib-datagrid `datasets.ts`) <!-- axf-plugin:feature-matrix -->
 
 A grid says what a row *is* (`DataGrid rowRef={(r) => ({ kind, id })}`; other lists draw `<RowHookButtons rowRef=… />` and map their context <!-- axf-plugin:feature-matrix -->

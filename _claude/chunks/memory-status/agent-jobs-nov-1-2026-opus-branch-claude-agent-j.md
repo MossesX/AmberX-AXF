@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=91-91 tokens=252 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=252 -->
 ## Status (as of Oct 21 2026)
 
 - **Agent jobs (Nov 1 2026, Opus, branch `claude/agent-jobs`, Breakroom build `agent-jobs`):** recurring work goes to hired agents. `job-type@1` asset type (`framework/core/engines/job-type-rules.mjs`, both validators, schema, fixture `spec/fixtures/job-type.json`, check `spec/check-job-type.mts`, six starters in `framework/assets/job-type/`; Kotlin twin deferred). Six `jobsOnly` crew agents (Reel Rhonda, Ping Paulie, Snap Sully, Landin' Lenny, Janitor Joey, Earl the Ear). Router `node framework/cli/agent-job.mjs <job-type>` (capability `service:agent-jobs@1` → the swarm's `jobs.mjs`): owner, duty + budget check, brief = template + the agent's own notes, launch via `deploy/claude-headless.sh` as `axf-<agent>-<job>`, run booked on the agent; one-tap hire for unassigned job types. Breakroom → Jobs view; cards list each agent's jobs. Rule in `_claude/rules/RULES.md`; install_steps Part J. Report `_claude/builds/reports/agent-jobs.md`. <!-- axf-plugin:agent-swarm -->

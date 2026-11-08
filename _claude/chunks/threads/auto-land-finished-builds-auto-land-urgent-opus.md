@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=335-341 tokens=456 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=456 -->
 ### Auto-land finished builds (`auto-land`, Urgent, Opus) — branch `claude/auto-land-2`, PR #270
 - **Asked (Brett, Nov 3 2026, voice):** finished builds land by themselves with zero tokens: reuse the push banner's merge path, plain scripts only; an agent only for a real code conflict or red CI needing code; UI Review stays the gate; stop claude-sync dropping files into finished worktrees; blocked = one plain push; fix the empty console overview; settings + commands; a no-LLM test.
 - **On the branch:** `<console plugins>/push-banner/land/` (land-core.mjs, land.mjs, land.test.mjs), push banner server/UI/help/plugin.json, `deploy/install-console.sh` (cron `axf-auto-land`), CI step, `framework/plan/builds-store-core.mjs` storeSummary, build-queue/engine-rpc/mcp_server, build-orchestrator health item + test.py, report `_claude/builds/reports/auto-land.md`.

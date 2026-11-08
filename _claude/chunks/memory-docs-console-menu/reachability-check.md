@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md lines=69-78 tokens=198 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md tokens=198 -->
 ## Reachability check
 
 `npx -y tsx apps/console-web/scripts/menu-reach.mts` (CI, web tests block) merges and compiles the menu like the

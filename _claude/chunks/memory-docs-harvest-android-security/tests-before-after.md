@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md lines=63-72 tokens=162 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md tokens=162 -->
 ## Tests before → after
 | Suite | Before | After |
 |---|---|---|

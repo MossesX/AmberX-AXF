@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=68-86 tokens=400 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=400 -->
 ## Added
 - `framework/core/engines/plugins.ts` (exported from `core/index.ts`): `PluginRecord`, `pluginRecord`,
   `resolveProviders`, `dependenciesOf`, `dependentsOf`, `healthOf`, `conflictsOf`, `inventoryCounts`,

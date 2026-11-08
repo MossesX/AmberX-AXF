@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=508-515 tokens=377 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=377 -->
 ### Plugin theme override + Plugins ladder — in refactor-all (was stopped by the Oct 28 STOP ORDER, since removed)
 
 - **Asked (Brett, Oct 28 2026):** a theme override for every plugin's UI over the axHub theme (Appearance tab container with every layout, colour, style and animation token; several editing views; switch from right-click, toolbar, app menu) + application menu **Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Disable**. Cards: profile Refactor; every plugin UI; a setting picks the Disable look (check mark or plain toggle); submenus flip left only when there's no room.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=9-14 tokens=93 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=93 -->
 ## What it replaced
 
 Before: `MenuBar` (`framework/react/components/Chrome.tsx`) drew `app-menu` asset menus as they were (`menus[].items`,

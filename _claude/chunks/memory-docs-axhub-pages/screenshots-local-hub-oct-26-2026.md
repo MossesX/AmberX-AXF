@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-pages.md lines=40-45 tokens=80 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-pages.md tokens=80 -->
 ## Screenshots (local hub, Oct 26 2026)
 
 ![Approvals on a phone](axhub-pages/phone-1-approvals.png) ![Postpone](axhub-pages/phone-3-postpone.png)

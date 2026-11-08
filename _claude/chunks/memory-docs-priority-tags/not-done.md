@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/priority-tags.md lines=31-36 tokens=60 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/priority-tags.md tokens=60 -->
 ## Not done
 
 - Steps have no priority of their own; a step follows its build.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=1-6 tokens=93 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=93 -->
 # Harvest — `py-contracts` (Fable, Oct 21 2026)
 
 Branch `harvest/f-py-contracts`. The Python ports of the framework contracts and the Python assistant host runtime

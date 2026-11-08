@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/projects.md lines=1-8 tokens=244 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/projects.md tokens=244 -->
 # Projects on the hub (each has a manifest, `_claude/` and `/projects/<name>/` on the hub)
 
 Only projects built with or for the AmberX framework, plus axHub itself, live in the hub's `/projects`.

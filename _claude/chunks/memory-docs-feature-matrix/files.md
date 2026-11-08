@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=14-22 tokens=172 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=172 -->
 ## Files
 
 | File | What |

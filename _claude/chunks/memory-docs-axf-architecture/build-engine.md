@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md lines=54-67 tokens=228 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md tokens=228 -->
 ## Build engine
 
 ```bash

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md lines=6-36 tokens=625 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md tokens=625 -->
 ## What it shows
 
 **Everything still to build, one list** (one row per build, nothing counted twice):

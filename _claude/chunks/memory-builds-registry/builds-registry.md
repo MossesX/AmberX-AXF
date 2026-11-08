@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/builds-registry.md lines=1-19 tokens=457 -->
+<!-- memory-chunk@1 source=_claude/memory/builds-registry.md tokens=457 -->
 # Builds registry
 
 Rule (Brett, Nov 5 2026): every build Amber launches gets a row here at launch, and its status updated after.

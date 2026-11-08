@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=157-174 tokens=569 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=569 -->
 ## How it's built
 
 Plugin folder `apps/console-web/plugins/session-checkin/` (id `ai.amberx.axf.console.session-checkin`):

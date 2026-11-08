@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=75-75 tokens=191 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=191 -->
 ## Status (as of Oct 21 2026)
 
 - **Plugin switches plugin (Oct 19 2026, built on Opus):** `apps/console-web/plugins/plugin-switches` (`ai.amberx.axf.console.plugin-switches`). Dialog `plugin-switches`: a plain list of every plugin (`GET /api/plugins`) with an on/off switch each (console route `POST /api/plugins/<folder>/enabled`, so admin/console token only); its own row is greyed out and can't be switched; switching off a plugin whose capability service (`provides` → `requires`) a running plugin needs asks first; rows show a load error or an unmet requirement. Opened from the default context menu, action `plugin-switches.open`, search, or Settings → Plugins → Plugin switches. Web-only: no server part, stores nothing. <!-- axf-plugin:plugin-switches -->

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=21-40 tokens=469 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=469 -->
 ## What changed in the app (`apps/axhub-web`)
 
 - **Banner** = the console's `amberx-thin` (logo, search in the middle, day/night switch and clock on the right) plus the

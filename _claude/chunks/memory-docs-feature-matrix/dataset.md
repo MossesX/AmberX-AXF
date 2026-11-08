@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=23-40 tokens=304 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=304 -->
 ## Dataset
 
 ```

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=9-20 tokens=259 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=259 -->
 ## Summary
 
 The agent swarm keeps every feature, route, view, setting and data file of the Opus build. What changed is **where the

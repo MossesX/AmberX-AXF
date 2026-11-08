@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=26-45 tokens=372 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=372 -->
 ## Changed
 
 - `framework/core/types.ts`: `MenuItem` gained optional `provider`, `badge`, `checked`, `order`, `before`, `after`;

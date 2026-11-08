@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md lines=115-133 tokens=480 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/ai-assistant-plugin.md tokens=480 -->
 ## Screenshots (web, no provider configured)
 | | before | after |
 | --- | --- | --- |

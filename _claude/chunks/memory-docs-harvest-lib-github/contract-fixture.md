@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md lines=28-41 tokens=267 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md tokens=267 -->
 ## Contract / fixture
 
 `framework/spec/fixtures/github.json` (hand-picked golden cases): `validRepo` 26, `parseRepo` 16, `repoPath` 13,

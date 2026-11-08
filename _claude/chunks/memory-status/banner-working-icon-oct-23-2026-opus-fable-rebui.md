@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=127-127 tokens=188 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=188 -->
 ## Status (as of Oct 21 2026)
 
 - **Banner working icon (Oct 23 2026, Opus; Fable rebuild parked as `banner-working-icon-fable`):** framework `BannerIcon({icon, working})` (in `BannerSettings.tsx`): while a banner's plugin does any work its corner icon swaps to its working icon and animates (spin / pulse / bounce / blink / still; still under reduced motion). Banner settings → Look → **Icon while working** + **Working animation** for every banner (prefs `workIcon`/`workAnim`, defaults from `BannerDef.workIcon`/`workAnim`). Every console banner uses it: push banner (push/pull/merge/check in flight or Claude Code on the VPS asked/waiting/running; upload icon, bounce), activity, builds, codebase changes, handoff, approvals, systems check, keys.

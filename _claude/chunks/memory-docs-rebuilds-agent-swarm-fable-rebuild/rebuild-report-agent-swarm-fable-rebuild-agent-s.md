@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=1-8 tokens=168 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=168 -->
 # Rebuild report — `agent-swarm-fable-rebuild` (Agent swarm, Fable rebuild Nov 3 2026)
 
 Branch `claude/agent-swarm-fable-rebuild`, profile Breakroom, steps s1–s6 on Fable, s7 (this report) written by the

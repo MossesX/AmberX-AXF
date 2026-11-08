@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=60-88 tokens=625 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=625 -->
 ## Added
 
 - `framework/core/engines/mcp.ts` — pure engine: `rpcRequest/rpcNotification/parseMessage(s)`, `SseParser/parseSse`,

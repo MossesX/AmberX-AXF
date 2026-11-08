@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md lines=73-79 tokens=111 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md tokens=111 -->
 ## Migrations
 
 - **Pro → Administrator, Advanced → Developer:** `settingsLevelOf` migrates in assets (`settings` asset levels and group

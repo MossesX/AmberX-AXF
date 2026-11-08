@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=17-17 tokens=246 -->
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md tokens=246 -->
 ## Before building anything
 
 - **Load the rules and threads first, or stop (Oct 26 2026, Brett):** before doing anything else, every session loads the rules (`CLAUDE.md`, `_claude/shared/rules/RULES.md`, `_claude/rules/RULES.md`) and the threads log (`_claude/THREADS.md`) **from axHub** (`claude-sync`, or `axhub.memory_read` project `amberx-axf` / `axhub`, area `claude`). If it can't reach axHub, it does nothing except tell Brett and ask him for a go on axHub (AXHub web app → **Go pass**, https://axhub.amberxai.com/#/go-pass). Then it reads `GO-PASS.json` on the repo's `go-pass` branch (`git fetch origin go-pass` then `git show origin/go-pass:GO-PASS.json`, or GitHub) and works only while that pass says `"state": "go"` and its `expiresAt` is still ahead; it re-checks before each new step, and stops again when the pass ends or expires. Under a pass it still reads every rules file and `THREADS.md` from the repo first. No pass, no work, not even "just one quick change".

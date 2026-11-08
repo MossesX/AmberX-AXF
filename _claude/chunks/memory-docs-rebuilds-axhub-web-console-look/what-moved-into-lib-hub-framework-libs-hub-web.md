@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=41-54 tokens=300 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=300 -->
 ## What moved into lib-hub (`framework/libs/hub`, web)
 
 - `apps.ts` (new): the `/apps.json` rules (`interpretApps`, `appDownloadUrl` = the only way a download link is made,

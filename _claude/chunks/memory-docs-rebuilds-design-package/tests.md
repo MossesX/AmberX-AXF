@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/design-package.md lines=31-36 tokens=97 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/design-package.md tokens=97 -->
 ## Tests
 check-design-package 197 (new; replaces check-appearance-package 24) · check-settings-ui 31 · check-customize 131 ·
 check-appearance 80 · check-widgets 241 · check-embed 422 · check-banner-hide 58 · check-looktokens 195 · theme +

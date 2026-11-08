@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/README.md lines=1-18 tokens=313 -->
+<!-- memory-chunk@1 source=_claude/README.md tokens=313 -->
 # _claude (axhub-projects@1)
 
 Brett's Claude files for **amberx-axf** (the `name` in `project.manifest.json`). Synced with the hub:

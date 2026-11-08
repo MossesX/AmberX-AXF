@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=120-127 tokens=146 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=146 -->
 ## Known gaps
 - No before/after screenshots: the Breakroom cannot render without axHub in this sandbox (see Screenshots); the screens
   are pixel identical by construction (same SVG paths, same classes, same tokens).

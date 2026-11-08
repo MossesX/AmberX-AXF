@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md lines=1-10 tokens=176 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md tokens=176 -->
 # Plugin theme override (Oct 28 2026)
 
 Brett (Oct 28 2026): every plugin UI, not only floating ones, gets a theme override over the axHub theme: a collapsible

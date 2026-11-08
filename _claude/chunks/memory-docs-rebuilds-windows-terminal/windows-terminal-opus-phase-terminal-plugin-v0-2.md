@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal.md lines=1-9 tokens=177 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal.md tokens=177 -->
 # windows-terminal — Opus phase (Terminal plugin v0.2.0 → v0.3.0)
 
 Orchestrator build `windows-terminal` (Refactor profile), steps s1–s5, Opus, branch `claude/windows-terminal`.

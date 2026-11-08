@@ -1,3 +1,3 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=226-227 tokens=154 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=154 -->
 ### Badges + notification rules (`badges-notify-followup`, Current, Opus) — branch `claude/badges-notify-followup`, supersedes PR 366 and PR 367
 Asked: "Run a follow-up." (requests that arrived after claude-badge-vps and notifications-control-panel finished). State: built, waiting in UI Review, then the merge queue takes it. Left: Brett's UI Review click. Report: `_claude/builds/reports/badges-notify-followup.md`. First message to carry on: "Pick up badges-notify-followup: read its report, check the PR's CI and UI Review, fix what is red." <!-- axf-plugin:claude-badge --> <!-- axf-plugin:notify-control -->

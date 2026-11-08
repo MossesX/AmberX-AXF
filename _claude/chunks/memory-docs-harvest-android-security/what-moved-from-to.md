@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md lines=8-26 tokens=646 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md tokens=646 -->
 ## What moved (from → to)
 
 | Item | From | To |

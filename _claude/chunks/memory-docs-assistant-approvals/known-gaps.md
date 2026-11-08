@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=58-67 tokens=158 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=158 -->
 ## Known gaps
 
 - No approval-badge@1 contract / fixture and no Kotlin twin (PORTING.md notes it).

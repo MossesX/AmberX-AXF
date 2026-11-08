@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md lines=91-118 tokens=431 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md tokens=431 -->
 ## Screenshots
 
 0.2.0 (Live, Built, search, Start build now, session builds on the banner):

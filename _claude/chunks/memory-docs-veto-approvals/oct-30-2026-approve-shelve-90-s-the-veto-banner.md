@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md lines=56-83 tokens=662 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md tokens=662 -->
 ## Oct 30 2026: Approve + Shelve, 90 s, the veto banner owns notices, screen and alarm (orchestrator `veto-everywhere` s5–s9)
 
 Brett (voice, Oct 30 2026): countdown 90 s; the veto notices, Deny screen and alarm belong to the veto banner plugin so

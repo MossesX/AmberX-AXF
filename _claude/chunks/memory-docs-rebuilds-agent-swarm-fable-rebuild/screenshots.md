@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=112-119 tokens=176 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=176 -->
 ## Screenshots
 Same pixels as the Opus build (the avatar draws the same paths with the same classes and tokens; no other visible
 change), so no UI Review item was raised. A `rebuild-shots` run was attempted for Crew, ID cards and Group chat

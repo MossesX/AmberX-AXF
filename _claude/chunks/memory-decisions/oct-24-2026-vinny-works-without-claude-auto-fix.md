@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=124-131 tokens=184 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=184 -->
 ## Oct 24 2026 — Vinny works without Claude; Auto fix tries Vinny first (Gizmo/Brett)
 
 Brett: "Make the agent Vinny able to work without an active Claude connection." Vinny gets a skill holding a managed

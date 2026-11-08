@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=139-146 tokens=201 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=201 -->
 ## On the VPS
 
 1. After the merge, the console's 5-minute update rebuilds it with the plugin (enabled by default).

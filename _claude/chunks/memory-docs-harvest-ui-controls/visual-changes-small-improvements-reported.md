@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=76-87 tokens=253 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=253 -->
 ## Visual changes (small improvements, reported)
 
 - Install wizard (web): the field label is bold and the required `*` is red (was plain text); help text and the

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md lines=57-69 tokens=223 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md tokens=223 -->
 ## Screenshots (after; console with AXF_APPEARANCE_HUB=off)
 
 | | |

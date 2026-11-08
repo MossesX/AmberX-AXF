@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=48-63 tokens=368 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=368 -->
 ## Added — Patches web (`apps/patches-web`, project `patches-web`)
 
 - `axf init … --template web-fastapi-wall --developer` (React/TS + FastAPI behind axHub's wall; look from axHub).

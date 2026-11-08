@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=29-34 tokens=77 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=77 -->
 ## Deleted
 
 Every hand-written `_NoRedirect`/`_NoAuthRedirect` opener, `_target_ok`, `_LOOPBACK`, all `tmp + chmod + replace`

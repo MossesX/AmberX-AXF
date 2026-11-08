@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=58-71 tokens=301 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=301 -->
 ## Guards kept / tightened
 
 - `safety.py`: the two plugin copies were byte-identical apart from the docstring; every guard kept (AST size,

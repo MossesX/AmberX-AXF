@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md lines=77-99 tokens=710 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md tokens=710 -->
 ## Screenshots (web console, dark, phone + desktop)
 Captured with `framework/cli/rebuild-shots.mjs` (`agent-manager-plugin/shots/shots.json`), 15 screens × 2 viewports, before = commit d2f58a9 (Opus build), after = this branch.
 

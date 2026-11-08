@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md lines=21-45 tokens=538 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md tokens=538 -->
 ## What changes
 
 1. **Shared recorder** (`framework/cli/walkthrough/`): move record/tts/assemble/check out of the AmberX folder,

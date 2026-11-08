@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md lines=26-34 tokens=428 -->
+<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md tokens=428 -->
 ## 4. STOPPED by Brett on Nov 1 (~credits) — folders + branches intact, none landed
 All were Opus. Restart = new build that continues the branch (build_start refuses an existing folder; tell it to merge claude/<old> first).
 1. `builds-one-page-finish` — ONE Builds page with a view toolbar (Plan/Tracker/Queue/Pending/Orchestrator/Steps) on the one store, folds in pending-grid-view; old screens redirect. Orchestrator `builds-one-page` was archived at 4/15. **Should be Fable for the view-registry/data parts.**

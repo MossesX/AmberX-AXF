@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md lines=15-26 tokens=207 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md tokens=207 -->
 ## The contract this side reads (veto@1)
 
 - Feed `GET /auth/api/approvals` and legacy `/auth/admin/approvals.json`: a held call is in `pending` with

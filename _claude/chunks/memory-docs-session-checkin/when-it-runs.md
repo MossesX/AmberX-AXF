@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=11-23 tokens=224 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=224 -->
 ## When it runs
 
 | Client | Trigger |

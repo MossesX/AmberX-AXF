@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets/android.md lines=24-42 tokens=218 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets/android.md tokens=218 -->
 ## axhub-android
 
 This app sets FLAG_SECURE (screens can't be captured, by design), so its captures came back empty.

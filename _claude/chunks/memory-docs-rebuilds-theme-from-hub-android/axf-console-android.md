@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub/android.md lines=6-23 tokens=333 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub/android.md tokens=333 -->
 ## axf-console-android
 
 | Screen | Before | After |

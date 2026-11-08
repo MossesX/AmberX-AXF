@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=202-205 tokens=134 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=134 -->
 ## GitHub App for the whole stack (Nov 1 2026, github-app, Opus)
 
 - Console plugin `github-app` (Settings → Plugins → GitHub): GitHub App manifest flow on MossesX (Create → Install on All

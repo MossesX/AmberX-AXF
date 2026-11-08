@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=244-248 tokens=235 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=235 -->
 ## Priority tags (Nov 5 2026, priority-tags, Opus)
 
 Every build has an Urgent / High / Normal / Low tag on every build view; tap or right-click to change it and see what is waiting on it. The agent queue and merge queue follow it; manual moves win. The Build queue screen now shows the real agent queue. Docs `_claude/memory/docs/priority-tags.md`, report `_claude/builds/reports/priority-tags.md`.

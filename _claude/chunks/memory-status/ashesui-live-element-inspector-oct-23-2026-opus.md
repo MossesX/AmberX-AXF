@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=150-150 tokens=244 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=244 -->
 ## Status (as of Oct 21 2026)
 
 - **AshesUI — live element inspector (Oct 23 2026, Opus; library `framework/libs/ashes`, `ai.amberx.axf.ashes`):** right-click → **AshesUI** toggles it (check mark while on; context-menu entries now take `checked` like app-menu items, drawn by `MenuList`). While on, a headless tooltip follows the pointer with what's under it (component, active asset, **the plugin or library it belongs to + the model that built it**, size, colours + contrast, font, role, React); double-click / double-tap opens a draggable, resizable inspector window: every element on screen in a tree (selection expanded), parameters in **Grid** and **Tree** tabs, live edits with revert, pick, freeze, keyboard walking, copy, filters, stats. Settings → Plugins → AshesUI. Installed in the console with every bundled plugin as an owner. Pure core tested by `framework/spec/check-ashes.mts` (53, in CI). Android twin deferred (PORTING.md). Doc: `framework/libs/README.md`.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=60-70 tokens=190 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=190 -->
 ## Screenshots (web; Android are captured by CI)
 
 The Libraries page now lists 23 libraries (lib-lock, lib-mcp, lib-voice, apiclient appear by themselves; 5 installable). The token dialog is unchanged.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=80-87 tokens=111 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=111 -->
 ## Tests before → after
 
 - axHub: 302 → 311 (data-api 9).

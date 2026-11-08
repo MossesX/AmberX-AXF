@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=101-135 tokens=810 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=810 -->
 ### Build Pilot adoption steps (exact)
 
 1. `scripts/bake-contracts.mjs` → `FILES`: replace the two plugin lines with

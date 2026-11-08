@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=104-104 tokens=199 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=199 -->
 ## Status (as of Oct 21 2026)
 
 - **Alerts bell plugin (Oct 21 2026, built on Opus):** `apps/console-web/plugins/alerts-bell` (`ai.amberx.axf.console.alerts-bell`). The alerts bell moved off the console toolbar (`console-search` 1.1.0 no longer has it; Brett: banner only) onto the banner: its own `action-button/alerts-bell` (bell, `alerts.open`) + `counter/alerts-bell` (`alerts.unread`, hidden at zero, 99+, tap = alerts.open), attached right after the clock (orders 30/31), origin = plugin id so switching it off removes both. Settings → Plugins → Alerts bell: show/hide + side (left/right, this browser). The alerts library (`framework/libs/alerts`: view, Settings → Alerts, transport, the counter) is unchanged. Web-only, no data. Self-test `test.py` (19). <!-- axf-plugin:alerts-bell -->

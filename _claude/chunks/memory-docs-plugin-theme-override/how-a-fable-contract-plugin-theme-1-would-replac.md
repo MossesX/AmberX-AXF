@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md lines=69-80 tokens=243 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md tokens=243 -->
 ## How a Fable contract (plugin-theme@1) would replace it
 
 1. Contract: keep `{ on, tokens }` under `axf.plugin.<id>.look` (add `$axf: "plugin-theme@1"` when written, read the

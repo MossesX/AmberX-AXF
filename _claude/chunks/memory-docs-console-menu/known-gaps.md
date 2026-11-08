@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md lines=90-100 tokens=203 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md tokens=203 -->
 ## Known gaps
 
 - **The default layout (`focus-top`) has `showToolbar: false`**, so View → Toolbar ticks but shows nothing until

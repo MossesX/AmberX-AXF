@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=33-46 tokens=316 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=316 -->
 ## Kept (unchanged ids and behaviour)
 - Plugin id `ai.amberx.axf.console.agent-swarm`, folder, `plugin.json` (provides `view:agent-swarm`, `settings-tab:agent-swarm`,
   `service:agent-jobs@1`), lifecycle data dir, env names; `swarm.mjs` commands and `--json` shapes; `jobs.mjs` and the

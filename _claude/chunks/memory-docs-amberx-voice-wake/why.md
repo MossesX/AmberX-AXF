@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md lines=5-15 tokens=151 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md tokens=151 -->
 ## Why
 
 Brett (Oct 29 2026, 01:13 EDT): "AmberX voice control constantly triggers tone but ActiveX doesn't — make it like ActiveX."

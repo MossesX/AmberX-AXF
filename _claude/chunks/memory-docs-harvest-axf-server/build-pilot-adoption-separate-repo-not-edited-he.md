@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=107-144 tokens=761 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=761 -->
 ## Build Pilot adoption (separate repo; not edited here)
 
 1. In `scripts/bake-contracts.mjs`, add to `FILES` (framework path → repo path):

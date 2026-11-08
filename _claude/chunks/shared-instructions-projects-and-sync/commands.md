@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/instructions/projects-and-sync.md lines=37-44 tokens=184 -->
+<!-- memory-chunk@1 source=_claude/shared/instructions/projects-and-sync.md tokens=184 -->
 ## Commands
 - `claude-sync status` / `claude-sync projects`: where it syncs, the projects found, data paths, held files.
 - `claude-sync sync`: sync every project in this repo now.

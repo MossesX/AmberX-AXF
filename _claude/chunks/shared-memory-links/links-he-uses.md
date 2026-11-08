@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/links.md lines=1-8 tokens=120 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/links.md tokens=120 -->
 # Links he uses
 
 - Kernel checklist: https://claude.ai/artifact/DvUPLjKSM3tEVTsL8pPtE2 (db `checklist/state`)

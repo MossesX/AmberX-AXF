@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=66-79 tokens=323 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=323 -->
 ## Changed (files touched outside new files)
 
 AmberX: `framework/core/{runtime,types,index}.ts`, `framework/react/{AppShell.tsx,index.ts}`, `framework/ui/axf.css`,

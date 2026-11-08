@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md lines=10-18 tokens=204 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md tokens=204 -->
 ## What shows
 - **Keys banner** turns red when a key is dead, expired or under-scoped: "GitHub token is broken", what broke, what it
   breaks, since when; **Fix** (paste a new one, tested before it's saved) and **New key** (GitHub's token page,

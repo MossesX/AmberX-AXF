@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/naming.md lines=41-51 tokens=349 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/naming.md tokens=349 -->
 ## Update 7 (Brett, Nov 3 2026, voice)
 - **Polo** hired ("Polo, man... Trust me, he won't give you no problems. He's good."). Fills the 8th build slot as an all-rounder, $7.50/h, agent card + avatar. Whether he also takes Security or QA is up to Brett.
 - Amber is named after one of Brett's cats who passed away. (Marco, Patches, Polo, Gizmo are cat names too.)

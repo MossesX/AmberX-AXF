@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=142-151 tokens=170 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=170 -->
 ## Left for later
 
 - **Kits overriding the new kinds:** `AxfComponents` has no slot for SELECT_FIELD / CHOICE_GRID / NOTE / SECTION /

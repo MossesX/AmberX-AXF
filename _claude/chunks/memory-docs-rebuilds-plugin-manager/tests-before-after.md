@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=110-124 tokens=318 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=318 -->
 ## Tests — before → after
 - Opus plugin self-test `test.py`: **46** checks (52 with FastAPI; FastAPI route checks were skipped in this sandbox) →
   **62** checks (plus the 6 route checks when FastAPI is installed, now 7 with `GET /records`). New: fixture replay of

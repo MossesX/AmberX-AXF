@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md lines=68-75 tokens=150 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md tokens=150 -->
 ## Screenshots
 ![IDE](walkthrough-studio/desktop-ide.png) ![Grid header menu](walkthrough-studio/03-header-ctx.png)
 ![Expanded row](walkthrough-studio/04-row-expanded.png) ![Drag to trash](walkthrough-studio/05-dragging-trash.png)

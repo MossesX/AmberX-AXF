@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md lines=7-49 tokens=1148 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md tokens=1148 -->
 ## What it does
 - **Projects column**: many projects (`walkthrough-project@1`); pick one and the whole studio renders it. New (blank or the
   framework walkthrough seed), duplicate, rename, compile, export, import, delete from its toolbar or right-click.

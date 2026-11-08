@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=88-111 tokens=642 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=642 -->
 ### Screenshots (web, dark, phone 412×915 @2x + desktop 1366×860)
 
 Before = clean checkout of `6406c87`; after = this branch. Files in `ui-controls/shots/{before,after}/`.

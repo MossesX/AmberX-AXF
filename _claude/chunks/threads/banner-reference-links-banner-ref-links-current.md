@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=305-310 tokens=459 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=459 -->
 ### Banner reference links (`banner-ref-links`, Current, Opus) — branch `claude/banner-ref-links`
 - **Asked (Brett, Nov 3 2026, voice):** "In the banner entries … where things are mentioned that do have a spot … clicking, double clicking … the text itself … make it open that part. Whatever it's referenced to." Build: s1 ref@1 resolver, s2 interaction, s3 every section, s4 through the generic renderer (don't touch banner-pack #251 / banner-editor #254 / banners-one), s5 commands + tests + shots + UI Review + report + PR.
 - **On the branch:** `framework/core/engines/refs.mjs` (+ `.d.mts`, fixture `framework/spec/fixtures/refs.json`, `framework/spec/check-refs.mjs`), `framework/react/components/RefText.tsx` (+ CSS in `framework/ui/axf.css`), `ActionMeta.effect`, RefText in push-banner / codebase-changes / build-manager / main-build-status, plugin `apps/console-web/plugins/ref-links/` (refs.mjs runner + CLI, server routes, web source, tests). Console re-baked. <!-- axf-plugin:ref-links -->

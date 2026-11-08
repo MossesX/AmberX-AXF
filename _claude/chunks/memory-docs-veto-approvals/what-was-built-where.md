@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md lines=27-38 tokens=559 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md tokens=559 -->
 ## What was built, where
 
 | Piece | Where |

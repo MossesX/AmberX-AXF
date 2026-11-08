@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=105-117 tokens=260 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=260 -->
 ## Migrations / adoption
 
 - **Build Pilot** (separate repo): re-bake the framework (`scripts/bake-contracts.mjs` / its `src/axf` copy) to get

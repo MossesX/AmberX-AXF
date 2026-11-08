@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/naming.md lines=18-24 tokens=153 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/naming.md tokens=153 -->
 ## Update 3 (Brett, Nov 3 2026, voice): org chart
 - **Brett** = the boss.
 - **Marco** = **VP**, one below Brett ("He's the VP, he's one below me."). Oversees Patches and the whole crew, gives Brett the rundown, only escalates what needs the boss.

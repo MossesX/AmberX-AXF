@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=364-372 tokens=362 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=362 -->
 ### dock-engine, md-studio, theme-editor (profile Urgent)
 - Asked in full: the orchestrator builds' detail (Brett Nov 2 2026 21:30 ET). Order: dock-engine (Fable) first; md-studio after it; theme-editor any time.
 - First messages: "Carry on dock-engine (Urgent) from s1 on Fable: `AXF_BUILD_PROFILE=all node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief dock-engine`." <!-- axf-plugin:build-orchestrator -->

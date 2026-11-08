@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=79-88 tokens=192 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=192 -->
 ### 6. Model
 - **Recommend** one of the top three models only, using the existing policy:
   - **Fable 5.1:** kernel internals, porting, cross-port contracts, heavy refactors

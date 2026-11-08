@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=40-66 tokens=620 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=620 -->
 ## Added — embed@1 (cross-port contract)
 
 An app can now run inside another app's frame and know it.

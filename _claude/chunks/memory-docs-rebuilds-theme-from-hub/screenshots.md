@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=88-95 tokens=136 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=136 -->
 ## Screenshots
 
 `theme-from-hub/shots/{before,after}/` (phone + desktop): `settings-appearance`, `app-tabs`, `theme-manager`, and

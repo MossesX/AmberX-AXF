@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md lines=8-15 tokens=182 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md tokens=182 -->
 ## Kept
 - Asset type `search-bar` (fields, enums, optional fields), `"widget": true` on clock + search-bar, group "Widgets".
 - Starters `search-bar/everything` (default), `search-bar/compact`; both banners keep `everything` in the centre.

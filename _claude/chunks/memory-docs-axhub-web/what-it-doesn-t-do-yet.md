@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md lines=64-85 tokens=553 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md tokens=553 -->
 ## What it doesn't do yet
 
 - The Manage areas are notes, not screens: they wait on the hub's admin API (step 4) reaching the browser with

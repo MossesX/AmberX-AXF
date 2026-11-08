@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=30-64 tokens=613 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=613 -->
 ## Proof the console installer does the same thing on the VPS
 
 `sudo bash deploy/dryrun/compare.sh HEAD` (committed) runs the installer as it was at the base commit and as it is now

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=74-87 tokens=208 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=208 -->
 ## Contract / API summary (what the Opus console build uses)
 
 ```ts

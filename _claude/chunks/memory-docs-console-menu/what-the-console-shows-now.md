@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md lines=8-15 tokens=131 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md tokens=131 -->
 ## What the console shows now
 
 - Manifest: `app-menu: console` (new asset), `hidden: ["toolbar", "nav-menu"]`. Users' own choices still win

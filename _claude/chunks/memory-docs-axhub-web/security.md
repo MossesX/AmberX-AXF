@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md lines=29-42 tokens=216 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-web.md tokens=216 -->
 ## Security
 
 The app holds **no hub token**. Both feeds are read with the browser's own hub session

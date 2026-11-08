@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=322-327 tokens=282 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=282 -->
 ### Terminal sessions nav (`terminal-sessions-nav`, Current, Opus) — branch `claude/terminal-sessions-nav`
 - Asked (Brett, Nov 3 2026, voice): a collapsible navigation menu on the left of the Terminal listing live sessions, including each session he does with Claude, so he can mirror it and jump in. Build into the existing Terminal plugin; builds on `terminal-vps-host` (#274, merged into this branch).
 - Done: s1 rail, s2 mirrors / Jump in / chat feeds / `console_session_note` + rule, s3 live websocket list with timers, sort / search / filter, Recent. Code commit `4d15d019`.

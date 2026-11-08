@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md lines=6-23 tokens=580 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md tokens=580 -->
 ## axf-console-android
 
 | Screen | Before | After |

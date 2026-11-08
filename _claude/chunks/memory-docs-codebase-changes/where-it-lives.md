@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=25-31 tokens=256 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=256 -->
 ## Where it lives
 
 - **Main copy on axHub:** `/projects/amberx-axf/_data/changes/` (the console container mounts `/projects`; resolved like every other shared file through `persist.mjs` / `cx.persist_root()`). One file per entry, rewritten only to update that entry; atomic writes; in the hub tree files are 0660 and new folders 2770 so axHub (another user) can serve them, elsewhere 0600/0700.

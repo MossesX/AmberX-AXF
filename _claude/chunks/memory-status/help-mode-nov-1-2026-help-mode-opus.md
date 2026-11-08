@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=192-200 tokens=186 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=186 -->
 ## Help mode (Nov 1 2026, help-mode, Opus)
 
 A switch that makes every AmberX app teach itself (Brett: "tooltips everywhere… off = no clutter"): the ? in the menu

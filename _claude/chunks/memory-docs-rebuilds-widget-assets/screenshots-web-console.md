@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md lines=58-68 tokens=245 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md tokens=245 -->
 ## Screenshots (web console)
 The web search bar is visually the same; the rebuild changed engines, validation and Android.
 

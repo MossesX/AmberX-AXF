@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=95-118 tokens=484 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=484 -->
 ## The baseline build (fixed reference)
 
 A small, fully specified build that never changes. Its cost per model × effort is **measured**, not guessed.

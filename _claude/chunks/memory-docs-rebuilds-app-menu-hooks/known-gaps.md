@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=112-121 tokens=156 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=156 -->
 ## Known gaps
 
 - **Android twin deferred** (port on hold, Brett Oct 21 2026): `AppMenuEngine.kt`, `AxfRuntime.addAppMenuItems` /

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=38-55 tokens=408 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=408 -->
 ## Contracts, fixtures, registries
 
 - `framework/core/library.ts` (exported from `core/index.ts`): `LIBRARY_PARAM_TYPES`, `PARAM_TRUE_WORDS`,

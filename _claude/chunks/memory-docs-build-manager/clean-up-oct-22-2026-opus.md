@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md lines=119-134 tokens=261 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-manager.md tokens=261 -->
 ## Clean up (Oct 22 2026, Opus)
 
 **Clean up (N)** in the page header opens a list of builds that look already built or removed, each ticked with the reason:

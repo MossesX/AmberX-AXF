@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=76-77 tokens=200 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=200 -->
 ## Oct 20 2026 — App catalog on axHub (app-catalog@1)
 
 - **Oct 21 2026 — Console application menu reaches everything (Brett).** The web console's app menu gets submenus and hooks for everything: remaining builds (Build manager, pending, queue), features, libraries, modules, plugins, every view, and all Build Pilot and axHub pages (through App tabs), plus every toolbar and navigation item — so the toolbar and side navigation can be hidden. **The console hides both the toolbar and the side navigation by default** once the menu reaches everything (the alerts bell moves into the menu/banner). Split: a Fable build adds the framework hook (runtime app-menu contributions with submenus and live lists, web + Kotlin, one fixture); then an Opus build fills the console's menu and plugin contributions.

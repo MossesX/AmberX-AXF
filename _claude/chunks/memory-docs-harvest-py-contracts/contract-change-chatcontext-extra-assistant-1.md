@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=36-57 tokens=493 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=493 -->
 ## Contract change: `ChatContext.extra` (assistant@1)
 
 `ChatContext { view?, title?, selection?, note?, extra?: Record<string, unknown> }` on all three ports:

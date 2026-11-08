@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=64-77 tokens=299 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=299 -->
 ## Console
 
 - **Banner** (order 4.7, after Activity and the Build manager): shows on every load while any entry isn't closed:

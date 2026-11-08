@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/todo/features-landed.md lines=5-16 tokens=229 -->
+<!-- memory-chunk@1 source=_claude/memory/todo/features-landed.md tokens=229 -->
 ## AmberX-AXF
 
 - #354 Priority tags (merged Nov 5, 1:00am ET): every build gets Urgent / High / Normal / Low. Tap the chip to change it or see what's waiting on that build. Agent queue and merge queue follow priority.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=30-44 tokens=324 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=324 -->
 ## Kept
 
 - Plugin id `ai.amberx.axf.console.mcp-client`, folder `mcp-client`, nav under Plugins, settings sub-tab id `mcp`, <!-- axf-plugin:mcp-client -->

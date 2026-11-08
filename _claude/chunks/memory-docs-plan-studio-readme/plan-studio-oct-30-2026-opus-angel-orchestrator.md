@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md lines=1-8 tokens=132 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md tokens=132 -->
 # Plan Studio (Oct 30 2026, Opus, Angel orchestrator `plan-studio`, branch `claude/plans`)
 
 Brett (voice, Oct 30): a planning studio to store and view every plan, entered by hand, categorized; every plugin and

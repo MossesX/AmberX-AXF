@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=6-19 tokens=535 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=535 -->
 ## What moved (from → to)
 
 | Item | From | To |

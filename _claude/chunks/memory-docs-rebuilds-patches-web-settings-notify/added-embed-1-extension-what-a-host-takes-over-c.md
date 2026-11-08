@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=24-47 tokens=536 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=536 -->
 ## Added — embed@1 extension: what a host takes over (cross-port contract)
 
 - **`takes`**: a host takes app functions over from the apps it embeds. Registry (open, `registerEmbedTake`):

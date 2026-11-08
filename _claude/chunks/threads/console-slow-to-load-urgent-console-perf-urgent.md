@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=242-247 tokens=250 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=250 -->
 ### Console slow to load (`urgent-console-perf`, Urgent, Opus) — branch `claude/urgent-console-perf`
 - **Asked (Brett, Nov 4 2026, voice):** "How come console is taking forever to load? I thought lazy loader was in." … "Can we dig into it?" … "Yes."
 - **Done:** s1–s4 (store lock + export fix, server read cache + spawn cap + tini, client fetchShare + getJson fallback, reconcile throttle). Report with before/after numbers: `_claude/builds/reports/urgent-console-perf.md`.

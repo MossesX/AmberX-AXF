@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=102-110 tokens=141 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=141 -->
 ## Known gaps
 
 - Kotlin written without a compiler (no Gradle plugin access here): CI is the compiler; check the "CI build errors" issue.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=20-28 tokens=210 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=210 -->
 ## Where
 
 | Piece | Where |

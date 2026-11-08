@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md lines=49-55 tokens=104 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/veto-approvals.md tokens=104 -->
 ## Known gaps
 
 - AmberX has no push transport yet (the phone polls the feed); `vetoFromPush` is ready for it.

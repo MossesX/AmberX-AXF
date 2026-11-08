@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md lines=9-16 tokens=203 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md tokens=203 -->
 ## Kept
 - Asset types `banner`, `badge`, `clock` in `framework/schemas/asset-types.json`, all fields, enums, defaults, `"optional": true`, `"attachable": true`, `hideable`, roll rules.
 - Starters `banner/amberx-thin`, `banner/amberx-accent`, `badge/new`, `clock/digital-12h|24h` (unchanged files).

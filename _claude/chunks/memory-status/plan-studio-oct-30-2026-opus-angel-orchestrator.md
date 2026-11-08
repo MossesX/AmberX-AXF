@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=179-179 tokens=194 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=194 -->
 ## Status (as of Oct 21 2026)
 
 - **Plan Studio (Oct 30 2026, Opus, Angel orchestrator `plan-studio`, branch `claude/plans`):** console plugin `plan-studio` (also targets AmberX): plan@1 contract (schema, fixtures, migrations), sectioned hand-entry editor, categories editor, 6 plan views, saved views + bulk, Catalog of every plugin/app/library/module/axHub with have/partial/planned/idea features (read from plugin.json, tracker, feature matrices; tracker items written back through catalog/status.json), plain-English AI edits as a diff, AmberX voice conversation, Turn into a build. Seeds: Docs Studio (parked, from draft PR #159), AmberX Selling It (title + link: paste the artifact), ClipX. Plans live in the hub's `_data/plan-studio/`. <!-- axf-plugin:plan-studio -->

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=741-748 tokens=389 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=389 -->
 ### feature-matrix (stopped by the STOP ORDER Oct 28 2026 15:26 EDT; Fable s1–s2 done on `fable/feature-matrix`, folded into refactor-all)
 - **Stopped:** after s2, nothing mid-way. s1 (contract) + s2 (Apply engine) are pushed on `fable/feature-matrix` (`cb43a82`, handoff `aa82cf2`), not merged. In `refactor-all`: s24, s25 ticked done; s62–s67 (= s3–s8) left. Full handoff in that branch's THREADS.md and `_claude/memory/docs/feature-matrix.md`.
 - **Asked (Brett, Oct 28 2026, claude.ai):** full request in orchestrator build `feature-matrix` detail. Model of the UI: the windows-terminal scope list https://claude.ai/artifact/CwBGQof4NBe4F3dPTczBvS (its db doc `scope/selection` is the first matrix).

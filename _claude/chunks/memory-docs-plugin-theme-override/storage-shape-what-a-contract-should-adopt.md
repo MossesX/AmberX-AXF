@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md lines=23-43 tokens=285 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md tokens=285 -->
 ## Storage shape (what a contract should adopt)
 
 One setting per plugin, only what the person changed:

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md lines=6-20 tokens=511 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md tokens=511 -->
 ## What moved (from → to)
 
 | Item | From (deleted copies) | To |

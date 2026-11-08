@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md lines=26-40 tokens=492 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md tokens=492 -->
 ## Android port (`framework/android`)
 
 | Module | Role |

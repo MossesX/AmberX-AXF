@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=10-19 tokens=199 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=199 -->
 ## What it does
 
 - A badge in the assistant's title bar while axHub has anything waiting: the count (a countdown when the only item is

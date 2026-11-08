@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md lines=27-40 tokens=259 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md tokens=259 -->
 ## alerts-bell
 
 - The alerts bell **left the toolbar** (`console-search` toolbar 1.1.0: the `alerts` item is gone; Brett: banner only).

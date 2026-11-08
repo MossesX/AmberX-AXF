@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=236-243 tokens=191 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=191 -->
 ## Menus stay on screen and scroll (Nov 3 2026, menu-scroll, Opus; branch `claude/menu-scroll`)
 menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; checks `spec/check-menu-fit.mts`, in CI) and
 `framework/react/components/menuFit.ts` (visual viewport + safe areas + `--fx-layout-phone-edge`; `useMenuFit`,

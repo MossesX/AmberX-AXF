@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md lines=17-25 tokens=521 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/banner-assets.md tokens=521 -->
 ## Changed
 - `framework/core/engines/banner.ts`: placement goes through `placeHost('banner', …)` from the widget engine; new `bannerHeight()`, `bannerSurface()` (unknown surface → `flat` instead of an unstyled bar), `clockTickMs()`, `BANNER_SURFACES`. `placeAttachments` always answers for the three sides even if a library replaced the host spec.
 - `framework/core/runtime.ts`: one host store; `attachToBanner`/`attachToToolbar` are wrappers over `attachToHost(host, a)`. A bad attach (unknown host, type the host doesn't take, bad side, unregistered asset) is **reported in the output terminal** (channel `widgets`) instead of silently vanishing; the entry is still stored so it shows once the asset is registered. New `dismissBannerPopup()` on the web (parity with Kotlin).

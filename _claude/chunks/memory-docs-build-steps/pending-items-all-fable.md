@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md lines=33-50 tokens=409 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md tokens=409 -->
 ## Pending items (all Fable)
 
 | Item | Old → new | Steps | Needs Brett |

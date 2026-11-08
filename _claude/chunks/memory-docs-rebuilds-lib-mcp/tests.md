@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=111-126 tokens=339 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=339 -->
 ## Tests
 
 Before (Opus): the plugin had no test file; a scratch smoke script against its server part passed **8** checks

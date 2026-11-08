@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/fresh-look.md lines=7-19 tokens=201 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/fresh-look.md tokens=201 -->
 ## What replaced what
 
 | Slot | Before (default) | After (default) |

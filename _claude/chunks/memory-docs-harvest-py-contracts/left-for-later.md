@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md lines=93-100 tokens=136 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/py-contracts.md tokens=136 -->
 ## Left for later
 
 - Build Pilot adoption (not done here; Build Pilot is read-only for this group): see the final message / below.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/decisions.md lines=1-5 tokens=341 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/decisions.md tokens=341 -->
 # Decisions that apply to every project
 
 - **Oct 18 2026:** rules, guidelines, decisions and memory must be active when he works in Claude Code from the mosh terminal on the VPS. First kept in the AmberX-AXF repo (`memory/`), then on axHub (`memory/<git repo name>/`). A later redesign (claude-fs@1, `/Claude`) was undone the same morning.

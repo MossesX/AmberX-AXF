@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/vision.md lines=7-14 tokens=258 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/vision.md tokens=258 -->
 ## MUST-HAVES before handing it to anyone (Brett, Nov 3 2026, voice) - the finish line, polishing phase
 Brett: "Let's get this done, start polishing it up... there's a few things that I must have." "The main thing is the Claude client."
 1. **Claude client (#1, the main thing)** - a full Claude client to do all the coding from the console or the browser: = gizmo-companion (chat first, then voice, terminal panel, files, builds, quick actions, screen share, appearance add-on). Built on the shared claude-session library so it runs in AmberX AND in the console / any browser.

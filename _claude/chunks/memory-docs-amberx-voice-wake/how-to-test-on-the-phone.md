@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md lines=66-79 tokens=284 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/amberx-voice-wake.md tokens=284 -->
 ## How to test on the phone
 
 1. Install the CI APK (`amberx-debug.apk`). Open AmberX → Voice and leave Hands-free on.

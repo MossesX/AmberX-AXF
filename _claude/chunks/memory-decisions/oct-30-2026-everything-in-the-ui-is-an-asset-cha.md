@@ -1,3 +1,3 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=144-146 tokens=186 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=186 -->
 ## Oct 30 2026 — Everything in the UI is an asset, changes everywhere (Brett)
 "Any part of the UI, anything at all that needs to be an asset in order to be changed, make an asset out of it. If something changes in an asset, it needs to change every UI in the whole thing, all the apps in the framework. Everything in the UI needs to be able to change on demand. If you need to make new asset types, do it." → Angel orchestrator build `ui-all-assets` (Fable contract phase first: audit + new asset types + engines + cross-app live sync; then Opus: move hard-coded layout values, incl. the Oct 30 compact frame in axf.css and the compact settings CSS, onto the new assets; starters; checks that flag any visible value not coming from an asset).

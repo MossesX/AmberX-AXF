@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=53-69 tokens=314 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=314 -->
 ## Apply engine (`ap.applyAll(matrix, { build?, pending?, queue?, change?, feature? }, now?)`)
 
 Pure, idempotent, never deletes, never undoes `done`:

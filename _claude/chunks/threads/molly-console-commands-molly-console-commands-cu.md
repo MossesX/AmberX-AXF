@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=281-287 tokens=378 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=378 -->
 ### Molly console commands (`molly-console-commands`, Current, Opus) — branch `claude/molly-console-commands`
 - **Asked (Brett, Nov 3 2026, voice):** Amber's console commands never reached his screen while he used the Console inside Molly; fix it (embedded console runs it, Molly brings it forward, `recent` = the client he's looking at, same for axHub/AmberX frames, console-wake through Molly, tests, report, PR, redeploy). **Addendum:** every app (Molly, axHub web, AmberX, future apps via the template) gets the Console's control surface on REST + MCP + CLI, `apps_list`, app-scoped targets, Molly relays to its frames, Plugin commands page grouped by app.
 - **On the branch:** fix commit (embed@1 `show`/`shown`, runtime `inFront`/`onFront`/`bringToFront`, console client host/front, server front-first + ACK 10 s, engine picker, Molly xLayout host + `warm` hook), tests (72 py, 7 node), report.

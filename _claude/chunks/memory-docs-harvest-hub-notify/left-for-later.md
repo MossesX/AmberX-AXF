@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md lines=68-74 tokens=184 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md tokens=184 -->
 ## Left for later
 - AXPP (Fable), hub push, admin API; Python port of lib-hub (no Python user yet).
 - `x.work`: lift ApprovalWatchService (above).

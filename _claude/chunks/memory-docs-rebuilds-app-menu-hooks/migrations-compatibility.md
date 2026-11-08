@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=88-93 tokens=85 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=85 -->
 ## Migrations / compatibility
 
 - No asset changes required. Apps that never contribute see the exact menus they had.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md lines=46-73 tokens=593 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/app-menu-hooks.md tokens=593 -->
 ## Added
 
 - **Engine** `framework/core/engines/appmenu.ts` (pure): `mergeAppMenu`, `compileAppMenu`, `buildAppMenu`,

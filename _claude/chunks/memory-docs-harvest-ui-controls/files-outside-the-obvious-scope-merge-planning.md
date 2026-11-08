@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md lines=131-141 tokens=197 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/ui-controls.md tokens=197 -->
 ## Files outside the obvious scope (merge planning)
 
 - `framework/core/index.ts`, `framework/react/index.ts` (new exports), `framework/ui/axf.css` (+71 lines of `.fx-*`).

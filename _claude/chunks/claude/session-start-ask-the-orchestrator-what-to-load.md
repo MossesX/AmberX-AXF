@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=CLAUDE.md lines=11-29 tokens=382 -->
+<!-- memory-chunk@1 source=CLAUDE.md tokens=382 -->
 ## Session start: ask the orchestrator what to load
 
 This file stays small. Everything else is in the chunked memory store, and you load only what the work needs:

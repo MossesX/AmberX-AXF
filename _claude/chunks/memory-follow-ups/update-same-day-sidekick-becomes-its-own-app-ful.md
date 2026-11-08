@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/follow-ups.md lines=14-19 tokens=254 -->
+<!-- memory-chunk@1 source=_claude/memory/follow-ups.md tokens=254 -->
 ### UPDATE (same day): sidekick becomes its own app - full Claude companion
 Brett said (verbatim): "Actually, replace the patches app, make it its own app, a full all-out Claude companion that is basically as full, powerful, as complete as the Claude app itself with everything, all the features, every setting, the connectors, plugins, a full Claude suite."
 - Supersedes the AmberX-plugin idea above. A standalone app on amberx-axf taking the slot of the old (killed) Patches wrapper app: chat + voice, projects, memory, connectors (axHub/MCP), plugins, every setting, files, artifacts-style previews, talks to Amber and the crew.

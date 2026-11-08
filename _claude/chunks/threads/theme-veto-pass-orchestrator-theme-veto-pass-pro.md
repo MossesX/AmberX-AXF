@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=373-378 tokens=429 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=429 -->
 ### Theme veto pass (orchestrator `theme-veto-pass`, profile Urgent) — branch `claude/theme-veto-pass`
 - Asked (Brett Nov 3 2026, voice, GO given): a timed override: "allow theme changes for the next 30 minutes" makes token changes run with no veto for that window. Grant approved once (traces to Brett), expiry server-side, deletes never covered, banner chip with live countdown (revoke / extend, warning 2 min before), audit + THREADS line per grant and change, `pass.undo`, read tools annotated read-only + recommended axHub policy, contract with axHub build `axhub-veto-pass`.
 - State (Nov 3 2026): **all 7 steps done**, PR open on base `claude/token-control-opus` (merge after #250). Report `_claude/builds/reports/theme-veto-pass.md`. PR [#262](https://github.com/MossesX/AmberX-AXF/pull/262). UI Review item `r-20261103-dbed7dea` (group "theme-veto-pass - Nov 3 10:41 AM") waits for Brett.

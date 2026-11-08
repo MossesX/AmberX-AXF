@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md lines=13-24 tokens=274 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/codebase-changes.md tokens=274 -->
 ## Record: change-log@1
 
 `{ $axf, id, createdAt, updatedAt, kind, title, asked, repos[], model, who {session, where, user, host}, state, steps[], result, closed }`

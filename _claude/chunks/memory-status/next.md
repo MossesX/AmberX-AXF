@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=27-30 tokens=374 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=374 -->
 ## Status (as of Oct 21 2026)
 
 - **Next:**

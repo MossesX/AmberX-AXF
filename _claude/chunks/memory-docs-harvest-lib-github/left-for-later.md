@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md lines=86-93 tokens=101 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md tokens=101 -->
 ## Left for later
 
 - Android port (`framework/android/lib-github`, Kotlin on axf-network) + the `x.lib.github` demo app, then a

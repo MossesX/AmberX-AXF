@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md lines=6-16 tokens=726 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/web-client.md tokens=726 -->
 ## What moved
 
 | Item | From (copies) | To (one source) |

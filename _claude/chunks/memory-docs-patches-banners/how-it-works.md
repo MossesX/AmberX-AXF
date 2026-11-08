@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md lines=10-26 tokens=380 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md tokens=380 -->
 ## How it works
 - **Console on its own:** exactly as before — plugin banners on its page and the App tabs bar (Console / Pilot /
   axHub). The App tabs plugin removed with Patches is back (0.2.0).

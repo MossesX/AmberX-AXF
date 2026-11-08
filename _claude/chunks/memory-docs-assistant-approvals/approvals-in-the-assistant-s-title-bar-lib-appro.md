@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=1-9 tokens=148 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=148 -->
 # Approvals in the assistant's title bar (lib-approvals)
 
 Brett, Oct 28 2026 19:19 EDT: "Make approvals pop up in the assistant's title bar, click to approve" — the same

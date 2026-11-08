@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/todo/install-keys.md lines=7-19 tokens=289 -->
+<!-- memory-chunk@1 source=_claude/memory/todo/install-keys.md tokens=289 -->
 ## Steps
 
 - [ ] 1. Find the exact vault key name the axHub `hostinger` service reads (Amber: read the service config on the VPS). Write it here: `________`

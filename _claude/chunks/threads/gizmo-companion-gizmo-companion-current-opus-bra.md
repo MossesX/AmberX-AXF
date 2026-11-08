@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=257-263 tokens=399 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=399 -->
 ### Gizmo companion (`gizmo-companion`, Current, Opus) — branch `claude/gizmo-companion`
 - **Asked (Brett, Nov 3 2026, voice):** a full Claude companion in AmberX as a plugin, as complete as the Claude app (chat, voice, connectors, crew, projects + memory, every setting, overlay bubble, commands for other plugins); harvest AmberX's assistant + the Terminal's session code into a shared lib; brains on the VPS via axHub, no keys in the APK; Gizmo replaces agent Molly.
 - **On the branch:** s1 lib `claude-session` + Terminal migration; s2 chat (plugin `apps/amberx-droid/src/plugins/companion`); s3 talk mode; s6b model + budget; s7a settings; s9 Gizmo agent (agent-manager add-on `gizmo`, roster card) + Molly → Gizmo texts.

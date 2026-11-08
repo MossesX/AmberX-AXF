@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=45-59 tokens=272 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=272 -->
 ## Changed
 
 - Server part now imports `framework/python/axf_libs/mcp` (stdlib `urllib`, synchronous, run in a thread pool);

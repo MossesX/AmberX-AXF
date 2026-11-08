@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md lines=36-50 tokens=309 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md tokens=309 -->
 ## Contract / API / fixture changes (old → new)
 | Area | Old | New |
 |---|---|---|

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/rules/RULES.md lines=1-52 tokens=7995 -->
+<!-- memory-chunk@1 source=_claude/rules/RULES.md tokens=7995 -->
 # AmberX AXF rules
 
 Project files (axhub-projects@1): `_claude/` ↔ `/projects/amberx-axf/_claude/` on the hub. Rules for every project

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md lines=21-55 tokens=569 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md tokens=569 -->
 ## Stack & layout
 
 TypeScript/React 18 + Vite (web), Node 22 (CLI/build engine, `.mjs`), Kotlin + Jetpack Compose (Android, JDK 17, AGP 8.7, API 35), Python 3.12 + FastAPI (console API + MCP).

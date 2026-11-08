@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=288-292 tokens=186 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=186 -->
 ### Console wake (`console-wake`, Urgent)
 - **Asked:** a console command must reach a console no matter what: queue + deliver on reconnect, fix the drop when approving inside the console, wake a closed console through AmberX, settings, toast, delivery in the MCP result, tests, report, PRs.
 - **State:** all steps done; PRs open (AmberX-AXF `claude/console-wake`, axHub #35). Report `_claude/builds/reports/console-wake.md`.

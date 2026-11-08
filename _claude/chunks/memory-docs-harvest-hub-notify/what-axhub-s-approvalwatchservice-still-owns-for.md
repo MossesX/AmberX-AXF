@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md lines=47-53 tokens=279 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md tokens=279 -->
 ## What AXHub's ApprovalWatchService still owns (for the Fable `x.work` group)
 1. Foreground service lifecycle: `startForeground(ID_WATCH, …, FOREGROUND_SERVICE_TYPE_SPECIAL_USE)` with the manifest `specialUse` subtype property; quiet stop when Android refuses a background start.
 2. The polling loop: `HubClient.Default.feed(prefs.base)` → `HubState.update` → `prefs.track(ids)` → clear gone alerts / alert fresh ones → update the ongoing notification; interval `prefs.intervalSec` (15–300 s), **5 min back-off when signed out / not admin**, a one-time "sign in" notice per signed-out spell.

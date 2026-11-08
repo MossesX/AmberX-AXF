@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=96-102 tokens=115 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=115 -->
 ## Known gaps / for Brett
 
 - Android written without a compiler beyond the kernel (lib-hub, axf-ui, apps compile in CI only).

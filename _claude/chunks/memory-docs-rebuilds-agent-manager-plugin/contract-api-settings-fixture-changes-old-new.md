@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md lines=51-66 tokens=338 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md tokens=338 -->
 ## Contract / API / settings / fixture changes (old → new)
 | What | Old | New |
 |---|---|---|

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=109-110 tokens=224 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=224 -->
 ## Oct 21 2026 — the axHub web app is an AXF developer app (Opus)
 
 - **Oct 23 2026 — Plugin open mode + build-engine default rules (Brett):** every plugin with a UI (new and existing) has a setting in its settings interface for where it opens: the main application area (default), a floating window, a dialog or a tab group. The build engine (not Claude) checks default configurations whenever anything is built (app, plugin, dialog) and applies the rules that exist from a registry; first rule: plugins that render a UI open in the main application area by default. Built on Opus (Oct 23 2026, pending `plugin-model-badges-update`): placement@1 (`core/engines/placement.ts`, runtime `setPlacement`/`openPlaced`, setting `axf.placement.<id>` "Opens in"), build-defaults@1 registry `framework/schemas/build-defaults.json` + `framework/cli/build-defaults.mjs` (= Python `server/build_defaults.py`).

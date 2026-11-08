@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md lines=1-9 tokens=122 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md tokens=122 -->
 # Banners live in Patches (Oct 21 2026, Opus)
 
 Brett: "Disable all banner plugins from console and enable them in Patches so they are always there regardless what

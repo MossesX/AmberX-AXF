@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md lines=54-79 tokens=364 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md tokens=364 -->
 ## Screenshots
 
 Before = `bbef259` (main), after = this branch; fake GitHub run (green, "Android framework + console" #812) and

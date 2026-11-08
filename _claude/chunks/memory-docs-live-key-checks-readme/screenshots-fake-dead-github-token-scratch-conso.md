@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md lines=19-29 tokens=172 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/live-key-checks/README.md tokens=172 -->
 ## Screenshots (fake dead GitHub token, scratch console)
 | Phone | Desktop |
 |---|---|

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/design-package.md lines=6-30 tokens=573 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/design-package.md tokens=573 -->
 ## What changed
 - **Removed:** asset type `appearance-package`, engine `core/engines/appearancepackage.ts` (moved to
   `designpackage.ts`), `spec/check-appearance-package.mts`, its JSON schema, every `appearance-package/` folder, and the

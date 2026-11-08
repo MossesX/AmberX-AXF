@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/appearance-asset-tokens/README.md lines=1-12 tokens=214 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/appearance-asset-tokens/README.md tokens=214 -->
 # Appearance asset tokens — screenshots (PR #61)
 
 Settings → Appearance → Assets in the web Dev Console, phone (412 px) and desktop, taken with

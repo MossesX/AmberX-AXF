@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md lines=44-57 tokens=313 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plugin-theme-override.md tokens=313 -->
 ## How it applies
 
 - Every plugin UI root carries `data-axf-plugin="<pluginId>"` (a `display: contents` wrapper around each view, dialog,

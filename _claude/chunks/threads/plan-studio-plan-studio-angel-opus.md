@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=481-500 tokens=519 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=519 -->
 ### Plan Studio (`plan-studio`, Angel, Opus)
 
 **Asked (Brett, Oct 30 2026, voice):** a planning studio to store and view every plan, entered by hand with all the info,

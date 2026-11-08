@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=21-29 tokens=176 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=176 -->
 ## Removed
 
 - The plugin's own protocol code (`_with_client` on the `mcp` SDK `Client`/`streamable_http_client`, `_dump`,

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md lines=104-122 tokens=412 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/windows-terminal-fable.md tokens=412 -->
 ## Screenshots
 
 Captured with `framework/cli/rebuild-shots.mjs` ([shots.json](windows-terminal-fable/shots/shots.json);

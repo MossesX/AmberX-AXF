@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md lines=6-26 tokens=457 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/banner-status-bell.md tokens=457 -->
 ## main-build-status
 
 - A framework **`status`** widget on the banner's right, just after the clock (order 25; the bell is at 30/31).

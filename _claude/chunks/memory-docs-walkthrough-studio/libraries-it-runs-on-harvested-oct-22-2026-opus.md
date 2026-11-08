@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md lines=50-58 tokens=223 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-studio.md tokens=223 -->
 ## Libraries it runs on (harvested Oct 22 2026, Opus; pending `walkthrough-harvest`)
 The studio's reusable parts are framework libraries now, each with **parts** (library@1: features inside a library you
 include and configure one by one — a designer can list them under the library's Customize… sheet):

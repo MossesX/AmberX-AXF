@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/clipx.md lines=1-18 tokens=321 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/clipx.md tokens=321 -->
 # ClipX — clipboard manager (plan, ON HOLD)
 
 **Asked (Brett, Oct 28 2026 15:18 EDT):** "Build a clipboard manager to save, sort, manage, view, edit, archive, create

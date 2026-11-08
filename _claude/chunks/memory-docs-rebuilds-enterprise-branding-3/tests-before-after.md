@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding-3.md lines=23-29 tokens=202 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding-3.md tokens=202 -->
 ## Tests before → after
 - console-web typecheck + build ✓ → ✓; theme-swap ✓ → ✓; menu-reach 228 ✓; interface-scope 7 ✓.
 - amberx-droid `test.mjs` 1629/1630 (banner default) → 1863/1863; build ✓.

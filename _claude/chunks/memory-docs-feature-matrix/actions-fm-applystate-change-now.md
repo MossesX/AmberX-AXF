@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md lines=41-52 tokens=227 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/feature-matrix.md tokens=227 -->
 ## Actions (`fm.apply(state, change, now?)`)
 
 `add` (refuses a duplicate) · `seed` (adds the matrix when missing, then only the items it lacks: idempotent; existing

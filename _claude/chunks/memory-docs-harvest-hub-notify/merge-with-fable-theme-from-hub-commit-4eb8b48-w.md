@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md lines=54-67 tokens=827 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/hub-notify.md tokens=827 -->
 ## Merge with `fable/theme-from-hub` (commit 4eb8b48), which also creates `framework/android/lib-hub`
 Same module (`lib-hub`), package `ai.amberx.axf.hub`, library id `ai.amberx.axf.hub`. Already shaped to merge as one:
 - `HubCredentials.kt`, `HubSignIn.kt`, `src/main/AndroidManifest.xml`: **copied byte-identical** from 4eb8b48 (both sides identical → no conflict).

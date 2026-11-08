@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/STATUS.md lines=119-119 tokens=238 -->
+<!-- memory-chunk@1 source=_claude/memory/STATUS.md tokens=238 -->
 ## Status (as of Oct 21 2026)
 
 - *[retired]* **Banners in Patches (Oct 21 2026, Opus):** standalone, the console is as before (plugin banners on its page, App tabs bar). As a tab in Patches the console page shows no plugin banners and no tab group: Patches shows the banners above every tab through the console's **banner strip** page `?axf-strip=banners` (`apps/console-web/src/bannerStrip.tsx`) in a web view (`apps/patches/.../views/BannerStrip.kt`, bridge `AxfPatchesStrip.height/open`, setting `patches.banners`), and runs the tabs itself. Banner taps in the strip (actions, dialogs, views) relay to the Console tab over a same-origin BroadcastChannel; the Console tab runs them only while embedded in Patches. Activity, build manager, systems check and keys banners minimize with **_** (new icon `minimize`); codebase changes has a **_** under its ✕ column; every banner launches expanded. Doc + shots: `_claude/memory/docs/patches-banners.md`.

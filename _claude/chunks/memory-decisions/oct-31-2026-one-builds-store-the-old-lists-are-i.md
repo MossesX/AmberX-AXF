@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=147-154 tokens=193 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=193 -->
 ## Oct 31 2026 — One builds store; the old lists are its projections (Brett, GO on the Urgent profile)
 "Just do whatever you gotta do... get that done ASAP. First thing done." Master cleanup: one builds store owned by the
 orchestrator (`_claude/builds/store.json`, builds@1), profiles are a field on each build, Pending is a status, the

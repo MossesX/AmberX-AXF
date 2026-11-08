@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=1-32 tokens=517 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=517 -->
 # Threads and builds log
 
 Every Claude session reads this file when it loads the project and keeps it current, so work can be picked up from

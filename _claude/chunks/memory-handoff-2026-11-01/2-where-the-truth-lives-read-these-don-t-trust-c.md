@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md lines=17-22 tokens=259 -->
+<!-- memory-chunk@1 source=_claude/memory/handoff-2026-11-01.md tokens=259 -->
 ## 2. Where the truth lives (read these, don't trust chat memory)
 - `_claude/THREADS.md` (per-thread "To carry on"), `STATUS.md`, `_claude/shared/rules/RULES.md`, decisions logs, `install_steps.md` (Parts A–M), `_claude/builds/reports/*.md` (one report per build).
 - Orchestrator: `_claude/builds/profiles/<profile>/orchestrator.json` — profiles `refactor` (main), `angel`, `breakroom`, `urgent`. CLI: `AXF_BUILD_PROFILE=<p> node apps/console-web/plugins/build-orchestrator/orchestrator.mjs list|next|brief|act`. Read-only view: axHub `vps.check name=orchestrator`.

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/fresh-look.md lines=47-53 tokens=111 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/fresh-look.md tokens=111 -->
 ## Screenshots (console, light, scratch data, hub off)
 Before: ![](fresh-look/shots/before/home-desktop.png) ![](fresh-look/shots/before/home-phone.png)
 After: ![](fresh-look/shots/after/home-desktop.png) ![](fresh-look/shots/after/home-phone.png)

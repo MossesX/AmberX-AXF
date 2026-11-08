@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md lines=20-32 tokens=239 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper.md tokens=239 -->
 ## Removed
 
 - **App tabs plugin** (`apps/console-web/plugins/app-tabs`, Opus build of Oct 19 + the axHub tab of Oct 20 + the

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=671-671 tokens=94 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=94 -->
 ## Done (recent)
 
 | Thread | Result | Updated |

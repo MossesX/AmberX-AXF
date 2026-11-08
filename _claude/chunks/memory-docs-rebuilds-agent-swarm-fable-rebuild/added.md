@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md lines=72-87 tokens=381 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md tokens=381 -->
 ## Added
 - `framework/core/engines/swarm-rules.mjs` (+ `.d.mts`): `SWARM` registry, `TAGS`, normalizers and validators for the
   seven records, `swarmErrors` / `normSwarm` front doors, `parseReport`, `budgetTokens`, `jsonSchemas()`; swarm-roster@1

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=133-141 tokens=180 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=180 -->
 ## Known gaps / placeholders
 - Kotlin written without a compiler (engine, host, module, screen, settings screen, conformance test); Android
   screenshots pending CI. Compose previews named `PluginManager_<layout>_<view>` are planned, not yet added.

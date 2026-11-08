@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md lines=32-43 tokens=683 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/agent-manager-plugin.md tokens=683 -->
 ## Changed
 - **Validation** of every collection goes through `contract.validate_item` (same messages as before, e.g. "tool names must be function names", "put secrets in an environment variable"). New normalisation rules: unknown references are dropped with a *warning* (not silently), self-delegation is dropped, memory numbers must be numbers, `temperature` 0–2, `maxLoops` capped at 6, workflow step ids must be unique and are sanitised, training sources are checked per type (URL / query / globs / text / uri / tool), chunk size 300–6000 and overlap ≤ 1000 (as before).
 - **System prompt** is built by `contract.compose_system_prompt` (identical text to the Opus composer; the container guide / safety note are passed as `extras`).

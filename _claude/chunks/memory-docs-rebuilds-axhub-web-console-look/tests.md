@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md lines=61-67 tokens=75 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/axhub-web-console-look.md tokens=75 -->
 ## Tests
 
 - `npx -y tsx framework/spec/check-hub.mts`: 85 → **338** checks.

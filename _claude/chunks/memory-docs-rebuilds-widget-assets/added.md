@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md lines=28-35 tokens=360 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/widget-assets.md tokens=360 -->
 ## Added
 - Android `axf-ui/components/Widgets.kt`: `WidgetRenderers` registry, `AxfWidget`, `AxfClock` (minute-aligned ticks, IANA zone via `java.util.TimeZone`, same text as the web through `BannerEngine.formatClock`), `AxfSearchBar` (width = space token × engine number).
 - Android `axf-ui/components/Search.kt`: `AxfLiveSearch` (results on every keystroke in an `AxfPopover`, up/down/Enter/Escape on hardware keyboards, IME Search picks, locked hits toast, kind chips), `AxfSearchHost` (views with icons/keywords, dialogs, open windows → index; focuser for windows and the asset gallery), `LocalAxfSearchHost`, `SearchShortcuts` (Ctrl/Cmd+K from `AxfRoot`; `/` deliberately not taken at the root because the root can't tell whether a text field has focus).

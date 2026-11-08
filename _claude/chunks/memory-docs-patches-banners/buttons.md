@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md lines=27-38 tokens=199 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/patches-banners.md tokens=199 -->
 ## Buttons
 - New framework icon `minimize` (an underscore, `framework/react/components/Icon.tsx`).
 - **Activity** and **Build manager** (the two building banners), **Systems check** and **Keys needed** (error

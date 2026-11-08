@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=20-28 tokens=158 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=158 -->
 ## Who uses it now
 
 - Console core: `main.py` (token file, state, GitHub reads, artifact download), `wall.py`, `credentials.py`, `alerts.py`,

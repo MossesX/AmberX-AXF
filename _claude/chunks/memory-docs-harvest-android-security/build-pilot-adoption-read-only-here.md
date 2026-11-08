@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md lines=84-91 tokens=156 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md tokens=156 -->
 ## Build Pilot adoption (read-only here)
 Build Pilot doesn't reference lib-lock or these classes today. When its Android stack generates apps:
 1. Emit `LockModule(this, …)` (Application first) when lib-lock is picked; `axf install lock` already writes that.

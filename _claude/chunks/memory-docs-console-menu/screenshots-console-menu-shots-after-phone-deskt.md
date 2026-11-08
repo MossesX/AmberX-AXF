@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md lines=79-89 tokens=166 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/console-menu.md tokens=166 -->
 ## Screenshots (`console-menu/shots/after/`, phone + desktop)
 
 01 console with toolbar + nav hidden · 02 Console · 03 Builds · 04 Open pending items (live) · 05 Framework → Libraries ·

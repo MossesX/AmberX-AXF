@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=450-455 tokens=301 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=301 -->
 ### GitHub App (`github-app`, Opus) — branch `claude/github-app`, on main
 - **Asked:** one GitHub App for the stack (no more dying tokens; repo creation), one-click setup, broker, every caller on it, health + banner, then finish the axp-backup push.
 - **Done:** broker + plugin + helpers + checks; VPS helpers installed (`/usr/local/bin/axf-git-cred`, `/usr/local/bin/gh`); `/root/axp-backup/bin/finish.sh` creates the 3 private repos with the app's user token on its next 15-min run after Brett authorizes, then pushes (secret scan in backup.sh unchanged).

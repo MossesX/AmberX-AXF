@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=7-23 tokens=361 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=361 -->
 ## Summary
 
 - **Theme as data.** The selection (asset id per appearance slot, spacing, hidden chrome, a small palette) is an

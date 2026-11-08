@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=39-50 tokens=133 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=133 -->
 ### 2. Repo (if there is a working directory)
 - **Show:**
   - `git remote get-url origin`, the branch and short HEAD

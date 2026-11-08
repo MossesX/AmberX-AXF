@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/voice-command-center.md lines=3-9 tokens=332 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/voice-command-center.md tokens=332 -->
 ## voice-command@1 (`apps/amberx-droid/src/plugins/commands/web/core.ts`)
 - **Category** = a tab: `notes`, `tasks`, `developer`, `snippets`, each with trigger words ("note", "task", "dev", "ask"…). A sentence starting with a trigger only matches that tab; otherwise every tab is tried and the page on screen breaks ties (+3), a trigger +5, each literal word +10.
 - **Command** = `{id, category, kind: action|chain|wizard, group, label, description, phrases[], steps[], slots?, optional?, settings?, defaultOff?, needsAi?, developer?}`. Phrases are patterns: words + `{slot}`.

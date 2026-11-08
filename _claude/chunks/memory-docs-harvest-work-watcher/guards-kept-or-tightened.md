@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md lines=47-64 tokens=422 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/work-watcher.md tokens=422 -->
 ## Guards kept or tightened
 Kept, one for one: never over the lock screen and lock-screen text only "Approval waiting" (unchanged `Alerts.kt` + channel
 PRIVATE), `FLAG_SECURE` (MainActivity untouched), session never backed up (backup rules untouched), the `axhub_watch` prefs

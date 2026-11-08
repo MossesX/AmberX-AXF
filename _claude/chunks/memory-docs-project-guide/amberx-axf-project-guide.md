@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md lines=1-16 tokens=605 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md tokens=605 -->
 # AmberX AXF: project guide
 
 The long part of CLAUDE.md, moved here on Nov 8 2026 (build memory-restructure) so it no longer loads in every

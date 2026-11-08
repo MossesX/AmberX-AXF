@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md lines=124-142 tokens=375 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/deploy-misc.md tokens=375 -->
 ## Build Pilot: nav asset rename steps (cleanup; not done here)
 
 Build Pilot edited three framework starters in place: `src/assets/nav-menu/{icon-rail,pill-tabs,sidebar-list}.json`

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md lines=74-84 tokens=181 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/build-steps.md tokens=181 -->
 ## Everything that needs Brett, in one list
 
 1. `named-asset-rule` step 2 — two decisions (rename vs alias; element assets required or opt-in).

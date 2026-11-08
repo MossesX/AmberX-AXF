@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md lines=50-59 tokens=213 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md tokens=213 -->
 ## voice-vault
 
 | Screen | Before | After |

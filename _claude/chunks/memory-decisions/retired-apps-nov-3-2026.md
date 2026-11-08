@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=164-166 tokens=235 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=235 -->
 ## Retired apps (Nov 3 2026)
 
 - **Nov 3 2026 — Patches and Build Pilot retired (Brett, voice).** "Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references." Both apps and every integration with them are removed from AmberX-AXF (apps, console banner strip and Pilot menu, app-ci@1 APK builds, the `pilot` plugin-catalog kind, watched repos, CI, rules, docs), their VPS containers and Coolify apps are removed after a snapshot to `/root/archive/retired-2026-11-03/`, their axHub projects are removed, and `MossesX/Build-Pilot` is archived (read-only; deleting it is Brett's one click). The Dev Console and every other app run standalone. embed@1 stays a generic host contract with no host. Every earlier decision about Patches or Build Pilot below is **superseded** by this one (marked *[superseded Nov 3 2026]*); the text is kept as history. Report `_claude/builds/reports/kill-patches-pilot.md`.

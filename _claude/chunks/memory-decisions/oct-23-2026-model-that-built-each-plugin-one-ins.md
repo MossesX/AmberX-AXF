@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=111-112 tokens=232 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=232 -->
 ## Oct 21 2026 — the axHub web app is an AXF developer app (Opus)
 
 - **Oct 23 2026 — Model that built each plugin + one instance per plugin (Brett):** every plugin@1 manifest records `builtWith.model` (+ `builtAt`), required by the build engine; a model badge shows wherever plugin info appears. "Only allow one instance of a plugin. Do not allow, under any circumstance, the same plugin to be installed twice but built by different models." Same plugin = same id, `builtWith.replaces`, same folder stem (`-fable`/`-opus`… stripped) or same name (`framework/cli/plugin-instances.mjs` = `instance_clash` in the console loader); install, catalog install and the loader refuse a second build; another model's build only arrives through the confirmed swap (Plugin Update → Replace, `plugin-catalog.mjs swap`). Plugin Update plugin: versions from axHub's catalog, one-click Update, Rebuild with <model> parks a from-scratch rebuild.

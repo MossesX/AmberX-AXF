@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md lines=94-108 tokens=233 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/lib-github.md tokens=233 -->
 ## Build Pilot adoption (separate repo; not edited here)
 
 Build Pilot makes no GitHub calls of its own today (APK builds go through the console's `app-ci@1`), so nothing to

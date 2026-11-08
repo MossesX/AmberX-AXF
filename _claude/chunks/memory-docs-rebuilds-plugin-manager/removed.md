@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md lines=17-26 tokens=193 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/plugin-manager.md tokens=193 -->
 ## Removed
 - The Opus plugin folder was removed first with its `uninstall.mjs --all`
   (commit `468df70`): folder deleted, the three marked doc lines stripped, `plugin-lifecycle.mjs check --after-uninstall`

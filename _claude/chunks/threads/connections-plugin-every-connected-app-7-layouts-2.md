@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=630-649 tokens=516 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=516 -->
 ### Connections plugin (every connected app, 7 layouts)
 - **Asked (Brett, Oct 26 2026, in the "Repo thread status review" chat; cut off, never started):** "Add tmux, ntfy,
   and tailscale to the install instructions and the step by step instructions [done in PR #106]. Also connect those 3

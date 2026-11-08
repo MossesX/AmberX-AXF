@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md lines=72-86 tokens=279 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/axf-server.md tokens=279 -->
 ## Tests before → after
 
 | Test | Before | After |

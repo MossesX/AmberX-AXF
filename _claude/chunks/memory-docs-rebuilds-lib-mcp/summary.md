@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md lines=6-20 tokens=352 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/lib-mcp.md tokens=352 -->
 ## Summary
 
 The MCP client is now a **framework library on all three ports** instead of console-only code: one pure engine

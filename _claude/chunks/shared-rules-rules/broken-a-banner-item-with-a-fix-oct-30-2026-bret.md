@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md lines=72-73 tokens=224 -->
+<!-- memory-chunk@1 source=_claude/shared/rules/RULES.md tokens=224 -->
 ## Sessions
 
 - **Broken = a banner item with a fix (Oct 30 2026, Brett: "You need to make sure things like that go into one of the banners. I need to see that kind of shit."):** anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a **Fix** or **Auto fix** button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get("axf.health@1").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there. <!-- axf-plugin:systems-check -->

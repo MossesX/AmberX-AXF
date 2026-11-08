@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md lines=43-48 tokens=81 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/assistant-approvals.md tokens=81 -->
 ## Live updates
 
 Polled every 5 s while the page is visible (2 s – 5 min, `everyMs`), on focus, on `axf:hub-check`

@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=617-629 tokens=289 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=289 -->
 ### AmberX Design Package (Fable rebuild)
 - **Built on Opus (Oct 27 2026, Brett: "Do in opus"):** branch `rebuild/design-package-opus`. New types `design-package`
   (style + colour theme + layout + behaviour theme, optional `extras` = what the appearance package held) and

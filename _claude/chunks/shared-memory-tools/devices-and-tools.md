@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/shared/memory/tools.md lines=1-10 tokens=268 -->
+<!-- memory-chunk@1 source=_claude/shared/memory/tools.md tokens=268 -->
 # Devices and tools
 
 - Phone: Samsung Galaxy S26 Ultra. Uses **Moshi** (mosh client) to reach the VPS; wanted real-time voice-to-text for voice notes.

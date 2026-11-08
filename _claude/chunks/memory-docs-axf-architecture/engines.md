@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md lines=41-53 tokens=255 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axf-architecture.md tokens=255 -->
 ## Engines
 
 | Engine | Input asset(s) | Output |

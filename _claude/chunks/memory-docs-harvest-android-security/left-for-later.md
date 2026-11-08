@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md lines=77-83 tokens=207 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/harvest/android-security.md tokens=207 -->
 ## Left for later
 - `axf.lock.keybound`: `KeystoreFileStore(configureKey = { setUserAuthenticationRequired(true) … })` + `decryptCipher()` in a BiometricPrompt `CryptoObject`.
 - System-scheduled clipboard clear (if the app is killed before the timer).

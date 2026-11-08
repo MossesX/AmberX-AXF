@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md lines=26-33 tokens=176 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/theme-from-hub.md tokens=176 -->
 ### axHub (`e8c9b68`)
 - `packages/server/src/data-api.ts`: `GET/PUT /data/:project/*path`, `GET /data/:project`, `GET /data-events?watch=`;
   `DataChangeFeed` wraps the data store (`main.ts`) so MCP tools / claude-sync writes also notify. Auth: admin session

@@ -49,7 +49,7 @@ function StudioView() {
         </div>
       </header>
       <div className="axp-memory-manager__cols">
-        {column !== 'hidden' && (phone ? <details className="axp-memory-manager__drawer"><summary className="fx-small">Files, snippets and wizards</summary><Column /></details> : <Column />)}
+        {column !== 'hidden' && (phone ? <details className="axp-memory-manager__drawer"><summary className="fx-small">Memory, files and chunks</summary><Column /></details> : <Column />)}
         <DockHost className="axp-memory-manager__dock" empty={<div className="fx-empty axp-memory-manager__empty"><p>Pick a file on the left to open it here.</p><p className="fx-small fx-muted">Drag a tab onto another tab header to group it, or onto a pane's edge to split.</p></div>} />
       </div>
     </div>

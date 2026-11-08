@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md lines=70-78 tokens=155 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/plan-studio/README.md tokens=155 -->
 ## Known gaps
 
 - No GitHub credentials in the build sandbox: push, PR and closing #159 go through one veto call (see THREADS).

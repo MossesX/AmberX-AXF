@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=1-11 tokens=210 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=210 -->
 # Patches web + one Settings for every app + Patches serves notifications — report (Opus, Oct 21 2026)
 
 **What Brett asked:** build the web port of Patches; make Patches responsible for serving all Android notifications;

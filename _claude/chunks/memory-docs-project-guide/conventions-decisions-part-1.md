@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md lines=100-132 tokens=2728 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/project-guide.md tokens=2728 -->
 ## Conventions & decisions
 
 - **Everything visible is an asset** (`asset@1`). Engines compile assets into tokens/variables; UI reads only compiled tokens and never hardcodes colours or sizes. Hot-swap = `runtime.swap(type, id)`.

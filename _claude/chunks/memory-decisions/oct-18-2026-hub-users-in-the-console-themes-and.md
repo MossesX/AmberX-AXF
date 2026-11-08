@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=38-38 tokens=202 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=202 -->
 ## Dev Console
 
 - Oct 18 2026: **Hub users in the console; themes and plugins are granted per user, default off** (built on Opus). Accounts stay on axHub (name, username, email, password; admin + Conrad seeded once from `AXHUB_ADMIN_PASSWORD` + `AXHUB_SEED_USERS` in Coolify, never in a repo). Only admins add users; added users, admin resets and seeds have temporary passwords and must pick their own at their first sign-in. Regular users may open the console; only admins change themes, colours, layouts or style unless granted `console.themes`, and a user uses a plugin only with `console.plugin.<folder>`, both ticked on the hub's users page. The console server is default-deny for users (page, read-only catalog data, granted plugins); every write, the terminal, alerts, secrets and MCP stay admin-only.

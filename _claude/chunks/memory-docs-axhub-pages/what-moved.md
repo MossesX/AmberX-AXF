@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/axhub-pages.md lines=7-21 tokens=271 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/axhub-pages.md tokens=271 -->
 ## What moved
 
 | Old hub page (plain HTML, deleted) | Now | Old address |

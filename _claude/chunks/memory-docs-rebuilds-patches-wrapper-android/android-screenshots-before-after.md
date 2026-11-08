@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md lines=1-5 tokens=97 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-wrapper/android.md tokens=97 -->
 # Android screenshots — before / after
 
 Captured automatically by `.github/workflows/rebuild-shots.yml` on an API 34 emulator (Pixel 6, demo-mode status bar).

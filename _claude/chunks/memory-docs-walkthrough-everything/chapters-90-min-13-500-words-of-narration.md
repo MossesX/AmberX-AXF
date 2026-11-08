@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md lines=46-70 tokens=453 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/walkthrough-everything.md tokens=453 -->
 ## Chapters (~90 min, ~13,500 words of narration)
 
 | # | Chapter | Where | Min |

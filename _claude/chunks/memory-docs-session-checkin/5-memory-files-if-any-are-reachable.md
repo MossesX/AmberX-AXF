@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md lines=67-78 tokens=188 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/session-checkin.md tokens=188 -->
 ### 5. Memory files (if any are reachable)
 - **Show:** where memory was loaded from, in priority order:
   1. axHub `memory/amberx-axf/` (live)

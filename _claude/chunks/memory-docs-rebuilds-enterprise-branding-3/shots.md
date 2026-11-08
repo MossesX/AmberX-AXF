@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding-3.md lines=30-39 tokens=219 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/enterprise-branding-3.md tokens=219 -->
 ## Shots
 `enterprise-branding-3/shots/{before,after}/` — console home (phone + desktop), theme manager, codebase changes, settings; after only: brand library (phone + desktop + preview); AmberX desktop + phone (+ page window after). Taken with a local stand-in axHub (404 = nothing saved) because the sandbox can't reach axhub.amberxai.com.
 

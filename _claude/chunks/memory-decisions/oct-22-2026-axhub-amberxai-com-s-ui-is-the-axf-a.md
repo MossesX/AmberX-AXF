@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/decisions.md lines=113-119 tokens=127 -->
+<!-- memory-chunk@1 source=_claude/memory/decisions.md tokens=127 -->
 ## Oct 22 2026 — axhub.amberxai.com's UI is the AXF app (Brett)
 
 The live axHub site gets its UI from the AXF app `apps/axhub-web` (rebuilt with the Dev Console's and Patches' look

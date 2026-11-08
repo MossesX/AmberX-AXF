@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md lines=64-79 tokens=349 -->
+<!-- memory-chunk@1 source=_claude/memory/docs/rebuilds/patches-web-settings-notify.md tokens=349 -->
 ## Changed — Patches Android (`apps/patches`)
 
 - `WebAppHolder("patches", takes = [settings, notifications])`; tabs get `onMessage` (lib-hub bridge).

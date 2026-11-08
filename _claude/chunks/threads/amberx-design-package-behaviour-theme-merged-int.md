@@ -1,4 +1,4 @@
-<!-- memory-chunk@1 source=_claude/THREADS.md lines=593-616 tokens=628 -->
+<!-- memory-chunk@1 source=_claude/THREADS.md tokens=628 -->
 ### AmberX Design Package + Behaviour theme (merged into enterprise-branding)
 - **Orchestrator (Oct 27 2026):** build `design-package`, Fable s1-s5 then Opus s6-s9 (one switch).
 - **Asked (Brett, Oct 27 2026, in the "Repo thread status review" chat):** "Make new AmberX Design Package asset type
