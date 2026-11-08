@@ -1,0 +1,86 @@
+{
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "terminal-header-responsi-mw81w0eq-terminal-header-menu",
+ "name": "terminal-header-responsi-mw81w0eq: Everything in ⋯",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Only the pinned items (session name, status, chain title) sit on the bar at every width; every other command is always in ⋯. Calmest bar. Setting: Terminal settings → Header → style 'menu'.",
+ "tags": [
+  "ui-choice",
+  "choice-set:terminal-header-responsi-mw81w0eq",
+  "choice-option:terminal-header-menu"
+ ],
+ "data": {
+  "variant": "labels",
+  "align": "spread",
+  "showSearch": false,
+  "density": "compact",
+  "divider": false,
+  "groups": [
+   {
+    "id": "terminal-header",
+    "items": [
+     {
+      "id": "session",
+      "icon": "monitor",
+      "label": "Session name",
+      "action": "terminal.connection"
+     },
+     {
+      "id": "status",
+      "icon": "activity",
+      "label": "Status"
+     },
+     {
+      "id": "settings",
+      "icon": "settings",
+      "label": "Terminal settings",
+      "action": "settings.open:terminal"
+     },
+     {
+      "id": "find",
+      "icon": "search",
+      "label": "Find"
+     },
+     {
+      "id": "size",
+      "icon": "type",
+      "label": "Text size"
+     },
+     {
+      "id": "claude",
+      "icon": "sparkles",
+      "label": "Claude Code",
+      "action": "terminal.claude"
+     },
+     {
+      "id": "copy",
+      "icon": "copy",
+      "label": "Copy"
+     },
+     {
+      "id": "paste",
+      "icon": "paste",
+      "label": "Paste"
+     },
+     {
+      "id": "mouse",
+      "icon": "monitor",
+      "label": "Mouse mode"
+     },
+     {
+      "id": "mosh",
+      "icon": "zap",
+      "label": "Mosh mode"
+     },
+     {
+      "id": "hide",
+      "icon": "chevron-up",
+      "label": "Hide toolbar"
+     }
+    ]
+   }
+  ]
+ }
+}
