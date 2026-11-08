@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1565,
- "updatedAt": "2026-11-08T19:26:10.365Z",
+ "rev": 1566,
+ "updatedAt": "2026-11-08T19:26:22.398Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122664,9 +122664,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-08T18:47:33.943Z",
+   "updatedAt": "2026-11-08T19:26:21.276Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:26:21.276Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -122681,7 +122686,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:26:21.276Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw883n8c04er14",
+     "title": "",
+     "text": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:26:21.276Z",
+     "updatedAt": "2026-11-08T19:26:21.276Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw883n8c05dxvz",
+     "title": "",
+     "text": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:26:21.276Z",
+     "updatedAt": "2026-11-08T19:26:21.276Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw883n8c060gef",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/one-way-to-start-builds-the-orchestrator-dispatc.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/one-way-to-start-builds-the-orchestrator-dispatc.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:26:21.276Z",
+     "updatedAt": "2026-11-08T19:26:21.276Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -122690,7 +122785,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122705,7 +122800,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:26:21.276Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
