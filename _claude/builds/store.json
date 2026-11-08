@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1566,
- "updatedAt": "2026-11-08T19:26:22.398Z",
+ "rev": 1567,
+ "updatedAt": "2026-11-08T19:26:34.304Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122818,12 +122818,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-08T19:12:15.011Z",
+   "updatedAt": "2026-11-08T19:26:33.365Z",
    "builtAt": "",
    "notes": [
     {
      "text": "PURPOSE (Brett): it's for PITCHING the product. Keep it dead simple. Main flow = three picks: (1) plugin or topic, (2) length in minutes, (3) narrator voice; then ONE Generate button. Generate writes a pitch script (hook up front, benefits not specs, closing call to action), picks the best screens, and plays a polished demo on real data: highlights, smooth zooms/pans, captions, background music, logo intro/outro. After: optional script tweak, preview, export video (MP4) or share link. Advanced editing (timeline, record-by-doing) stays tucked behind an Advanced section, never in the main flow.",
      "at": "2026-11-08T19:12:15.011Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:26:33.365Z"
     }
    ],
    "approvals": [],
@@ -122840,7 +122844,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-08T19:26:33.365Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw883wk507uzgy",
+     "title": "",
+     "text": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:26:33.365Z",
+     "updatedAt": "2026-11-08T19:26:33.365Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw883wk508h0bv",
+     "title": "",
+     "text": "Make a new one. I want a, a, a demonstration designer plugin.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:26:33.365Z",
+     "updatedAt": "2026-11-08T19:26:33.365Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw883wk50974gl",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/demonstration-designer-plugin-new-standalone.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/demonstration-designer-plugin-new-standalone.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-08T19:26:33.365Z",
+     "updatedAt": "2026-11-08T19:26:33.365Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -122849,7 +122943,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122864,7 +122958,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-08T19:26:33.365Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
