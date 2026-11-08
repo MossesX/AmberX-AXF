@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1482,
- "updatedAt": "2026-11-08T16:59:54.691Z",
+ "rev": 1483,
+ "updatedAt": "2026-11-08T17:00:13.138Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116620,14 +116620,14 @@
    "title": "Molly is the one native shell for every app (no embedding); all-apps menus; layout modes with IDE + tab-group containers; Patches leftovers retired",
    "category": "Molly",
    "detail": "Brief: /root/axf-builds/molly-one-shell-r2/.brief.md (r1/r2 runs died before doing anything; r3 = this run). Patches itself was already removed by kill-patches-pilot; this build clears what is left.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T16:59:27.815Z",
+   "updatedAt": "2026-11-08T17:00:05.994Z",
    "builtAt": "",
    "notes": [
     {
@@ -116665,12 +116665,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-08T17:00:05.994Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:57:58.979Z",
-     "updatedAt": "2026-11-08T16:57:58.979Z"
+     "updatedAt": "2026-11-08T17:00:06.912Z"
     },
     {
      "id": "s2",
@@ -116967,7 +116967,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
