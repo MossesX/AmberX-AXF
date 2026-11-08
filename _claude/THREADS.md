@@ -750,8 +750,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 05:34 UTC · `skins-asset-types` s6 done (current) · orchestrator
-- 2026-11-07 05:34 UTC · `skins` s9 done, → running (main-framework) · orchestrator
 - 2026-11-07 05:34 UTC · `skins` s10 done (main-framework) · orchestrator
 - 2026-11-07 05:34 UTC · `skins` s11 done, → complete (main-framework) · orchestrator
 - 2026-11-07 05:34 UTC · `skins` note (main-framework) · orchestrator
@@ -1150,6 +1148,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 17:44 UTC · `account-health-failover` s3 done (all) · orchestrator
 - 2026-11-08 17:44 UTC · `account-health-failover` s4 done (all) · orchestrator
 - 2026-11-08 17:45 UTC · `ui-api-parity-rule` branch claude/ui-api-parity-rule-r3, PR #393 (all) · builds-live
+- 2026-11-08 17:45 UTC · `full-api-control` → built, branch claude/ui-api-parity-rule-r3, PR #393 (all) · builds-live
+- 2026-11-08 17:45 UTC · `full-api-control` note (all) · orchestrator
 
 ## Token passes (log)
 

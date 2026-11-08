@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-08T17:45:49.236Z",
+ "updatedAt": "2026-11-08T17:46:01.467Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67208,14 +67208,14 @@
    "title": "The API controls everything in the console",
    "category": "",
    "detail": "Step 1 terminal typing (open tab on target, type visibly ~30 chars/s, keys, read screen, close; 'terminal' screen id). Step 2 audit every UI element, coverage table + registry. Step 3 fill gaps through control@1 generic addressing, UI Review approve/reject/pick. Step 4 CI check + rules.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/full-api-control",
-   "pr": "",
+   "branch": "claude/ui-api-parity-rule-r3",
+   "pr": "#393",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-07T16:58:59.434Z",
+   "updatedAt": "2026-11-08T17:45:50.327Z",
    "builtAt": "2026-11-07T16:58:59.435Z",
    "notes": [
     {
@@ -67225,6 +67225,10 @@
     {
      "text": "All 9 steps built and committed on claude/full-api-control (not pushed, per the brief). Waiting on Brett's UI Review pick r-20261107-e7b50396 (API Browser look), then push + PR. Report _claude/builds/reports/full-api-control.md.",
      "at": "2026-11-07T16:58:59.434Z"
+    },
+    {
+     "text": "Never pushed until Nov 8 2026: merged into claude/ui-api-parity-rule-r3 and lands with ui-api-parity-rule in PR #393 (still waits on UI Review r-20261107-e7b50396).",
+     "at": "2026-11-08T17:45:50.327Z"
     }
    ],
    "approvals": [],
