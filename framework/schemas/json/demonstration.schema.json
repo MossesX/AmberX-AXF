@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/demonstration.schema.json",
+  "title": "AmberX AXF Demonstration asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "demonstration"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "steps"
+      ],
+      "properties": {
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 60,
+          "items": {
+            "type": "object",
+            "required": [
+              "say"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "say": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "do": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "target": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "highlight": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "title": {
+                "type": "string"
+              },
+              "wait": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 30000
+              }
+            }
+          }
+        },
+        "about": {
+          "type": "string",
+          "description": "the glossary entry id this demonstrates"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 200
+        },
+        "app": {
+          "type": "string"
+        },
+        "surface": {
+          "enum": [
+            "live",
+            "preview",
+            "recorder"
+          ]
+        },
+        "voice": {
+          "type": "object",
+          "properties": {
+            "narrator": {
+              "type": "string"
+            },
+            "speed": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 2
+            }
+          }
+        },
+        "chain": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string"
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string"
+          }
+        },
+        "generated": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "enum": [
+                "glossary",
+                "manual",
+                "book",
+                "help-intro",
+                "recorder"
+              ]
+            },
+            "at": {
+              "type": "string"
+            },
+            "build": {
+              "type": "string"
+            }
+          }
+        },
+        "editable": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -139,6 +139,8 @@ jobs:
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
+      - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
+        run: npx -y tsx apps/console-web/plugins/glossary-index/test.mts && node apps/console-web/plugins/glossary-index/catalog.mjs --check  # axf-plugin:glossary-index
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
@@ -261,6 +263,7 @@ jobs:
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
+            npx -y tsx framework/spec/check-demo.mts                   # demonstration@1 / book@1 / clip@1 / docs@1: registry, fixture replay (generator, book plan, moves, clip tags, docs plan), validators agree, starters, schemas
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
             npx -y tsx framework/spec/check-claude-session.mts         # claude-session lib: Terminal reads it, companion helpers (Gizmo)
             npx -y tsx framework/spec/check-listeners.mts              # listeners lib (listener@1): cases.json replay (= Android ListenerRules), policy keys, backoff + give-up, silent restarts, yield, one mic owner, device doc, baked copies

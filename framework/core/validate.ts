@@ -12,6 +12,7 @@ import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { cardErrors } from './engines/card-rules.mjs';
+import { demoAssetErrors } from './engines/demo-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
@@ -127,6 +128,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...jobTypeErrors(raw.type, data));
   // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, data));
+  // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
+  errors.push(...demoAssetErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
