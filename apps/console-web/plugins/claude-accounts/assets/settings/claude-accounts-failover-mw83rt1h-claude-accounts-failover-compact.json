@@ -1,0 +1,36 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-accounts-failover-mw83rt1h-claude-accounts-failover-compact",
+ "name": "claude-accounts-failover-mw83rt1h: Compact",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Phone-sized: only out now open, the rest folded.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-accounts-failover-mw83rt1h",
+  "choice-option:claude-accounts-failover-compact"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.failover": "basic"
+  },
+  "view": "compact",
+  "order": [
+   "out",
+   "failover",
+   "alerts",
+   "events",
+   "logins"
+  ],
+  "open": [
+   "out"
+  ]
+ }
+}

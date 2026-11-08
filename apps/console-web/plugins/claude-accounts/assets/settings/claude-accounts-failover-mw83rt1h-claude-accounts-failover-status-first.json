@@ -1,0 +1,37 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-accounts-failover-mw83rt1h-claude-accounts-failover-status-first",
+ "name": "claude-accounts-failover-mw83rt1h: Status first",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "What is wrong first: out now and account events open, settings folded.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-accounts-failover-mw83rt1h",
+  "choice-option:claude-accounts-failover-status-first"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.failover": "basic"
+  },
+  "view": "status-first",
+  "order": [
+   "out",
+   "events",
+   "logins",
+   "failover",
+   "alerts"
+  ],
+  "open": [
+   "out",
+   "events"
+  ]
+ }
+}
