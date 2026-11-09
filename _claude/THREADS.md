@@ -757,9 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 15:38 UTC · `console-android-app-tabs` → built (all) · orchestrator
-- 2026-11-07 15:40 UTC · `postgres-console` → pending, note (all) · reconciler
-- 2026-11-07 16:09 UTC · `full-api-control` added (6 steps) (all) · orchestrator
 - 2026-11-07 16:17 UTC · `full-api-control` s1 done, → running (all) · orchestrator
 - 2026-11-07 16:17 UTC · `full-api-control` s2 done (all) · orchestrator
 - 2026-11-07 16:34 UTC · `full-api-control` s3 done (all) · orchestrator
@@ -1157,6 +1154,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:29 UTC · `urgent-approval-links-say-method-not-allowed` s1 done, → running (all) · orchestrator
 - 2026-11-09 02:29 UTC · `urgent-approval-links-say-method-not-allowed` s2 done (all) · orchestrator
 - 2026-11-09 02:30 UTC · `urgent-approval-links-say-method-not-allowed` branch claude/approval-links-fix, PR #403 (all) · builds-live
+- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
+- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` branch claude/plan-studio-receives-a-valid-shipped-feature-man (all) · pipeline
+- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
 
 ## Token passes (log)
 
