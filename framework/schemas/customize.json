@@ -1,6 +1,6 @@
 {
   "$schema": "asset-customize@1",
-  "_doc": "Extra editable tokens every customizable asset type gets in Settings → Appearance → Assets, on top of the fields its own asset carries. Values are saved per slot in setting axf.custom.<type> = {all, shared, byId} (all = one set of values for every asset of the type, the default; otherwise one per asset id) and apply to the active asset of the slot. Every value maps to theme tokens (colours = colour-theme tokens, sizes = multiples of the style theme), so themes still restyle everything. A token with `types` applies to those types only. `targets` = the elements each type styles (root, and its items for hover/click). Engine: core/engines/customize.ts; icon sets in icon-sets.json. New token = one entry here + one case in customizeCss.",
+  "_doc": "Extra editable tokens every customizable asset type gets in Settings → Appearance → Assets, on top of the fields its own asset carries. Values are saved per slot in setting axf.custom.<type> = {all, shared, byId} (all = one set of values for every asset of the type, the default; otherwise one per asset id) and apply to the active asset of the slot. Every value maps to theme tokens (colours = colour-theme tokens, sizes = multiples of the style theme), so themes still restyle everything. A token with `types` applies to those types only. `targets` = the elements each type styles (root, its items for hover/click, and `text` = text children inside the root that keep a look of their own, such as .fx-banner__logo or .fx-card__head: the type's text tokens reach them too, all but the size, which stays their own scale step). Engine: core/engines/customize.ts; icon sets in icon-sets.json. New token = one entry here + one case in customizeCss.",
   "tokens": [
     {
       "key": "fontSize",
@@ -559,7 +559,8 @@
     },
     "nav-menu": {
       "root": ".fx-nav",
-      "item": ".fx-nav__item"
+      "item": ".fx-nav__item",
+      "text": ".fx-nav__header, .fx-nav__label"
     },
     "context-menu": {
       "root": ".fx-ctx",
@@ -567,14 +568,17 @@
     },
     "tab-group": {
       "root": ".fx-tabs, .fx-tabgroup__bar",
-      "item": ".fx-tab"
+      "item": ".fx-tab",
+      "text": ".fx-tabs__pick"
     },
     "banner": {
       "root": ".fx-banner",
-      "item": ".fx-banner__item"
+      "item": ".fx-banner__item",
+      "text": ".fx-banner__logo"
     },
     "dialog": {
-      "root": ".fx-dialog"
+      "root": ".fx-dialog",
+      "text": ".fx-dialog__head"
     },
     "popup": {
       "root": ".fx-popover, .fx-dropdown, .fx-banner__pop"
@@ -583,19 +587,23 @@
       "root": ".fx-btn, .fx-iconbtn"
     },
     "slider": {
-      "root": ".fx-slider"
+      "root": ".fx-slider",
+      "text": ".fx-slider__head, .fx-slider__value"
     },
     "container": {
-      "root": ".fx-card"
+      "root": ".fx-card",
+      "text": ".fx-card__head"
     },
     "gauge": {
-      "root": ".fx-gauge"
+      "root": ".fx-gauge",
+      "text": ".fx-gauge__center, .fx-gauge__barvalue, .fx-gauge__digits"
     },
     "meter": {
       "root": ".fx-meter"
     },
     "search-bar": {
-      "root": ".fx-search"
+      "root": ".fx-search",
+      "text": ".fx-search__hit, .fx-search__detail, .fx-search__kind, .fx-search__empty"
     },
     "badge": {
       "root": ".fx-badge, .fx-banner__badge, .fx-toolbtn__badge, .fx-nav__badge, .fx-tab__badge, .fx-menu__badge"
@@ -616,13 +624,16 @@
       "root": ".fx-widget-status"
     },
     "counter": {
-      "root": ".fx-widget-counter"
+      "root": ".fx-widget-counter",
+      "text": ".fx-widget-counter__num, .fx-widget-counter__label"
     },
     "progress": {
-      "root": ".fx-widget-progress"
+      "root": ".fx-widget-progress",
+      "text": ".fx-widget-progress__label, .fx-widget-progress__value"
     },
     "avatar": {
-      "root": ".fx-widget-avatar"
+      "root": ".fx-widget-avatar",
+      "text": ".fx-widget-avatar__initials"
     },
     "link": {
       "root": ".fx-widget-link"

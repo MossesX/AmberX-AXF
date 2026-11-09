@@ -19,6 +19,12 @@
  *   uncovered  a type the skin can't reach: a widget without a style target, or an excluded type with no declaration.
  *              `uncoveredTypes()` is what CI fails on.
  *
+ * Every registered type carries an explicit declaration (build skins-restyle-everything, Nov 2026) so a reader of the
+ * registry sees how a skin reaches it without running this engine; the derivation above stays the fallback for a type
+ * added without one. A skin ingredient (`ingredient: true`, with `by: slot`) is a type the skin is made of: the colour,
+ * style and layout themes, typography, density, sizing and the behaviour theme set the `--fx-*` tokens every rule
+ * reads and draw nothing of their own, so they never get a style target or parts and a screenshot gate skips them.
+ *
  * Composite assets (Brett: "button = box + text, nav = container + items"): a type's style target gives the elements
  * the parts reach — `box` (the root), `text`, `icon`, and `items` when the target names them — so one `parts` block
  * styles every element of the type at once.
@@ -137,10 +143,18 @@ export function declaredCoverage(typeSpec) {
   const d = isObj(typeSpec) && isObj(typeSpec.skin) ? typeSpec.skin : null;
   if (!d) return null;
   const by = COVERAGE_KINDS.includes(d.by) ? d.by : '';
-  return { by, via: str(d.via, 80), why: str(d.why, 300) };
+  return { by, via: str(d.via, 80), why: str(d.why, 300), ingredient: d.ingredient === true };
 }
 
-/** Problems with a type's declaration (CI lists them): a kind outside the list, `none` without a why. */
+/** Is the type a skin ingredient (declared `skin: { by: slot, ingredient: true }`)? */
+export function isIngredient(typeSpec) {
+  return declaredCoverage(typeSpec)?.ingredient === true;
+}
+
+/**
+ * Problems with a type's declaration (CI lists them): a kind outside the list, `none` without a why, `reference`
+ * without a via, `ingredient` on anything but a slot.
+ */
 export function declarationErrors(type, typeSpec) {
   const d = isObj(typeSpec) && isObj(typeSpec.skin) ? typeSpec.skin : null;
   if (!d) return [];
@@ -148,6 +162,15 @@ export function declarationErrors(type, typeSpec) {
   if (!COVERAGE_KINDS.includes(d.by)) out.push(`${type}: skin.by must be one of ${COVERAGE_KINDS.join(', ')}`);
   if (d.by === 'none' && !str(d.why, 300).trim()) out.push(`${type}: skin.by "none" needs a why`);
   if (d.by === 'reference' && !str(d.via, 80).trim()) out.push(`${type}: skin.by "reference" needs via (the field or slot that names it)`);
+  if (d.ingredient === true && d.by !== 'slot') out.push(`${type}: skin.ingredient is only for a slot type (the themes and scale assets a skin is made of)`);
+  return out;
+}
+
+/** Problems between a declaration and the style targets: a skin ingredient draws nothing, so a target for it is a mistake. */
+export function ingredientErrors(spec, targets = {}) {
+  const out = [];
+  if (!isObj(spec)) return out;
+  for (const [type, t] of Object.entries(spec)) if (isIngredient(t) && isObj(targets) && targets[type]) out.push(`${type}: a skin ingredient has no drawn element; remove its style target from schemas/customize.json`);
   return out;
 }
 
@@ -171,6 +194,7 @@ export function coverageOf(type, spec, targets = {}, never = []) {
   if (errors.length) return { ...base, by: 'uncovered', declared: true, why: errors.join('; ') };
   const d = declaredCoverage(t);
   if (d) {
+    if (d.ingredient) return { ...base, by: d.by, also: [], elements: [], declared: true, via: d.via, why: d.why, ingredient: true };
     const also = d.by !== 'parts' && elements.length ? ['parts'] : [];
     return { ...base, by: d.by, also, declared: true, via: d.via, why: d.why };
   }
@@ -203,7 +227,7 @@ export function coverageSummary(rows) {
 
 /** The types a skin's `parts` may name: everything with a style target, registry order. */
 export function partsTypes(spec, targets = {}) {
-  return Object.keys(isObj(spec) ? spec : {}).filter((t) => partElements(isObj(targets) ? targets[t] : null).length);
+  return Object.keys(isObj(spec) ? spec : {}).filter((t) => !isIngredient(spec[t]) && partElements(isObj(targets) ? targets[t] : null).length);
 }
 
 /** Validation messages for a skin's `parts` block: unknown types, types without a style target, values that aren't maps. */
@@ -213,6 +237,7 @@ export function partsErrors(parts, spec, targets = {}) {
   const out = [];
   for (const [type, values] of Object.entries(parts)) {
     if (!isObj(spec) || !spec[type]) out.push(`data.parts.${type}: not a registered asset type`);
+    else if (isIngredient(spec[type])) out.push(`data.parts.${type}: a skin ingredient (the skin picks it; it draws nothing of its own, so it has no parts)`);
     else if (!partElements(isObj(targets) ? targets[type] : null).length) out.push(`data.parts.${type}: this type has no style target, so a skin can't style its parts`);
     if (!isObj(values)) out.push(`data.parts.${type} must be an object (token → value)`);
   }

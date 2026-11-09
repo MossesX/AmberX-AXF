@@ -213,6 +213,15 @@ console.log(`check-skin: ${n} checks passed`);
   eq(partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), cv.partsErrors.bad, 'parts errors');
   eq(declarationErrors('mystery', types.mystery), ['mystery: skin.by must be one of slot, parts, reference, bundle, none'], 'a kind outside the list');
   eq(declarationErrors('hush', types.hush), ['hush: skin.by "none" needs a why'], 'none needs a why');
+  // skin ingredients (build skins-restyle-everything): the themes and scale assets a skin is made of draw nothing and take no parts
+  const ing = { typography: { label: 'Typography', group: 'Themes', skin: { by: 'slot', ingredient: true, why: 'the skin picks it' } }, badge: { label: 'Badge', group: 'Chrome', attachable: true, skin: { by: 'parts', ingredient: true, why: 'wrong' } } };
+  const ingRow = coverageTable(ing as never, { typography: { root: '.fx-type' }, badge: { root: '.fx-badge' } }, never).find((r) => r.type === 'typography')!;
+  eq({ by: ingRow.by, also: ingRow.also, elements: ingRow.elements, ingredient: (ingRow as { ingredient?: boolean }).ingredient }, { by: 'slot', also: [], elements: [], ingredient: true }, 'an ingredient is a slot with no parts even if a target names it');
+  eq(declarationErrors('badge', ing.badge), ['badge: skin.ingredient is only for a slot type (the themes and scale assets a skin is made of)'], 'ingredient needs by: slot');
+  eq(partsTypes(ing as never, { typography: { root: '.fx-type' } }), [], 'an ingredient never takes parts');
+  eq(partsErrors({ typography: { fontWeight: '300' } }, ing as never, { typography: { root: '.fx-type' } }), ['data.parts.typography: a skin ingredient (the skin picks it; it draws nothing of its own, so it has no parts)'], 'parts on an ingredient are refused');
+  eq(skinCoverage().filter((r) => (r as { ingredient?: boolean }).ingredient).map((r) => r.type), ['color-theme', 'style-theme', 'layout', 'behavior-theme', 'typography', 'density', 'sizing'], 'the real registry: seven ingredients');
+  ok(skinCoverage().every((r) => r.declared), 'the real registry: every type declares how a skin reaches it');
 
   // the real registry: nothing uncovered (CI: spec/check-skin-coverage.mjs says the same from plain node)
   eq(skinUncovered().map((r) => `${r.type}: ${r.why}`), [], 'every registered asset type has skin coverage');

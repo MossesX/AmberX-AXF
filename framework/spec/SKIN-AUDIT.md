@@ -71,11 +71,8 @@ Look values written in, which no theme, asset or part changes:
 - **s4, batch 2 (tables, forms, charts, plugin screens)**: same for card / search / widget / slider / gauge / meter
   children; plugin CSS literals moved onto tokens (`scale-adopt.mjs`); table, input and chip rules checked against the
   theme tokens.
-- **Fable (s6)**: explicit `skin` entries in `asset-types.json`, and an optional `text` selector list on customize
-  targets (engine change in `customizeCss`: a type's text parts also set the elements that carry its text, such as
-  `.fx-banner__logo`, `.fx-nav__header`, `.fx-card__head`). Shadowed text children wait for that: making them
-  `inherit` in CSS would change the default look.
-- **s5**: the screenshot gate (each skin vs the default, fail on unchanged elements) after s6 lands.
+- **s5**: the screenshot gate (each skin vs the default, fail on unchanged elements) now that s6 has landed. Skin
+  ingredients (`ingredient: true` in the registry) and `none` types have no drawn element and are skipped.
 
 ## Done
 
@@ -90,6 +87,19 @@ Look values written in, which no theme, asset or part changes:
   outlines and SVG chart / graph strokes (gauge ticks and needle, plugin graph edges, recorder, avatars) read
   `--fx-border-w` with a floor (`max(calc(var(--fx-border-w) * 2), 2px)`), so a skin with heavier borders thickens
   them and a look token that sets the border width to 0 can't hide focus rings or chart lines. Same values by default.
+- **s6 (Fable)**: every registered type now declares how a skin reaches it (`skin: { by, why, via?, ingredient? }`
+  in `schemas/asset-types.json`; 44 added, 55 of 55 declared, `check-skin-coverage` fails on a type without one).
+  The seven skin ingredients (colour, style and layout themes, behaviour theme, typography, density, sizing) are
+  declared `ingredient: true`: the skin is made of them, they set the `--fx-*` tokens and draw nothing, so they never
+  get a style target or parts (`partsErrors` refuses them; a target for one fails CI). The four content types
+  (demonstration, book, clip, docs) are `none`, like job types and Home cards. Customize targets take an optional
+  `text` selector list (`schemas/customize.json`): the type's text parts (weight, family, spacing, case, italic, line
+  height, colour; not the size, which stays the child's own scale step) are also drawn under those children, so
+  `.fx-banner__logo`, `.fx-nav__header` / `__label`, `.fx-tabs__pick`, `.fx-dialog__head`, `.fx-card__head`,
+  `.fx-slider__head` / `__value`, `.fx-gauge__center` / `__barvalue` / `__digits`, the search hits and messages, and
+  the counter, progress and avatar text follow the skin. Additive: with no parts the sheet is empty as before, so the
+  default look is unchanged; the Windows skin's counter weight now reaches the number and label. Shadowed is down to
+  the non-text children (dots, bars, fills, tracks, close buttons, the banner pop-over).
 - **Still theme-only (no asset type)**: tables (`.fx-table`, datagrid), inputs and fields, chips, switches, toasts,
   scrollbars, terminal, cards that aren't containers (`.fx-idcard`, `.fx-dcard`). They follow the skin's colour, style,
   typography, density and sizing assets; a skin can't give them their own parts until they get asset types (Fable).

@@ -12,8 +12,10 @@
  *
  *   target     a style target whose root or item class nothing renders (framework/react, framework/libs): the type's
  *              parts never reach the screen (the bug this build fixed for banner badges)
- *   shadowed   a drawn element inside a typed element (`.fx-banner__logo` inside `.fx-banner`) that sets its own colour,
- *              font, radius, border or shadow: the type's parts set the root and items, the element keeps its own
+ *   shadowed   a drawn element inside a typed element (`.fx-banner__dot` inside `.fx-banner`) that sets its own colour,
+ *              font, radius, border or shadow: the type's parts set the root and items, the element keeps its own. A
+ *              text child the target names (`text`, s6) is reached for its text look (colour, font) and listed only
+ *              for the rest (radius, border, background, shadow)
  *   untyped    a component no asset type owns (tables, inputs, toasts, chips, scrollbars …) that sets colour, font,
  *              radius, border or shadow: only the theme tokens restyle it, a skin's parts can't
  *   literal    a look value written in instead of read from a token (font-weight numbers, pill radii, px outlines),
@@ -38,9 +40,12 @@ const classOf = (sel) => (sel.match(/\.(fx-[a-z0-9_-]+)/) || [])[1] || '';
 const blockOf = (cls) => cls.replace(/(__|--).*$/, '');
 
 /* type → { roots, items } (class names) */
-const targets = Object.entries(custom.targets).map(([type, t]) => ({ type, roots: split(t.root).map(classOf), items: split(t.item).map(classOf) }));
+const targets = Object.entries(custom.targets).map(([type, t]) => ({ type, roots: split(t.root).map(classOf), items: split(t.item).map(classOf), text: split(t.text).map(classOf) }));
 const ownerOf = new Map();
 for (const t of targets) for (const c of [...t.roots, ...t.items]) ownerOf.set(c, t.type);
+/** Text children a target names: the type's text parts (colour, font) reach them. */
+const textChild = new Set(targets.flatMap((t) => t.text));
+const TEXT_LOOK = /^(color|font-family|font-weight)$/;
 const blockOwner = new Map();
 // a block belongs to the type whose root or item IS the block (.fx-banner → banner, .fx-tab → tab-group); a root that
 // is itself an element of another block (.fx-banner__clock) owns only its own children
@@ -61,7 +66,7 @@ function walk(dir, out = []) {
 const code = [...walk(join(ROOT, 'framework/react')), ...walk(join(ROOT, 'framework/libs'))].map((f) => readFileSync(f, 'utf8')).join('\n');
 const rendered = (cls) => new RegExp(`(["'\`\\s{])${cls}(["'\`\\s$}])`).test(code);
 const target = [];
-for (const t of targets) for (const c of [...t.roots, ...t.items]) if (c && !rendered(c)) target.push({ type: t.type, class: c });
+for (const t of targets) for (const c of [...t.roots, ...t.items, ...t.text]) if (c && !rendered(c)) target.push({ type: t.type, class: c });
 
 /* ---------- css rules ---------- */
 const css = readFileSync(cssFile, 'utf8').replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '));
@@ -83,7 +88,8 @@ const untyped = new Map();
 const literal = [];
 for (const r of rules) {
   const subject = subjectOf(r.sel);
-  const look = r.decls.filter(([p]) => LOOK.test(p));
+  // a text child's colour and font follow the type's text parts (customize.json `text`); its size is its own step
+  const look = r.decls.filter(([p]) => LOOK.test(p) && !(textChild.has(subject) && (TEXT_LOOK.test(p) || p === 'font-size')));
   for (const [p, v] of r.decls) {
     if (p === 'font-weight' && /^\d+$/.test(v)) literal.push({ line: r.line, sel: r.sel, decl: `${p}: ${v}` });
     else if (p === 'border-radius' && /999px|50%/.test(v)) literal.push({ line: r.line, sel: r.sel, decl: `${p}: ${v}` });

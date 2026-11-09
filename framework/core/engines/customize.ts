@@ -38,6 +38,13 @@ export interface CustomTarget {
   root: string;
   /** Its items (hover / click / item padding); absent = the root reacts itself. */
   item?: string;
+  /**
+   * Text children inside the root that keep a look of their own (`.fx-banner__logo`, `.fx-nav__header`,
+   * `.fx-card__head` …), so the type's text parts reach them too (comma list; absent = the root and items carry all
+   * the text). They keep their own size step (their scale token); weight, family, spacing, case, italic, line height
+   * and colour follow the skin.
+   */
+  text?: string;
 }
 
 export interface IconSet {
@@ -235,6 +242,7 @@ export function customizeCss(type: string, values: CustomValues): string {
   if (!Object.keys(v).length) return '';
   const roots = split(target.root);
   const items = target.item ? split(target.item) : [];
+  const textChildren = target.text ? split(target.text) : [];
   const root: string[] = [];
   const text: string[] = [];
   const item: string[] = [];
@@ -317,6 +325,9 @@ export function customizeCss(type: string, values: CustomValues): string {
   const out: string[] = [];
   if (root.length || text.length) out.push(`${scoped(roots)}{${[...root, ...text].join(';')}}`);
   if (text.length && items.length) out.push(`${under(roots, target.item!)}{${text.join(';')}}`);
+  // text children keep their own size step; everything else about the type's text follows
+  const childText = textChildren.length ? text.filter((d) => !d.startsWith('font-size:')) : [];
+  if (childText.length) out.push(`${under(roots, target.text!)}{${childText.join(';')}}`);
   if (item.length) out.push(`${items.length ? under(roots, target.item!) : scoped(roots)}{${item.join(';')}}`);
   if (hover.length) out.push(`${pressSel(':hover')}{${hover.join(';')}}`);
   if (active.length) out.push(`${pressSel(':active')}{${active.join(';')}}`);

@@ -40,14 +40,21 @@ type by hand, so a new type is covered (or fails CI) the moment it is registered
 | by | how the skin reaches it | which types |
 | --- | --- | --- |
 | `slot` | the skin picks the active asset (`assets[type]`, the three themes) | every type not excluded from appearance slots |
-| `parts` | the skin styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items) | widgets and attachables (label, badge, clock, counter …); slot types with a target take parts too |
+| `parts` | the skin styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items, plus the target's `text` children) | widgets and attachables (label, badge, clock, counter …); slot types with a target take parts too |
 | `reference` | the skin names it through a field (`iconPack`) or an asset it picks (`via: branding` for logo marks) | declared on the registry entry |
 | `bundle` | a whole look the skin stands in for | design package, style package, interface, skin (declared) |
-| `none` | no look (declared with a `why`) | access policy, help, job type, card |
+| `none` | no look (declared with a `why`) | access policy, help, job type, card, demonstration, book, clip, docs |
+
+Since build skins-restyle-everything (Nov 9 2026) every registered type carries the declaration
+(`"skin": { "by", "why", "via"?, "ingredient"? }`) and the check fails on a type without one; the derivation from flags
+stays the fallback for a type added mid-build. `ingredient: true` (a slot) marks the seven assets a skin is made of
+(colour, style and layout themes, behaviour theme, typography, density, sizing): they set the `--fx-*` tokens, draw
+nothing, never get a style target or parts, and a screenshot gate skips them.
 
 `node framework/spec/check-skin-coverage.mjs` fails on any type with none of these (a widget without a style target, an
-excluded type with no declaration, a bad declaration). `node framework/cli/skins.mjs coverage` and `covers <skin>`
-print the table; Settings → Appearance → *What a skin covers* shows it.
+excluded type with no declaration, a bad declaration, an ingredient with a target, a `text` selector nothing renders).
+`node framework/cli/skins.mjs coverage` and `covers <skin>` print the table (REST: `GET /api/skins/coverage` in the
+theme-manager plugin); Settings → Appearance → *What a skin covers* shows it.
 
 **Scopes** (the icon-map model): the chain for a place is `plugin:<id>` → `ui:<view>` → `app` → `global`, and the first
 level that is not *inherit* decides; its overrides and those of every level nearer the leaf apply (child over parent).

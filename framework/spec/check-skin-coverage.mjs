@@ -8,15 +8,18 @@
  *   - a type excluded from appearance slots with no `skin: { by: … }` declaration on its registry entry,
  *   - a declaration outside the kinds list, a `none` without a why, a `reference` without a via,
  *   - a declaration naming a `via` that is neither `iconPack` nor a registered type,
- *   - a style target naming a type that isn't registered (a stale target would hide a gap),
+ *   - a type without a declaration (every type says how a skin reaches it; build skins-restyle-everything, Nov 2026),
+ *   - a skin ingredient (`ingredient: true`) that isn't a slot, or that has a style target (it draws nothing),
+ *   - a style target naming a type that isn't registered (a stale target would hide a gap), or a `text` selector list
+ *     naming a class the framework never renders,
  * and prints the coverage table so a reviewer sees how each type is reached.
  *
  *   node framework/spec/check-skin-coverage.mjs [--json] [--quiet]
  */
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { COVERAGE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes } from '../core/engines/skin-coverage.mjs';
+import { COVERAGE_KINDS, coverageSummary, coverageTable, declarationErrors, ingredientErrors, partsTypes } from '../core/engines/skin-coverage.mjs';
 import { SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,7 +39,27 @@ for (const [type, t] of Object.entries(spec)) {
   const via = t?.skin?.via;
   if (t?.skin?.by === 'reference' && via && via !== 'iconPack' && !spec[via]) problems.push(`${type}: skin.via "${via}" is neither iconPack nor a registered type`);
 }
+for (const [type, t] of Object.entries(spec)) if (!t?.skin) problems.push(`${type}: no "skin": { "by": … } declaration (every registered type says how a skin reaches it)`);
+problems.push(...ingredientErrors(spec, targets));
 for (const type of Object.keys(targets)) if (!spec[type]) problems.push(`customize target "${type}" is not a registered asset type`);
+// every `text` selector names a class the framework renders (react + libs), so a type's text parts land somewhere
+function walk(dir, out = []) {
+  for (const name of readdirSync(dir)) {
+    if (name === 'node_modules' || name.startsWith('.')) continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) walk(p, out); else if (/\.(tsx|ts)$/.test(name)) out.push(readFileSync(p, 'utf8'));
+  }
+  return out;
+}
+const code = [...walk(join(ROOT, 'react')), ...walk(join(ROOT, 'libs'))].join('\n');
+for (const [type, t] of Object.entries(targets)) {
+  if (t.text === undefined) continue;
+  if (typeof t.text !== 'string' || !t.text.trim()) { problems.push(`customize target "${type}": text must be a comma list of selectors`); continue; }
+  for (const sel of t.text.split(',').map((s) => s.trim()).filter(Boolean)) {
+    const cls = (sel.match(/\.(fx-[a-z0-9_-]+)/) || [])[1];
+    if (!cls || !new RegExp(`(["'\`\\s{])${cls}(["'\`\\s$}])`).test(code)) problems.push(`customize target "${type}": text selector ${sel} names a class nothing renders`);
+  }
+}
 // the kinds list is the contract (docs, the UI's legend and the CLI print it)
 if (JSON.stringify(COVERAGE_KINDS) !== JSON.stringify(['slot', 'parts', 'reference', 'bundle', 'none'])) problems.push('COVERAGE_KINDS changed: update spec/APPEARANCE-SOURCE.md and the Appearance panel legend');
 
@@ -46,7 +69,7 @@ if (json) {
 } else {
   if (!quiet) {
     const w = Math.max(...rows.map((r) => r.type.length));
-    for (const r of rows) console.log(`  ${r.type.padEnd(w)}  ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : '          '}  ${r.elements.length ? r.elements.join('/') : '-'}${r.declared ? '  (declared)' : ''}${r.via ? `  via ${r.via}` : ''}`);
+    for (const r of rows) console.log(`  ${r.type.padEnd(w)}  ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : '          '}  ${r.elements.length ? r.elements.join('/') : '-'}${r.ingredient ? '  (ingredient)' : r.declared ? '  (declared)' : ''}${r.via ? `  via ${r.via}` : ''}`);
   }
   console.log(`check-skin-coverage: ${summary.total} types · slot ${summary.slot} · parts ${summary.parts} · reference ${summary.reference} · bundle ${summary.bundle} · none ${summary.none} · uncovered ${summary.uncovered}`);
   for (const p of problems) console.error(`  ✗ ${p}`);

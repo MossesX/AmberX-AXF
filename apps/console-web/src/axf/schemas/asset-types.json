@@ -53,6 +53,11 @@
           "focus",
           "shadow"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin names its colour theme (data.colorTheme); every --fx-* colour token comes from it. It draws nothing of its own, so it has no style target and no parts."
       }
     },
     "style-theme": {
@@ -96,6 +101,11 @@
       "optional_fields": {
         "scrollbar": "'thin' — thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
         "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
+      },
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin names its style theme (data.styleTheme); fonts, radii, border width, shadows and the space unit come from it. It draws nothing of its own, so it has no style target and no parts."
       }
     },
     "layout": {
@@ -197,6 +207,11 @@
         "prefix": "layout",
         "rules": "core/engines/layout-rules.mjs",
         "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or × --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json → compiled) keeps px numbers for native ports; the web grid vars read the tokens."
+      },
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin names its layout theme (data.layoutTheme); where the chrome sits comes from it. It draws nothing of its own, so it has no style target and no parts."
       }
     },
     "app-menu": {
@@ -224,7 +239,11 @@
         "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
         "items[].provider|badge|checked|order|before|after": "see menuItems"
       },
-      "hideable": true
+      "hideable": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active app menu; its parts style the menu bar, its buttons and the dropdown items under the style target."
+      }
     },
     "toolbar": {
       "label": "Toolbar",
@@ -279,6 +298,10 @@
           "start",
           "end"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active toolbar; its parts style the bar and its tool buttons."
       }
     },
     "nav-menu": {
@@ -314,7 +337,11 @@
         "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
         "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
       },
-      "hideable": true
+      "hideable": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active navigation menu; its parts style the nav, its items, and its headers and labels (text)."
+      }
     },
     "context-menu": {
       "label": "Context menu",
@@ -345,6 +372,10 @@
       "hideable": true,
       "optional_fields": {
         "contributions": "boolean — false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active context menu; its parts style the menu and its items."
       }
     },
     "tab-group": {
@@ -409,7 +440,11 @@
         "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active tab group; its parts style the tab row, its tabs and the dropdown picker (text)."
+      }
     },
     "dialog": {
       "label": "Dialog",
@@ -444,6 +479,10 @@
           "accent-bar",
           "filled"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active dialog; its parts style the dialog and its header (text)."
       }
     },
     "popup": {
@@ -469,6 +508,10 @@
           "outline",
           "minimal"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active popup; its parts style popovers, dropdowns and the banner pop-up bubble."
       }
     },
     "button": {
@@ -500,6 +543,10 @@
           "md",
           "lg"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active button; its parts style buttons and icon buttons."
       }
     },
     "slider": {
@@ -530,6 +577,10 @@
           "hover",
           "never"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active slider; its parts style the slider and its head and value (text)."
       }
     },
     "container": {
@@ -560,6 +611,10 @@
           "md",
           "lg"
         ]
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active container; its parts style cards and their headers (text)."
       }
     },
     "gauge": {
@@ -592,7 +647,11 @@
           "none"
         ]
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active gauge; its parts style the gauge and its readouts (text)."
+      }
     },
     "meter": {
       "label": "Progress meter",
@@ -625,7 +684,11 @@
           "soft"
         ]
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active meter; its parts style the meter."
+      }
     },
     "banner": {
       "label": "Banner",
@@ -664,6 +727,10 @@
       "optional_fields": {
         "divider": "boolean — line under the banner (default true)",
         "height": "number — px, 16 to 48 (thin = 24)"
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the active banner; its parts style the banner, its items and its logo (text)."
       }
     },
     "clock": {
@@ -697,7 +764,11 @@
         "timezone": "string — IANA zone (e.g. America/New_York); default the device's",
         "mono": "boolean — monospace digits (default true)"
       },
-      "widget": true
+      "widget": true,
+      "skin": {
+        "by": "parts",
+        "why": "A banner widget with many copies: the skin styles them with parts under the clock style target."
+      }
     },
     "search-bar": {
       "label": "Search bar",
@@ -726,6 +797,10 @@
       "optional_fields": {
         "kinds": "string[] — only these result kinds (default: all)",
         "shortcut": "boolean — Ctrl/Cmd+K and / focus it (default true)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A chrome widget: parts style the search box and its hits, details, kinds and empty message (text)."
       }
     },
     "action-button": {
@@ -761,6 +836,10 @@
       "optional_fields": {
         "tone": "neutral (default) | accent | danger",
         "tooltip": "string"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every action button on banners and toolbars."
       }
     },
     "logo": {
@@ -798,6 +877,10 @@
         "link": "string — action spec run on tap (e.g. app.settings, view.open:home)",
         "bold": "boolean — bold wordmark (default true)",
         "tooltip": "string"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every logo widget on banners and toolbars."
       }
     },
     "label": {
@@ -830,6 +913,10 @@
         "bold": "boolean (default false)",
         "mono": "boolean — monospace (default false)",
         "tooltip": "string"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every label on banners and toolbars."
       }
     },
     "status": {
@@ -872,6 +959,10 @@
       "optional_fields": {
         "link": "string — action spec run on tap",
         "dot": "boolean — show the dot (default true)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every status widget on banners and toolbars."
       }
     },
     "counter": {
@@ -906,6 +997,10 @@
         "label": "string — text after the number",
         "link": "string — action spec run on tap",
         "max": "number — cap shown as max+ (default 99)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every counter, its number and its label (text)."
       }
     },
     "progress": {
@@ -944,6 +1039,10 @@
         "label": "string — text before the bar",
         "tone": "neutral | success | … (default accent)",
         "showValue": "boolean — percent after the bar (default false)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every progress widget, its label and its value (text)."
       }
     },
     "avatar": {
@@ -984,6 +1083,10 @@
         "image": "string — image URL or app path when source is image",
         "link": "string — action spec run on tap (e.g. settings.open:account)",
         "tooltip": "string"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every avatar and its initials (text)."
       }
     },
     "link": {
@@ -1007,6 +1110,10 @@
         "icon": "string — icon before the label",
         "tooltip": "string",
         "external": "boolean — open in a new tab / outside the app (default true)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every link widget on banners and toolbars."
       }
     },
     "theme-switch": {
@@ -1037,6 +1144,10 @@
         "lightLabel": "string (default Light)",
         "darkLabel": "string (default Dark)",
         "tooltip": "string"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every theme switch on banners and toolbars."
       }
     },
     "spacer": {
@@ -1061,6 +1172,10 @@
       "roll": {
         "slot": false,
         "asset": false
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every spacer (its size and background)."
       }
     },
     "divider": {
@@ -1080,6 +1195,10 @@
       },
       "optional_fields": {
         "inset": "boolean — shorter than the host (default true)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "A widget: parts style every divider (its colour and width)."
       }
     },
     "badge": {
@@ -1117,6 +1236,10 @@
       "optional_fields": {
         "tooltip": "string — shown on hover/long-press",
         "link": "string — action spec run on tap (e.g. settings.open:x)"
+      },
+      "skin": {
+        "by": "parts",
+        "why": "An attachable: parts style every badge, on banners, tool buttons, nav items, tabs and menu items."
       }
     },
     "settings": {
@@ -1155,7 +1278,11 @@
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the settings interface; the page it describes is drawn with typed elements (tab groups, cards, buttons) the skin styles."
+      }
     },
     "dock-layout": {
       "label": "Pane layout",
@@ -1175,7 +1302,11 @@
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the pane layout; the panes are drawn with typed chrome the skin styles."
+      }
     },
     "xlayout": {
       "label": "xLayout",
@@ -1196,7 +1327,11 @@
         "asset": false
       },
       "shared": false,
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the host layout; the chrome it frames is typed and styled by the skin."
+      }
     },
     "nav-style": {
       "label": "Navigation style",
@@ -1216,7 +1351,11 @@
         "accents": "{ <item id>: colour token }"
       },
       "hideable": false,
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the navigation style; it reads the colour and style theme tokens the skin sets, and the nav-menu parts reach what it draws."
+      }
     },
     "behavior-theme": {
       "label": "Behaviour theme",
@@ -1235,7 +1374,12 @@
         "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0–48, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
         "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0–20000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin picks it as assets.behavior-theme; motion, interaction and window behaviour tokens come from it. It draws nothing of its own, so it has no style target and no parts."
+      }
     },
     "design-package": {
       "label": "AmberX Design Package",
@@ -1265,7 +1409,7 @@
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): every type declares `skin: { by: slot | parts | reference | bundle | none, via?, why?, ingredient? }` (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot; `ingredient: true` marks the themes and scale assets the skin is made of, which draw nothing and take no parts); a type added without one is derived from its flags, and CI fails on a type a skin cannot reach.",
       "required": [
         "layoutTheme",
         "colorTheme",
@@ -1474,6 +1618,10 @@
         "decorations": "{ <brand slot>: none | mark | wordmark | lockup | animated | accent-edge | watermark }",
         "palette": "{ brand1, brand2, brand3 }: #hex",
         "accentFromBrand": "boolean: brand1 becomes the accent (default false)"
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the branding package; logo marks, animated logos and the icon pack follow through it."
       }
     },
     "typography": {
@@ -1490,7 +1638,12 @@
         "eyebrow": "{ size em, weight, tracking em, case: upper | normal }",
         "mono": "{ size em }"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin picks it as assets.typography; the --fx-type-* tokens every text rule reads come from it. It draws nothing of its own, so it has no style target and no parts."
+      }
     },
     "density": {
       "label": "Density",
@@ -1503,7 +1656,12 @@
         "pad": "{ control, card, page, row, cell } × --fx-space",
         "row": "{ list, table, menu, control } × --fx-font-size"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin picks it as assets.density; the --fx-dens-* gap, padding and row tokens come from it. It draws nothing of its own, so it has no style target and no parts."
+      }
     },
     "sizing": {
       "label": "Component sizing",
@@ -1524,7 +1682,12 @@
         "table": "{ padY, padX ×space, font em }",
         "pageHead": "{ descriptionFont em, descriptionLines 1–6 }"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "slot",
+        "ingredient": true,
+        "why": "A skin ingredient: the skin picks it as assets.sizing; the --fx-size-* tokens every control reads come from it. It draws nothing of its own, so it has no style target and no parts."
+      }
     },
     "agent-card": {
       "label": "Agent card",
@@ -1591,6 +1754,10 @@
         "front": "card field ids, in order (name, role, specialty, employeeId, email, hiredAt, status, catchphrase, signature, jobs, successRate, spend, favoriteModel); up to 12",
         "back": "card field ids for the back (flip); empty = no back",
         "labels": "{ field: label } to rename a field on this design (up to 24 characters)"
+      },
+      "skin": {
+        "by": "slot",
+        "why": "The skin picks the agent card design; it colours itself from the theme roles the skin sets."
       }
     },
     "job-type": {
@@ -1745,6 +1912,10 @@
         "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
         "generated": "{ from: glossary | manual | book | help-intro | recorder, at: ISO time, build: the build that made it }",
         "editable": "false = a generated demo that is rebuilt from its entry (edits are lost); default true"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A demonstration is narrated content, not a look; the player that shows it is drawn with typed elements the skin styles."
       }
     },
     "book": {
@@ -1772,6 +1943,10 @@
         "docs": "{ enabled, depth, format, interactive, includeApi, includeScreens } — the documentation generated alongside the book",
         "outputs": "{ video: the narrated walkthrough video, chapterClips: one clip asset per chapter }",
         "keywords": "words for search (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A book is generated content, not a look; the reader is drawn with typed elements the skin styles."
       }
     },
     "clip": {
@@ -1812,6 +1987,10 @@
         "chain": "clip ids played after this one",
         "entries": "glossary entry ids shown in the clip",
         "keywords": "the auto-extracted tag set (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A clip is a generated recording, not a look; the player is drawn with typed elements the skin styles."
       }
     },
     "docs": {
@@ -1860,6 +2039,10 @@
         "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
         "build": "the build that generated it",
         "keywords": "words for search (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "Generated documentation is content, not a look; the viewer is drawn with typed elements the skin styles."
       }
     },
     "uac-policy": {
