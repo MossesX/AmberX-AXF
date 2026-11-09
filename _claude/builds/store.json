@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2048,
- "updatedAt": "2026-11-09T23:52:28.021Z",
+ "rev": 2049,
+ "updatedAt": "2026-11-09T23:52:39.281Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132272,15 +132272,15 @@
    "title": "Assign an employee to every role, action type and app; avatars in the Activity Monitor; who-has-which-job board",
    "category": "",
    "detail": "Goes with the Activity Monitor build. 1) Every role gets a named employee (crew agent profile): orchestrator, dispatcher, each app (console, AmberX, Molly, axHub, Patches...), each action type (builds, approvals, fixes, deploys, accounts, notifications, git/merge, etc.). Use existing crew where they fit, create the rest with names and avatars. 2) Every Activity Monitor entry shows the acting employee's avatar and name like a chat message; click opens their profile: role, jobs, current work, full activity history. 3) A Who does what board: every job/role and the employee that holds it, reassignable. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/assign-an-employee-to-every-role-action-type-and",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:52:23.688Z",
+   "updatedAt": "2026-11-09T23:52:30.365Z",
    "builtAt": "",
    "notes": [
     {
@@ -132290,6 +132290,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T23:52:16.582Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-assign-an-employee-to-every-role-action-type-and--paulie.",
+     "at": "2026-11-09T23:52:27.692Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-assign-an-employee-to-every-role-action-type-and--paulie, own login copy)",
+     "at": "2026-11-09T23:52:30.365Z"
     }
    ],
    "approvals": [],
@@ -132317,12 +132325,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T23:50:16.318Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-assign-an-employee-to-every-role-action-type-and--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-09T23:52:27.287Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T23:52:16.582Z",
@@ -132332,9 +132340,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-09T23:52:27.287Z"
    },
    "steps": [
     {
@@ -132415,7 +132423,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
