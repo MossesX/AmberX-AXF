@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:20:30.287Z",
+ "updatedAt": "2026-11-09T13:21:25.930Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77566,6 +77566,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw9ad24o0avu3d"
+    }
+   ]
+  },
+  {
+   "id": "appearance-skins-colour-themes-only-remove-design-packs",
+   "title": "Appearance = skins + colour themes only (remove design packs)",
+   "category": "Appearance",
+   "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T13:21:25.004Z",
+   "updatedAt": "2026-11-09T13:21:25.004Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Inventory design packs and every reference; convert each pack to a skin asset",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9ai6p6045lit"
+    },
+    {
+     "id": "s2",
+     "text": "Remove Design packs screen, settings, menus and design-package/style-package types; redirect references to skins; migrations for saved settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9ai6p605j0u3"
+    },
+    {
+     "id": "s3",
+     "text": "Appearance shows only Skin + Colour theme; report on style/layout themes; tests, before/after screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9ai6p606isiz"
     }
    ]
   }
