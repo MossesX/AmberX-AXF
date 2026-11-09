@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T21:00:42.885Z",
+ "updatedAt": "2026-11-09T21:00:56.669Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75814,8 +75814,8 @@
    "pr": "#417",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-09T21:00:30.564Z",
-   "builtAt": "2026-11-09T21:00:30.564Z",
+   "updatedAt": "2026-11-09T21:00:45.690Z",
+   "builtAt": "2026-11-09T21:00:45.690Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -75832,6 +75832,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina, own login copy)",
      "at": "2026-11-09T20:49:25.525Z"
+    },
+    {
+     "text": "Headless run axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina: brief only · start 11.3K tokens ($0.03) · cost $4.29 · 87 turns · 6 tools, MCP none",
+     "at": "2026-11-09T21:00:45.690Z"
     },
     {
      "text": "PR #417. UI Review shots not taken (no running preview in the headless phase). axHub acceptance of service * passes unverified; parked plan filed.",
