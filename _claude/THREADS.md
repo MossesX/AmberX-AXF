@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` → running, note (all) · pipeline
 - 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` branch claude/urgent-amberx-veto-notice-alarm-too-loud-approve (all) · pipeline
 - 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · orchestrator
 - 2026-11-08 22:28 UTC · `nested-menus-for-console-amberx-and-molly-overri` → queued, note (all) · cli
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:36 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-09 20:14 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` added (0 steps) (all) · console
 - 2026-11-09 20:14 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` → queued, note (all) · console
+- 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` note (all) · orchestrator
 
 ## Token passes (log)
 
