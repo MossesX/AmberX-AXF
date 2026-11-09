@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T16:25:53.499Z",
+ "updatedAt": "2026-11-09T16:26:02.264Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77916,21 +77916,64 @@
    "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
    "category": "",
    "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-09T16:25:52.442Z",
+   "updatedAt": "2026-11-09T16:25:53.571Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:25:53.571Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
     "at": "2026-11-09T16:25:52.442Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "orchestrator-settings-api-account-limits-and-rou",
+   "title": "Orchestrator settings: API account limits and routing rules",
+   "category": "",
+   "detail": "Settings screen in the orchestrator to manage API-key accounts (add/remove, label, daily and weekly spend caps, alert level, on/off) and routing rules (add, edit, reorder, enable/disable; conditions: job type, model, priority, steps, minutes, subs busy), plus apiOverflow and allowed API accounts. Same controls via API/voice.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-09T16:25:54.451Z",
+   "updatedAt": "2026-11-09T16:25:55.550Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:25:55.550Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need the settings in the orchestrator to configure the API limits and the rules.",
+    "at": "2026-11-09T16:25:54.451Z",
     "source": "",
     "session": "",
     "link": "",

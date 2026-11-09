@@ -2569,6 +2569,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-settings-api-account-limits-and-rou": {
+   "said": "I need the settings in the orchestrator to configure the API limits and the rules.",
+   "at": "2026-11-09T16:25:54.451Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "partial-land-ship-completed-steps-of-a-build": {
    "said": "I want to be able to select stuff that's completed, like completed steps from within a build. Just take the completed things, transfer them to their own push request, merge them on their own, and deploy immediately so I can take partially finished builds, what's completed out of them, and deploy them without the whole thing being built, unless it needs it for dependencies.",
    "at": "",
