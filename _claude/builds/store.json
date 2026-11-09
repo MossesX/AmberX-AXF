@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1674,
- "updatedAt": "2026-11-09T02:30:03.812Z",
+ "rev": 1675,
+ "updatedAt": "2026-11-09T02:30:15.653Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126148,10 +126148,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-approval-links-say-method-not-allowed",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/approval-links-fix",
+   "pr": "#403",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-09T02:29:53.100Z",
+   "updatedAt": "2026-11-09T02:30:12.562Z",
    "builtAt": "",
    "notes": [
     {
@@ -126274,7 +126274,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {

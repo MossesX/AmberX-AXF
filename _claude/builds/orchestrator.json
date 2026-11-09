@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:30:03.812Z",
+ "updatedAt": "2026-11-09T02:30:15.653Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76461,10 +76461,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-approval-links-say-method-not-allowed",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/approval-links-fix",
+   "pr": "#403",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-09T02:29:53.100Z",
+   "updatedAt": "2026-11-09T02:30:12.562Z",
    "builtAt": "",
    "notes": [
     {
