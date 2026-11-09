@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:48:09.791Z",
+ "updatedAt": "2026-11-09T20:48:24.719Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14989,7 +14989,7 @@
    "title": "Owner-only settings: Brett's admin console login counts as owner",
    "category": "Fix",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> won't let me set it. It says no way enabled by owner only. Only Brett changes it. With his own click in the console. ... I can't click it.\n> I'm logged in as admin.\n> Yes, do that.\n\nProblem: Settings → Plugins → Claude refuses owner-only switches (No wait) for Brett's signed-in admin console session. Fix the owner check so Brett's own login is recognised as owner. Queue behind the account/badge build (one build at a time).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -14997,8 +14997,8 @@
    "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:48:07.360Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T20:48:11.014Z",
+   "builtAt": "2026-11-09T20:48:11.014Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -15176,8 +15176,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:48:11.014Z",
      "note": "",
      "uid": "st-mw9q4bhv07c1a2"
     }
@@ -70131,7 +70131,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:47:11.553Z",
+   "updatedAt": "2026-11-09T20:48:09.282Z",
    "builtAt": "",
    "notes": [
     {
@@ -70153,6 +70153,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-owner-check-bug-dead-start-button--paulie, own login copy)",
      "at": "2026-11-09T20:39:24.411Z"
+    },
+    {
+     "text": "Owner-check half is in PR #415 (owner-only-settings build): owner_approval() accepts the signed wall admin session. Leave token-control/claude-settings alone; this build only needs the Build manager Start fix.",
+     "at": "2026-11-09T20:48:09.282Z"
     }
    ],
    "approvals": [],
