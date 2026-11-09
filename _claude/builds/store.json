@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1685,
- "updatedAt": "2026-11-09T02:58:14.370Z",
+ "rev": 1686,
+ "updatedAt": "2026-11-09T02:58:20.776Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108085,15 +108085,15 @@
    "title": "skins-asset-types",
    "category": "",
    "detail": "Upgrade skins to style every registry asset type (widgets, icon packs, composites, embeds, text blocks), scoped inheritance, registry-driven coverage + CI check. Brief: /root/axf-builds/skins-asset-types/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
    "branch": "claude/skins-asset-types",
    "pr": "#383",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-07T06:10:22.457Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T02:58:18.211Z",
+   "builtAt": "2026-11-09T02:58:18.212Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
@@ -108296,12 +108296,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T02:58:18.211Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:45:35.257Z",
-     "updatedAt": "2026-11-07T04:45:35.353Z"
+     "updatedAt": "2026-11-09T02:58:18.325Z"
     }
    ],
    "profiles": [
@@ -108312,7 +108312,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
