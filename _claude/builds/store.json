@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1748,
- "updatedAt": "2026-11-09T16:40:19.196Z",
+ "rev": 1749,
+ "updatedAt": "2026-11-09T16:40:28.806Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127561,15 +127561,15 @@
    "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
    "category": "",
    "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/orchestrator-self-check-when-stuck-verify-each-a",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-09T16:40:15.588Z",
+   "updatedAt": "2026-11-09T16:40:19.177Z",
    "builtAt": "",
    "notes": [
     {
@@ -127579,6 +127579,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-self-check-when-stuck-verify-each-a--joey, own login copy)",
+     "at": "2026-11-09T16:40:19.177Z"
     },
     {
      "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
@@ -127602,12 +127606,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T16:25:53.300Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "axf-orchestrator-self-check-when-stuck-verify-each-a--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T16:40:15.242Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T16:26:19.535Z",
@@ -127617,9 +127621,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-09T16:40:15.242Z"
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -127700,7 +127704,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
