@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 19:27 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` note (all) · orchestrator
-- 2026-11-08 19:27 UTC · `rebase-land-approve-button-fix-approve-goes-stra` note (all) · orchestrator
 - 2026-11-08 21:08 UTC · `agent-profile-schema-skills-personas-with-a-big-` added (0 steps) (all) · pending
 - 2026-11-08 21:09 UTC · `agent-profile-schema-skills-personas-with-a-big-` note (all) · orchestrator
 - 2026-11-08 21:10 UTC · `agent-profile-schema-skills-personas-with-a-big-` note (all) · pending
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` branch claude/urgent-terminal-pops-up-every-time-the-console-o (all) · pipeline
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
+- 2026-11-09 19:21 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
+- 2026-11-09 19:21 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 
 ## Token passes (log)
 
