@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1718,
- "updatedAt": "2026-11-09T13:09:44.596Z",
+ "rev": 1719,
+ "updatedAt": "2026-11-09T13:10:08.269Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126442,12 +126442,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T13:09:43.815Z",
+   "updatedAt": "2026-11-09T13:10:06.911Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett: AmberX is integrated with the console, one and the same. Do NOT build a new toolbar system: reuse the existing console toolbar/drop-on system and its shared settings on axHub, so items can be dragged from the console onto the AmberX floating toolbar and vice versa.",
      "at": "2026-11-09T13:09:43.815Z"
+    },
+    {
+     "text": "Brett: not just the console. Every app in the AXF framework must integrate with the floating toolbar through the shared toolbar system and settings on axHub: items drag and drop between the AmberX toolbar and any framework app.",
+     "at": "2026-11-09T13:10:06.911Z"
     }
    ],
    "approvals": [],
@@ -126550,7 +126554,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

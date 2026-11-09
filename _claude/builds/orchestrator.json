@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:09:44.596Z",
+ "updatedAt": "2026-11-09T13:10:08.269Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77141,12 +77141,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T13:09:43.815Z",
+   "updatedAt": "2026-11-09T13:10:06.911Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett: AmberX is integrated with the console, one and the same. Do NOT build a new toolbar system: reuse the existing console toolbar/drop-on system and its shared settings on axHub, so items can be dragged from the console onto the AmberX floating toolbar and vice versa.",
      "at": "2026-11-09T13:09:43.815Z"
+    },
+    {
+     "text": "Brett: not just the console. Every app in the AXF framework must integrate with the floating toolbar through the shared toolbar system and settings on axHub: items drag and drop between the AmberX toolbar and any framework app.",
+     "at": "2026-11-09T13:10:06.911Z"
     }
    ],
    "approvals": [],

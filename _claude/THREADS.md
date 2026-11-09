@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 00:45 UTC · `orchestrator-full-api-control` added (5 steps) (all) · claude-voice
 - 2026-11-08 00:46 UTC · `universal-voice-api-control-everything-controllable` added (6 steps) (all) · claude-voice
 - 2026-11-08 00:47 UTC · `slot-aware-plan-optimizer-pre-launch` added (5 steps) (all) · claude-voice
 - 2026-11-08 00:52 UTC · `real-time-slot-tracking-stale-data-reaper` added (5 steps) (all) · claude-voice
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 04:31 UTC · `skins-asset-types` note (all) · orchestrator
 - 2026-11-09 13:08 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` added (3 steps) (all) · claude-ai-voice
 - 2026-11-09 13:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · claude-ai-voice
+- 2026-11-09 13:10 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · claude-ai-voice
 
 ## Token passes (log)
 
