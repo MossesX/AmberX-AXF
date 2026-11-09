@@ -1,6 +1,10 @@
 # Orchestrator self-check when stuck (Nov 9 2026)
 
-Build: `orchestrator-self-check-when-stuck-verify-each-a` · branch `claude/orch-self-check-stuck` · Opus.
+Build: `orchestrator-self-check-when-stuck-verify-each-a` · branch `claude/orchestrator-self-check-when-stuck-verify-each-a`
+(carries the first session's commit from `claude/orch-self-check-stuck`, PR #406, which it supersedes) · Opus.
+
+Brett (Nov 9 2026): "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any
+problems, he's supposed to check each account one by one. And look for stale jobs."
 
 ## What was broken
 
@@ -35,6 +39,27 @@ Build: `orchestrator-self-check-when-stuck-verify-each-a` · branch `claude/orch
 - UI (Pipeline tab): asks for a self-check on load. Adds a Self-check card (last result, fixes, accounts it can't
   use, one chip per account, "Check accounts now"), and shows when the account list is the host's snapshot.
 
+## Second session: when it runs
+
+The first session ran the self-check only on stuck ticks and when the Pipeline tab opened. Now `P.checkDue()`
+(pipeline-core, pure) decides on every tick, in this order:
+
+1. asked for: console load, `POST /pipeline/selfcheck`, `pipeline.mjs selfcheck --request`, voice;
+2. the dispatcher's first tick after it was down (no tick for 5 min or more, or never): deploy, reboot, stopped cron;
+3. queued builds wait and this tick started nothing (stuck);
+4. a routine sweep for stale claims, slots and builds every 30 min, even when nothing looks stuck.
+
+The console asks on every Build orchestrator load, whichever tab opens (it moved from the Pipeline tab to the page).
+AmberX still hears only when something was fixed or an account newly can't be used, so the sweep is quiet.
+
+## How each surface reaches it
+
+- REST: `POST /pipeline/selfcheck {reason}`; result in `GET /pipeline` → `state.selfCheck`, `accountsFrom`.
+- MCP / voice / CLI runner: plugin command `pipeline-selfcheck` (registry-checked by `plugin-commands.mjs check`),
+  read side `pipeline-status`.
+- CLI: `pipeline.mjs selfcheck [--request] [--reason r] [--json]`.
+- Deep link: `#/build-orchestrator` (Pipeline tab: Self-check card, "Check accounts now").
+
 ## Choices
 
 - An API key is checked locally (saved, and not rejected by its last run), not with a live call to Anthropic on
@@ -52,6 +77,17 @@ Build: `orchestrator-self-check-when-stuck-verify-each-a` · branch `claude/orch
 - `node deploy/claude-workers.test.mjs`: 72 checks (new: reap, liveSessions with no tmux server).
 - `node apps/console-web/plugins/build-orchestrator/test.mjs` 33, `test.py` 31; `tsc --noEmit` clean;
   check-theme / check-controls / check-toolbars / check-chrome-assets pass.
+
+Second session: `pipeline.test.mjs` 40 checks (new: `checkDue` rules; e2e first tick after downtime runs it).
+claude-workers 72, test.mjs 33, test.py 31, tsc clean; check-theme / controls / toolbars / chrome-assets pass.
+`plugin-lifecycle.mjs check build-orchestrator` fails on stale references in `framework/cli/dispatch-gate.mjs`, which
+are on main too and not touched here.
+
+## Not done
+
+- UI Review shots of the Self-check card: the live console runs main and there is no branch preview harness here, so
+  desktop and phone shots wait for a session that can render the branch (or the deploy after it lands).
+- Session heartbeats and killing hung sessions (`real-time-slot-tracking-stale-data-reaper` s2, s3).
 
 ## Live state when this ran
 

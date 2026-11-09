@@ -54,7 +54,12 @@ export function OrchestratorPage() {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load();
+    // every orchestrator load, whichever tab: the dispatcher checks every account one by one and reaps stale jobs on its
+    // next tick (quietly: no toast; the Pipeline tab shows the result)
+    void api.post('pipeline/selfcheck', { reason: 'console-load' }).catch(() => undefined);
+  }, []);
 
   const act: Act = async (change) => {
     setBusy(true);

@@ -187,6 +187,17 @@ t('self-check: each account gets a state; blocked ones are the alert; a new prob
   const a = P.alertFor('selfcheck', { fixes: ['released x'], problems: sum.problems, line: sum.line });
   assert.equal(a.key, 'pipeline:selfcheck'); assert.equal(a.severity, 'warning'); assert.match(a.title, /fixed 1, 2 accounts can't work/); assert.match(a.body, /Can't use lim/);
 });
+t('checkDue: asked, fresh start, down a while, stuck, routine sweep, else quiet', () => {
+  const now = Date.parse('2026-11-09T17:00:00Z'); const ago = (m) => new Date(now - m * 60e3).toISOString();
+  assert.equal(P.checkDue({ asked: { reason: 'console-load' }, prevTickAt: ago(1), lastCheckAt: ago(1), now }), 'console-load');
+  assert.equal(P.checkDue({ asked: {}, now }), 'on demand');
+  assert.equal(P.checkDue({ prevTickAt: '', now }), 'dispatcher started', 'no tick ever: the dispatcher just loaded');
+  assert.match(P.checkDue({ prevTickAt: ago(42), lastCheckAt: ago(1), now }), /^dispatcher started \(no tick for 42 min\)$/);
+  assert.equal(P.checkDue({ prevTickAt: ago(1), lastCheckAt: ago(1), stuck: true, now }), 'queued builds wait, nothing launched');
+  assert.equal(P.checkDue({ prevTickAt: ago(1), lastCheckAt: ago(P.CHECK_SWEEP_MIN), now }), 'routine sweep');
+  assert.equal(P.checkDue({ prevTickAt: ago(1), lastCheckAt: '', now }), 'routine sweep', 'never checked');
+  assert.equal(P.checkDue({ prevTickAt: ago(1), lastCheckAt: ago(10), now }), '', 'running fine, checked lately: quiet');
+});
 t('alertFor: idle keyed once, per-build run keys, every kind has a title', () => {
   const idle = P.alertFor('idle', { kind: 'stuck', reason: 'why' }); assert.equal(idle.key, 'pipeline:idle'); assert.equal(idle.severity, 'warning'); assert.equal(idle.source, 'pipeline');
   assert.equal(P.alertFor('idle', { kind: 'empty', reason: 'why' }).severity, 'info');
@@ -419,6 +430,12 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const a = JSON.parse(ask.stdout.trim().split('\n').pop()); assert.equal(a.ran, false); assert.ok(a.requested);
     assert.ok(existsSync(join(pipeDir, 'selfcheck-request.json')));
     const tk = json(pipe('tick', '--json')); assert.equal(tk.selfCheck?.reason, 'on demand'); assert.ok(!existsSync(join(pipeDir, 'selfcheck-request.json')), 'the tick ran it');
+  });
+  t('e2e the dispatcher self-checks on its first tick after it was down', () => {
+    const sf = join(pipeDir, 'state.json'); const st = JSON.parse(readFileSync(sf, 'utf8'));
+    st.at = new Date(Date.now() - 20 * 60e3).toISOString(); writeFileSync(sf, JSON.stringify(st));
+    const tk = json(pipe('tick', '--json')); assert.match(tk.selfCheck?.reason || '', /^dispatcher started \(no tick for 2\d min\)$/);
+    const again = json(pipe('tick', '--json')); assert.ok(!again.selfCheck || /queued builds wait/.test(again.selfCheck.reason), 'the next tick is a normal one');
   });
   t('e2e stale reaper: a build marked running on an account with no session and no slot goes back to the Queue', () => {
     orch('act', JSON.stringify({ action: 'add', id: 'ghost', title: 'Ghost', steps: [{ text: 'never ran', model: 'Opus', estimate: '20 min' }] }));

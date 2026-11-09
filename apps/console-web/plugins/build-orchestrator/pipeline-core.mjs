@@ -359,7 +359,29 @@ export function checkSummary(findings, fixes = []) {
   return { line, problems: blocked.map((x) => `${x.name}: ${x.note}`), signature: blocked.map((x) => `${x.name}:${x.limited?.kind || x.note}`).sort().join('|') };
 }
 
-/** Should the self-check tell Brett? When it fixed something, or an account it can't use shows up that wasn't there last time. */
+/** A dispatcher whose last tick is older than this was down (deploy, reboot, cron stopped): its next tick is a fresh load. */
+export const CHECK_RESUME_MIN = 5;
+/** Even when nothing looks stuck, sweep for stale claims, slots and builds this often. */
+export const CHECK_SWEEP_MIN = 30;
+
+/**
+ * Why this tick runs the self-check, '' when it doesn't (Brett, Nov 9 2026: "check all that every time it loads if
+ * things are stuck … check each account one by one. And look for stale jobs"). In order: asked for (console load,
+ * API, voice); the dispatcher's first tick after it was down; queued work waits and nothing started; a routine sweep.
+ */
+export function checkDue({ asked = null, prevTickAt = '', lastCheckAt = '', stuck = false, now = Date.now() } = {}) {
+  if (asked) return str(asked.reason, 80) || 'on demand';
+  const prev = Date.parse(prevTickAt || '');
+  if (!Number.isFinite(prev)) return 'dispatcher started';
+  const down = Math.round((now - prev) / 60e3);
+  if (down >= CHECK_RESUME_MIN) return `dispatcher started (no tick for ${down} min)`;
+  if (stuck) return 'queued builds wait, nothing launched';
+  const last = Date.parse(lastCheckAt || '');
+  if (!Number.isFinite(last) || now - last >= CHECK_SWEEP_MIN * 60e3) return 'routine sweep';
+  return '';
+}
+
+/** Should the self-check tell Brett?When it fixed something, or an account it can't use shows up that wasn't there last time. */
 export function checkNotify(cur, prev) {
   if (list(cur?.fixes).length) return true;
   const was = new Set(String(prev?.signature || '').split('|').filter(Boolean));

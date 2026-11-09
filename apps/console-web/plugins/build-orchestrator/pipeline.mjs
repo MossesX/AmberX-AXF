@@ -538,11 +538,13 @@ export function tick({ env = process.env } = {}) {
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
-  // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
+  // self-check: asked for (console load, voice, API), the dispatcher's first tick after it was down, queued work waits and
+  // this tick started nothing, or the routine sweep for stale claims / slots / builds
   const asked = readJson(files().checkRequest);
+  const due = P.checkDue({ asked, prevTickAt: state.at, lastCheckAt: state.selfCheck?.at, stuck: !!(plan.queue.length && !launched.length && plan.waits.length) });
   let check = null;
-  if (asked || (plan.queue.length && !launched.length && plan.waits.length)) {
-    try { check = selfCheck({ reason: asked ? asked.reason || 'on demand' : 'queued builds wait, nothing launched', by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
+  if (due) {
+    try { check = selfCheck({ reason: due, by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
     catch (e) { logLine({ event: 'self-check-failed', error: str(e.message, 300) }); }
   }
   for (const fn of TICK_HOOKS) {

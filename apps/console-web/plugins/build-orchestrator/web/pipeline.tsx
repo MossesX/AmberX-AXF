@@ -43,8 +43,6 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   };
   useEffect(() => {
     void load();
-    // console load: the dispatcher checks every account on its next tick (quietly: no toast)
-    void api.post('pipeline/selfcheck', { reason: 'console-load' }).catch(() => undefined);
     // one timer, only while the page is on screen (the console's pollers once starved the picture fetches: never per render)
     const tickIt = () => { if (document.visibilityState === 'visible') void load(); };
     timer.current = window.setInterval(tickIt, REFRESH_MS);
