@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1671,
- "updatedAt": "2026-11-09T02:25:50.627Z",
+ "rev": 1672,
+ "updatedAt": "2026-11-09T02:26:14.690Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126151,9 +126151,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-09T02:25:05.067Z",
+   "updatedAt": "2026-11-09T02:26:13.242Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T02:26:13.242Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -126168,7 +126173,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T02:26:13.242Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8n3lh70172xv",
+     "title": "",
+     "text": "Approval links sent in notices and by Claude (https://axhub.amberxai.com/auth/admin/approvals/<id>) answer 'Method not allowed' when Brett taps Approve. The hub's plain HTML approval pages were removed when every axhub.amberxai.com route moved to the axhub-web app, so the old link/form posts to a route that no longer takes it. Fix: the approval link opens the approval in axhub-web (or the console) with working Approve/Deny that call the hub's decide API with the right method; keep the old URL working as a redirect. Check every place that builds approval links (notices, AmberX push, console banner, axHub tool results approvalUrl). Test Approve and Deny end to end on a veto hold and a confirm hold. Land it the same day.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:26:13.242Z",
+     "updatedAt": "2026-11-09T02:26:13.242Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8n3lh702en38",
+     "title": "",
+     "text": "When I click approve, it says method not allowed. You can't have it broken.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:26:13.242Z",
+     "updatedAt": "2026-11-09T02:26:13.242Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8n3lh703zv50",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/urgent-approval-links-say-method-not-allowed.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/urgent-approval-links-say-method-not-allowed.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:26:13.242Z",
+     "updatedAt": "2026-11-09T02:26:13.242Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -126177,7 +126274,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126192,7 +126289,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T02:26:13.242Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
