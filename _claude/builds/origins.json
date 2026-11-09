@@ -2557,6 +2557,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-self-check-when-stuck-verify-each-a": {
+   "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
+   "at": "2026-11-09T16:25:52.442Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "partial-land-ship-completed-steps-of-a-build": {
    "said": "I want to be able to select stuff that's completed, like completed steps from within a build. Just take the completed things, transfer them to their own push request, merge them on their own, and deploy immediately so I can take partially finished builds, what's completed out of them, and deploy them without the whole thing being built, unless it needs it for dependencies.",
    "at": "",
