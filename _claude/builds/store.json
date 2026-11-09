@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2038,
- "updatedAt": "2026-11-09T23:49:16.345Z",
+ "rev": 2039,
+ "updatedAt": "2026-11-09T23:49:25.865Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132109,16 +132109,22 @@
    "title": "Activity Monitor plugin: live plain-English log of everything the console, axHub and every app does, with rules",
    "category": "",
    "detail": "New plugin (not app core). 1) One event bus: console UI actions, plugin commands, axHub calls/jobs/approvals/vetoes, agent and crew requests, orchestrator decisions (split, queue, launch, reject, hand-off), headless sessions, errors and the fix attempts after them (link to the Automatic fixes notes), from every app through axHub. 2) Each event written as a plain-English sentence with who, what, to whom, result (e.g. 'Joey sent X to the orchestrator, which rejected it: reason'), plus expandable raw detail. Chains grouped: one request and everything that followed it, as a collapsible tree. 3) Beautiful output window: colored by kind and severity, tabs (All, Errors, Approvals, Agents, Builds, axHub, per app), collapsible panes, live follow, search, filters, time range, pause, export; settings for colors, density, what to show. 4) Select any event to act on it: retry, open the thing it touched, jump to the fix note, or Make a rule: 'when this happens again, do that' (run a fix, notify, route to an agent), rules listed and editable. 5) Widget for banners/toolbars with live count and last error. Full API control so sessions can read and search the log.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-09T23:49:14.622Z",
+   "updatedAt": "2026-11-09T23:49:16.724Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T23:49:16.724Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -132133,6 +132139,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-09T23:49:16.424Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -132142,7 +132164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
