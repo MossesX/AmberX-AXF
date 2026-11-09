@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 22:46 UTC · `tabs-api-control` s2 done (all) · orchestrator
 - 2026-11-08 22:46 UTC · `tabs-api-control` s3 done (all) · orchestrator
 - 2026-11-08 22:46 UTC · `tabs-api-control` s4 done, → complete (all) · orchestrator
 - 2026-11-08 22:46 UTC · `tabs-api-control` → built, PR #398 (all) · builds-live
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:19 UTC · `test-button-on-every-claude-account-subscription` → running, note (all) · pipeline
 - 2026-11-09 20:19 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
 - 2026-11-09 20:20 UTC · `test-button-on-every-claude-account-subscription` → failed, note (all) · pipeline
+- 2026-11-09 20:21 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · console
 
 ## Token passes (log)
 
