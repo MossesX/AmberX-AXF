@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1996,
- "updatedAt": "2026-11-09T20:45:32.942Z",
+ "rev": 1997,
+ "updatedAt": "2026-11-09T20:45:48.559Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96198,7 +96198,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:44:34.558Z",
+   "updatedAt": "2026-11-09T20:45:34.690Z",
    "builtAt": "",
    "notes": [
     {
@@ -96220,6 +96220,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T20:38:31.984Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-owner-only-settings-brett-s-admin-console-login---earl.",
+     "at": "2026-11-09T20:45:30.602Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-only-settings-brett-s-admin-console-login---earl, own login copy)",
+     "at": "2026-11-09T20:45:34.690Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-owner-only-settings-brett-s-admin-console-login---sully.",
@@ -96248,10 +96256,10 @@
     "queuedAt": "2026-11-09T20:37:06.160Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-owner-only-settings-brett-s-admin-console-login---sully",
+    "session": "axf-owner-only-settings-brett-s-admin-console-login---earl",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T20:44:27.561Z",
+    "launchedAt": "2026-11-09T20:45:29.604Z",
     "runs": 1,
     "lastRun": null,
     "split": {
@@ -96264,7 +96272,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:44:27.561Z"
+    "dispatchedAt": "2026-11-09T20:45:29.604Z"
    },
    "steps": [
     {

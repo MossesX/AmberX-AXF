@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:45:32.942Z",
+ "updatedAt": "2026-11-09T20:45:48.559Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14997,7 +14997,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:44:34.558Z",
+   "updatedAt": "2026-11-09T20:45:34.690Z",
    "builtAt": "",
    "notes": [
     {
@@ -15019,6 +15019,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T20:38:31.984Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-owner-only-settings-brett-s-admin-console-login---earl.",
+     "at": "2026-11-09T20:45:30.602Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-only-settings-brett-s-admin-console-login---earl, own login copy)",
+     "at": "2026-11-09T20:45:34.690Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-owner-only-settings-brett-s-admin-console-login---sully.",
