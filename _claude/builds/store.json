@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2024,
- "updatedAt": "2026-11-09T21:08:48.512Z",
+ "rev": 2025,
+ "updatedAt": "2026-11-09T21:09:50.411Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127269,7 +127269,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T21:08:47.408Z",
+   "updatedAt": "2026-11-09T21:09:49.179Z",
    "builtAt": "",
    "notes": [
     {
@@ -127367,6 +127367,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-09T21:08:47.408Z"
+    },
+    {
+     "text": "s6 done (Fable): 44 skin declarations + text children, commit 770788566 pushed to PR #409. Worktree /root/axf-builds/skins-restyle-everything-badges-banner-and-every-visual-element has a stale /opt/axf/.git/worktrees/skins-restyle-everything-badges-banner-and-every-visual-element/index.lock (0 bytes, 20:53, no git process) that the session could not delete (sensitive path). s6 was committed through a temporary index. Before s5: rm that index.lock, then git reset -q in the worktree.",
+     "at": "2026-11-09T21:09:49.179Z"
     }
    ],
    "approvals": [
@@ -127559,7 +127563,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
