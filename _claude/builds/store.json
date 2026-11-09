@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1974,
- "updatedAt": "2026-11-09T20:36:18.669Z",
+ "rev": 1975,
+ "updatedAt": "2026-11-09T20:36:36.634Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96198,7 +96198,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:36:16.498Z",
+   "updatedAt": "2026-11-09T20:36:23.061Z",
    "builtAt": "",
    "notes": [
     {
@@ -96208,6 +96208,10 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-09T20:36:16.498Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-09T20:36:23.061Z"
     }
    ],
    "approvals": [],
@@ -96223,7 +96227,7 @@
     "runs": 0,
     "lastRun": null,
     "split": null,
-    "splitRequested": "2026-11-09T20:36:15.950Z",
+    "splitRequested": "2026-11-09T20:36:21.120Z",
     "note": "",
     "route": "",
     "dispatchedAt": ""
@@ -96326,7 +96330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -116770,11 +116774,32 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:35:37.752Z",
+   "updatedAt": "2026-11-09T20:36:26.559Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-09T20:36:26.559Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "2026-11-09T20:36:25.143Z",
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -116851,7 +116876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
