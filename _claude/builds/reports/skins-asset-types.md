@@ -75,3 +75,12 @@ and "Scoping in action" (the Windows skin on the app while the Home screen draws
   Follow switch tells where to set it).
 - The VPS disk hit 100% during this build (docker build cache 17 GB, old `/tmp` scratch); `docker builder prune` and the
   tsx cache freed 13 GB. A disk-space health check with Auto fix belongs in the systems check.
+
+## Finish (Nov 9 2026)
+
+Merged origin/main (568 commits) into `claude/skins-finish`. Conflicts: the asset-type lists in `core/types.ts` (main's
+demo types + `skin`), the `build-engine.mjs` imports and the PORTING.md deferred sections took both sides; the lock files,
+build profiles and another build's report took main's. After the merge: tsc clean (console-web), check-theme,
+check-controls, check-toolbars, check-chrome-assets, check-skin (476 checks), check-skin-coverage (55 types, 0 uncovered;
+main's demonstration / book / clip / docs types are covered as slots), theme-manager tests (34) and its lifecycle check
+all pass. The UI Review options A-C and "scoping in action" were already approved there; nothing new was posted.
