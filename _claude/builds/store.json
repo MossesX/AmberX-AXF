@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1894,
- "updatedAt": "2026-11-09T19:14:04.697Z",
+ "rev": 1895,
+ "updatedAt": "2026-11-09T19:20:21.467Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129548,7 +129548,7 @@
    "title": "URGENT: Terminal pops up every time the console opens",
    "category": "",
    "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129556,12 +129556,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T18:52:29.382Z",
+   "updatedAt": "2026-11-09T19:20:18.341Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T18:52:29.382Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T19:20:18.341Z"
     }
    ],
    "approvals": [],
@@ -129579,8 +129583,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-09T19:20:17.331Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -129596,7 +129600,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": ""
    },
@@ -129679,7 +129683,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
