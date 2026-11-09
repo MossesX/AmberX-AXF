@@ -100,6 +100,19 @@ Look values written in, which no theme, asset or part changes:
   the counter, progress and avatar text follow the skin. Additive: with no parts the sheet is empty as before, so the
   default look is unchanged; the Windows skin's counter weight now reaches the number and label. Shadowed is down to
   the non-text children (dots, bars, fills, tracks, close buttons, the banner pop-over).
+- **s5**: the screenshot gate, `npx -y tsx framework/cli/skin-shots.mts check [--out <dir>]` (CI: the console job,
+  next to the theme swap). A gallery page holds one element for every style-target root, item and text child in
+  `schemas/customize.json` (63 elements: banner, toolbar, menus, nav, tabs, dialog, popups, buttons, cards, search,
+  sliders, gauges, meters, badges, every banner widget). Each skin and design package is drawn the way the runtime
+  draws it (colour and style themes, typography / density / sizing assets, spacing, style parts through the customize
+  engine) and compared with the default in Chromium, computed style by computed style. An element is **unchanged**
+  when nothing differs and **colour only** when only its colours differ (shape, weight and type kept). The gate fails
+  on any such element that isn't in `spec/skin-shots-baseline.json` (a ratchet: `skin-shots.mts baseline` shrinks it
+  after a fix; never grow it to pass). Looks whose sheet is the default's (`fresh`, `quiet-focus`: layout and
+  behaviour only) are skipped. `--out` saves `<skin>-desktop.png` / `-phone.png`; the Nov 9 set is in UI Review.
+  Baseline today: `coral-play` and `fresh-night` are colour only everywhere (themes-only packages on the Fresh shapes);
+  `enterprise-day` / `-night` leave 22 widget and slider / gauge / tab-picker elements colour only. Slot assets a React
+  component reads as props (a button asset's shape) are covered by `check-skin.mts`, not by the gallery.
 - **Still theme-only (no asset type)**: tables (`.fx-table`, datagrid), inputs and fields, chips, switches, toasts,
   scrollbars, terminal, cards that aren't containers (`.fx-idcard`, `.fx-dcard`). They follow the skin's colour, style,
   typography, density and sizing assets; a skin can't give them their own parts until they get asset types (Fable).

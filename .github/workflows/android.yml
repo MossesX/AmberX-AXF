@@ -233,6 +233,7 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
+          npx -y tsx ../../framework/cli/skin-shots.mts check     # skin-coverage@1 screenshot gate: every skin vs the default, element by element; fails on a new unchanged or colour-only element (spec/skin-shots-baseline.json)
           npx tsx scripts/interface-scope-check.mts     # two <InterfaceScope>s read their own interfaces, the app keeps its own
           npx tsx scripts/window-handles-check.mts      # every floating window has its 8 resize handles, windows stay under dialogs, settings 'Opens in' dialog
           npx tsx scripts/fetch-share-check.mts         # one shared /api GET per source, hidden tab quiet, 5xx exponential backoff
