@@ -1,0 +1,27 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "queues-api-screen-layout-mw8j5nn2-columns",
+ "name": "queues-api-screen-layout-mw8j5nn2: columns",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Queues side by side as columns next to Pending (drag a build between columns), the API accounts strip above them, the rules editor below. Best on a wide screen; on a phone the columns stack.",
+ "tags": [
+  "ui-choice",
+  "choice-set:queues-api-screen-layout-mw8j5nn2",
+  "choice-option:columns"
+ ],
+ "data": {
+  "view": "columns",
+  "order": [
+   "api",
+   "queues",
+   "rules"
+  ],
+  "open": [
+   "api",
+   "queues",
+   "rules"
+  ]
+ }
+}

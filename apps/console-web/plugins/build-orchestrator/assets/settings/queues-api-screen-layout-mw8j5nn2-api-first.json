@@ -1,0 +1,27 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "queues-api-screen-layout-mw8j5nn2-api-first",
+ "name": "queues-api-screen-layout-mw8j5nn2: API control first",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The API control panel leads: API accounts with key status, caps and spend, then the rules editor, then the queues. For days the money is the question.",
+ "tags": [
+  "ui-choice",
+  "choice-set:queues-api-screen-layout-mw8j5nn2",
+  "choice-option:api-first"
+ ],
+ "data": {
+  "view": "api-first",
+  "order": [
+   "api",
+   "rules",
+   "queues"
+  ],
+  "open": [
+   "api",
+   "rules",
+   "queues"
+  ]
+ }
+}
