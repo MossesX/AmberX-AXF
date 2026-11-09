@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1716,
- "updatedAt": "2026-11-09T13:08:04.083Z",
+ "rev": 1717,
+ "updatedAt": "2026-11-09T13:09:00.992Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126442,7 +126442,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T13:08:03.151Z",
+   "updatedAt": "2026-11-09T13:08:59.722Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -126493,6 +126493,28 @@
      "updatedAt": "2026-11-09T13:08:03.152Z"
     },
     {
+     "id": "s4",
+     "uid": "st-mw9a27mm01rfrf",
+     "title": "",
+     "text": "Make it a standard toolbar: same drop-on behaviour as every other toolbar (registered in Toolbars settings, plugins can register and drop items onto it, reorder/remove), so Brett's own plugins attach later",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T13:08:59.723Z",
+     "updatedAt": "2026-11-09T13:08:59.806Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mw9a0zz406wz2o",
      "title": "",
@@ -126523,7 +126545,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:08:04.083Z",
+ "updatedAt": "2026-11-09T13:09:00.992Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77141,7 +77141,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T13:08:03.151Z",
+   "updatedAt": "2026-11-09T13:08:59.722Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -77182,6 +77182,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw9a0zz4058ljf"
+    },
+    {
+     "id": "s4",
+     "text": "Make it a standard toolbar: same drop-on behaviour as every other toolbar (registered in Toolbars settings, plugins can register and drop items onto it, reorder/remove), so Brett's own plugins attach later",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9a27mm01rfrf"
     },
     {
      "id": "s3",
