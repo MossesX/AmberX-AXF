@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:38 UTC · `ui-api-parity-console` added (27 steps) (all) · orchestrator
 - 2026-11-08 17:38 UTC · `ui-api-parity-look` added (8 steps) (all) · orchestrator
 - 2026-11-08 17:38 UTC · `ui-api-parity-media` added (10 steps) (all) · orchestrator
 - 2026-11-08 17:38 UTC · `ui-api-parity-framework` added (6 steps) (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:10 UTC · `split-builds-pages-build-manager-pending-complet-3` → failed, note (all) · pipeline
 - 2026-11-09 18:10 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
 - 2026-11-09 18:10 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
+- 2026-11-09 18:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → failed, note (all) · pipeline
 
 ## Token passes (log)
 
