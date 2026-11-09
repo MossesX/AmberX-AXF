@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` s2 done (all) · orchestrator
 - 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` s3 done (all) · orchestrator
 - 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` s4 done (all) · orchestrator
 - 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` s5 done (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 16:39 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` note (all) · orchestrator
 - 2026-11-09 16:39 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` s1 done, → complete (all) · orchestrator
 - 2026-11-09 16:39 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
+- 2026-11-09 16:40 UTC · `orchestrator-self-check-when-stuck-verify-each-a` → running, note (all) · pipeline
 
 ## Token passes (log)
 
