@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T04:30:32.190Z",
+ "updatedAt": "2026-11-09T04:31:06.986Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -65373,7 +65373,7 @@
    "pr": "#383",
    "mergedAt": "2026-11-09T04:24:01Z",
    "createdAt": "2026-11-06T00:15:34.281Z",
-   "updatedAt": "2026-11-09T04:30:30.691Z",
+   "updatedAt": "2026-11-09T04:31:04Z",
    "builtAt": "2026-11-07T05:34:58.589Z",
    "notes": [
     {
@@ -65391,6 +65391,10 @@
     {
      "text": "Reconciler: PR #383 merged",
      "at": "2026-11-09T04:30:30.691Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins rev 1 sent to Shipped features (orchestrator): landed 744b4d902, 153 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-09T04:31:04Z"
     }
    ],
    "approvals": [],

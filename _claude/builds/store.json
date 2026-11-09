@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1713,
- "updatedAt": "2026-11-09T04:30:32.190Z",
+ "rev": 1714,
+ "updatedAt": "2026-11-09T04:31:06.986Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -93980,7 +93980,7 @@
    "pr": "#383",
    "mergedAt": "2026-11-09T04:24:01Z",
    "createdAt": "2026-11-06T00:15:34.281Z",
-   "updatedAt": "2026-11-09T04:30:30.691Z",
+   "updatedAt": "2026-11-09T04:31:04Z",
    "builtAt": "2026-11-07T05:34:58.589Z",
    "notes": [
     {
@@ -93998,6 +93998,10 @@
     {
      "text": "Reconciler: PR #383 merged",
      "at": "2026-11-09T04:30:30.691Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins rev 1 sent to Shipped features (orchestrator): landed 744b4d902, 153 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-09T04:31:04Z"
     }
    ],
    "approvals": [],
@@ -94013,6 +94017,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-skins",
+    "rev": 1,
+    "at": "2026-11-09T04:31:04Z",
+    "landedCommit": "744b4d902fb20bfdd13044f12734efee32008a7e"
    },
    "steps": [
     {
@@ -94266,7 +94276,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
