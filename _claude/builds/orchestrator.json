@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:48:24.719Z",
+ "updatedAt": "2026-11-09T20:48:35.881Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14997,8 +14997,8 @@
    "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:48:11.014Z",
-   "builtAt": "2026-11-09T20:48:11.014Z",
+   "updatedAt": "2026-11-09T20:48:24.624Z",
+   "builtAt": "2026-11-09T20:48:24.624Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -15035,6 +15035,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-only-settings-brett-s-admin-console-login---sully, own login copy)",
      "at": "2026-11-09T20:44:34.558Z"
+    },
+    {
+     "text": "Headless run axf-owner-only-settings-brett-s-admin-console-login---earl: brief only · start 11.0K tokens ($0.03) · cost $0.53 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:48:24.624Z"
     }
    ],
    "approvals": [],

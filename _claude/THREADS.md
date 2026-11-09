@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:16 UTC · `x.lib.files` → running (all) · build-queue
-- 2026-11-09 02:16 UTC · `x.lib.hub` → running (all) · build-queue
 - 2026-11-09 02:24 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` added (0 steps) (all) · pending
 - 2026-11-09 02:25 UTC · `urgent-approval-links-say-method-not-allowed` added (0 steps) (all) · pending
 - 2026-11-09 02:25 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` PR #415 (all) · builds-live
 - 2026-11-09 20:48 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
 - 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s7 done, → built (all) · orchestrator
+- 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` PR #415 (all) · foreign-write
+- 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 
 ## Token passes (log)
 
