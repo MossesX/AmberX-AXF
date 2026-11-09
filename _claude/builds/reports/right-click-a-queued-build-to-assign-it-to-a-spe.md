@@ -50,7 +50,7 @@ stored accounts."
   (already on main) and in the untracked `.axf-brief.md`. `help-coverage` fails on `claude-accounts/help.json` entry 17.
 
 ## Screenshots
-Desktop and phone screenshots from a scratch console reading the real accounts are in UI Review.
+Desktop and phone screenshots from a scratch console reading the real accounts are in UI Review (r-20261109-156a9d3a). PR #411.
 
 ## Deferred
 - Android twin: none (no Kotlin work). The pin is a field on the shared record, and the console is the only UI.
