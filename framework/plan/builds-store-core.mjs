@@ -46,15 +46,33 @@
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
+import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
+import { normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
-/** `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged. */
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+/**
+ * `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged.
+ * `queued` (Nov 8 2026, pipeline rebuild) = Brett moved it from Pending to the Queue: the dispatcher starts it when a slot
+ * is free; `running` is the pipeline's Building (framework/core/build-pipeline.mjs).
+ */
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 /** Statuses that count as finished work (progress, Pending list). */
 export const FINISHED = ['built', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
-export const BASE_PROFILE = 'main-framework';
+/**
+ * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
+ * `all`; a record that still names one of them (an older checkout, a live merge from a session on older code, a hub
+ * plan's build link, `AXF_BUILD_PROFILE=urgent` in an old brief) is read as `all`, its old profile kept in
+ * `fromProfile`. Urgency is a per-build `priority`, never a profile: a build from `urgent` without one reads as P0.
+ * The old base, `main-framework`, was folded in too (Brett, Nov 7 2026), so `all` is the base profile now: its files
+ * are the original paths (`_claude/builds/orchestrator.json`, `framework/plan/pending.json`, …).
+ */
+export const MERGED_PROFILE = 'all';
+export const BASE_PROFILE = MERGED_PROFILE;
+export const RETIRED_PROFILES = ['current', 'urgent', 'angel', 'big-dog', 'breakroom', 'refactor', 'main-framework'];
+/** A profile id after the merge: a retired id is `all`, anything else stays. */
+export const resolveProfile = (id) => (RETIRED_PROFILES.includes(id) ? MERGED_PROFILE : id);
 
 const PREFIX = /^\[(Fable|Opus|Sonnet)\]\s*/;
 const str = (v, max = 8000) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -113,9 +131,16 @@ export function normBuild(b, ctx = {}) {
   const steps = (Array.isArray(o.steps) ? o.steps : []).map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
   const seen = new Set();
   steps.forEach((s, i) => { if (seen.has(s.id)) s.id = `s${i + 1}-${i}`; seen.add(s.id); });
-  const profiles = [...new Set((Array.isArray(o.profiles) ? o.profiles : [o.profile || ctx.profile || BASE_PROFILE]).map((p) => str(p, 40)).filter(Boolean))];
+  const named = [...new Set((Array.isArray(o.profiles) ? o.profiles : [o.profile || ctx.profile || BASE_PROFILE]).map((p) => str(p, 40)).filter(Boolean))];
+  const retired = named.filter((p) => RETIRED_PROFILES.includes(p));
+  const profiles = [...new Set(named.map(resolveProfile))];
   const order = {};
-  for (const p of profiles) order[p] = Number.isFinite(o.order?.[p]) ? o.order[p] : (Number.isFinite(ctx.order) ? ctx.order : 0);
+  for (const p of profiles) {
+    const was = p === MERGED_PROFILE ? [p, ...retired].find((x) => Number.isFinite(o.order?.[x])) : p;
+    order[p] = Number.isFinite(o.order?.[was]) ? o.order[was] : (Number.isFinite(ctx.order) ? ctx.order : 0);
+  }
+  const fromProfile = str(o.fromProfile, 40) || retired[0] || '';
+  const priority = normPriority(o.priority) || (retired.includes('urgent') ? 'P0' : '');
   const origin = normOrigin(o.origin); // build-origin@1: what Brett said that started it (framework/core/build-origin.mjs)
   return {
     id,
@@ -129,7 +154,7 @@ export function normBuild(b, ctx = {}) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}), // when its PR merged (built → complete)
-    ...(normPriority(o.priority) ? { priority: normPriority(o.priority) } : {}), // optional: unset = worked out on read (core/build-priority.mjs)
+    ...(priority ? { priority } : {}), // optional: unset = worked out on read (core/build-priority.mjs)
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     builtAt: FINISHED.includes(o.status) ? str(o.builtAt, 40) : '',
@@ -137,9 +162,12 @@ export function normBuild(b, ctx = {}) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
+    ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
+    ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     steps,
     profiles,
     order,
+    ...(fromProfile ? { fromProfile } : {}), // the profile it lived in before the Nov 7 2026 merge into `all`
     kind: o.kind === 'epic' ? 'epic' : 'build',
     planRef: str(o.planRef, 80),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
@@ -166,11 +194,78 @@ export function normalizeStore(s) {
     ...e,
     rev: Number.isInteger(o.rev) ? o.rev : 0,
     migratedAt: str(o.migratedAt, 40),
-    rules: o.rules && typeof o.rules === 'object' ? clone(o.rules) : {},
-    meta: { queue: clone(o.meta?.queue ?? {}), pending: clone(o.meta?.pending ?? {}) },
-    drafts: o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {},
+    rules: foldRetired(o.rules && typeof o.rules === 'object' ? clone(o.rules) : {}),
+    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})) },
+    drafts: foldRetired(o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {}, (a, b) => ({ ...a, ops: [...(a.ops ?? []), ...(b.ops ?? [])] })),
     builds: (Array.isArray(o.builds) ? o.builds : []).map((b) => normBuild(b)),
   };
+}
+
+/**
+ * Per-profile maps (rules, queue / pending meta, drafts) keyed by a retired profile fold into `all`: what `all` already
+ * holds wins, else the first retired profile's (RETIRED_PROFILES order); `join(a, b)` merges two entries instead.
+ */
+function foldRetired(map, join = null) {
+  const keys = RETIRED_PROFILES.filter((p) => map[p] !== undefined);
+  if (!keys.length) return map;
+  let acc = map[MERGED_PROFILE];
+  for (const k of keys) { acc = acc === undefined ? map[k] : join ? join(acc, map[k]) : acc; delete map[k]; }
+  map[MERGED_PROFILE] = acc;
+  return map;
+}
+const mergeQueueMeta = (a, b) => ({
+  ...a,
+  dirty: a.dirty === true || b.dirty === true,
+  updatedAt: [str(a.updatedAt, 40), str(b.updatedAt, 40)].sort().pop(),
+  history: [...(a.history ?? []), ...(b.history ?? [])].sort((x, y) => (str(x?.at) < str(y?.at) ? -1 : 1)),
+});
+
+/**
+ * Fold profiles `from` into `into` (Brett, Nov 7 2026: one profile for everything). Every build of `from` keeps its id,
+ * status, steps and step states; it leaves `from` for `into`, gains `fromProfile` (its old profile) and, when it came
+ * from `urgent` without a stored priority, `priority: 'P0'` so urgency stays a per-build field. Order: `from` in the
+ * given order, each profile's own order kept. A build id seen twice (never in one store, since ids are unique, but
+ * possible when merging exports) keeps both: the later one gets `-<oldprofile>`. Returns { store, report }.
+ */
+export function mergeProfiles(store, from, into, { now = nowIso() } = {}) {
+  const s = clone(store);
+  const report = { into, from: [], moved: 0, renamed: [], shared: [] };
+  let next = nextOrder(s, into);
+  const ids = new Set(s.builds.map((b) => b.id));
+  for (const p of from) {
+    const mine = buildsOf(s, p, { withDeleted: true });
+    report.from.push({ id: p, builds: mine.filter((b) => !b.deleted).length, deleted: mine.filter((b) => b.deleted).length });
+    for (const b of mine) {
+      if (b.profiles.includes(into)) { // already in `into` through another merged profile: one record, nothing renamed
+        b.profiles = b.profiles.filter((x) => x !== p); delete b.order[p];
+        report.shared.push(b.id); continue;
+      }
+      b.profiles = b.profiles.map((x) => (x === p ? into : x));
+      delete b.order[p];
+      b.order[into] = next++;
+      if (!b.fromProfile) b.fromProfile = p;
+      if (p === 'urgent' && !normPriority(b.priority)) b.priority = 'P0';
+      b.notes = [...(b.notes ?? []), { text: `Merged from build profile "${p}" into "${into}" (one profile for everything).`, at: now }];
+      report.moved++;
+    }
+  }
+  // clashes only arise between exports; the store has one record per id, so this is a guard, not a path
+  const seen = new Set();
+  for (const b of s.builds) {
+    if (seen.has(b.id) && b.fromProfile) { let id = `${b.id}-${b.fromProfile}`; while (ids.has(id)) id = `${id}-2`; report.renamed.push({ from: b.id, to: id }); ids.add(id); b.id = id; }
+    seen.add(b.id);
+  }
+  renumber(s, into);
+  for (const k of ['rules', 'drafts']) s[k] = foldInto(s[k], from, into);
+  s.meta = { queue: foldInto(s.meta.queue, from, into, mergeQueueMeta), pending: foldInto(s.meta.pending, from, into) };
+  return { store: s, report };
+}
+function foldInto(map, from, into, join = null) {
+  const m = { ...(map ?? {}) };
+  let acc = m[into];
+  for (const k of from) if (m[k] !== undefined) { acc = acc === undefined ? m[k] : join ? join(acc, m[k]) : acc; delete m[k]; }
+  if (acc !== undefined) m[into] = acc;
+  return m;
 }
 
 // ------------------------------------------------------------------ store self-check (builds@1)
@@ -510,7 +605,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
     b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
-    if (['pending', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
+    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
   }
   if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }

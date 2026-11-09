@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-86ab2420-6fc2-4119-b216-716d833246db",
+ "source": "claude-code",
+ "sessionId": "86ab2420-6fc2-4119-b216-716d833246db",
+ "project": "other",
+ "title": "login",
+ "startedAt": "2026-11-05T23:40:44.012Z",
+ "endedAt": "2026-11-05T23:40:52.644Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (terminal)",
+  "appVersion": "2.1.318",
+  "entrypoint": "cli",
+  "surface": "vps-claude-code",
+  "device": "ssh/mosh",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T23:40:44.102Z",
+   "kind": "prompt",
+   "text": "login",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 590,
+    "cacheRead": 39499,
+    "cacheWrite": 42739,
+    "thinking": 162
+   },
+   "costUsd": 0.2334,
+   "costEstimated": false,
+   "seconds": 8,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Which login did you mean? \"login\" on its own could be a few things: - **Claude Code:** type `/login` here. I can't run it for you. - **axHub sync on this VPS:** type `! claude-sync login` so you can enter the axHub token yourself. The startup sync worked, so this probably isn't needed right now. - …"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 590,
+  "cacheRead": 39499,
+  "cacheWrite": 42739,
+  "thinking": 162,
+  "costUsd": 0.2334,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.3737
+ },
+ "ingestedAt": "2026-11-06T00:27:23.388Z"
+}

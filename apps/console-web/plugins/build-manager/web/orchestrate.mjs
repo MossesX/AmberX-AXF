@@ -199,34 +199,5 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
 /** Shell-safe single-quoted string. */
 export const sq = (s) => `'${str(s).replace(/'/g, `'\\''`)}'`;
 
-/**
- * The one command axHub's vps.run gets (Brett sees all of it on the approval page): a fresh worktree of the console's
- * clone on the build's branch, the brief in a file, headless Claude Code with the model, reporting env set. The brief
- * is passed base64 so no quoting can break out. Never pushes to main and never merges.
- */
-/** Headless Claude Code in a tmux session the console's Terminal opens and brings to the front (Oct 26 2026); the old
- * nohup launch when the console's checkout doesn't have the helper yet. */
-export function headless(name, log, args, repoDir = '/opt/axf') {
-  const helper = `${repoDir}/deploy/claude-headless.sh`;
-  const n = String(name).replace(/[^A-Za-z0-9._-]/g, '-').slice(0, 48);
-  return `set -- ${args}; if [ -f ${sq(helper)} ]; then bash ${sq(helper)} --name ${sq(n)} --brief .axf-brief.md --log ${log} -- "$@"; `
-    + `else nohup claude -p "$@" "$(cat .axf-brief.md)" > ${log} 2>&1 & echo "started pid $! in $(pwd)"; fi`;
-}
-
-export function launchCommand({ brief, branch, model, changeId, repoDir = '/opt/axf', workRoot = '/root/axf-builds' }) {
-  const safeBranch = /^[A-Za-z0-9._/-]{1,120}$/.test(branch) && !branch.includes('..') ? branch : 'build/unnamed';
-  const dir = `${workRoot}/${safeBranch.replace(/[^A-Za-z0-9._-]/g, '-')}`;
-  const b64 = Buffer.from(brief, 'utf8').toString('base64');
-  const m = ['fable', 'opus', 'sonnet'].includes(model) ? model : 'opus';
-  const id = /^chg-\d{8}-[0-9a-f]{6,16}$/.test(changeId) ? changeId : '';
-  return [
-    'set -e',
-    `mkdir -p ${sq(workRoot)}`,
-    `git -C ${sq(repoDir)} fetch -q origin`,
-    `if [ ! -d ${sq(dir)} ]; then git -C ${sq(repoDir)} worktree add -q -B ${sq(safeBranch)} ${sq(dir)} origin/main; fi`,
-    `cd ${sq(dir)}`,
-    `echo ${sq(b64)} | base64 -d > .axf-brief.md`,
-    `export AXF_SURFACE=console-launch AXF_MODEL=${m}${id ? ` AXF_ADOPT_CHANGE=${id}` : ''} AXF_CLAUDE_AUTH=\${AXF_CLAUDE_AUTH:-plan}`,
-    headless(`build-${safeBranch}`, '.axf-build.log', `--model ${m} --permission-mode acceptEdits`, repoDir),
-  ].join('; ');
-}
+// No launch command here any more (Brett, Nov 9 2026: one way to start builds, the orchestrator): Start sends the build to
+// the orchestrator's Queue (POST /start → axf.build-dispatch@1) and its dispatcher launches it.

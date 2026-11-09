@@ -20,7 +20,7 @@ persist_root: Callable[[], Path | None] = lambda: None  # noqa: E731
 # Build profiles (build-profiles@1): data_path(rel) = where the active profile keeps a shared work file (pending, plan,
 # queue, status, tracker, plan media); other shared files resolve as before. build_profile() = the active profile.
 data_path: Callable[[str], Path] = lambda rel: ROOT / rel  # noqa: E731
-build_profile: Callable[[], dict[str, Any]] = lambda: {"id": "main-framework", "name": "Main framework", "base": True}  # noqa: E731
+build_profile: Callable[[], dict[str, Any]] = lambda: {"id": "all", "name": "All builds", "base": True}  # noqa: E731
 log: Callable[..., None] = lambda *a, **k: None  # noqa: E731
 plugin_enabled: Callable[[str], bool] = lambda folder: True  # noqa: E731
 # Switch a plugin on/off, as the admin's Settings → Plugins switch does (the systems check's Auto fix for a plugin
@@ -31,6 +31,7 @@ terminal_lines: Callable[[], list[dict[str, Any]]] = lambda: []  # noqa: E731 �
 # No-ops until main.py wires the alert hub (it is created after the plugins load); plugins call them at request time.
 raise_alert: Callable[[dict[str, Any]], dict[str, Any]] = lambda inp: {}  # noqa: E731
 resolve_alerts: Callable[[list[str]], None] = lambda keys: None  # noqa: E731
+alerts_changed: Callable[[], None] = lambda: None  # noqa: E731 — what readers see changed: the alert streams send it again
 # The console's ASGI app (a plugin calls another plugin's route in-process) and its MCP server (the Plugin commands
 # plugin adds <plugin>_<command> tools as plugins come and go). None until main.py sets them.
 asgi_app: Any = None

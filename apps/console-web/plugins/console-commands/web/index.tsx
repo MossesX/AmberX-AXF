@@ -94,6 +94,22 @@ function catalogOf(rt: AxfRuntime) {
   return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
 }
 
+/**
+ * Reloads this page: soft is a plain reload; hard clears the page's caches and service workers first, then reloads
+ * past the HTTP cache with a one-time query value.
+ */
+async function reloadPage(hard: boolean): Promise<void> {
+  if (hard) {
+    try { await Promise.all((await caches.keys()).map((k) => caches.delete(k))); } catch { /* no Cache API here */ }
+    try { await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister())); } catch { /* none */ }
+    const u = new URL(location.href);
+    u.searchParams.set('axf-refresh', Date.now().toString(36));
+    location.replace(u.href);
+    return;
+  }
+  location.reload();
+}
+
 /** Run one message; → [ok, what happened]. */
 function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
   const errors = consoleMessageErrors(m);
@@ -104,7 +120,10 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];
-    case 'run': return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
+    case 'run':
+      // the catalog already leaves these out; a stale catalog or a crafted message stops here
+      if (rt.actions.list().some((a) => a.meta.personOnly === true && a.id === m.spec!.split(':')[0])) return [false, `${m.label ?? m.spec} needs Brett's own tap`];
+      return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
     case 'close': {
       const open = rt.getState().dialog;
       if (!open) return [true, 'no dialog was open'];
@@ -114,6 +133,7 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       return [true, `closed ${m.label ?? open.id}`];
     }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
+    case 'refresh': return [true, m.hard ? 'hard reloading (caches cleared)' : 'reloading']; // after the ack: see reloadPage
     case 'back': {
       if (rt.getState().dialog) { rt.closeDialog(); return [true, 'closed the dialog']; }
       history.pop(); // the screen we're on
@@ -183,7 +203,8 @@ function ConsoleCommandsClient() {
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
-        void post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
       },
     );
     return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };

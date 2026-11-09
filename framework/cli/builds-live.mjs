@@ -34,7 +34,7 @@
  * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,19 +42,22 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, journalDir, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { emitChangesTo } from './build-hooks.mjs';
+import { readManifest } from './shipped-files.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
+const SHIPPED_DIR_REL = '_claude/builds/shipped'; // shipped-manifest@1 sidecars (framework/cli/shipped-files.mjs)
 const THREADS_REL = '_claude/THREADS.md';
 export const LIVE_HEAD = '## Live build log';
 const LIVE_NOTE = '<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->';
 const LIVE_KEEP = 400;
 const ATTEMPTS = 6;
 /** Files a builds-only conflict may touch (heal) and the merge driver handles. */
-export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
+export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, `${SHIPPED_DIR_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
 
 const env = (k, d = '') => process.env[k] ?? d;
 const remote = () => env('AXF_BUILDS_LIVE_REMOTE', 'origin');
@@ -132,7 +135,7 @@ export function flushLive({ pull = true } = {}) {
       if (!r.ok) { setStatus({ lastError: new Date().toISOString(), error: r.error }); return { ok: false, error: r.error, commits }; }
       dropFromOutbox(lines);
       if (r.sha) commits.push(r.sha);
-      setStatus({ lastOk: new Date().toISOString(), error: '', lastSha: r.sha || readJson(statusFile())?.lastSha || '', published: (readJson(statusFile())?.published ?? 0) + entries.length });
+      setStatus({ lastOk: new Date().toISOString(), error: '', skipped: r.skipped ?? [], lastSha: r.sha || readJson(statusFile())?.lastSha || '', published: (readJson(statusFile())?.published ?? 0) + entries.length });
       if (pull) { pullFrom(r.files); toConsole(r.files); }
     }
     return { ok: true, commits };
@@ -194,33 +197,52 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const base = git(['rev-parse', ref]).out;
     const mainText = show(base, STORE_REL);
     const mainStore = mainText ? core.normalizeStore(JSON.parse(mainText)) : core.emptyStore();
-    const { store: merged, taken } = merge.mergeStores(mainStore, { ...core.emptyStore(), builds: records }, { ids });
+    let { store: merged, taken } = merge.mergeStores(mainStore, { ...core.emptyStore(), builds: records }, { ids });
+    let v = core.validateStore(merged);
+    // a bad record stays out of this commit; the rest of the batch still goes (one poisoned copy used to stop every build)
+    const skipped = v.ok ? [] : [...new Set(v.errors.map((e) => /^builds\[\d+\]\(([^)]+)\)/.exec(e.path)?.[1]))].filter((id) => ids.includes(id));
+    if (skipped.length) {
+      const kept = records.filter((r) => !skipped.includes(r.id));
+      ({ store: merged, taken } = merge.mergeStores(mainStore, { ...core.emptyStore(), builds: kept }, { ids: kept.map((r) => r.id) }));
+      v = core.validateStore(merged);
+    }
+    if (!v.ok) return { ok: false, error: `the merged store is not valid builds@1, nothing pushed: ${v.errors.slice(0, 3).map((e) => `${e.path} ${e.message}`).join('; ')}` };
+    if (skipped.length && !taken.length) return { ok: true, sha: '', files: allFiles(base, { [STORE_REL]: mainText }), skipped };
     const now = new Date().toISOString();
     if (taken.length) { merged.rev = (mainStore.rev ?? 0) + 1; merged.updatedAt = now; }
-    const v = core.validateStore(merged);
-    if (!v.ok) return { ok: false, error: `the merged store is not valid builds@1, nothing pushed: ${v.errors.slice(0, 3).map((e) => `${e.path} ${e.message}`).join('; ')}` };
     const files = {};
     files[STORE_REL] = taken.length ? storeText(merged) : mainText ?? storeText(merged);
     const months = new Map();
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
     for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
-    for (const [m, lines] of months) { const rel = `${JOURNAL_REL}/${m}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', lines.join('\n')); }
-    const threadLines = entries.flatMap((e) => merge.changeLines(e));
+    const sizes = journalSizes(base);
+    for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
+    const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => !skipped.includes(b.id)) }));
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
     for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
+    // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
+    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten.
+    for (const rel of staleProfileExports(base, files)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
       const text = mergeOriginsText(mergeOriginsText(show(base, ORIGINS_REL) ?? '', mine), fromRecords);
       if (text !== mergeOriginsText('', '') || show(base, ORIGINS_REL) !== null) files[ORIGINS_REL] = text; }
+    // shipped-manifest@1: the manifest of every build in this batch that has one here (main's copy stays when it is newer)
+    for (const id of ids) {
+      const m = readManifest(id); if (!m) continue;
+      const rel = `${SHIPPED_DIR_REL}/${m.build.id}.json`; let mainRev = 0;
+      try { mainRev = Number(JSON.parse(show(base, rel) ?? '{}').rev) || 0; } catch { /* unreadable on main: ours replaces it */ }
+      if (mainRev <= m.rev) files[rel] = `${JSON.stringify(m, null, 1)}\n`;
+    }
     // what actually differs from main
     const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
-    if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files) };
+    if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files), skipped };
     const sha = commitOnto(base, changed, message(entries, taken));
     if (!sha.ok) return sha;
     const p = git(['push', '-q', remote(), `${sha.sha}:refs/heads/${branch()}`], { timeout: 60000 });
-    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, files) }; }
+    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, files), skipped }; }
     last = p.err;
     // main moved under us: fetch and apply again; anything else (protection, auth) is not retried
     if (!/non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(p.err) || /protected branch|permission|denied|403|GH006|GH013/i.test(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
@@ -228,10 +250,21 @@ export function publish(entries, { journalExtra = {} } = {}) {
   }
   return { ok: false, error: `main kept moving: gave up after ${ATTEMPTS} tries (${last.slice(-200)})` };
 }
+/** { fileKey: bytes } of the journal files at a revision. */
+function journalSizes(rev) {
+  const out = {};
+  for (const l of git(['ls-tree', '-l', rev, `${JOURNAL_REL}/`]).out.split('\n')) { const m = /\s(\d+)\t.*\/([^/]+)\.jsonl$/.exec(l); if (m) out[m[2]] = Number(m[1]); }
+  return out;
+}
+/** Orchestrator exports on `rev` under _claude/builds/profiles/ that no registered profile writes (null = remove). */
+export function staleProfileExports(rev, files) {
+  return git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles']).out.split('\n')
+    .filter((rel) => rel.endsWith('/orchestrator.json') && !(rel in files));
+}
 function allFiles(rev, files) {
   const out = { ...files };
   const ls = git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles', '_claude/builds/orchestrator.json']).out.split('\n').filter((x) => x.endsWith('orchestrator.json'));
-  for (const rel of ls) if (!(rel in out)) out[rel] = show(rev, rel) ?? '';
+  for (const rel of ls) if (!(rel in out) || out[rel] === null) out[rel] = show(rev, rel) ?? '';
   return out;
 }
 function message(entries, taken) {
@@ -246,6 +279,7 @@ function commitOnto(base, files, msg) {
   try {
     let r = git(['read-tree', base], { envx }); if (r.code) return { ok: false, error: `read-tree: ${r.err}` };
     for (const [rel, text] of files) {
+      if (text === null) { r = git(['update-index', '--force-remove', '--', rel], { envx }); if (r.code) return { ok: false, error: `update-index: ${r.err}` }; continue; } // a file taken off main
       const h = git(['hash-object', '-w', '--stdin'], { input: text }); if (h.code) return { ok: false, error: `hash-object: ${h.err}` };
       r = git(['update-index', '--add', '--cacheinfo', `100644,${h.out},${rel}`], { envx }); if (r.code) return { ok: false, error: `update-index: ${r.err}` };
     }
@@ -289,8 +323,14 @@ function toConsole(files) {
     const main = core.normalizeStore(JSON.parse(files[STORE_REL]));
     const theirs = core.normalizeStore(JSON.parse(readFileSync(join(root, STORE_REL), 'utf8')));
     const { store, taken } = merge.mergeStores(theirs, main);
+    for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${SHIPPED_DIR_REL}/`) && t) { mkdirSync(join(root, SHIPPED_DIR_REL), { recursive: true }); writeFileSync(join(root, rel), t); }
     if (!taken.length) return;
     const consoleOnly = merge.mergeStores(main, theirs).taken.length;
+    const next = consoleOnly ? store : main;
+    // build-hook@1: these builds changed in this checkout, not in the console's; their events go to the console's outbox
+    // (its Shipped features sync delivers them), or the ledger never hears of ticks, PRs and manifests made in a worktree
+    const hooks = join(root, '.axf-console', 'build-hooks');
+    if (existsSync(hooks)) emitChangesTo(hooks, adoptedChanges(theirs, next), { at: new Date().toISOString(), by: 'builds-live' });
     writeFileSync(join(root, STORE_REL), consoleOnly ? storeText(store) : files[STORE_REL]);
     for (const x of orchestratorExports(consoleOnly ? store : main)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
@@ -318,11 +358,14 @@ export function syncAll() {
   const ids = merge.mergeStores(main, local).taken;
   if (!ids.length) return { ...pullMain(), pushed: [] };
   const journalExtra = {};
-  for (const m of localJournalMonths()) {
-    const onMain = new Set((show(rev, `${JOURNAL_REL}/${m}.jsonl`) ?? '').split('\n'));
-    let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { continue; }
-    const extra = mine.split('\n').filter((l) => l.trim() && !onMain.has(l));
-    if (extra.length) journalExtra[m] = extra;
+  const mainKeys = Object.keys(journalSizes(rev));
+  const onMain = new Map();   // month → every line main holds in any part of that month
+  for (const key of localJournalMonths()) {
+    const m = key.slice(0, 7);
+    if (!onMain.has(m)) onMain.set(m, new Set(mainKeys.filter((k) => k.slice(0, 7) === m).flatMap((k) => (show(rev, `${JOURNAL_REL}/${k}.jsonl`) ?? '').split('\n'))));
+    let mine = ''; try { mine = readFileSync(join(journalDir(), `${key}.jsonl`), 'utf8'); } catch { continue; }
+    const extra = mine.split('\n').filter((l) => l.trim() && !onMain.get(m).has(l));
+    if (extra.length) journalExtra[m] = [...(journalExtra[m] ?? []), ...extra];
   }
   const at = new Date().toISOString();
   const entry = { rev: local.rev, at, by: 'builds-live', action: 'sync', note: `newer here than on ${branch()}: ${ids.join(', ')}`, builds: ids.map((id) => { const b = local.builds.find((x) => x.id === id); const o = main.builds.find((x) => x.id === id); return { id, op: o ? 'change' : 'add', rev: b.rev, before: o ? core.compactBuild(o) : null, after: core.compactBuild(b) }; }) };
@@ -433,7 +476,7 @@ async function main(argv) {
   const opt = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true) : undefined; };
   const out = (o, text) => { if (!quiet) console.log(json ? JSON.stringify(o) : text); };
   const [cmd = 'status', ...rest] = args;
-  if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} · ${s.queued} queued · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}`); }
+  if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} · ${s.queued} queued · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}${s.skipped?.length ? `\nleft out as not valid: ${s.skipped.join(', ')}` : ''}`); }
   if (cmd === 'flush') { const r = flushLive(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `flush skipped (${r.skipped})` : `published ${r.commits.length} commit(s) ${r.commits.map((c) => c.slice(0, 8)).join(' ')}`) : `not published: ${r.error}`); }
   if (cmd === 'sync') { const r = syncAll(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `synced: sent ${r.pushed?.length ?? 0} build(s)${r.pushed?.length ? ` (${r.pushed.join(', ')})` : ''}, took ${r.taken?.length ?? 0} from main${r.taken?.length ? ` (${r.taken.join(', ')})` : ''}`) : `sync failed: ${r.error}`); }
   if (cmd === 'pull') { const r = pullMain(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `pulled: ${r.taken.length} build(s) newer on main${r.taken.length ? ` (${r.taken.join(', ')})` : ''}`) : `pull failed: ${r.error}`); }

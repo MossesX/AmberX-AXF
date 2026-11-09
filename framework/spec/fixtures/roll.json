@@ -50,6 +50,10 @@
     "job-type": false,
     "card": false,
     "help": false,
+    "demonstration": false,
+    "book": false,
+    "clip": false,
+    "docs": false,
     "uac-policy": false
   },
   "cases": {

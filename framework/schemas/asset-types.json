@@ -1715,6 +1715,153 @@
         "why": "Help text has no look of its own: the Help UI that shows it is drawn with parts a skin styles."
       }
     },
+    "demonstration": {
+      "label": "Demonstration",
+      "group": "Demos",
+      "icon": "play",
+      "shared": false,
+      "description": "A narrated demonstration of one glossary entry (demonstration@1, rules core/engines/demo-rules.mjs), built on the walkthrough engine: steps of walkthrough@1 shape (say = the narration, do = a console action such as nav:builds or settings.open:plugins, target = the data-axf-id, view id or selector to highlight, plus a highlight label, a wait and a title), the surface it runs on (the live UI, a preview, the recorder), a voice (narrator, speed), demonstrations chained after it into a tour, the entry it is about and the entries it covers, auto-tagged keywords and where it was generated from (the glossary's Generate demonstration button, by hand, a book, a help intro, the recorder). Editable, replayable and voice-controlled in the Demonstration Designer; Molly's guide plays it as walkthrough@1; the recorder films it into a clip. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "steps"
+      ],
+      "enums": {
+        "surface": [
+          "live",
+          "preview",
+          "recorder"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "about": "the glossary entry id it demonstrates (plugin:build-manager, concept:asset, control:console-web:ui-review:approve)",
+        "entries": "glossary entry ids it covers (the about entry is always one)",
+        "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
+        "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5–2 }",
+        "chain": "demonstration ids played after this one (a tour)",
+        "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
+        "generated": "{ from: glossary | manual | book | help-intro | recorder, at: ISO time, build: the build that made it }",
+        "editable": "false = a generated demo that is rebuilt from its entry (edits are lost); default true"
+      }
+    },
+    "book": {
+      "label": "Book",
+      "group": "Demos",
+      "icon": "file",
+      "shared": false,
+      "description": "A book written from the glossary (book@1, rules core/engines/demo-rules.mjs): the wizard's plan (total minutes, minutes per chapter, style: quickstart, tutorial, tour, reference or deep-dive, the design package to show, narrator voice and speed), its chapters (id, title, minutes or a share of the total, an intro line, and items: a glossary entry id, demonstration/<id>, clip/<id> or book/<id>#<chapter>, each with its own minutes and a note; items are dragged in from the glossary and index and moved by drag, context menu or the column icons), the documentation to generate with it (enabled, depth light / standard / deep / extreme, format markdown / html / interactive-html-ts, how interactive: none, examples or live components) and its outputs (the walkthrough video, one clip per chapter). The Book Builder previews a book as one walkthrough and hands it to the recorder; what comes back is clip assets and a docs asset. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "plan",
+        "chapters"
+      ],
+      "nested": {
+        "plan": [
+          "chapterMinutes"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "about": "what the book is about (up to 600)",
+        "docs": "{ enabled, depth, format, interactive, includeApi, includeScreens } — the documentation generated alongside the book",
+        "outputs": "{ video: the narrated walkthrough video, chapterClips: one clip asset per chapter }",
+        "keywords": "words for search (up to 200)"
+      }
+    },
+    "clip": {
+      "label": "Clip",
+      "group": "Demos",
+      "icon": "monitor",
+      "shared": false,
+      "description": "A generated clip (clip@1, rules core/engines/demo-rules.mjs): every clip, demo, chapter, walkthrough or video the demonstration system makes is one of these, a first-class registry asset. It names its kind and source (the demonstration, book chapter, walkthrough or entry it came from), its media (video, poster, captions, audio: paths in the data folder or https URLs, seconds, size), how it was recorded (when, app, URL, viewport, the design package shown, the voice), a transcript (seconds + words), clips chained after it, the glossary entries it shows and a large auto-extracted keyword set (the entries' terms, kinds, categories and keywords, every action and target, every word of the narration, the app, the look, the voice), so it is searchable, filterable and sortable like everything else and can be dropped into books. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "source",
+        "media"
+      ],
+      "enums": {
+        "kind": [
+          "clip",
+          "demo",
+          "chapter",
+          "walkthrough",
+          "video"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ],
+        "media": [
+          "seconds"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "recorded": "{ at: ISO time, app, url, viewport: { width, height }, designPackage, voice }",
+        "transcript": "[{ at: seconds, say }] (up to 2000 lines)",
+        "chain": "clip ids played after this one",
+        "entries": "glossary entry ids shown in the clip",
+        "keywords": "the auto-extracted tag set (up to 200)"
+      }
+    },
+    "docs": {
+      "label": "Documentation",
+      "group": "Demos",
+      "icon": "code",
+      "shared": false,
+      "description": "Generated documentation (docs@1, rules core/engines/demo-rules.mjs): made alongside a book (or from one demonstration, or a list of glossary entries) from the same sources (glossary, index, registry, the sandbox) and kept in sync by a hash of them. Depth: light (one page), standard (an index plus a page per chapter), deep (plus a page per item with its full API, links and demonstration steps) or extreme (plus runnable API examples, live components embedded from the real app, a search index and the TypeScript sources). Format: markdown, html or interactive-html-ts (real, runnable, interactive examples and live components throughout: the real deal, not static pages); interactive: none, examples or live. Lists the files it is made of (index, pages, scripts, styles, data, media), when it was generated and the build. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "source",
+        "depth",
+        "format",
+        "files"
+      ],
+      "enums": {
+        "depth": [
+          "light",
+          "standard",
+          "deep",
+          "extreme"
+        ],
+        "format": [
+          "markdown",
+          "html",
+          "interactive-html-ts"
+        ],
+        "interactive": [
+          "none",
+          "examples",
+          "live"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "interactive": "none | examples | live (live needs format interactive-html-ts); default none",
+        "generatedAt": "ISO time",
+        "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
+        "build": "the build that generated it",
+        "keywords": "words for search (up to 200)"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

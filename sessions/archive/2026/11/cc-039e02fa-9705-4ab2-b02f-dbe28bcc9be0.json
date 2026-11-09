@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-039e02fa-9705-4ab2-b02f-dbe28bcc9be0",
+ "source": "claude-code",
+ "sessionId": "039e02fa-9705-4ab2-b02f-dbe28bcc9be0",
+ "project": "other",
+ "title": "Reply with just: ok",
+ "startedAt": "2026-11-06T02:20:48.569Z",
+ "endedAt": "2026-11-06T02:20:51.950Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T02:20:49.341Z",
+   "kind": "prompt",
+   "text": "Reply with just: ok",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 4,
+    "cacheRead": 9012,
+    "cacheWrite": 14695,
+    "thinking": 0
+   },
+   "costUsd": 0.0754,
+   "costEstimated": false,
+   "seconds": 2,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "ok"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 4,
+  "cacheRead": 9012,
+  "cacheWrite": 14695,
+  "thinking": 0,
+  "costUsd": 0.0754,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.1195
+ },
+ "ingestedAt": "2026-11-06T02:20:52.213Z"
+}

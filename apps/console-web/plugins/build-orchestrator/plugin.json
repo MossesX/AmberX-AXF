@@ -2,18 +2,19 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Page = tab group (Pipeline, Builds, Approvals, Rules); the Pipeline tab shows Pending / Queue / Building, the accounts, what the next tick starts and why the rest waits. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
-    "service:orchestrator@1"
+    "service:orchestrator@1",
+    "service:axf.build-dispatch@1"
   ],
   "scopes": [
     "ROUTES"
@@ -36,13 +37,15 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
+      ".github/workflows/android.yml",
       "CLAUDE.md",
-      "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
       "_claude/builds/README.md",
+      "_claude/memory/STATUS.md",
       "_claude/rules/RULES.md",
       "_claude/shared/rules/RULES.md",
       "deploy/claude-headless.sh",
+      "deploy/install-console.sh",
       "framework/spec/check-builds-live.mjs"
     ]
   },
@@ -77,6 +80,26 @@
           ]
         },
         "output": "{ id, title, priority, label, waiting: [{ kind, id, title, why }] }"
+      },
+      {
+        "id": "headless-runs",
+        "route": "GET /headless/{build}",
+        "title": "Headless runs and start tokens",
+        "description": "A build's headless runs: start tokens (the context of the first request), cost, brief only or full chain, tools and MCP servers loaded. Say 'what did skins start with'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ build, runs: [{ session, briefOnly, startTokens, startCostUsd, costUsd, at }] }"
       },
       {
         "id": "priority-set",
@@ -215,6 +238,186 @@
           ]
         },
         "output": "{ id, origin }"
+      },
+      {
+        "id": "pipeline-status",
+        "route": "GET /pipeline",
+        "title": "Pipeline status",
+        "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
+        "readOnly": true,
+        "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
+      },
+      {
+        "id": "pipeline-queue",
+        "route": "POST /pipeline/queue",
+        "title": "Queue a build",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. Say 'queue the icon browser build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status, pipeline }"
+      },
+      {
+        "id": "pipeline-unqueue",
+        "route": "POST /pipeline/unqueue",
+        "title": "Take a build out of the Queue",
+        "description": "Move a queued build back to Pending before it starts.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-split",
+        "route": "POST /pipeline/split",
+        "title": "Split a build into steps",
+        "description": "Ask the orchestrator to split (or re-split) a build into steps of 30 minutes or less, Fable only where needed; done by the dispatcher within a minute.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, requested }"
+      },
+      {
+        "id": "pipeline-request",
+        "route": "POST /pipeline/request",
+        "title": "Ask for a build",
+        "description": "File a build with the orchestrator and put it in the Queue: the orchestrator is the only thing that starts builds; it assigns the id, splits it and the dispatcher launches it on the right account and model. Say 'build me …'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "What to build, one line"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Details, steps, files"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's words, verbatim"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "P0",
+                "P1",
+                "P2",
+                "P3"
+              ],
+              "description": "Urgent, High, Normal, Low"
+            },
+            "queue": {
+              "type": "boolean",
+              "description": "Straight to the Queue (default true); false = Pending"
+            }
+          },
+          "required": [
+            "title"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-route",
+        "route": "POST /pipeline/route",
+        "title": "Route a build to API or subscriptions",
+        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; Brett's own click), subscription (never an API account) or auto (subscriptions, API only by the overflow rule).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "route": {
+              "type": "string",
+              "enum": [
+                "api",
+                "subscription",
+                "auto"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "route"
+          ]
+        },
+        "output": "{ id, route }"
+      },
+      {
+        "id": "pipeline-settings",
+        "route": "GET /pipeline/settings",
+        "title": "Pipeline settings",
+        "readOnly": true,
+        "description": "The dispatcher's settings, including the API overflow rule (apiOverflow) and which API accounts it may use.",
+        "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-settings-set",
+        "route": "POST /pipeline/settings",
+        "title": "Change pipeline settings",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apiOverflow": {
+              "type": "boolean"
+            },
+            "apiAccounts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "parallelPerAccount": {
+              "type": "integer"
+            },
+            "maxRuns": {
+              "type": "integer"
+            },
+            "idleAfterMin": {
+              "type": "integer"
+            },
+            "splitProvider": {
+              "type": "string",
+              "enum": [
+                "claude",
+                "rules",
+                "off"
+              ]
+            }
+          }
+        },
+        "output": "{ settings }"
       }
     ]
   },

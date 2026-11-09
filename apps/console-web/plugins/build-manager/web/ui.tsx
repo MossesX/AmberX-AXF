@@ -217,9 +217,9 @@ export function LiveTracker({ compact, query = '' }: { compact?: boolean; query?
   );
 }
 
-/* ---------------- Start build now ---------------- */
+/* ---------------- Send to queue (the orchestrator starts every build; Brett, Nov 9 2026) ---------------- */
 
-const JOB_LABEL: Record<string, string> = { asking: 'Asking axHub…', waiting: 'Waiting for your approval', launching: 'Starting…', launched: 'Running on the VPS', rejected: 'Rejected', expired: 'Approval expired', failed: 'Failed' };
+const JOB_LABEL: Record<string, string> = { queued: 'In the orchestrator Queue', asking: 'Asking axHub…', waiting: 'Waiting for your approval', launching: 'Starting…', launched: 'Running on the VPS', rejected: 'Rejected', expired: 'Approval expired', failed: 'Failed' };
 
 export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) {
   const rt = useRuntime();
@@ -234,13 +234,13 @@ export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) 
     try {
       const r = await startBuild(row.key);
       if (!r.ok) setPlan(r.plan ?? plan);
-      else if (r.job?.approvalUrl) rt.toast('Approve it on axHub to start', 'info');
+      else rt.toast(`Queued as ${r.build ?? row.title}: the orchestrator starts it`, 'success');
     } catch (e) { setErr((e as Error).message); }
     setBusy(false);
   };
   return (
-    <div className="axp-build-manager__start" role="region" aria-label={`Start ${row.title}`}>
-      <div className="axp-build-manager__start-head"><Icon name="play" size={14} /><strong>Start build now</strong><span className="fx-grow" /><button type="button" className="fx-iconbtn" aria-label="Close" onClick={onClose}><Icon name="x" size={14} /></button></div>
+    <div className="axp-build-manager__start" role="region" aria-label={`Send ${row.title} to the queue`}>
+      <div className="axp-build-manager__start-head"><Icon name="list" size={14} /><strong>Send to queue</strong><span className="fx-grow" /><button type="button" className="fx-iconbtn" aria-label="Close" onClick={onClose}><Icon name="x" size={14} /></button></div>
       {err && <p className="fx-small axp-build-manager__error" role="alert">{err}</p>}
       {!plan && !err && <p className="fx-small fx-muted">Planning: dependencies, what’s running, model…</p>}
       {plan && !plan.ok && <p className="fx-small axp-build-manager__error" role="alert">{plan.refuse ?? plan.wait}</p>}
@@ -254,18 +254,16 @@ export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) 
             {plan.order ? <><dt>Queue</dt><dd>reordered so its dependencies build first</dd></> : null}
             <dt>Checks after</dt><dd>{plan.verify?.map((v) => v.name).join(', ')}</dd>
           </dl>
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>Runs headless Claude Code on the VPS on its own branch through axHub <code>vps.run</code>. You approve it on axHub first (the page shows the whole command). Nothing is merged.</p>
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>Goes to the Build orchestrator’s Queue. The orchestrator is the only thing that starts builds: it splits it, picks the account and model, and starts it when a slot is free. The Build manager tracks it from there.</p>
           {!job || ['rejected', 'expired', 'failed'].includes(job.state)
-            ? <div className="axp-build-manager__actions"><Button icon="play" onClick={() => void go()} disabled={busy}>{busy ? 'Starting…' : job ? 'Try again' : 'Start on the VPS'}</Button></div>
+            ? <div className="axp-build-manager__actions"><Button icon="list" onClick={() => void go()} disabled={busy}>{busy ? 'Sending…' : job ? 'Try again' : 'Send to queue'}</Button></div>
             : null}
         </>
       )}
       {job && (
         <div className="axp-build-manager__job">
-          <Badge icon={job.state === 'launched' ? 'check' : job.state === 'waiting' ? 'clock' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'x' : 'refresh'} tone={job.state === 'launched' ? 'ok' : job.state === 'waiting' ? 'warn' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'danger' : undefined}>{JOB_LABEL[job.state] ?? job.state}</Badge>
+          <Badge icon={job.state === 'launched' || job.state === 'queued' ? 'check' : job.state === 'waiting' ? 'clock' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'x' : 'refresh'} tone={job.state === 'launched' ? 'ok' : job.state === 'waiting' ? 'warn' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'danger' : undefined}>{JOB_LABEL[job.state] ?? job.state}</Badge>
           <span className="fx-small">{job.message}</span>
-          {job.approvalUrl && job.state === 'waiting' && <a className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={job.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Approve on axHub</a>}
-          {job.state === 'waiting' && <span className="fx-small fx-muted">Retrying by itself ({job.attempts ?? 0}): every 15 s, then every minute.</span>}
         </div>
       )}
     </div>
@@ -665,8 +663,8 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           </span>
         )}
       </button>
-      <Button size="sm" tone="neutral" icon="play" className="axp-build-manager__start-btn" onClick={() => setStarting(true)} aria-label={`Start building ${row.title} now`} title="Start build now (dependencies first, never on top of a running build)">
-        Start
+      <Button size="sm" tone="neutral" icon="list" className="axp-build-manager__start-btn" onClick={() => setStarting(true)} aria-label={`Send ${row.title} to the orchestrator queue`} title="Send to the orchestrator's Queue: it starts the build (dependencies first, never on top of a running build)">
+        Queue
       </Button>
       {starting && <StartPanel row={row} onClose={() => setStarting(false)} />}
       {open && (

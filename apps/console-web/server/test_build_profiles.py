@@ -48,10 +48,18 @@ with tempfile.TemporaryDirectory() as tmp:
     st = node("state", env=env)
     check("state ok", st.get("ok") is True, str(st))
     ids = [p["id"] for p in st["profiles"]]
-    check("main + refactor listed", "main-framework" in ids and "refactor" in ids, str(ids))
+    check("all is the one (base) profile", ids == ["all"] and st["profiles"][0].get("base") is True, str(ids))
+    check("retired profiles gone (main-framework too)", not any(i in ids for i in bp.RETIRED_PROFILES) and "main-framework" in bp.RETIRED_PROFILES, str(ids))
     check("python registry matches", [p["id"] for p in prof.registry()["profiles"]] == ids)
+    check("all takes the framework's sources", prof.active().get("catalog") is True)
 
-    for pid in ("main-framework", "refactor"):
+    # a second profile still works (profiles stay an open list); `all` keeps the original paths
+    # (its orchestrator tracker is a repo file: taken away again at the end, so the checkout keeps one profile)
+    side_dir = ROOT / "_claude/builds/profiles/side"
+    made_side = not side_dir.exists()
+    r = node("act", json.dumps({"action": "create", "name": "Side", "id": "side"}), env=env)
+    check("create side", r.get("ok") is True, str(r))
+    for pid in ("side", "all"):
         r = node("act", json.dumps({"action": "select", "id": pid}), env=env)
         check(f"select {pid}", r.get("ok") is True, str(r))
         check(f"python sees {pid}", prof.active()["id"] == pid)
@@ -59,23 +67,42 @@ with tempfile.TemporaryDirectory() as tmp:
             n = node_path(rel, env)
             py = str(prof.data_path(rel))
             check(f"{pid} {rel}", Path(n).resolve() == Path(py).resolve(), f"node={n} py={py}")
+            if pid == "all":
+                check(f"all keeps the original path {rel}", "/profiles/" not in n, n)
 
-    # refactor starts empty, never a copy of main
-    pend = json.loads(Path(node_path("framework/plan/pending.json", env)).read_text())
-    check("refactor pending empty", pend["items"] == [])
-
-    # override for one process
-    env2 = {**env, "AXF_BUILD_PROFILE": "main-framework"}
-    check("env override", node("current", env=env2)["profile"]["id"] == "main-framework")
+    # a retired id means all (old briefs, AXF_BUILD_PROFILE=urgent or main-framework, a hub registry not yet saved again)
+    check("retired env id resolves", node("current", env={**env, "AXF_BUILD_PROFILE": "urgent"})["profile"]["id"] == "all")
+    check("main-framework env id resolves", node("current", env={**env, "AXF_BUILD_PROFILE": "main-framework"})["profile"]["id"] == "all")
+    os.environ["AXF_BUILD_PROFILE"] = "breakroom"
+    check("python retired env id resolves", prof.active()["id"] == "all")
     os.environ["AXF_BUILD_PROFILE"] = "main-framework"
-    check("python env override", prof.active()["id"] == "main-framework")
+    check("python main-framework env id resolves", prof.active()["id"] == "all")
     del os.environ["AXF_BUILD_PROFILE"]
+    old_reg = {"active": "current", "profiles": [{"id": "main-framework", "name": "Main"}, {"id": "current", "name": "Current"}, {"id": "angel", "name": "Angel"}]}
+    (data / "framework/plan/profiles.json").write_text(json.dumps(old_reg))
+    st_old = node("state", env=env)
+    check("old registry reads folded", [p["id"] for p in st_old["profiles"]] == ["all"] and st_old["active"] == "all", str(st_old))
+    check("python folds the old registry too", [p["id"] for p in prof.registry()["profiles"]] == ["all"] and prof.registry()["active"] == "all")
+    old_all = {"active": "main-framework", "profiles": [{"id": "main-framework", "name": "Main"}, {"id": "all", "name": "All builds", "catalog": False}]}
+    (data / "framework/plan/profiles.json").write_text(json.dumps(old_all))
+    st_old = node("state", env=env)
+    check("registry from before the base moved reads folded", [(p["id"], p.get("base"), p.get("catalog")) for p in st_old["profiles"]] == [("all", True, True)] and st_old["active"] == "all", str(st_old))
+    check("python too", [(p["id"], p["base"], p.get("catalog")) for p in prof.registry()["profiles"]] == [("all", True, True)])
+    for rid in ("urgent", "main-framework"):
+        check(f"{rid} can't be created again", node("act", json.dumps({"action": "create", "name": "X", "id": rid}), env=env).get("ok") is False)
+    node("act", json.dumps({"action": "select", "id": "all"}), env=env)
 
     # guards
-    check("base can't go", node("act", json.dumps({"action": "remove", "id": "main-framework", "confirm": "main-framework"}), env=env).get("ok") is False)
-    check("active can't go", node("act", json.dumps({"action": "remove", "id": "refactor", "confirm": "refactor"}), env=env).get("ok") is False)
+    check("base can't go", node("act", json.dumps({"action": "remove", "id": "all", "confirm": "all"}), env=env).get("ok") is False)
     check("bad id refused", node("act", json.dumps({"action": "create", "name": "x", "id": "Bad Id"}), env=env).get("ok") is False)
-    check("duplicate refused", node("act", json.dumps({"action": "create", "name": "Refactor", "id": "refactor"}), env=env).get("ok") is False)
-    node("act", json.dumps({"action": "select", "id": "main-framework"}), env=env)
+    check("duplicate refused", node("act", json.dumps({"action": "create", "name": "All", "id": "all"}), env=env).get("ok") is False)
+
+    if made_side:
+        import shutil
+        shutil.rmtree(side_dir, ignore_errors=True)
+        try:
+            side_dir.parent.rmdir()  # only when empty
+        except OSError:
+            pass
 
 print(f"build profiles: {passed} checks passed")

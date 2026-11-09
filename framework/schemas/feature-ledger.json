@@ -1,0 +1,287 @@
+{
+  "schema": "feature-ledger@1",
+  "version": 1,
+  "records": {
+    "feature": "feature@1",
+    "edit": "feature-edit@1",
+    "pr": "ledger-pr@1",
+    "build": "ledger-build@1",
+    "prompt": "prompt@1",
+    "deploy": "deploy@1"
+  },
+  "statuses": [
+    "planned",
+    "queued",
+    "building",
+    "in-pr",
+    "merged",
+    "live",
+    "cancelled",
+    "removed"
+  ],
+  "pending": [
+    "planned",
+    "queued",
+    "building",
+    "in-pr"
+  ],
+  "completed": [
+    "merged",
+    "live",
+    "removed"
+  ],
+  "ended": [
+    "cancelled",
+    "removed"
+  ],
+  "statusLabel": {
+    "planned": "Planned",
+    "queued": "Queued",
+    "building": "Building",
+    "in-pr": "In PR",
+    "merged": "Merged",
+    "live": "Live",
+    "cancelled": "Cancelled",
+    "removed": "Removed"
+  },
+  "statusTone": {
+    "planned": "muted",
+    "queued": "muted",
+    "building": "info",
+    "in-pr": "warn",
+    "merged": "accent",
+    "live": "ok",
+    "cancelled": "muted",
+    "removed": "danger"
+  },
+  "events": [
+    "planned",
+    "queued",
+    "building",
+    "pr-opened",
+    "pr-closed",
+    "merged",
+    "deployed",
+    "cancelled",
+    "removed"
+  ],
+  "eventTo": {
+    "planned": "planned",
+    "queued": "queued",
+    "building": "building",
+    "pr-opened": "in-pr",
+    "pr-closed": "building",
+    "merged": "merged",
+    "deployed": "live",
+    "cancelled": "cancelled",
+    "removed": "removed"
+  },
+  "featureTypes": [
+    "new-feature",
+    "fix",
+    "ui",
+    "framework-contract",
+    "infra",
+    "docs",
+    "perf",
+    "refactor",
+    "test",
+    "chore",
+    "removal"
+  ],
+  "typeLabel": {
+    "new-feature": "New feature",
+    "fix": "Fix",
+    "ui": "UI",
+    "framework-contract": "Framework contract",
+    "infra": "Infra",
+    "docs": "Docs",
+    "perf": "Performance",
+    "refactor": "Refactor",
+    "test": "Tests",
+    "chore": "Chore",
+    "removal": "Removal"
+  },
+  "roles": [
+    "added",
+    "changed",
+    "fixed",
+    "removed"
+  ],
+  "editKinds": [
+    "changed",
+    "fixed",
+    "removed",
+    "renamed",
+    "moved",
+    "reverted",
+    "restored"
+  ],
+  "repos": {
+    "amberx-axf": {
+      "label": "AmberX",
+      "github": "MossesX/AmberX-AXF"
+    },
+    "axhub": {
+      "label": "axHub",
+      "github": "MossesX/axHub"
+    }
+  },
+  "sources": [
+    "live",
+    "import",
+    "manual"
+  ],
+  "groupings": [
+    "pr",
+    "plugin",
+    "app",
+    "type",
+    "build",
+    "day",
+    "repo",
+    "flat"
+  ],
+  "groupingLabel": {
+    "pr": "PR",
+    "plugin": "Plugin",
+    "app": "App",
+    "type": "Feature type",
+    "build": "Build",
+    "day": "Day",
+    "repo": "Repo",
+    "flat": "Flat (features)"
+  },
+  "sortKeys": [
+    "liveAt",
+    "mergedAt",
+    "plannedAt",
+    "lastChangedAt",
+    "lastEditAt",
+    "editCount",
+    "name",
+    "status",
+    "app",
+    "plugin",
+    "type",
+    "builds",
+    "prs",
+    "repo"
+  ],
+  "defaultView": {
+    "by": "pr",
+    "sort": {
+      "by": "liveAt",
+      "dir": "desc"
+    },
+    "hideCompleted": false,
+    "hidePending": false,
+    "hideCancelled": true,
+    "statuses": [],
+    "hasEdits": null,
+    "beingEdited": false,
+    "editStatus": "",
+    "search": "",
+    "app": "",
+    "plugin": "",
+    "type": "",
+    "repo": "",
+    "live": "",
+    "from": "",
+    "to": "",
+    "hiddenColumns": [],
+    "expanded": []
+  },
+  "columns": [
+    {
+      "id": "name",
+      "label": "Feature",
+      "sort": "name"
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "sort": "status"
+    },
+    {
+      "id": "app",
+      "label": "App",
+      "sort": "app"
+    },
+    {
+      "id": "plugin",
+      "label": "Plugin",
+      "sort": "plugin"
+    },
+    {
+      "id": "type",
+      "label": "Type",
+      "sort": "type"
+    },
+    {
+      "id": "repo",
+      "label": "Repo",
+      "sort": "repo"
+    },
+    {
+      "id": "prs",
+      "label": "PR",
+      "sort": "prs"
+    },
+    {
+      "id": "builds",
+      "label": "Builds",
+      "sort": "builds"
+    },
+    {
+      "id": "mergedAt",
+      "label": "Merged",
+      "sort": "mergedAt"
+    },
+    {
+      "id": "liveAt",
+      "label": "Live",
+      "sort": "liveAt"
+    },
+    {
+      "id": "lastChangedAt",
+      "label": "Last changed",
+      "sort": "lastChangedAt"
+    },
+    {
+      "id": "edits",
+      "label": "Edits",
+      "sort": "editCount"
+    },
+    {
+      "id": "lastEditAt",
+      "label": "Last edited",
+      "sort": "lastEditAt"
+    },
+    {
+      "id": "model",
+      "label": "Model"
+    },
+    {
+      "id": "agent",
+      "label": "Agent"
+    },
+    {
+      "id": "session",
+      "label": "Session"
+    }
+  ],
+  "deployTargets": [
+    "console",
+    "site",
+    "axhub",
+    "axhub-web",
+    "amberx",
+    "molly",
+    "walkthrough",
+    "expenses",
+    "apk:amberx",
+    "apk:console",
+    "maven"
+  ]
+}

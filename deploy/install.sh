@@ -156,4 +156,12 @@ elif check_dns; then
   certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --redirect "${mail[@]}" -q
 fi
 if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then URL="https://$DOMAIN"; else URL="http://$DOMAIN"; fi
+# deploy-log@1: the site branch commit says which main commit it was built from ("Site build from <sha7>")
+SRC_SHA="$(git -C "$WEBROOT" log -1 --format=%s 2>/dev/null | sed -n 's/^Site build from \([0-9a-f]\{7,40\}\).*/\1/p')"
+DEPLOY_LOG="${AXF_DEPLOY_LOG:-/opt/axf/.axf-console/deploys/log.jsonl}"
+if [ -n "$SRC_SHA" ] && [ -d "$(dirname "$(dirname "$DEPLOY_LOG")")" ]; then
+  mkdir -p "$(dirname "$DEPLOY_LOG")"
+  printf '{"$axf":"deploy@1","target":"site","sha":"%s","at":"%s","who":"%s","host":"%s","kind":"deploy","state":"done"}\n' \
+    "$SRC_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${AXF_DEPLOY_WHO:-install}" "$(hostname | tr -cd 'A-Za-z0-9._-')" >> "$DEPLOY_LOG"
+fi
 say "Done. Live at $URL (updates within 2 minutes of every push)."

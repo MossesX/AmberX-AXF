@@ -1,0 +1,82 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-60079acc-7951-4f64-af62-521846a9ce6c",
+ "source": "claude-code",
+ "sessionId": "60079acc-7951-4f64-af62-521846a9ce6c",
+ "project": "axhub",
+ "title": "# build-own-login: every headless build keeps its own Claude login Brett, Nov 5 2026 (voice): \"Yeah, it should be like …",
+ "startedAt": "2026-11-05T21:43:25.428Z",
+ "endedAt": "2026-11-05T21:43:30.167Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/build-own-login",
+  "repo": "",
+  "branch": "claude/build-own-login"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T21:43:28.933Z",
+   "kind": "prompt",
+   "text": "# build-own-login: every headless build keeps its own Claude login Brett, Nov 5 2026 (voice): \"Yeah, it should be like that already.\" (after two builds died with 'Not logged in' because he logged the VPS Claude out to add another account). ## Problem Every headless build (deploy/claude-headless.sh via axHub vps.build_start, the orchestrator / agent-swarm launchers, console Terminal headless tabs) runs `claude -p` against the one shared login under the root user's ~/.claude. Logging out, switching accounts or adding an account on the VPS kills or re-points every running build. ## Fix - At laun…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-4dfaf11c39"
+   ],
+   "features": [
+    "breakroom:agent-swarm"
+   ],
+   "output": "You've hit your 5-hour limit · resets 12:50am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-4dfaf11c39"
+ ],
+ "features": [
+  "breakroom:agent-swarm"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-05T21:43:30.344Z"
+}

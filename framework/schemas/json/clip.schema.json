@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/clip.schema.json",
+  "title": "AmberX AXF Clip asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "clip"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "source",
+        "media"
+      ],
+      "properties": {
+        "source": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "entry",
+                "demonstration",
+                "book",
+                "chapter",
+                "walkthrough",
+                "manual"
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "chapter": {
+              "type": "string"
+            }
+          }
+        },
+        "media": {
+          "type": "object",
+          "required": [
+            "seconds"
+          ],
+          "properties": {
+            "video": {
+              "type": "string"
+            },
+            "poster": {
+              "type": "string"
+            },
+            "captions": {
+              "type": "string"
+            },
+            "audio": {
+              "type": "string"
+            },
+            "seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
+        },
+        "kind": {
+          "enum": [
+            "clip",
+            "demo",
+            "chapter",
+            "walkthrough",
+            "video"
+          ]
+        },
+        "recorded": {
+          "type": "object",
+          "properties": {
+            "at": {
+              "type": "string"
+            },
+            "app": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "viewport": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                }
+              }
+            },
+            "designPackage": {
+              "type": "string"
+            },
+            "voice": {
+              "type": "string"
+            }
+          }
+        },
+        "transcript": {
+          "type": "array",
+          "maxItems": 2000,
+          "items": {
+            "type": "object",
+            "required": [
+              "at",
+              "say"
+            ],
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "say": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "chain": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string"
+          }
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

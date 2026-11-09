@@ -74,6 +74,24 @@ node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
 ```
 
+## The pipeline: Pending → Queue → Building (since Nov 8 2026)
+
+Brett: "what I say, send a build to the orchestrator … he sends everything to the pending. And I have to send them from
+pending to queue … If he has slots open, he grabs the next build in the queue and starts the headless session."
+
+- Every build gets its id in the store and, when it has no steps, a split by the orchestrator (one Opus call, ≤ 30-min
+  steps, Fable only where needed; `apps/console-web/plugins/build-orchestrator/pipeline.mjs intake`). It sits in **Pending**.
+- **Pending → Queue** is Brett's move: the Pipeline tab's *Queue*, `pipeline.mjs queue <id>`, the plugin command
+  `pipeline-queue` (MCP / voice). *Launch builds without asking* ON (owner-only Claude setting) queues split builds by itself.
+- The **dispatcher** (`pipeline.mjs tick`, cron `axf-pipeline` every minute) reads the Claude accounts (which have Fable,
+  how many run on each, limits), the agent slots and the Queue, and starts the next build when a slot and an account for
+  its next phase's model are free: `deploy/claude-headless.sh --account <acct>` in `/root/axf-builds/<id>`. Status
+  `queued` → `running` (**Building**). It never starts a session right away.
+- A session end moves the build on: built / complete; the Queue again (next phase, or a crash, up to 3 runs); Pending
+  (stopped early, for Brett); failed. Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
+- Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
+  `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
+
 ## Own Claude login per build (since Nov 5 2026)
 
 Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):
@@ -91,6 +109,26 @@ Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) is a field o
 registry is `framework/plan/profiles.json`; `orchestrator.mjs` works on the active profile's builds; check it with
 `node framework/cli/profiles.mjs current` (or run one command on another profile with `AXF_BUILD_PROFILE=<id>`).
 Console: banner chip / **Build profiles** dialog.
+
+**One profile for the work (Nov 7 2026, Brett: "combine every build profile into ONE new profile on main and delete the
+others"):** `current`, `urgent`, `angel`, `big-dog`, `breakroom` and `refactor` were merged into **`all`** (229 builds,
+`node framework/cli/profiles.mjs merge-all`, safe to re-run). Every build kept its id, status, steps and step states and
+gained `fromProfile` (its old profile); Urgent's builds got `priority: 'P0'`, so urgency is a per-build priority tag, never
+a profile. The base `main-framework` stays. A retired id anywhere (`AXF_BUILD_PROFILE=urgent`, an old brief, a Plan Studio
+plan's build link, the hub registry until its next save, a live merge from older code) reads as `all`
+(`resolveProfile` / `RETIRED_PROFILES` in `framework/plan/builds-store-core.mjs`, mirrored in
+`apps/console-web/server/build_profiles.py`); creating a profile with a retired id is refused.
+
+**`main-framework` folded in too; `all` is the base (Nov 7 2026, Brett approved, build `profiles-all-finish`):** the old
+base's 189 builds joined `all` (175 moved with `fromProfile: main-framework`, 14 were in both already), so the store has
+one profile. `all` is now `BASE_PROFILE` and keeps the original paths (`_claude/builds/orchestrator.json`,
+`framework/plan/{pending,build-queue,plan}.json`, `framework/catalog/status.json`, `_claude/builds/matrices.json`) and
+the framework's catalog; `main-framework` is a retired id that reads as `all`. The old profile folders
+(`_claude/builds/profiles/*`, `framework/plan/profiles/*`) are gone from the repo and the hub, and nothing writes them
+again: exports cover registered profiles only, the builds-live publisher takes any profile export left on main off it
+(`staleProfileExports`), the batch resolver (`/opt/axf-batch/resolve.py`) drops retired-profile files from a merge, the
+manifest no longer syncs `framework/plan/profiles/`, and `profiles.mjs merge-all` prunes any leftover folder (repo + hub;
+run it once after this lands, when the deployed console no longer reads `framework/plan/profiles/all/` on the hub).
 
 ## Carry a build on
 

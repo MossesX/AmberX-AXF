@@ -191,6 +191,19 @@ if axf_coolify_proxy_running; then
     [ "$(axf_wall_secret "$WSECF" "${AXF_WALL_SECRET:-}")" = created ] && say "  made a wall secret: put it on the axHub app in Coolify as AXHUB_WALL_SECRET (view it with: cat $WSECF)"
     say "  until AXHUB_WALL_SECRET on the hub matches $WSECF, signed-in browsers still need the console token and hub users can't chat"
     WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_SECRET=$(cat "$WSECF")" -e "AXF_WALL_HUB=$WALL_HUB")
+    # Approve / Deny in the console (approvals-banner relay, Nov 7 2026): the console's own server-side axHub owner
+    # sign-in, used when a browser's hub cookie doesn't reach the console. Kept in a root-only file, never in the repo;
+    # AXF_HUB_RELAY_USER / AXF_HUB_RELAY_PASSWORD [/ AXF_HUB_RELAY_OWNERS] on one run save it.
+    RELAYF="$DIR/.axf-console/hub-relay"
+    if [ -n "${AXF_HUB_RELAY_USER:-}" ] && [ -n "${AXF_HUB_RELAY_PASSWORD:-}" ]; then
+      ( umask 077; printf 'AXF_HUB_RELAY_USER=%s\nAXF_HUB_RELAY_PASSWORD=%s\nAXF_HUB_RELAY_OWNERS=%s\n' "$AXF_HUB_RELAY_USER" "$AXF_HUB_RELAY_PASSWORD" "${AXF_HUB_RELAY_OWNERS:-}" > "$RELAYF" )
+    fi
+    if [ -f "$RELAYF" ]; then
+      while IFS= read -r line; do case "$line" in AXF_HUB_RELAY_USER=?*|AXF_HUB_RELAY_PASSWORD=?*|AXF_HUB_RELAY_OWNERS=?*) WALL_ARGS+=(-e "$line");; esac; done < "$RELAYF"
+      say "  Approve / Deny in the console use the owner sign-in in $RELAYF when a browser's hub session doesn't reach the console"
+    else
+      say "  no owner sign-in for Approve / Deny yet: AXF_HUB_RELAY_USER=<hub admin> AXF_HUB_RELAY_PASSWORD=… bash $DIR/deploy/install-console.sh"
+    fi
     axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
     [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
   else
@@ -214,6 +227,7 @@ fi
 # One deploy per merge-queue stack (Brett, Nov 4 2026: "Save the compute"): while the queue is merging a stack it
 # keeps push-banner/queue-merging fresh; the update waits until the last PR of the stack is in (stale after 15 min).
 QUEUE_HOLD="$DIR/.axf-console/plugins/push-banner/queue-merging"  # axf-plugin:push-banner
+AXF_UPDATE_DEPLOY="${AXF_DEPLOY_LOG:-$DIR/.axf-console/deploys/log.jsonl} console" \
 AXF_UPDATE_PRELUDE="[ -n \"\$(find \"$QUEUE_HOLD\" -mmin -15 2>/dev/null)\" ] && exit 0  # the merge queue is landing a stack: one deploy once it is all in" \
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
@@ -224,15 +238,24 @@ axf_cron_file axf-console "*/5 * * * * root flock -n /run/axf-console-update.loc
 # Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
 # lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
 axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"
+# The build pipeline's dispatcher (Brett, Nov 8 2026): every minute, split new builds, watch the Queue, the Claude accounts
+# and the agent slots, and start a headless session for the next Queue build when a slot is free (never two at once).
+axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator
 # Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
 # builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
 axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
 # Rotated Claude tokens (refresh-token-save, Nov 6 2026): the live login's renewals reach its saved copy within a minute,
 # and pairs AI keys renews reach the host's logins. Builds' own copies save back by themselves (claude-headless.sh).
 axf_cron_file axf-claude-token-save "* * * * * root T=$DIR/deploy/claude-token-save.mjs; [ -f \$T ] && flock -n /run/axf-claude-token-save.lock node \$T sweep >> /var/log/axf-claude-token-save.log 2>&1"
+# Nightly deploy (Brett, Nov 2026): this ticks every minute; deploy/console-nightly.mjs waits for the set time in New York
+# (Claude settings nightly.enabled / nightly.time) and deploys once a night when code on main changed.
+axf_cron_file axf-console-nightly "* * * * * root N=$DIR/deploy/console-nightly.mjs; [ -f \$N ] && DIR=$DIR NAME=$NAME flock -n /run/axf-console-nightly.lock node \$N run >> /var/log/axf-console-nightly.log 2>&1"
 # Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
 axf_cron_file axf-doctor "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1"
 DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true
+
+# deploy-log@1: what is live on the console now (Shipped features dates features from it)
+axf_deploy_log "${AXF_DEPLOY_LOG:-$DIR/.axf-console/deploys/log.jsonl}" console "$(git -C "$DIR" rev-parse HEAD 2>/dev/null || true)"
 
 sleep 3
 docker ps --filter "name=^$NAME$" --format '{{.Names}} is {{.Status}}' | sed 's/^/[axf] /'

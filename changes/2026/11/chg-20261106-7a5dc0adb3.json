@@ -1,0 +1,68 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-7a5dc0adb3",
+  "createdAt": "2026-11-06T01:55:11.447Z",
+  "updatedAt": "2026-11-06T01:55:12.166Z",
+  "kind": "build",
+  "title": "# urgent: recorder mic on/off per recording Brett, Nov 5 2026 (voice): \"I want to be able to turn o…",
+  "asked": "# urgent: recorder mic on/off per recording Brett, Nov 5 2026 (voice): \"I want to be able to turn on the microphone or not too.\" ... \"Create a new build called urgent and put that in it.\" This is axHub PR #30 (`claude/recorder-mic`): `amberx.recorder_start` gets an opt-in `mic` arg and the approval title says \"Playback + MIC\" when the mic will be on. It's 1 commit, behind main. ## Do - Merge main into the branch, fix conflicts, make the tests pass, push. Keep PR #30 as the PR (update its description). Do not merge it yourself; it goes through the normal merge flow. - Check the AmberX app side (MossesX/AmberX-AXF, the Audio Output Recorder on Android): it must honour the mic flag per recording. If it needs changes, write them in a separate AmberX-AXF branch `claude/urgent-recorder-mic` with a PR, Kotlin/Java noted as needing a new APK (no JDK on the VPS; CI compiles). - Console / Molly: wherever the recorder is started (voice command, MCP, any button), add a Mic on/off choice, default off. - Tests for the mic arg and approval title. Done: PRs updated/opened, report, THREADS row, readme, hand to the merge flow (don't merge). No sub-agents, Opus only, never print secrets. Short plain report at the end. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "64978b44-ed0",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-06T01:55:11.447Z",
+  "finishedAt": "2026-11-06T01:55:12.166Z",
+  "lastSeenAt": "2026-11-06T01:55:11.447Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/urgent",
+    "branch": "claude/urgent",
+    "base": "8e014141669e16800123055f9ab49949fa9d5e63",
+    "head": "1e5553f5fca58ac8dd58413a0b4b6cf1e7bf7354",
+    "pushed": true,
+    "dirty": 7,
+    "files": [
+      "packages/connectors/device-relay/src/index.ts",
+      "packages/core/src/connector.ts",
+      "packages/core/src/hub.ts",
+      "packages/server/test/amberx.test.ts",
+      ".axf-claude/",
+      ".axf-watch-live.log",
+      "_claude/shared/memory/amber-persona.md",
+      "_claude/shared/memory/naming.md",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-06T01:55:12.216Z"
+  }
+}

@@ -387,12 +387,14 @@ export function CompanionView() {
 
       <footer className="axp-companion__composer">
         {talk.on && (
-          <div className="axp-companion__talk">
-            <Icon name="mic" size={14} />
-            <span className="axp-companion__clip">{talk.phase === 'listening' ? (talk.heard || 'Listening… talk to Gizmo') : talk.phase === 'thinking' ? `“${talk.heard}”` : talk.phase === 'speaking' ? 'Gizmo is talking (say “stop” to cut in)' : ''}</span>
+          <div className="axp-companion__talk" data-talk-phase={talk.phase}>
+            <Icon name={talk.phase === 'paused' ? 'pause' : 'mic'} size={14} />
+            <span className="axp-companion__clip">{talk.phase === 'listening' ? (talk.heard || 'Listening… talk to Gizmo') : talk.phase === 'thinking' ? `“${talk.heard}”` : talk.phase === 'speaking' ? 'Gizmo is talking (say “stop” to cut in)' : talk.phase === 'paused' ? talk.paused : ''}</span>
             {talk.phase === 'speaking' && <Button size="sm" icon="x" onClick={stopSpeaking}>Quiet</Button>}
           </div>
         )}
+        {talk.on && talk.background && <p className="axp-companion__note">Talk mode keeps going with the screen off. Stop it here or from the notification.</p>}
+        {!talk.on && talk.stopped && <p className="axp-companion__note">{talk.stopped}</p>}
         {budget.level === 'warn' && <p className="axp-companion__note">Today: {money(spentUsd)} of your {money(capUsd)} cap ({budget.left} left).</p>}
         {editing && <p className="axp-companion__note">Editing a message: send to replace it and everything after. <Button size="sm" icon="x" onClick={() => { setEditing(''); setText(''); }}>Cancel</Button></p>}
         {(images.length > 0 || files.length > 0) && (

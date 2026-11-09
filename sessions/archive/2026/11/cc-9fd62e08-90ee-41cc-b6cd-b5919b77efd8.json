@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-9fd62e08-90ee-41cc-b6cd-b5919b77efd8",
+ "source": "claude-code",
+ "sessionId": "9fd62e08-90ee-41cc-b6cd-b5919b77efd8",
+ "project": "other",
+ "title": "read the README in the repo and tell me the first heading",
+ "startedAt": "2026-11-06T18:47:18.402Z",
+ "endedAt": "2026-11-06T18:47:25.204Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/assistant-chat-mode-r4",
+  "repo": "",
+  "branch": "claude/assistant-chat-mode-r4"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T18:47:18.906Z",
+   "kind": "prompt",
+   "text": "read the README in the repo and tell me the first heading",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 521,
+    "cacheRead": 67054,
+    "cacheWrite": 45598,
+    "thinking": 236
+   },
+   "costUsd": 0.2519,
+   "costEstimated": false,
+   "seconds": 6,
+   "tools": {
+    "Read": 1
+   },
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "First heading in `README.md:1`, kid: ``` # AmberX AXF — cross-platform app framework (v0.1.0) ``` The startup hooks also flagged two things: - **Builds live is stuck:** 6 changes aren't on main because `token-usage-log-accounts-plan-studio-control-small-steps` has duplicate step uids. - **Sync is h…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 521,
+  "cacheRead": 67054,
+  "cacheWrite": 45598,
+  "thinking": 236,
+  "costUsd": 0.2519,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.3886
+ },
+ "ingestedAt": "2026-11-06T18:47:25.441Z"
+}

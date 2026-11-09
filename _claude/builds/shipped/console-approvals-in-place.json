@@ -1,0 +1,716 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-console-approvals-in-place",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T01:28:05Z",
+ "build": {
+  "id": "console-approvals-in-place",
+  "title": "Approve / deny axHub approvals inside the Dev Console (no bounce to axHub)",
+  "profile": "all",
+  "category": "Console",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
+  "verbatim": true,
+  "at": "2026-11-06T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "\"Schedule a console build and deploy every night at 2 a.m.\" and \"I need refresh added to the API, the MCP and the CLI too.\"",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "Make UI Review have a separate tab under each one for anything that requires a choice. You need to be able to select multiple with priorities. If you select multiple, it will create a separate view for each one you selected, with the first one being default.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "Not all asset types can have more than one view; a settings interface may not need more than one. But make every choice, even the ones I don't pick, an asset, stored in that plugin's folder as an asset for the library.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "Every UI in the Appearance section will allow you to choose from any of the assets that have been made for it.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "Everything comes shipped (all options as assets). For UI Review, for everything sent through it, I need a minimum of three choices. A setting for the default number of choices, and an option to enable a prompt any time something is sent, asking me how many options I want built.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: approvals-in-place-r2\n\n## Brett said (verbatim)\n\"How come when I click approve, it's going back to axHub, not staying on console?\" \"Yep\" (queue the fix).\n\nResume pending item console-approvals-in-place (steps s1-s4 done on branch claude/console-approvals-in-place if it exists; check). Finish it:\n1. Approve / Deny in the console pop-up, banner, Follow Amber dialog and AmberX notification act in place through the console relay. Never bounce to axHub, never open a new window or tab. Result shown in place.\n2. Same for UI Review approve.\n3. Also covers pending item approvals-no-window-spam... step 1 (no new windows). Note it.\n4. Tests, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOne session, lean chain.\n## Addendum 1 (Brett, voice)\n\"Schedule a console build and deploy every night at 2 a.m.\" and \"I need refresh added to the API, the MCP and the CLI too.\"\n- Nightly: cron on the VPS at 02:00 America/New_York runs deploy/install-console.sh (rebuild + deploy from current main) with the existing flock; log to /root/axf-builds/nightly-deploy.log; banner note on success/failure. Only when main changed since the last deploy. Setting to turn it off / change the time (Claude settings).\n- New console command 'refresh' (console.refresh in control@1): reloads the live console page(s) (soft reload, or hard reload with cache clear as an option). REST + MCP + CLI + voice.\n\n## Addendum 2 (Brett, voice) - UI Review choices\n\"Make UI Review have a separate tab under each one for anything that requires a choice. You need to be able to select multiple with priorities. If you select multiple, it will create a separate view for each one you selected, with the first one being default.\"\n- UI Review items can carry a 'Choices' set: a Choices tab under the item (Screens / Choices / Comments). Builder submits N options (predicted shots).\n- Brett selects one or several and orders them by priority (drag or number). Result on the item: chosen[] in order. Single pick = build that one. Multiple picks = build each as a selectable view/layout, the first = default.\n- API/MCP/CLI for submit choices + read the decision; the build waits on the decision like a normal hold.\n- Also: UI Review grid gets a Date column of its own and sortable columns (Brett asked earlier).\n\n## Addendum 3 (Brett, voice) - every choice becomes an asset\n\"Not all asset types can have more than one view; a settings interface may not need more than one. But make every choice, even the ones I don't pick, an asset, stored in that plugin's folder as an asset for the library.\"\n- Multi-pick only offered when the asset type supports multiple views; otherwise single pick.\n- Every submitted option (chosen or not) is saved as a real asset of its type in the owning plugin's assets folder, tagged with the choice set and whether it was picked, so it shows in the asset library and can be applied later.\n\n## Addendum 4 (Brett, voice)\n\"Every UI in the Appearance section will allow you to choose from any of the assets that have been made for it.\"\n- Settings > Appearance: for every UI that has assets (screens, dialogs, settings interfaces, tab groups, banners, menus, badges...), a picker listing every saved asset of that type for that UI (including unpicked UI Review options), with preview, apply, reset to default. Backed by the asset library + UI registry; REST/MCP/CLI + voice.\n\n## Addendum 5 (Brett, voice)\n\"Everything comes shipped (all options as assets). For UI Review, for everything sent through it, I need a minimum of three choices. A setting for the default number of choices, and an option to enable a prompt any time something is sent, asking me how many options I want built.\"\n- Rule: every UI Review submission ships at least N options (default N = 3) as predicted shots + saved assets. Setting in UI Review settings: default option count (min 3).\n- Optional prompt (setting on/off): when a build is about to submit a UI, Brett gets asked how many options to make (console pop-up / AmberX notification / voice through Gizmo); if no answer in X minutes, use the default.\n- Update the rule in _claude/shared/rules/RULES.md + headless brief template.\n\n## Addendum 6 (Brett, voice) - UI Review grid\n\"Highlight everything that needs me. Keep everything I need to do always at the top, sorted by date. Put more information about the UI in the first row of the grid, with hooks. Collapsible rows.\"\n- UI Review list = framework DataGrid: items waiting on Brett pinned at the top, highlighted, sorted newest first; decided ones below.\n- Collapsed row shows: date (own column), build, group, what UI it is (screen/dialog/settings/etc.), app, PR, status, option count. Expand = shots, choices, verbatim ask, ref@1 hooks (tap to open the live UI / build / PR), approve / reject / pick in place.\n- Phone-first; column hiding/sorting as every grid.\n\n## Addendum 7 (Brett, voice)\n\"UI Review shows what it is now and the predicted, side by side.\"\n- Every item's expanded view: Current (live screenshot of that UI as it is today, taken by the console screenshot tool) beside Predicted / After shots, same device size, swipe or slider to compare on phone. If no current exists (new UI), say 'new'.\n\n## Addendum 8 (Brett, voice) - plan tab in UI Review\n\"UI Review needs hooks to its plan, open in focus. Next to the Review and Screenshots tabs, add a tab that embeds the project's plan.\"\n- Each UI Review item/group gets a Plan tab that embeds its Plan Studio plan (same component, live, editable), scrolled to the matching step/preview. Hook from any item: 'Open plan' focuses it in Plan Studio too.\n- Link source: build id -> plan (plan-studio-backfill-12h makes every build's plan).\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-approvals-in-place-r2--paulie",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-07T01:04:29.587Z",
+   "endedAt": "2026-11-07T01:38:54.306Z",
+   "exit": 0,
+   "costUsd": 21.0527
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Console server relay: POST /api/plugins/approvals-banner/decide (Brett's hub session → axHub decide API), tests",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:04:29.587Z",
+   "doneAt": "2026-11-06T12:30:40.738Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Console decide host: approvals + veto hosts decide through the relay; banner/menu/follow-amber decide in place",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T12:30:40.738Z",
+   "doneAt": "2026-11-06T12:30:41.460Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "In-console approval view replaces the framed hub page; result in place; axHub link secondary",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T12:30:41.460Z",
+   "doneAt": "2026-11-06T12:30:42.257Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Console actions approvals.view/approve/deny + console_show approval:<id> opens the view; AmberX notification taps open it",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T12:30:42.257Z",
+   "doneAt": "2026-11-06T12:30:42.892Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Help/docs, THREADS row, report, checks, PR (not landed)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T12:30:42.892Z",
+   "doneAt": "2026-11-07T01:33:36.746Z",
+   "actualMin": 783,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Addendum 1: Nightly: cron on the VPS at 02:00 America/New_York runs deploy/install-console.sh (rebuild + deploy from current main) with the existing flock; log to /root/axf-builds/nightly-deploy.log; banner note on success/failure. Only when main changed since the last deploy. Setting to turn it off / change th",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:36.746Z",
+   "doneAt": "2026-11-07T01:33:37.546Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6-1",
+   "text": "Nightly: cron on the VPS at 02:00 America/New_York runs deploy/install-console.sh (rebuild + deploy from current main) with the existing flock; log to /root/axf-builds/nightly-deploy.log; banner note on success/failure. Only when main changed since the last deploy. Setting to turn it off / change the time (Claude settings).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:37.546Z",
+   "doneAt": "2026-11-07T01:33:38.542Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6-2",
+   "text": "New console command 'refresh' (console.refresh in control@1): reloads the live console page(s) (soft reload, or hard reload with cache clear as an option). REST + MCP + CLI + voice.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:38.542Z",
+   "doneAt": "2026-11-07T01:33:39.776Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Addendum 2: UI Review items can carry a 'Choices' set: a Choices tab under the item (Screens / Choices / Comments). Builder submits N options (predicted shots). Brett selects one or several and orders them by priority (drag or number). Result on the item: chosen[] in order. Single pick = build that one. Multipl",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:39.776Z",
+   "doneAt": "2026-11-07T01:33:40.799Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-1",
+   "text": "UI Review items can carry a 'Choices' set: a Choices tab under the item (Screens / Choices / Comments). Builder submits N options (predicted shots).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:40.799Z",
+   "doneAt": "2026-11-07T01:33:41.654Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-2",
+   "text": "Brett selects one or several and orders them by priority (drag or number). Result on the item: chosen[] in order. Single pick = build that one. Multiple picks = build each as a selectable view/layout, the first = default.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:41.654Z",
+   "doneAt": "2026-11-07T01:33:42.498Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-3",
+   "text": "API/MCP/CLI for submit choices + read the decision; the build waits on the decision like a normal hold.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:42.498Z",
+   "doneAt": "2026-11-07T01:33:43.308Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-4",
+   "text": "Also: UI Review grid gets a Date column of its own and sortable columns (Brett asked earlier).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:43.308Z",
+   "doneAt": "2026-11-07T01:33:44.179Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Addendum 3: Multi-pick only offered when the asset type supports multiple views; otherwise single pick. Every submitted option (chosen or not) is saved as a real asset of its type in the owning plugin's assets folder, tagged with the choice set and whether it was picked, so it shows in the asset library and can",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:44.179Z",
+   "doneAt": "2026-11-07T01:33:44.957Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8-1",
+   "text": "Multi-pick only offered when the asset type supports multiple views; otherwise single pick.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:44.957Z",
+   "doneAt": "2026-11-07T01:33:45.821Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8-2",
+   "text": "Every submitted option (chosen or not) is saved as a real asset of its type in the owning plugin's assets folder, tagged with the choice set and whether it was picked, so it shows in the asset library and can be applied later.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:45.821Z",
+   "doneAt": "2026-11-07T01:33:46.554Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Addendum 4: Settings > Appearance: for every UI that has assets (screens, dialogs, settings interfaces, tab groups, banners, menus, badges...), a picker listing every saved asset of that type for that UI (including unpicked UI Review options), with preview, apply, reset to default. Backed by the asset library +",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:46.554Z",
+   "doneAt": "2026-11-07T01:33:47.401Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9-1",
+   "text": "Settings > Appearance: for every UI that has assets (screens, dialogs, settings interfaces, tab groups, banners, menus, badges...), a picker listing every saved asset of that type for that UI (including unpicked UI Review options), with preview, apply, reset to default. Backed by the asset library + UI registry; REST/MCP/CLI + voice.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:47.401Z",
+   "doneAt": "2026-11-07T01:33:48.146Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Addendum 5: Rule: every UI Review submission ships at least N options (default N = 3) as predicted shots + saved assets. Setting in UI Review settings: default option count (min 3). Optional prompt (setting on/off): when a build is about to submit a UI, Brett gets asked how many options to make (console pop-up",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:48.146Z",
+   "doneAt": "2026-11-07T01:33:48.847Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10-1",
+   "text": "Rule: every UI Review submission ships at least N options (default N = 3) as predicted shots + saved assets. Setting in UI Review settings: default option count (min 3).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:48.847Z",
+   "doneAt": "2026-11-07T01:33:49.593Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10-2",
+   "text": "Optional prompt (setting on/off): when a build is about to submit a UI, Brett gets asked how many options to make (console pop-up / AmberX notification / voice through Gizmo); if no answer in X minutes, use the default.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:49.593Z",
+   "doneAt": "2026-11-07T01:33:50.353Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10-3",
+   "text": "Update the rule in _claude/shared/rules/RULES.md + headless brief template.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T01:33:50.353Z",
+   "doneAt": "2026-11-07T01:33:51.090Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/approvals-in-place-r2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 375,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/375"
+ },
+ "landedCommit": "e57b6e5278d822ca78f67a4dac9fc1fa183973c8",
+ "commits": [
+  "95cfce7cb6b0d41397b2efcfdf64c963c83826f6",
+  "21a2bf4ca4a09d1f49efbad473cdc78646cb60f1",
+  "426cc735a0a480a08fcfe3b64f8ff625a36cb347",
+  "9085127226fd8b539663bb108ae6f758f10ce6de",
+  "ad4844389826a1e5ca73d842db13069291205d59",
+  "a57287e2cf49bf8523eabe1756d0a80d27e1fa64",
+  "576fb9c31b60e723afe1c706ecb49b1f0b0bdf06",
+  "cbec94c3da8d0359de4347237ee4f6327f5eea15"
+ ],
+ "mergedAt": "2026-11-07T12:01:20Z",
+ "landedAt": "2026-11-07T12:07:32Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/BRIEF-TEMPLATE.md",
+  "_claude/builds/reports/approvals-in-place-r2.md",
+  "_claude/builds/reports/approvals-in-place-r2/shots/appearance-picker-desktop.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/appearance-picker-phone.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/approval-result-desktop.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/approval-result-phone.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/approval-review-desktop.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/approval-review-phone.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-choices-desktop.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-choices-phone.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-grid-desktop.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-grid-phone.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/veto-screen-desktop.png",
+  "_claude/builds/reports/approvals-in-place-r2/shots/veto-screen-phone.png",
+  "_claude/memory/STATUS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/actions.ts",
+  "apps/amberx-droid/src/axf/core/engines/console-commands.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/console-commands.mjs",
+  "apps/amberx-droid/src/axf/core/engines/control-rules.mjs",
+  "apps/amberx-droid/src/axf/core/ui-choices.d.mts",
+  "apps/amberx-droid/src/axf/core/ui-choices.mjs",
+  "apps/amberx-droid/src/axf/core/ui-review-schema.mjs",
+  "apps/amberx-droid/src/axf/libs/approvals/core.ts",
+  "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+  "apps/amberx-droid/src/axf/schemas/control.json",
+  "apps/amberx-droid/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/amberx-droid/src/axf/schemas/ui-review.json",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/approvals/web/deny.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/approvals-banner/server/__init__.py",
+  "apps/console-web/plugins/approvals-banner/test.mts",
+  "apps/console-web/plugins/approvals-banner/test.py",
+  "apps/console-web/plugins/approvals-banner/web/approvals-banner.css",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/relay.ts",
+  "apps/console-web/plugins/approvals-banner/web/veto.tsx",
+  "apps/console-web/plugins/claude-settings/plugin.json",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/console-commands/console.mjs",
+  "apps/console-web/plugins/console-commands/server/__init__.py",
+  "apps/console-web/plugins/console-commands/web/index.tsx",
+  "apps/console-web/plugins/follow-amber/plugin.json",
+  "apps/console-web/plugins/follow-amber/server/__init__.py",
+  "apps/console-web/plugins/follow-amber/web/check.mts",
+  "apps/console-web/plugins/follow-amber/web/index.tsx",
+  "apps/console-web/plugins/token-control/web/docs.ts",
+  "apps/console-web/plugins/ui-review/README.md",
+  "apps/console-web/plugins/ui-review/help.json",
+  "apps/console-web/plugins/ui-review/plugin.json",
+  "apps/console-web/plugins/ui-review/review.mjs",
+  "apps/console-web/plugins/ui-review/server/__init__.py",
+  "apps/console-web/plugins/ui-review/server/choices.py",
+  "apps/console-web/plugins/ui-review/server/schema.py",
+  "apps/console-web/plugins/ui-review/test.mts",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/plugins/ui-review/web/choices.tsx",
+  "apps/console-web/plugins/ui-review/web/index.tsx",
+  "apps/console-web/plugins/ui-review/web/review-core.mjs",
+  "apps/console-web/plugins/ui-review/web/ui-review.css",
+  "apps/console-web/plugins/ui-review/web/ui.tsx",
+  "apps/console-web/plugins/ui-review/web/views.tsx",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/assetPicker.tsx",
+  "apps/console-web/src/axf/core/engines/actions.ts",
+  "apps/console-web/src/axf/core/engines/console-commands.d.mts",
+  "apps/console-web/src/axf/core/engines/console-commands.mjs",
+  "apps/console-web/src/axf/core/engines/control-rules.mjs",
+  "apps/console-web/src/axf/core/ui-choices.d.mts",
+  "apps/console-web/src/axf/core/ui-choices.mjs",
+  "apps/console-web/src/axf/core/ui-review-schema.mjs",
+  "apps/console-web/src/axf/libs/approvals/core.ts",
+  "apps/console-web/src/axf/libs/hub/veto.ts",
+  "apps/console-web/src/axf/schemas/control.json",
+  "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/console-web/src/axf/schemas/ui-review.json",
+  "apps/console-web/src/hubAppearance.tsx",
+  "deploy/console-nightly.mjs",
+  "deploy/install-console.sh",
+  "framework/catalog/libraries.json",
+  "framework/cli/axf.mjs",
+  "framework/cli/rebuild-shots.mjs",
+  "framework/core/engines/actions.ts",
+  "framework/core/engines/console-commands.d.mts",
+  "framework/core/engines/console-commands.mjs",
+  "framework/core/engines/control-rules.mjs",
+  "framework/core/ui-choices.d.mts",
+  "framework/core/ui-choices.mjs",
+  "framework/core/ui-review-schema.mjs",
+  "framework/libs/approvals/core.ts",
+  "framework/libs/hub/veto.ts",
+  "framework/plan/plan.json",
+  "framework/plan/profiles/breakroom/framework/catalog/status.json",
+  "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+  "framework/plan/profiles/breakroom/framework/plan/plan.json",
+  "framework/schemas/control.json",
+  "framework/schemas/json/ui-review-item.schema.json",
+  "framework/schemas/ui-review.json",
+  "framework/spec/CONTROL.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-console-commands.mts",
+  "framework/spec/check-nightly-deploy.mjs",
+  "framework/spec/fixtures/control.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/actions.ts",
+    "apps/amberx-droid/src/axf/core/engines/console-commands.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/console-commands.mjs",
+    "apps/amberx-droid/src/axf/core/engines/control-rules.mjs",
+    "apps/amberx-droid/src/axf/core/ui-choices.d.mts",
+    "apps/amberx-droid/src/axf/core/ui-choices.mjs",
+    "apps/amberx-droid/src/axf/core/ui-review-schema.mjs",
+    "apps/amberx-droid/src/axf/libs/approvals/core.ts",
+    "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+    "apps/amberx-droid/src/axf/schemas/control.json",
+    "apps/amberx-droid/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/amberx-droid/src/axf/schemas/ui-review.json",
+    "apps/amberx-droid/src/native.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/assetPicker.tsx",
+    "apps/console-web/src/axf/core/engines/actions.ts",
+    "apps/console-web/src/axf/core/engines/console-commands.d.mts",
+    "apps/console-web/src/axf/core/engines/console-commands.mjs",
+    "apps/console-web/src/axf/core/engines/control-rules.mjs",
+    "apps/console-web/src/axf/core/ui-choices.d.mts",
+    "apps/console-web/src/axf/core/ui-choices.mjs",
+    "apps/console-web/src/axf/core/ui-review-schema.mjs",
+    "apps/console-web/src/axf/libs/approvals/core.ts",
+    "apps/console-web/src/axf/libs/hub/veto.ts",
+    "apps/console-web/src/axf/schemas/control.json",
+    "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/console-web/src/axf/schemas/ui-review.json",
+    "apps/console-web/src/hubAppearance.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/README.md",
+    "apps/console-web/plugins/ui-review/help.json",
+    "apps/console-web/plugins/ui-review/plugin.json",
+    "apps/console-web/plugins/ui-review/review.mjs",
+    "apps/console-web/plugins/ui-review/server/__init__.py",
+    "apps/console-web/plugins/ui-review/server/choices.py",
+    "apps/console-web/plugins/ui-review/server/schema.py",
+    "apps/console-web/plugins/ui-review/test.mts",
+    "apps/console-web/plugins/ui-review/test.py",
+    "apps/console-web/plugins/ui-review/web/choices.tsx",
+    "apps/console-web/plugins/ui-review/web/index.tsx",
+    "apps/console-web/plugins/ui-review/web/review-core.mjs",
+    "apps/console-web/plugins/ui-review/web/ui-review.css",
+    "apps/console-web/plugins/ui-review/web/ui.tsx",
+    "apps/console-web/plugins/ui-review/web/views.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/BRIEF-TEMPLATE.md",
+    "_claude/builds/reports/approvals-in-place-r2.md",
+    "_claude/builds/reports/approvals-in-place-r2/shots/appearance-picker-desktop.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/appearance-picker-phone.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/approval-result-desktop.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/approval-result-phone.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/approval-review-desktop.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/approval-review-phone.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-choices-desktop.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-choices-phone.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-grid-desktop.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/ui-review-grid-phone.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/veto-screen-desktop.png",
+    "_claude/builds/reports/approvals-in-place-r2/shots/veto-screen-phone.png"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/plugin.json",
+    "apps/console-web/plugins/approvals-banner/server/__init__.py",
+    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/approvals-banner/test.py",
+    "apps/console-web/plugins/approvals-banner/web/approvals-banner.css",
+    "apps/console-web/plugins/approvals-banner/web/index.tsx",
+    "apps/console-web/plugins/approvals-banner/web/relay.ts",
+    "apps/console-web/plugins/approvals-banner/web/veto.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/actions.ts",
+    "framework/core/engines/console-commands.d.mts",
+    "framework/core/engines/console-commands.mjs",
+    "framework/core/engines/control-rules.mjs",
+    "framework/core/ui-choices.d.mts",
+    "framework/core/ui-choices.mjs",
+    "framework/core/ui-review-schema.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/CONTROL.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-console-commands.mts",
+    "framework/spec/check-nightly-deploy.mjs",
+    "framework/spec/fixtures/control.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/plugin.json",
+    "apps/console-web/plugins/follow-amber/server/__init__.py",
+    "apps/console-web/plugins/follow-amber/web/check.mts",
+    "apps/console-web/plugins/follow-amber/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/plan.json",
+    "framework/plan/profiles/breakroom/framework/catalog/status.json",
+    "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+    "framework/plan/profiles/breakroom/framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-commands",
+   "files": [
+    "apps/console-web/plugins/console-commands/console.mjs",
+    "apps/console-web/plugins/console-commands/server/__init__.py",
+    "apps/console-web/plugins/console-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/control.json",
+    "framework/schemas/json/ui-review-item.schema.json",
+    "framework/schemas/ui-review.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/plugin.json",
+    "apps/console-web/plugins/claude-settings/registry.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/axf.mjs",
+    "framework/cli/rebuild-shots.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/approvals/core.ts",
+    "framework/libs/hub/veto.ts"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/console-nightly.mjs",
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals",
+   "files": [
+    "apps/amberx-droid/src/plugins/approvals/web/deny.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/web/docs.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261107-6700e9e1",
+   "name": "Approvals in place, UI Review choices, Appearance picker",
+   "status": "approved",
+   "group": "g-20261107-f882cb0d",
+   "url": "/review/r-20261107-6700e9e1"
+  }
+ ],
+ "cost": {
+  "usd": 21.0527,
+  "estimated": false,
+  "tokens": {
+   "input": 158,
+   "output": 1285,
+   "cacheRead": 21995088,
+   "cacheWrite": 407756
+  }
+ },
+ "report": "_claude/builds/reports/approvals-in-place-r2.md",
+ "open": [
+  "Not exercised against the live hub. The relay is tested against a fake hub with its exact rules. The first real tap after deploy is the proof.",
+  "Not built, Addendum 4 per-UI picks: the picker is per asset type, not per UI instance. Per-row picks exist only for chrome (right-click → Change…).",
+  "Multi-view switching: choosing several records them in order; rendering them as a switchable view is each build's job, there is no shared view switcher yet.",
+  "Multi-view types are a list in code, not a property of `asset-types.json`.",
+  "The three-option rule refuses builds at intake (`source` headless / agent, `build:` / `agent:` senders) unless they send choices or `--single-option`. Manual uploads and predicted items pass. `rebuild-shots --submit` does not pass either flag yet, so a headless run of it is refused until it does.",
+  "Schema changed on Opus: ui-review-item@1 gained `choices` + `singleOption`, and `ActionMeta` gained `personOnly`. Under the Fable rule these want a Fable review.",
+  "Option assets that arrive through the API live in the console's data folder, not in a repo; only CLI ones ship in a PR. An option with an empty `data` may fail its type's validator and then stay out of the library.",
+  "Shared files: RULES.md and BRIEF-TEMPLATE.md are edited in the repo only; `claude-sync` holds both, so the hub copy needs Brett's pick once this lands."
+ ]
+}

@@ -81,7 +81,7 @@ async function main(argv) {
     const input = {
       title: flags.title, app: flags.app, plugin: flags.plugin || null, plain: flags.plain || '', quote: flags.quote || '', status: flags.status || 'pending',
       model: flags.model || 'Opus', minutes: flags.minutes ?? null, costUsd: flags.cost ?? null, branch: flags.branch || '', pr: flags.pr || null,
-      profile: flags.profile || 'main-framework', sources: flags.sources || [], askedAt: flags['asked-at'] || undefined, timeApprox: !!flags.approx, id: flags.id || undefined,
+      profile: flags.profile || 'all', sources: flags.sources || [], askedAt: flags['asked-at'] || undefined, timeApprox: !!flags.approx, id: flags.id || undefined,
     };
     const ask = bb.makeAsk(input, doc);
     const problems = bb.checkAsk(ask, doc);

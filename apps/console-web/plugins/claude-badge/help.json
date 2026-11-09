@@ -13,13 +13,6 @@
     "scope": "plugin:claude-badge",
     "entries": [
       {
-        "target": "claude-badge",
-        "title": "Claude badge",
-        "text": "Shows the “Claude badge” part of this screen. Part of Claude badge.",
-        "kind": "tab",
-        "draft": true
-      },
-      {
         "target": "show-on-the-banner",
         "title": "Show on the banner",
         "text": "Puts this badge on the banner, or takes it off. Hiding the console badge also stops its test when the console loads.",
@@ -30,6 +23,18 @@
         "title": "Icons only",
         "text": "Shows just the icon, without the word. The colour still shows the state. Each badge has its own switch.",
         "kind": "field"
+      },
+      {
+        "target": "badges",
+        "title": "Badges",
+        "text": "Settings for the Claude, VPS, axHub, AmberX and usage badges on the banner.",
+        "kind": "tab"
+      },
+      {
+        "target": "badge-settings",
+        "title": "Badge settings",
+        "text": "Opens Settings → Plugins → Badges.",
+        "kind": "button"
       }
     ],
     "intros": []

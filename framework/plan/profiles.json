@@ -1,61 +1,15 @@
 {
  "$axf": "build-profiles@1",
- "updatedAt": "2026-11-03T19:13:07.377Z",
- "active": "current",
+ "updatedAt": "2026-11-07T10:19:35.297Z",
+ "active": "all",
  "profiles": [
   {
-   "id": "main-framework",
-   "name": "Main framework",
-   "description": "The framework's own work: everything planned, queued, pending and tracked before profiles existed.",
-   "updatedAt": "2026-10-27T19:02:21.878Z"
-  },
-  {
-   "id": "refactor",
-   "name": "Refactor",
-   "description": "Fresh build profile for the refactor: its own plan, build queue, pending builds, tracking and orchestrator builds.",
-   "createdAt": "2026-10-27T19:02:12.357Z",
-   "updatedAt": "2026-10-27T19:02:12.358Z",
-   "catalog": false
-  },
-  {
-   "id": "angel",
-   "name": "Angel",
-   "description": "Angel profile (created Oct 29 2026 with home-cards): newest builds incl. batch-manager, element-inspector, context-menu-editor, layout-repeating-slots, approval-row-buttons, session-history, grid-sort-filter, plugin-cleanup, audio-output-recorder, audio-mic-filters, transcription-engine, ui-all-assets.",
-   "createdAt": "2026-10-29T18:34:15.248Z",
-   "updatedAt": "2026-10-31T11:58:00.000Z",
-   "catalog": false
-  },
-  {
-   "id": "breakroom",
-   "name": "Breakroom",
-   "description": "Breakroom profile: agent-swarm (headless specialist agents, Boss orchestrator, group chat, HR statuses, discipline, salary = token budget, agent-card@1 ID cards, vibe settings).",
-   "createdAt": "2026-10-29T18:34:17.880Z",
-   "updatedAt": "2026-10-31T11:58:00.000Z",
-   "catalog": false
-  },
-  {
-   "id": "urgent",
-   "name": "Urgent",
-   "description": "Urgent profile (Brett, Oct 31 2026): master data cleanup + live progress bars. On hold until Brett says go.",
-   "createdAt": "2026-10-31T12:18:00.000Z",
-   "updatedAt": "2026-10-31T12:18:00.000Z",
-   "catalog": false
-  },
-  {
-   "id": "big-dog",
-   "name": "Big Dog",
-   "description": "Molly: one interface (molly.amberxai.com) hosting AmberX, axHub and the Dev Console, each app still running on its own, untouched. Opus version; a Fable version comes later in its own build.",
-   "createdAt": "2026-11-02T02:43:37.642Z",
-   "updatedAt": "2026-11-02T02:43:37.654Z",
-   "catalog": false
-  },
-  {
-   "id": "current",
-   "name": "Current",
-   "description": "What Brett is working on right now (Nov 3 2026)",
-   "createdAt": "2026-11-03T19:13:07.361Z",
-   "updatedAt": "2026-11-03T19:13:07.361Z",
-   "catalog": false
+   "id": "all",
+   "name": "All builds",
+   "description": "Every build in one profile (Brett, Nov 7 2026): Main framework, Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.",
+   "createdAt": "2026-11-07T00:00:00.000Z",
+   "catalog": true,
+   "updatedAt": "2026-11-07T10:19:35.296Z"
   }
  ]
 }

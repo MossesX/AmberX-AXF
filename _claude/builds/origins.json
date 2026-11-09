@@ -1,6 +1,42 @@
 {
  "$axf": "build-origins@1",
  "origins": {
+  "account-failover-notify": {
+   "said": "Brief (headless launch, no verbatim block): Account failover + phone alerts + one home per login. 1. Automatic failover: when a build fails on an account for auth (expired/unrefreshable login) or usage limit, immediately mark that account out and relaunch the same build on the next available account (workers, then the interactive account; API accounts only per routing rules). No build should die and stay dead because of one account. Today three builds died in 1 s each on account-1 (OAuth expired) and nothing retried. 2. Phone notification (AmberX) on every such problem: which account, what failed (expired login / limit / no credits), which build moved where, and what Brett needs to do (e.g. sign account-1 in). 3. One home per login: each account's credentials live in exactly ONE store; every token refresh from any build, console or session writes back to that same place. No duplicate copies that can spend a refresh token and leave others dead. Audit claude-login.mjs / claude-token-save.mjs / claude-headless.sh and the console AI keys store for duplicates; find why account-1's refresh failed (spent by another copy vs idle expiry) and report it. 4. Status in the console Claude accounts screen: out/why/until, last refresh time per login.",
+   "at": "2026-11-08T16:59:53.289Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "account-health-failover": {
+   "said": "Account health probe + failover + phone alerts (Brett). A. Health probe (new): On console load and on a schedule, the orchestrator probes EVERY Claude account (subscriptions + API keys): a tiny headless session with a minimal brief, NO rules, NO CLAUDE.md, no MCP. It checks: login valid, credits/usage available (5-hour + weekly used/left, reset times; API: balance or last-known spend vs cap), which models it can use (opus/fable/etc.). It saves each account's status in ONE shared store all plugins read (status: ok / limited / no credits / login expired; credits left; models; checked at). Usage badge, Claude accounts screen and routing all read it. Keep probe cost near zero. The orchestrator only sends a job to an account that the store says can take it, with the model it needs. B. Failover: If a build still fails on auth or limit, mark the account out, update the store, and relaunch the same build on the next able account. Today 5 builds died in 1-3 s on account-1 (expired) and account-3 Hulu (no credits) and nothing retried. C. Phone alerts (AmberX): Notify on every account problem: which account, what (expired / limit / no credits), which build moved where, what Brett must do. D. One home per login: Each account's credentials live in exactly ONE store; every token refresh from any build/console/session writes back there. Audit claude-login.mjs, claude-token-save.mjs, claude-headless.sh, console AI keys for duplicate copies; find why account-1's refresh failed and report. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (probe interval, alerts); tests; report, STATUS, THREADS. E. Probe notifications (Brett): When the console loads: send a phone notification that the account checks are about to run; when done, send another with the result per account (ok / limited / no credits / expired, credits left, models). Uses the AmberX notification panel (build amberx-notify-panel) as its type 'account-status'.",
+   "at": "2026-11-08T17:24:55.214Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "adopt-today-s-direct-launched-builds-record-only": {
+   "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "agent-cap": {
    "said": "a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
    "at": "2026-11-01",
@@ -35,6 +71,18 @@
    "brief": "# Build: agent-pick (Urgent profile)\n\nBrett, Nov 3 2026 (voice). Assigned agent: **Snap Sully** (book on his card when this starts; if he is still busy and the all-rounder router from crew-retrain #265 is on main, the router may give it to whoever is free - record who in the report). Register in Urgent (id `agent-pick`) + banner entry.\n\n## What Brett wants\nEvery Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Claude becomes whichever agent he picks.\n\n## Build on what exists (don't duplicate)\n- Console **Agent manager** plugin + **Agent swarm** page (agent cards: names, stats, pay $7.50/h, history, write-ups), AmberArt ID card art, crew-live (avatars, AgentAvatar component, agent context menu), follow-amber (console pop-up dialogs + axHub approval stream), claude-settings (Claude plugin, settings on axHub, `claude_settings_get`). Coordinate through their APIs; if one isn't on main yet, build against its contract and note it.\n\n## Steps\n- s1 **Assign hook:** in Agent manager, every agent row/card has 'Assign to Claude' (and the agent context menu gets it everywhere). Claude settings gets 'Claude agent' = default agent + 'Ask me every session' switch (default ON).\n- s2 **Agent picker dialog**, opened from the context menu anywhere ('Choose Claude's agent...') and automatically at session start: list of every agent with avatar, name, status (working/idle), current job, today's cost, hours, pay, rating; tap a row to expand ALL details and stats (jobs done, success/fail, average cost and time, recent runs, write-ups, raises) with hooks to their full card, history, Session browser runs, Terminal tabs, group chat. One tap picks.\n- s3 **Session-start approval:** when a Claude session starts it calls a new MCP tool `claude_session_start` {client: voice|chat|code|headless, summary}. With 'Ask me every session' ON, that pops the picker as a console approval dialog (via follow-amber's pop-up; also an axHub approval item as fallback, and a push to his phone). Until Brett answers, the session uses the default agent. The answer returns {agent id, name, persona/voice notes, avatar}. Headless builds keep their brief's named agent (no prompt) unless Brett turns on 'Ask for headless too'.\n- s4 **Claude acts as that agent:** the session's work, costs and commits are booked on that agent's card (AXF_AGENT), its avatar shows on everything it does, and it introduces itself by that agent's name. Agent cards get an optional persona/voice field (how they talk) that the session follows. `claude_agent_get` (allow) tells a session who it is.\n- s5 Rule in shared RULES.md + CLAUDE.md: 'Every Claude session calls claude_session_start first and works as the agent Brett assigns.' Commands declared once -> REST + MCP + CLI.\n- s6 Zero tokens for the picker/manager code (no LLM imports, test). Tests (ask on/off, default fallback, booking to the right card, picker approval round trip with a fake axHub), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/agent-pick.md`, THREADS, PR, steps through the store. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "agent-profile-schema-skills-personas-with-a-big-": {
+   "said": "Create a schema for the agents that for their skills and personas. Create a schema with a shitload of templates that um with boilerplates for certain skills and all that.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "agent-swarm": {
@@ -89,6 +137,18 @@
    "said": "Put someone else on it.",
    "at": "2026-11-05T00:00:00Z",
    "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "amber-chat-asset": {
+   "said": "Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7). Rule: every UI element is an asset. The AmberX companion chat is a plain component. 1. Chat as an asset (Fable: contract). 2. Rename Gizmo -> Amber, safely: inventory, rename everywhere, migrate saved chats/settings, keep gizmo as an alias, back up old data, one-step rollback, CI check. 3. UI Review with choices: THREE distinct looks. 4. Tests + Shipped features.",
+   "at": "2026-11-07T12:30:40.602Z",
+   "source": "",
    "session": "",
    "link": "",
    "by": "",
@@ -191,6 +251,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "amberx-notify-panel": {
+   "said": "AmberX notification panel (Brett): A real notification panel inside the AmberX phone app that receives every kind of notification and status from the console, orchestrator, axHub and builds. 1. Typed notifications: build started/done/failed, approvals and veto holds (with Deny / Run now), account status (checks starting/done, expired, limit, no credits), UI Review items, alerts, info. Extensible type registry. 2. Panel: list grouped by type/source, filters, unread counts, search, mark read, clear, pin; tap opens the related screen; action buttons per type. 3. Live status area: current account statuses, running builds, queue. 4. Also delivered as Android push notifications with actions; panel keeps history. 5. One send API every plugin uses (console, orchestrator, axHub); reuse existing notifications/alert hub code (notifications-control-panel groups/triggers/actions) where it exists. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (per-type on/off, sound, priority); 3 UI options to UI Review; phone screenshots; tests; report, STATUS, THREADS.",
+   "at": "2026-11-08T17:50:26.084Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "build:amberx-notify-panel",
+   "brief": "Launched directly from voice (no record); text is the launch brief.",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "amberx-open-any-url": {
@@ -383,6 +455,30 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "approvals-page-auto-approve-toggle-1-h-2-h-until": {
+   "said": "Add a slot and approve everything automatically. Add one hour, two hours, and until I turn it off, and it needs to be able to be turned off on that same container. And um, it also we need collapsible campaigns on the approval page. The w rating page.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "approve-button-fix": {
+   "said": "Bug: in the console's \"Approval waiting\" dialog (approvals-in-place, landed today on main), clicking Approve repeatedly does nothing; the dialog stays. It says \"This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.\" Brett is signed in to the console as owner (Admin). (launch brief, Nov 7 2026)",
+   "at": "2026-11-07T16:36:58.936Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "apps-control-surface": {
@@ -623,6 +719,66 @@
    "from": "detail",
    "addenda": []
   },
+  "big-library-of-snappable-title-bar-widgets-each-": {
+   "said": "Create a shitload of widgets, snappable widgets for title bars. And, um, a shitload of them, like tons of them, all with the, their own, um, Settings interface accessible by right clicking the individual item or the parent itself.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "blueprint-notes-tasks": {
+   "said": "Blueprints switch notes, tasks and to-dos too (Brett, Nov 7)\n\n1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists).\n2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the existing plans went to.\n3. Global lists: some lists are shared across all blueprints. \"Quick notes\" is global by default. A per-list switch \"show in every blueprint\".\n4. Voice: \"add X to quick notes\" always works; \"switch blueprint to X\" switches all of it. control@1, MCP, CLI.\n5. Active blueprint visible in AmberX and the console (chip), settings in place, assets only, no hard-coded styling. UI Review three options (--choices).\n6. Tests: switch filters plans + notes + tasks + to-dos; global lists stay; nothing lost. Add to Shipped features.\n\nAddendum (Brett, Nov 7): permanent Global group\n- Notes/tasks/to-do manager AND Plan Studio each get a permanent group called **Global** (can't be deleted or moved).\n- Global holds repo-wide items: they show no matter which blueprint is open.\n- Any plan, note, task, to-do or list can be set to Global (toggle + drag in), and back.\n- Quick notes lives in Global by default. Replaces the per-list \"show in every blueprint\" switch: Global is that switch.",
+   "at": "2026-11-07T14:45:07.894Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "brief-approval-dialog-before-every-headless-sess": {
+   "said": "Okay, now for a headless session. From now on, I want the orchestrator to send me a fucking dialogue for approval. That shows what he's sending in as the brief.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "brief-only-headless": {
+   "said": "Headless builds (deploy/claude-headless.sh, claude -p) must NOT load CLAUDE.md, the CLAUDE.md chain, memory folders, rules files or any auto-loaded context. The ONLY input is the brief the orchestrator writes: exactly what that job needs, nothing more.",
+   "at": "2026-11-08T16:14:35.744Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "briefs-list-the-existing-files-each-step-needs": {
+   "said": "Better to have it list the files that it already knows it's gonna need, and then it can read those files and determine what to do. It will help it determine what to do.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "bugs-board": {
    "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
    "at": "2026-11-04T00:00:00Z",
@@ -726,6 +882,18 @@
    "session": "",
    "link": "",
    "by": "build-own-login-r2",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "build-pipeline-v2": {
+   "said": "Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD). Replace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what is redundant. Single profile all already on main. Flow: Request → orchestrator → Pending → Queued (one queue per Claude account, max 5) → Building (parallel per account, default 3). Build table states ONLY Pending, Queued, Building. Shipped features: Waiting → Building → Pending merge → Live. Headless sessions load ONLY the brief; brief check before queueing; progress file per build (START/END per step, never pauses, watcher crosses steps off, token usage per session and per step); final step updates Shipped features. Blocked flow: phone alert → Brett answers or taps Let orchestrator decide → relaunch from the blocked step. Phone notifications on session started, build finished, failed, stopped incomplete, blocked, landed. Account dies → move its builds + alert. Landing discards _claude/builds sync noise; on land Shipped features Live + alert. Decisions to _claude/memory. Acceptance suite in CI blocks landing.",
+   "at": "2026-11-07T10:30:00Z",
+   "source": "chat",
+   "session": "",
+   "link": "",
+   "by": "Brett",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -934,6 +1102,18 @@
     }
    ]
   },
+  "clean-up-plan-studio-simplify-remove-redundancy": {
+   "said": "Clean up plant studio too. It's too much like redundant. It's too complicated. Clean uh, clean that up.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-account-picker": {
    "said": "I need to be able to flip them from the console.",
    "at": "2026-11-05T23:30:48.450Z",
@@ -953,7 +1133,7 @@
    "session": "",
    "link": "",
    "by": "backfill",
-   "brief": "",
+   "brief": "# Dev Console as an Android app: wrapper, one codebase (Brett, Nov 7)\n\nBrett chose the wrapper over a native rewrite: the existing web console runs inside an Android app shell, same way AmberX loads its web plugins. One codebase; every console change shows on the phone at once.\n\nReuse: orchestrator build `console-android-app-tabs` (19 steps, pending) — get its brief (`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief console-android-app-tabs`) and use what fits; ignore the archived native rewrite `console-android-native-tabs`. Reuse AmberX's Android shell/bridge pieces (apps/amberx-droid) rather than writing new ones.\n\n1. Android app shell loading the console (console.amberxai.com), with sign-in kept, back button/navigation, pull-to-refresh, offline screen.\n2. Native bridges where needed: push notifications (build start/finish/fail/land alerts), mic for voice, background wake, file share/download (APKs), deep links that open a console screen.\n3. Console UI stays asset-driven; phone layouts come from the existing three-layouts/phone assets, no hard-coded styling.\n4. APK built in CI next to amberx-debug.apk; listed under Apps in the console/axHub for install.\n5. UI Review with three options (--choices) for the shell chrome. Tests. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
    "verbatim": false,
    "from": "detail",
    "addenda": []
@@ -1136,6 +1316,18 @@
    "from": "",
    "addenda": []
   },
+  "demonstration-designer-plugin-new-standalone": {
+   "said": "Make a new one. I want a, a, a demonstration designer plugin.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "design-package": {
    "said": "new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
    "at": "2026-10-27",
@@ -1194,6 +1386,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "every-banner-title-bar-and-toolbar-snappable-ass": {
+   "said": "every banner and title bar is snap, has to be snaps. Every banner and title bar and all that has to be snappable assets so nothing overlines. And they all need a settings. Every single one needs its own settings.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "expenses-port": {
@@ -1393,6 +1597,26 @@
    "from": "detail",
    "addenda": []
   },
+  "full-api-control": {
+   "said": "The API controls EVERYTHING in the console. Rule: the API (control@1 / MCP / CLI / voice) must be able to do anything Brett can do by hand in the console and every plugin. Today it can't (e.g. it can open a terminal tab but can't type in it).",
+   "at": "2026-11-07T16:09:37.164Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "A real, polished API Browser plugin in the console listing EVERY API path (control@1 targets/actions, REST routes, MCP tools, CLI commands, plugin reads/commands) from one generated registry.\n- Multiple views: Grid (sort/filter/search), Tree (by app > plugin > screen > element), Cards, and a Coverage view (which UI elements have API paths, red for gaps).\n- Each entry: what it does, inputs/outputs schema, policy (instant/veto/approve), REST + MCP + CLI names, the UI element it maps to, links to docs/glossary.\n- \"Try it\" panel: fill inputs, run (respecting policy), see the result; reads run instantly.\n- Nice and pretty: from assets only, three looks to UI Review (--choices).",
+     "at": "",
+     "source": "console",
+     "by": "sully",
+     "verbatim": true
+    }
+   ]
+  },
   "github-app": {
    "said": "",
    "at": "",
@@ -1505,6 +1729,18 @@
    "session": "",
    "link": "",
    "by": "claude-voice",
+   "brief": "# glossary-index-demos (r2)\n\nThis build already exists in the orchestrator (profile `all`, id `glossary-index-demos`, 6 steps, none done) with its Plan Studio plan. An old folder /root/axf-builds/glossary-index-demos exists from an earlier attempt: check it for any committed work and bring it over.\n\n1. Get the full brief: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief glossary-index-demos` (and its Plan Studio plan). Follow it exactly: documentation index, glossary and walkthrough demos.\n2. If a step needs Fable (new shared asset type/contract), stop there and write `blocked: needs Fable for sN` to PROGRESS.md.\n3. Progress: append `<time> START|DONE <step>` to PROGRESS.md in this folder at each step; don't stop between steps.\n4. Last step: add it to Shipped features.\n\nShipped-product quality, no hard-coded styling. Commit, don't push.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "go-to-hooks-every-shipped-feature-build-and-plan": {
+   "said": "Whenever you click the shipped feature, a built plan or anything related to a UI or setting, it brings you to it. There's got to be a hook to it. Somewhere, either clicking it or a hook somewhere in its expanded row or something.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -1549,6 +1785,18 @@
   "handoff-2-addenda-r2": {
    "said": "Restart the builds that died on credits, on Opus. (Nov 4, on the add-ons:) Okay, do it... put them all. Do that now. ... The helper account needs to use its own subscription ... You can pass Fable to helpers. The helpers just have to check to make sure they have Fable. If not, they reject it, send it back to you in the group chat, and tell you to keep it. ... Give it to Brownie. She can handle the helpers. ... Give Brownie an attitude. Make her crack the whip. ... Can you store that key so I can use it to switch back and forth from the console?",
    "at": "2026-11-05T11:07:45.303Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "headless-loop-guards-stop-endless-loops-and-sear": {
+   "said": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+   "at": "",
    "source": "",
    "session": "",
    "link": "",
@@ -1678,6 +1926,18 @@
    "from": "",
    "addenda": []
   },
+  "idle-alert-phone-flag-when-nothing-is-building": {
+   "said": "alerts on my phone when shit stops building, dude. You constantly need to be checking every, you know, all the time. If there's nothing running, I need a flag to appear on my phone.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "interface-roller": {
    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
    "at": "2026-10-27",
@@ -1688,6 +1948,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "investor-demo-player-shell-with-login-gate-skins": {
+   "said": "Oh, let's build that section. Let's build the the view the viewer with um, behind a login gate uh, with a guest login.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "jump-menu-asset": {
@@ -1810,6 +2082,18 @@
    "from": "",
    "addenda": []
   },
+  "maintenance-redundancy-scan": {
+   "said": "Maintenance: redundancy scan (Brett, Nov 7)\n\nAdd a job to the Maintenance plan/runner (reuse maintenance-vps-monitor / AmberX Maintenance / syscheck pieces where they exist) that searches for redundant data sets in a controlled, methodical way and REPORTS them. It never deletes or merges anything.",
+   "at": "2026-11-07T13:46:06.752Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",
@@ -1822,6 +2106,18 @@
    "from": "brief",
    "addenda": []
   },
+  "memory-restructure-chunked-claude-md-store-memor": {
+   "said": "Put it in a build. Send it to the org.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "menu-scroll": {
    "said": "The application menus need to be scrollable when they reach beyond the screen.",
    "at": "2026-11-03",
@@ -1830,6 +2126,30 @@
    "link": "",
    "by": "backfill",
    "brief": "# Build: menu-scroll (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they reach beyond the screen.\" Assigned agent: **Janitor Joey** (book on his agent-swarm card; set AXF_AGENT=janitor-joey if supported, else record in report + store note). Register in Urgent (id `menu-scroll`) + banner entry.\n\n## Fix (framework level, so every app and plugin gets it)\n- Application menu bar dropdowns, their submenus, and also context menus / overflow (⋯) menus: when a menu is taller than the space left in the viewport, cap its height to the available space (respect safe-area insets, the banner/toolbars, and the on-screen keyboard; use visualViewport on mobile) and make it scroll vertically inside.\n- Smooth touch scrolling on phones (overscroll contained so the page behind doesn't scroll), wheel + keyboard arrow navigation scrolls the highlighted item into view, subtle top/bottom fade or chevron hints when there's more.\n- Positioning: flip up / shift to stay on screen before falling back to scroll; submenus that would go off the right edge open to the left; on compact width they stay inside the screen.\n- Max height + hint style come from tokens/assets (menu asset or component-sizing), no hard-coded sizes (check-theme must pass).\n- Apply in the framework menu components (web reference + axf.css) so console, axHub web, AmberX (Capacitor) and every plugin inherit it; Compose twin recorded in PORTING.md unless trivial.\n- Tests (overflow cases: long menu at bottom of a short phone screen, nested submenu at the edge, keyboard open), before/after screenshots at 412 px and 1280 px, UI Review item, report `_claude/builds/reports/menu-scroll.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+   "verbatim": false,
+   "from": "brief",
+   "addenda": []
+  },
+  "merge-conflict-alerts": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "merge-conflict-alerts",
+   "brief": "# merge-conflict-alerts\nOrchestrator build ID: merge-conflict-alerts (profile current, 5 steps). Use that record: follow its steps and models, tick steps as you finish, record session and cost on it.\n\nURGENT FIRST (step s1): fix PR #370 (branch claude/badges-notify-followup, badges + usage meter). GitHub refuses to merge it: 'Pull Request has merge conflicts'. Merge origin/main into the branch, resolve conflicts keeping both sides' intent, re-run the checks, push, and get it landed through the merge queue (Brett already approved its UI Review items). Report what conflicted.\n\nThen steps s2-s5: detect conflicts on every open PR; alert Brett with an approval (AmberX push AND console) with 'Fix conflicts now'; a persistent item on the fixed banner until resolved; approving launches an orchestrator conflict-fix job and re-queues the PR.",
+   "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
+  "merge-profiles-one": {
+   "said": "combine every build profile into ONE new profile on main and delete the others.",
+   "at": "2026-11-07",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "merge-profiles-one",
+   "brief": "",
    "verbatim": false,
    "from": "brief",
    "addenda": []
@@ -1909,6 +2229,30 @@
    "from": "",
    "addenda": []
   },
+  "molly-native-expenses": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-08T16:58:59.537Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "molly-one-shell": {
+   "said": "Brett wants everything in ONE app. Molly becomes the single shell for every app and plugin: Dev Console, axHub web, AmberX, and all future apps. Patches is scrapped. NO embedding: Do NOT embed other apps as pages/iframes (no second file menu/banner/chrome). ONE native app: Molly has the only chrome (one banner, one file menu, one nav, one settings). Every app's screens, plugins, menus and settings load natively into Molly as plugins, merged into Molly's single menu/nav. Menus: Molly's menus reach EVERYTHING from every app: every screen, plugin, action, setting. Grouped by app and category, search/jump-to-anything, favorites and recents, sliding sub menus, three-dot overflow on small screens. Fully voice and API controllable. Layouts: User picks a layout mode. IDE-style is ONE option among others. In the IDE layout, containers dock/split/float/resize, and each container can optionally be a tab group: drag anything from a menu onto a container and it opens there as a new tab; tabs drag between containers. Save/switch named layouts. Reuse framework tab group / drag-to-tab work.",
+   "at": "2026-11-08T16:57:58.978Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-opus": {
    "said": "combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
    "at": "2026-11-02",
@@ -1921,6 +2265,18 @@
    "from": "detail",
    "addenda": []
   },
+  "molly-sign-in-once": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-08T16:59:02.204Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "mosses-build-tools": {
    "said": "Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
    "at": "2026-10-28",
@@ -1931,6 +2287,42 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "multi-account-headless-workers": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "multi-account-headless-workers",
+   "brief": "# multi-account-headless-workers\nThis build is ALREADY registered in the Build orchestrator as `multi-account-headless-workers` (profile current, 5 steps). Use that record: follow its steps and the model the orchestrator set for each step, tick steps there as you finish them, and record session and cost on it.\n\nGoal (Brett): the console signs into more than one Claude subscription at once. The console itself uses one account. The other accounts exist only as headless worker sessions, and the orchestrator sends build jobs to them.\n1. Audit existing account-failover, account-switch-handoff and claude-accounts code and reuse it.\n2. Console holds multiple signed-in subscriptions: one interactive, others headless-only.\n3. Account manager UI: add, sign in and remove worker accounts; usage and limits per account.\n4. Orchestrator routes jobs to worker accounts and fails over when one hits its limit.\n5. Recording, cost and session booking per worker account.",
+   "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
+  "nested-menus-for-console-amberx-and-molly-overri": {
+   "said": "You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "nested-menus-for-console-amberx-and-molly-overri",
+   "brief": "# Build: nested-menus-for-console-amberx-and-molly-overri\n\n## Brett said (verbatim)\n> You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.\n\n## What to build\nContinue build \"Nested menus for console, AmberX and Molly (override the shared menus)\" (nested-menus-for-console-amberx-and-molly-overri) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"You can optimize uh, navigation and application menu for console with um, subcategories. That's just way too long... generate new menus for the for AmberX. For Molly, for console, and actually generate new nested menus the same exact way and override the shared actual.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step nested-menus-for-console-amberx-and-molly-overri <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link nested-menus-for-console-amberx-and-molly-overri --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step nested-menus-for-console-amberx-and-molly-overri <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note nested-menus-for-console-amberx-and-molly-overri \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "new-app-wizard": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "new-app-wizard",
+   "brief": "# new-app-wizard\nOrchestrator build ID: new-app-wizard (profile current). Use that record: follow its steps and the model the orchestrator set for each step, tick steps as you finish, record session and cost on it.\n\nBuild a New App wizard (console screen, voice, API/MCP/CLI). It asks for: app name, quick summary, brief, and subdomain on amberxai.com. Then it: creates a GitHub repo under MossesX; scaffolds a framework app with standard style and assets, a settings interface and a control panel; adds the Hostinger DNS record for the subdomain; sets up HTTPS and VPS routing behind Brett's login; registers the app in the registry; sends the brief to the orchestrator as a build with a build ID (orchestrator plans and picks models). Shows progress and a final summary with links. Everything voice controlled, every step has an API function.",
+   "verbatim": false,
+   "from": "",
    "addenda": []
   },
   "notes-tasks-calendar": {
@@ -2023,6 +2415,30 @@
     }
    ]
   },
+  "one-builds-page-pending-queued-built-tabs-remove": {
+   "said": "There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "one-builds-page-pending-queued-built-tabs-remove",
+   "brief": "# Build: one-builds-page-pending-queued-built-tabs-remove\n\n## Brett said (verbatim)\n> There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.\n\n## What to build\nContinue build \"One builds page: Pending, Queued, Built tabs; remove every other builds table\" (one-builds-page-pending-queued-built-tabs-remove) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.\n[ ] s2 (~30 min) There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-builds-page-pending-queued-built-tabs-remove.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-builds-page-pending-queued-built-tabs-remove.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-builds-page-pending-queued-built-tabs-remove <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-builds-page-pending-queued-built-tabs-remove --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-builds-page-pending-queued-built-tabs-remove <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-builds-page-pending-queued-built-tabs-remove \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "one-way-to-start-builds-the-orchestrator-dispatc": {
+   "said": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orch-live-sync": {
    "said": "you fix it, I trust you",
    "at": "2026-11-03",
@@ -2079,6 +2495,66 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "orchestrator-api-rule-in-every-brief-plan-studio": {
+   "said": "Now I want to make sure he makes the orchestrator is going to include in the briefs, everything comes with an API. It also needs to make the stepped plan in Plan Studio for the build. And it needs to update any plan in the Plan Studio. So the Plan Studio needs to be uh, somehow synced with future builds.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "orchestrator-api-rule-in-every-brief-plan-studio",
+   "brief": "# Build: orchestrator-api-rule-in-every-brief-plan-studio\n\n## Brett said (verbatim)\n> Now I want to make sure he makes the orchestrator is going to include in the briefs, everything comes with an API. It also needs to make the stepped plan in Plan Studio for the build. And it needs to update any plan in the Plan Studio. So the Plan Studio needs to be uh, somehow synced with future builds.\n\n## What to build\nContinue build \"Orchestrator: API rule in every brief + Plan Studio stepped plans, always in sync\" (orchestrator-api-rule-in-every-brief-plan-studio) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Now I want to make sure he makes the orchestrator is going to include in the briefs, everything comes with an API. It also needs to make the stepped plan in Plan Studio for the build. And it needs to update any plan in the Plan Studio. So the Plan Studio needs to be uh, somehow synced with future builds.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Brett: for every build the orchestrator handles: (1) every brief it writes includes the rule that anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity; (2) when it splits a build into steps it creates the stepped plan in Plan Studio for that build (same build ID, steps, estimates, models); (3) it keeps Plan Studio synced for all future builds: every step tick, status change, re-split, phase change, land or failure updates the matching Plan Studio plan automatically, and edits made in Plan Studio flow back to the orchestrator. One source of truth (the builds store), Plan Studio and Build Manager are views of it. Tests: new build -> plan appears with steps; tick -> plan updates; brief contains API rule.\n[ ] s2 (~30 min) Now I want to make sure he makes the orchestrator is going to include in the briefs, everything comes with an API. It also needs to make the stepped plan in Plan Studio for the build. And it needs to update any plan in the Plan Studio. So the Plan Studio needs to be uh, somehow synced with future builds.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-api-rule-in-every-brief-plan-studio.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-api-rule-in-every-brief-plan-studio.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-api-rule-in-every-brief-plan-studio <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-api-rule-in-every-brief-plan-studio --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-api-rule-in-every-brief-plan-studio <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-api-rule-in-every-brief-plan-studio \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-chain-trace-brownie-molly-group-cha": {
+   "said": "All right, I want a plugin from now. I want actually, I want settings in the orchestrator. But for the chains... I want to see what exactly he receives, for instructions, what he does with those instructions, who he what he launches on the VPS, if anything, what. And then what other se sections he sends information to, like he has to send it to the plant studio... Molly is the plant studio, so I want to see Brownie sending the stuff to to uh, whatever her name is in the group chat. Talking back and forth.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-checks-shipped-features-before-spli": {
+   "said": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-dup-check": {
+   "said": "Orchestrator: cheap redundancy check at split time (Brett, Nov 7). Every time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).",
+   "at": "2026-11-07T14:11:33.802Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless brief",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-gate": {
+   "said": "Orchestrator is the only door to the VPS; approval rules in orchestrator settings. Nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the orchestrator's settings, and work even when no Claude session exists.",
+   "at": "",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "headless build orchestrator-vps-gate",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "partial-land-ship-completed-steps-of-a-build": {
@@ -2213,6 +2689,42 @@
    "from": "detail",
    "addenda": []
   },
+  "plan-archive": {
+   "said": "Plan Studio: Archive folder (Brett, Nov 7)\n\n1. Add a separate **Archive** folder/section in Plan Studio. Archived plans are hidden from the normal lists, shown only in Archive, never deleted.\n2. Actions: `archive` and `unarchive` (restore) on planner.plans — in the UI (row menu + bulk select), control@1 (`control_act planner.plans archive|unarchive`), MCP/CLI/voice. Restore puts the plan back exactly as it was (status, steps, links, build link).\n3. Move EVERY existing plan (all ~58 at time of writing) into Archive. Do NOT archive the plan named \"New Hire\" if it exists, nor anything created after this build starts. Linked builds keep their links.\n4. Archive state stored in plan@1 (optional field, backward compatible); UI from assets, no hard-coded styling. UI Review: submit the Archive view with three options (--choices).\n5. Tests: archive/unarchive round-trip, bulk move, hidden from default lists, restore exact. Add to Shipped features.",
+   "at": "2026-11-07T12:28:04.815Z",
+   "source": "code",
+   "session": "",
+   "link": "",
+   "by": "paulie",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "plan-blueprints": {
+   "said": "Plan Studio: Blueprints (Brett, Nov 7)\n\nFIRST: the queued build plan-archive (queue id hl-mw6dmjiy-7w) is SUPERSEDED by this one. Remove it from the headless launch queue before it starts (or, if it already started, stop it with tmux kill axf-plan-archive-* and discard its branch). Note it in PROGRESS.md.\n\n## What a Blueprint is\nA named package of plans in Plan Studio, like build profiles but for plans. Only one blueprint is active at a time; Plan Studio shows only the active blueprint's plans. Plans keep their exact structure (steps, sub-items, status, build links) inside a blueprint.\n\n## Do\n1. Contract (Fable): blueprint@1 (id, name, description, created, plans). Plans gain an optional `blueprint` field (backward compatible). Store alongside plans; orchestrator/build links unaffected.\n2. Plan Studio gets a **Blueprints** section: list, create (name), rename, duplicate, delete (with confirm; plans move, never lost), move plans between blueprints (bulk select).\n3. **Context menu**: Plan Studio's context menu gets a **Blueprints** submenu listing every blueprint; selecting one switches the active blueprint. Same switch available via control@1 (planner.blueprints list/add/act switch), MCP, CLI and voice (\"switch blueprint to X\").\n4. Migration: create blueprint **\"Existing\"** (or similar) and move ALL current plans into it, structure untouched. Plan named \"New Hire\" (if present) goes in a new blueprint \"New Hire\".\n5. UI from assets, no hard-coded styling; settings in place. UI Review: three options (--choices) for the Blueprints section + submenu.\n6. Tests: migration keeps every plan identical, switch filters correctly, move between blueprints, links intact. Add to Shipped features.",
+   "at": "2026-11-07T13:13:15.891Z",
+   "source": "code",
+   "session": "",
+   "link": "",
+   "by": "gina",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "plan-designer": {
+   "said": "Plan Designer in AmberX: voice plans at zero Claude tokens (Brett, Nov 7). Trigger: Brett says \"let's make a plan\" (voice, AmberX) or taps Plan Designer. It's part of Plan Studio, lives in AmberX (phone first; console view too). 1. Talk back and forth with a LOCAL agent: Ollama on the VPS (Brett is installing it), through assistant@1's existing Ollama provider. Small model (3-8B, CPU only, no GPU) chosen in settings; never uses Claude while drafting. Agent role: interviewer that asks clarifying questions, keeps an outline (goal, what, why, steps, acceptance, open questions), reads it back. 2. Voice in/out via AmberX talk mode (same mic/echo-safe path as Amber). Text editing too. 3. Draft saved locally/on the VPS as it goes (no loss on disconnect). Works if the VPS model is slow: show progress, allow plain dictation with no agent replies. 4. Send to orchestrator: one button/voice \"send it\" sends the whole draft in ONE request; the orchestrator (Claude) picks models, splits into <=30-min steps, assigns the id. Show the token saving estimate. 5. If Ollama isn't installed/running: say so plainly with the setup line; dictation-only mode still works. 6. UI from assets, settings in place, no hard-coded styling. UI Review three options (--choices). Tests (mock Ollama). Add to Shipped features.",
+   "at": "2026-11-07T14:21:02.462Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "plan-studio": {
    "said": "a planning studio to store and view all plans, entered by hand, categorized; every plugin and app listed with its features checked off as have or planned. + plain-English AI command box (Oct 30 ~14:20) + AmberX voice conversation mode (Oct 30 ~14:22). Profile Angel, Opus, one session. Branch claude/plans. Web/TS/Python only; AmberX is its Capacitor web shell (allowed exception). Don't touch push-banner, approvals/veto, design-packs/ui-review, enterprise-branding, agent-voice files.",
    "at": "2026-10-30",
@@ -2242,8 +2754,27 @@
      "source": "",
      "by": "",
      "verbatim": true
+    },
+    {
+     "said": "\"Any time something in a plan is edited or changed, put that in Plan Studio as a sub-step, something you can check off. It's gotta be two addendums: show the actual verbatim addendum that I said, show your interpretation / summary of what you are going to do, and then list the steps it's going to do, to be crossed off as they are completed. Any changes have to go through the orchestrator, so when the orchestrator completes them, it sends them to Plan Studio to check them off.\"\n- Every addendum on a build = a check-off item under its plan with three parts: (1) Brett's words verbatim, (2) Claude's summary of what it will do, (3) sub-steps with IDs (buildId-N-M), each tickable.\n- All changes enter through the orchestrator (brief addenda, pending_change, MCP); the orchestrator is the one that ticks sub-steps in Plan Studio when done. Plain code, zero tokens.\n- Backfill today's addenda the same way.",
+     "at": "",
+     "source": "",
+     "by": "",
+     "verbatim": true
     }
    ]
+  },
+  "plan-studio-receives-a-valid-shipped-feature-man": {
+   "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "plan-studio-receives-a-valid-shipped-feature-man",
+   "brief": "# Build: plan-studio-receives-a-valid-shipped-feature-man\n\n## Brett said (verbatim)\n> Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n\n## What to build\nContinue build \"Plan Studio receives a valid shipped-feature manifest\" (plan-studio-receives-a-valid-shipped-feature-man) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plan-studio-receives-a-valid-shipped-feature-man --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plan-studio-receives-a-valid-shipped-feature-man \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
   },
   "planner-select-items-and-build-them": {
    "said": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
@@ -2317,6 +2848,18 @@
    "from": "detail",
    "addenda": []
   },
+  "postgres-console": {
+   "said": "the planner sends a request to the orchestrator to assign the building ID. The orchestrator has to assign all IDs and register them.\nwhat kind of database is this registry? Is it SQLite? Or Postgres.\nSQLite is too small. This project's too big.\nI'm thinking MongoDB or Postgres.\ncan we make Postgres run on the console?\nBundle the Postgres into the console's container.\nAnd make it queryable from the console.\ndon't run that. Put that in the planner for Molly and park it.",
+   "at": "2026-11-06T13:41:20.323Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Amber (claude.ai voice)",
+   "brief": "# Postgres: ONE true location for all data sets, in its own container (Brett, Nov 7)\n\nOrchestrator build id: `postgres-console` (profile all, 7 steps) with Plan Studio plan `postgres-for-the-console-orchestrator-id-registr-anyx` — read both (`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief postgres-console`) and follow them, with this change: Postgres runs in its OWN Docker container, not inside the console's.\n\nProblem: the same data lives in 3+ places (builds store, per-profile orchestrator files, pending list, journal, plans, tracker/catalog, feature-ledger, origins) read by different tools, constantly out of sync.\n\n1. Contract (Fable): schema for builds, steps, plans, blueprints, journal, queue, accounts/workers usage, Shipped features, origins, ID registry (orchestrator assigns every id). Migrations versioned.\n2. Own container: `axf-postgres` (official image, pinned), internal Docker network only (no public port), named data volume, healthcheck, restart policy, nightly backup + restore script, credentials in the vault/env (never in git). Compose/deploy files + docs.\n3. Importer: every existing JSON source loaded losslessly, counts/hashes verified, duplicates resolved with a report.\n4. Switch every reader/writer (orchestrator, Build manager, Builds page, Plan Studio, builds-live, merge queue, MCP/CLI, AmberX, axHub) to the DB. JSON files become generated read-only exports for git/sessions. Kill file locks.\n5. CI check: no code writes those JSON files directly anymore.\n6. Tests + perf check. Add to Shipped features.\n\nDeploying the container is a VPS write: prepare it, and leave a one-command deploy for Brett/orchestrator. Progress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "postponed-gestures": {
    "said": "add draggable from anywhere to postponed gesture list",
    "at": "2026-10-28",
@@ -2377,6 +2920,18 @@
    "from": "brief",
    "addenda": []
   },
+  "profiles-all-finish": {
+   "said": "Brett approved both open questions from merge-profiles-one:\n1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes).\n2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree).",
+   "at": "",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "profiles-all-finish",
+   "brief": "",
+   "verbatim": false,
+   "from": "brief",
+   "addenda": []
+  },
   "push-banner-merge-all": {
    "said": "add pending merges to the push banner, a button to fix conflicts and merge all, and a button to fix conflicts and pull main into all. Every merge goes to axHub for approval (github.pulls/merge). Conflicts get a Copy fix brief for a Claude session (automatic Claude conflict fixing was refused by the session safety check).",
    "at": "2026-10-22",
@@ -2393,6 +2948,18 @@
    "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
    "at": "2026-11-04T00:00:00Z",
    "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "rebase-land-approve-button-fix-approve-goes-stra": {
+   "said": "When I click an approved link in the console, approved pop up in the dialog, it just says opened in Axe Hub, approve it or deny it there. It needs to fucking go right through and close the goddamn dialog.",
+   "at": "",
+   "source": "",
    "session": "",
    "link": "",
    "by": "",
@@ -2509,6 +3076,18 @@
    "from": "detail",
    "addenda": []
   },
+  "shipped-features-live-manifests-from-dispatch-to": {
+   "said": "Ship dock features gets manifest as soon as orchestrator sends out the job. then its status is it, it sends a manifest every time it's updated to every time it's a step completed it sends a manifest every time it's completed it sends a manifest and its status in ship features is updated constantly with different badges and a progress meter.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "shipped-features-r2": {
    "said": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
    "at": "2026-11-04T12:00:00Z",
@@ -2596,6 +3175,18 @@
     }
    ]
   },
+  "slot-watchdog": {
+   "said": "Assign a crew member (agent profile in the roster, e.g. a 'Slot Warden') whose only job is watching the headless build slots and queue, all the time, in plain code (zero tokens).\n\n1. Every ~30 s: check each running slot in framework/cli/agent-slots.mjs against reality (tmux session alive, claude -p pid alive, log advancing). Today 3 builds died in 1-3 s on bad logins but kept all 3 slots, freezing the queue.\n2. Dead / finished / hung (no log progress past a threshold) -> release the slot, mark the build failed with the reason (auth, limit, crash, hung), tell the orchestrator so it can relaunch/fail over (account-health-failover build), and notify Brett's phone (AmberX notification panel, type 'slot').\n3. Report: a live slot/queue status the console and AmberX show; a log of every intervention.\n4. Also fix the root: claude-headless.sh must always finish/release its slot when Claude exits, even on instant auth failure.\n\nDuplicate guard (Brett): The watchdog and the launcher refuse or stop duplicate builds: same brief/goal running twice (e.g. memory-manager-r2 and -r3 both ran). On launch, compare against running + queued builds (name stem, brief source, build id); keep the furthest-along one, stop/dequeue the other, tell the orchestrator and notify Brett. Reuse the unlanded orchestrator-dup-check branch.",
+   "at": "2026-11-08T17:54:52.704Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "gina",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
    "at": "2026-11-03",
@@ -2642,6 +3233,30 @@
    "from": "detail",
    "addenda": []
   },
+  "standing-rule-every-ui-ships-with-full-api-contr": {
+   "said": "Now make sure the orchestrator knows that. Everything gets the API.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "style-override-rule": {
+   "said": "# Style override rule (Brett, Nov 7) — contract + enforcement\n\nThe rule:\n1. Main apps — Dev Console, axHub web, AmberX, Patches — SHARE one style/theme/design. Their override switch is OFF by default.\n2. Every plugin and every UI asset has its own override switch, ON by default. On first install it stores its own copy seeded from the shared style, so everything looks the same until someone changes it.\n3. A plugin/asset override changes ONLY that plugin/asset. It never changes the app it belongs to, other plugins, or the shared style.\n4. Turning a plugin's override OFF makes it follow its app's (shared) style live.\n5. Turning an app's override ON gives that app its own style; its plugins keep their own copies.\n\nDo:\n- Find the existing pieces (app-style-override branch/build, apply-all-levels, appearance-asset-tokens, skins, theme engine, settings assets) and reuse them; finish app-style-override if it fits.\n- Implement the resolution order in the shared theme/style engine (both web and Android twins where they exist): asset own copy (if override on) → app (if app override on) → shared main style.\n- Switch in each app's and each plugin's settings (settings asset, no hard-coded UI). Migration: existing plugins get override ON with a copy of the current shared style; apps OFF.\n- Write the rule to RULES.md and the brief template so every build follows it. CI check: every UI asset/plugin declares the override field.\n- UI Review: submit the switch UI with three options (--choices).\n- Tests for each rule above. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+   "at": "2026-11-07T12:36:38.545Z",
+   "source": "console",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "style-package-fable": {
    "said": "new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
    "at": "2026-10-27",
@@ -2654,6 +3269,18 @@
    "from": "detail",
    "addenda": []
   },
+  "style-rule-every-design-element-overrides-axhub-": {
+   "said": "All design elements override X hubs except for the color theme.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "tab-group-assets": {
    "said": "Looking at UI Review's row (Design packs, Whole apps, Screens and pages, Settings interfaces, Dialogs, Menus), which switches the list = a tab group: \"If it's a tab group, why can't I get to the tab group settings by right-clicking on it?\" ... \"Needs to be. Yeah, all tab groups are supposed to be assets. With a settings interface, that's also an asset.\"\n\nAddendum 1 (voice, Nov 4): \"Right now, I want to make sure that navigation menus, toolbars, banners, are all asset types, and they all have a settings interface, which is an asset, and we can get to their settings by right-clicking all of them.\"\n\nAddendum 2 (voice, Nov 4): \"Every asset type that has the settings interface, there's going to be a default settings interface for all, used by default. And then there will be another one that will make a customized one for every app. And by default, the custom one will be selected.\"\n\nAddendum 3 (voice, Nov 4, correction): \"No, actually, by default, it uses the default one.\"",
    "at": "2026-11-04T12:00:00.000Z",
@@ -2661,6 +3288,42 @@
    "session": "",
    "link": "",
    "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "tabs-api-control": {
+   "said": "Tabs get API control (Brett, urgent)\n\nAgents can open a screen but can't switch its tabs (e.g. Build orchestrator > Pipeline). Fix in the framework so every tab and tab group in every app is API/voice/MCP controllable:\n1. Every tab registers an action (e.g. `tab.open` with screen + tab id/label) and shows in console_list actions; console_open accepts `screen/tab` (\"build-orchestrator/pipeline\") and console_show can target a tab.\n2. Also sub-tabs, settings sections and accordions: open/expand by id or label.\n3. Deep links for screen/tab.\n4. Test on Build orchestrator > Pipeline, Plan Studio, Settings.\n5. CI check: any tab without an action fails.\nKeep it small and land fast: tests, report, PR. Create a build record so it shows in Plan Studio.",
+   "at": "2026-11-08T22:30:52.988Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "tap-to-confirm-switch-in-every-toolbar-s-own-set": {
+   "said": "it should be in every toolbar setting.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "terminal-header-responsive": {
+   "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
+   "at": "2026-11-08T16:15:18.411Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -2688,6 +3351,18 @@
    "brief": "# Build: terminal-sessions-nav (Current profile)\n\nBrett, Nov 3 2026 (voice): give the Terminal a collapsible navigation menu on the left listing live sessions, including each session he is personally doing with Claude, so he can mirror it and jump in. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in `current` (id `terminal-sessions-nav`) + banner entry. Runs after / builds on `terminal-vps-host` (the Terminal's VPS host must be set up; if that isn't on main yet, wait for it or include its fix).\n\n## Build INTO the existing Terminal plugin (Windows Terminal + headless-tabs). No second terminal.\n- s1 **Left nav rail:** collapsible (icon-only collapsed, full when open, swipe/hamburger on phone), framework nav component + tokens, remembers state. Sections: **My sessions** (Brett's own), **Agents** (headless builds, with agent avatar/name, model, live cost, status dot - reuse headless meters), **Connections** (VPS, containers, axHub...). Tap = open/focus that tab; right-click = context menu (open, split, open in Moshi, stop with confirm, session info).\n- s2 **My sessions:** (a) Claude Code sessions he runs (tmux / claude-headless / phone via Moshi, Session check-in archive) - live mirror of the tmux pane, read-only by default, **Jump in** = attach writable and type into it. (b) Claude.ai chat/voice sessions (Amber): claude.ai has no live API for the transcript, so mirror what reaches axHub: every axHub call the session makes (tool, args summary, result, approvals) as a live activity feed per session (group by axHub session/correlation + client), with the session's agent (agent-pick) and cost if known; 'Jump in' = open that chat in claude.ai (deep link if the session reports its URL) and keep the feed beside it. Add MCP tool `console_session_note` (allow) so a Claude session can post what it's saying/doing as short lines into its own mirror feed, and add a rule: 'Chat/voice sessions post a short line to console_session_note when they act.' Zero tokens on the console side.\n- s3 Session list is live (websocket), shows started time + running timer, sort/search/filter, collapsible groups; ended sessions move to a 'Recent' group (link to Session browser).\n- s4 Commands declared once -> REST + MCP + CLI (list sessions, mirror, jump in, stop). Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/terminal-sessions-nav.md`, THREADS, PR, steps through the store. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "terminal-toolbar-responsive-overflow-every-item-": {
+   "said": "And clean up the toolbar on the terminal. It's, uh, it's overlaps each other. When it gets too small, it needs to drop things. So make sure everything is a snappable asset.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "terminal-vps-host": {
@@ -2777,6 +3452,18 @@
    "from": "",
    "addenda": []
   },
+  "toolbar-labels-managed-in-each-toolbar-s-setting": {
+   "said": "toolbar has a label that can be managed in its sections. You can change what the label is, where it is, and its behavior. You can hide it.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "toolbar-tap-confirm": {
    "said": "every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.",
    "at": "2026-11-03",
@@ -2843,6 +3530,90 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "ui-api-parity-agents": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:36.556Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-builds": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:35.326Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-console": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:38.031Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-framework": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:42.522Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-look": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:39.309Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-media": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:38:40.979Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ui-api-parity-rule": {
+   "said": "Standing rule: anything with a UI must have API functions that can do everything the UI can (open, read state, every action, every setting). Voice control is the app's main selling point and rides on this.\n\n1. Orchestrator: every brief it writes for a build that touches UI includes this requirement explicitly (brief template + brief writer). Keep it short.\n2. CI check: every registered UI asset/control/plugin view maps to API operations covering its actions and settings; fail when missing; report gaps.\n3. Audit: list every existing UI lacking full API coverage, starting with the glossary/index Demonstration Designer and Book Builder; fix those two here, add the rest as pending builds.\n4. Deep link per plugin view (URL that opens it) so agents can open any UI on the phone.",
+   "at": "2026-11-08T17:23:21.874Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "ui-asset-designer": {
@@ -2952,6 +3723,42 @@
    "from": "brief",
    "addenda": []
   },
+  "ui-roller-roll-a-random-style-on-any-ui-element": {
+   "said": "I need a UI roller plugin for every single UI element dialog window. Every single UI element needs a roll style. So you pick the context menu and the element you're over, it comes up and you can go roll style. Or reset element, if it's already been changed, and it'll just roll a random style and save it to the tokens. When you click roll, it opens a dialogue, and you can select what things you want in the roll. Every plugin or app, in the main settings there needs to be a rolled assets page that lists all the plugins and any rolled assets so you can view the asset itself in a preview and reset it, reset all, and reset selected. Whenever you apply a skin or a design pack or a theme, it resets the rolled assets; rolled assets that it doesn't touch go back to default before the roll.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "urgent-amberx-veto-notice-alarm-too-loud-approve": {
+   "said": "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "urgent-amberx-veto-notice-alarm-too-loud-approve",
+   "brief": "# Build: urgent-amberx-veto-notice-alarm-too-loud-approve\n\n## Brett said (verbatim)\n> The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\n\n## What to build\nContinue build \"URGENT: AmberX veto notice alarm too loud + Approve must go straight through\" (urgent-amberx-veto-notice-alarm-too-loud-approve) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.\n[ ] s2 (~30 min) The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-amberx-veto-notice-alarm-too-loud-approve <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link urgent-amberx-veto-notice-alarm-too-loud-approve --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step urgent-amberx-veto-notice-alarm-too-loud-approve <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-amberx-veto-notice-alarm-too-loud-approve \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "urgent-approval-links-say-method-not-allowed": {
+   "said": "When I click approve, it says method not allowed. You can't have it broken.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "urgent-builds": {
    "said": "/projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
    "at": "2026-10-31",
@@ -2995,6 +3802,18 @@
    "session": "",
    "link": "",
    "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "urgent-rebuild-pipeline-orchestrator-ids-splits-": {
+   "said": "You need to start the pipeline over from scratch. From now on, what I say, send a build to the orchestrator. The orchestrator is going to assign an ID. A build ID. He's going to use you to break it up into steps select a model Babel or Opus Babel when it's needed and then he's going to see how many subscriptions are connected to the VPS how many accounts are available How many, what's the max parallel for each one? And uh, if it's a account that has Fable, he'll send the Fable to that. He'll send everything else to Opus. He will, no, he will check the BPS to see what accounts have what slots. Available parallel. Dish out the steps, okay? The steps are marked. We already have the rules for how the steps are marked down into a, in a progress pile and blah blah blah. Updated in real time because you have a monitor watching the progress files. And um, the orchestrator starts starts the head, headless. The orchestrator then sends it to the queue, or he sends it to pending. Yeah, he sends everything to the pending. And I have to send them from pending to queue.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -3126,6 +3945,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "workers-api-routing": {
+   "said": "All subscription logins are workers: account-1 (brettspend), account-3 (hulu0241, 'Hulu'), mossesx-max- (Moses X). The interactive/active account can also take headless jobs (setting, default on). Fix whatever left cfg.workers empty and make sure the orchestrator actually routes across all workers in parallel (per-account queue max default 5, building default 3). Allow API-key accounts as workers: add 'Hulu API' and 'Moses X API' slots (keys from the vault; never print or commit keys). API accounts are billed per token, so they only get jobs that match routing rules. Orchestrator settings interface: rules for which jobs go to API accounts vs subscription accounts. Rules on job type, model, size/estimated steps, priority, profile, when subscriptions are limited/busy (fallback), and daily/weekly spend caps per API account with alerts. Rule order, enable/disable, test-a-job preview showing which account it would go to. Show per-account status in the console: role, running, limit, cost today/week.",
+   "at": "2026-11-08T16:15:21.028Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "xlayout": {

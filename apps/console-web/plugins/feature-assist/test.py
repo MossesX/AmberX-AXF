@@ -131,14 +131,22 @@ check(bp["order"]["changed"] and bp["order"]["after"].index(later) < bp["order"]
 check(bp["model"]["recommend"] == "opus", "model recommendation")
 park = c.post("/p/build/start", json={"featureId": target, "plan": bp["plan"], "model": "fable", "park": True}).json()
 check(park["parked"] and mod.engine("pending")["items"][-1]["model"] == "Fable", "Fable = parked on the pending list")
+import plugin_services as _ps  # noqa: E402
+check(c.post("/p/build/start", json={"featureId": target, "plan": bp["plan"], "model": "opus"}).status_code == 409, "orchestrator off: Build refuses (builds start only from its Queue)")
+class _FakeDispatch:
+    def __init__(self): self.calls = []
+    def request(self, title, detail="", **kw): self.calls.append((title, detail, kw)); return {"ok": True, "id": "build-target", "status": "queued"}
+_fd = _FakeDispatch()
+_ps.provide("axf.build-dispatch@1", _fd, "build-orchestrator")
 st = c.post("/p/build/start", json={"featureId": target, "plan": bp["plan"], "model": "opus", "fableLater": True, "order": bp["order"]["after"]}).json()
 check(not st["parked"] and len(st["pending"]) == 1, "Opus now + Fable later adds the Fable rebuild")
 rebuild = mod.engine("pending")["items"][-1]
 check(rebuild["model"] == "Fable" and "uninstall script" in rebuild["detail"], "…which starts by running the Opus version's uninstall")
 q2 = mod.engine("build-queue")["view"]["order"]
 check(q2.index(later) < q2.index(target), "approved order applied")
-chat = st["chat"]
-check(chat["agentId"] == "coder" and "read" in chat["message"] and chat["profile"] == "claude" and chat["model"] == "claude-opus-5-5", "chat hand-off: Mosses, the plan, an Anthropic profile + the picked model")
+check(st["queued"] and st["build"] == "build-target" and st["chat"] is None and len(_fd.calls) == 1 and _fd.calls[0][2]["queue"] is True and "read" in _fd.calls[0][1],
+      "Build = the orchestrator's Queue (one way to start builds): the plan goes along, no chat launch")
+_ps.withdraw("build-orchestrator")
 fplan = {f["id"]: f for f in mod.engine("plan")["features"]}[target]
 check(fplan["model"] == "opus" and fplan["modelEdited"], "model recorded on the feature")
 check(target in c.get("/p/status").json()["building"], "feature shows as being built")

@@ -5,7 +5,7 @@ import * as core from './review-core.mjs';
 import type { Item } from './review-core.mjs';
 import type { GroupBy } from './keys';
 import { Shot, ShotBrowser } from './shots';
-import { Detail, GroupPick, Meta, Pick, StatusChip, useReview } from './ui';
+import { Detail, GroupPick, Meta, Pick, StatusChip, useReview, when } from './ui';
 
 /** Waiting / total for a list (group heads, tree nodes). */
 const tally = (xs: Item[]) => core.counts(xs)[''] ?? { waiting: 0, total: 0 };
@@ -27,6 +27,7 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
             <b>{it.title}</b>
             <Meta it={it} kind={kind} />
           </span>
+          <span className="axp-ui-review__date fx-small fx-muted">{when(it.submittedAt)}</span>
           <StatusChip status={it.status} />
         </button>
       </div>
@@ -36,8 +37,25 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
 }
 
 /** Collapsible grid with expandable panes. */
-export function GridView({ items }: { items: Item[] }) {
-  return <div className="axp-ui-review__grid" role="list">{items.map((it) => <Row key={it.id} it={it} />)}</div>;
+/** Sortable columns: a tap sorts by it, a second tap the other way round. */
+const COLUMNS = [{ label: 'Title', up: 'title', down: 'title-desc' }, { label: 'App', up: 'app', down: 'app-desc' }, { label: 'Date', up: 'newest', down: 'oldest' }, { label: 'Status', up: 'waiting', down: 'waiting-desc' }];
+
+export function GridView({ items, sort, onSort }: { items: Item[]; sort: string; onSort: (s: string) => void }) {
+  return (
+    <>
+      <div className="axp-ui-review__heads" role="group" aria-label="Sort by">
+        {COLUMNS.map((c) => {
+          const on = sort === c.up || sort === c.down;
+          return (
+            <button key={c.label} type="button" data-fx-row className={`axp-ui-review__head fx-small${on ? ' is-on' : ' fx-muted'}`} aria-pressed={on} onClick={() => onSort(sort === c.up ? c.down : c.up)}>
+              {c.label}{on && <Icon name={sort === c.up ? 'chevron-down' : 'chevron-up'} size={12} />}
+            </button>
+          );
+        })}
+      </div>
+      <div className="axp-ui-review__grid" role="list">{items.map((it) => <Row key={it.id} it={it} />)}</div>
+    </>
+  );
 }
 
 /** Grid with sub-grids: rows grouped by kind / app / status / build, each group its own collapsible grid. */

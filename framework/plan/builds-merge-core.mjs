@@ -40,6 +40,7 @@ export function liveStatus(b) {
   if (done === steps.length) return str(b.pr) && !str(b.mergedAt) ? 'built' : 'complete';
   if (!done && (b.status === 'complete' || b.status === 'built')) return b.status; // built without ticking its steps
   if (b.status === 'waiting') return 'waiting';
+  if (b.status === 'queued') return done > 0 ? 'running' : 'queued'; // in the Queue until the dispatcher's session ticks a step
   // a pending build with ticked steps stays pending (paused: nothing is running it); a tick through the Builds page or
   // the orchestrator moves it back to running
   return b.status === 'running' || (done > 0 && b.status !== 'pending') ? 'running' : 'pending';
@@ -127,6 +128,20 @@ export function mergeOrchestratorDocs(a, b) {
     else { const m = mergeBuild({ notes: [], ...out.builds[i] }, { notes: [], ...x }); out.builds[i] = m; }
   }
   return out;
+}
+
+/**
+ * Journal files are <YYYY-MM>.jsonl, then <YYYY-MM>-p2.jsonl, -p3… : GitHub refuses a file over 100 MiB, and one refused
+ * push stops every status commit, so a month rolls into a new part well before that. A full part is never rewritten.
+ */
+export const JOURNAL_PART_BYTES = 80 * 1024 * 1024;
+const partKey = (month, n) => (n === 1 ? month : `${month}-p${n}`);
+/** Which journal file takes `add` more bytes this month. `sizes` = { fileKey: bytes } of every journal file there. */
+export function journalPart(month, sizes, add = 0, max = JOURNAL_PART_BYTES) {
+  const parts = Object.keys(sizes).map((k) => (k === month ? 1 : k.startsWith(`${month}-p`) ? Number(k.slice(month.length + 2)) : 0)).filter((n) => Number.isInteger(n) && n > 0);
+  const last = parts.length ? Math.max(...parts) : 1;
+  const size = sizes[partKey(month, last)] ?? 0;
+  return partKey(month, size > 0 && size + add > max ? last + 1 : last);
 }
 
 /** Journal files (JSON lines, append-only): the first text as it is, then every line of the others it lacks, in order. */

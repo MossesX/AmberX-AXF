@@ -10,7 +10,11 @@
  */
 
 export const ALARM_KEYS = {
-  enabled: 'approvals-banner.alarm.enabled',
+  /**
+   * The alarm switch. A new key since Nov 8 2026 (Brett: the alarm on every veto hold was too much): the old
+   * `approvals-banner.alarm.enabled` defaulted on, so a device that ever saved it would keep ringing; this one starts off.
+   */
+  enabled: 'approvals-banner.alarm.on',
   tone: 'approvals-banner.alarm.tone',
   customSound: 'approvals-banner.alarm.customSound',
   customName: 'approvals-banner.alarm.customName',
@@ -24,7 +28,29 @@ export const ALARM_KEYS = {
   startAt: 'approvals-banner.alarm.startAt',
   throughSilent: 'approvals-banner.alarm.throughSilent',
   notices: 'approvals-banner.notices',
+  /** One notice per hold: does it make a sound, does it vibrate, does it alert again at 30 s left and when it runs? */
+  noticeSound: 'approvals-banner.notice.sound',
+  noticeVibrate: 'approvals-banner.notice.vibrate',
+  noticeRepeat: 'approvals-banner.notice.repeat',
 } as const;
+
+/** How the one notice per hold behaves (Brett, Nov 8 2026: one normal notification, no alarm, no repeat at 30 s). */
+export interface NoticeConfig {
+  /** the notice plays the normal notification sound */ sound: boolean;
+  /** the notice vibrates */ vibrate: boolean;
+  /** the 30 s left and running updates alert again (off = they update the same notice silently) */ repeat: boolean;
+}
+
+export const NOTICE_DEFAULTS: NoticeConfig = { sound: true, vibrate: false, repeat: false };
+
+export function noticeConfig(get: (k: string) => unknown): NoticeConfig {
+  const b = (v: unknown, d: boolean) => (typeof v === 'boolean' ? v : d);
+  return {
+    sound: b(get(ALARM_KEYS.noticeSound), NOTICE_DEFAULTS.sound),
+    vibrate: b(get(ALARM_KEYS.noticeVibrate), NOTICE_DEFAULTS.vibrate),
+    repeat: b(get(ALARM_KEYS.noticeRepeat), NOTICE_DEFAULTS.repeat),
+  };
+}
 
 /** Built-in tones. `alarm` / `ringtone` / `notification` are the phone's own sounds (the browser imitates them). */
 export const TONES = [
@@ -84,10 +110,14 @@ export interface AlarmConfig {
   throughSilent: boolean;
 }
 
+/**
+ * Off by default, and gentle when switched on (Brett, Nov 8 2026: "I received the alarm, so it's still stopping"): the
+ * phone's notification sound, one ring, no vibration, not through silent mode. Every value stays a setting.
+ */
 export const ALARM_DEFAULTS: AlarmConfig = {
-  enabled: true, tone: 'alarm', customSound: '', customName: '', volume: 80, louder: true, louderSeconds: 20,
-  ringSeconds: 30, repeat: 2, repeatGapSeconds: 15, vibration: 'pulse', vibrationPattern: [0, 150, 100, 150, 100, 150],
-  startAt: '30', throughSilent: true,
+  enabled: false, tone: 'notification', customSound: '', customName: '', volume: 60, louder: false, louderSeconds: 20,
+  ringSeconds: 5, repeat: 1, repeatGapSeconds: 15, vibration: 'none', vibrationPattern: [],
+  startAt: '30', throughSilent: false,
 };
 
 /** A custom sound file is kept in settings as a data URL: capped so settings stay small. */
@@ -170,9 +200,10 @@ export function volumeAt(cfg: Pick<AlarmConfig, 'volume' | 'louder' | 'louderSec
 }
 
 /** What the phone shell gets (`VetoHost.alarm`): the same settings, with the start point in seconds left (-1 = at the start). */
-export function nativeAlarmConfig(cfg: AlarmConfig): Record<string, unknown> {
+export function nativeAlarmConfig(cfg: AlarmConfig, notice: NoticeConfig = NOTICE_DEFAULTS): Record<string, unknown> {
   const at = startSeconds(cfg);
   return {
+    noticeSound: notice.sound, noticeVibrate: notice.vibrate, noticeRepeat: notice.repeat,
     enabled: cfg.enabled, tone: cfg.tone, customSound: cfg.tone === 'custom' ? cfg.customSound : '', volume: cfg.volume,
     louder: cfg.louder, louderSeconds: cfg.louderSeconds, ringSeconds: cfg.ringSeconds, repeat: cfg.repeat,
     repeatGapSeconds: cfg.repeatGapSeconds, vibration: cfg.vibrationPattern, startSeconds: at === Infinity ? -1 : at,

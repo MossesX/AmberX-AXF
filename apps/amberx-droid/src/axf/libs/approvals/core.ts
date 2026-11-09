@@ -7,9 +7,9 @@
  *  - the extra fields the hub's feed entries carry (axHub decision #99): `title` / `reason.title`, `description` /
  *    `reason.description`, `actions`, `revision`, read again from the same reply body (hub.ts stays unchanged);
  *  - the hub's decide route `POST /auth/api/approvals/<id>` `{action, rev}` (the AXHub web app's `act`) and veto@1's Deny.
- *    Both need the hub's own Origin + `X-AxHub-CSRF`, so only a page on the hub can send them; every other app opens
- *    the approval page (in a frame where the hub allows it, `AXHUB_APPROVALS_FRAME_ANCESTORS`) or hands the decision to
- *    its own deciding path (the AmberX phone: the signed-in hub web view, native Deny).
+ *    Both need the hub's own Origin + `X-AxHub-CSRF`, so only a page on the hub can send them directly; every other app
+ *    hands the decision to its own deciding path (the console's relay, the AmberX phone's native side) and shows the
+ *    result in place, or with no path at all opens the approval page.
  *
  * Held (veto) calls offer Deny, and Approve (run it now, veto@1 `approve-now`, decision 104) when the hub lists it.
  *
