@@ -1,0 +1,21 @@
+/* Queues & API (multi-queues-api-panel): layout only. Controls come from the framework (Button, Chip, Meter, SelectField…). */
+.bq-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-sm); }
+.bq-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; overflow-wrap: anywhere; }
+.bq-section { min-width: 0; }
+.bq-cols { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18em), 1fr)); align-items: start; }
+.bq-queue { display: grid; gap: var(--fx-dens-gap-sm); align-content: start; min-width: 0; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.bq-queue.is-drop { border-color: var(--fx-accent); background: var(--fx-accent-soft); }
+.bq-queue--pending { border-style: dashed; }
+.bq-qhead { display: grid; gap: var(--fx-dens-gap-sm); padding-bottom: var(--fx-dens-gap-sm); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.bq-qhead__title { margin: 0; }
+.bq-qhead p, .bq-card p, .bq-api__acct p { margin: 0; }
+.bq-card { display: grid; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); cursor: grab; }
+.bq-card.is-running { cursor: default; border-color: var(--fx-accent); }
+.bq-api { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20em), 1fr)); align-items: start; }
+.bq-api > p { grid-column: 1 / -1; margin: 0; }
+.bq-api__acct { display: grid; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.bq-meters { display: grid; gap: var(--fx-dens-gap-sm); max-width: 28em; }
+.bq-form { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 14em), 1fr)); align-items: end; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.bq-form > .bq-toolbar { grid-column: 1 / -1; }
+.bq-rule { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.bq-rule > :first-child { flex: 1 1 18em; min-width: 0; }

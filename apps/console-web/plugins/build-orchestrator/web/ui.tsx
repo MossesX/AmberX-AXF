@@ -78,7 +78,7 @@ export function OrchestratorPage() {
           <h1>Build orchestrator</h1>
           <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/store.json">Every build in small Fable / Opus steps, split by the orchestrator; Pending → Queue (your move) → Building (the dispatcher, when a slot is free).</p>
         </div>
-        <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
+        <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Button icon="list" onClick={() => rt.navigate('build-queues')}>Queues &amp; API</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />

@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Build orchestrator plugin",
+  "id": "build-queues-api-first",
+  "name": "Queues & API: API control first",
+  "description": "The API control panel leads: API accounts with key status, caps and spend, then the rules editor, then the queues. For days the money is the question.",
+  "tags": [
+    "build-orchestrator",
+    "build-queues",
+    "ui-choices:build-queues"
+  ],
+  "data": {
+    "view": "api-first",
+    "order": [
+      "api",
+      "rules",
+      "queues"
+    ],
+    "open": [
+      "api",
+      "rules",
+      "queues"
+    ]
+  }
+}

@@ -43,6 +43,8 @@ import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
+// build queues (multi-queues-api-panel): hookPlan() spreads the tick over every named queue, afterTick() records claims and enforces spend
+import * as queuesHook from './queues.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
@@ -125,7 +127,7 @@ export function status() {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
   const builds = live(store);
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const plan = queuesHook.hookPlan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
@@ -374,7 +376,7 @@ export function tick({ env = process.env } = {}) {
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const accounts = accountsNow(store, settings); const sl = slotsNow();
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const plan = queuesHook.hookPlan({ builds: live(store), accounts, slots: sl, settings, rules });
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
   for (const l of plan.launches) {
@@ -398,6 +400,9 @@ export function tick({ env = process.env } = {}) {
       logLine({ event: 'launch-failed', build: l.id, account: l.account, error: e.message });
     }
   }
+  let queues = null;
+  try { queues = queuesHook.afterTick({ launched, ended, plan, store, send: (a) => consoleApi('POST', '/api/alerts', a), resolve: (keys) => consoleApi('POST', '/api/alerts/resolve', { keys }), env }); }
+  catch (e) { queues = { error: e.message }; logLine({ event: 'queues-failed', error: e.message }); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
   if (plan.idle && !launched.length) {
@@ -414,7 +419,7 @@ export function tick({ env = process.env } = {}) {
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, queues };
 }
 
 // ------------------------------------------------------------------ probe

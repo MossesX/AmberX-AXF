@@ -490,3 +490,156 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+# ---- build queues (multi-queues-api-panel, Nov 9 2026): named queue lists + the API job control panel, run by queues.mjs
+# Every change goes through queues.mjs (one store, queues.json next to the pipeline's files, written under its lock), so
+# the console, the CLI, MCP / axHub tools and voice share one set of rules. Owner-only changes (raising a cost cap,
+# switching a max-cost rule off, giving a queue API accounts, OK-ing a build for an API key) pass only with Brett's own
+# click (brett_click); anything else gets the plain refusal from the CLI.
+
+QUEUES_CLI = CLI.parent / "queues.mjs"
+QUEUE_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 ._-]{0,59}$")
+QUEUE_FIELDS = ("name", "paused", "uses", "apiAccounts", "subAccounts", "maxParallel", "defaultModel", "priority", "costCapUsd", "note")
+RULE_OPS = {"add": "rule-add", "update": "rule-update", "remove": "rule-remove", "move": "rule-move", "on": "rule-on", "off": "rule-off"}
+
+
+def _queues(*args: str, who: str = "", approver: str = "") -> dict[str, Any]:
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}  # only Brett's click sets them
+    if who:
+        env["AXF_ACTOR"] = who
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
+    proc = subprocess.run(["node", str(QUEUES_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=120, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        err = str(res.get("error") or "queues failed")
+        raise HTTPException(403 if "only Brett" in err or "Brett's OK" in err else 404 if err.startswith("no ") else 400 if proc.returncode == 2 else 500, err[:400])
+    res.pop("doc", None)
+    return res
+
+
+def _queue_name(v: Any) -> str:
+    s = str(v or "").strip()
+    if not QUEUE_RE.match(s):
+        raise HTTPException(400, "bad queue name")
+    return s
+
+
+async def _queue_act(request: Request, change: dict[str, Any]) -> dict[str, Any]:
+    who = brett_click(request)
+    return _queues("act", json.dumps(change), "--by", (who or "console")[:80], who=who or "console", approver=who)
+
+
+@router.get("/queues")
+def queues_status() -> dict[str, Any]:
+    """Every queue (start order) with its queued builds and live running jobs, Pending, the API accounts (key set /
+    missing, never the value; caps, spend today / this week), the rules, Brett's API OKs and what the next tick starts."""
+    return _queues("status")
+
+
+@router.get("/queues/spend")
+def queues_spend() -> dict[str, Any]:
+    return _queues("spend")
+
+
+@router.post("/queues/create")
+async def queues_create(request: Request) -> dict[str, Any]:
+    """{name, uses?, maxParallel?, priority?, defaultModel?, costCapUsd?, apiAccounts?, subAccounts?, note?}"""
+    body = await _json_body(request)
+    return await _queue_act(request, {"action": "create", "name": _queue_name(body.get("name")), **{k: body[k] for k in QUEUE_FIELDS if k in body and k != "name"}})
+
+
+@router.post("/queues/update")
+async def queues_update(request: Request) -> dict[str, Any]:
+    """{queue, …fields}: any setting of one queue."""
+    body = await _json_body(request)
+    patch = {k: body[k] for k in QUEUE_FIELDS if k in body}
+    if not patch:
+        raise HTTPException(400, "nothing to change")
+    return await _queue_act(request, {"action": "update", "queue": _queue_name(body.get("queue")), "patch": patch})
+
+
+@router.post("/queues/rename")
+async def queues_rename(request: Request) -> dict[str, Any]:
+    body = await _json_body(request)
+    return await _queue_act(request, {"action": "rename", "queue": _queue_name(body.get("queue")), "name": _queue_name(body.get("name"))})
+
+
+@router.post("/queues/move")
+async def queues_move(request: Request) -> dict[str, Any]:
+    """{queue, to: up|down|top|bottom|<index>}: reorder the queue lists."""
+    body = await _json_body(request)
+    to = body.get("to")
+    if not (isinstance(to, int) or to in ("up", "down", "top", "bottom")):
+        raise HTTPException(400, "to is up, down, top, bottom or an index")
+    return await _queue_act(request, {"action": "move", "queue": _queue_name(body.get("queue")), "to": to})
+
+
+@router.post("/queues/pause")
+async def queues_pause(request: Request) -> dict[str, Any]:
+    """{queue, paused?: true}: pause (default) or resume a queue."""
+    body = await _json_body(request)
+    return await _queue_act(request, {"action": "resume" if body.get("paused") is False else "pause", "queue": _queue_name(body.get("queue"))})
+
+
+@router.post("/queues/delete")
+async def queues_delete(request: Request) -> dict[str, Any]:
+    """{queue, into?}: delete a queue; its builds move to `into` (default the first subscription queue)."""
+    body = await _json_body(request)
+    change = {"action": "delete", "queue": _queue_name(body.get("queue"))}
+    if body.get("into"):
+        change["into"] = _queue_name(body.get("into"))
+    return await _queue_act(request, change)
+
+
+@router.post("/queues/assign")
+async def queues_assign(request: Request) -> dict[str, Any]:
+    """{build, queue}: Pending → that queue, or from one queue to another."""
+    body = await _json_body(request)
+    return await _queue_act(request, {"action": "assign", "build": _build_id(body.get("build")), "queue": _queue_name(body.get("queue"))})
+
+
+@router.post("/queues/pending")
+async def queues_pending(request: Request) -> dict[str, Any]:
+    """{build}: a queued build back to Pending."""
+    body = await _json_body(request)
+    return await _queue_act(request, {"action": "unassign", "build": _build_id(body.get("build"))})
+
+
+@router.post("/queues/rule")
+async def queues_rule(request: Request) -> dict[str, Any]:
+    """{op: add|update|remove|move|on|off, rule (id, or the rule object for add), patch?, to?, at?}"""
+    body = await _json_body(request)
+    op = RULE_OPS.get(str(body.get("op") or ""))
+    if not op:
+        raise HTTPException(400, "op is add, update, remove, move, on or off")
+    change: dict[str, Any] = {"action": op, "rule": body.get("rule")}
+    if op == "rule-add" and not isinstance(body.get("rule"), dict):
+        raise HTTPException(400, "rule must be an object for add")
+    if op != "rule-add" and not isinstance(body.get("rule"), str):
+        raise HTTPException(400, "rule is the rule id")
+    for k in ("patch", "to", "at"):
+        if k in body:
+            change[k] = body[k]
+    return await _queue_act(request, change)
+
+
+@router.post("/queues/approve")
+async def queues_approve(request: Request) -> dict[str, Any]:
+    """{build, maxCostUsd?}: Brett's OK for a build to run on an API key (billed per token). His own click only."""
+    body = await _json_body(request)
+    change: dict[str, Any] = {"action": "approve", "build": _build_id(body.get("build"))}
+    if isinstance(body.get("maxCostUsd"), (int, float)):
+        change["maxCostUsd"] = body["maxCostUsd"]
+    return await _queue_act(request, change)
+
+
+@router.post("/queues/revoke")
+async def queues_revoke(request: Request) -> dict[str, Any]:
+    body = await _json_body(request)
+    return await _queue_act(request, {"action": "revoke", "build": _build_id(body.get("build"))})

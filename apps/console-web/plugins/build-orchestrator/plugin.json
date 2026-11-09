@@ -2,18 +2,19 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Page = tab group (Pipeline, Builds, Approvals, Rules); the Pipeline tab shows Pending / Queue / Building, the accounts, what the next tick starts and why the rest waits. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Page = tab group (Pipeline, Builds, Approvals, Rules); the Pipeline tab shows Pending / Queue / Building, the accounts, what the next tick starts and why the rest waits. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick). Queues (Brett, Nov 9 2026): several named queue lists (Main on subscriptions, API on API keys, any he makes), each with its accounts, max parallel, priority, default model and cost cap; rules for overflow, routing and max cost per job; the Queues & API screen (#/build-queues) shows them with the API accounts' keys, caps and spend (queues.mjs).",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
-    "service:orchestrator@1"
+    "service:orchestrator@1",
+    "view:build-queues"
   ],
   "scopes": [
     "ROUTES"
@@ -302,6 +303,388 @@
           ]
         },
         "output": "{ id, requested }"
+      },
+      {
+        "id": "queues-status",
+        "route": "GET /queues",
+        "title": "Queues and API jobs",
+        "readOnly": true,
+        "description": "Every build queue (Main, API and Brett's own lists) with its queued builds and live running jobs, Pending, each API account's key status (set or missing, never the value), caps and spend today and this week, the routing rules and what the next tick starts. Say 'what's in the API queue' or 'show my queues'.",
+        "output": "{ queues: [{ id, name, paused, uses, maxParallel, priority, costCapUsd, queued, running, stats }], pending, api, rules, approvals, asks, plan }"
+      },
+      {
+        "id": "queues-spend",
+        "route": "GET /queues/spend",
+        "title": "API spend",
+        "readOnly": true,
+        "description": "API accounts: key set or missing, on or off, spend today and this week against their caps; queue cost caps. Say 'how much have the API keys spent'.",
+        "output": "{ api: [...], queues: [...] }"
+      },
+      {
+        "id": "queue-create",
+        "route": "POST /queues/create",
+        "title": "Make a queue",
+        "description": "Make a new queue list: name, which accounts it uses (subscriptions, API or both), max parallel, priority, default model, optional cost cap. Say 'make a queue called Night runs'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "uses": {
+              "type": "string",
+              "enum": [
+                "subscription",
+                "api",
+                "both"
+              ],
+              "description": "Which accounts the queue may use"
+            },
+            "maxParallel": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12,
+              "description": "Builds running at once from this queue"
+            },
+            "priority": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9,
+              "description": "1 starts first among queues"
+            },
+            "defaultModel": {
+              "type": "string",
+              "enum": [
+                "",
+                "opus",
+                "fable"
+              ],
+              "description": "Model for steps with none pinned"
+            },
+            "costCapUsd": {
+              "type": "number",
+              "minimum": 0,
+              "description": "API spend cap per 24 h (0 = none). Raising it is Brett's click only"
+            },
+            "apiAccounts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "API accounts it may use ([] = any)"
+            },
+            "subAccounts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Subscription accounts it may use ([] = any)"
+            },
+            "paused": {
+              "type": "boolean"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "output": "{ log, queue }"
+      },
+      {
+        "id": "queue-update",
+        "route": "POST /queues/update",
+        "title": "Change a queue's settings",
+        "description": "Change any setting of a queue: accounts, max parallel, priority, default model, cost cap, paused, note. Lowering a cap is anyone's; raising one or giving a queue API accounts is Brett's own click.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "queue": {
+              "type": "string",
+              "description": "Queue id or name (Main, API, …)"
+            },
+            "uses": {
+              "type": "string",
+              "enum": [
+                "subscription",
+                "api",
+                "both"
+              ],
+              "description": "Which accounts the queue may use"
+            },
+            "maxParallel": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12,
+              "description": "Builds running at once from this queue"
+            },
+            "priority": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9,
+              "description": "1 starts first among queues"
+            },
+            "defaultModel": {
+              "type": "string",
+              "enum": [
+                "",
+                "opus",
+                "fable"
+              ],
+              "description": "Model for steps with none pinned"
+            },
+            "costCapUsd": {
+              "type": "number",
+              "minimum": 0,
+              "description": "API spend cap per 24 h (0 = none). Raising it is Brett's click only"
+            },
+            "apiAccounts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "API accounts it may use ([] = any)"
+            },
+            "subAccounts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Subscription accounts it may use ([] = any)"
+            },
+            "paused": {
+              "type": "boolean"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "queue"
+          ]
+        },
+        "output": "{ log, queue }"
+      },
+      {
+        "id": "queue-rename",
+        "route": "POST /queues/rename",
+        "title": "Rename a queue",
+        "description": "Rename a queue list.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "queue": {
+              "type": "string",
+              "description": "Queue id or name (Main, API, …)"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "queue",
+            "name"
+          ]
+        },
+        "output": "{ log, queue }"
+      },
+      {
+        "id": "queue-move",
+        "route": "POST /queues/move",
+        "title": "Reorder a queue",
+        "description": "Move a queue list up, down, to the top or bottom, or to a place.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "queue": {
+              "type": "string",
+              "description": "Queue id or name (Main, API, …)"
+            },
+            "to": {
+              "description": "up, down, top, bottom or an index"
+            }
+          },
+          "required": [
+            "queue",
+            "to"
+          ]
+        },
+        "output": "{ log }"
+      },
+      {
+        "id": "queue-pause",
+        "route": "POST /queues/pause",
+        "title": "Pause or resume a queue",
+        "description": "Pause a queue (it starts nothing new; running jobs carry on) or resume it with paused false. Say 'pause the API queue'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "queue": {
+              "type": "string",
+              "description": "Queue id or name (Main, API, …)"
+            },
+            "paused": {
+              "type": "boolean",
+              "description": "false resumes"
+            }
+          },
+          "required": [
+            "queue"
+          ]
+        },
+        "output": "{ log, queue }"
+      },
+      {
+        "id": "queue-delete",
+        "route": "POST /queues/delete",
+        "title": "Delete a queue",
+        "description": "Delete a queue list; its builds move to another queue (default the first subscription queue).",
+        "destructive": true,
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "queue": {
+              "type": "string",
+              "description": "Queue id or name (Main, API, …)"
+            },
+            "into": {
+              "type": "string",
+              "description": "Queue its builds move to"
+            }
+          },
+          "required": [
+            "queue"
+          ]
+        },
+        "output": "{ log }"
+      },
+      {
+        "id": "queue-assign",
+        "route": "POST /queues/assign",
+        "title": "Put a build in a queue",
+        "description": "Move a build from Pending into a queue, or from one queue to another. Say 'move the icon browser build to the API queue'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "queue": {
+              "type": "string",
+              "description": "Queue id or name (Main, API, …)"
+            }
+          },
+          "required": [
+            "build",
+            "queue"
+          ]
+        },
+        "output": "{ log, queue }"
+      },
+      {
+        "id": "queue-pending",
+        "route": "POST /queues/pending",
+        "title": "Send a build back to Pending",
+        "description": "Take a queued build out of its queue, back to Pending.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ log }"
+      },
+      {
+        "id": "queue-rule",
+        "route": "POST /queues/rule",
+        "title": "Edit a queue rule",
+        "description": "Add, change, reorder, remove or switch on/off a queue rule: overflow {from, to} (subscriptions full sends work to the API queue), route {to, when: {categories, models}} (a build queued with no queue named goes there), max-cost {queue, maxCostUsd} (an API run that costs more is stopped). Switching a max-cost rule off or raising it is Brett's click only.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "add",
+                "update",
+                "remove",
+                "move",
+                "on",
+                "off"
+              ]
+            },
+            "rule": {
+              "description": "Rule id, or the rule object for add"
+            },
+            "patch": {
+              "type": "object"
+            },
+            "to": {
+              "description": "New place for move"
+            },
+            "at": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "op",
+            "rule"
+          ]
+        },
+        "output": "{ log, rule }"
+      },
+      {
+        "id": "queue-approve",
+        "route": "POST /queues/approve",
+        "title": "OK a build for an API key",
+        "description": "Brett's OK for a build to run on an API key (billed per token), optionally with a max cost per run. Only Brett's own console click: anything else is refused and he is asked instead.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "maxCostUsd": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ log }"
+      },
+      {
+        "id": "queue-revoke",
+        "route": "POST /queues/revoke",
+        "title": "Withdraw an API OK",
+        "description": "Withdraw a build's OK to run on API keys.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ log }"
       }
     ]
   },

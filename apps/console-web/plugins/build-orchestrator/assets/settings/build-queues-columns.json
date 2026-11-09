@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Build orchestrator plugin",
+  "id": "build-queues-columns",
+  "name": "Queues & API: columns",
+  "description": "Queues side by side as columns next to Pending (drag a build between columns), the API accounts strip above them, the rules editor below. Best on a wide screen; on a phone the columns stack.",
+  "tags": [
+    "build-orchestrator",
+    "build-queues",
+    "ui-choices:build-queues"
+  ],
+  "data": {
+    "view": "columns",
+    "order": [
+      "api",
+      "queues",
+      "rules"
+    ],
+    "open": [
+      "api",
+      "queues",
+      "rules"
+    ]
+  }
+}

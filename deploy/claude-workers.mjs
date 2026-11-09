@@ -226,6 +226,14 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
 }
 
+/** What each headless session has cost so far, over every account it ran on: { session: usd } (build queues' spend). */
+export function sessionCosts(env = process.env) {
+  const led = ledger(readEvents(env), { cost: (s) => meterCost(env, s), alive: aliveSet(env) });
+  const out = {};
+  for (const a of Object.values(led)) for (const r of a.runs) out[r.session] = +((out[r.session] || 0) + r.costUsd).toFixed(4);
+  return out;
+}
+
 /** Rows as the router sees them for one job: queued-ahead jobs count as running. */
 const routingRows = (s) => s.accounts.map((a) => ({ ...a, running: a.running.length + (a.ahead || 0) }));
 

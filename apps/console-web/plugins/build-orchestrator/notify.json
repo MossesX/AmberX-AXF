@@ -60,6 +60,62 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "queues.spend-warn",
+      "label": "API spend at 80% of a cap",
+      "group": "builds",
+      "app": "console",
+      "source": "Build queues (dispatcher)",
+      "description": "An API account (or a queue's cost cap) reached 80% of its daily or weekly cap. Sent once per spell; cleared when spend drops back.",
+      "match": {
+        "source": "queues",
+        "keyPrefix": "queues:spend:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "queues.cap-warn",
+      "label": "Queue cost cap: 80% or stopped",
+      "group": "builds",
+      "app": "console",
+      "source": "Build queues (dispatcher)",
+      "description": "A queue's own 24 h cost cap reached 80% (warning) or 100% (its API jobs stop).",
+      "match": {
+        "source": "queues",
+        "keyPrefix": "queues:cap:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "queues.stopped",
+      "label": "API job stopped",
+      "group": "builds",
+      "app": "console",
+      "source": "Build queues (dispatcher)",
+      "description": "An API job was stopped: its account or queue hit a cap, or the run cost more than its max per job. The build is back in Pending.",
+      "match": {
+        "source": "queues",
+        "keyPrefix": "queues:stop:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "queues.ask",
+      "label": "OK to run on an API key?",
+      "group": "builds",
+      "app": "console",
+      "source": "Build queues (dispatcher)",
+      "description": "A build waits in a queue for an API key (billed per token): Brett's OK is needed before it starts. Asked once per build.",
+      "match": {
+        "source": "queues",
+        "keyPrefix": "queues:ask:"
+      },
+      "push": true,
+      "priority": "high"
     }
   ]
 }

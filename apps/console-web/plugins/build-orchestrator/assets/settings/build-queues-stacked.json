@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Build orchestrator plugin",
+  "id": "build-queues-stacked",
+  "name": "Queues & API: stacked lists",
+  "description": "One collapsible list per queue, stacked in start order, Pending last; API accounts and rules as collapsible sections under them. Reads top to bottom on a phone.",
+  "tags": [
+    "build-orchestrator",
+    "build-queues",
+    "ui-choices:build-queues"
+  ],
+  "data": {
+    "view": "stacked",
+    "order": [
+      "queues",
+      "api",
+      "rules"
+    ],
+    "open": [
+      "queues"
+    ]
+  }
+}

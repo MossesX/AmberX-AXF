@@ -103,4 +103,77 @@ try:
 finally:
     srv.subprocess.run = _real_run
 
+# ---- build queues (multi-queues-api-panel, Nov 9 2026): queues.mjs is called with fixed argv, Brett's click is the only
+# approver, refusals map to 403 / 404 / 400
+import asyncio  # noqa: E402
+from types import SimpleNamespace  # noqa: E402
+
+check(srv.QUEUES_CLI.is_file(), "queues.mjs is where the server looks for it")
+
+
+class _Req:
+    def __init__(self, body: dict, admin: bool = False, headers: dict | None = None) -> None:
+        self._b = json.dumps(body).encode()
+        self.headers = headers or {}
+        self.state = SimpleNamespace(axf_user=SimpleNamespace(via="session", admin=True, name="brett") if admin else None)
+
+    async def body(self) -> bytes:
+        return self._b
+
+
+_qcalls: list[tuple[list[str], dict]] = []
+
+
+def _fake_queues(cmd, **kw):  # noqa: ANN001
+    _qcalls.append((cmd, kw.get("env") or {}))
+    if any("only Brett" in c for c in cmd) or (len(cmd) > 3 and '"approve"' in cmd[3] and "AXF_APPROVER" not in (kw.get("env") or {})):
+        return _Proc('{"ok":false,"error":"running a build on an API key (billed per token) needs Brett\'s OK: his console click"}', 2)
+    if any('"nope"' in c for c in cmd):
+        return _Proc('{"ok":false,"error":"no queue \\"nope\\""}', 2)
+    return _Proc('{"ok":true,"log":["done"],"doc":{"big":1}}')
+
+
+srv.subprocess.run = _fake_queues
+try:
+    r = srv.queues_status()
+    check(_qcalls[-1][0][1].endswith("queues.mjs") and _qcalls[-1][0][2] == "status", "GET /queues runs queues.mjs status --json")
+    check("doc" not in r, "the whole store document is not sent back")
+    asyncio.run(srv.queues_create(_Req({"name": "Night runs", "maxParallel": 2, "uses": "subscription", "evil": 1})))
+    change = json.loads(_qcalls[-1][0][3])
+    check(change == {"action": "create", "name": "Night runs", "uses": "subscription", "maxParallel": 2}, "create passes only queue fields")
+    check("AXF_APPROVER" not in _qcalls[-1][1], "a token call carries no approver")
+    asyncio.run(srv.queues_assign(_Req({"build": "alpha", "queue": "API"})))
+    check(json.loads(_qcalls[-1][0][3]) == {"action": "assign", "build": "alpha", "queue": "API"}, "assign passes build and queue")
+    try:
+        asyncio.run(srv.queues_approve(_Req({"build": "alpha"})))
+        check(False, "an API OK without Brett's click is refused")
+    except srv.HTTPException as e:
+        check(e.status_code == 403, "an API OK without Brett's click is a 403")
+    asyncio.run(srv.queues_approve(_Req({"build": "alpha", "maxCostUsd": 3}, admin=True)))
+    env = _qcalls[-1][1]
+    check(env.get("AXF_APPROVER") == "brett" and env.get("AXF_APPROVER_VIA") == "console", "Brett's click is the approver")
+    try:
+        asyncio.run(srv.queues_approve(_Req({"build": "alpha"}, admin=True, headers={"x-axhub-session": "claude-1"})))
+    except srv.HTTPException as e:
+        check(e.status_code == 403, "a session header in Brett's browser is not his click")
+    try:
+        asyncio.run(srv.queues_pause(_Req({"queue": "nope"})))
+        check(False, "an unknown queue is a 404")
+    except srv.HTTPException as e:
+        check(e.status_code == 404, "an unknown queue is a 404")
+    for bad in ({"op": "zap", "rule": "x"}, {"op": "add", "rule": "x"}, {"op": "off", "rule": {"a": 1}}):
+        try:
+            asyncio.run(srv.queues_rule(_Req(bad)))
+            check(False, f"bad rule call {bad} is refused")
+        except srv.HTTPException as e:
+            check(e.status_code == 400, f"bad rule call {bad['op']} is a 400")
+    for bad in ("", "../x", "x" * 70):
+        try:
+            srv._queue_name(bad)
+            check(False, f"bad queue name {bad!r} is refused")
+        except srv.HTTPException as e:
+            check(e.status_code == 400, f"bad queue name {bad[:10]!r} is a 400")
+finally:
+    srv.subprocess.run = _real_run
+
 print(f"build-orchestrator: {n} checks passed")
