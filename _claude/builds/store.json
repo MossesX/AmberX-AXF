@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1732,
- "updatedAt": "2026-11-09T14:31:40.219Z",
+ "rev": 1733,
+ "updatedAt": "2026-11-09T14:33:30.337Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127176,6 +127176,66 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T13:21:25.005Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-stale-running-counts-per-claude-account-not-cleared",
+   "title": "Fix: stale running counts per Claude account not cleared",
+   "category": "Builds",
+   "detail": "Seen Nov 9: claude_accounts shows Hulu 1/3, Moses X 4/3, account-1 4/3 running while the VPS has 0 tmux axf-* sessions and 0 claude -p processes. Rule (Brett): every time the console loads, and on the watchdog tick, the orchestrator checks for stale runs and releases any slot or running entry with no live process (agent-slots, claude-workers.mjs counts, orchestrator.json statuses). Find why the existing check didn't run or didn't clear these; fix; add a test with fake stale entries; log each release.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T14:33:29.282Z",
+   "updatedAt": "2026-11-09T14:33:29.282Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9d2vbc02m4k8",
+     "title": "",
+     "text": "Find why stale running counts survive (console-load check, slot-watchdog, claude-workers counts); fix release of slots with no live process on console load and watchdog tick; test; log releases",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T14:33:29.283Z",
+     "updatedAt": "2026-11-09T14:33:29.283Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 492
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-09T14:33:29.283Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` s2 done, → complete (all) · orchestrator
 - 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · orchestrator
 - 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` PR #384 (all) · builds-live
 - 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s8 done, → built (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 13:25 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · claude-ai-voice
 - 2026-11-09 14:30 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued (all) · claude-ai-voice
 - 2026-11-09 14:31 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued (all) · claude-ai-voice
+- 2026-11-09 14:33 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` added (1 steps) (all) · claude-ai-voice
 
 ## Token passes (log)
 
