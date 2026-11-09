@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:14 UTC · `memory-restructure-chunked-claude-md-store-memor` s7 done (all) · orchestrator
-- 2026-11-08 17:14 UTC · `memory-restructure-chunked-claude-md-store-memor` s8 done (all) · orchestrator
-- 2026-11-08 17:03 UTC · `memory-restructure-chunked-claude-md-store-memor` branch claude/memory-manager-r3 (all) · builds-live
 - 2026-11-08 17:16 UTC · `memory-restructure-chunked-claude-md-store-memor` s5 done (all) · orchestrator
 - 2026-11-08 17:16 UTC · `memory-restructure-chunked-claude-md-store-memor` s6 done (all) · orchestrator
 - 2026-11-08 17:16 UTC · `memory-restructure-chunked-claude-md-store-memor` s7 done (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:52 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · console
 - 2026-11-09 17:53 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · builds-live
 - 2026-11-09 17:53 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
+- 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
+- 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` branch claude/account-failover-chain-subscription-next-subscri (all) · pipeline
+- 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 
 ## Token passes (log)
 
