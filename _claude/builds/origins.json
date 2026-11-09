@@ -4390,6 +4390,18 @@
    "from": "detail",
    "addenda": []
   },
+  "walkthrough-player-ide-layout-setting-collapsibl": {
+   "said": "They want to be able to open a collapsible column or a view... maybe we should make a setting in its settings to be IDE style, and then you can create books by dragging and dropping clips. And you can get code from the already built demonstration manager and merge them together.",
+   "at": "2026-11-09T23:59:19.114Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "walkthrough-random-look": {
    "said": "for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
    "at": "2026-11-02",

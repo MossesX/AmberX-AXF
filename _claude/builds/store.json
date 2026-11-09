@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2060,
- "updatedAt": "2026-11-09T23:58:40.287Z",
+ "rev": 2061,
+ "updatedAt": "2026-11-09T23:59:20.920Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132499,6 +132499,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T23:52:16.582Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "walkthrough-player-ide-layout-setting-collapsibl",
+   "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
+   "category": "",
+   "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T23:59:19.114Z",
+   "updatedAt": "2026-11-09T23:59:19.114Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They want to be able to open a collapsible column or a view... maybe we should make a setting in its settings to be IDE style, and then you can create books by dragging and dropping clips. And you can get code from the already built demonstration manager and merge them together.",
+    "at": "2026-11-09T23:59:19.114Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 515
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
