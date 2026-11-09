@@ -3627,7 +3627,15 @@
    "brief": "",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "When this page opens, it needs to have an animation, an animated thing saying it's loading as it checks each account one at a time and shows their status.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
+    }
+   ]
   },
   "theme-editor": {
    "said": "theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1930,
- "updatedAt": "2026-11-09T20:16:13.568Z",
+ "rev": 1931,
+ "updatedAt": "2026-11-09T20:16:34.696Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130794,7 +130794,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:16:05.087Z",
+   "updatedAt": "2026-11-09T20:16:33.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -130814,7 +130814,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "When this page opens, it needs to have an animation, an animated thing saying it's loading as it checks each account one at a time and shows their status.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     }
+    ]
    },
    "pipeline": {
     "queuedAt": "2026-11-09T20:16:04.178Z",
@@ -130841,7 +130849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
