@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:32 UTC · `terminal-header-responsive` s5 done, → complete (all) · orchestrator
 - 2026-11-08 16:32 UTC · `terminal-header-responsive` → built, branch claude/terminal-header-responsive, PR #387 (all) · builds-live
 - 2026-11-08 16:34 UTC · `brief-only-headless` s5 done (all) · orchestrator
 - 2026-11-08 16:35 UTC · `brief-only-headless` PR #388 (all) · builds-live
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:03 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 17:06 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s2 done (all) · orchestrator
 - 2026-11-09 17:08 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s3 done (all) · orchestrator
+- 2026-11-09 17:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
