@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · orchestrator
 - 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → built (all) · orchestrator
 - 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
 - 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 21:08 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s6 done, note (all) · orchestrator
 - 2026-11-09 21:09 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 21:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
+- 2026-11-09 21:40 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
