@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1884,
- "updatedAt": "2026-11-09T19:10:24.785Z",
+ "rev": 1885,
+ "updatedAt": "2026-11-09T19:11:16.014Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129909,12 +129909,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-09T19:10:11.792Z",
+   "updatedAt": "2026-11-09T19:11:14.502Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T19:10:11.792Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T19:11:14.502Z"
     }
    ],
    "approvals": [],
@@ -129941,13 +129945,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-09T19:11:14.502Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9n0287013wki",
+     "title": "",
+     "text": "Enforce on the VPS itself: every headless Claude build launch (claude-headless.sh, agent slots, vps build_start, any launcher) must carry an orchestrator-issued build ID/token; anything else is refused and logged, with a notice to the phone. Builds on one-way-to-start-builds-the-orchestrator-dispatc (2/3 done) - finish or fold that in. 2) New console plugin 'VPS Settings' to view and change VPS-side settings, starting with this rule (on/off, refused-jobs log). Full API control per standing rule.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T19:11:14.502Z",
+     "updatedAt": "2026-11-09T19:11:14.502Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9n028702xq9j",
+     "title": "",
+     "text": "I need a rule on the VPS that refuses any job that doesn't come from the orchestrator. ... Now how would I manage that setting? I need a console plugin to manage the VPS settings. ... Put it in the same build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T19:11:14.502Z",
+     "updatedAt": "2026-11-09T19:11:14.502Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9n028703ofoi",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/vps-orchestrator-only-rule-vps-settings-console.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/vps-orchestrator-only-rule-vps-settings-console.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T19:11:14.502Z",
+     "updatedAt": "2026-11-09T19:11:14.502Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -129956,12 +130036,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T19:11:14.502Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
