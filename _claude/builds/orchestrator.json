@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:43:32.939Z",
+ "updatedAt": "2026-11-09T18:44:38.621Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78970,12 +78970,16 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-09T18:43:23.783Z",
+   "updatedAt": "2026-11-09T18:44:36.717Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T18:43:23.783Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T18:44:36.717Z"
     }
    ],
    "approvals": [],
@@ -78992,7 +78996,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9m1tda011epg"
+    },
+    {
+     "id": "s2",
+     "text": "I need a watchdog plugin that I can tell to watch files for changes without using AI. I need it to run scripts, or run commands on the console. It can use AI, but it doesn't have to. I can give it a prompt to use AI, and switch it to enable AI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9m1tda02ma5y"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/file-watchdog-plugin-watch-files-run-scripts-or.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/file-watchdog-plugin-watch-files-run-scripts-or.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9m1tda03v4op"
+    }
+   ]
   }
  ]
 }
