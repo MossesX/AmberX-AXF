@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 18:00 UTC · `molly-one-shell` s15 done, note (all) · reconciler
-- 2026-11-08 18:20 UTC · `amberx-notify-panel` → pending, note (all) · reconciler
 - 2026-11-08 18:30 UTC · `molly-one-shell` → pending, note (all) · reconciler
 - 2026-11-08 18:40 UTC · `standing-rule-every-ui-ships-with-full-api-contr` added (0 steps) (all) · pending
 - 2026-11-08 18:47 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` added (0 steps) (all) · pending
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` → running, note (all) · pipeline
 - 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` branch claude/orchestrator-and-build-manager-search-bar-collap (all) · pipeline
 - 2026-11-09 18:53 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
+- 2026-11-09 18:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
+- 2026-11-09 18:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 
 ## Token passes (log)
 
