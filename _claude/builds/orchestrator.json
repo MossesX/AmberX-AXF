@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T01:01:50.356Z",
+ "updatedAt": "2026-11-09T01:01:56.534Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74135,7 +74135,7 @@
    "branch": "claude/orchestrator-only-launcher",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-09T00:48:37.325Z",
+   "updatedAt": "2026-11-09T01:01:49Z",
    "builtAt": "",
    "notes": [
     {
@@ -74149,6 +74149,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-09T00:48:37.325Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-way-to-start-builds-the-orchestrator-dispatc rev 1 sent to Shipped features (backfill): landed e15e52876, 30 file(s), 5 test line(s), 8 open.",
+     "at": "2026-11-09T01:01:49Z"
     }
    ],
    "approvals": [],

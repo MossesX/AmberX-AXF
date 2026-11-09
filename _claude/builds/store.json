@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1648,
- "updatedAt": "2026-11-09T01:01:50.356Z",
+ "rev": 1649,
+ "updatedAt": "2026-11-09T01:01:56.534Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122571,7 +122571,7 @@
    "branch": "claude/orchestrator-only-launcher",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-09T00:48:37.325Z",
+   "updatedAt": "2026-11-09T01:01:49Z",
    "builtAt": "",
    "notes": [
     {
@@ -122585,6 +122585,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-09T00:48:37.325Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-way-to-start-builds-the-orchestrator-dispatc rev 1 sent to Shipped features (backfill): landed e15e52876, 30 file(s), 5 test line(s), 8 open.",
+     "at": "2026-11-09T01:01:49Z"
     }
    ],
    "approvals": [],
@@ -122600,6 +122604,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-one-way-to-start-builds-the-orchestrator-dispatc",
+    "rev": 1,
+    "at": "2026-11-09T01:01:49Z",
+    "landedCommit": "e15e5287681b1c11a80aaf5f2e1be996bb293cc9"
    },
    "steps": [
     {
@@ -122680,7 +122690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
