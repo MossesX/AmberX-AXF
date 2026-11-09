@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2059,
- "updatedAt": "2026-11-09T23:58:00.684Z",
+ "rev": 2060,
+ "updatedAt": "2026-11-09T23:58:40.287Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132280,7 +132280,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:57:58.853Z",
+   "updatedAt": "2026-11-09T23:58:38.730Z",
    "builtAt": "",
    "notes": [
     {
@@ -132378,6 +132378,13 @@
      },
      {
       "said": "In the walkthrough, keep the group chat open as picture-in-picture, with the group chat going on while you watch the demo go around the screen clicking stuff. You'll see an alert pop up, and then right in the group chat, John said this or Jim said that, as things go on in the demonstration. Make mock events: a mock build gets done, a mock error is reported, a mock build failed, something being added to the queue or the orchestrator. Make the alerts pop up in the banners and the notifications. Make mock events to demonstrate everything about the human resources department and the employees.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "And the demo can change the voice during playback, change the playback speed, you can hide certain things...",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132486,7 +132493,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
