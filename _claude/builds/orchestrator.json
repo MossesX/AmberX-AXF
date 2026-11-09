@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:03:49.378Z",
+ "updatedAt": "2026-11-09T17:03:59.941Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77243,7 +77243,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:03:42.363Z",
+   "updatedAt": "2026-11-09T17:03:56.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -77257,6 +77257,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-skins-restyle-everything-badges-banner-and-every--earl, own login copy)",
      "at": "2026-11-09T17:01:11.796Z"
+    },
+    {
+     "text": "s1 done: badge customize target now names .fx-badge and .fx-banner__badge, so skin badge parts reach every banner badge. s6 raised to Fable (edits asset-types.json, the asset-type registry) and moved after s4 so it still lands before the s5 CI gate; s2-s4 continue on Opus.",
+     "at": "2026-11-09T17:03:56.117Z"
     }
    ],
    "approvals": [],
