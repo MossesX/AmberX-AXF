@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:47:44.207Z",
+ "updatedAt": "2026-11-09T02:52:49.652Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75182,7 +75182,7 @@
    "branch": "claude/one-builds-page-pending-queued-built-tabs-remove",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-09T02:25:04.997Z",
+   "updatedAt": "2026-11-09T02:52:48.156Z",
    "builtAt": "",
    "notes": [
     {
@@ -75204,6 +75204,10 @@
     {
      "text": "Brett (Nov 9): \"the pending build table looks like shit. It needs to be collapsible. There's no tables or nothing. It's trash.\" Pending (and Queued, Built) must be real data grids (stock DataGrid: columns, sort, filter, search, resizable), each build a collapsible row: collapsed = title, status badge, model, estimate, progress, added; expanded = Brett's words, detail, steps checklist, notes. Expand/collapse all, grouping by category or status. Clean, readable; 3 layout options to UI Review.",
      "at": "2026-11-09T02:25:04.997Z"
+    },
+    {
+     "text": "Brett (Nov 9): \"I need to be able to move queued items back to pending and pending items back to the planner. I need to be able to cancel or put on hold pending items... and put on hold things in the queue.\" Row actions (and multi-select bulk actions) on the one builds page: Queued -> Back to pending; Pending -> Back to planner (parks it as a Plan Studio plan, keeps Brett's words and steps); Cancel (pending or queued: marked cancelled with reason, kept in history, restorable); Hold / Resume (pending and queued: held items are skipped by the dispatcher and show a Held badge). A running build: Hold = stop after the current step, then held. Every action logged, sends a manifest update, and has full API/MCP/CLI/voice control. Confirm dialog for Cancel.",
+     "at": "2026-11-09T02:52:48.156Z"
     }
    ],
    "approvals": [],
