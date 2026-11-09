@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:49:42.589Z",
+ "updatedAt": "2026-11-09T17:50:59.223Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78293,6 +78293,37 @@
    "origin": {
     "said": "Clean those tables up. One line that's expandable, with collapsible grids or sections inside the expanded row. All the tables need to look the same. The active ones need to show the timer, how long they've been going, how many steps are complete. Build manager will have pending and complete. Orchestrator will have active and queued.",
     "at": "2026-11-09T17:49:22.125Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "split-builds-pages-build-manager-pending-complet-3",
+   "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
+   "category": "",
+   "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T17:50:55.358Z",
+   "updatedAt": "2026-11-09T17:50:55.359Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.",
+    "at": "2026-11-09T17:50:55.358Z",
     "source": "",
     "session": "",
     "link": "",
