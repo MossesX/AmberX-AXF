@@ -757,9 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 14:55 UTC · `blueprint-notes-tasks` s3 done (all) · orchestrator
-- 2026-11-07 14:55 UTC · `blueprint-notes-tasks` s4 done (all) · orchestrator
-- 2026-11-07 14:59 UTC · `postgres-console` s3 done (all) · orchestrator
 - 2026-11-07 14:59 UTC · `postgres-console` s4 done (all) · orchestrator
 - 2026-11-07 15:00 UTC · `blueprint-notes-tasks` s5 done (all) · orchestrator
 - 2026-11-07 15:09 UTC · `blueprint-notes-tasks` s6 done (all) · orchestrator
@@ -1157,6 +1154,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 01:27 UTC · `amberx-voice-echo-fix` merged, note (all) · orchestrator
 - 2026-11-09 01:28 UTC · `assistant-chat-mode` note (all) · orchestrator
 - 2026-11-09 01:28 UTC · `console-approvals-in-place` note (all) · orchestrator
+- 2026-11-09 02:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
+- 2026-11-09 02:10 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
+- 2026-11-09 02:13 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
