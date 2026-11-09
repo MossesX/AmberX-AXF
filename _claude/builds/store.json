@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1911,
- "updatedAt": "2026-11-09T19:24:32.961Z",
+ "rev": 1912,
+ "updatedAt": "2026-11-09T19:24:42.901Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127167,7 +127167,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127175,7 +127175,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T19:23:21.566Z",
+   "updatedAt": "2026-11-09T19:24:39.093Z",
    "builtAt": "",
    "notes": [
     {
@@ -127233,6 +127233,14 @@
     {
      "text": "Session on account-3 ended (exit 1) with 5 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T19:22:17.222Z"
+    },
+    {
+     "text": "Started run 3 on account-3 (Fable, Phase 1): axf-appearance-skins-colour-themes-only-remove-desig--paulie.",
+     "at": "2026-11-09T19:24:37.435Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-appearance-skins-colour-themes-only-remove-desig--paulie, own login copy)",
+     "at": "2026-11-09T19:24:39.093Z"
     }
    ],
    "approvals": [],
@@ -127244,7 +127252,7 @@
     "session": "",
     "link": "",
     "by": "appearance-skins-colour-themes-only-remove-design-packs",
-    "brief": "# Build: appearance-skins-colour-themes-only-remove-design-packs\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Appearance = skins + colour themes only (remove design packs)\" (appearance-skins-colour-themes-only-remove-design-packs) [Appearance] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.5 h):\n[ ] s1 (~30 min) Inventory design packs and every reference; convert each pack to a skin asset\n[ ] s2 (~30 min) Remove Design packs screen, settings, menus and design-package/style-package types; redirect references to skins; migrations for saved settings\n[ ] s3 (~30 min) Appearance shows only Skin + Colour theme; report on style/layout themes; tests, before/after screenshots to UI Review\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step appearance-skins-colour-themes-only-remove-design-packs <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link appearance-skins-colour-themes-only-remove-design-packs --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step appearance-skins-colour-themes-only-remove-design-packs <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note appearance-skins-colour-themes-only-remove-design-packs \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: appearance-skins-colour-themes-only-remove-design-packs\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Appearance = skins + colour themes only (remove design packs)\" (appearance-skins-colour-themes-only-remove-design-packs) [Appearance] — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/appearance-skins-colour-themes-only-remove-design-packs\nSteps in this phase (3 left, ~1.5 h):\n[ ] s4 (~30 min) FIRST, before any change: write a regression suite and record a baseline on current main (tag pre-skins-only-2026-11-09): screenshot every screen/dialog in every framework app (console, Molly, AmberX web, axHub, studios) in the default look; every plugin loads with no console errors; every settings tab opens; saved settings and axHub shared settings round-trip; control@1 tokens/list/act API and every MCP/axHub tool still answer; theme token names resolve (aliases); asset manifest validation passes; app builds and CI pass. Hidden-breakage checks: no JS errors in logs, no missing CSS variables (computed style audit), no 404 assets, data files unchanged except intended migrations. LAST step: rerun everything, diff against baseline, block landing on any unexpected difference; post report + diffs to UI Review.\n[ ] s1 (~30 min) Inventory design packs, style packages and colour/style/layout/behaviour themes (see build note); convert each pack/theme into skin sections (colours, style, layout, behaviour kept separate); default look identical\n[ ] s2 (~30 min) Remove design-package/style-package and the theme asset types, their screens, settings and menus; aliases so other apps and axHub keep resolving; migrations for saved settings; framework/core first, then regenerate spec fixtures and app copies\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step appearance-skins-colour-themes-only-remove-design-packs <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link appearance-skins-colour-themes-only-remove-design-packs --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step appearance-skins-colour-themes-only-remove-design-packs <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note appearance-skins-colour-themes-only-remove-design-packs \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -127253,11 +127261,11 @@
     "queuedAt": "2026-11-09T18:49:58.353Z",
     "queuedBy": "console",
     "account": "account-3",
-    "session": "",
+    "session": "axf-appearance-skins-colour-themes-only-remove-desig--paulie",
     "slot": "",
     "model": "Fable",
-    "launchedAt": "2026-11-09T19:21:25.063Z",
-    "runs": 2,
+    "launchedAt": "2026-11-09T19:24:37.196Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-09T19:22:16.916Z",
      "exit": 1,
@@ -127268,9 +127276,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 5 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:21:25.063Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
    "steps": [
     {
@@ -127392,7 +127400,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129577,7 +129585,7 @@
    "title": "URGENT: Terminal pops up every time the console opens",
    "category": "",
    "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129585,7 +129593,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T19:23:27.543Z",
+   "updatedAt": "2026-11-09T19:24:31.894Z",
    "builtAt": "",
    "notes": [
     {
@@ -129639,6 +129647,10 @@
     {
      "text": "Headless run axf-urgent-terminal-pops-up-every-time-the-console-o--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:23:27.543Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+     "at": "2026-11-09T19:24:31.894Z"
     }
    ],
    "approvals": [],
@@ -129659,18 +129671,18 @@
     "queuedAt": "2026-11-09T19:20:17.331Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:23:07.733Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-09T19:23:02.725Z",
+     "at": "2026-11-09T19:24:31.405Z",
      "exit": 1,
-     "outcome": "requeued",
+     "outcome": "failed",
      "stepsLeft": 3,
      "account": "account-1",
-     "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--gina"
+     "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--lenny"
     },
     "split": {
      "at": "2026-11-09T18:52:29.382Z",
@@ -129680,7 +129692,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
@@ -129763,7 +129775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130191,7 +130203,7 @@
    "title": "Home page Build queue card opens the orchestrator, not the old build queue",
    "category": "",
    "detail": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130199,7 +130211,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:23:31.207Z",
+   "updatedAt": "2026-11-09T19:24:33.146Z",
    "builtAt": "",
    "notes": [
     {
@@ -130237,6 +130249,10 @@
     {
      "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--joey: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:23:31.207Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T19:24:33.146Z"
     }
    ],
    "approvals": [],
@@ -130257,18 +130273,18 @@
     "queuedAt": "2026-11-09T19:21:06.131Z",
     "queuedBy": "console",
     "account": "account-3",
-    "session": "axf-home-page-build-queue-card-opens-the-orchestrato--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:23:12.121Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-09T19:23:03.887Z",
+     "at": "2026-11-09T19:24:32.338Z",
      "exit": 1,
      "outcome": "requeued",
      "stepsLeft": 3,
      "account": "account-3",
-     "session": "axf-home-page-build-queue-card-opens-the-orchestrato--rhonda"
+     "session": "axf-home-page-build-queue-card-opens-the-orchestrato--joey"
     },
     "split": {
      "at": "2026-11-09T19:22:16.340Z",
@@ -130278,7 +130294,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-09T19:23:12.121Z"
    },
@@ -130361,7 +130377,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
