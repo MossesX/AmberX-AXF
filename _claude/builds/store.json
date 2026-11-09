@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1838,
- "updatedAt": "2026-11-09T18:09:05.337Z",
+ "rev": 1839,
+ "updatedAt": "2026-11-09T18:09:17.720Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128270,7 +128270,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-09T18:08:16.575Z",
+   "updatedAt": "2026-11-09T18:09:12.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -128344,6 +128344,10 @@
     {
      "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:08:16.574Z"
+    },
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-split-builds-pages-build-manager-pending-complet--joey, own login copy)",
+     "at": "2026-11-09T18:09:12.735Z"
     }
    ],
    "approvals": [],
@@ -128468,7 +128472,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -128675,7 +128679,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128683,7 +128687,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-09T18:09:03.757Z",
+   "updatedAt": "2026-11-09T18:09:09.544Z",
    "builtAt": "",
    "notes": [
     {
@@ -128709,6 +128713,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 11 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T18:09:03.757Z"
+    },
+    {
+     "text": "Started run 3 on account-1 (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--joey.",
+     "at": "2026-11-09T18:09:09.544Z"
     }
    ],
    "approvals": [],
@@ -128729,11 +128737,11 @@
     "queuedAt": "2026-11-09T17:50:57.626Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "",
+    "session": "axf-split-builds-pages-build-manager-pending-complet--joey",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T18:07:10.020Z",
-    "runs": 2,
+    "launchedAt": "2026-11-09T18:09:09.055Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-09T18:09:03.198Z",
      "exit": 1,
@@ -128750,9 +128758,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 11 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:07:10.020Z"
+    "dispatchedAt": "2026-11-09T18:09:09.055Z"
    },
    "steps": [
     {
@@ -129009,7 +129017,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
