@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1666,
- "updatedAt": "2026-11-09T02:14:18.666Z",
+ "rev": 1667,
+ "updatedAt": "2026-11-09T02:17:01.747Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -6237,12 +6237,12 @@
     "all"
    ],
    "order": {
-    "all": 230
+    "all": 355
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.designer",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6613,12 +6613,12 @@
     "all"
    ],
    "order": {
-    "all": 231
+    "all": 356
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.browser",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6746,12 +6746,12 @@
     "all"
    ],
    "order": {
-    "all": 232
+    "all": 357
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.plugins.manager",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7129,12 +7129,12 @@
     "all"
    ],
    "order": {
-    "all": 233
+    "all": 358
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.templates",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7274,12 +7274,12 @@
     "all"
    ],
    "order": {
-    "all": 234
+    "all": 230
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.console.pending",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7346,12 +7346,12 @@
     "all"
    ],
    "order": {
-    "all": 235
+    "all": 231
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.lib.mcp",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -24101,12 +24101,12 @@
     "all"
    ],
    "order": {
-    "all": 325
+    "all": 232
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.assets",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24154,12 +24154,12 @@
     "all"
    ],
    "order": {
-    "all": 326
+    "all": 233
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engines",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24209,12 +24209,12 @@
     "all"
    ],
    "order": {
-    "all": 327
+    "all": 234
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.kernel",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24265,12 +24265,12 @@
     "all"
    ],
    "order": {
-    "all": 328
+    "all": 235
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.conformance",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24318,12 +24318,12 @@
     "all"
    ],
    "order": {
-    "all": 329
+    "all": 325
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.windows",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24373,12 +24373,12 @@
     "all"
    ],
    "order": {
-    "all": 330
+    "all": 326
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.terminal",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24428,12 +24428,12 @@
     "all"
    ],
    "order": {
-    "all": 331
+    "all": 327
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.android.modules",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24483,12 +24483,12 @@
     "all"
    ],
    "order": {
-    "all": 332
+    "all": 328
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.android.showcase",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24539,12 +24539,12 @@
     "all"
    ],
    "order": {
-    "all": 333
+    "all": 329
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.core",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24594,12 +24594,12 @@
     "all"
    ],
    "order": {
-    "all": 334
+    "all": 330
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.templates",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24649,12 +24649,12 @@
     "all"
    ],
    "order": {
-    "all": 335
+    "all": 331
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.cli",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24702,12 +24702,12 @@
     "all"
    ],
    "order": {
-    "all": 336
+    "all": 332
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.install",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24757,12 +24757,12 @@
     "all"
    ],
    "order": {
-    "all": 337
+    "all": 333
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.libs.browser",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24813,12 +24813,12 @@
     "all"
    ],
    "order": {
-    "all": 338
+    "all": 334
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.librarytemplates",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24869,12 +24869,12 @@
     "all"
    ],
    "order": {
-    "all": 339
+    "all": 335
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.web",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24925,12 +24925,12 @@
     "all"
    ],
    "order": {
-    "all": 340
+    "all": 336
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.api",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -24980,12 +24980,12 @@
     "all"
    ],
    "order": {
-    "all": 341
+    "all": 337
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.plan",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25036,12 +25036,12 @@
     "all"
    ],
    "order": {
-    "all": 342
+    "all": 338
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.panel",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25091,12 +25091,12 @@
     "all"
    ],
    "order": {
-    "all": 343
+    "all": 339
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.ci",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25144,12 +25144,12 @@
     "all"
    ],
    "order": {
-    "all": 344
+    "all": 340
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.site",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25197,12 +25197,12 @@
     "all"
    ],
    "order": {
-    "all": 345
+    "all": 341
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.demo",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25253,12 +25253,12 @@
     "all"
    ],
    "order": {
-    "all": 346
+    "all": 342
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.build",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25309,12 +25309,12 @@
     "all"
    ],
    "order": {
-    "all": 347
+    "all": 343
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.mcp",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25343,7 +25343,7 @@
    "title": "Module system: modules, extension points, services, placeholders",
    "category": "Kernel & engines",
    "detail": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -25569,12 +25569,12 @@
     "all"
    ],
    "order": {
-    "all": 348
+    "all": 345
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25598,7 +25598,7 @@
    "title": "Console deployment (install-console.sh)",
    "category": "Deploy & CI",
    "detail": "One command on the VPS builds the console + API + panel container behind Coolify Traefik with HTTPS at console.amberxai.com, prints AXF_TOKEN and auto-updates every 5 minutes.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -25672,12 +25672,12 @@
     "all"
    ],
    "order": {
-    "all": 349
+    "all": 346
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.console",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25701,7 +25701,7 @@
    "title": "State, data cache, events, flags, config, migrations",
    "category": "Kernel & engines",
    "detail": "AxfStore (reducer/middleware/undo), QueryClient (stale-while-revalidate), EventBus, layered FeatureFlags and Config, migrations ledger + semver.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -25900,12 +25900,12 @@
     "all"
    ],
    "order": {
-    "all": 350
+    "all": 347
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.state",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25929,7 +25929,7 @@
    "title": "UI-kit switching + fallback",
    "category": "Kernel & engines",
    "detail": "Every component is an abstract kind; the active ui-kit asset picks which library renders it. Kinds a kit lacks fall back to the default AmberX kit and are noted on the output terminal.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -26106,12 +26106,12 @@
     "all"
    ],
    "order": {
-    "all": 351
+    "all": 348
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.uikits",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26135,7 +26135,7 @@
    "title": "Libraries: settings, logging, admin, accounts, profile, billing",
    "category": "Android port",
    "detail": "The six libraries the console and apps build on. Settings and logging are complete; accounts and billing run on mock providers.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -26422,12 +26422,12 @@
     "all"
    ],
    "order": {
-    "all": 352
+    "all": 349
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.libs.core",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26451,7 +26451,7 @@
    "title": "Import third-party UI libraries → AmberX kits",
    "category": "Build engine",
    "detail": "axf import-ui clones (git/local) or records (maven/npm) a library, rewrites literals and Material/MUI roles to AXF tokens, saves kit-<id> + its ui-kit asset and applies it to the open project.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -26584,12 +26584,12 @@
     "all"
    ],
    "order": {
-    "all": 353
+    "all": 350
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.uiport",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26613,7 +26613,7 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -26724,12 +26724,12 @@
     "all"
    ],
    "order": {
-    "all": 354
+    "all": 351
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26753,7 +26753,7 @@
    "title": "Session, principal, audit log",
    "category": "Kernel & engines",
    "detail": "Session/Principal/SessionProvider contracts and an AuditLog service; accounts library uses a mock auth provider.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -26930,12 +26930,12 @@
     "all"
    ],
    "order": {
-    "all": 355
+    "all": 352
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.session",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27356,12 +27356,12 @@
     "all"
    ],
    "order": {
-    "all": 356
+    "all": 353
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.python.port",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27628,12 +27628,12 @@
     "all"
    ],
    "order": {
-    "all": 357
+    "all": 354
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.plugins",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27812,12 +27812,12 @@
     "all"
    ],
    "order": {
-    "all": 358
+    "all": 359
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.work",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27996,12 +27996,12 @@
     "all"
    ],
    "order": {
-    "all": 359
+    "all": 360
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.showcase.packs",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28180,12 +28180,12 @@
     "all"
    ],
    "order": {
-    "all": 360
+    "all": 361
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.media",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28364,12 +28364,12 @@
     "all"
    ],
    "order": {
-    "all": 361
+    "all": 362
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.location",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28548,12 +28548,12 @@
     "all"
    ],
    "order": {
-    "all": 362
+    "all": 363
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.editor",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28732,12 +28732,12 @@
     "all"
    ],
    "order": {
-    "all": 363
+    "all": 364
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.ai",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28916,12 +28916,12 @@
     "all"
    ],
    "order": {
-    "all": 364
+    "all": 365
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.vps",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29100,12 +29100,12 @@
     "all"
    ],
    "order": {
-    "all": 365
+    "all": 366
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.github",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29129,7 +29129,7 @@
    "title": "Library: Notifications & push",
    "category": "Showcase",
    "detail": "Library lib-notifications with a demo app; covers dv.notif, w.push.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -29284,12 +29284,12 @@
     "all"
    ],
    "order": {
-    "all": 366
+    "all": 367
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.notifications",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29468,12 +29468,12 @@
     "all"
    ],
    "order": {
-    "all": 367
+    "all": 368
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.sensors",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29497,7 +29497,7 @@
    "title": "Library: Files & sync",
    "category": "Showcase",
    "detail": "Library lib-files with a demo app; covers d.files, d.sync.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -29652,12 +29652,12 @@
     "all"
    ],
    "order": {
-    "all": 368
+    "all": 369
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.files",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29836,12 +29836,12 @@
     "all"
    ],
    "order": {
-    "all": 369
+    "all": 370
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.charts",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29998,12 +29998,12 @@
     "all"
    ],
    "order": {
-    "all": 370
+    "all": 371
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.repo",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -30027,7 +30027,7 @@
    "title": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view)",
    "category": "Kernel & engines",
    "detail": "Framework library so any AXF app (web + Android) talks to axHub. First slice (Opus, Oct 20 2026 harvest) = only what the hub serves today: hub address rules, hub URLs, the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen ids, sign-out on the hub, an origin-locked web view and hub APK downloads (Android). The hub protocol contract (AXPP) stays parked for Fable (placeholder axf.hub.axpp).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -30182,12 +30182,12 @@
     "all"
    ],
    "order": {
-    "all": 371
+    "all": 372
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.hub",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -30233,12 +30233,12 @@
     "all"
    ],
    "order": {
-    "all": 372
+    "all": 344
    },
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.projects",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

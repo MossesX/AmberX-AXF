@@ -757,17 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 15:09 UTC · `blueprint-notes-tasks` s6 done (all) · orchestrator
-- 2026-11-07 15:11 UTC · `blueprint-notes-tasks` s7 done, → complete (all) · orchestrator
-- 2026-11-07 15:11 UTC · `blueprint-notes-tasks` note (all) · orchestrator
-- 2026-11-07 15:11 UTC · `blueprint-notes-tasks` → built (all) · orchestrator
-- 2026-11-07 15:12 UTC · `console-android-app-tabs` note (all) · orchestrator
-- 2026-11-07 15:13 UTC · `postgres-console` s5 done (all) · orchestrator
-- 2026-11-07 15:13 UTC · `postgres-console` s7 done (all) · orchestrator
-- 2026-11-07 15:13 UTC · `postgres-console` note (all) · orchestrator
-- 2026-11-07 15:21 UTC · `orchestrator-gate` note (all) · orchestrator
-- 2026-11-07 15:22 UTC · `orchestrator-gate` s5 done, → complete (all) · orchestrator
-- 2026-11-07 15:22 UTC · `orchestrator-gate` → built (all) · orchestrator
 - 2026-11-07 15:14 UTC · `console-android-app-tabs` note (all) · orchestrator
 - 2026-11-07 15:14 UTC · `console-android-app-tabs` → running (all) · orchestrator
 - 2026-11-07 15:29 UTC · `console-android-app-tabs` s1 done (all) · orchestrator
@@ -1157,6 +1146,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:13 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
 - 2026-11-09 02:14 UTC · `multi-account-headless-workers` note (all) · orchestrator
 - 2026-11-09 02:14 UTC · `merge-profiles-one` merged, note (all) · orchestrator
+- 2026-11-09 02:16 UTC · `x.modules` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.deploy.console` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.state` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.uikits` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.libs.core` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.engine.uiport` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.engine.dev` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.session` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.lib.notifications` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.lib.files` → running (all) · build-queue
+- 2026-11-09 02:16 UTC · `x.lib.hub` → running (all) · build-queue
 
 ## Token passes (log)
 
