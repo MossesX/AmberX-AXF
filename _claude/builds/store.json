@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1929,
- "updatedAt": "2026-11-09T20:16:04.251Z",
+ "rev": 1930,
+ "updatedAt": "2026-11-09T20:16:13.568Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130786,16 +130786,22 @@
    "title": "Test button on every Claude account (subscription and API)",
    "category": "",
    "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:16:02.957Z",
+   "updatedAt": "2026-11-09T20:16:05.087Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:16:05.087Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -130810,6 +130816,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-09T20:16:04.178Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -130819,7 +130841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
