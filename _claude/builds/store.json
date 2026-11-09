@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1763,
- "updatedAt": "2026-11-09T17:01:17.415Z",
+ "rev": 1764,
+ "updatedAt": "2026-11-09T17:03:15.715Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126887,7 +126887,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:01:11.796Z",
+   "updatedAt": "2026-11-09T17:03:14.279Z",
    "builtAt": "",
    "notes": [
     {
@@ -126917,22 +126917,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "account-3",
-    "session": "axf-skins-restyle-everything-badges-banner-and-every--earl",
-    "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T17:01:09.306Z",
-    "runs": 1,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "2026-11-09T17:01:09.306Z"
-   },
    "steps": [
     {
      "id": "s1",
@@ -126949,12 +126933,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T17:03:14.279Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T13:17:25.807Z",
-     "updatedAt": "2026-11-09T13:17:25.807Z"
+     "updatedAt": "2026-11-09T17:03:14.397Z"
     },
     {
      "id": "s6",
