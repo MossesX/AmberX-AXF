@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T16:27:17.826Z",
+ "updatedAt": "2026-11-09T16:39:28.522Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77473,12 +77473,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T14:33:29.282Z",
-   "updatedAt": "2026-11-09T14:33:53.355Z",
+   "updatedAt": "2026-11-09T16:39:27.394Z",
    "builtAt": "",
    "notes": [
     {
      "text": "ROOT CAUSE (found live): deploy/claude-workers.mjs liveSessions() runs `tmux ls`; when NO tmux sessions exist, tmux exits non-zero ('no server running'), so it returns null = 'can't ask tmux'. Then ledger() counts every open session as running and liveClaims keeps claims for 12 h. So the stale entries survive exactly when nothing is running. Fix: treat 'no server running' (tmux present, exit 1) as an empty Set; only return null when tmux binary is missing. Test it.",
      "at": "2026-11-09T14:33:53.355Z"
+    },
+    {
+     "text": "Root cause fixed in PR #406 (claude/orch-self-check-stuck): tmux 'no server running' was read as unknown, so every unclosed session in events.jsonl counted as running. Self-check on console load and stuck ticks releases dead claims, expired limits and builds with no session; tests in claude-workers.test.mjs and pipeline.test.mjs; each release logged.",
+     "at": "2026-11-09T16:39:27.394Z"
     }
    ],
    "approvals": [],
