@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:23:57.640Z",
+ "updatedAt": "2026-11-09T19:24:32.961Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79755,12 +79755,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:23:48.168Z",
+   "updatedAt": "2026-11-09T19:24:30.821Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T19:23:48.168Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T19:24:30.821Z"
     }
    ],
    "approvals": [],
@@ -79777,7 +79781,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9nh4o60135ic"
+    },
+    {
+     "id": "s2",
+     "text": "They have to run on the API. There's no more Fable credits. Run them on API, man. ... You need to. Fix it. Make it so you can.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9nh4o602xj9q"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/let-voice-api-route-a-build-to-an-api-account-wi.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/let-voice-api-route-a-build-to-an-api-account-wi.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9nh4o603023b"
+    }
+   ]
   }
  ]
 }
