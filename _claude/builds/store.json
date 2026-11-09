@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1644,
- "updatedAt": "2026-11-09T00:52:27.434Z",
+ "rev": 1645,
+ "updatedAt": "2026-11-09T00:52:52.323Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125497,7 +125497,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:52:25.833Z",
+   "updatedAt": "2026-11-09T00:52:50.828Z",
    "builtAt": "",
    "notes": [
     {
@@ -125519,6 +125519,10 @@
     {
      "text": "Brett: \"There has to be filters too, where you put in for the list of certain types of parameters. There's got to be filters.\" Every pick list in the snippet dialog has filters fitting its type, plus search: files/folders by app, plugin, folder, file type/extension, changed recently, owned by a build; plugins by app, category, enabled; builds by status, queue, model, category, date; queues by account type; steps by build and state; accounts by role, model available, health; models by tier; agents by role/skill; tools by service; settings keys by plugin/section. Filters combine, show counts, can be cleared, and remember the last used per field.",
      "at": "2026-11-09T00:52:25.833Z"
+    },
+    {
+     "text": "Brett: \"list of features. Stack. And the list of predefined search terms based on what the rule is.\" 1) Filters stack (combine) and include a 'feature' filter: pick from the Shipped features list / plugin feature catalog to narrow files, builds and steps to one feature. 2) Each snippet carries predefined search terms and preset filter stacks that fit that rule (e.g. a file-fence rule offers 'server routes', 'web views', 'plugin.json', 'tests', 'schemas'; a model rule offers 'Fable-only steps', 'UI steps'), shown as quick chips in the pick list; tap one to apply. Brett can save his own presets per snippet.",
+     "at": "2026-11-09T00:52:50.828Z"
     }
    ],
    "approvals": [],
@@ -125636,7 +125640,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
