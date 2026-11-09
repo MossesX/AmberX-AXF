@@ -234,7 +234,7 @@ export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) 
     try {
       const r = await startBuild(row.key);
       if (!r.ok) setPlan(r.plan ?? plan);
-      else rt.toast(`Queued as ${r.build ?? row.title}: the orchestrator starts it`, 'success');
+      else rt.toast(r.how === 'already' ? `${r.build ?? row.title} is already in the orchestrator` : `Queued as ${r.build ?? row.title}: the orchestrator starts it`, 'success');
     } catch (e) { setErr((e as Error).message); }
     setBusy(false);
   };

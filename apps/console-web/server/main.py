@@ -248,10 +248,21 @@ def _wall_admin(request: HTTPConnection) -> bool:
     return True
 
 
+def _token_caller(request: HTTPConnection) -> Any:
+    """Who a request that passed the token check is. The console's own page sends its stored token on every call, so a
+    browser signed in to axHub as an admin carries both: that request is the admin's own session (owner-only settings
+    and veto passes key on it), not the shared token that sessions, MCP and voice use. Signed wall headers only count
+    from the console's own origin; anything else stays the token caller."""
+    c = wall.wall_caller(request.headers)
+    if c is not None and c.admin and wall.same_origin(request):
+        return c
+    return wall.TOKEN_CALLER
+
+
 def auth(request: Request) -> None:
     tok = current_token()
     if not tok or _token_ok(request, tok):
-        request.state.axf_user = wall.TOKEN_CALLER
+        request.state.axf_user = _token_caller(request)
         return
     if _wall_admin(request):
         return
@@ -1096,7 +1107,7 @@ def auth_always(request: HTTPConnection) -> None:
             raise WebSocketException(code=4401, reason="ticket required (POST /api/ws-ticket)")
         return
     if not tok or _token_ok(request, tok):
-        request.state.axf_user = wall.TOKEN_CALLER
+        request.state.axf_user = _token_caller(request)
         return
     if _wall_admin(request):
         return

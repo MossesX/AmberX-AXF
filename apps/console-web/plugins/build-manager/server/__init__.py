@@ -247,13 +247,46 @@ async def start(request: Request) -> dict[str, Any]:
     if not disp:
         return {"ok": False, "refuse": "The Build orchestrator is off: builds start only from its Queue. Turn it on in Settings → Plugins."}
     row = planned.get("row") or {}
+    by = _who(request)
     try:
-        r = await asyncio.to_thread(disp.request, str(row.get("title") or key.split(":", 1)[1])[:300], str(planned.get("brief") or "")[:8000],
-                                    by="build-manager", source="build-manager", queue=True)
+        r = await asyncio.to_thread(send_to_queue, disp, key, row, str(planned.get("brief") or ""), by)
     except Exception as e:  # noqa: BLE001
-        return {"ok": False, "refuse": f"The orchestrator did not take it: {getattr(e, 'detail', None) or e}"[:400]}
+        msg = f"The orchestrator did not take it: {getattr(e, 'detail', None) or e}"[:400]
+        cx.log("system", f"Build manager: Queue {key} refused ({by}): {msg}", "warn")
+        return {"ok": False, "refuse": msg}
     JOBS.queued(key, planned, str(r.get("id") or ""))
-    return {"ok": True, "queued": True, "build": r.get("id"), "status": r.get("status"), "job": JOBS.get(key), "plan": planned}
+    cx.log("system", f"Build manager: {key} → orchestrator {r.get('id')} ({r.get('how')}, {r.get('status')}) by {by}")
+    return {"ok": True, "queued": True, "build": r.get("id"), "status": r.get("status"), "how": r.get("how"), "job": JOBS.get(key), "plan": planned}
+
+
+def _who(request: Request) -> str:
+    user = getattr(request.state, "axf_user", None)
+    return str(getattr(user, "name", "") or "console")[:80]
+
+
+def send_to_queue(disp: Any, key: str, row: dict[str, Any], brief: str, by: str) -> dict[str, Any]:
+    """Put a row's build in the orchestrator's Queue → {id, status, how}. A row the orchestrator already has (a pending
+    build has the same id there) is queued as itself; one it is already running or holding is left alone; only a row
+    with no build behind it (a plan feature, a build-queue step) is filed as a new build. Filing a pending build again
+    made a second copy and left the one on screen Pending."""
+    bid = str(row.get("id") or key.split(":", 1)[1])
+    have: dict[str, Any] = {}
+    try:
+        have = disp.build(bid) or {}
+    except Exception as e:  # noqa: BLE001 — not found / not an orchestrator id: no build behind this row
+        if getattr(e, "status_code", 404) not in (400, 404):
+            raise  # the orchestrator failed: refuse rather than file a possible duplicate
+        have = {}
+    if have.get("id"):
+        status = str(have.get("status") or "")
+        if status == "pending" and not have.get("hidden"):
+            q = disp.queue(have["id"], by=f"build-manager ({by})")
+            return {"id": q.get("id") or have["id"], "status": q.get("status") or "queued", "how": "queued"}
+        if status in ("queued", "running"):
+            return {"id": have["id"], "status": status, "how": "already"}
+        raise ValueError(f"{have['id']} is {status}{' (hidden)' if have.get('hidden') else ''}: only a Pending build can be queued")
+    r = disp.request(str(row.get("title") or bid)[:300], brief[:8000], by=f"build-manager ({by})", source="build-manager", queue=True)
+    return {"id": r.get("id"), "status": r.get("status"), "how": "filed"}
 
 
 @router.get("/jobs")

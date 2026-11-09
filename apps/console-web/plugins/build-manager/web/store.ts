@@ -183,14 +183,14 @@ export async function planBuild(key: string): Promise<StartPlan> {
   if (!r.ok) throw new Error(r.status === 401 ? 'Console token needed.' : j.detail ?? `HTTP ${r.status}`);
   return j.plan ?? { ok: false, refuse: 'No plan.' };
 }
-export async function startBuild(key: string): Promise<{ job?: StartJob; plan?: StartPlan; ok: boolean; queued?: boolean; build?: string }> {
+export async function startBuild(key: string): Promise<{ job?: StartJob; plan?: StartPlan; ok: boolean; queued?: boolean; build?: string; how?: string }> {
   const r = await pluginFetch(FOLDER, 'start', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key }) });
-  const j = (await r.json().catch(() => ({}))) as { ok?: boolean; job?: StartJob; plan?: StartPlan; detail?: string; refuse?: string; queued?: boolean; build?: string };
+  const j = (await r.json().catch(() => ({}))) as { ok?: boolean; job?: StartJob; plan?: StartPlan; detail?: string; refuse?: string; queued?: boolean; build?: string; how?: string };
   if (!r.ok) throw new Error(j.detail ?? `HTTP ${r.status}`);
   if (!j.ok && j.refuse && !j.plan) throw new Error(j.refuse);
   if (j.job) set({ jobs: { ...st.jobs, [key]: j.job } });
   void loadChanges(true);
-  return { ok: !!j.ok, job: j.job, plan: j.plan, queued: j.queued, build: j.build };
+  return { ok: !!j.ok, job: j.job, plan: j.plan, queued: j.queued, build: j.build, how: j.how };
 }
 export async function loadJobs(): Promise<void> {
   try {

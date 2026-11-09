@@ -152,8 +152,21 @@ check(r["ok"] is False and "only from its Queue" in (r.get("refuse") or ""), "or
 
 
 class FakeDispatch:
-    def __init__(self) -> None:
+    """The orchestrator's axf.build-dispatch@1: `known` = builds it already has (id → status)."""
+    def __init__(self, known: dict[str, str] | None = None) -> None:
         self.calls: list[tuple[str, str, dict]] = []
+        self.queued: list[tuple[str, str]] = []
+        self.known = dict(known or {})
+
+    def build(self, build_id: str) -> dict:
+        if build_id not in self.known:
+            raise LookupError(f'no build "{build_id}"')
+        return {"id": build_id, "status": self.known[build_id]}
+
+    def queue(self, build_id: str, by: str = "console") -> dict:
+        self.queued.append((build_id, by))
+        self.known[build_id] = "queued"
+        return {"ok": True, "id": build_id, "status": "queued"}
 
     def request(self, title: str, detail: str = "", **kw: object) -> dict:
         self.calls.append((title, detail, kw))
@@ -164,11 +177,29 @@ fd = FakeDispatch()
 plugin_services.provide("axf.build-dispatch@1", fd, "build-orchestrator")
 r = c.post("/p/start", json={"key": f"pending:{open_item['id']}"}).json()
 check(r["ok"] and r["queued"] and r["build"] == "fake-build-1" and r["job"]["state"] == "queued", "Start = send to the orchestrator's Queue; the job says which build it became")
-check(len(fd.calls) == 1 and fd.calls[0][2].get("queue") is True and fd.calls[0][2].get("by") == "build-manager" and "# Build:" in fd.calls[0][1], "the orchestrator gets the title, the planned brief as detail, by build-manager, straight to the Queue")
+check(len(fd.calls) == 1 and fd.calls[0][2].get("queue") is True and str(fd.calls[0][2].get("by")).startswith("build-manager") and "# Build:" in fd.calls[0][1], "no build behind the row: the orchestrator gets the title, the planned brief as detail, by build-manager, straight to the Queue")
+check(r.get("how") == "filed", "… and the answer says it was filed as a new build")
 r = c.post("/p/start", json={"key": f"pending:{open_item['id']}"}).json()
 check(r.get("existing") and len(fd.calls) == 1, "a second Start on the same item does not file it twice")
 check(c.get("/p/jobs").json()["items"][0]["state"] == "queued", "jobs lists it as queued")
 plugin_services.withdraw("build-orchestrator")
+
+# A pending build the orchestrator already has is queued as itself, never filed again (filing it made a second copy and
+# left the one on screen Pending: the "dead Start button", Nov 2026).
+others = [i for i in pend["items"] if i.get("status") == "pending" and i["id"] != open_item["id"]][:3]
+if len(others) >= 2:
+    a, b = others[0]["id"], others[1]["id"]
+    fd2 = FakeDispatch({a: "pending", b: "running"})
+    plugin_services.provide("axf.build-dispatch@1", fd2, "build-orchestrator")
+    r = c.post("/p/start", json={"key": f"pending:{a}"}).json()
+    check(r["ok"] and r["build"] == a and r["how"] == "queued" and fd2.queued and fd2.queued[0][0] == a and not fd2.calls, "a Pending orchestrator build: Start queues that same build (no duplicate)")
+    r = c.post("/p/start", json={"key": f"pending:{b}"}).json()
+    check(r["ok"] and r["build"] == b and r["how"] == "already" and len(fd2.queued) == 1 and not fd2.calls, "a build already running: Start says so and files nothing")
+    fd2.known[others[2]["id"] if len(others) > 2 else "x"] = "archived"
+    if len(others) > 2:
+        r = c.post("/p/start", json={"key": f"pending:{others[2]['id']}"}).json()
+        check(r["ok"] is False and "only a Pending build" in (r.get("refuse") or "") and not fd2.calls, "an archived build: Start refuses with the reason, files nothing")
+    plugin_services.withdraw("build-orchestrator")
 e2 = svc.open({"kind": "build", "title": "verify me", "status": "running"}, "build-manager")
 j = {"changeId": e2["id"]}
 
