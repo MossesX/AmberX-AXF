@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1695,
- "updatedAt": "2026-11-09T03:03:34.770Z",
+ "rev": 1696,
+ "updatedAt": "2026-11-09T03:04:05.410Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124573,14 +124573,14 @@
    "title": "Plan Studio receives a valid shipped-feature manifest",
    "category": "",
    "detail": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T03:03:27.933Z",
+   "updatedAt": "2026-11-09T03:04:03.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -124598,6 +124598,10 @@
     {
      "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--sully: brief only · start 12.7K tokens ($0.10) · cost $16.09 · 152 turns · 6 tools, MCP none",
      "at": "2026-11-09T03:03:27.933Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T03:04:03.717Z"
     }
    ],
    "approvals": [],
@@ -124618,12 +124622,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "account-3",
-    "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-09T02:31:11.152Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-09T03:04:03.174Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 2,
+     "account": "account-3",
+     "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--sully"
+    },
     "split": {
      "at": "2026-11-09T00:38:25.943Z",
      "by": "orchestrator",
@@ -124632,7 +124643,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
@@ -124715,7 +124726,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
