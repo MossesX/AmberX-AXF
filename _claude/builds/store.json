@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1664,
- "updatedAt": "2026-11-09T02:13:08.311Z",
+ "rev": 1665,
+ "updatedAt": "2026-11-09T02:14:10.166Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -109146,7 +109146,7 @@
    "pr": "#382",
    "mergedAt": "2026-11-07T10:52:53Z",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T11:00:36.082Z",
+   "updatedAt": "2026-11-09T02:14:06Z",
    "builtAt": "2026-11-07T05:15:15.700Z",
    "notes": [
     {
@@ -109164,6 +109164,10 @@
     {
      "text": "Reconciler: PR #382 merged",
      "at": "2026-11-07T11:00:36.082Z"
+    },
+    {
+     "text": "Shipped manifest sm-multi-account-headless-workers rev 1 sent to Shipped features (orchestrator): landed aeccdb0a8, 0 file(s), 3 test line(s), 4 open.",
+     "at": "2026-11-09T02:14:06Z"
     }
    ],
    "approvals": [],
@@ -109179,6 +109183,12 @@
     "verbatim": false,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-multi-account-headless-workers",
+    "rev": 1,
+    "at": "2026-11-09T02:14:06Z",
+    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
    },
    "steps": [
     {
@@ -109301,7 +109311,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {

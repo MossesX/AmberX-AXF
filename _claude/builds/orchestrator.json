@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:13:08.311Z",
+ "updatedAt": "2026-11-09T02:14:10.166Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -23642,7 +23642,7 @@
    "pr": "#382",
    "mergedAt": "2026-11-07T10:52:53Z",
    "createdAt": "2026-11-07T04:45:26.036Z",
-   "updatedAt": "2026-11-07T11:00:36.082Z",
+   "updatedAt": "2026-11-09T02:14:06Z",
    "builtAt": "2026-11-07T05:15:15.700Z",
    "notes": [
     {
@@ -23660,6 +23660,10 @@
     {
      "text": "Reconciler: PR #382 merged",
      "at": "2026-11-07T11:00:36.082Z"
+    },
+    {
+     "text": "Shipped manifest sm-multi-account-headless-workers rev 1 sent to Shipped features (orchestrator): landed aeccdb0a8, 0 file(s), 3 test line(s), 4 open.",
+     "at": "2026-11-09T02:14:06Z"
     }
    ],
    "approvals": [],
