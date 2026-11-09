@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:13:43.935Z",
+ "updatedAt": "2026-11-09T13:15:38.597Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77359,6 +77359,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw9a8a94021dw9"
+    }
+   ]
+  },
+  {
+   "id": "toast-manager-plugin",
+   "title": "Toast manager plugin",
+   "category": "Console > Plugins",
+   "detail": "New plugin that owns all toasts across every AXF framework app (shared via axHub). One toast asset (default look like the activity test toast: black box, amber, green check). Settings page: appearance (colours, icon, size, position, animation, per-type styles: success, info, warning, error) and behaviour (duration, default longer ~6 s, hover pauses, click to dismiss, stacking/max on screen, sound). List of every toast source (plugins, builds, approvals, skins) with on/off and per-source overrides; toast history; test button. API/control@1 so any plugin or Claude can fire a toast. The Skins banner build's toast should use this plugin. Brett: \"I want a toast manager plugin.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T13:15:37.662Z",
+   "updatedAt": "2026-11-09T13:15:37.662Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Plugin scaffold, toast asset + token styles, fire API (control@1 + JS hook) shared on axHub across framework apps",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9aaqp504rp75"
+    },
+    {
+     "id": "s2",
+     "text": "Settings: appearance and behaviour, per-type styles, sources list with on/off/overrides, test button",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9aaqp505nfj1"
+    },
+    {
+     "id": "s3",
+     "text": "Toast history panel, migrate existing toasts to it, screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9aaqp506hajv"
     }
    ]
   }
