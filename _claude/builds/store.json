@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1697,
- "updatedAt": "2026-11-09T04:07:29.810Z",
+ "rev": 1698,
+ "updatedAt": "2026-11-09T04:07:37.810Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122248,10 +122248,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "demonstration-designer-plugin-new-standalone",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/demo-designer",
+   "pr": "#405",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-09T04:07:28.625Z",
+   "updatedAt": "2026-11-09T04:07:29.603Z",
    "builtAt": "",
    "notes": [
     {
@@ -122360,7 +122360,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
