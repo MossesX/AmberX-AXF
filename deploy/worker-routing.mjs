@@ -13,7 +13,8 @@
  *                         is a worker by default (Brett, Nov 8 2026: "All subscription logins are workers").
  *   interactiveTakesJobs  the console's own (active) account also takes headless jobs, after the workers. Default on.
  *   limits                { building: 3, queue: 5 } per account: jobs running at once, jobs waiting for that account
- *   perAccount            { name: { label?, building?, queue? } }
+ *   perAccount            { name: { label?, building?, queue?, fable? } } fable: true | false = this account runs Fable
+ *                         or not (set by hand; missing = auto: a probe, else the plan). The orchestrator reads it here.
  *   api                   { name: { label, enabled, dailyCapUsd, weeklyCapUsd, alertAt } } the API-key accounts that may
  *                         work. They bill per token, so they only take a job a rule sends them (never by default).
  *   rules                 ordered; the first enabled rule that matches a job decides:
@@ -94,6 +95,7 @@ export function normConfig(c) {
     if (str(v.label, 40)) o.label = str(v.label, 40);
     if (v.building !== undefined && v.building !== null && v.building !== '') o.building = int(v.building, 0, MAX_LIMIT, limits.building);
     if (v.queue !== undefined && v.queue !== null && v.queue !== '') o.queue = int(v.queue, 0, MAX_LIMIT, limits.queue);
+    if (typeof v.fable === 'boolean') o.fable = v.fable;
     if (Object.keys(o).length) perAccount[n] = o;
   }
   const api = {};
@@ -178,7 +180,7 @@ export function roster(config, accounts) {
     const can = takes && !limited && !capped;
     if (!why && limited) why = `out until ${limited.until}${limited.reason ? ` (${limited.reason})` : ''}`;
     if (!why && capped) why = spend.why;
-    return { name: a.name, label: pa.label || api?.label || '', kind, role, active: !!a.active, running, queued, building, queue, limited, spend,
+    return { name: a.name, label: pa.label || api?.label || '', kind, role, fable: typeof pa.fable === 'boolean' ? pa.fable : null, active: !!a.active, running, queued, building, queue, limited, spend,
       takesJobs: takes, canRun: can && running < building, canQueue: can && running >= building && queued < queue, order: role === 'interactive' ? 2e3 : order(a.name), why };
   });
 }

@@ -1169,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` PR #412 (all) · builds-live
 - 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s3 done, → built (all) · orchestrator
 - 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` note (all) · orchestrator
+- 2026-11-09 20:50 UTC · `one-source-of-truth-for-claude-accounts-the-orch` the orchestrator reads Claude accounts (workers.json) live for accounts, caps, Fable by hand, API workers and Job routing rules; its apiOverflow / apiAccounts / parallelPerAccount / useConsoleAccount and accounts.json records migrate there (`pipeline.mjs migrate`, every tick); report _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md (all) · session
 
 ## Token passes (log)
 

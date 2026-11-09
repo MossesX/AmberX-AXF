@@ -17,24 +17,26 @@
  *   alerts     alertFor(): the one payload shape for the console's alerts API (notify.json names the types)
  *   API jobs   (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?") the
  *              dispatcher can put a build on an API-key account (claude-workers@1 api slots, e.g. hulu-api, mossesx-api):
- *              routeFor() = the per-build override (pipeline.route = api | subscription) or the overflow rule (setting
- *              apiOverflow, off by default: every subscription account full or out → an API account). An API account
- *              takes a build only when it has a key, is switched on, is under its daily and weekly caps and has room;
- *              otherwise it is skipped and the reason is said (apiNoAccountWhy()).
+ *              routeFor() = the per-build override (pipeline.route = api | subscription), else the Job routing rules of
+ *              Claude accounts (workers.json rules, first enabled match decides, the same ruleMiss() the launcher runs;
+ *              "API fallback when subscriptions are busy" is a rule with subs: busy). An API account takes a build only
+ *              when it has a key, is switched on, is under its daily and weekly caps and has room (apiNoAccountWhy()).
+ *   one source (Brett, Nov 9 2026: "I need him to read from one source, dude. One true source.") every account fact comes
+ *              from Claude accounts (deploy/claude-workers.mjs status: workers.json + the saved logins): role, whether it
+ *              takes jobs, its building cap, Fable by hand (perAccount.fable), API slots, caps and the routing rules. The
+ *              pipeline keeps no copy; its own file holds only what it measured (Fable probes). migrationOf() moves the
+ *              old pipeline-settings / accounts.json values into workers.json once.
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './web/orchestrator-core.mjs';
+import { normJob, normRule, ruleMiss } from '../../../../deploy/worker-routing.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
-  /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
-  parallelPerAccount: 1,
-  /** Plans that run Fable (Brett's Max subscriptions do; Pro ones don't). An account's override or probe beats the plan. */
+  /** Plans that run Fable (Brett's Max subscriptions do; Pro ones don't). Fable set by hand in Claude accounts or a probe beats the plan. */
   fablePlans: ['max'],
-  /** Use the console's own (interactive) account when no account is marked as a worker. */
-  useConsoleAccount: true,
   /** A crashed or cut-off session is relaunched this many times, then the build is failed. */
   maxRuns: DEFAULT_MAX_RUNS,
   /** Nothing running while the Queue has work for this long = a phone alert. */
@@ -45,79 +47,118 @@ export const DEFAULTS = Object.freeze({
   splitProvider: 'claude',
   /** New builds go straight to the Queue (the Claude setting builds.launchWithoutAsking, read on every tick). */
   autoQueue: false,
-  /** The overflow rule: when no subscription account can take a build, send it to an API-key account (billed per token, under its caps). Off by default. */
-  apiOverflow: false,
-  /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
-  apiAccounts: [],
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
+/** Settings that were account facts and now live only in Claude accounts (workers.json); migrationOf() moves them. */
+export const MOVED_SETTINGS = Object.freeze(['parallelPerAccount', 'useConsoleAccount', 'apiOverflow', 'apiAccounts']);
+/** The rule id an old apiOverflow switch becomes in workers.json. */
+export const FALLBACK_RULE_ID = 'api-fallback';
+const LIMITS = { maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
 const clamp = (k, v) => { const [lo, hi] = LIMITS[k]; const n = Number(v); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : DEFAULTS[k]; };
+const NAME = /^[a-z0-9][a-z0-9-]{0,31}$/;
 
 export function normSettings(raw = {}) {
   const o = raw && typeof raw === 'object' ? raw : {};
   return {
     $axf: SCHEMA,
-    parallelPerAccount: o.parallelPerAccount === undefined ? DEFAULTS.parallelPerAccount : clamp('parallelPerAccount', o.parallelPerAccount),
     fablePlans: list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean).length ? list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean) : [...DEFAULTS.fablePlans],
-    useConsoleAccount: o.useConsoleAccount !== false,
     maxRuns: o.maxRuns === undefined ? DEFAULTS.maxRuns : clamp('maxRuns', o.maxRuns),
     idleAfterMin: o.idleAfterMin === undefined ? DEFAULTS.idleAfterMin : clamp('idleAfterMin', o.idleAfterMin),
     probeDays: o.probeDays === undefined ? DEFAULTS.probeDays : clamp('probeDays', o.probeDays),
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
-    apiOverflow: o.apiOverflow === true,
-    apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
+}
+
+/**
+ * The one-time move of the pipeline's old account settings into Claude accounts. `file` = the raw pipeline settings.json,
+ * `own` = the raw accounts.json, `cfg` = workers.json (normConfig'd), `rows` = claude-workers status rows (to tell API
+ * accounts from subscriptions). Returns { config, settings, own, moved: [lines] }; moved = [] means nothing to do.
+ *   apiOverflow true      → a Job routing rule "API fallback when subscriptions are busy" (to api, subs busy, accounts =
+ *                           apiAccounts), unless an enabled api rule with subs busy is already there
+ *   parallel (per account)→ perAccount.building (API accounts too)
+ *   fable (per account)   → perAccount.fable
+ *   use false             → excluded (subscription) or api.enabled false (API account)
+ *   parallelPerAccount, useConsoleAccount → dropped: the workers.json limits and interactiveTakesJobs already decide
+ * Probes stay in accounts.json: they are measurements, not settings.
+ */
+export function migrationOf(file = {}, own = {}, cfg = {}, rows = []) {
+  const f = file && typeof file === 'object' ? { ...file } : {};
+  const config = JSON.parse(JSON.stringify(cfg ?? {}));
+  config.perAccount ??= {}; config.api ??= {}; config.excluded ??= []; config.rules ??= [];
+  const moved = [];
+  const isApi = (n) => !!config.api[n] || list(rows).some((r) => r?.name === n && r?.kind === 'api');
+  if (f.apiOverflow === true) {
+    const have = config.rules.find((r) => r?.enabled !== false && r?.to === 'api' && r?.when?.subs === 'busy');
+    if (have) moved.push(`API overflow: already the Job routing rule "${have.name || have.id}"`);
+    else {
+      const accounts = [...new Set((typeof f.apiAccounts === 'string' ? f.apiAccounts.split(',') : list(f.apiAccounts)).map((n) => str(n, 32).trim().toLowerCase()).filter((n) => NAME.test(n)))];
+      config.rules.push({ id: FALLBACK_RULE_ID, name: 'API fallback when subscriptions are busy', enabled: true, to: 'api', accounts, when: { subs: 'busy' } });
+      moved.push(`API overflow on → Job routing rule "API fallback when subscriptions are busy"${accounts.length ? ` (${accounts.join(', ')})` : ''}`);
+    }
+  }
+  for (const k of MOVED_SETTINGS) if (k in f) { if (k !== 'apiOverflow' || f.apiOverflow !== true) moved.push(`pipeline setting ${k} dropped (Claude accounts decides it)`); delete f[k]; }
+  const nextOwn = {};
+  for (const [n, rec] of Object.entries(own && typeof own === 'object' && !Array.isArray(own) ? own : {})) {
+    if (!NAME.test(n) || !rec || typeof rec !== 'object') continue;
+    const pa = { ...(config.perAccount[n] ?? {}) };
+    if (typeof rec.fable === 'boolean') { if (typeof pa.fable !== 'boolean') pa.fable = rec.fable; moved.push(`${n}: Fable ${rec.fable ? 'on' : 'off'} by hand`); }
+    if (Number.isInteger(rec.parallel) && rec.parallel > 0) { if (pa.building === undefined) pa.building = rec.parallel; moved.push(`${n}: ${rec.parallel} at once`); }
+    if (rec.use === false) {
+      if (isApi(n)) { if (config.api[n]) config.api[n] = { ...config.api[n], enabled: false }; moved.push(`${n}: API worker switched off`); }
+      else { if (!config.excluded.includes(n)) config.excluded.push(n); moved.push(`${n}: not a worker`); }
+    }
+    if (Object.keys(pa).length) config.perAccount[n] = pa;
+    if (rec.probe && typeof rec.probe === 'object') nextOwn[n] = { probe: rec.probe };
+  }
+  const ownChanged = JSON.stringify(nextOwn) !== JSON.stringify(Object.fromEntries(Object.entries(own ?? {}).filter(([n, r]) => NAME.test(n) && r && typeof r === 'object')));
+  if (!moved.length && ownChanged) moved.push('accounts.json: only Fable probes kept');
+  return { config, settings: f, own: nextOwn, moved };
 }
 
 // ------------------------------------------------------------------ accounts
 
 /**
- * One account as the pipeline sees it. `row` = a claude-workers status row ({ name, role, email, plan, limited, running[] }),
- * `own` = the pipeline's own record for it (accounts.json: { fable?, parallel?, use?, probe?: { fable, at, error } }).
- *   fable      may this account run Fable? override (own.fable) > a fresh probe > the plan (fablePlans)
- *   parallel   sessions at once: own.parallel > settings.parallelPerAccount
- *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett switched off;
- *              workers always; the console's account only when no worker exists and useConsoleAccount is on
+ * One account as the pipeline sees it. `row` = a claude-workers status row ({ name, kind, role, email, plan, label,
+ * limited, running[], building, takesJobs, why, fable, hasKey, spend }): everything comes from Claude accounts; `own` =
+ * the pipeline's measurements only ({ probe?: { fable, at, error } }).
+ *   fable      may this account run Fable? Claude accounts' hand setting (row.fable) > a fresh probe > the plan (fablePlans)
+ *   parallel   sessions at once: the account's building cap in Claude accounts
+ *   usable     may the dispatcher put a build on it? exactly when Claude accounts says it takes jobs (workers, and the
+ *              console's own account while interactiveTakesJobs is on), never limited, never an API key
  */
-export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now() } = {}) {
+export function accountView(row, own = {}, { settings = normSettings(), now = Date.now() } = {}) {
   const o = own && typeof own === 'object' ? own : {};
   const plan = str(row?.plan, 40).toLowerCase();
   const probe = o.probe && typeof o.probe === 'object' && typeof o.probe.fable === 'boolean' && now - Date.parse(o.probe.at || 0) < settings.probeDays * 86400e3 ? o.probe : null;
-  const fable = typeof o.fable === 'boolean' ? o.fable : probe ? probe.fable : settings.fablePlans.includes(plan);
-  const fableFrom = typeof o.fable === 'boolean' ? 'override' : probe ? 'probe' : plan ? 'plan' : 'unknown';
+  const hand = typeof row?.fable === 'boolean' ? row.fable : null;
   const role = str(row?.role, 20) || 'saved';
-  const running = list(row?.running).length;
-  const parallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : settings.parallelPerAccount;
   const apiKey = row?.kind === 'api' || role === 'api-key' || role === 'api-worker' || role === 'api-off' || plan === 'api';
-  const off = o.use === false;
+  const fable = hand !== null ? hand : probe ? probe.fable : apiKey ? true : settings.fablePlans.includes(plan);
+  const fableFrom = hand !== null ? 'override' : probe ? 'probe' : apiKey ? 'api' : plan ? 'plan' : 'unknown';
+  const running = list(row?.running).length;
+  const parallel = Number.isInteger(row?.building) && row.building >= 0 ? Math.min(20, row.building) : 1;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : null;
-  // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or overflow)
-  const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
+  const takes = typeof row?.takesJobs === 'boolean' ? row.takesJobs : role === 'worker' || role === 'interactive';
+  // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or a rule)
+  const usable = !apiKey && !limited && takes && parallel > 0;
   let why = '';
-  if (off) why = 'switched off for the pipeline';
-  else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
-  else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
-  else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
-  // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
-  const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
-  const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
+  if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (apiKey) why = 'API key (billed per token): takes a build only when a Job routing rule or the build sends it there';
+  else if (!usable) why = str(row?.why, 200) || (parallel <= 0 ? 'building cap 0' : 'does not take headless jobs');
+  const api = apiKey ? apiState(row, { limited, apiParallel: parallel, running }) : null;
   return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40),
-    fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
-    parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
+    fable, fableFrom, parallel, running, free: Math.max(0, parallel - running), usable, takesJobs: takes, why, limited, probe: probe ?? (o.probe ?? null), api };
 }
 
 /** May the dispatcher route a build to this API account now? { usable, why, spend } (why says what to do when it can't). */
-export function apiState(row, own = {}, settings = normSettings(), { limited = null, apiParallel = 1, running = 0 } = {}) {
+export function apiState(row, { limited = null, apiParallel = 1, running = 0 } = {}) {
   const name = str(row?.name, 40);
   const spend = row?.spend && typeof row.spend === 'object' ? row.spend : null;
   let why = '';
-  if (own?.use === false) why = 'switched off for the pipeline';
-  else if (settings.apiAccounts.length && !settings.apiAccounts.includes(name)) why = 'not in the pipeline\'s API account list';
-  else if (row?.hasKey === false) why = `no API key saved (Terminal → VPS host → claude-account savekey ${name})`;
+  if (row?.hasKey === false) why = `no API key saved (Terminal → VPS host → claude-account savekey ${name})`;
   else if (row?.role === 'api-off') why = row?.why || 'not set up as an API worker (Claude accounts → Job routing → API accounts)';
   else if (limited) why = `${limited.reason === 'auth' ? 'key rejected' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
   else if (spend?.state === 'capped') why = `spend cap reached: ${spend.why}`;
@@ -125,10 +166,9 @@ export function apiState(row, own = {}, settings = normSettings(), { limited = n
   return { usable: !why, why, spend };
 }
 
-/** Every account as the pipeline sees it; `rows` = claude-workers status rows, `own` = accounts.json. */
+/** Every account as the pipeline sees it; `rows` = claude-workers status rows, `own` = accounts.json (probes). */
 export function accountViews(rows, own = {}, opts = {}) {
-  const anyWorker = list(rows).some((r) => r?.role === 'worker');
-  return list(rows).map((r) => accountView(r, own?.[r?.name], { ...opts, anyWorker }));
+  return list(rows).map((r) => accountView(r, own?.[r?.name], opts));
 }
 
 /** Accounts that can take one more session on `model` now: Fable needs an account with Fable; fewest running first, Opus away from Fable accounts, workers before the console's account. */
@@ -136,51 +176,77 @@ export function candidates(accounts, model) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   // Opus work goes to accounts without Fable first, so the Fable accounts stay free for Fable phases
   return list(accounts).filter((a) => a.usable && a.free > 0 && (!needFable || a.fable))
-    .sort((a, b) => a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
+    .sort((a, b) => (a.role === 'interactive' ? 1 : 0) - (b.role === 'interactive' ? 1 : 0) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)));
 }
 
 /** API accounts that can take one more build on `model` now: least busy first, then the least spent today. */
-export function apiCandidates(accounts, model) {
+export function apiCandidates(accounts, model, only = []) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
-  return list(accounts).filter((a) => a.kind === 'api' && a.api?.usable && a.free > 0 && (!needFable || a.fable))
+  return list(accounts).filter((a) => a.kind === 'api' && a.api?.usable && a.free > 0 && (!needFable || a.fable) && (!only.length || only.includes(a.name)))
     .sort((a, b) => a.running - b.running || (Number(a.api?.spend?.day) || 0) - (Number(b.api?.spend?.day) || 0) || a.name.localeCompare(b.name));
 }
 
 /** Why no API account takes `model` right now: every API account and what keeps it out. */
-export function apiNoAccountWhy(accounts, model) {
-  const apis = list(accounts).filter((a) => a.kind === 'api');
-  if (!apis.length) return 'no API account is set up (Claude accounts → Job routing → API accounts)';
+export function apiNoAccountWhy(accounts, model, only = []) {
+  const apis = list(accounts).filter((a) => a.kind === 'api' && (!only.length || only.includes(a.name)));
+  if (!apis.length) return only.length ? `none of ${only.join(', ')} is an API account here` : 'no API account is set up (Claude accounts → Job routing → API accounts)';
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   return `no API account can take it: ${apis.map((a) => `${a.name}: ${a.api?.why || (needFable && !a.fable ? `no ${MODEL_LABELS[FOUNDATION_MODEL]}` : 'full')}`).join('; ')}`;
 }
 
+/** A build as the Job routing rules see it (worker-routing normJob): type build, its next model, priority, profile, steps and minutes left. */
+export function jobOf(b, model) {
+  const left = openSteps(b);
+  return normJob({ name: b?.id, build: b?.id, jobType: 'build', model, priority: effectivePriority(b), profile: b?.profile || 'all', steps: left.length, minutes: left.reduce((n, s) => n + (estimateMinutes(s.estimate) || 0), 0) });
+}
+
 /**
- * Where one build goes this tick: { account, kind, rule, why }. `rule` = override (pipeline.route api) | overflow
- * (settings.apiOverflow, every subscription account full or out) | '' (a subscription account, the normal case).
- * No account = account '' and `why` says what keeps each option out (a missing key, a cap, a full account).
+ * Where one build goes this tick: { account, kind, rule, why }. The per-build override (pipeline.route api | subscription)
+ * first; else the Job routing rules of Claude accounts (`routing` = workers.json, normConfig'd), first enabled match
+ * decides, exactly as the launcher's decide() does: a rule to api → an API account under its caps (none free → falls
+ * through to subscriptions); otherwise the least busy subscription account that runs the model. `rule` = override |
+ * the matching rule's id | ''. No account = account '' and `why` says what keeps each option out.
  */
-export function routeFor(b, accounts, model, settings = normSettings()) {
+export function routeFor(b, accounts, model, routing = {}) {
   const route = b?.pipeline?.route || '';
   if (route === 'api') {
     const a = apiCandidates(accounts, model)[0];
     return a ? { account: a.name, kind: 'api', rule: 'override', why: `routed to API account ${a.name} (this build is set to run on API)` } : { account: '', kind: '', rule: 'override', why: `set to run on API, ${apiNoAccountWhy(accounts, model)}` };
   }
   const sub = candidates(accounts, model)[0];
-  if (sub) return { account: sub.name, kind: 'subscription', rule: '', why: '' };
+  const job = jobOf(b, model);
+  let rule = null;
+  if (route !== 'subscription') {
+    for (const r of list(routing?.rules)) {
+      if (!r || r.enabled === false) continue;
+      if (!ruleMiss(normRule(r), job, !!sub)) { rule = r; break; }
+    }
+  }
+  let fell = '';
+  if (rule?.to === 'api') {
+    const only = list(rule.accounts);
+    const a = apiCandidates(accounts, model, only)[0];
+    if (a) return { account: a.name, kind: 'api', rule: rule.id, why: `Job routing rule "${rule.name}" sends it to API account ${a.name}` };
+    fell = `rule "${rule.name}": ${apiNoAccountWhy(accounts, model, only)}`;
+  }
+  if (sub) return { account: sub.name, kind: 'subscription', rule: rule?.to === 'subscription' ? rule.id : '', why: fell ? `${fell}, so ${sub.name}` : '' };
   const subWhy = noAccountWhy(accounts, model);
   if (route === 'subscription') return { account: '', kind: '', rule: '', why: `${subWhy} (this build is kept off API accounts)` };
+  if (fell) return { account: '', kind: '', rule: rule.id, why: `${subWhy}; ${fell}` };
   const hasApi = list(accounts).some((a) => a.kind === 'api');
-  if (!settings.apiOverflow) return { account: '', kind: '', rule: '', why: hasApi ? `${subWhy} (API overflow is off)` : subWhy };
-  const a = apiCandidates(accounts, model)[0];
-  return a ? { account: a.name, kind: 'api', rule: 'overflow', why: `every subscription account is full or out, so the overflow rule sends it to API account ${a.name}` }
-    : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
+  return { account: '', kind: '', rule: rule?.id ?? '', why: hasApi && !rule ? `${subWhy} (no Job routing rule sends it to an API account)` : subWhy };
+}
+
+/** The API rules of Claude accounts in one line for the console and the CLI ("API fallback when subscriptions are busy: on (hulu-api)"). */
+export function routingLines(routing = {}) {
+  return list(routing?.rules).filter((r) => r?.to === 'api').map((r) => `${r.name}: ${r.enabled === false ? 'off' : 'on'}${list(r.accounts).length ? ` (${r.accounts.join(', ')})` : ' (any API account)'}${r.when?.subs === 'busy' ? ' · only while subscriptions are busy' : ''}`);
 }
 
 /** Why no account takes `model` right now, in plain words. */
 export function noAccountWhy(accounts, model) {
   const usable = list(accounts).filter((a) => a.usable);
   const needFable = modelKey(model) === FOUNDATION_MODEL;
-  if (!usable.length) return list(accounts).length ? `no usable Claude account (${list(accounts).map((a) => `${a.name}: ${a.why || 'busy'}`).join('; ')})` : 'no Claude account is signed in on the VPS';
+  if (!usable.length) return list(accounts).filter((a) => a.kind !== 'api').length ? `no usable Claude account (${list(accounts).filter((a) => a.kind !== 'api').map((a) => `${a.name}: ${a.why || 'busy'}`).join('; ')})` : 'no Claude subscription account is signed in on the VPS';
   const able = needFable ? usable.filter((a) => a.fable) : usable;
   if (!able.length) return `no account with ${MODEL_LABELS[FOUNDATION_MODEL]} (${usable.map((a) => a.name).join(', ')} ${usable.length === 1 ? 'has' : 'have'} none)`;
   return `${able.map((a) => `${a.name} ${a.running}/${a.parallel}`).join(', ')}: every ${needFable ? 'Fable ' : ''}account is at its parallel cap`;
@@ -190,12 +256,12 @@ export function noAccountWhy(accounts, model) {
 
 /**
  * What one tick does. `builds` = live builds@1 records; `accounts` = accountViews(); `slots` = { free, used, cap } from
- * agent-slots; `rules` = the orchestrator rules. Returns { launches, waits, queue, idle }:
+ * agent-slots; `routing` = Claude accounts' workers.json (its Job routing rules); `rules` = the orchestrator rules. Returns { launches, waits, queue, idle }:
  *   launches  [{ id, account, model, phase }]  one per free slot, in Queue order
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, routing = {}, rules, now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
   const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
@@ -209,7 +275,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
     if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
-    const r = routeFor(b, acc, model, settings);
+    const r = routeFor(b, acc, model, routing);
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
     a.running += 1; a.free -= 1; free -= 1;

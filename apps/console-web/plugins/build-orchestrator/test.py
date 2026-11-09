@@ -118,14 +118,14 @@ try:
     svc.request("Fix systems check: mosh", "Install mosh.", by="systems-check", source="systems-check", priority="P1", queue=True)
     cmd = _calls[-1]
     check(cmd[2] == "request" and "--queue" in cmd and cmd[cmd.index("--priority") + 1] == "P1" and cmd[cmd.index("--by") + 1] == "systems-check" and "--detail-file" in cmd, "request: title, detail in a file, priority, by, straight to the Queue")
-    for body, brett, want in (({"apiOverflow": True}, False, 403), ({"apiOverflow": False}, False, 200), ({"apiOverflow": True}, True, 200)):
+    for body, want in (({"apiOverflow": True}, 400), ({"parallelPerAccount": 2}, 400), ({"maxRuns": 2}, 200)):
         try:
-            asyncio.run(srv.pipeline_settings_set(_Req(body, brett)))
+            asyncio.run(srv.pipeline_settings_set(_Req(body, True)))
             code = 200
         except srv.HTTPException as e:
             code = e.status_code
-        check(code == want, f"API overflow {'on' if body['apiOverflow'] else 'off'} by {'Brett' if brett else 'a session'}: {want}")
-    check(_calls[-1][-2] == "apiOverflow=true", "a Python bool reaches the CLI as true/false")
+        check(code == want, f"pipeline settings {list(body)[0]}: {want} (account facts are Claude accounts' only)")
+    check("maxRuns=2" in _calls[-1], "a dispatcher setting reaches the CLI")
     for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:
             asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))

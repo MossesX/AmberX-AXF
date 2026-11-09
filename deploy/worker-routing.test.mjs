@@ -53,6 +53,8 @@ x = R.decide({ api: caps, interactiveTakesJobs: false, limits: { queue: 2 } }, t
 ok(x.state === 'none' && /queue is full/.test(x.why), 'every queue full = none');
 x = R.decide({ api: caps, perAccount: { w1: { building: 1 } } }, team({ w1: { running: 1 } }), {});
 ok(x.account === 'w2', 'a per-account building limit');
+ok(R.normConfig({ perAccount: { w1: { fable: true }, w2: { fable: 'yes' } } }).perAccount.w1.fable === true && !R.normConfig({ perAccount: { w2: { fable: 'yes' } } }).perAccount.w2, 'perAccount.fable: a boolean only (the orchestrator reads it)');
+ok(R.roster({ perAccount: { w1: { fable: false } } }, team()).find((r) => r.name === 'w1').fable === false && R.roster({}, team()).find((r) => r.name === 'w2').fable === null, 'roster carries Fable by hand (null = auto)');
 x = R.decide({ api: caps }, team({ w1: { limited: { until: 'later', reason: 'hit its limit' } } }), {});
 ok(x.account === 'w2', 'a limited account is skipped');
 ok(R.decide({ api: caps }, team(), { model: 'fable' }).kind === 'subscription', 'no rule = API accounts never get a job');

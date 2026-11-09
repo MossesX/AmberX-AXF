@@ -24,6 +24,8 @@
  *   node deploy/claude-workers.mjs set <key> <value>            interactiveTakesJobs on|off · building N · queue N
  *   node deploy/claude-workers.mjs worker <name> on|off         Make worker / Stop worker (subscription logins)
  *   node deploy/claude-workers.mjs label <name> <text>          a display name (Hulu, Moses X…)
+ *   node deploy/claude-workers.mjs fable <name> on|off|auto     does this account run Fable (auto = probe, else plan)
+ *   node deploy/claude-workers.mjs building <name> <n>|default  jobs at once on one account (the orchestrator's cap too)
  *   node deploy/claude-workers.mjs api add <name> --label L --daily N --weekly N [--alert 0.8]   an API worker slot
  *   node deploy/claude-workers.mjs api on|off|remove <name>     · api caps <name> --daily N --weekly N (lower only)
  *   node deploy/claude-workers.mjs rule add --json '{rule}' [--at i] · rule update <id> --json '{…}' · rule remove <id>
@@ -221,7 +223,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   // API worker slots set up before their key is saved still show (no key yet)
   for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
   const ro = roster(cfg, base);
-  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why }));
+  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, fable: ro[i].fable, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why }));
   const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
   return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
 }
@@ -399,6 +401,16 @@ const main = async () => {
       const n = nameOk(rest[0]); const label = rest.slice(1).join(' ').trim();
       editConfig((x) => { if (x.api[n]) x.api[n].label = label; else { x.perAccount[n] = { ...(x.perAccount[n] ?? {}), label }; } });
       out({ name: n, label }, `${n} is shown as "${label}"`);
+    } else if (cmd === 'fable') {
+      const n = nameOk(rest[0]); const v = String(rest[1] ?? '').toLowerCase();
+      const fable = v === 'auto' ? undefined : onOff(v);
+      editConfig((x) => { const o = { ...(x.perAccount[n] ?? {}) }; if (fable === undefined) delete o.fable; else o.fable = fable; x.perAccount[n] = o; });
+      out({ name: n, fable: fable ?? 'auto' }, `${n}: Fable ${fable === undefined ? 'auto (probe, else plan)' : fable ? 'on' : 'off'}`);
+    } else if (cmd === 'building') {
+      const n = nameOk(rest[0]); const v = rest[1];
+      editConfig((x) => { const o = { ...(x.perAccount[n] ?? {}) }; if (v === 'default') delete o.building; else o.building = Number(v); x.perAccount[n] = o; });
+      const c = loadConfig();
+      out({ name: n, building: c.perAccount[n]?.building ?? c.limits.building }, `${n}: ${c.perAccount[n]?.building ?? `${c.limits.building} (default)`} at once`);
     } else if (cmd === 'api') {
       const [op, n0] = rest; const n = nameOk(n0);
       const c = editConfig((x) => {
@@ -424,7 +436,7 @@ const main = async () => {
     } else if (cmd === 'signin') console.log(`started ${signin(rest[0])}: finish the sign-in in the console's Terminal`);
     else if (cmd === 'remove') console.log(`set aside in ${remove(rest[0])}`);
     else if (cmd === 'note') console.log(noteFor(rest[0]));
-    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
+    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|fable|building|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
   } catch (e) { console.error(`claude-workers: ${e.message}`); process.exit(2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

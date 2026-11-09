@@ -102,6 +102,9 @@ ok(cli('api', 'add', 'keyonly', '--label', 'Hulu API', '--daily', '10', '--weekl
 ok(cli('api', 'add', 'other', '--label', 'X').status === 2, 'an API worker without caps is refused (raising a cap is Brett\'s)');
 ok(cli('api', 'caps', 'keyonly', '--daily', '20').status === 2 && /Brett's own click/.test(cli('api', 'caps', 'keyonly', '--daily', '20').stderr), 'a session can not raise a cap');
 ok(cli('api', 'caps', 'keyonly', '--daily', '5').status === 0 && X.loadConfig(env).api.keyonly.dailyCapUsd === 5, 'but it can lower one');
+ok(cli('fable', 'w9', 'on').status === 0 && X.loadConfig(env).perAccount.w9.fable === true, 'fable <name> on: Fable by hand in workers.json');
+ok(cli('building', 'w9', '2').status === 0 && X.loadConfig(env).perAccount.w9.building === 2, 'building <name> <n>: the per-account cap the orchestrator uses');
+ok(cli('fable', 'w9', 'auto').status === 0 && cli('building', 'w9', 'default').status === 0 && !X.loadConfig(env).perAccount.w9, 'auto / default clear them');
 ok(cli('rule', 'add', '--json', JSON.stringify({ name: 'Walkthroughs to API', to: 'api', when: { jobTypes: ['walkthrough'] } })).status === 0, 'rule add');
 ok(cli('rule', 'add', '--json', JSON.stringify({ name: 'Urgent stays', to: 'subscription', when: { priorities: ['P0'] } }), '--at', '0').status === 0, 'rule add at the top');
 ok(X.loadConfig(env).rules.map((r) => r.id).join() === 'urgent-stays,walkthroughs-to-api', 'order');

@@ -44,39 +44,45 @@ t('outcomeOf: finished / returned / requeued / failed after maxRuns', () => {
   assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, phaseSwitch: true }), 'requeued', 'a phase ended: the next phase queues for its own account');
 });
 
-// ---------------- accounts
-const settings = P.normSettings({ parallelPerAccount: 2 });
+// ---------------- accounts (rows exactly as deploy/claude-workers.mjs status gives them: the one source)
+const settings = P.normSettings({});
 const rows = [
-  { name: 'console', role: 'interactive', email: 'c@x', plan: 'max', limited: null, running: [] },
-  { name: 'w-pro', role: 'worker', email: 'p@x', plan: 'pro', limited: null, running: ['s1'] },
-  { name: 'w-max', role: 'worker', email: 'm@x', plan: 'max', limited: null, running: [] },
-  { name: 'w-out', role: 'worker', email: 'o@x', plan: 'max', limited: { until: '2026-11-09T00:00:00Z', reason: 'hit its limit' }, running: [] },
+  { name: 'console', role: 'interactive', email: 'c@x', plan: 'max', limited: null, running: [], building: 2, takesJobs: true },
+  { name: 'w-pro', role: 'worker', email: 'p@x', plan: 'pro', limited: null, running: ['s1'], building: 2, takesJobs: true },
+  { name: 'w-max', role: 'worker', email: 'm@x', plan: 'max', limited: null, running: [], building: 2, takesJobs: true },
+  { name: 'w-out', role: 'worker', email: 'o@x', plan: 'max', limited: { until: '2026-11-09T00:00:00Z', reason: 'hit its limit' }, running: [], building: 2, takesJobs: true },
 ];
-t('accountView: Fable from the plan, override and probe win over it; parallel per account', () => {
-  const v = P.accountViews(rows, { 'w-pro': { fable: true }, 'w-max': { probe: { fable: false, at: now }, parallel: 3 } }, { settings, now: Date.parse(now) + 1000 });
+const subRows = rows.filter((r) => r.role === 'worker');
+t('accountView: Fable by hand in Claude accounts (row.fable) beats a probe beats the plan; parallel = the building cap there', () => {
+  const v = P.accountViews([...rows.slice(0, 2).map((r) => (r.name === 'w-pro' ? { ...r, fable: true } : r)), { ...rows[2], building: 3 }], { 'w-max': { probe: { fable: false, at: now } }, 'w-pro': { probe: { fable: false, at: now } } }, { settings, now: Date.parse(now) + 1000 });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
   assert.equal(by.console.fable, true); assert.equal(by.console.fableFrom, 'plan');
-  assert.equal(by['w-pro'].fable, true); assert.equal(by['w-pro'].fableFrom, 'override');
+  assert.equal(by['w-pro'].fable, true); assert.equal(by['w-pro'].fableFrom, 'override', 'the hand setting in Claude accounts wins over a probe');
   assert.equal(by['w-max'].fable, false); assert.equal(by['w-max'].fableFrom, 'probe'); assert.equal(by['w-max'].parallel, 3); assert.equal(by['w-max'].free, 3);
   assert.equal(by['w-pro'].free, 1);
+  // the pipeline's old own records (fable / parallel / use in accounts.json) are ignored: only probes are read
+  const old = P.accountViews([rows[1]], { 'w-pro': { fable: true, parallel: 9, use: false } }, { settings });
+  assert.deepEqual([old[0].fable, old[0].parallel, old[0].usable], [false, 2, true]);
 });
-t('usable: workers only when any worker exists; the console account when none; never a limited one', () => {
+t('usable = Claude accounts says it takes jobs (workers, the console account while interactiveTakesJobs is on), never a limited one', () => {
   const v = P.accountViews(rows, {}, { settings });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
-  assert.equal(by.console.usable, false); assert.match(by.console.why, /not a worker/);
+  assert.equal(by.console.usable, true, 'interactive account takes jobs in Claude accounts, so the orchestrator uses it too');
   assert.equal(by['w-pro'].usable, true); assert.equal(by['w-out'].usable, false); assert.match(by['w-out'].why, /hit its limit/);
-  const solo = P.accountViews([rows[0]], {}, { settings }); assert.equal(solo[0].usable, true);
-  const off = P.accountViews([rows[0]], {}, { settings: P.normSettings({ useConsoleAccount: false }) }); assert.equal(off[0].usable, false);
+  const off = P.accountViews([{ ...rows[0], takesJobs: false, why: 'console account; taking headless jobs is off' }], {}, { settings });
+  assert.equal(off[0].usable, false); assert.match(off[0].why, /taking headless jobs is off/, 'the reason is the one Claude accounts shows');
+  const stopped = P.accountViews([{ ...rows[1], role: 'saved', takesJobs: false, why: 'not a worker (stopped)' }], {}, { settings });
+  assert.equal(stopped[0].usable, false); assert.match(stopped[0].why, /not a worker \(stopped\)/);
   const stale = P.accountViews(rows, { 'w-max': { probe: { fable: false, at: '2026-01-01T00:00:00Z' } } }, { settings, now: Date.parse(now) });
   assert.equal(stale.find((a) => a.name === 'w-max').fableFrom, 'plan');
 });
-t('candidates: Fable only on Fable accounts, fewest running first', () => {
+t('candidates: Fable only on Fable accounts, workers before the console account, fewest running first', () => {
   const v = P.accountViews(rows, {}, { settings });
-  assert.deepEqual(P.candidates(v, 'Fable').map((a) => a.name), ['w-max']);
-  assert.deepEqual(P.candidates(v, 'Opus').map((a) => a.name), ['w-max', 'w-pro'], 'fewest running first, then non-Fable accounts');
+  assert.deepEqual(P.candidates(v, 'Fable').map((a) => a.name), ['w-max', 'console']);
+  assert.deepEqual(P.candidates(v, 'Opus').map((a) => a.name), ['w-max', 'w-pro', 'console'], 'workers first, fewest running first');
   assert.match(P.noAccountWhy(v.filter((a) => a.name === 'w-pro'), 'Fable'), /no account with Fable/);
   assert.match(P.noAccountWhy(v.map((a) => ({ ...a, free: 0 })), 'Opus'), /parallel cap/);
-  assert.match(P.noAccountWhy([], 'Opus'), /no Claude account/);
+  assert.match(P.noAccountWhy([], 'Opus'), /no Claude subscription account/);
 });
 
 // ---------------- the plan of a tick
@@ -86,8 +92,8 @@ const q3 = build('q3', 'queued', [], { pipeline: { queuedAt: '2026-11-08T00:03:0
 const q4 = build('q4', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:04:00Z' } });
 const p1 = build('p1', 'pending', [step('s1', 'Opus')]);
 t('plan: one launch per free slot in Queue order, Fable to a Fable account, the rest wait with a reason', () => {
-  const v = P.accountViews(rows, {}, { settings });
-  const r = P.plan({ builds: [q4, q2, q1, q3, p1], accounts: v, slots: { free: 2, used: 1, cap: 3 }, settings });
+  const v = P.accountViews(subRows, {}, { settings });
+  const r = P.plan({ builds: [q4, q2, q1, q3, p1], accounts: v, slots: { free: 2, used: 1, cap: 3 } });
   assert.deepEqual(r.queue, ['q1', 'q2', 'q3', 'q4']);
   assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.model]), [['q1', 'w-max', 'Fable'], ['q2', 'w-pro', 'Opus']], 'Opus work keeps the Fable account free');
   assert.deepEqual(r.waits.map((w) => w.id), ['q3', 'q4']);
@@ -95,29 +101,29 @@ t('plan: one launch per free slot in Queue order, Fable to a Fable account, the 
   assert.equal(r.idle, null);
 });
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {
-  const v = P.accountViews(rows.filter((x) => x.name === 'w-pro'), {}, { settings: P.normSettings({ parallelPerAccount: 1 }) });
-  const r = P.plan({ builds: [q1, q2], accounts: v, slots: { free: 5, used: 0, cap: 5 }, settings });
+  const v = P.accountViews(rows.filter((x) => x.name === 'w-pro').map((x) => ({ ...x, building: 1 })), {}, { settings });
+  const r = P.plan({ builds: [q1, q2], accounts: v, slots: { free: 5, used: 0, cap: 5 } });
   assert.equal(r.launches.length, 0); assert.match(r.waits[0].why, /no account with Fable/); assert.match(r.waits[1].why, /parallel cap/);
   assert.equal(r.idle.kind, 'stuck'); assert.match(r.idle.reason, /2 builds in the Queue, nothing running/);
 });
 t('plan: idle when the Queue is empty and Pending has work; quiet when something runs', () => {
-  const v = P.accountViews(rows, {}, { settings });
-  const r = P.plan({ builds: [p1], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  const v = P.accountViews(subRows, {}, { settings });
+  const r = P.plan({ builds: [p1], accounts: v, slots: { free: 2, used: 0, cap: 3 } });
   assert.equal(r.idle.kind, 'empty'); assert.match(r.idle.reason, /1 build wait in Pending/);
-  const r2 = P.plan({ builds: [p1, build('r', 'running', [step('s1', 'Opus')])], accounts: v, slots: { free: 2, used: 1, cap: 3 }, settings });
+  const r2 = P.plan({ builds: [p1, build('r', 'running', [step('s1', 'Opus')])], accounts: v, slots: { free: 2, used: 1, cap: 3 } });
   assert.equal(r2.idle, null);
-  const r3 = P.plan({ builds: [], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  const r3 = P.plan({ builds: [], accounts: v, slots: { free: 2, used: 0, cap: 3 } });
   assert.equal(r3.idle, null);
 });
 t('plan: an unapproved upgrade phase waits for Brett', () => {
   const up = build('up', 'queued', [step('s1', 'Opus', true), step('s2', 'Fable')], { pipeline: { queuedAt: now } });
-  const v = P.accountViews(rows, {}, { settings });
+  const v = P.accountViews(subRows, {}, { settings });
   setUpgradePolicy({ approvalRequired: true, source: 'test' });
-  const held = P.plan({ builds: [up], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  const held = P.plan({ builds: [up], accounts: v, slots: { free: 2, used: 0, cap: 3 } });
   assert.equal(held.launches.length, 0); assert.match(held.waits[0].why, /needs Brett's approval: upgrade Opus → Fable/);
   // Fable upgrades need my approval is off (Brett's standing order): it launches on a Fable account
   setUpgradePolicy({ approvalRequired: false, source: 'test' });
-  const was = P.plan({ builds: [up], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  const was = P.plan({ builds: [up], accounts: v, slots: { free: 2, used: 0, cap: 3 } });
   assert.equal(was.launches.length, 1); assert.equal(was.launches[0].account, 'w-max'); assert.equal(was.launches[0].model, 'Fable');
 });
 
@@ -173,57 +179,75 @@ t('alertFor: idle keyed once, per-build run keys, every kind has a title', () =>
   assert.throws(() => P.alertFor('bogus'), /unknown alert kind/);
 });
 t('settings normalise and clamp', () => {
-  const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
-  assert.equal(s.parallelPerAccount, 12); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
+  const s = P.normSettings({ parallelPerAccount: 99, apiOverflow: true, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
+  assert.equal('parallelPerAccount' in s, false, 'account facts are not pipeline settings'); assert.equal('apiOverflow' in s, false); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
 });
 
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")
-const apiRow = (name, extra = {}) => ({ name, kind: 'api', role: 'api-worker', plan: '', email: '', limited: null, running: [], hasKey: true, building: 1, spend: { day: 0, week: 0, state: 'ok', why: '' }, ...extra });
-const subsFull = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: ['a', 'b'] }];
-t('settings: the API overflow rule is off by default; API account list parsed', () => {
-  assert.equal(P.normSettings({}).apiOverflow, false); assert.deepEqual(P.normSettings({}).apiAccounts, []);
-  assert.equal(P.normSettings({ apiOverflow: true }).apiOverflow, true); assert.equal(P.normSettings({ apiOverflow: 'yes' }).apiOverflow, false);
-  assert.deepEqual(P.normSettings({ apiAccounts: 'hulu-api,Bad Name,mossesx-api' }).apiAccounts, ['hulu-api', 'mossesx-api']);
-});
+const apiRow = (name, extra = {}) => ({ name, kind: 'api', role: 'api-worker', plan: '', email: '', limited: null, running: [], hasKey: true, building: 1, takesJobs: true, spend: { day: 0, week: 0, state: 'ok', why: '' }, ...extra });
+const subsFull = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: ['a', 'b'], building: 2, takesJobs: true }];
+// workers.json as Claude accounts holds it: the "API fallback when subscriptions are busy" rule is a rule with subs busy
+const fallback = (enabled = true, accounts = []) => ({ rules: [{ id: 'api-fallback', name: 'API fallback when subscriptions are busy', enabled, to: 'api', accounts, when: { subs: 'busy' } }] });
 t('API accounts: never usable as a subscription; ready only with a key, switched on, under caps, with room', () => {
-  const s = P.normSettings({ parallelPerAccount: 2 });
-  const v = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached ($10.00)' } }), apiRow('off-api', { role: 'api-off', why: 'API worker switched off' })], {}, { settings: s });
+  const v = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached ($10.00)' } }), apiRow('off-api', { role: 'api-off', why: 'API worker switched off' })], {}, { settings });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
   for (const n of ['hulu-api', 'mossesx-api', 'capped-api', 'off-api']) { assert.equal(by[n].kind, 'api'); assert.equal(by[n].usable, false, `${n} never takes a build by itself`); }
   assert.equal(by['hulu-api'].api.usable, true); assert.equal(by['hulu-api'].parallel, 1, 'its own building limit');
   assert.equal(by['mossesx-api'].api.usable, false); assert.match(by['mossesx-api'].api.why, /no API key saved .*savekey mossesx-api/);
   assert.equal(by['capped-api'].api.usable, false); assert.match(by['capped-api'].api.why, /spend cap reached: daily cap \$10/);
   assert.equal(by['off-api'].api.usable, false); assert.match(by['off-api'].api.why, /switched off/);
-  assert.equal(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: s })[0].api.usable, false, 'full: no room');
-  assert.match(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: s })[0].api.why, /full \(1\/1\)/);
-  assert.equal(P.accountViews([apiRow('hulu-api')], {}, { settings: P.normSettings({ apiAccounts: ['mossesx-api'] }) })[0].api.usable, false, 'not in the pipeline list');
+  assert.equal(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings })[0].api.usable, false, 'full: no room');
+  assert.match(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings })[0].api.why, /full \(1\/1\)/);
 });
-t('routeFor: subscriptions first; overflow off = wait and say so; overflow on = API under its caps; override api / subscription', () => {
-  const free = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api')], {}, { settings: P.normSettings({}) });
-  assert.deepEqual([P.routeFor(build('x', 'queued', []), free, 'Opus').account, P.routeFor(build('x', 'queued', []), free, 'Opus').kind], ['w-max', 'subscription']);
-  const full = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
-  const off = P.routeFor(build('x', 'queued', []), full, 'Opus', P.normSettings({ apiOverflow: false }));
-  assert.equal(off.account, ''); assert.match(off.why, /API overflow is off/);
-  const on = P.routeFor(build('x', 'queued', []), full, 'Opus', P.normSettings({ apiOverflow: true }));
-  assert.deepEqual([on.account, on.kind, on.rule], ['hulu-api', 'api', 'overflow']);
-  const noKeys = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
-  const skip = P.routeFor(build('x', 'queued', []), noKeys, 'Opus', P.normSettings({ apiOverflow: true }));
+t('routeFor reads the Job routing rules of Claude accounts: no rule = wait and say so; the fallback rule = API under its caps; override api / subscription', () => {
+  const free = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [], building: 2, takesJobs: true }, apiRow('hulu-api')], {}, { settings });
+  assert.deepEqual([P.routeFor(build('x', 'queued', []), free, 'Opus', fallback()).account, P.routeFor(build('x', 'queued', []), free, 'Opus', fallback()).kind], ['w-max', 'subscription'], 'subs busy rule: a free subscription wins');
+  const full = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false })], {}, { settings });
+  const none = P.routeFor(build('x', 'queued', []), full, 'Opus', {});
+  assert.equal(none.account, ''); assert.match(none.why, /no Job routing rule sends it to an API account/);
+  const offRule = P.routeFor(build('x', 'queued', []), full, 'Opus', fallback(false));
+  assert.equal(offRule.account, '', 'a switched-off rule decides nothing');
+  const on = P.routeFor(build('x', 'queued', []), full, 'Opus', fallback());
+  assert.deepEqual([on.account, on.kind, on.rule], ['hulu-api', 'api', 'api-fallback']); assert.match(on.why, /API fallback when subscriptions are busy/);
+  const only = P.routeFor(build('x', 'queued', []), full, 'Opus', fallback(true, ['mossesx-api']));
+  assert.equal(only.account, '', 'the rule names its accounts'); assert.match(only.why, /mossesx-api: no API key saved/);
+  // a rule without subs busy (e.g. "Fable jobs on API") applies even while a subscription is free, as the launcher does
+  const fableApi = { rules: [{ id: 'fable-api', name: 'Fable on API', enabled: true, to: 'api', accounts: [], when: { models: ['fable'], subs: 'any' } }] };
+  assert.equal(P.routeFor(build('x', 'queued', [step('s1', 'Fable')]), free, 'Fable', fableApi).account, 'hulu-api');
+  assert.equal(P.routeFor(build('x', 'queued', [step('s1', 'Opus')]), free, 'Opus', fableApi).account, 'w-max');
+  const noKeys = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], {}, { settings });
+  const skip = P.routeFor(build('x', 'queued', []), noKeys, 'Opus', fallback());
   assert.equal(skip.account, ''); assert.match(skip.why, /mossesx-api: no API key saved/); assert.match(skip.why, /capped-api: spend cap reached: weekly cap/);
   const ov = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), free, 'Opus');
   assert.deepEqual([ov.account, ov.kind, ov.rule], ['hulu-api', 'api', 'override'], 'per-build override: API even while a subscription is free');
   const ovNone = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), noKeys, 'Opus');
   assert.equal(ovNone.account, ''); assert.match(ovNone.why, /set to run on API, no API account can take it/);
-  const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', P.normSettings({ apiOverflow: true }));
+  const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', fallback());
   assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
 });
-t('plan: overflow fills an API account up to its cap, then the rest wait with the reason', () => {
-  const s = P.normSettings({ parallelPerAccount: 2, apiOverflow: true });
-  const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });
+t('plan: the fallback rule fills an API account up to its cap, then the rest wait with the reason', () => {
+  const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings });
   const q = (id, at) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at } });
-  const r = P.plan({ builds: [q('one', '2026-11-08T00:01:00Z'), q('two', '2026-11-08T00:02:00Z')], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: s });
-  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'overflow']]);
+  const r = P.plan({ builds: [q('one', '2026-11-08T00:01:00Z'), q('two', '2026-11-08T00:02:00Z')], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, routing: fallback() });
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'api-fallback']]);
   assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api: full/);
   assert.equal(BP.normPipeline({ route: 'api' }).route, 'api'); assert.equal(BP.normPipeline({ route: 'nope', queuedAt: now }).route, '');
+});
+t('migrationOf: the old pipeline settings and account records move into workers.json once, then nothing to do', () => {
+  const file = { apiOverflow: true, apiAccounts: ['hulu-api'], parallelPerAccount: 2, useConsoleAccount: true, maxRuns: 3 };
+  const own = { 'w-pro': { fable: true, parallel: 4, probe: { fable: false, at: now } }, 'w-max': { use: false }, 'hulu-api': { use: false } };
+  const cfg = { api: { 'hulu-api': { label: 'Hulu', enabled: true, dailyCapUsd: 5, weeklyCapUsd: 20 } }, rules: [], perAccount: {}, excluded: [] };
+  const m = P.migrationOf(file, own, cfg, [{ name: 'hulu-api', kind: 'api' }]);
+  assert.deepEqual(m.config.rules.map((r) => [r.id, r.to, r.when.subs, r.accounts.join()]), [['api-fallback', 'api', 'busy', 'hulu-api']]);
+  assert.deepEqual(m.config.perAccount['w-pro'], { fable: true, building: 4 });
+  assert.deepEqual(m.config.excluded, ['w-max']); assert.equal(m.config.api['hulu-api'].enabled, false);
+  assert.deepEqual(m.settings, { maxRuns: 3 }, 'account facts leave settings.json; dispatcher settings stay');
+  assert.deepEqual(m.own, { 'w-pro': { probe: { fable: false, at: now } } }, 'only probes stay in accounts.json');
+  assert.ok(m.moved.length >= 5);
+  const again = P.migrationOf(m.settings, m.own, m.config, []);
+  assert.deepEqual(again.moved, [], 'idempotent');
+  const had = P.migrationOf({ apiOverflow: true }, {}, fallback(), []);
+  assert.equal(had.config.rules.length, 1, 'an existing fallback rule is not doubled'); assert.match(had.moved[0], /already the Job routing rule/);
 });
 t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {
   assert.match(OC.API_RULE, /deep link/); assert.match(OC.API_RULE, /every action and setting/); assert.match(OC.API_RULE, /MCP/); assert.match(OC.API_RULE, /CLI/); assert.match(OC.API_RULE, /voice/);
@@ -254,7 +278,8 @@ if (e2e) {
   for (const name of ['console', 'w-max', 'w-pro']) { mkdirSync(join(accountsDir, name), { recursive: true }); writeFileSync(join(accountsDir, name, '.credentials.json'), '{}'); }
   writeFileSync(join(accountsDir, '.active'), 'console\n');
   writeFileSync(join(workersDir, 'seen.json'), JSON.stringify({ console: { email: 'c@x', plan: 'max' }, 'w-max': { email: 'max@x', plan: 'max' }, 'w-pro': { email: 'pro@x', plan: 'pro' } }));
-  writeFileSync(join(workersDir, 'workers.json'), JSON.stringify({ workers: ['w-max', 'w-pro'] }));
+  // Claude accounts (workers.json) is the one source: one job at once per account, the console's own account takes none
+  writeFileSync(join(workersDir, 'workers.json'), JSON.stringify({ workers: ['w-max', 'w-pro'], limits: { building: 1 }, interactiveTakesJobs: false }));
   // the fake launcher records what it was asked to start and "starts" a session: an events.jsonl line + a slot entry
   const launcher = join(tmp, 'launcher.sh');
   writeFileSync(launcher, `#!/usr/bin/env bash
@@ -274,7 +299,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
-    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
   const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0 && !args.includes('--expect-fail')) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
   const pipe = (...a) => run('pipeline.mjs', ...a);
@@ -296,7 +321,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const r = json(pipe('tick', '--json'));
     assert.equal(r.launched.length, 0); assert.equal(r.plan.pending, 2);
     const s = json(pipe('status', '--json')); assert.equal(s.table.pending.length, 2); assert.equal(s.table.queued.length, 0); assert.equal(s.accounts.length, 3);
-    assert.equal(s.accounts.find((a) => a.name === 'console').usable, false, 'workers exist: the console account stays out');
+    assert.equal(s.accounts.find((a) => a.name === 'console').usable, false, 'Claude accounts says the console account takes no jobs: the orchestrator agrees');
+    assert.equal(s.routing.source, 'claude-workers@1'); assert.equal(s.routing.apiFallback, false);
     assert.equal(s.accounts.find((a) => a.name === 'w-max').fable, true); assert.equal(s.accounts.find((a) => a.name === 'w-pro').fable, false);
   });
   t('e2e queue: Brett moves both to the Queue; unqueue brings one back', () => {
@@ -385,6 +411,33 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
+  });
+  t('e2e one source: the orchestrator sees API workers and the fallback rule of Claude accounts; old settings migrate; account edits land in workers.json', () => {
+    // Claude accounts has an API worker (no key saved yet) the pipeline never had in its own list
+    const wf = join(workersDir, 'workers.json');
+    const w = JSON.parse(readFileSync(wf, 'utf8'));
+    writeFileSync(wf, JSON.stringify({ ...w, api: { 'hulu-api': { label: 'Hulu', enabled: true, dailyCapUsd: 5, weeklyCapUsd: 20 } } }));
+    // the old pipeline copy: overflow on, a parallel cap, a hand Fable flag
+    writeFileSync(join(pipeDir, 'settings.json'), JSON.stringify({ apiOverflow: true, apiAccounts: ['hulu-api'], parallelPerAccount: 4, maxRuns: 3 }));
+    writeFileSync(join(pipeDir, 'accounts.json'), JSON.stringify({ 'w-pro': { fable: true, parallel: 2 } }));
+    const m = json(pipe('migrate', '--json')); assert.ok(m.moved.some((x) => /API fallback/.test(x)), JSON.stringify(m));
+    const cfg = JSON.parse(readFileSync(wf, 'utf8'));
+    assert.deepEqual(cfg.rules.map((r) => [r.id, r.when.subs, r.accounts.join()]), [['api-fallback', 'busy', 'hulu-api']]);
+    assert.deepEqual(cfg.perAccount['w-pro'], { building: 2, fable: true });
+    assert.deepEqual(JSON.parse(readFileSync(join(pipeDir, 'settings.json'), 'utf8')), { maxRuns: 3 });
+    assert.deepEqual(json(pipe('migrate', '--json')).moved, [], 'nothing left to move');
+    const s = json(pipe('status', '--json'));
+    const hulu = s.accounts.find((a) => a.name === 'hulu-api');
+    assert.ok(hulu, 'the API worker of Claude accounts is an orchestrator account'); assert.equal(hulu.kind, 'api'); assert.match(hulu.api.why, /no API key saved/);
+    assert.equal(s.routing.apiFallback, true); assert.match(s.routing.lines.join(), /API fallback when subscriptions are busy: on \(hulu-api\)/);
+    const pro = s.accounts.find((a) => a.name === 'w-pro'); assert.equal(pro.fable, true); assert.equal(pro.fableFrom, 'override'); assert.equal(pro.parallel, 2);
+    // edits from the orchestrator (CLI = REST = MCP pipeline-account) write Claude accounts, not a pipeline copy
+    json(pipe('account', 'w-pro', '--fable', 'auto', '--parallel', '3', '--json'));
+    const after = JSON.parse(readFileSync(wf, 'utf8')).perAccount['w-pro']; assert.deepEqual(after, { building: 3 });
+    json(pipe('account', 'w-pro', '--use', 'off', '--json')); assert.ok(JSON.parse(readFileSync(wf, 'utf8')).excluded.includes('w-pro'));
+    assert.equal(json(pipe('status', '--json')).accounts.find((a) => a.name === 'w-pro').usable, false);
+    json(pipe('account', 'w-pro', '--use', 'on', '--json'));
+    const refused = pipe('set', 'apiOverflow=true', '--expect-fail'); assert.equal(refused.status, 2); assert.match(refused.stderr, /Claude accounts settings now/);
   });
 }
 

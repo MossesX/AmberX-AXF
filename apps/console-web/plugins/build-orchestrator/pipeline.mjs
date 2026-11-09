@@ -13,10 +13,13 @@
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
- *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
- *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
+ *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running), read live from Claude accounts
+ *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   writes Claude accounts (workers.json), the one source:
+ *                                  perAccount.fable, perAccount.building, Stop worker / API worker off
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
- *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
+ *   … settings [--json] | set k=v…  dispatcher settings (pipeline-settings@1: split, retries, idle alert, probes). Account
+ *                                  facts (caps, API accounts, the API fallback) are Claude accounts → Job routing only
+ *   … migrate [--json]             move old pipeline account settings into workers.json (every tick does it too)
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
@@ -26,14 +29,17 @@
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
- * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
- * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or a Job
+ * routing rule of Claude accounts (e.g. "API fallback when subscriptions are busy"), only with a key, under its caps
+ * (pipeline-core.mjs routeFor()). One source (Brett, Nov 9 2026): accounts, caps, Fable by hand, API workers and the
+ * routing rules are read live from deploy/claude-workers.mjs status (workers.json) on every call; nothing is copied.
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
- * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
+ * with the console container): settings.json, accounts.json (Fable probes only), state.json (what the last tick saw and
+ * did), log.jsonl.
  * Environment for tests: AXF_PIPELINE_LAUNCHER (instead of deploy/claude-headless.sh), AXF_PIPELINE_SPLITTER (a command that
  * reads the prompt on stdin and prints Claude's answer), AXF_PIPELINE_WORKTREES (root of build worktrees, default
  * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
@@ -59,7 +65,7 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { status as workersStatus, route as workerRoute, editConfig as editWorkers } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -91,18 +97,63 @@ export function loadSettings(env = process.env) {
   const file = readJson(files().settings, {}) ?? {};
   const cs = claudeSettings(env);
   const fromClaude = {};
-  if (file.parallelPerAccount === undefined && Number.isFinite(Number(cs['builds.maxParallel']))) fromClaude.parallelPerAccount = Number(cs['builds.maxParallel']);
   if (typeof cs['builds.launchWithoutAsking'] === 'boolean') fromClaude.autoQueue = cs['builds.launchWithoutAsking'];
   let patch = {}; try { patch = env.AXF_PIPELINE_SETTINGS ? JSON.parse(env.AXF_PIPELINE_SETTINGS) : {}; } catch { patch = {}; }
   return P.normSettings({ ...fromClaude, ...file, ...patch });
 }
-export function saveSettings(patch) { const f = files(); const next = P.normSettings({ ...(readJson(f.settings, {}) ?? {}), ...patch }); writeJson(f.settings, next); return next; }
+/** Account facts are Claude accounts' alone: a patch naming one is refused with where it lives now. */
+export function saveSettings(patch) {
+  const moved = Object.keys(patch ?? {}).filter((k) => P.MOVED_SETTINGS.includes(k));
+  if (moved.length) throw Object.assign(new Error(`${moved.join(', ')} ${moved.length === 1 ? 'is' : 'are'} Claude accounts settings now (the one source): Settings → Plugins → Claude accounts → Job routing, or node deploy/claude-workers.mjs rule … / building <name> <n> / set interactiveTakesJobs on|off`), { code: 2 });
+  const f = files(); const next = P.normSettings({ ...(readJson(f.settings, {}) ?? {}), ...patch }); writeJson(f.settings, next); return next;
+}
+/** accounts.json: the pipeline's measurements per account (Fable probes), never a setting. */
 export const loadOwnAccounts = () => { const j = readJson(files().accounts, {}); return j && typeof j === 'object' && !Array.isArray(j) ? j : {}; };
-export function saveOwnAccount(name, patch) {
+function saveProbe(name, probe) {
   if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const all = loadOwnAccounts(); const cur = all[name] && typeof all[name] === 'object' ? all[name] : {};
-  const next = { ...cur, ...patch }; for (const k of Object.keys(next)) if (next[k] === undefined) delete next[k];
-  all[name] = next; writeJson(files().accounts, all); return next;
+  const all = loadOwnAccounts(); all[name] = { probe }; writeJson(files().accounts, all); return all[name];
+}
+
+/** Claude accounts as claude-workers.mjs status reports them (workers.json + the saved logins), or an empty picture. */
+export function workersNow() {
+  try { return workersStatus(); } catch (e) { return { accounts: [], config: { rules: [] }, error: str(e.message, 300) }; }
+}
+
+/**
+ * One-time move of the old pipeline account settings (apiOverflow, apiAccounts, parallelPerAccount, useConsoleAccount and
+ * accounts.json fable / parallel / use) into workers.json, the one source. Idempotent: nothing to move = nothing written.
+ */
+export function migrate() {
+  const f = files();
+  const file = readJson(f.settings, null); const own = readJson(f.accounts, null);
+  if (!file && !own) return { moved: [] };
+  const w = workersNow();
+  const m = P.migrationOf(file ?? {}, own ?? {}, w.config ?? {}, w.accounts ?? []);
+  if (!m.moved.length) return { moved: [] };
+  editWorkers((c) => P.migrationOf(file ?? {}, own ?? {}, c, w.accounts ?? []).config);
+  if (file) writeJson(f.settings, m.settings);
+  if (own) writeJson(f.accounts, m.own);
+  logLine({ event: 'migrated', moved: m.moved });
+  return { moved: m.moved };
+}
+
+/** Change one account in Claude accounts (workers.json): Fable by hand, its building cap, whether it takes jobs. */
+export function setAccount(name, { fable, parallel, use } = {}) {
+  if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
+  const row = (workersNow().accounts ?? []).find((a) => a.name === name);
+  if (!row) throw Object.assign(new Error(`no Claude account ${name}`), { code: 2 });
+  const cfg = editWorkers((c) => {
+    const pa = { ...(c.perAccount[name] ?? {}) };
+    if (fable === 'auto') delete pa.fable; else if (typeof fable === 'boolean') pa.fable = fable;
+    if (Number.isFinite(parallel)) pa.building = parallel;
+    c.perAccount[name] = pa;
+    if (typeof use === 'boolean') {
+      if (row.kind === 'api') { if (!c.api[name]) throw Object.assign(new Error(`${name} is not set up as an API worker: Claude accounts → Job routing → API accounts`), { code: 2 }); c.api[name] = { ...c.api[name], enabled: use }; }
+      else { c.excluded = use ? c.excluded.filter((x) => x !== name) : [...new Set([...c.excluded, name])]; if (use && !c.workers.includes(name)) c.workers.push(name); }
+    }
+    return c;
+  });
+  return { perAccount: cfg.perAccount[name] ?? {}, api: cfg.api[name] ?? null, excluded: cfg.excluded.includes(name) };
 }
 export const loadState = () => ({ $axf: SCHEMA_STATE, at: '', plan: null, slots: null, accounts: [], idle: null, alerts: [], launchFails: {}, recent: [], ...(readJson(files().state, {}) ?? {}) });
 const saveState = (s) => writeJson(files().state, { ...s, $axf: SCHEMA_STATE });
@@ -120,10 +171,9 @@ export function slotsNow() {
   catch { return { used: 0, cap: 1, free: 1, running: [], queue: [], unavailable: true }; }
 }
 
-/** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
-export function accountsNow(store, settings = loadSettings()) {
-  let rows = [];
-  try { rows = workersStatus().accounts; } catch { rows = []; }
+/** Accounts as the pipeline sees them: Claude accounts' rows (read live) + what the store says runs on each + Fable probes. */
+export function accountsNow(store, settings = loadSettings(), workers = workersNow()) {
+  const rows = (workers.accounts ?? []).map((r) => ({ ...r }));
   const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting') && b.pipeline?.account);
   for (const r of rows) {
     const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
@@ -131,6 +181,10 @@ export function accountsNow(store, settings = loadSettings()) {
   }
   return P.accountViews(rows, loadOwnAccounts(), { settings });
 }
+
+/** The Job routing picture of Claude accounts the orchestrator works from (read-only here; edited in Claude accounts). */
+const routingOf = (w) => ({ source: 'claude-workers@1', settingsTab: 'claude-accounts', rules: (w.config?.rules ?? []).map((r) => ({ id: r.id, name: r.name, enabled: r.enabled, to: r.to, accounts: r.accounts, subs: r.when?.subs ?? 'any' })),
+  apiFallback: (w.config?.rules ?? []).some((r) => r.enabled && r.to === 'api' && r.when?.subs === 'busy'), lines: P.routingLines(w.config), interactiveTakesJobs: w.config?.interactiveTakesJobs !== false, limits: w.config?.limits ?? null, error: w.error || '' });
 
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
@@ -141,16 +195,16 @@ const row = (b) => {
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const store = loadStore(); const settings = loadSettings(); const workers = workersNow(); const accounts = accountsNow(store, settings, workers); const sl = slotsNow();
   const builds = live(store);
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const plan = P.plan({ builds, accounts, slots: sl, routing: workers.config, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, routing: routingOf(workers), state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -390,11 +444,13 @@ export function tick({ env = process.env } = {}) {
   const sent = [];
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
+  try { const m = migrate(); if (m.moved.length) consoleApi('POST', '/api/alerts', { source: P.ALERT_SOURCE, link: P.ALERT_LINK, key: 'pipeline:migrated', severity: 'info', title: 'Orchestrator account settings moved to Claude accounts', body: m.moved.join('; '), meta: { kind: 'migrated' } }); }
+  catch (e) { logLine({ event: 'migrate-failed', error: str(e.message, 300) }); }
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
-  const accounts = accountsNow(store, settings); const sl = slotsNow();
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const workers = workersNow(); const accounts = accountsNow(store, settings, workers); const sl = slotsNow();
+  const plan = P.plan({ builds: live(store), accounts, slots: sl, routing: workers.config, rules });
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
   for (const l of plan.launches) {
@@ -405,7 +461,7 @@ export function tick({ env = process.env } = {}) {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : `Job routing rule ${l.rule}`})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
@@ -431,7 +487,7 @@ export function tick({ env = process.env } = {}) {
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
   const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
-  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
+  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, kind: a.kind, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why, api: a.api ? { usable: a.api.usable, why: a.api.why } : null })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   for (const fn of TICK_HOOKS) {
@@ -480,7 +536,7 @@ export function request({ title, detail = '', said = '', priority = '', route = 
 export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const r = route === 'auto' ? '' : route;
   if (!BP.ROUTES.includes(r)) throw Object.assign(new Error('route is api, subscription or auto'), { code: 2 });
-  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (subscriptions; API only by the overflow rule)'} (${by}).`, by, action: 'pipeline:route' });
+  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (subscriptions; API only by a Job routing rule in Claude accounts)'} (${by}).`, by, action: 'pipeline:route' });
   logLine({ event: 'route', build: id, route: r || 'auto', by });
   return out;
 }
@@ -501,7 +557,7 @@ export function probe(name, env = process.env) {
     rec = { fable: ok, at: nowIso(), error: ok ? '' : str((r.error?.message || out).trim().split('\n').pop(), 200) };
   } catch (e) { rec = { fable: false, at: nowIso(), error: str(e.message, 200) }; }
   finally { if (snap) { try { releaseLogin({ dir, session: 'probe' }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
-  saveOwnAccount(name, { probe: rec });
+  saveProbe(name, rec);
   return rec;
 }
 
@@ -519,8 +575,8 @@ async function main(argv) {
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.unavailable ? ' (no slots store here)' : ''}`,
-      `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
-      `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
+      `Accounts (Claude accounts): ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
+      `Job routing (Claude accounts): ${s.routing.lines.join(' · ') || 'no API rule: API accounts take only builds set to API'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
       `Queue (${s.table.queued.length})`, ...s.table.queued.map(line),
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
@@ -551,18 +607,19 @@ async function main(argv) {
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
     const patch = {};
-    if (has('fable')) patch.fable = flag('fable') === 'auto' ? undefined : flag('fable') === 'on';
-    if (has('parallel')) patch.parallel = Math.max(1, Math.min(12, Number(flag('parallel')) || 1));
+    if (has('fable')) patch.fable = flag('fable') === 'auto' ? 'auto' : flag('fable') === 'on';
+    if (has('parallel')) patch.parallel = Math.max(0, Math.min(20, Number(flag('parallel')) || 0));
     if (has('use')) patch.use = flag('use') !== 'off';
-    const r = saveOwnAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r }, `${rest[0]}: ${JSON.stringify(r)}`);
+    const r = setAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r, source: 'claude-workers@1' }, `${rest[0]} in Claude accounts: ${JSON.stringify(r)}`);
   }
+  if (cmd === 'migrate') { const r = migrate(); return out({ ok: true, ...r }, r.moved.length ? `moved to Claude accounts:\n${r.moved.map((x) => `  ${x}`).join('\n')}` : 'nothing to move'); }
   if (cmd === 'probe') { const r = probe(rest[0]); return out({ ok: true, name: rest[0], probe: r }, `${rest[0]}: Fable ${r.fable ? 'yes' : 'no'}${r.error ? ` (${r.error})` : ''}`); }
   if (cmd === 'settings') { const s = loadSettings(); return out({ ok: true, settings: s }, Object.entries(s).filter(([k]) => k !== '$axf').map(([k, v]) => `${k} = ${JSON.stringify(v)}`).join('\n')); }
   if (cmd === 'set') {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | migrate | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

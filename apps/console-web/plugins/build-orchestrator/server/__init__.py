@@ -457,9 +457,13 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
     return _pipeline("split", _build_id(body.get("id")), "--request", "--by", (brett_click(request) or "console")[:80])
 
 
+MOVED_SETTINGS = ("parallelPerAccount", "useConsoleAccount", "apiOverflow", "apiAccounts")
+
+
 @router.post("/pipeline/account")
 async def pipeline_account(request: Request) -> dict[str, Any]:
-    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
+    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: changes the account in Claude accounts (workers.json, the one
+    source the orchestrator reads): Fable by hand, its building cap, whether it takes jobs. Never a credential."""
     body = await _json_body(request)
     name = str(body.get("name") or "").strip()
     if not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", name):
@@ -467,7 +471,7 @@ async def pipeline_account(request: Request) -> dict[str, Any]:
     args = ["account", name]
     if body.get("fable") in ("on", "off", "auto"):
         args += ["--fable", str(body["fable"])]
-    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 12:
+    if isinstance(body.get("parallel"), int) and 0 <= body["parallel"] <= 20:
         args += ["--parallel", str(body["parallel"])]
     if body.get("use") in ("on", "off"):
         args += ["--use", str(body["use"])]
@@ -483,13 +487,14 @@ def pipeline_settings() -> dict[str, Any]:
 
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
+    """{key: value…} for pipeline-settings@1 (fablePlans, maxRuns, idleAfterMin, probeDays, splitProvider). Account facts
+    (parallel caps, the console account taking jobs, API accounts, the API fallback) live only in Claude accounts → Job
+    routing (one source, Brett Nov 9 2026): naming one here is a 400 that says where it went."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
-    if body.get("apiOverflow") is True and not brett_click(request):
-        raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
+    allowed = {"fablePlans", "maxRuns", "idleAfterMin", "probeDays", "splitProvider"}
+    moved = sorted(k for k in body if k in MOVED_SETTINGS)
+    if moved:
+        raise HTTPException(400, f"{', '.join(moved)}: Claude accounts settings now (Settings → Plugins → Claude accounts → Job routing; MCP claude-accounts routing tools)")
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -505,7 +510,7 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
 @router.post("/pipeline/route")
 async def pipeline_route(request: Request) -> dict[str, Any]:
     """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under
-    their caps; Brett's own click), subscription = never an API account, auto = subscriptions, API only by overflow."""
+    their caps; Brett's own click), subscription = never an API account, auto = Claude accounts' Job routing rules."""
     body = await _json_body(request)
     route = str(body.get("route") or "")
     if route not in ("api", "subscription", "auto"):

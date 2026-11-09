@@ -29,7 +29,7 @@ interface Run { session: string; name: string; agent?: string; model?: string; a
 interface Account {
   name: string; active: boolean; email: string; plan: string; type: string; kind: 'subscription' | 'api'; role: Role; label: string; hasKey: boolean;
   limited: { until: string; kind: string; reason: string } | null; running: string[]; queued: number; building: number; queue: number;
-  runsToday: number; costToday: number; costWeek: number; recent: Run[];
+  runsToday: number; costToday: number; costWeek: number; recent: Run[]; fable?: boolean | null;
   spend: { day: number; week: number; dayCap: number; weekCap: number; state: 'ok' | 'warn' | 'capped'; why: string } | null;
 }
 interface Pending { op: Op; name: string; by: string }
@@ -82,7 +82,8 @@ const usd = (n: number) => `$${n.toFixed(2)}`;
 function usageLine(a: Account): string {
   const jobs = a.building ? [`${a.running.length}/${a.building} running`, `${a.queued ?? 0}/${a.queue} waiting`] : a.running.length ? [`${a.running.length} running`] : [];
   const caps = a.spend && (a.spend.dayCap || a.spend.weekCap) ? [`caps ${a.spend.dayCap ? usd(a.spend.dayCap) : 'none'}/day · ${a.spend.weekCap ? usd(a.spend.weekCap) : 'none'}/week`] : [];
-  return [...jobs, `${a.runsToday} run${a.runsToday === 1 ? '' : 's'} today`, `${usd(a.costToday)} today`, `${usd(a.costWeek)} this week`, ...caps].join(' · ');
+  const fable = a.fable === true ? ['Fable (set by hand)'] : a.fable === false ? ['no Fable (set by hand)'] : [];
+  return [...jobs, ...fable, `${a.runsToday} run${a.runsToday === 1 ? '' : 's'} today`, `${usd(a.costToday)} today`, `${usd(a.costWeek)} this week`, ...caps].join(' · ');
 }
 
 const ROLE_CHIP: Record<Role, string> = { interactive: 'Console', worker: 'Worker', saved: 'Stopped', 'api-worker': 'API worker', 'api-off': 'API · not used' };

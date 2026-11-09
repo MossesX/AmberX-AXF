@@ -349,7 +349,7 @@
         "id": "pipeline-route",
         "route": "POST /pipeline/route",
         "title": "Route a build to API or subscriptions",
-        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; Brett's own click), subscription (never an API account) or auto (subscriptions, API only by the overflow rule).",
+        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; Brett's own click), subscription (never an API account) or auto (Claude accounts' Job routing rules decide, e.g. API fallback when subscriptions are busy).",
         "input": {
           "type": "object",
           "properties": {
@@ -374,33 +374,60 @@
         "output": "{ id, route }"
       },
       {
+        "id": "pipeline-account",
+        "route": "POST /pipeline/account",
+        "title": "Change a Claude account for the orchestrator",
+        "description": "Writes Claude accounts (workers.json), the one source the orchestrator reads live: fable on|off|auto (perAccount.fable), parallel n (its building cap), use on|off (Stop worker, or API worker off).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Account name (e.g. hulu-api)"
+            },
+            "fable": {
+              "type": "string",
+              "enum": [
+                "on",
+                "off",
+                "auto"
+              ]
+            },
+            "parallel": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "use": {
+              "type": "string",
+              "enum": [
+                "on",
+                "off"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "output": "{ name, record, source }"
+      },
+      {
         "id": "pipeline-settings",
         "route": "GET /pipeline/settings",
         "title": "Pipeline settings",
         "readOnly": true,
-        "description": "The dispatcher's settings, including the API overflow rule (apiOverflow) and which API accounts it may use.",
+        "description": "The dispatcher's own settings (split provider, retries, idle alert, probes). Accounts, caps, API workers and the API fallback are not here: the orchestrator reads them live from Claude accounts (claude-workers@1); see GET /pipeline → routing.",
         "output": "{ settings }"
       },
       {
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings (fablePlans, maxRuns, idleAfterMin, probeDays, splitProvider). Account facts (parallelPerAccount, useConsoleAccount, apiOverflow, apiAccounts) are refused with a 400: they live only in Claude accounts → Job routing.",
         "input": {
           "type": "object",
           "properties": {
-            "apiOverflow": {
-              "type": "boolean"
-            },
-            "apiAccounts": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "parallelPerAccount": {
-              "type": "integer"
-            },
             "maxRuns": {
               "type": "integer"
             },

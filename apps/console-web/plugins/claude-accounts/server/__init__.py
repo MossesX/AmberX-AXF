@@ -167,6 +167,7 @@ def parse_workers(text: str) -> dict[str, dict[str, Any]]:
                           "role": str(a.get("role") or "") if a.get("role") in ROLE_NAMES else "", "kind": "api" if a.get("kind") == "api" else "subscription",
                           "label": str(a.get("label") or "")[:40], "queued": int(a.get("queued") or 0), "building": int(a.get("building") or 0), "queue": int(a.get("queue") or 0),
                           "hasKey": a.get("hasKey") is not False, "why": str(a.get("why") or "")[:200], "takesJobs": bool(a.get("takesJobs")),
+                          "fable": a.get("fable") if isinstance(a.get("fable"), bool) else None,
                           "spend": {k: (float(sp.get(k) or 0) if k not in ("state", "why") else str(sp.get(k) or "")[:120]) for k in ("day", "week", "dayCap", "weekCap", "alertAt", "state", "why")} if sp else None,
                           "running": [str(s)[:80] for s in a.get("running") or []][:20], "runsToday": int(a.get("runsToday") or 0),
                           "costToday": float(a.get("costToday") or 0), "costWeek": float(a.get("costWeek") or 0),
