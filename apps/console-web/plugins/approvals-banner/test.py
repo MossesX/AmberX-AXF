@@ -36,6 +36,11 @@ def ok(v: object, what: str) -> None:
     checks += 1
 
 
+# The console image must ship what the relay imports: a missing httpx left /decide unmounted and every Approve tap
+# answered 405 Method Not Allowed (Nov 9 2026, after mcp 2.3 moved to httpx2).
+_reqs = (HERE.parents[1] / "server" / "requirements.txt").read_text()
+ok(any(line.split("#")[0].strip().startswith("httpx>") for line in _reqs.splitlines()), "console requirements list httpx")
+
 ID = "0123abcd-0123-4abc-8def-0123456789ab"
 EXPIRED = "0123abcd-0123-4abc-8def-0000000000e0"
 DECIDED = "0123abcd-0123-4abc-8def-0000000000d0"
