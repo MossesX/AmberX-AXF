@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2046,
- "updatedAt": "2026-11-09T23:51:16.009Z",
+ "rev": 2047,
+ "updatedAt": "2026-11-09T23:52:17.768Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132280,12 +132280,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:50:17.483Z",
+   "updatedAt": "2026-11-09T23:52:16.582Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T23:50:17.483Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T23:52:16.582Z"
     }
    ],
    "approvals": [],
@@ -132312,13 +132316,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-09T23:52:16.582Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9x1h3a01v2ab",
+     "title": "",
+     "text": "Goes with the Activity Monitor build. 1) Every role gets a named employee (crew agent profile): orchestrator, dispatcher, each app (console, AmberX, Molly, axHub, Patches...), each action type (builds, approvals, fixes, deploys, accounts, notifications, git/merge, etc.). Use existing crew where they fit, create the rest with names and avatars. 2) Every Activity Monitor entry shows the acting employee's avatar and name like a chat message; click opens their profile: role, jobs, current work, full activity history. 3) A Who does what board: every job/role and the employee that holds it, reassignable. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T23:52:16.582Z",
+     "updatedAt": "2026-11-09T23:52:16.582Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9x1h3a02b758",
+     "title": "",
+     "text": "The orchestrator has somebody who runs it, one of my employees. Assign employees to every single type of action and app, so I can understand easily what's what. If it's something they did, it will have their avatar next to it, like in a text message. You'll be able to click that person with hooks to the employee's information, their history. And I need a way to see who has which job.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T23:52:16.582Z",
+     "updatedAt": "2026-11-09T23:52:16.582Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9x1h3a036bnt",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/assign-an-employee-to-every-role-action-type-and.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/assign-an-employee-to-every-role-action-type-and.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T23:52:16.582Z",
+     "updatedAt": "2026-11-09T23:52:16.582Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -132327,12 +132407,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T23:52:16.582Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
