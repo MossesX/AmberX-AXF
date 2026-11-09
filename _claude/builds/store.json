@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1687,
- "updatedAt": "2026-11-09T02:58:30.140Z",
+ "rev": 1688,
+ "updatedAt": "2026-11-09T02:58:36.877Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108092,7 +108092,7 @@
    "branch": "claude/skins-finish",
    "pr": "#383",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-09T02:58:28.966Z",
+   "updatedAt": "2026-11-09T02:58:35.329Z",
    "builtAt": "2026-11-09T02:58:18.212Z",
    "notes": [
     {
@@ -108312,12 +108312,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "complete",
+    "status": "pending",
     "estimate": "",
     "source": "console",
     "planId": "",
