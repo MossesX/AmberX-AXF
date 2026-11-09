@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1665,
- "updatedAt": "2026-11-09T02:14:10.166Z",
+ "rev": 1666,
+ "updatedAt": "2026-11-09T02:14:18.666Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -111142,8 +111142,9 @@
    "pendingId": "",
    "branch": "claude/merge-profiles-one",
    "pr": "",
+   "mergedAt": "2026-11-07T10:32:38Z",
    "createdAt": "2026-11-07T09:19:46.590Z",
-   "updatedAt": "2026-11-07T10:29:30.278Z",
+   "updatedAt": "2026-11-09T02:14:07Z",
    "builtAt": "2026-11-07T09:19:46.590Z",
    "notes": [
     {
@@ -111153,6 +111154,10 @@
     {
      "text": "Follow-up profiles-all-finish (branch claude/profiles-all-finish): main-framework folded into all too, all is the base profile, old profile folders deleted in repo + hub.",
      "at": "2026-11-07T10:29:30.278Z"
+    },
+    {
+     "text": "Shipped manifest sm-merge-profiles-one rev 1 sent to Shipped features (orchestrator): landed 7babeb631, 77 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-09T02:14:07Z"
     }
    ],
    "approvals": [],
@@ -111168,6 +111173,12 @@
     "verbatim": false,
     "from": "brief",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-merge-profiles-one",
+    "rev": 1,
+    "at": "2026-11-09T02:14:07Z",
+    "landedCommit": "7babeb6313cdc799a7792142c3fda37178239e98"
    },
    "steps": [
     {
@@ -111289,7 +111300,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
