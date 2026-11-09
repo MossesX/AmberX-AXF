@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1773,
- "updatedAt": "2026-11-09T17:11:08.012Z",
+ "rev": 1774,
+ "updatedAt": "2026-11-09T17:11:19.223Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126887,7 +126887,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:10:53.056Z",
+   "updatedAt": "2026-11-09T17:11:10.387Z",
    "builtAt": "",
    "notes": [
     {
@@ -126905,6 +126905,10 @@
     {
      "text": "s1 done: badge customize target now names .fx-badge and .fx-banner__badge, so skin badge parts reach every banner badge. s6 raised to Fable (edits asset-types.json, the asset-type registry) and moved after s4 so it still lands before the s5 CI gate; s2-s4 continue on Opus.",
      "at": "2026-11-09T17:03:56.117Z"
+    },
+    {
+     "text": "Headless run axf-skins-restyle-everything-badges-banner-and-every--earl: brief only · start 10.9K tokens ($0.03) · cost $3.43 · 105 turns · 6 tools, MCP none",
+     "at": "2026-11-09T17:11:10.387Z"
     },
     {
      "text": "Phase 1 (Opus) done: s1-s4 on draft PR #409. Next: s6 on Fable (asset-types skin entries + customize text targets), then s5 (screenshot gate, UI Review).",
