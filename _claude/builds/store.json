@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1978,
- "updatedAt": "2026-11-09T20:38:35.026Z",
+ "rev": 1979,
+ "updatedAt": "2026-11-09T20:39:08.177Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116857,7 +116857,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:37:05.198Z",
+   "updatedAt": "2026-11-09T20:39:05.871Z",
    "builtAt": "",
    "notes": [
     {
@@ -116867,6 +116867,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-09T20:37:05.198Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T20:39:05.871Z"
     }
    ],
    "approvals": [],
@@ -116881,18 +116885,24 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
-    "splitRequested": "2026-11-09T20:36:25.143Z",
-    "note": "",
+    "split": {
+     "at": "2026-11-09T20:39:05.871Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 4,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw77z1qq040wp5",
+     "uid": "st-mw9q51n308aia3",
      "title": "",
-     "text": "Find why the owner check passes for max parallel but fails for launchWithoutAsking; make the admin login count as owner for all owner-only settings",
+     "text": "Signed in to the console as admin (the only account), Gizmo could raise Max parallel builds but 'Launch builds without asking' says owner only and won't toggle.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -116907,14 +116917,14 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-08T02:35:00.330Z",
-     "updatedAt": "2026-11-08T02:35:00.330Z"
+     "createdAt": "2026-11-09T20:39:05.871Z",
+     "updatedAt": "2026-11-09T20:39:05.871Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw77z1qq05egks",
+     "uid": "st-mw9q51n3096a74",
      "title": "",
-     "text": "Wire the Build Manager start button on pending builds to actually launch, with a log line and error shown on failure",
+     "text": "The owner check must treat the admin login as the owner for every owner-only setting.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -116929,14 +116939,14 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-08T02:35:00.330Z",
-     "updatedAt": "2026-11-08T02:35:00.330Z"
+     "createdAt": "2026-11-09T20:39:05.871Z",
+     "updatedAt": "2026-11-09T20:39:05.871Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw77z1qq06g7yp",
+     "uid": "st-mw9q51n30asakn",
      "title": "",
-     "text": "Test: admin toggles every owner-only setting; start launches a pending build",
+     "text": "Also: the Build Manager start button on a pending build does nothing (no log line).",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -116951,8 +116961,33 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-08T02:35:00.330Z",
-     "updatedAt": "2026-11-08T02:35:00.330Z"
+     "createdAt": "2026-11-09T20:39:05.871Z",
+     "updatedAt": "2026-11-09T20:39:05.871Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw9q51n30bird4",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fix-owner-check-bug-dead-start-button.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/fix-owner-check-bug-dead-start-button.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T20:39:05.871Z",
+     "updatedAt": "2026-11-09T20:39:05.871Z"
     }
    ],
    "profiles": [
@@ -116963,7 +116998,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116982,7 +117017,7 @@
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-08T02:35:00.330Z",
+   "defaultAt": "2026-11-09T20:39:05.871Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
