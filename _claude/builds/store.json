@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1721,
- "updatedAt": "2026-11-09T13:13:04.304Z",
+ "rev": 1722,
+ "updatedAt": "2026-11-09T13:13:43.935Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126702,6 +126702,66 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T13:13:03.324Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "banner-skins-context-menu-item-with-sub-menu-of-all-skins-widget-hidden-by-def",
+   "title": "Banner: Skins context-menu item with sub-menu of all skins (widget hidden by default)",
+   "category": "Banner",
+   "detail": "A skins banner widget that shows nothing on the banner by default; instead right-clicking (long-press on touch) the banner shows a context menu item 'Skins' with a sub-menu listing every skin, current one checked; picking one applies it live. Option in settings to also show it as a visible banner widget. Uses the existing banner widgets and context menu system, assets/tokens only. Brett: \"by default I don't want it to show anything, just part of the context menu... right click the banner, it will show a context menu item with skins with a sub menu of all the skins.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T13:13:43.065Z",
+   "updatedAt": "2026-11-09T13:13:43.065Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9a8a94021dw9",
+     "title": "",
+     "text": "Skins banner widget (hidden by default) contributing a 'Skins' item with a sub-menu of all skins to the banner context menu; apply live, check current; setting to show it visibly; screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T13:13:43.066Z",
+     "updatedAt": "2026-11-09T13:13:43.066Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 488
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-09T13:13:43.066Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
