@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1886,
- "updatedAt": "2026-11-09T19:11:25.684Z",
+ "rev": 1887,
+ "updatedAt": "2026-11-09T19:11:40.137Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129909,7 +129909,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-09T19:11:23.406Z",
+   "updatedAt": "2026-11-09T19:11:39.022Z",
    "builtAt": "",
    "notes": [
     {
@@ -129927,6 +129927,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-vps-orchestrator-only-rule-vps-settings-console--lenny, own login copy)",
      "at": "2026-11-09T19:11:23.406Z"
+    },
+    {
+     "text": "Headless run axf-vps-orchestrator-only-rule-vps-settings-console--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:11:39.022Z"
     }
    ],
    "approvals": [],
@@ -130044,7 +130048,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
