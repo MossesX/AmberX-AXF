@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 01:23 UTC · `shipped-features-live-manifests-from-dispatch-to` added (0 steps) (all) · foreign-write
 - 2026-11-09 01:24 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · pending
 - 2026-11-09 01:24 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · orchestrator
 - 2026-11-09 01:25 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · pending
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:42 UTC · `fix-owner-check-bug-dead-start-button` s1 done, → running (all) · orchestrator
 - 2026-11-09 20:42 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s1 done, → running (all) · orchestrator
 - 2026-11-09 20:42 UTC · `fix-owner-check-bug-dead-start-button` s2 done (all) · orchestrator
+- 2026-11-09 20:42 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
