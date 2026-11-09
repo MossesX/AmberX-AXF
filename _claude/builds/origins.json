@@ -586,6 +586,20 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "And I can say, Jim, read this page, or read that window, or that tab, or container, or whatever. He'll use his own voice and he'll read it out loud. It can be any app on the screen, it doesn't have to be the console. You can say, Joey, read this tab, this Chrome tab.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
+    },
+    {
+     "said": "So we need writers and readers too.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },

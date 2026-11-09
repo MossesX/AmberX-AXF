@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2049,
- "updatedAt": "2026-11-09T23:52:39.281Z",
+ "rev": 2050,
+ "updatedAt": "2026-11-09T23:52:49.337Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132280,7 +132280,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:52:30.365Z",
+   "updatedAt": "2026-11-09T23:52:48.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -132315,6 +132315,20 @@
     "addenda": [
      {
       "said": "It doesn't have to be a different job for every single action. Make categories, like a janitor who cleans up all the cache, an artist who makes images, a manager who runs the orchestrator, a builder. ... I need to be able to see all the employees and see which ones have actual jobs, which ones are on the clock, which ones are working. I can set rules and permissions for each one, like this one's restricted to that, this one's allowed to do this. Every employee has rules. The orchestrator, every headless session, has to be assigned to an employee. Everything has to be assigned to somebody so I can easily track things. ... Give each employee a unique voice accent that can be tweaked. And if you click a button, you can hear the output pane in words and audio, Jim talking to Joe and all that.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "And I can say, Jim, read this page, or read that window, or that tab, or container, or whatever. He'll use his own voice and he'll read it out loud. It can be any app on the screen, it doesn't have to be the console. You can say, Joey, read this tab, this Chrome tab.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "So we need writers and readers too.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132423,7 +132437,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
