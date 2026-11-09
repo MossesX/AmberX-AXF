@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1846,
- "updatedAt": "2026-11-09T18:16:32.387Z",
+ "rev": 1847,
+ "updatedAt": "2026-11-09T18:17:09.467Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127586,7 +127586,7 @@
    "title": "Right-click a queued build to assign it to a specific saved Claude account",
    "category": "",
    "detail": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127594,8 +127594,8 @@
    "pr": "#411",
    "priority": "P2",
    "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-09T18:16:31.101Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T18:17:08.338Z",
+   "builtAt": "2026-11-09T18:17:08.338Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -127714,12 +127714,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T18:17:08.338Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T16:04:14.593Z",
-     "updatedAt": "2026-11-09T16:04:14.593Z"
+     "updatedAt": "2026-11-09T18:17:08.493Z"
     }
    ],
    "profiles": [
@@ -127730,7 +127730,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
