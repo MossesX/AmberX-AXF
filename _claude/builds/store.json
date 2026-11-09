@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1819,
- "updatedAt": "2026-11-09T18:00:44.097Z",
+ "rev": 1820,
+ "updatedAt": "2026-11-09T18:01:14.284Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128939,7 +128939,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-09T18:00:37.341Z",
+   "updatedAt": "2026-11-09T18:01:11.918Z",
    "builtAt": "",
    "notes": [
     {
@@ -128973,6 +128973,10 @@
     {
      "text": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
      "at": "2026-11-09T18:00:13.412Z"
+    },
+    {
+     "text": "Headless run axf-skins-own-everything-colour-theme-swaps-independ--joey: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T18:01:11.918Z"
     }
    ],
    "approvals": [],
@@ -129090,7 +129094,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
