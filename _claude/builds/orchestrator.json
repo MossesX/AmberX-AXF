@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:50:46.878Z",
+ "updatedAt": "2026-11-09T23:51:02.770Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81014,12 +81014,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-09T23:49:16.724Z",
+   "updatedAt": "2026-11-09T23:51:00.075Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T23:49:16.724Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T23:51:00.075Z"
     }
    ],
    "approvals": [],
@@ -81036,7 +81040,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "New plugin (not app core). 1) One event bus: console UI actions, plugin commands, axHub calls/jobs/approvals/vetoes, agent and crew requests, orchestrator decisions (split, queue, launch, reject, hand-off), headless sessions, errors and the fix attempts after them (link to the Automatic fixes notes), from every app through axHub. 2) Each event written as a plain-English sentence with who, what, to whom, result (e.g. 'Joey sent X to the orchestrator, which rejected it: reason'), plus expandable raw detail. Chains grouped: one request and everything that followed it, as a collapsible tree. 3) Beautiful output window: colored by kind and severity, tabs (All, Errors, Approvals, Agents, Builds, axHub, per app), collapsible panes, live follow, search, filters, time range, pause, export; settings for colors, density, what to show. 4) Select any event to act on it: retry, open the thing it touched, jump to the fix note, or Make a rule: 'when this happens again, do that' (run a fix, notify, route to an agent), rules listed and editable. 5) Widget for banners/toolbars with live count and last error. Full API control so sessions can read and search the log.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9wzu2401pwnq"
+    },
+    {
+     "id": "s2",
+     "text": "I need an activity log for the console. Every time something clicks, or any time something is being done, or any time an agent or employee asks for something or an approval... if you receive an error, it should note the error, and then what you do to fix it, in a very beautiful colored output window... beautiful interactive log with collapsible panes, maybe tabs... allow me to select an action and make rules, so if this happens again, you do that... see everything the console is doing, axHub's doing, any of the apps are doing through axHub... like Molly reached out to Patches through axHub to download a file. Joey sent this to the orchestrator who rejected it, and the orchestrator sent it to Patches who fixed it and sent it back... very detailed log of everything in English words.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9wzu240243y2"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/activity-monitor-plugin-live-plain-english-log-o.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/activity-monitor-plugin-live-plain-english-log-o.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9wzu2403n0ka"
+    }
+   ]
   },
   {
    "id": "assign-an-employee-to-every-role-action-type-and",
