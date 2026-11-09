@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1729,
- "updatedAt": "2026-11-09T13:25:26.317Z",
+ "rev": 1730,
+ "updatedAt": "2026-11-09T13:31:22.027Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127058,7 +127058,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T13:25:25.454Z",
+   "updatedAt": "2026-11-09T13:31:21.138Z",
    "builtAt": "",
    "notes": [
     {
@@ -127138,6 +127138,28 @@
      "rev": 1,
      "createdAt": "2026-11-09T13:21:25.005Z",
      "updatedAt": "2026-11-09T13:21:25.005Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw9auynu01ktuh",
+     "title": "",
+     "text": "FIRST, before any change: write a regression suite and record a baseline on current main (tag pre-skins-only-2026-11-09): screenshot every screen/dialog in every framework app (console, Molly, AmberX web, axHub, studios) in the default look; every plugin loads with no console errors; every settings tab opens; saved settings and axHub shared settings round-trip; control@1 tokens/list/act API and every MCP/axHub tool still answer; theme token names resolve (aliases); asset manifest validation passes; app builds and CI pass. Hidden-breakage checks: no JS errors in logs, no missing CSS variables (computed style audit), no 404 assets, data files unchanged except intended migrations. LAST step: rerun everything, diff against baseline, block landing on any unexpected difference; post report + diffs to UI Review.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T13:31:21.139Z",
+     "updatedAt": "2026-11-09T13:31:21.211Z"
     }
    ],
    "profiles": [
@@ -127148,7 +127170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
