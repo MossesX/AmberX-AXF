@@ -757,8 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 21:00 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` added (2 steps) (all) · claude-ai-voice
-- 2026-11-07 21:09 UTC · `glossary-index-demos` → running, note (all) · orchestrator
 - 2026-11-07 21:33 UTC · `glossary-index-demos` s2 done, note (all) · orchestrator
 - 2026-11-07 21:33 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 21:39 UTC · `investor-demo-player-shell-with-login-gate-skins` added (0 steps) (all) · pending
@@ -1157,6 +1155,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 03:02 UTC · `plan-studio-receives-a-valid-shipped-feature-man` PR #404 (all) · builds-live
 - 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · pending
 - 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · foreign-write
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · foreign-write
+- 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · orchestrator
 
 ## Token passes (log)
 

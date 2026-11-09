@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T03:02:52.021Z",
+ "updatedAt": "2026-11-09T03:03:19.411Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75904,7 +75904,7 @@
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T03:02:41.009Z",
+   "updatedAt": "2026-11-09T03:03:12.967Z",
    "builtAt": "",
    "notes": [
     {
@@ -75948,8 +75948,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T03:03:12.967Z",
      "note": "",
      "uid": "st-mw8j8z9z0160g3"
     },
@@ -76864,12 +76864,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T03:02:16.421Z",
-   "updatedAt": "2026-11-09T03:02:50.247Z",
+   "updatedAt": "2026-11-09T03:03:15.234Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett: \"Can I make it so that employees like Molly or Amber or Moses can use it, and then I assign one of the employees to the orchestrator so the orchestrator can say run it, change it?\" Permissions are granted per employee (agent from the one roster: Molly, Amber, Moses, Brownie, etc.), not just per session type. Brett assigns an employee to the orchestrator; the orchestrator acts with that employee's permissions. Brett can grant an employee permission to change policies, but only within a ceiling Brett sets: an employee can never raise its own or another's permissions above the ceiling, never touch owner-only settings or the ceiling itself, every change it makes is logged with the employee's name and sends Brett a notification, and Brett can revoke instantly. Panel shows per-employee view and per-tool view.",
      "at": "2026-11-09T03:02:50.247Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T03:03:15.234Z"
     }
    ],
    "approvals": [],
@@ -76886,7 +76890,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8of7z701qzlf"
+    },
+    {
+     "id": "s2",
+     "text": "I need a control panel for all those settings, those permission settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8of7z7023tt9"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8of7z703zubg"
+    }
+   ]
   }
  ]
 }
