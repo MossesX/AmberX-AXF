@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2016,
- "updatedAt": "2026-11-09T20:53:18.610Z",
+ "rev": 2017,
+ "updatedAt": "2026-11-09T20:57:15.989Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124573,7 +124573,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-09T20:49:25.525Z",
+   "updatedAt": "2026-11-09T20:57:14.433Z",
    "builtAt": "",
    "notes": [
     {
@@ -124618,18 +124618,18 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:41:57.914Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T20:49:20.226Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:49:20.226Z"
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124647,12 +124647,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:57:14.433Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T22:33:35.426Z",
-     "updatedAt": "2026-11-08T22:33:35.426Z"
+     "updatedAt": "2026-11-09T20:57:14.583Z"
     },
     {
      "id": "s2",
