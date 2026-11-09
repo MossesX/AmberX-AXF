@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 14:17 UTC · `orchestrator-dup-check` → built (all) · orchestrator-dup-check
 - 2026-11-07 14:17 UTC · `orchestrator-dup-check` → complete, note (all) · orchestrator-dup-check
 - 2026-11-07 14:21 UTC · `plan-designer` added (6 steps) (all) · claude-plan-designer
 - 2026-11-07 14:27 UTC · `plan-designer` s1 done, → running (all) · claude-plan-designer
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:48 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · foreign-write
 - 2026-11-09 00:49 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
 - 2026-11-09 00:50 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
+- 2026-11-09 00:51 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
 
 ## Token passes (log)
 
