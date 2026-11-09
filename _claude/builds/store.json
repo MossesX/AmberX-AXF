@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1959,
- "updatedAt": "2026-11-09T20:26:35.155Z",
+ "rev": 1960,
+ "updatedAt": "2026-11-09T20:26:44.783Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131188,16 +131188,22 @@
    "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
    "category": "",
    "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:26:33.987Z",
+   "updatedAt": "2026-11-09T20:26:35.400Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:26:35.400Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -131212,6 +131218,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-09T20:26:35.079Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -131221,7 +131243,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
