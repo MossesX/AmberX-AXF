@@ -3641,6 +3641,13 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "No, don't check them when the console opens. Forget that. Don't check them unless it's manual. ... The orchestrator doesn't test before he runs the build. If the build fails, that's the check.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },

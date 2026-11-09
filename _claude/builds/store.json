@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1941,
- "updatedAt": "2026-11-09T20:19:22.489Z",
+ "rev": 1942,
+ "updatedAt": "2026-11-09T20:19:35.523Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130794,7 +130794,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:19:21.263Z",
+   "updatedAt": "2026-11-09T20:19:33.959Z",
    "builtAt": "",
    "notes": [
     {
@@ -130875,6 +130875,13 @@
       "at": "",
       "source": "voice",
       "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "No, don't check them when the console opens. Forget that. Don't check them unless it's manual. ... The orchestrator doesn't test before he runs the build. If the build fails, that's the check.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
       "verbatim": true
      }
     ]
@@ -130987,7 +130994,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

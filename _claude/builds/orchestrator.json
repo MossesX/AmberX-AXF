@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:19:22.489Z",
+ "updatedAt": "2026-11-09T20:19:35.523Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80053,7 +80053,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:19:21.263Z",
+   "updatedAt": "2026-11-09T20:19:33.959Z",
    "builtAt": "",
    "notes": [
     {
@@ -80134,6 +80134,13 @@
       "at": "",
       "source": "voice",
       "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "No, don't check them when the console opens. Forget that. Don't check them unless it's manual. ... The orchestrator doesn't test before he runs the build. If the build fails, that's the check.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
       "verbatim": true
      }
     ]
