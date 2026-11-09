@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2057,
- "updatedAt": "2026-11-09T23:56:08.906Z",
+ "rev": 2058,
+ "updatedAt": "2026-11-09T23:56:49.564Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132280,7 +132280,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:56:06.837Z",
+   "updatedAt": "2026-11-09T23:56:48.017Z",
    "builtAt": "",
    "notes": [
     {
@@ -132364,6 +132364,13 @@
      },
      {
       "said": "You can also assign them jobs or move their job or fire them, and you select from a dialog of jobs and you can add everything you want. It's a sortable, filterable, multi-column, collapsible and expandable rows. Make it sick, dude. Make an HR department that's off the meat rack.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "Then give me a meticulous walkthrough that describes everything they can do, everything going on, all the information about them, where it's stored, how it works, and how everything's linked together to the employees. A powerful, extensive walkthrough that even includes every individual setting. Make it 30 minutes. Make it sick.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132472,7 +132479,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
