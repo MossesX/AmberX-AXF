@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` → running, note (all) · pipeline
 - 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` branch claude/nested-menus-for-console-amberx-and-molly-overri (all) · pipeline
 - 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` note (all) · orchestrator
 - 2026-11-08 23:27 UTC · `nested-menus-for-console-amberx-and-molly-overri` branch claude/nested-menus-for-console-amberx-and-molly-overri, PR #399 (all) · builds-live
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → running, note (all) · pipeline
 - 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` branch claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status (all) · pipeline
 - 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · orchestrator
+- 2026-11-09 20:23 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
