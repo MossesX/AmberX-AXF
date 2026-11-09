@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:51:33.595Z",
+ "updatedAt": "2026-11-09T20:51:42.671Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14997,8 +14997,8 @@
    "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:51:23.444Z",
-   "builtAt": "2026-11-09T20:48:11.014Z",
+   "updatedAt": "2026-11-09T20:51:26.623Z",
+   "builtAt": "2026-11-09T20:51:26.623Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -15035,6 +15035,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-only-settings-brett-s-admin-console-login---sully, own login copy)",
      "at": "2026-11-09T20:44:34.558Z"
+    },
+    {
+     "text": "Covered by PR #416 (fix-owner-check-bug-dead-start-button): the signed-in admin session now counts as the owner even when the console page sends its token. Check it once that lands; this build may not need its own run.",
+     "at": "2026-11-09T20:51:26.623Z"
     },
     {
      "text": "Headless run axf-owner-only-settings-brett-s-admin-console-login---earl: brief only · start 11.0K tokens ($0.03) · cost $0.53 · 22 turns · 6 tools, MCP none",
@@ -70131,7 +70135,7 @@
    "title": "Fix owner check bug + dead start button",
    "category": "bug fix",
    "detail": "Signed in to the console as admin (the only account), Gizmo could raise Max parallel builds but 'Launch builds without asking' says owner only and won't toggle. The owner check must treat the admin login as the owner for every owner-only setting. Also: the Build Manager start button on a pending build does nothing (no log line).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -70139,8 +70143,8 @@
    "pr": "#416",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:51:18.508Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T20:51:20.568Z",
+   "builtAt": "2026-11-09T20:51:20.569Z",
    "notes": [
     {
      "text": "Split asked for by console.",
@@ -70252,8 +70256,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:51:20.568Z",
      "note": "",
      "uid": "st-mw9q51n30bird4"
     }
