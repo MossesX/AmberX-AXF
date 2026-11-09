@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1660,
- "updatedAt": "2026-11-09T01:27:07.519Z",
+ "rev": 1661,
+ "updatedAt": "2026-11-09T01:27:14.429Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -92301,8 +92301,9 @@
    "pendingId": "",
    "branch": "claude/gizmo-voice-fix",
    "pr": "",
+   "mergedAt": "2026-11-07T16:33:00Z",
    "createdAt": "2026-11-05T01:38:10.037Z",
-   "updatedAt": "2026-11-07T11:17:46.296Z",
+   "updatedAt": "2026-11-09T01:27:06Z",
    "builtAt": "2026-11-07T11:17:32.753Z",
    "notes": [
     {
@@ -92312,6 +92313,10 @@
     {
      "text": "Nov 7: fixed on branch claude/gizmo-voice-fix (committed, not pushed yet). Report _claude/builds/reports/gizmo-voice.md. Phone test of the new APK is Brett's.",
      "at": "2026-11-07T11:17:46.296Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-voice-echo-fix rev 1 sent to Shipped features (orchestrator): landed aeccdb0a8, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-09T01:27:06Z"
     }
    ],
    "approvals": [],
@@ -92327,6 +92332,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-voice-echo-fix",
+    "rev": 1,
+    "at": "2026-11-09T01:27:06Z",
+    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
    },
    "steps": [
     {
@@ -92409,7 +92420,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
