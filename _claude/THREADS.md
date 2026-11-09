@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 21:16 UTC · `terminal-toolbar-responsive-overflow-every-item-` note (all) · orchestrator
 - 2026-11-08 21:16 UTC · `big-library-of-snappable-title-bar-widgets-each-` added (0 steps) (all) · pending
 - 2026-11-08 21:17 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` note (all) · orchestrator
 - 2026-11-08 21:17 UTC · `big-library-of-snappable-title-bar-widgets-each-` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:23 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
 - 2026-11-09 19:23 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` added (0 steps) (all) · console
 - 2026-11-09 19:23 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · console
+- 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
