@@ -4071,6 +4071,18 @@
    "from": "detail",
    "addenda": []
   },
+  "vps-orchestrator-only-rule-vps-settings-console": {
+   "said": "I need a rule on the VPS that refuses any job that doesn't come from the orchestrator. ... Now how would I manage that setting? I need a console plugin to manage the VPS settings. ... Put it in the same build.",
+   "at": "2026-11-09T19:10:08.745Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "walkthrough-chapters": {
    "said": "break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
    "at": "2026-11-02",

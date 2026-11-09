@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:56:04.917Z",
+ "updatedAt": "2026-11-09T19:10:11.757Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79397,6 +79397,37 @@
      "uid": "st-mw9mcdfh06vni8"
     }
    ]
+  },
+  {
+   "id": "vps-orchestrator-only-rule-vps-settings-console",
+   "title": "VPS orchestrator-only rule + VPS Settings console plugin to manage it",
+   "category": "",
+   "detail": "1) Enforce on the VPS itself: every headless Claude build launch (claude-headless.sh, agent slots, vps build_start, any launcher) must carry an orchestrator-issued build ID/token; anything else is refused and logged, with a notice to the phone. Builds on one-way-to-start-builds-the-orchestrator-dispatc (2/3 done) - finish or fold that in. 2) New console plugin 'VPS Settings' to view and change VPS-side settings, starting with this rule (on/off, refused-jobs log). Full API control per standing rule.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T19:10:08.745Z",
+   "updatedAt": "2026-11-09T19:10:08.745Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a rule on the VPS that refuses any job that doesn't come from the orchestrator. ... Now how would I manage that setting? I need a console plugin to manage the VPS settings. ... Put it in the same build.",
+    "at": "2026-11-09T19:10:08.745Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

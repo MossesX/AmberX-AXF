@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 19:19 UTC · `handoff-session-threads` note (all) · orchestrator
 - 2026-11-08 19:19 UTC · `x.deploy.console` note (all) · orchestrator
 - 2026-11-08 19:20 UTC · `planner-select-items-and-build-them` note (all) · orchestrator
 - 2026-11-08 19:21 UTC · `partial-land-ship-completed-steps-of-a-build` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:55 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · pipeline
 - 2026-11-09 18:55 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 - 2026-11-09 18:56 UTC · `orchestrator-and-build-manager-search-bar-collap` → failed, note (all) · pipeline
+- 2026-11-09 19:10 UTC · `vps-orchestrator-only-rule-vps-settings-console` added (0 steps) (all) · console
 
 ## Token passes (log)
 
