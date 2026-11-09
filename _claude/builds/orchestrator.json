@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T16:40:28.806Z",
+ "updatedAt": "2026-11-09T16:44:10.141Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77715,7 +77715,7 @@
    "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
    "category": "",
    "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77723,7 +77723,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-09T16:40:19.177Z",
+   "updatedAt": "2026-11-09T16:44:08.704Z",
    "builtAt": "",
    "notes": [
     {
@@ -77771,8 +77771,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T16:44:08.704Z",
      "note": "",
      "uid": "st-mw9h3z7z01y8m1"
     },
