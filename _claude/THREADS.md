@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
-- 2026-11-09 02:46 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (0 steps) (all) · pending
 - 2026-11-09 02:47 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` note (all) · orchestrator
 - 2026-11-09 02:52 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
 - 2026-11-09 02:54 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:57 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s1 done, → running (all) · orchestrator
 - 2026-11-09 20:59 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s2 done (all) · orchestrator
 - 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` PR #417 (all) · builds-live
+- 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
+- 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
