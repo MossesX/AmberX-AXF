@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1632,
- "updatedAt": "2026-11-09T00:38:07.523Z",
+ "rev": 1633,
+ "updatedAt": "2026-11-09T00:38:27.199Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125089,9 +125089,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T00:38:06.173Z",
+   "updatedAt": "2026-11-09T00:38:25.943Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T00:38:25.943Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -125106,7 +125111,97 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T00:38:25.943Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8j8z9z0160g3",
+     "title": "",
+     "text": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:38:25.943Z",
+     "updatedAt": "2026-11-09T00:38:25.943Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8j8z9z02tix6",
+     "title": "",
+     "text": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:38:25.943Z",
+     "updatedAt": "2026-11-09T00:38:25.943Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8j8z9z03wha6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:38:25.943Z",
+     "updatedAt": "2026-11-09T00:38:25.943Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -125115,7 +125210,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125130,7 +125225,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T00:38:25.943Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
