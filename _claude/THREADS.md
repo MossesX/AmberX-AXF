@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 03:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
 - 2026-11-09 03:02 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · foreign-write
 - 2026-11-09 03:02 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (3 steps) (all) · foreign-write
 - 2026-11-09 03:02 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` branch claude/fix-log-fyi-phone-notifications-from-claude-sess (all) · pipeline
 - 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` note (all) · orchestrator
 - 2026-11-09 23:47 UTC · `standing-rule-in-every-brief-fix-problems-yourse` note (all) · orchestrator
+- 2026-11-09 23:49 UTC · `activity-monitor-plugin-live-plain-english-log-o` added (0 steps) (all) · console
 
 ## Token passes (log)
 
