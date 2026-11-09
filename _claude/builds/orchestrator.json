@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:13:35.000Z",
+ "updatedAt": "2026-11-09T17:13:46.368Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77408,7 +77408,7 @@
    "branch": "claude/appearance-skins-colour-themes-only-remove-design-packs",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T17:13:30.447Z",
+   "updatedAt": "2026-11-09T17:13:45.277Z",
    "builtAt": "",
    "notes": [
     {
@@ -77426,6 +77426,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-appearance-skins-colour-themes-only-remove-desig--gina, own login copy)",
      "at": "2026-11-09T17:12:13.804Z"
+    },
+    {
+     "text": "Opus session (account-3) stopped with no code changes. Why: Brett's Nov 9 notes changed the scope to skins only and marked pack/theme conversion, settings migration and asset-type removal as Fable work. s4 (Fable) must record the baseline before any change. Steps now run: s4 Fable baseline, s1 Fable convert, s2 Fable remove + aliases + migrations, s3 Opus Skin-only picker + API + screenshots, s5 Opus rerun regression + diff. s1/s2 raised Opus→Fable under the Nov 4 policy (no approval needed). Inventory for s1: framework/assets has design-package 27 (default 'fresh' in framework/defaults.json), style-package 25, color-theme 31, style-theme 16, layout 16, behavior-theme 25, interface 4, skin 1 (windows). Kernel: framework/core/runtime.ts (~57 refs: DESIGN_PACKAGE_TYPE, the design-package slot, lookApplied kinds, captureAppearancePackage, swap:design-package), engines designpackage.ts (266 lines), stylepackage.ts, interface.ts, skin.ts, roller.ts, demo-rules.mjs, skin-rules.mjs, appearance.ts, types.ts, validate.ts; schemas framework/schemas/asset-types.json plus json/design-package and json/style-package schemas, clip.schema.json. Specs: check-design-package.mts, check-hub-look.mts, check-interface.mts, check-appearance-lock.mts, gen-fixtures.mts, APPEARANCE-SOURCE.md, PORTING.md, TOOLBARS.md. Every per-control asset folder (button, dialog, popup, slider, container, tab-group...) names its style-package. App copies to regenerate: console-web, molly, axhub-web, amberx-droid (src/axf), walkthrough-studio, demo. Console: settings panel axf.design-package (src/axf/libs/settings/index.tsx:562), axf.lock.json (54 refs), ui-review plugin kinds, token-control/lib/tokens.mjs, feature-matrix plain.ts, glossary-index. Size: 4.5k references in 1.7k files, so ~30 min per step is too tight; expect s1 and s2 to need splitting.",
+     "at": "2026-11-09T17:13:45.277Z"
     }
    ],
    "approvals": [],
