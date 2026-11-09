@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1625,
- "updatedAt": "2026-11-08T23:52:03.415Z",
+ "rev": 1630,
+ "updatedAt": "2026-11-09T00:24:49.756Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25343,23 +25343,50 @@
    "title": "Module system: modules, extension points, services, placeholders",
    "category": "Kernel & engines",
    "detail": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-09T00:09:58.947Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Watchdog: no session and no claude process; last sign of life 8 days ago (8 steps left). Back in Pending, not relaunched: queue it again if it is still wanted.",
+     "at": "2026-11-09T00:09:58.947Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": {
+     "at": "2026-11-09T00:09:58.653Z",
+     "exit": null,
+     "outcome": "returned",
+     "stepsLeft": 8,
+     "account": "",
+     "session": ""
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -25547,7 +25574,7 @@
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -87947,7 +87974,7 @@
    "title": "Build to-do sync plugin: build names + categories, live to-do checklists, Plan Studio plan per build with Planned & fixes and docs",
    "category": "Plugin",
    "detail": "Spec: /root/axf-builds/build-todo-sync/.brief.md (brief + 4 addenda). Agent Snap Sully. Branch claude/brett-todo-sync.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "code",
    "pendingId": "",
@@ -87955,7 +87982,7 @@
    "pr": "#333",
    "priority": "P0",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-07T00:57:00.598Z",
+   "updatedAt": "2026-11-09T00:09:59.599Z",
    "builtAt": "",
    "notes": [
     {
@@ -87977,6 +88004,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Watchdog: no session and no claude process; last sign of life 47 h ago (1 step left). Back in Pending, not relaunched: queue it again if it is still wanted.",
+     "at": "2026-11-09T00:09:59.599Z"
     }
    ],
    "approvals": [],
@@ -88021,6 +88052,29 @@
       "verbatim": true
      }
     ]
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": {
+     "at": "2026-11-09T00:09:59.305Z",
+     "exit": null,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "",
+     "session": ""
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -88187,7 +88241,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "build-names-live-to-do-checklists-build-manager-yxjz",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97414,14 +97468,14 @@
    "title": "Token usage log + accounts + Plan Studio control (small steps)",
    "category": "Builds",
    "detail": "Replaces token-usage-log-accounts-plan-studio-control. Every step sized ~10 min so work isn't lost on an account switch (Brett, voice, Nov 6 2026).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-07T05:14:24.273Z",
+   "updatedAt": "2026-11-09T00:10:00.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -97467,6 +97521,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-06T19:16:22.437Z"
+    },
+    {
+     "text": "Watchdog: no session and no claude process; last sign of life 43 h ago (36 steps left). Back in Pending, not relaunched: queue it again if it is still wanted.",
+     "at": "2026-11-09T00:10:00.696Z"
     }
    ],
    "approvals": [],
@@ -97482,6 +97540,29 @@
     "verbatim": false,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": {
+     "at": "2026-11-09T00:09:59.981Z",
+     "exit": null,
+     "outcome": "returned",
+     "stepsLeft": 36,
+     "account": "",
+     "session": ""
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -98704,7 +98785,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "token-usage-log-accounts-plan-studio-control-small-steps",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104566,19 +104647,23 @@
    "title": "Claude settings: tabs, views, Approvals & veto tab",
    "category": "Builds",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings-tabs-veto",
    "pr": "#371",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-07T00:49:48.988Z",
+   "updatedAt": "2026-11-09T00:10:02.704Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Watchdog: the session ended cleanly with 13 steps left; the next step runs on another model: queued for the next phase.",
+     "at": "2026-11-09T00:10:02.704Z"
     }
    ],
    "approvals": [
@@ -104618,6 +104703,22 @@
       "verbatim": true
      }
     ]
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-09T00:10:01.715Z",
+    "queuedBy": "watchdog",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "watchdog: phase-done",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -105026,7 +105127,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "claude-settings-tabs-veto",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -106116,14 +106217,14 @@
    "title": "In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We",
    "category": "",
    "detail": "Launched without an orchestrator entry; record made from its brief (notes-tasks-calendar).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-07T01:32:17.392Z",
+   "updatedAt": "2026-11-09T00:10:06.909Z",
    "builtAt": "",
    "notes": [
     {
@@ -106137,6 +106238,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Watchdog: the session ended cleanly with 3 steps left: waiting on Brett. Back in Pending (UI Review or the next step waits on Brett).",
+     "at": "2026-11-09T00:10:06.909Z"
     }
    ],
    "approvals": [],
@@ -106174,6 +106279,29 @@
       "verbatim": true
      }
     ]
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": {
+     "at": "2026-11-09T00:10:05.737Z",
+     "exit": null,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "account-1",
+     "session": ""
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "watchdog: waiting",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -106516,7 +106644,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122436,19 +122564,23 @@
    "title": "One way to start builds: the orchestrator dispatches from the queue",
    "category": "",
    "detail": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
-   "branch": "",
+   "branch": "claude/orchestrator-only-launcher",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-08T19:26:21.276Z",
+   "updatedAt": "2026-11-09T00:24:33.480Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:26:21.276Z"
+    },
+    {
+     "text": "Built on claude/orchestrator-only-launcher (8710fed63): dispatch token gate, every other launch path files into the Queue, API routing (override + overflow, off by default), API rule in every brief. Report _claude/builds/reports/orchestrator-only-launcher.md. s3: tests and report done; UI Review shots and the PR are left for build_land.",
+     "at": "2026-11-09T00:24:33.480Z"
     }
    ],
    "approvals": [],
@@ -122481,12 +122613,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T00:24:25.894Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:26:21.276Z",
-     "updatedAt": "2026-11-08T19:26:21.276Z"
+     "updatedAt": "2026-11-09T00:24:26.301Z"
     },
     {
      "id": "s2",
@@ -122503,12 +122635,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T00:24:29.567Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:26:21.276Z",
-     "updatedAt": "2026-11-08T19:26:21.276Z"
+     "updatedAt": "2026-11-09T00:24:30.147Z"
     },
     {
      "id": "s3",
@@ -122544,7 +122676,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122783,7 +122915,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": ""
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -123186,14 +123320,14 @@
    "title": "Nested menus for console, AmberX and Molly (override the shared menus)",
    "category": "",
    "detail": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "nested-menus-for-console-amberx-and-molly-overri",
    "branch": "claude/nested-menus-for-console-amberx-and-molly-overri",
    "pr": "#399",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-08T23:52:01.088Z",
+   "updatedAt": "2026-11-09T00:10:09.938Z",
    "builtAt": "",
    "notes": [
     {
@@ -123215,6 +123349,10 @@
     {
      "text": "Headless run axf-nested-menus-for-console-amberx-and-molly-overri--sully: brief only · start 12.4K tokens ($0.09) · cost $24.20 · 240 turns · 6 tools, MCP none",
      "at": "2026-11-08T23:52:01.088Z"
+    },
+    {
+     "text": "Watchdog: the session ended cleanly with 2 steps left; the next step runs on another model: queued for the next phase.",
+     "at": "2026-11-09T00:10:09.938Z"
     }
    ],
    "approvals": [],
@@ -123232,8 +123370,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-08T22:28:21.210Z",
-    "queuedBy": "cli",
+    "queuedAt": "2026-11-09T00:10:08.847Z",
+    "queuedBy": "watchdog",
     "account": "",
     "session": "",
     "slot": "",
@@ -123243,7 +123381,9 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": ""
+    "note": "watchdog: phase-done",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -123324,7 +123464,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124458,14 +124598,15 @@
    "title": "URGENT: AmberX veto notice alarm too loud + Approve must go straight through",
    "category": "",
    "detail": "Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
    "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
    "pr": "#397",
+   "mergedAt": "2026-11-09T00:06:38Z",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:42:04.773Z",
+   "updatedAt": "2026-11-09T00:20:45.297Z",
    "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
@@ -124487,6 +124628,10 @@
     {
      "text": "Session axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny on account-3 ended (exit 0); the build was already built.",
      "at": "2026-11-08T22:42:04.773Z"
+    },
+    {
+     "text": "Reconciler: PR #397 merged",
+     "at": "2026-11-09T00:20:45.297Z"
     }
    ],
    "approvals": [],
@@ -124528,7 +124673,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": ""
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124609,7 +124756,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124682,7 +124829,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them"
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {

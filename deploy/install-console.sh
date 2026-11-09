@@ -191,6 +191,19 @@ if axf_coolify_proxy_running; then
     [ "$(axf_wall_secret "$WSECF" "${AXF_WALL_SECRET:-}")" = created ] && say "  made a wall secret: put it on the axHub app in Coolify as AXHUB_WALL_SECRET (view it with: cat $WSECF)"
     say "  until AXHUB_WALL_SECRET on the hub matches $WSECF, signed-in browsers still need the console token and hub users can't chat"
     WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_SECRET=$(cat "$WSECF")" -e "AXF_WALL_HUB=$WALL_HUB")
+    # Approve / Deny in the console (approvals-banner relay, Nov 7 2026): the console's own server-side axHub owner
+    # sign-in, used when a browser's hub cookie doesn't reach the console. Kept in a root-only file, never in the repo;
+    # AXF_HUB_RELAY_USER / AXF_HUB_RELAY_PASSWORD [/ AXF_HUB_RELAY_OWNERS] on one run save it.
+    RELAYF="$DIR/.axf-console/hub-relay"
+    if [ -n "${AXF_HUB_RELAY_USER:-}" ] && [ -n "${AXF_HUB_RELAY_PASSWORD:-}" ]; then
+      ( umask 077; printf 'AXF_HUB_RELAY_USER=%s\nAXF_HUB_RELAY_PASSWORD=%s\nAXF_HUB_RELAY_OWNERS=%s\n' "$AXF_HUB_RELAY_USER" "$AXF_HUB_RELAY_PASSWORD" "${AXF_HUB_RELAY_OWNERS:-}" > "$RELAYF" )
+    fi
+    if [ -f "$RELAYF" ]; then
+      while IFS= read -r line; do case "$line" in AXF_HUB_RELAY_USER=?*|AXF_HUB_RELAY_PASSWORD=?*|AXF_HUB_RELAY_OWNERS=?*) WALL_ARGS+=(-e "$line");; esac; done < "$RELAYF"
+      say "  Approve / Deny in the console use the owner sign-in in $RELAYF when a browser's hub session doesn't reach the console"
+    else
+      say "  no owner sign-in for Approve / Deny yet: AXF_HUB_RELAY_USER=<hub admin> AXF_HUB_RELAY_PASSWORD=… bash $DIR/deploy/install-console.sh"
+    fi
     axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
     [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
   else

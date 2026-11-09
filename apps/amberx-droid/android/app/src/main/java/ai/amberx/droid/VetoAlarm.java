@@ -82,12 +82,18 @@ final class VetoAlarm {
         }
     }
 
+    /**
+     * Off unless the banner plugin's current settings say on (Brett, Nov 8 2026: no alarm on every veto hold). A config
+     * saved by an older plugin (no notice keys) never rings: it defaulted the alarm on.
+     */
+    static boolean enabled(JSONObject cfg) { return cfg.has("noticeSound") && cfg.optBoolean("enabled", false); }
+
     private static Set<String> rang(Context c) { return new HashSet<>(prefs(c).getStringSet("rang", new HashSet<>())); }
 
     /** Schedules this call's alarm at its start point (once per call). Called with every feed read while it counts down. */
     static void schedule(Context c, Handler work, HubRules.Veto v) {
         JSONObject cfg = config(c);
-        if (!cfg.optBoolean("enabled", true) || v.shelved || v.approvedNow) return;
+        if (!enabled(cfg) || v.shelved || v.approvedNow) return;
         if (rang(c).contains(v.id)) return;
         int start = cfg.optInt("startSeconds", 30);
         long now = System.currentTimeMillis();
