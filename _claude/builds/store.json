@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1690,
- "updatedAt": "2026-11-09T03:00:35.837Z",
+ "rev": 1691,
+ "updatedAt": "2026-11-09T03:02:18.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125955,7 +125955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125967,10 +125967,73 @@
     "createdAt": "2026-11-09T02:59:26.044Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8obr2k01uilk": "2026-11-09T03:00:33.356Z",
+     "st-mw8obr2k02jyvm": "2026-11-09T03:00:33.356Z",
+     "st-mw8obr2k03rhvl": "2026-11-09T03:00:33.356Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T03:00:33.356Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "permissions-control-panel-every-axhub-tool-s-pol",
+   "title": "Permissions control panel: every axHub tool's policy in one place",
+   "category": "",
+   "detail": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "permissions-control-panel-every-axhub-tool-s-pol",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T03:02:16.421Z",
+   "updatedAt": "2026-11-09T03:02:16.421Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a control panel for all those settings, those permission settings.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 483
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "2 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T03:02:16.421Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
