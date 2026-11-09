@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:37:07.482Z",
+ "updatedAt": "2026-11-09T20:37:19.904Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14989,7 +14989,7 @@
    "title": "Owner-only settings: Brett's admin console login counts as owner",
    "category": "Fix",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> won't let me set it. It says no way enabled by owner only. Only Brett changes it. With his own click in the console. ... I can't click it.\n> I'm logged in as admin.\n> Yes, do that.\n\nProblem: Settings → Plugins → Claude refuses owner-only switches (No wait) for Brett's signed-in admin console session. Fix the owner check so Brett's own login is recognised as owner. Queue behind the account/badge build (one build at a time).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -14997,7 +14997,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:36:23.061Z",
+   "updatedAt": "2026-11-09T20:37:07.324Z",
    "builtAt": "",
    "notes": [
     {
@@ -15011,6 +15011,10 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-09T20:36:23.061Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:37:07.324Z"
     }
    ],
    "approvals": [],
