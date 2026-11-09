@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Headless sessions get the brief only (brief-only-headless) | built, waiting on UI Review (r-20261108-66e8c903) | claude/brief-only-headless | #388 | merge queue; then PR #360 / #362 rebase onto it (report → Reused) | Nov 8 2026 |
 | Workers + API routing (workers-api-routing) | built, waiting on UI Review | claude/workers-api-routing | (PR) | Brett: pick a Job routing layout in UI Review; save the Hulu API / Moses X API keys (`claude-account savekey <name>`); add routing rules | Nov 8 2026 |
 | Veto notice alarm + Approve straight through (`urgent-amberx-veto-notice-alarm-too-loud-approve`, Opus; Brett Nov 8: "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping."): alarm off by default (new key), one normal notice per hold (sound / vibration / repeat switches, `approvals.notice` action), AmberX channels default importance + silent updates, console relay ported from approve-button-fix, AmberX server relay with the page's hub session | built, PR open | `claude/urgent-amberx-veto-notice-alarm-too-loud-approve` | (PR) | Lands through the merge queue; new AmberX APK for the channel change. Supersedes `rebase-land-approve-button-fix-approve-goes-stra`. Report `_claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md` | 2026-11-08 |
 | Pipeline rebuild (`urgent-rebuild-pipeline-orchestrator-ids-splits-`, Fable, agent Ping Paulie; Brett Nov 8 voice: "start the pipeline over from scratch … he sends everything to the pending. And I have to send them from pending to queue" + "If he has slots open, he grabs the next build in the queue and starts the headless session"): `queued` status + build-pipeline@1 record, orchestrator split (Claude, ≤ 30 min, Fable only where needed), Pending → Queue (Brett) → dispatcher cron `axf-pipeline` launches on a Fable / Opus account when a slot is free, session-end outcomes, idle phone alert, Pipeline tab | review (all 8 steps done; PR open, UI Review waiting) | `claude/pipeline-rebuild` | [#384](https://github.com/MossesX/AmberX-AXF/pull/384) | Lands through the merge queue; the cron comes with the next console deploy. Report `_claude/builds/reports/pipeline-rebuild.md` | 2026-11-08 |
@@ -756,27 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 12:58 UTC · `style-override-rule` s4 done (all) · orchestrator
-- 2026-11-07 12:58 UTC · `style-override-rule` s5 done (all) · orchestrator
-- 2026-11-07 13:02 UTC · `amber-chat-asset` s1 done, → running (all) · orchestrator
-- 2026-11-07 13:02 UTC · `amber-chat-asset` s2 done (all) · orchestrator
-- 2026-11-07 13:02 UTC · `amber-chat-asset` branch claude/amber-chat-asset (all) · builds-live
-- 2026-11-07 13:03 UTC · `style-override-rule` s6 done (all) · orchestrator
-- 2026-11-07 13:07 UTC · `amber-chat-asset` s3 done (all) · orchestrator
-- 2026-11-07 13:10 UTC · `amber-chat-asset` s4 done (all) · orchestrator
-- 2026-11-07 13:10 UTC · `amber-chat-asset` note (all) · orchestrator
-- 2026-11-07 13:12 UTC · `amber-chat-asset` s5 done, → complete (all) · orchestrator
-- 2026-11-07 13:12 UTC · `amber-chat-asset` note (all) · orchestrator
-- 2026-11-07 13:13 UTC · `plan-blueprints` added (7 steps) (all) · gina
-- 2026-11-07 13:13 UTC · `plan-blueprints` → running (all) · gina
-- 2026-11-07 13:13 UTC · `plan-archive` → complete, note (all) · gina
-- 2026-11-07 13:13 UTC · `plan-archive` → archived (all) · gina
-- 2026-11-07 13:13 UTC · `plan-blueprints` branch claude/plan-blueprints (all) · builds-live
-- 2026-11-07 13:32 UTC · `plan-blueprints` s1 done (all) · gina
-- 2026-11-07 13:32 UTC · `plan-blueprints` s2 done (all) · gina
-- 2026-11-07 13:32 UTC · `orchestrator-gate` branch claude/orchestrator-vps-gate (all) · orchestrator
-- 2026-11-07 13:32 UTC · `orchestrator-gate` → running (all) · orchestrator
-- 2026-11-07 13:36 UTC · `plan-blueprints` s3 done (all) · gina
 - 2026-11-07 13:36 UTC · `plan-blueprints` s4 done (all) · gina
 - 2026-11-07 13:36 UTC · `plan-blueprints` s5 done (all) · gina
 - 2026-11-07 13:36 UTC · `plan-blueprints` s6 done (all) · gina
@@ -1156,6 +1136,27 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` branch claude/urgent-amberx-veto-notice-alarm-too-loud-approve (all) · pipeline
 - 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · orchestrator
 - 2026-11-08 22:28 UTC · `nested-menus-for-console-amberx-and-molly-overri` → queued, note (all) · cli
+- 2026-11-08 22:32 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` added (0 steps) (all) · pending
+- 2026-11-08 22:33 UTC · `brief-only-headless` → complete, merged, note (all) · reconciler
+- 2026-11-08 22:33 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
+- 2026-11-08 22:40 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` s1 done (all) · orchestrator
+- 2026-11-08 22:40 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` s2 done (all) · orchestrator
+- 2026-11-08 22:41 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` PR #397 (all) · builds-live
+- 2026-11-08 22:41 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` s3 done, → built (all) · orchestrator
+- 2026-11-08 22:41 UTC · `rebase-land-approve-button-fix-approve-goes-stra` note (all) · orchestrator
+- 2026-11-08 22:42 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · pipeline
+- 2026-11-08 22:30 UTC · `tabs-api-control` added (4 steps) (all) · orchestrator
+- 2026-11-08 22:46 UTC · `tabs-api-control` s1 done, → running (all) · orchestrator
+- 2026-11-08 22:46 UTC · `tabs-api-control` s2 done (all) · orchestrator
+- 2026-11-08 22:46 UTC · `tabs-api-control` s3 done (all) · orchestrator
+- 2026-11-08 22:46 UTC · `tabs-api-control` s4 done, → complete (all) · orchestrator
+- 2026-11-08 22:46 UTC · `tabs-api-control` → built, PR #398 (all) · builds-live
+- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` → running, note (all) · pipeline
+- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` branch claude/nested-menus-for-console-amberx-and-molly-overri (all) · pipeline
+- 2026-11-08 22:48 UTC · `nested-menus-for-console-amberx-and-molly-overri` note (all) · orchestrator
+- 2026-11-08 23:27 UTC · `nested-menus-for-console-amberx-and-molly-overri` branch claude/nested-menus-for-console-amberx-and-molly-overri, PR #399 (all) · builds-live
+- 2026-11-08 23:49 UTC · `nested-menus-for-console-amberx-and-molly-overri` s1 done, → running (all) · orchestrator
+- 2026-11-08 23:52 UTC · `nested-menus-for-console-amberx-and-molly-overri` note (all) · orchestrator
 
 ## Token passes (log)
 

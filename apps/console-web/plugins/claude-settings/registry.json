@@ -9,6 +9,7 @@
     { "id": "talking", "label": "Talking", "icon": "mic", "order": 50, "description": "How Amber talks to Brett (voice and chat)." },
     { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the AmberX app, and when it stays quiet." },
     { "id": "recording", "label": "Session recording", "icon": "mic", "order": 65, "description": "AmberX records each Claude session and every part is transcribed. Android's capture prompt and your own mic switch still decide." },
+    { "id": "headless", "label": "Headless sessions", "icon": "terminal", "order": 35, "description": "What a headless build takes in. Brief only: no CLAUDE.md, rules files, memory or settings-injected context; the brief the orchestrator writes is the whole input (headless-context@1)." },
     { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." },
     { "id": "deploy", "label": "Nightly deploy", "icon": "refresh", "order": 80, "description": "The console rebuilds and deploys from main once a night, when code changed." }
   ],
@@ -97,6 +98,21 @@
     { "key": "nightly.time", "group": "deploy", "label": "Deploy at", "kind": "time", "default": "02:00", "level": "basic",
       "description": "When the nightly deploy starts (24 h clock, New York time)." },
     { "key": "memory.handoffNote", "group": "memory", "label": "Handoff note at end of session", "kind": "toggle", "default": true, "level": "basic",
-      "description": "Each session ends with a handoff note (what was done, what's left) in THREADS.md." }
+      "description": "Each session ends with a handoff note (what was done, what's left) in THREADS.md." },
+    { "key": "headless.briefOnly", "group": "headless", "label": "Brief only", "kind": "toggle", "default": true, "owner": true, "level": "simple",
+      "description": "On (Brett, Nov 8 2026): headless runs load no CLAUDE.md chain, rules files, auto-memory, settings files or claude.ai connectors; the brief (with its rules block) is the only input. Off: the full chain, as before." },
+    { "key": "headless.tools", "group": "headless", "label": "Built-in tools", "kind": "text", "default": "Bash,Read,Edit,Write,Glob,Grep", "level": "developer",
+      "description": "Built-in tools every headless run gets, comma-separated; a brief adds more with a 'Needs tools:' line. 'default' = Claude Code's whole set." },
+    { "key": "headless.mcp", "group": "headless", "label": "MCP servers for every run", "kind": "text", "default": "", "level": "developer",
+      "description": "MCP servers every headless run gets (known: axhub). Empty = none; a brief asks for one with a 'Needs MCP:' line." },
+    { "key": "headless.disallowedTools", "group": "headless", "label": "Tools never given", "kind": "text", "default": "Agent,Workflow", "level": "developer",
+      "description": "Tools a headless run never gets, comma-separated (one agent, no sub-agents)." },
+    { "key": "headless.hooks", "group": "headless", "label": "Hooks", "kind": "choice", "default": "quiet", "level": "administrator",
+      "options": [ { "value": "quiet", "label": "Quiet (reporting hooks run, print nothing into the context)" }, { "value": "none", "label": "None" }, { "value": "all", "label": "All (their output reaches the context)" } ],
+      "description": "Hooks from the settings files: quiet keeps the change log, activity and archive hooks and mutes SessionStart / UserPromptSubmit output." },
+    { "key": "headless.briefBudgetChars", "group": "headless", "label": "Brief budget (characters)", "kind": "number", "default": 24000, "min": 1000, "max": 200000, "step": 1000, "level": "basic",
+      "description": "Brief plus its rules block. Over it the run still starts, with a warning in its log and a note on the build. 24000 ≈ 6K tokens." },
+    { "key": "headless.startTokenWarn", "group": "headless", "label": "Start tokens warning", "kind": "number", "default": 25000, "min": 1000, "max": 500000, "step": 1000, "level": "basic",
+      "description": "A run whose first request carries more context than this gets a warning on its meter and its build note." }
   ]
 }

@@ -66,6 +66,15 @@
 # queue; none can take it = the console's account, with a note. A worker that hits its limit or
 # loses its login is taken out, and the run moves to the next worker. The console's active account never changes for it.
 # Each move and the end of the run write the cost to events.jsonl per account. AXF_WORKERS=off skips the routing.
+# Brief only (headless-context@1, build brief-only-headless, Nov 8 2026, Brett: "The ONLY input is the brief the
+# orchestrator writes"): the inner run asks framework/cli/headless-context.mjs for its launch plan and runs claude with
+# it: no CLAUDE.md chain, auto-memory, settings files (user / project / local) or claude.ai connectors; the reporting
+# hooks keep running from a lean settings file with the context-printing events (SessionStart, UserPromptSubmit) muted;
+# MCP servers only when the brief says `Needs MCP: axhub` (or Claude settings → Headless sessions names them; default
+# none). The log's `# context: …` line says what loaded; the meter keeps the init summary and the start tokens. Off in
+# Claude settings (headless.briefOnly) or AXF_BRIEF_ONLY=off for one launch = the full chain as before. A brief without
+# a "## Rules for this job" block gets one appended (rules-briefs@1 + every rule bullet whose tag it names); a brief over
+# the budget (headless.briefBudgetChars) is sent anyway, with a warning in the log and a note on the build.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -225,13 +234,38 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
   fi
 fi
 
+# Brief only: the launch plan (env, claude args, lean settings + MCP files in a private folder that goes with the run).
+# Sets ctx_args / ctx_line / ctx_warn / ctx_dir and exports the plan's env; brief_only=1 once a plan is in force.
+ctx_args=() ctx_line="" ctx_warn=() ctx_dir="" ctx_rules="" brief_only=""
+CTX_JS="$HERE/../framework/cli/headless-context.mjs"
+ctx_plan() {   # $1 = session name
+  command -v node >/dev/null && [[ -f "$CTX_JS" ]] || return 0
+  ctx_dir="$(mktemp -d "${TMPDIR:-/tmp}/axf-ctx-XXXXXX")"
+  local l kv
+  while IFS= read -r l; do
+    case "$l" in
+      "env "*) kv="${l#env }"; export "${kv%%=*}=${kv#*=}"; brief_only=1 ;;
+      "arg "*) ctx_args+=("${l#arg }") ;;
+      "line "*) ctx_line="${l#line }" ;;
+      "warn "*) ctx_warn+=("${l#warn }") ;;
+      "rules "*) ctx_rules="${l#rules }" ;;
+    esac
+  done < <(node "$CTX_JS" plan --brief "$brief" --out "$ctx_dir" --session "$1" 2>/dev/null)
+  [[ -n "$brief_only" ]] && export AXF_BRIEF_ONLY_RUN=1   # the stream printer reads it: no CLAUDE.md chain on the meter
+  return 0
+}
+
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
     # shellcheck disable=SC1090
     source "$envfile"
     rm -f "$envfile"
   fi
-  if [[ -n "${AXHUB_TOKEN:-}" && -n "${AXF_SESSION:-}" ]]; then
+  ctx_plan "axf-${name:-run}"
+  if [[ -n "$brief_only" ]]; then
+    set -- "$@" "${ctx_args[@]}"
+    for w in "${ctx_warn[@]}"; do build_note "Brief only: $w"; done
+  elif [[ -n "${AXHUB_TOKEN:-}" && -n "${AXF_SESSION:-}" ]]; then   # full chain (brief only switched off): axHub as before
     mcp="$(mktemp "${TMPDIR:-/tmp}/axf-mcp-XXXXXX.json")"
     hub="${AXHUB_URL:-https://axhub.amberxai.com}"; hub="${hub%/}"; hub="${hub%/mcp}"
     printf '{"mcpServers":{"axhub":{"type":"http","url":"%s/mcp","headers":{"Authorization":"Bearer ${AXHUB_TOKEN}","X-Axhub-Session":"${AXF_SESSION}"}}}}\n' "$hub" > "$mcp"
@@ -257,8 +291,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   fi
   own_login "${account:-active}"
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
+  [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
+  for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
   prompt="$(cat "$brief")"
+  # brief only: the rules this job needs ride in the brief (rules brief + rule snippets by tag) when it has none yet
+  [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && prompt="$prompt"$'\n\n'"$(cat "$ctx_rules")"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
@@ -272,11 +310,13 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
+  run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
+  read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   while :; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
-      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
+      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --build "${run_build:-}")
+      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; [[ -n "$ctx_line" ]] && printf '%s\n' "$ctx_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
       claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
     fi
@@ -311,6 +351,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     switches=$((switches + 1))
   done
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
+  [[ -n "${ctx_dir:-}" && -d "$ctx_dir" ]] && rm -rf "$ctx_dir"
+  # per-build start tokens and cost: one note on the build (every build view shows its notes)
+  if command -v node >/dev/null && [[ -f "$CTX_JS" ]] && hdir_ready; then
+    run_sum="$(node "$CTX_JS" summary --meter "$HDIR/$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}").meter.json" 2>/dev/null)"
+    [[ -n "$run_sum" ]] && build_note "$run_sum"
+  fi
   release_login   # the build's own login copy goes with the session
   [[ -n "$on_worker" ]] && release_worker   # its slot on that account frees for the next job
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
@@ -379,8 +425,10 @@ elif slots_on; then
 fi
 if ! command -v tmux >/dev/null; then
   login_session="$session"; own_login "${account:-active}"
+  ctx_plan "$session"; [[ -n "$brief_only" ]] && set -- "$@" "${ctx_args[@]}"
+  fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
-  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$(cat "$brief")" &
+  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$fb_prompt" &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0

@@ -29,6 +29,13 @@ type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
 type Act = (c: Record<string, unknown>) => Promise<boolean>;
 
+/** A build's headless runs, from the launcher's end-of-run notes (headless-context@1; same line format as
+ * parseRunNote in framework/cli/headless-context.mjs): start tokens, cost, brief only or full chain. */
+const RUN_NOTE = /^Headless run (\S+): (brief only|full chain) · (start [\d.]+K? tokens(?: \(\$[\d.]+\))?|no start recorded) · cost (\$[\d.]+(?: \(estimate\))?)/;
+function headlessRuns(b: Build): { at: string; start: string; cost: string; mode: string }[] {
+  return b.notes.map((n) => { const m = RUN_NOTE.exec(n.text); return m ? { at: n.at, start: m[3]!.replace(/^start /, ''), cost: m[4]!, mode: m[2]! } : null; })
+    .filter((x): x is { at: string; start: string; cost: string; mode: string } => !!x).reverse();
+}
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const TABS = [{ id: 'pipeline', label: 'Pipeline', icon: 'play' }, { id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
@@ -216,6 +223,11 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           ))}
         </div>
       ))}
+      {headlessRuns(b).length > 0 && (
+        <div className="pd-thread"><h3>Headless runs</h3>{headlessRuns(b).map((r, i) => (
+          <div key={i} className="pd-entry"><time dateTime={r.at}>{fmtDate(r.at)}</time>
+            <p><span className="fx-mono">{r.start}</span> start · {r.cost} · {r.mode}</p></div>))}</div>
+      )}
       {b.notes.length > 0 && (
         <div className="pd-thread"><h3>Notes</h3>{b.notes.map((e, i) => <div key={i} className="pd-entry"><time dateTime={e.at}>{fmtDate(e.at)}</time><p>{e.text}</p></div>)}</div>
       )}
