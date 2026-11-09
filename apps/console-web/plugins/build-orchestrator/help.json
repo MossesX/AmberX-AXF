@@ -101,6 +101,18 @@
         "title": "API overflow",
         "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
         "kind": "toggle"
+      },
+      {
+        "target": "api-limits-rules",
+        "title": "API limits & rules",
+        "text": "Opens Settings → Build orchestrator → API limits & routing rules: API account caps, alert level and on/off, the routing rules, API overflow and which API accounts the dispatcher may use.",
+        "kind": "button"
+      },
+      {
+        "target": "save-allowed-accounts",
+        "title": "Save allowed accounts",
+        "text": "Saves which API accounts the dispatcher may send builds to. None ticked means any of them.",
+        "kind": "button"
       }
     ],
     "intros": []

@@ -39,3 +39,6 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
+
+/* Settings → API limits & routing rules (Nov 9 2026): layout only */
+.ol-checks { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }

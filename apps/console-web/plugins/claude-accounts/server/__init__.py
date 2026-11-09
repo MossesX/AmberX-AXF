@@ -631,6 +631,16 @@ class AccountsService:
     def use(self, name: str, by: str) -> dict[str, Any]:
         return ask("use", clean_name(name), by)
 
+    def routing(self) -> dict[str, Any]:
+        """Job routing for other plugins (the Build orchestrator's settings): API accounts with their caps, alert level and
+        on/off, the routing rules in order, the spend alerts. Read-only; changes go through POST /routing/api and /routing/rule."""
+        v = routing_view()
+        cfg = v["config"]
+        spend = {a["name"]: a.get("spend") for a in v["accounts"] if a.get("kind") == "api"}
+        keys = {a["name"]: a.get("hasKey", True) for a in v["accounts"]}
+        return {"ready": v["ready"], "why": v["why"], "alerts": v["alerts"], "rules": cfg.get("rules") or [],
+                "api": [{"name": n, **c, "hasKey": keys.get(n, False), "spend": spend.get(n)} for n, c in (cfg.get("api") or {}).items()]}
+
 
 plugin_services.provide("axf.claude-accounts@1", AccountsService(), FOLDER)
 

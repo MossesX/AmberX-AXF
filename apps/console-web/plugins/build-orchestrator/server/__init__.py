@@ -502,6 +502,29 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     return _pipeline("set", *pairs)
 
 
+@router.get("/pipeline/limits")
+def pipeline_limits() -> dict[str, Any]:
+    """Settings → Plugins → Build orchestrator → API limits & routing rules, as data: the overflow rule and the API accounts
+    the dispatcher may use (pipeline-settings@1), plus each API account's caps, alert level, on/off and spend and the routing
+    rules in order (Job routing, through capability axf.claude-accounts@1; null when that plugin is off)."""
+    s = _pipeline("settings")
+    settings = s.get("settings") or {}
+    out: dict[str, Any] = {"ok": True, "apiOverflow": bool(settings.get("apiOverflow")), "apiAccounts": settings.get("apiAccounts") or [],
+                           "routing": None, "why": "", "change": {
+                               "overflow": "POST /pipeline/settings {apiOverflow, apiAccounts}",
+                               "apiAccount": "claude-accounts POST /routing/api {op: add|remove|enable|disable|caps, name, label?, dailyCapUsd?, weeklyCapUsd?, alertAt?}",
+                               "rule": "claude-accounts POST /routing/rule {op: add|update|remove|move|enable|disable, id?, rule?, to?}"}}
+    svc = plugin_services.get("axf.claude-accounts@1")
+    if svc is None or not hasattr(svc, "routing"):
+        out["why"] = "Job routing (API accounts and rules) comes from the Claude accounts plugin, which is off or not loaded."
+        return out
+    try:
+        out["routing"] = svc.routing()
+    except HTTPException as e:
+        out["why"] = str(e.detail)[:200]
+    return out
+
+
 @router.post("/pipeline/route")
 async def pipeline_route(request: Request) -> dict[str, Any]:
     """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under

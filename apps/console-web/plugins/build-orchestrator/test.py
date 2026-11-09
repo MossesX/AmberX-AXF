@@ -133,6 +133,17 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    # Settings → API limits & routing rules: one read of the overflow rule, the allowed API accounts and Job routing
+    class _Routing:
+        def routing(self) -> dict:
+            return {"ready": True, "why": "", "alerts": [], "rules": [{"id": "r1"}], "api": [{"name": "hulu-api", "dailyCapUsd": 10}]}
+
+    plugin_services.provide("axf.claude-accounts@1", _Routing(), "fake-accounts")
+    lim = srv.pipeline_limits()
+    check(lim["ok"] and lim["routing"]["api"][0]["name"] == "hulu-api" and lim["routing"]["rules"][0]["id"] == "r1" and "rule" in lim["change"], "limits: overflow, allowed accounts, API caps and rules in one read")
+    plugin_services.provide("axf.claude-accounts@1", object(), "fake-accounts")
+    lim = srv.pipeline_limits()
+    check(lim["routing"] is None and "Claude accounts" in lim["why"], "limits without Job routing says why")
 finally:
     srv.subprocess.run = _real_run
 

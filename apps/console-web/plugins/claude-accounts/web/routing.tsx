@@ -62,6 +62,12 @@ function useRouting() {
   return { data, error, refresh };
 }
 
+/** The API-key accounts set up in Job routing ({name, label, enabled}), live: for pickers in other plugins (axf.job-routing@1). */
+export function useApiAccounts(): { name: string; label: string; enabled: boolean }[] {
+  const { data } = useRouting();
+  return Object.entries(data?.config.api ?? {}).map(([name, c]) => ({ name, label: c.label || name, enabled: c.enabled }));
+}
+
 function useSaid() {
   const [said, setSaid] = useState<{ text: string; bad: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -343,7 +349,10 @@ function TestJob({ data }: { data: Routing }) {
 const SECTION_ICON: Record<string, string> = { status: 'chart', workers: 'user', api: 'key', rules: 'list', test: 'play' };
 const SECTION_TITLE: Record<string, string> = { status: 'Account status', workers: 'Workers & limits', api: 'API accounts & spend caps', rules: 'Routing rules', test: 'Test a job' };
 
-export function JobRouting() {
+/** Section keys of the Job routing panel; `only` (e.g. the Build orchestrator's settings, through axf.job-routing@1) shows a subset. */
+export type RoutingSection = 'status' | 'workers' | 'api' | 'rules' | 'test';
+
+export function JobRouting({ only }: { only?: RoutingSection[] } = {}) {
   const { data, error, refresh } = useRouting();
   const rt = useRuntime();
   const view = useView();
@@ -354,7 +363,8 @@ export function JobRouting() {
     status: <StatusTable data={data} />, workers: <WorkersLimits data={data} />, api: <ApiAccounts data={data} />,
     rules: <Rules data={data} cards={view === 'rule-cards'} />, test: <TestJob data={data} />,
   };
-  const open = new Set<string>(asset.data.open);
+  const order = (asset.data.order as string[]).filter((k) => !only || only.includes(k as RoutingSection));
+  const open = new Set<string>(only ? order : asset.data.open);
   return (
     <div className="fx-stack" data-axf-routing-view={view}>
       {!data.ready && <Note tone="warning">Can't read the VPS host: {data.why}</Note>}
@@ -363,7 +373,7 @@ export function JobRouting() {
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </div>
       <div className={view === 'rule-cards' ? 'axp-ca-grid' : 'fx-stack'}>
-        {asset.data.order.map((k) => (
+        {order.map((k) => (
           <Container key={`${view}-${k}`} title={SECTION_TITLE[k]} icon={SECTION_ICON[k]} collapsible defaultOpen={open.has(k)} className={`axp-ca-section axp-ca-section--${k}`}>{body[k]}</Container>
         ))}
       </div>

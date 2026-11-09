@@ -14,7 +14,9 @@
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
     "service:orchestrator@1",
-    "service:axf.build-dispatch@1"
+    "service:axf.build-dispatch@1",
+    "settings-panel:build-orchestrator.limits",
+    "action:build-orchestrator.limits"
   ],
   "scopes": [
     "ROUTES"
@@ -24,7 +26,9 @@
     "service:axf.agent-slots@1",
     "service:axf.merge-queue@1",
     "service:plans@1",
-    "service:ui-review@1"
+    "service:ui-review@1",
+    "service:axf.claude-accounts@1",
+    "service:axf.job-routing@1"
   ],
   "banner": false,
   "tabable": {
@@ -372,6 +376,14 @@
           ]
         },
         "output": "{ id, route }"
+      },
+      {
+        "id": "pipeline-limits",
+        "route": "GET /pipeline/limits",
+        "title": "API limits and routing rules",
+        "readOnly": true,
+        "description": "What Settings → Plugins → Build orchestrator → API limits & routing rules shows: the API overflow rule and the API accounts the dispatcher may use, each API account's daily and weekly spend caps, alert level, on/off, key and spend, and the routing rules in order (voice: 'what are the API limits'). Change the overflow with pipeline-settings-set, an API account with claude-accounts routing-api, a rule with claude-accounts routing-rule.",
+        "output": "{ apiOverflow, apiAccounts, routing: { api[], rules[], alerts[] } | null, why }"
       },
       {
         "id": "pipeline-settings",

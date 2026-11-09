@@ -11,7 +11,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
+import { JobRouting, ROUTING_ASSETS, loadRouting, useApiAccounts } from './routing';
 import './claude-accounts.css';
 
 const ID = 'ai.amberx.axf.console.claude-accounts';
@@ -22,6 +22,8 @@ const POLL_MS = 60000;
 const ASSET_ID = 'claude-account';
 const COUNTER = 'claude-accounts.active';
 const NAME = /^[a-z0-9-]{1,32}$/;
+export const JOB_ROUTING = 'axf.job-routing@1';
+const services = () => ((globalThis as { __axfWebServices?: Record<string, unknown> }).__axfWebServices ??= {});
 
 type Op = 'use' | 'save' | 'signin' | 'remove';
 type Role = 'interactive' | 'worker' | 'saved' | 'api-worker' | 'api-off';
@@ -272,7 +274,11 @@ export const plugin: AxfWebLibrary = {
   label: 'Claude accounts',
   version: '0.1.0',
   appMenu,
+  provides: [JOB_ROUTING],
   register(rt) {
+    // capability axf.job-routing@1 (web): the Job routing panel (or some of its sections) and the live API account list,
+    // so the Build orchestrator's settings edit the same API limits and rules without importing this folder
+    services()[JOB_ROUTING] = { version: 1, JobRouting, useApiAccounts, open: () => rt.dispatch(`settings.open:${VIEW}`) };
     rt.actions.register('claude-accounts.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude accounts settings' });
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
     rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });

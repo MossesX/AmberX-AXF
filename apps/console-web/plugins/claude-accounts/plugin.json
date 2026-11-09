@@ -18,7 +18,8 @@
     "action:claude-accounts.switch",
     "service:axf.claude-accounts@1",
     "settings-panel:claude-accounts.routing",
-    "action:claude-accounts.routing"
+    "action:claude-accounts.routing",
+    "service:axf.job-routing@1"
   ],
   "requires": [
     "service:axf.headless@1",
