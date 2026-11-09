@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T16:02:40.517Z",
+ "updatedAt": "2026-11-09T16:03:31.870Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77726,12 +77726,16 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-09T16:02:31.689Z",
+   "updatedAt": "2026-11-09T16:03:30.605Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T16:02:31.689Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T16:03:30.605Z"
     }
    ],
    "approvals": [],
@@ -77748,7 +77752,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9gamy501pgwh"
+    },
+    {
+     "id": "s2",
+     "text": "Build up prompt caching and batch API plugin... Actually, it's for the orchestrator, not an agent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9gamy502r43e"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/prompt-caching-and-batch-api-support-in-the-buil.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/prompt-caching-and-batch-api-support-in-the-buil.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9gamy5034hbt"
+    }
+   ]
   }
  ]
 }
