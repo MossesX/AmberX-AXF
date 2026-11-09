@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:12:16.820Z",
+ "updatedAt": "2026-11-09T19:12:28.610Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79411,7 +79411,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-09T19:12:12.859Z",
+   "updatedAt": "2026-11-09T19:12:27.040Z",
    "builtAt": "",
    "notes": [
     {
@@ -79445,6 +79445,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-vps-orchestrator-only-rule-vps-settings-console--joey, own login copy)",
      "at": "2026-11-09T19:12:12.859Z"
+    },
+    {
+     "text": "Headless run axf-vps-orchestrator-only-rule-vps-settings-console--joey: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:12:27.040Z"
     }
    ],
    "approvals": [],
