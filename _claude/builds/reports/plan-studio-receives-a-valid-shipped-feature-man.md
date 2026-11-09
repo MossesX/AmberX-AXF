@@ -4,7 +4,7 @@ Brett said:
 
 > Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.
 
-Build `plan-studio-receives-a-valid-shipped-feature-man`, branch `claude/plan-studio-receives-a-valid-shipped-feature-man`, Fable, one session (s1). Follow-up to `shipped-manifest-api` (shipped-manifest@1).
+Build `plan-studio-receives-a-valid-shipped-feature-man`, branch `claude/plan-studio-receives-a-valid-shipped-feature-man`, Fable s1, then Opus s2–s3 (phase 2, downgrade recorded on the build). Follow-up to `shipped-manifest-api` (shipped-manifest@1).
 
 ## What was built
 
@@ -59,9 +59,27 @@ amberx-voice-echo-fix, multi-account-headless-workers, merge-profiles-one). `pla
 (10 shipped manifests, 10 plans carry one). Builds that land from now on arrive through the hook once this lands and
 the console updates; until then `shipped backfill` takes them.
 
+## Phase 2 (Opus): checked end to end through the real chain
+
+s1 tested the listener by calling it directly. s2 checks what actually runs when a build ships: on a scratch builds store
+with hooks on, `framework/cli/shipped.mjs ship <build>` writes the sidecar and the `shipped` ref, the store write fires
+exactly one build-hook@1 `shipped` event, `framework/cli/build-hooks.mjs` delivers it to Plan Studio (its cursor moves,
+a second delivery hands it nothing), and the build's plan exists with `shipped` equal to the sidecar **field for field**,
+valid under `validateManifest`, and its own fields (title, category, origin verbatim, steps, status done, build
+status / progress / branch / PR, links, manifest id + rev) filled from it; `check-builds` on that store is green. This is
+the new test `shipped (end to end)` in `test.mjs`. The hub plan store: `plans.mjs check-builds` green (10 shipped
+manifests, 10 plans carry one).
+
+Found on the way, not in this plugin: the Shipped features listener (`shipped-features/ledger/hook.mjs`) fails on Node 20
+(`No such built-in module: node:sqlite`, needs Node 22), so on a Node 20 checkout its cursor never moves. Plan Studio
+does not depend on it; its own cursor moves either way.
+
+Also fixed: `check-theme` read the PR strings `'#397'` in `test.mjs` as hex colours (3 findings, red); they are built
+from the number now.
+
 ## Tests
 
-- `npx -y tsx apps/console-web/plugins/plan-studio/test.mjs`: 28 checks pass (was 25). New: the pure mapping (every
+- `npx -y tsx apps/console-web/plugins/plan-studio/test.mjs`: 29 checks pass (was 25; s2 added the end-to-end one). New: the pure mapping (every
   field on the plan, verbatim words kept, steps ticked / added, features → have, same rev no change, stale rev, newer
   rev, flag + clear, no build id refused), and the store: the hook listener on the `shipped` event creates the matching
   plan (and ignores other events / a missing sidecar), replay changes nothing, `shipped-get`, an invalid manifest refused

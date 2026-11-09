@@ -214,11 +214,11 @@ await t('shipped (pure): a valid manifest becomes the build\'s plan with every f
   assert.equal(p.summary, MANIFEST.said.text);
   assert.deepEqual(p.steps.map((s) => [s.id, s.text, s.model, s.minutes, s.done, s.actualMin, s.estimate]), [['s1', 'Do A', 'Opus', 20, true, 25, '20 min'], ['s2', 'Do B', 'Fable', 30, true, 23, '30 min']]);
   assert.deepEqual(p.links.map((l) => [l.kind, l.ref]), [['build', 'all:ship-it-live'], ['branch', 'claude/ship-it-live'], ['pr', '397'], ['doc', '_claude/builds/reports/ship-it-live.md']]);
-  assert.equal(p.build.id, 'ship-it-live'); assert.equal(p.build.status, 'complete'); assert.equal(p.build.progress, 100); assert.equal(p.build.landedCommit, MANIFEST.landedCommit); assert.equal(p.build.pr, '#397'); assert.deepEqual(p.build.shipped, { id: 'sm-ship-it-live', rev: 1, at: '2026-11-09T01:00:00Z', source: 'orchestrator' });
+  assert.equal(p.build.id, 'ship-it-live'); assert.equal(p.build.status, 'complete'); assert.equal(p.build.progress, 100); assert.equal(p.build.landedCommit, MANIFEST.landedCommit); assert.equal(p.build.pr, `#${MANIFEST.pr.number}`); assert.deepEqual(p.build.shipped, { id: 'sm-ship-it-live', rev: 1, at: '2026-11-09T01:00:00Z', source: 'orchestrator' });
   assert.deepEqual(p.actual, { usd: 4.25, estimated: false, tokens: { input: 100, output: 2000, cacheRead: 5000000, cacheWrite: 90000 }, minutes: 48, estimateMinutes: 50, runs: 1, models: ['Opus', 'Fable'], accounts: ['account-3'] });
   assert.equal(p.cost.usd, Math.round((20 * 0.14 + 30 * 0.275) * 100) / 100, 'plan cost stays the estimate from the steps');
   assert.deepEqual(p.shipped, MANIFEST, 'the whole manifest, every field, is on the plan');
-  assert.ok(pc.searchText(p).includes('#397') && pc.searchText(p).includes('claude/ship-it-live') && pc.searchText(p).includes('kotlin twin deferred'), 'search finds manifest fields');
+  assert.ok(pc.searchText(p).includes(`#${MANIFEST.pr.number}`) && pc.searchText(p).includes('claude/ship-it-live') && pc.searchText(p).includes('kotlin twin deferred'), 'search finds manifest fields');
   // an existing plan: its own words (verbatim) stay when the manifest's are a paraphrase; matching steps tick, new ones are added; planned features → have
   const mine = pc.normalize({ id: 'ship-it-live', title: 'My title', status: 'building', origin: { said: 'My exact words', verbatim: true }, steps: [{ id: 'a', text: 'Do A', model: 'Opus', minutes: 15 }, { id: 'x', text: 'Extra', model: 'Opus', minutes: 5 }], features: [{ entry: 'plugin:plan-studio', feature: 'f', title: 'F', state: 'planned' }], tags: ['mine'] }, { now: NOW });
   const para = { ...MANIFEST, said: { ...MANIFEST.said, text: 'Something paraphrased', verbatim: false } };
@@ -457,6 +457,46 @@ await t('shipped (store + CLI + hook): the sidecar manifest creates the matching
   assert.equal(cli('shipped', 'ship-it-later').plan.shipped.rev, 2);
   const v2 = apiCall({ op: 'get', id: 'ship-it-later' }).plan; assert.equal(v2.summary, 'my own summary'); assert.equal(v2.title, 'My later title'); assert.equal(v2.status, 'done'); assert.equal(v2.build.shipped.rev, 2);
   ck = cli('check-builds'); assert.ok(ck.ok);
+});
+await t('shipped (end to end): the orchestrator ships a build (shipped.mjs ship) → build-hook@1 delivers `shipped` → Plan Studio creates the plan carrying the same valid manifest', () => {
+  // a scratch builds store with one landed build (complete, merged, every step done: the ship adds only the `shipped` ref, so only that event fires)
+  const e2e = join(scratch, 'e2e'); mkdirSync(e2e, { recursive: true });
+  const id = 'ship-it-e2e'; const said = 'Make sure it creates the plan studio. It has to be valid.';
+  const rec = {
+    id, title: 'Ship it end to end', category: 'Console', status: 'complete', branch: 'claude/ship-it-e2e', pr: `#${398}`, mergedAt: '2026-11-09T02:00:00Z', builtAt: '2026-11-09T02:00:00Z', createdAt: '2026-11-09T01:00:00Z', updatedAt: '2026-11-09T02:00:00Z', profiles: ['all'], notes: [], approvals: [], rev: 3,
+    origin: { said, at: '2026-11-09T01:00:00Z', source: 'voice', by: 'Brett', verbatim: true, addenda: [] },
+    steps: [{ id: 's1', uid: 'st-e2e-1', text: 'Do A', model: 'Opus', estimate: '20 min', done: true, doneAt: '2026-11-09T01:30:00Z' }, { id: 's2', uid: 'st-e2e-2', text: 'Do B', model: 'Fable', estimate: '30 min', done: true, doneAt: '2026-11-09T01:55:00Z' }],
+  };
+  writeFileSync(join(e2e, 'store.json'), JSON.stringify({ $axf: 'builds@1', rev: 1, rules: {}, meta: {}, drafts: [], builds: [rec] }));
+  // hooks on for the scratch store, delivered in-process so the run is done when the ship returns
+  const envE = { ...env, AXF_BUILDS_STORE: join(e2e, 'store.json'), AXF_SHIPPED_DIR: join(e2e, 'shipped'), AXF_BUILD_HOOKS: 'on', AXF_BUILD_HOOKS_DIR: join(e2e, 'hooks'), AXF_BUILD_HOOKS_SYNC: '1' };
+  const shipOut = JSON.parse(execFileSync('node', [join(repo, 'framework/cli/shipped.mjs'), 'ship', id, '--source', 'orchestrator', '--by', 'orchestrator', '--json'], { env: envE, cwd: repo, encoding: 'utf8' }).trim().split('\n').at(-1));
+  assert.ok(shipOut.ok, JSON.stringify(shipOut));
+  const events = readFileSync(join(e2e, 'hooks/events.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+  assert.deepEqual(events.map((e) => [e.event, e.build.id]), [['shipped', id]]);
+  // Plan Studio took it (its cursor moved past the event); a second delivery hands it nothing new
+  assert.equal(JSON.parse(readFileSync(join(e2e, 'hooks/cursors.json'), 'utf8'))['plan-studio'], 1);
+  const again = JSON.parse(execFileSync('node', [join(repo, 'framework/cli/build-hooks.mjs'), 'deliver', 'plan-studio'], { env: envE, cwd: repo, encoding: 'utf8' }).trim());
+  assert.equal(again['plan-studio'], 0);
+  // the plan exists, and what it received is the sidecar manifest, field for field, valid under the shared schema
+  const sidecar = JSON.parse(readFileSync(join(e2e, 'shipped', `${id}.json`), 'utf8'));
+  assert.deepEqual(SM.validateManifest(sidecar).errors ?? [], []);
+  const got = apiCall({ op: 'get', id }); assert.ok(got.ok, 'the build\'s plan was created');
+  const p = got.plan; assert.deepEqual(pc.validate(p), []);
+  assert.deepEqual(SM.validateManifest(p.shipped), { ok: true, errors: [] }, 'the plan carries a valid shipped-manifest@1');
+  for (const k of Object.keys(sidecar)) assert.deepEqual(p.shipped[k], sidecar[k], `manifest field ${k} reached the plan`);
+  assert.equal(p.shippedProblem, undefined);
+  // and the plan's own fields come from it
+  assert.equal(p.title, 'Ship it end to end'); assert.equal(p.category, 'Builds > Console'); assert.equal(p.createdBy, 'orchestrator');
+  assert.equal(p.origin.said, said); assert.equal(p.origin.verbatim, true);
+  assert.equal(p.status, 'done'); assert.equal(p.build.status, 'complete'); assert.equal(p.build.progress, 100); assert.equal(String(p.build.pr).replace(/^#/, ''), '398'); assert.equal(p.build.branch, 'claude/ship-it-e2e');
+  assert.equal(p.build.shipped.id, sidecar.id); assert.equal(p.build.shipped.rev, sidecar.rev);
+  assert.deepEqual(p.steps.map((s) => [s.id, s.text, s.model, s.done]), [['s1', 'Do A', 'Opus', true], ['s2', 'Do B', 'Fable', true]]);
+  assert.ok(p.links.some((l) => l.kind === 'pr') && p.links.some((l) => l.kind === 'branch'));
+  // check-builds on this store: green (the shipped build has its plan, same rev, agreeing)
+  let ck; try { ck = execFileSync('node', [join(here, 'plans.mjs'), 'check-builds', '--json'], { env: envE, encoding: 'utf8' }); } catch (e) { ck = e.stdout; }
+  ck = JSON.parse(ck.trim().split('\n').at(-1)); assert.equal(ck.problems.filter((x) => String(x.problem ?? '').includes(id)).length, 0, JSON.stringify(ck.problems));
+  assert.ok(ck.checked >= 1);
 });
 await t('API: AI turn with a fixed reply; AI edits recorded in history as "AI, from: …"', () => {
   const id = apiCall({ op: 'save', plan: { title: 'AI target' }, force: true }).plan.id;
