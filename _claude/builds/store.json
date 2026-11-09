@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1638,
- "updatedAt": "2026-11-09T00:49:06.685Z",
+ "rev": 1639,
+ "updatedAt": "2026-11-09T00:49:16.139Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125431,9 +125431,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:48:58.297Z",
+   "updatedAt": "2026-11-09T00:49:14.856Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T00:49:14.856Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -125448,7 +125453,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T00:49:14.856Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8jmvzc01kosm",
+     "title": "",
+     "text": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:49:14.856Z",
+     "updatedAt": "2026-11-09T00:49:14.856Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8jmvzc02dlrs",
+     "title": "",
+     "text": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:49:14.856Z",
+     "updatedAt": "2026-11-09T00:49:14.856Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8jmvzc03ccrp",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/headless-loop-guards-stop-endless-loops-and-sear.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/headless-loop-guards-stop-endless-loops-and-sear.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:49:14.856Z",
+     "updatedAt": "2026-11-09T00:49:14.856Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -125457,7 +125554,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125472,7 +125569,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T00:49:14.856Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

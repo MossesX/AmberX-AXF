@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:49:06.685Z",
+ "updatedAt": "2026-11-09T00:49:16.139Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76021,9 +76021,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:48:58.297Z",
+   "updatedAt": "2026-11-09T00:49:14.856Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T00:49:14.856Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -76038,7 +76043,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8jmvzc01kosm"
+    },
+    {
+     "id": "s2",
+     "text": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8jmvzc02dlrs"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/headless-loop-guards-stop-endless-loops-and-sear.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/headless-loop-guards-stop-endless-loops-and-sear.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8jmvzc03ccrp"
+    }
+   ]
   }
  ]
 }

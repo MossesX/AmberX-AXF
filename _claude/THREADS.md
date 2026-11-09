@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 14:11 UTC · `postgres-console` note (all) · orchestrator
 - 2026-11-07 14:11 UTC · `orchestrator-dup-check` added (5 steps) (all) · orchestrator-dup-check
 - 2026-11-07 14:11 UTC · `maintenance-redundancy-scan` → complete, note (all) · orchestrator-dup-check
 - 2026-11-07 14:13 UTC · `orchestrator-gate` s3 done (all) · orchestrator
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:48 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` → pending, note (all) · reconciler
 - 2026-11-09 00:48 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · orchestrator
 - 2026-11-09 00:48 UTC · `headless-loop-guards-stop-endless-loops-and-sear` added (0 steps) (all) · pending
+- 2026-11-09 00:49 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · orchestrator
 
 ## Token passes (log)
 
