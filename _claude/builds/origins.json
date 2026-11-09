@@ -3353,6 +3353,18 @@
     }
    ]
   },
+  "split-builds-pages-build-manager-pending-complet": {
+   "said": "Build manager will have pending and complete. Orchestrator will have active and queued. They need to be sent to the orchestrator, so they gotta be sent from somewhere.",
+   "at": "2026-11-09T17:48:20.032Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "stack-walkthrough": {
    "said": "90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
    "at": "2026-11-01",
