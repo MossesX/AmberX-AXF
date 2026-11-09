@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1844,
- "updatedAt": "2026-11-09T18:11:12.110Z",
+ "rev": 1845,
+ "updatedAt": "2026-11-09T18:15:35.987Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124713,6 +124713,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
@@ -125824,6 +125825,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -125984,6 +125986,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -126148,6 +126151,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -126328,6 +126332,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -127166,6 +127171,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T17:15:12.238Z"
    },
    "steps": [
@@ -127482,6 +127488,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
    "steps": [
@@ -127587,7 +127594,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-09T17:47:01.281Z",
+   "updatedAt": "2026-11-09T18:15:34.387Z",
    "builtAt": "",
    "notes": [
     {
@@ -127641,6 +127648,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -127681,12 +127689,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T18:15:34.387Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T16:04:14.593Z",
-     "updatedAt": "2026-11-09T16:04:14.593Z"
+     "updatedAt": "2026-11-09T18:15:34.535Z"
     },
     {
      "id": "s3",
@@ -127722,7 +127730,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -127808,6 +127816,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -127975,6 +127984,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -128181,6 +128191,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
    "steps": [
@@ -128411,6 +128422,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T18:05:17.080Z"
    },
    "steps": [
@@ -128558,6 +128570,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -128784,6 +128797,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 11 steps left after 3 runs: failed.",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T18:09:09.055Z"
    },
    "steps": [
@@ -129166,6 +129180,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T18:02:10.280Z"
    },
    "steps": [
