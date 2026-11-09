@@ -757,9 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 16:40 UTC · `shipped-features-r2` → complete, merged, note (all) · reconciler
-- 2026-11-07 16:40 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, merged, note (all) · reconciler
-- 2026-11-07 16:48 UTC · `full-api-control` s7 done (all) · orchestrator
 - 2026-11-07 16:48 UTC · `full-api-control` s8 done (all) · orchestrator
 - 2026-11-07 16:49 UTC · `settings-placement-everywhere` note (all) · orchestrator
 - 2026-11-07 16:49 UTC · `full-api-control` note (all) · orchestrator
@@ -1157,6 +1154,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:57 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (0 steps) (all) · pending
 - 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · orchestrator
 - 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → built (all) · orchestrator
+- 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
+- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
+- 2026-11-09 02:58 UTC · `skins-asset-types` → built, branch claude/skins-finish (all) · builds-live
 
 ## Token passes (log)
 
