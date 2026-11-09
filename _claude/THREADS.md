@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 02:31 UTC · `x.lib.files` → pending (all) · claude-voice
-- 2026-11-08 02:31 UTC · `x.lib.hub` → pending (all) · claude-voice
 - 2026-11-08 02:31 UTC · `axhub-google` → pending (all) · claude-voice
 - 2026-11-08 02:31 UTC · `amberx-open-any-url` → pending (all) · claude-voice
 - 2026-11-08 02:35 UTC · `fix-owner-check-bug-dead-start-button` added (3 steps) (all) · claude-voice
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 16:25 UTC · `orchestrator-self-check-when-stuck-verify-each-a` → queued, note (all) · console
 - 2026-11-09 16:25 UTC · `orchestrator-settings-api-account-limits-and-rou` added (0 steps) (all) · console
 - 2026-11-09 16:25 UTC · `orchestrator-settings-api-account-limits-and-rou` → queued, note (all) · console
+- 2026-11-09 16:26 UTC · `orchestrator-self-check-when-stuck-verify-each-a` → queued, note (all) · builds-live
+- 2026-11-09 16:26 UTC · `orchestrator-settings-api-account-limits-and-rou` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 
