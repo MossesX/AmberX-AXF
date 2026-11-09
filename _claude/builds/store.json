@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1922,
- "updatedAt": "2026-11-09T19:27:25.880Z",
+ "rev": 1923,
+ "updatedAt": "2026-11-09T19:28:04.628Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130417,7 +130417,7 @@
    "title": "Let voice/API route a build to an API account (with owner approval)",
    "category": "",
    "detail": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
-   "status": "running",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130425,7 +130425,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:27:24.202Z",
+   "updatedAt": "2026-11-09T19:28:03.157Z",
    "builtAt": "",
    "notes": [
     {
@@ -130479,6 +130479,10 @@
     {
      "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:27:24.202Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+     "at": "2026-11-09T19:28:03.157Z"
     }
    ],
    "approvals": [],
@@ -130499,18 +130503,18 @@
     "queuedAt": "2026-11-09T19:23:47.923Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:27:06.719Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-09T19:27:02.638Z",
+     "at": "2026-11-09T19:28:02.794Z",
      "exit": 1,
-     "outcome": "requeued",
+     "outcome": "failed",
      "stepsLeft": 3,
      "account": "account-1",
-     "session": "axf-let-voice-api-route-a-build-to-an-api-account-wi--gina"
+     "session": "axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda"
     },
     "split": {
      "at": "2026-11-09T19:24:30.821Z",
@@ -130520,7 +130524,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
@@ -130603,7 +130607,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
