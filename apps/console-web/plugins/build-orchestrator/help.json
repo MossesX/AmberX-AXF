@@ -101,6 +101,18 @@
         "title": "API overflow",
         "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
         "kind": "toggle"
+      },
+      {
+        "target": "account-queues",
+        "title": "Account queues",
+        "text": "Every Claude account has its own queue, subscription and API alike. Each lane shows what runs on that account and what waits for it. Hold a build (or right-click it) and pick Send to account queue, or drag it onto a lane: it starts there as soon as the account has room. API accounts still keep to their key, daily and weekly caps. Drop it on Shared queue to let any account take it.",
+        "kind": "card"
+      },
+      {
+        "target": "orch-send",
+        "title": "Send to account queue",
+        "text": "Puts this build in one account's own queue so it starts there right away when the account has room. Pick an API account (like Hulu API) to run it on the API, billed per token under its caps.",
+        "kind": "menu-item"
       }
     ],
     "intros": []

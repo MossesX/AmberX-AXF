@@ -148,6 +148,9 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 the orchestrator's dispatcher send a build to an API-key account) and `pipeline.dispatchedAt`. The dispatcher, its API
 routing and the one-build dispatch token (`framework/cli/dispatch-gate.mjs`) run only on the VPS host. No Kotlin twin:
 Android work is on hold and builds show only in the web console. A port needs `ROUTES` and the same normalisation.
+Build per-account-queues (Nov 9 2026) added `pipeline.pin` / `pinnedAt` / `pinnedBy` (a build sent to one account's own
+queue; pinned builds start first within their priority in `queueOrder`) and `queueOf()`. Same deferral: a port needs
+the three fields, the `queueOrder` tie-break and `queueOf`.
 
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 

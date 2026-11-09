@@ -39,3 +39,16 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
+
+/* Account queues (Nov 9 2026): one lane per Claude account + the shared queue; layout only */
+.oq-lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 15), 1fr)); gap: var(--fx-dens-gap-xl); align-items: start }
+.oq-lane { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.oq-lane.is-api { border-color: var(--fx-accent) }
+.oq-lane.is-over { outline: var(--fx-border-w) dashed var(--fx-accent) }
+.oq-list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); margin: 0; padding: 0; list-style: none }
+.oq-card { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); font-size: var(--fx-type-root-sm); cursor: grab; touch-action: manipulation; user-select: none }
+.oq-card.is-running { cursor: default; border-color: var(--fx-accent) }
+.oq-card.is-next { border-color: var(--fx-success) }
+.oq-card__title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.oq-card__why { flex-basis: 100% }
+.oq-empty { padding: var(--fx-dens-gap-sm) 0 }

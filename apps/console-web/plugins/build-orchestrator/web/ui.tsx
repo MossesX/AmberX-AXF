@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab } from './pipeline';
+import { SHOW_EVENT } from './queues';
 import './orchestrator.css';
 
 /*
@@ -49,6 +50,8 @@ export function OrchestratorPage() {
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'pipeline'));
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
+  // deep links (build-orchestrator.queues): switch to the tab they name
+  useEffect(() => { const f = (e: Event) => { const t = (e as CustomEvent<{ tab?: Tab }>).detail?.tab; if (t) setTab(t); }; window.addEventListener(SHOW_EVENT, f); return () => window.removeEventListener(SHOW_EVENT, f); }, []);
 
   const load = async () => {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }

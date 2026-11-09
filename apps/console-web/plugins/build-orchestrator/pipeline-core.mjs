@@ -107,7 +107,7 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
   return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40),
     fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
-    parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
+    parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, off, why, limited, probe: probe ?? (o.probe ?? null), api };
 }
 
 /** May the dispatcher route a build to this API account now? { usable, why, spend } (why says what to do when it can't). */
@@ -160,6 +160,8 @@ export function apiNoAccountWhy(accounts, model) {
  * No account = account '' and `why` says what keeps each option out (a missing key, a cap, a full account).
  */
 export function routeFor(b, accounts, model, settings = normSettings()) {
+  const pin = b?.pipeline?.pin || '';
+  if (pin) return pinRoute(pin, accounts, model);
   const route = b?.pipeline?.route || '';
   if (route === 'api') {
     const a = apiCandidates(accounts, model)[0];
@@ -174,6 +176,54 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
   const a = apiCandidates(accounts, model)[0];
   return a ? { account: a.name, kind: 'api', rule: 'overflow', why: `every subscription account is full or out, so the overflow rule sends it to API account ${a.name}` }
     : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
+}
+
+/**
+ * A build sent to one account's own queue (pipeline.pin): it runs there or waits there, never anywhere else. Brett's
+ * send is the pick, so a subscription account need not be a worker; it still has to be switched on, not limited, have
+ * room and (for a Fable phase) Fable. An API account still needs its key, its daily and weekly caps and room.
+ */
+export function pinRoute(pin, accounts, model) {
+  const a = list(accounts).find((x) => x.name === pin);
+  const where = `sent to ${pin}'s queue`;
+  if (!a) return { account: '', kind: '', rule: 'pin', why: `${where}, but ${pin} is not a signed-in Claude account on the VPS` };
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  if (needFable && !a.fable) return { account: '', kind: a.kind, rule: 'pin', why: `${where}: ${pin} has no ${MODEL_LABELS[FOUNDATION_MODEL]} for this phase (send it to an account with ${MODEL_LABELS[FOUNDATION_MODEL]})` };
+  if (a.kind === 'api') {
+    if (!a.api?.usable || a.free <= 0) return { account: '', kind: 'api', rule: 'pin', why: `${where}: ${a.api?.why || `full (${a.running}/${a.parallel})`}` };
+    return { account: a.name, kind: 'api', rule: 'pin', why: `sent to API account ${a.name} (billed per token, under its caps)` };
+  }
+  const own = a.off || a.limited ? a.why : '';
+  if (own) return { account: '', kind: 'subscription', rule: 'pin', why: `${where}: ${own}` };
+  if (a.free <= 0) return { account: '', kind: 'subscription', rule: 'pin', why: `${where}: full (${a.running}/${a.parallel}), starts when a run there ends` };
+  return { account: a.name, kind: 'subscription', rule: 'pin', why: `sent to ${a.name}` };
+}
+
+/**
+ * Every account's own queue (Brett, Nov 9 2026: "I want every account to have its own queue"): what runs on it now,
+ * what waits in its queue (builds sent there, plus the ones this tick would start there) and the shared queue that
+ * any account takes from. `running` = rows of running builds ({ id, pipeline: { account } }), `queued` = Queue rows in
+ * start order, `plan` = plan(). Returns { accounts: [{ name, kind, label, running: [id], waiting: [id], next: [id],
+ * free, parallel, why }], shared: [id] }.
+ */
+export function accountQueues({ accounts, running = [], queued = [], plan: p = null }) {
+  const launchOn = new Map(list(p?.launches).map((l) => [l.id, l.account]));
+  const waitWhy = new Map(list(p?.waits).map((w) => [w.id, w.why]));
+  const shared = [];
+  const lanes = list(accounts).map((a) => ({ name: a.name, kind: a.kind, label: a.label || '', email: a.email || '', fable: !!a.fable, parallel: a.parallel, running: [], waiting: [], next: [], free: a.free,
+    why: a.kind === 'api' ? (a.api?.why || '') : a.why || '', spend: a.kind === 'api' ? (a.api?.spend ?? null) : null }));
+  const lane = (n) => lanes.find((l) => l.name === n);
+  for (const b of list(running)) { const l = lane(b.pipeline?.account); if (l) l.running.push(b.id); }
+  for (const b of list(queued)) {
+    const pin = b.pipeline?.pin || '';
+    const l = pin ? lane(pin) : null;
+    if (l) l.waiting.push(b.id);
+    else if (pin) shared.push(b.id); // sent to an account that is gone: it shows in the shared queue with the reason
+    else shared.push(b.id);
+    const on = launchOn.get(b.id);
+    if (on && lane(on)) lane(on).next.push(b.id);
+  }
+  return { accounts: lanes, shared, why: Object.fromEntries(waitWhy) };
 }
 
 /** Why no account takes `model` right now, in plain words. */

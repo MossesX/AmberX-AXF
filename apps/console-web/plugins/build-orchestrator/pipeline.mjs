@@ -22,6 +22,9 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … send <id> <account>|auto [--later]  put a build in one account's own queue (subscription or API) and tick now;
+ *                                  auto = back to the shared queue. Pending builds are queued by it.
+ *   … queues [--json]              every account's own queue: running, waiting, what the next tick starts there; the shared queue
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -39,7 +42,7 @@
  * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
  * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
  */
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -182,7 +185,7 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
-  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
+  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', pin: '', pinnedAt: '', pinnedBy: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
   logLine({ event: 'unqueued', build: b.id, by });
   return r;
 }
@@ -405,7 +408,7 @@ export function tick({ env = process.env } = {}) {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'pin' ? 'sent to this account' : l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : l.rule === 'pin' ? ' (sent to this account)' : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
@@ -485,6 +488,55 @@ export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } 
   return out;
 }
 
+// ------------------------------------------------------------------ per-account queues: send a build to one account now
+
+/**
+ * Send a build to one account's own queue (Brett, Nov 9 2026: "hold a job down … in the queue and send it to an API
+ * immediately … I want every account to have its own queue"). A Pending build goes to the Queue; a queued build moves
+ * lanes. It runs only on that account (subscription or API, an API one still under its key, caps and room), ahead of
+ * unpinned builds of its priority; `account` '' or 'auto' takes it back to the shared queue. With `now` the dispatcher
+ * ticks at once (on the VPS host, under the cron's own lock) so it starts right away when the account has room.
+ */
+export function send(id, account, { by = process.env.AXF_ACTOR || 'console', now = true, env = process.env } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (b.status !== 'pending' && b.status !== 'queued') throw Object.assign(new Error(`${b.id} is ${b.status}: only a Pending or queued build can be sent to an account`), { code: 2 });
+  if (b.hidden) throw Object.assign(new Error(`${b.id} is hidden`), { code: 2 });
+  const to = account === 'auto' ? '' : str(account, 40).trim();
+  let acc = null;
+  if (to) {
+    if (!BP.accountName(to)) throw Object.assign(new Error(`not an account name: ${to}`), { code: 2 });
+    acc = accountsNow(loadStore()).find((a) => a.name === to);
+    if (!acc) throw Object.assign(new Error(`${to} is not a signed-in Claude account on the VPS`), { code: 2 });
+  }
+  const at = nowIso();
+  const lane = acc ? `${acc.name}${acc.kind === 'api' ? ' (API key, billed per token, under its caps)' : ''}` : 'the shared queue';
+  const patch = { pin: to, pinnedAt: to ? at : '', pinnedBy: to ? str(by, 80) : '', note: '' };
+  if (b.status === 'pending') Object.assign(patch, { queuedAt: at, queuedBy: str(by, 80) });
+  const r = setPipeline(b.id, patch, { status: 'queued', note: `Sent to ${lane} by ${by}.`, by, action: 'pipeline:send' });
+  logLine({ event: 'sent', build: b.id, account: to || 'auto', kind: acc?.kind || '', by });
+  const kicked = now && to ? kickTick(env) : { kicked: false, why: to ? 'not asked to start now' : '' };
+  const st = status();
+  const w = st.plan.waits.find((x) => x.id === b.id); const l = st.plan.launches.find((x) => x.id === b.id);
+  return { build: r, account: to, kind: acc?.kind || '', kicked, next: l ? `starts on ${l.account} ${kicked.kicked ? 'now' : 'on the next tick'}` : w ? `waits: ${w.why}` : '' };
+}
+
+/** Run one dispatcher tick in the background, on the VPS host only (tmux there), under the cron's lock: a busy lock = a tick is running and takes it. */
+export function kickTick(env = process.env) {
+  if (env.AXF_PIPELINE_KICK === 'off') return { kicked: false, why: 'kick off (AXF_PIPELINE_KICK)' };
+  if (spawnSync('tmux', ['-V'], { encoding: 'utf8' }).status !== 0) return { kicked: false, why: 'not on the VPS host: the dispatcher starts it within a minute' };
+  const self = fileURLToPath(import.meta.url);
+  const c = spawn('flock', ['-n', '/run/axf-pipeline.lock', 'timeout', '600', process.execPath, self, 'tick'], { cwd: REPO_ROOT, env, detached: true, stdio: 'ignore' });
+  c.on('error', () => {}); c.unref();
+  return { kicked: true, why: '' };
+}
+
+/** Every account's own queue, for the console, the CLI, MCP and voice. */
+export function queues() {
+  const st = status();
+  const q = P.accountQueues({ accounts: st.accounts, running: st.table.building, queued: st.table.queued, plan: st.plan });
+  return { ok: true, $axf: 'pipeline-queues@1', at: st.at, ...q, pending: st.table.pending.map((b) => b.id), titles: Object.fromEntries([...st.table.pending, ...st.table.queued, ...st.table.building].map((b) => [b.id, b.title])) };
+}
+
 // ------------------------------------------------------------------ probe
 
 /** Ask an account's login whether it can run Fable: one tiny call; the answer is recorded on the account for probeDays. */
@@ -541,6 +593,14 @@ async function main(argv) {
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'send') {
+    const r = send(rest[0], rest[1] || '', { by, now: !has('later') });
+    return out({ ok: true, id: r.build.id, status: r.build.status, account: r.account || 'auto', kind: r.kind, kicked: r.kicked, next: r.next, pipeline: r.build.pipeline }, `${r.build.id} → ${r.account ? `${r.account}'s queue` : 'shared queue'}${r.next ? ` · ${r.next}` : ''}`);
+  }
+  if (cmd === 'queues') {
+    const q = queues(); const t = (id) => `${id}`;
+    return out(q, [...q.accounts.map((a) => `${a.name.padEnd(16)} ${a.kind.padEnd(12)} running ${a.running.map(t).join(', ') || '—'} · queue ${a.waiting.map(t).join(', ') || '—'}${a.why ? ` · ${a.why}` : ''}`), `${'shared'.padEnd(16)} ${''.padEnd(12)} queue ${q.shared.join(', ') || '—'}`].join('\n'));
+  }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
@@ -562,7 +622,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | send <id> <account>|auto [--later] | queues [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

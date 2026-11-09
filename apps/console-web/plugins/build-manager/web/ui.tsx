@@ -787,6 +787,7 @@ export function BuildManagerView() {
       <TabGroup id="build-manager.views" label="Build manager views" className={`axp-build-manager__tabs${liveCount ? ' has-live' : ''}`} value={tab} onChange={setTab}
         tabs={([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle'], ['sessions', 'Sessions', sessionRows.length, 'users']] as const).map(([id, label, n, icon]) => ({ value: id, label, icon, badge: hits ? `${hits[id]}/${n}` : n }))} />
 
+      {tab === 'live' && <Slot name="builds.accounts" props={{ page: 'build-manager' }} />}
       {tab === 'live' && <LiveTracker query={query} />}
       {tab === 'built' && <BuiltView query={query} />}
       {tab === 'sessions' && <SessionsView query={query} />}

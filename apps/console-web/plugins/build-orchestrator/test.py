@@ -133,6 +133,21 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    _lanes = {"ok": True, "accounts": [{"name": "hulu-api", "kind": "api"}, {"name": "w-max", "kind": "subscription"}], "shared": []}
+    _orig_pipeline = srv._pipeline
+    srv._pipeline = lambda *a, **k: _lanes if a[0] == "queues" else (_calls.append(list(a)) or {"ok": True})
+    try:
+        for account, brett, want in (("hulu-api", False, 403), ("hulu-api", True, 200), ("w-max", False, 200), ("auto", False, 200), ("Bad Name", True, 400)):
+            try:
+                asyncio.run(srv.pipeline_send(_Req({"id": "alpha", "account": account}, brett)))
+                code = 200
+            except srv.HTTPException as e:
+                code = e.status_code
+            check(code == want, f"send to {account} by {'Brett' if brett else 'a session'}: {want}")
+        asyncio.run(srv.pipeline_send(_Req({"id": "alpha", "account": "w-max", "now": False}, False)))
+        check(_calls[-1][:3] == ["send", "alpha", "w-max"] and "--later" in _calls[-1], "send: id, account, --later when now is false")
+    finally:
+        srv._pipeline = _orig_pipeline
 finally:
     srv.subprocess.run = _real_run
 

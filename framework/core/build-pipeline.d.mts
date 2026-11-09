@@ -12,6 +12,7 @@ export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'r
 export interface BuildPipeline {
   queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number;
   lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
+  route: '' | 'api' | 'subscription'; dispatchedAt: string; pin: string; pinnedAt: string; pinnedBy: string;
 }
 export function accountName(v: unknown): string;
 export function emptyPipeline(): BuildPipeline;
@@ -19,7 +20,8 @@ export function normPipeline(p: unknown): BuildPipeline | null;
 export function tableOf(b: { status?: string } | null | undefined): '' | 'pending' | 'queued' | 'building';
 export function canQueue(b: unknown): boolean;
 export function canUnqueue(b: unknown): boolean;
-export function queueOrder<T extends { status: string; createdAt?: string; pipeline?: { queuedAt?: string } | null }>(builds: T[], priorityOf?: (b: T) => string): T[];
+export function queueOrder<T extends { status: string; createdAt?: string; pipeline?: { queuedAt?: string; pin?: string; pinnedAt?: string } | null }>(builds: T[], priorityOf?: (b: T) => string): T[];
+export function queueOf(b: { pipeline?: { pin?: string } | null } | null | undefined): string;
 export function openSteps<T extends { done?: boolean; skip?: boolean }>(b: { steps?: T[] } | null | undefined): T[];
 export function nextModel(b: { steps?: Array<{ done?: boolean; skip?: boolean; model?: string }> } | null | undefined): string;
 export function outcomeOf(run: { exit: number | null; stepsLeft: number; runs: number }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';

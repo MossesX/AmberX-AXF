@@ -516,6 +516,34 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
 
 
+@router.get("/pipeline/queues")
+def pipeline_queues() -> dict[str, Any]:
+    """Every Claude account's own queue (subscription and API): what runs on it, what waits in its queue and what the
+    next tick starts there, plus the shared queue any account takes from and why each waiting build waits."""
+    ensure_health()
+    return _pipeline("queues")
+
+
+@router.post("/pipeline/send")
+async def pipeline_send(request: Request) -> dict[str, Any]:
+    """{id, account, now?: true}: send a Pending or queued build to one account's own queue (account 'auto' = back to
+    the shared queue). It runs only there, ahead of unsent builds of its priority, and the dispatcher ticks at once.
+    An API account bills per token (still under its key, caps and room): sending there is Brett's own click."""
+    body = await _json_body(request)
+    account = str(body.get("account") or "").strip()
+    if account != "auto" and not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", account):
+        raise HTTPException(400, "account is a Claude account name or auto")
+    who = brett_click(request)
+    if account != "auto" and not who:
+        lanes = _pipeline("queues").get("accounts") or []
+        if any(a.get("name") == account and a.get("kind") == "api" for a in lanes):
+            raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
+    args = ["send", _build_id(body.get("id")), account, "--by", (who or "console")[:80]]
+    if body.get("now") is False:
+        args.append("--later")
+    return _pipeline(*args)
+
+
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",
                   queue: bool = True) -> dict[str, Any]:
     """File a build with the orchestrator (it assigns the id) and, by default, put it in the Queue: the dispatcher starts

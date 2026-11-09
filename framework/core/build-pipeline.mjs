@@ -24,6 +24,10 @@
  *   route      '' (auto: subscriptions, then API only when the overflow rule is on) | 'api' (run on an API-key account,
  *              billed per token, under its caps) | 'subscription' (never an API account). Brett's per-build override.
  *   dispatchedAt  ISO of the orchestrator dispatch that started the current run (its token is in the dispatcher's files)
+ *   pin        '' or one account name: the build waits in that account's own queue and runs only there (Brett, Nov 9
+ *              2026: "I want every account to have its own queue"; long-press → Send to <account>). Beats `route`.
+ *   pinnedAt   ISO of the pin; pinned builds start before unpinned ones of the same priority ("send it … immediately")
+ *   pinnedBy   who pinned it
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -44,7 +48,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', pin: '', pinnedAt: '', pinnedBy: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -60,6 +64,7 @@ export function normPipeline(p) {
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
     route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
+    pin: accountName(p.pin), pinnedAt: accountName(p.pin) ? iso(p.pinnedAt) : '', pinnedBy: accountName(p.pin) ? str(p.pinnedBy, 80) : '',
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -73,11 +78,17 @@ export const canQueue = (b) => !!b && b.status === 'pending' && !b.deleted && !b
 /** A build may leave the Queue for Pending: queued and not launched yet. */
 export const canUnqueue = (b) => !!b && b.status === 'queued';
 
-/** Builds of the Queue in start order: priority first (P0 before P3), then the moment they were queued. */
+/** Builds of the Queue in start order: priority first (P0 before P3), then builds sent to an account (oldest send first), then the moment they were queued. */
 export function queueOrder(builds, priorityOf = () => 'P2') {
   const rank = (p) => { const n = parseInt(String(p).replace(/^P/, ''), 10); return Number.isInteger(n) ? n : 2; };
-  return [...builds].filter((b) => b.status === 'queued').sort((a, b) => rank(priorityOf(a)) - rank(priorityOf(b)) || str(a.pipeline?.queuedAt).localeCompare(str(b.pipeline?.queuedAt)) || str(a.createdAt).localeCompare(str(b.createdAt)));
+  const pinned = (b) => (b.pipeline?.pin ? 0 : 1);
+  return [...builds].filter((b) => b.status === 'queued').sort((a, b) => rank(priorityOf(a)) - rank(priorityOf(b)) || pinned(a) - pinned(b)
+    || (a.pipeline?.pin && b.pipeline?.pin ? str(a.pipeline?.pinnedAt).localeCompare(str(b.pipeline?.pinnedAt)) : 0)
+    || str(a.pipeline?.queuedAt).localeCompare(str(b.pipeline?.queuedAt)) || str(a.createdAt).localeCompare(str(b.createdAt)));
 }
+
+/** The account queue a build sits in: its pin, else '' (the shared queue any account takes from). */
+export const queueOf = (b) => b?.pipeline?.pin || '';
 
 /** The steps still to do (not done, not skipped). */
 export const openSteps = (b) => (b?.steps ?? []).filter((s) => !s.done && !s.skip);

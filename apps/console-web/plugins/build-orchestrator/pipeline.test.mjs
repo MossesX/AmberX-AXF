@@ -225,6 +225,34 @@ t('plan: overflow fills an API account up to its cap, then the rest wait with th
   assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api: full/);
   assert.equal(BP.normPipeline({ route: 'api' }).route, 'api'); assert.equal(BP.normPipeline({ route: 'nope', queuedAt: now }).route, '');
 });
+// ---------------- per-account queues (Brett, Nov 9 2026: "hold a job down … send it to an API immediately … every account to have its own queue")
+t('pin: a build sent to an account runs only there (API under its caps, subscription even when not a worker); waits with the reason', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const accts = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, { name: 'brett-pro', role: 'saved', plan: 'pro', limited: null, running: [] }, apiRow('hulu-api'), apiRow('capped-api', { spend: { day: 9, week: 9, state: 'capped', why: 'daily cap $5 reached' } })], {}, { settings: s });
+  const pinned = (pin) => build('x', 'queued', [], { pipeline: { pin, pinnedAt: now } });
+  assert.deepEqual(Object.values(P.routeFor(pinned('hulu-api'), accts, 'Opus', s)).slice(0, 3), ['hulu-api', 'api', 'pin'], 'API while a subscription is free');
+  assert.equal(P.routeFor(pinned('brett-pro'), accts, 'Opus', s).account, 'brett-pro', 'a non-worker subscription takes it when sent there');
+  assert.match(P.routeFor(pinned('brett-pro'), accts, 'Fable', s).why, /no Fable/);
+  assert.match(P.routeFor(pinned('capped-api'), accts, 'Opus', s).why, /capped-api's queue: spend cap reached/);
+  assert.match(P.routeFor(pinned('gone'), accts, 'Opus', s).why, /not a signed-in Claude account/);
+  const pin = BP.normPipeline({ pin: 'hulu-api', pinnedAt: now, pinnedBy: 'brett' });
+  assert.deepEqual([pin.pin, pin.pinnedBy], ['hulu-api', 'brett']); assert.equal(BP.normPipeline({ pin: 'Bad Name', pinnedAt: now, pinnedBy: 'x' }), null, 'a bad name is no pin');
+});
+t('queue order: a sent build starts before unpinned ones of its priority; plan starts it on its account; account queues group it', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const accts = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api')], {}, { settings: s });
+  const q = (id, at, extra = {}) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at, ...extra } });
+  const builds = [q('old', '2026-11-08T00:01:00Z'), q('sent', '2026-11-08T00:05:00Z', { pin: 'hulu-api', pinnedAt: '2026-11-08T00:06:00Z' }), q('later', '2026-11-08T00:03:00Z', { pin: 'w-max', pinnedAt: '2026-11-08T00:07:00Z' })];
+  assert.deepEqual(BP.queueOrder(builds).map((b) => b.id), ['sent', 'later', 'old']);
+  const r = P.plan({ builds, accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: s });
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.rule]), [['sent', 'hulu-api', 'pin'], ['later', 'w-max', 'pin']]);
+  assert.match(r.waits.find((w) => w.id === 'old').why, /parallel cap|API overflow is off/);
+  const lanes = P.accountQueues({ accounts: accts, running: [{ id: 'busy', pipeline: { account: 'w-max' } }], queued: BP.queueOrder(builds), plan: r });
+  const by = Object.fromEntries(lanes.accounts.map((a) => [a.name, a]));
+  assert.deepEqual(by['hulu-api'].waiting, ['sent']); assert.deepEqual(by['hulu-api'].next, ['sent']); assert.equal(by['hulu-api'].kind, 'api');
+  assert.deepEqual(by['w-max'].running, ['busy']); assert.deepEqual(by['w-max'].waiting, ['later']);
+  assert.deepEqual(lanes.shared, ['old']);
+});
 t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {
   assert.match(OC.API_RULE, /deep link/); assert.match(OC.API_RULE, /every action and setting/); assert.match(OC.API_RULE, /MCP/); assert.match(OC.API_RULE, /CLI/); assert.match(OC.API_RULE, /voice/);
   const b = OC.normalizeState({ builds: [build('ui-thing', 'queued', [step('s1', 'Opus')])] }).builds[0];
@@ -274,7 +302,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
-    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_KICK: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
   const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0 && !args.includes('--expect-fail')) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
   const pipe = (...a) => run('pipeline.mjs', ...a);
@@ -343,6 +371,20 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.notEqual(pipe('route', r2.id, 'nowhere', '--json', '--expect-fail').status, 0);
     assert.equal(json(pipe('show', r.id, '--json')).build.status, 'queued');
     json(pipe('unqueue', r.id, '--json'));
+  });
+  t('e2e send: long-press → Send to <account> queues a Pending build in that account\'s own queue; auto takes it back', () => {
+    const id = 'fix-systems-check-mosh-server-2';
+    const r = json(pipe('send', id, 'console', '--by', 'brett', '--json'));
+    assert.equal(r.status, 'queued'); assert.equal(r.account, 'console'); assert.equal(r.kicked.kicked, false, 'no kick in tests');
+    assert.deepEqual([find(id).pipeline.pin, find(id).pipeline.pinnedBy], ['console', 'brett']); assert.match(find(id).notes.at(-1).text, /Sent to console by brett/);
+    assert.match(r.next, /waits: no steps yet/, 'the reason it has not started is said (the plan unit test covers the start)');
+    const q = json(pipe('queues', '--json'));
+    assert.deepEqual(q.accounts.find((a) => a.name === 'console').waiting, [id]); assert.ok(!q.shared.includes(id));
+    assert.notEqual(pipe('send', id, 'nobody', '--json', '--expect-fail').status, 0, 'an unknown account is refused');
+    assert.notEqual(pipe('send', 'alpha', 'console', '--json', '--expect-fail').status, 0, 'a running build is not moved');
+    json(pipe('send', id, 'auto', '--json')); assert.equal(find(id).pipeline?.pin ?? '', ''); assert.equal(find(id).status, 'queued');
+    assert.ok(json(pipe('queues', '--json')).shared.includes(id));
+    json(pipe('unqueue', id, '--json')); assert.equal(find(id).status, 'pending');
   });
   t('e2e session end: a crash requeues (run 2), a clean finish with every step done = complete', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 1, at: new Date().toISOString() }) + '\n');

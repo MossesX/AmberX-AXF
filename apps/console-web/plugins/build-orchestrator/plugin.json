@@ -374,6 +374,42 @@
         "output": "{ id, route }"
       },
       {
+        "id": "pipeline-queues",
+        "route": "GET /pipeline/queues",
+        "title": "Account queues",
+        "description": "Every Claude account's own queue, subscription and API (e.g. hulu-api): what runs on it, what waits in its queue, what the next tick starts there, and the shared queue any account takes from. Say 'what's in Hulu API's queue'.",
+        "readOnly": true,
+        "output": "{ accounts: [{ name, kind, running, waiting, next, free, parallel, why }], shared, why, titles }"
+      },
+      {
+        "id": "pipeline-send",
+        "route": "POST /pipeline/send",
+        "title": "Send a build to an account's queue",
+        "description": "Send a Pending or queued build to one Claude account's own queue so it starts there right away (subscription or API account, an API one still under its key, daily and weekly caps and room). It runs only on that account; auto puts it back in the shared queue. Sending to an API account bills per token: Brett's own click. Say 'send the icon browser build to Hulu API now'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "account": {
+              "type": "string",
+              "description": "Claude account name (e.g. hulu-api, mossesx-max) or auto"
+            },
+            "now": {
+              "type": "boolean",
+              "description": "Tick the dispatcher at once (default true)"
+            }
+          },
+          "required": [
+            "id",
+            "account"
+          ]
+        },
+        "output": "{ id, status, account, kind, kicked, next }"
+      },
+      {
         "id": "pipeline-settings",
         "route": "GET /pipeline/settings",
         "title": "Pipeline settings",
