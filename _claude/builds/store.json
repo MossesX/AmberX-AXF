@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2006,
- "updatedAt": "2026-11-09T20:49:17.645Z",
+ "rev": 2007,
+ "updatedAt": "2026-11-09T20:49:36.816Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124553,15 +124553,15 @@
    "title": "Approvals page: auto-approve toggle (1 h / 2 h / until off) + collapsible containers",
    "category": "",
    "detail": "SKIP PENDING: put straight in the queue. On the approvals / waiting page (console banner approvals and axHub approvals): an Auto-approve control with 1 hour, 2 hours, and Until I turn it off; shows remaining time; turned off from the same container. Uses axHub passes (axhub.pass_grant/revoke) covering every tool Brett allows, incl. veto vps.run if axHub permits; if destructive tools can't be passed, say so on the control. Waiting approvals grouped in collapsible containers (by service/tool/build). Full API + voice + MCP/CLI control. Tests; report; Plan Studio plan.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "approvals-page-auto-approve-toggle-1-h-2-h-until",
-   "branch": "",
+   "branch": "claude/approvals-page-auto-approve-toggle-1-h-2-h-until",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-09T20:49:13.919Z",
+   "updatedAt": "2026-11-09T20:49:25.525Z",
    "builtAt": "",
    "notes": [
     {
@@ -124571,6 +124571,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-09T20:41:58.440Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina.",
+     "at": "2026-11-09T20:49:20.983Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina, own login copy)",
+     "at": "2026-11-09T20:49:25.525Z"
     }
    ],
    "approvals": [],
@@ -124598,18 +124606,18 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:41:57.914Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-09T20:49:20.226Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-09T20:49:20.226Z"
    },
    "steps": [
     {
@@ -124690,7 +124698,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
