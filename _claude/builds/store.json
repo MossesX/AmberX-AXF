@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2030,
- "updatedAt": "2026-11-09T23:44:15.847Z",
+ "rev": 2031,
+ "updatedAt": "2026-11-09T23:44:48.271Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131793,6 +131793,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T20:27:49.018Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-log-fyi-phone-notifications-from-claude-sess",
+   "title": "Fix log + FYI phone notifications from Claude sessions (no approval)",
+   "category": "",
+   "detail": "An axHub/console tool any Claude session (voice, chat, headless) can call with a short text: it appends to a Fix log (time, session, what was tried, outcome: trying / failed / fixed) and sends an informational notification to Brett's phone through AmberX (and the console bell). Policy allow: no approval, no veto countdown, never asks for anything. Fix log viewable in the console with filters. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T23:44:46.980Z",
+   "updatedAt": "2026-11-09T23:44:46.980Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If something needs to be fixed, you can send me a notification on my phone through AmberX... log it, and then if you try something, notify me that you're trying this, say what it is. If that fails, say that failed... just notify me of doing it, not for permission or veto.",
+    "at": "2026-11-09T23:44:46.980Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 511
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -1584,6 +1584,18 @@
    "from": "detail",
    "addenda": []
   },
+  "fix-log-fyi-phone-notifications-from-claude-sess": {
+   "said": "If something needs to be fixed, you can send me a notification on my phone through AmberX... log it, and then if you try something, notify me that you're trying this, say what it is. If that fails, say that failed... just notify me of doing it, not for permission or veto.",
+   "at": "2026-11-09T23:44:46.980Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-owner-check-bug-dead-start-button": {
    "said": "",
    "at": "",
