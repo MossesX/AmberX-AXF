@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:59 UTC · `molly-sign-in-once` added (3 steps) (all) · orchestrator
-- 2026-11-08 16:59 UTC · `molly-multi-instance-tabs` note (all) · orchestrator
 - 2026-11-08 16:59 UTC · `molly-banner-match` → running, note (all) · orchestrator
 - 2026-11-08 16:59 UTC · `drag-to-tab` note (all) · orchestrator
 - 2026-11-08 16:59 UTC · `apps-control-surface` note (all) · orchestrator
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:14 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-09 17:15 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
 - 2026-11-09 17:15 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
+- 2026-11-09 17:40 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
+- 2026-11-09 17:40 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

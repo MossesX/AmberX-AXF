@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1782,
- "updatedAt": "2026-11-09T17:15:19.114Z",
+ "rev": 1783,
+ "updatedAt": "2026-11-09T17:40:32.978Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126880,14 +126880,14 @@
    "title": "Skins restyle EVERYTHING: badges, banner and every visual element",
    "category": "Appearance",
    "detail": "Bug: applying a skin doesn't change the banner badges (Claude, VPS, axHub, AmberX, usage). Rule: a skin must change every single visual thing everywhere, in every framework app: banner, badges, toolbars, menus, dialogs, toasts, tables, buttons, icons, inputs, scrollbars, charts. Audit every component for hard-coded colours/styles or styles not read from skin tokens and move them to tokens/assets. Add an automated check: apply each skin, screenshot every screen, and fail on any element whose style didn't change from the default. Result must look professional. Brett: \"the skin literally needs to change every single visual thing everywhere... I need it to look professional.\"",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:11:10.387Z",
+   "updatedAt": "2026-11-09T17:40:31.294Z",
    "builtAt": "",
    "notes": [
     {
@@ -126913,6 +126913,10 @@
     {
      "text": "Phase 1 (Opus) done: s1-s4 on draft PR #409. Next: s6 on Fable (asset-types skin entries + customize text targets), then s5 (screenshot gate, UI Review).",
      "at": "2026-11-09T17:10:53.056Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-09T17:40:31.294Z"
     }
    ],
    "approvals": [],
@@ -127071,7 +127075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -127087,14 +127091,14 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/appearance-skins-colour-themes-only-remove-design-packs",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T17:15:14.479Z",
+   "updatedAt": "2026-11-09T17:40:31.294Z",
    "builtAt": "",
    "notes": [
     {
@@ -127128,6 +127132,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-appearance-skins-colour-themes-only-remove-desig--rhonda, own login copy)",
      "at": "2026-11-09T17:15:14.479Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-09T17:40:31.294Z"
     }
    ],
    "approvals": [],
@@ -127280,7 +127288,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
