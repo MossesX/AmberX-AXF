@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1890,
- "updatedAt": "2026-11-09T19:12:28.610Z",
+ "rev": 1891,
+ "updatedAt": "2026-11-09T19:13:05.024Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129901,7 +129901,7 @@
    "title": "VPS orchestrator-only rule + VPS Settings console plugin to manage it",
    "category": "",
    "detail": "1) Enforce on the VPS itself: every headless Claude build launch (claude-headless.sh, agent slots, vps build_start, any launcher) must carry an orchestrator-issued build ID/token; anything else is refused and logged, with a notice to the phone. Builds on one-way-to-start-builds-the-orchestrator-dispatc (2/3 done) - finish or fold that in. 2) New console plugin 'VPS Settings' to view and change VPS-side settings, starting with this rule (on/off, refused-jobs log). Full API control per standing rule.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129909,7 +129909,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-09T19:12:27.040Z",
+   "updatedAt": "2026-11-09T19:13:03.160Z",
    "builtAt": "",
    "notes": [
     {
@@ -129947,6 +129947,10 @@
     {
      "text": "Headless run axf-vps-orchestrator-only-rule-vps-settings-console--joey: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:12:27.040Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T19:13:03.160Z"
     }
    ],
    "approvals": [],
@@ -129967,18 +129971,18 @@
     "queuedAt": "2026-11-09T19:10:10.755Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-vps-orchestrator-only-rule-vps-settings-console--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:12:09.082Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-09T19:12:03.289Z",
+     "at": "2026-11-09T19:13:02.811Z",
      "exit": 1,
      "outcome": "requeued",
      "stepsLeft": 3,
      "account": "account-1",
-     "session": "axf-vps-orchestrator-only-rule-vps-settings-console--lenny"
+     "session": "axf-vps-orchestrator-only-rule-vps-settings-console--joey"
     },
     "split": {
      "at": "2026-11-09T19:11:14.502Z",
@@ -129988,7 +129992,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-09T19:12:09.082Z"
    },
@@ -130071,7 +130075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
