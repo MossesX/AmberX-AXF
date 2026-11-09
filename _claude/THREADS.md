@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:15 UTC · `terminal-header-responsive` added (5 steps) (all) · orchestrator
-- 2026-11-08 16:15 UTC · `terminal-header-responsive` → running (all) · orchestrator
-- 2026-11-08 16:24 UTC · `terminal-header-responsive` s1 done (all) · orchestrator
 - 2026-11-08 16:24 UTC · `terminal-header-responsive` s2 done (all) · orchestrator
 - 2026-11-08 16:24 UTC · `terminal-header-responsive` s3 done (all) · orchestrator
 - 2026-11-08 16:26 UTC · `brief-only-headless` s4 done (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` PR #408 (all) · builds-live
 - 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` s3 done, → built (all) · orchestrator
 - 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` note (all) · orchestrator
+- 2026-11-09 17:01 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
+- 2026-11-09 17:01 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` branch claude/skins-restyle-everything-badges-banner-and-every-visual-element (all) · pipeline
+- 2026-11-09 17:01 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 
 ## Token passes (log)
 
