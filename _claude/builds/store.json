@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1954,
- "updatedAt": "2026-11-09T20:25:13.673Z",
+ "rev": 1955,
+ "updatedAt": "2026-11-09T20:25:31.599Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126439,14 +126439,14 @@
    "title": "AmberX floating toolbar (always on top): mic + approvals + build status",
    "category": "amberx",
    "detail": "AmberX Android app: a small floating toolbar (overlay bubble, draw over other apps) that stays on top everywhere. Main items: mic button (talk to Claude / hands-free toggle) and approvals (badge with count of waiting axHub approvals; tap to approve/deny in place). Also build status (running count, failures). Draggable, collapsible, snaps to edges; every piece an asset, styled from tokens, configurable in settings (items, size, opacity, position). Brett: \"add a floating toolbar to AmberX that's always on top... the main thing was the mic and the approvals.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T20:25:11.588Z",
+   "updatedAt": "2026-11-09T20:25:18.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -126492,6 +126492,14 @@
     {
      "text": "Session on account-3 ended (exit 1) with 4 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T20:24:05.729Z"
+    },
+    {
+     "text": "Started run 3 on account-3 (Opus, Phase 1): axf-amberx-floating-toolbar-always-on-top-mic-approv--rhonda.",
+     "at": "2026-11-09T20:25:16.483Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-amberx-floating-toolbar-always-on-top-mic-approv--rhonda, own login copy)",
+     "at": "2026-11-09T20:25:18.838Z"
     }
    ],
    "approvals": [],
@@ -126520,11 +126528,11 @@
     "queuedAt": "2026-11-09T20:21:47.553Z",
     "queuedBy": "console",
     "account": "account-3",
-    "session": "",
+    "session": "axf-amberx-floating-toolbar-always-on-top-mic-approv--rhonda",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T20:23:06.762Z",
-    "runs": 2,
+    "launchedAt": "2026-11-09T20:25:15.903Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-09T20:24:05.267Z",
      "exit": 1,
@@ -126535,9 +126543,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 4 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:23:06.762Z"
+    "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
    "steps": [
     {
@@ -126637,7 +126645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
