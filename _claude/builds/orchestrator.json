@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:45:37.158Z",
+ "updatedAt": "2026-11-09T23:45:54.612Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80808,12 +80808,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:44:46.980Z",
-   "updatedAt": "2026-11-09T23:44:48.321Z",
+   "updatedAt": "2026-11-09T23:45:53.547Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T23:44:48.321Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T23:45:53.547Z"
     }
    ],
    "approvals": [],
@@ -80830,7 +80834,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "An axHub/console tool any Claude session (voice, chat, headless) can call with a short text: it appends to a Fix log (time, session, what was tried, outcome: trying / failed / fixed) and sends an informational notification to Brett's phone through AmberX (and the console bell). Policy allow: no approval, no veto countdown, never asks for anything. Fix log viewable in the console with filters. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9wt9jf01o8gv"
+    },
+    {
+     "id": "s2",
+     "text": "If something needs to be fixed, you can send me a notification on my phone through AmberX... log it, and then if you try something, notify me that you're trying this, say what it is. If that fails, say that failed... just notify me of doing it, not for permission or veto.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9wt9jf02b2bv"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/fix-log-fyi-phone-notifications-from-claude-sess.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/fix-log-fyi-phone-notifications-from-claude-sess.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9wt9jf03bhnd"
+    }
+   ]
   },
   {
    "id": "standing-rule-in-every-brief-fix-problems-yourse",
