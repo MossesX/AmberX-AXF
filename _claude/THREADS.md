@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` s2 done (all) · orchestrator
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` branch claude/orchestrator-only-launcher (all) · builds-live
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · orchestrator
 - 2026-11-09 00:37 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (0 steps) (all) · pending
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:27 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 - 2026-11-09 20:27 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
 - 2026-11-09 20:27 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s1 done, → running (all) · orchestrator
+- 2026-11-09 20:29 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
