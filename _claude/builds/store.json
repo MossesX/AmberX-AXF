@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1677,
- "updatedAt": "2026-11-09T02:31:19.385Z",
+ "rev": 1678,
+ "updatedAt": "2026-11-09T02:46:52.990Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126126,7 +126126,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126138,7 +126138,11 @@
     "createdAt": "2026-11-09T02:24:24.342Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8n332101tdx4": "2026-11-09T02:25:49.369Z",
+     "st-mw8n332102i81z": "2026-11-09T02:25:49.369Z",
+     "st-mw8n332103utl6": "2026-11-09T02:25:49.369Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T02:25:49.369Z",
@@ -126282,7 +126286,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126294,10 +126298,73 @@
     "createdAt": "2026-11-09T02:25:05.067Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8n3lh70172xv": "2026-11-09T02:26:13.242Z",
+     "st-mw8n3lh702en38": "2026-11-09T02:26:13.242Z",
+     "st-mw8n3lh703zv50": "2026-11-09T02:26:13.242Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T02:26:13.242Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "go-to-hooks-every-shipped-feature-build-and-plan",
+   "title": "Go-to hooks: every shipped feature, build and plan opens the UI or setting it touched",
+   "category": "",
+   "detail": "Every Shipped Features entry, build (Pending/Queued/Built) and Plan Studio plan that relates to a UI, screen, dialog, plugin or setting carries go-to hooks. The manifest records the UI targets it touched (view ids, dialogs, settings tabs/keys, plugin, element selectors) from the registry. In the row: an 'Open' button (opens the main target), and in the expanded row a 'Go to' list of every target. Clicking opens it in the console (or Molly/AmberX) via deep link / console_show, focused, scrolled into view, centered and highlighted. Works on desktop and phone; targets that no longer exist show as 'removed'. Backfill hooks for already shipped entries from their reports/plugin.json ui blocks. Full API/MCP/CLI/voice control ('open what build X changed'). Tests: a hook opens the right view and highlights the element.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "go-to-hooks-every-shipped-feature-build-and-plan",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:46:50.916Z",
+   "updatedAt": "2026-11-09T02:46:50.916Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Whenever you click the shipped feature, a built plan or anything related to a UI or setting, it brings you to it. There's got to be a hook to it. Somewhere, either clicking it or a hook somewhere in its expanded row or something.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 480
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T02:46:50.916Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

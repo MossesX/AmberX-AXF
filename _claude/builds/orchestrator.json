@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:31:19.385Z",
+ "updatedAt": "2026-11-09T02:46:52.990Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76553,6 +76553,37 @@
      "uid": "st-mw8n3lh703zv50"
     }
    ]
+  },
+  {
+   "id": "go-to-hooks-every-shipped-feature-build-and-plan",
+   "title": "Go-to hooks: every shipped feature, build and plan opens the UI or setting it touched",
+   "category": "",
+   "detail": "Every Shipped Features entry, build (Pending/Queued/Built) and Plan Studio plan that relates to a UI, screen, dialog, plugin or setting carries go-to hooks. The manifest records the UI targets it touched (view ids, dialogs, settings tabs/keys, plugin, element selectors) from the registry. In the row: an 'Open' button (opens the main target), and in the expanded row a 'Go to' list of every target. Clicking opens it in the console (or Molly/AmberX) via deep link / console_show, focused, scrolled into view, centered and highlighted. Works on desktop and phone; targets that no longer exist show as 'removed'. Backfill hooks for already shipped entries from their reports/plugin.json ui blocks. Full API/MCP/CLI/voice control ('open what build X changed'). Tests: a hook opens the right view and highlights the element.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "go-to-hooks-every-shipped-feature-build-and-plan",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:46:50.916Z",
+   "updatedAt": "2026-11-09T02:46:50.916Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Whenever you click the shipped feature, a built plan or anything related to a UI or setting, it brings you to it. There's got to be a hook to it. Somewhere, either clicking it or a hook somewhere in its expanded row or something.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

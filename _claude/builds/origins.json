@@ -1734,6 +1734,18 @@
    "from": "",
    "addenda": []
   },
+  "go-to-hooks-every-shipped-feature-build-and-plan": {
+   "said": "Whenever you click the shipped feature, a built plan or anything related to a UI or setting, it brings you to it. There's got to be a hook to it. Somewhere, either clicking it or a hook somewhere in its expanded row or something.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "grid-column-hiding": {
    "said": "Every grid needs to be able to hide columns. If you right-click on the column, you can select which ones to hide. And every grid, framework wide.",
    "at": "2026-11-04T19:59:59.405Z",
