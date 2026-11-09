@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1854,
- "updatedAt": "2026-11-09T18:47:26.421Z",
+ "rev": 1855,
+ "updatedAt": "2026-11-09T18:48:04.981Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129267,7 +129267,7 @@
    "title": "File watchdog plugin: watch files, run scripts or console commands, optional AI prompt (off by default)",
    "category": "",
    "detail": "New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129275,7 +129275,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-09T18:47:24.843Z",
+   "updatedAt": "2026-11-09T18:48:03.518Z",
    "builtAt": "",
    "notes": [
     {
@@ -129297,6 +129297,10 @@
     {
      "text": "Headless run axf-file-watchdog-plugin-watch-files-run-scripts-or--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:47:24.843Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T18:48:03.518Z"
     }
    ],
    "approvals": [],
@@ -129317,12 +129321,19 @@
     "queuedAt": "2026-11-09T18:43:23.420Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-file-watchdog-plugin-watch-files-run-scripts-or--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:47:07.699Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-09T18:48:03.128Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 3,
+     "account": "account-1",
+     "session": "axf-file-watchdog-plugin-watch-files-run-scripts-or--gina"
+    },
     "split": {
      "at": "2026-11-09T18:44:36.717Z",
      "by": "orchestrator",
@@ -129331,7 +129342,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-09T18:47:07.699Z"
    },
@@ -129414,7 +129425,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

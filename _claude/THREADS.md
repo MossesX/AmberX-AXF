@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:45 UTC · `ui-api-parity-rule` branch claude/ui-api-parity-rule-r3, PR #393 (all) · builds-live
 - 2026-11-08 17:45 UTC · `full-api-control` → built, branch claude/ui-api-parity-rule-r3, PR #393 (all) · builds-live
 - 2026-11-08 17:45 UTC · `full-api-control` note (all) · orchestrator
 - 2026-11-08 17:46 UTC · `ui-api-parity-rule` s7 done, → built (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:47 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → running, note (all) · pipeline
 - 2026-11-09 18:47 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` branch claude/file-watchdog-plugin-watch-files-run-scripts-or (all) · pipeline
 - 2026-11-09 18:47 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · orchestrator
+- 2026-11-09 18:48 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
