@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1793,
- "updatedAt": "2026-11-09T17:45:59.480Z",
+ "rev": 1794,
+ "updatedAt": "2026-11-09T17:47:03.512Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124713,6 +124713,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
@@ -125824,6 +125825,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -125984,6 +125986,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -126148,6 +126151,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -126328,6 +126332,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -127166,6 +127171,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T17:15:12.238Z"
    },
    "steps": [
@@ -127466,6 +127472,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
     "route": "",
+    "pin": "",
     "dispatchedAt": "2026-11-09T17:42:07.862Z"
    },
    "steps": [
@@ -127571,7 +127578,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-09T17:41:23.966Z",
+   "updatedAt": "2026-11-09T17:47:01.281Z",
    "builtAt": "",
    "notes": [
     {
@@ -127608,12 +127615,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T16:03:36.807Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T17:41:20.109Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T16:04:14.593Z",
@@ -127623,9 +127630,10 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:41:20.109Z"
+    "pin": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -127643,12 +127651,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T17:47:01.281Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T16:04:14.593Z",
-     "updatedAt": "2026-11-09T16:04:14.593Z"
+     "updatedAt": "2026-11-09T17:47:01.559Z"
     },
     {
      "id": "s2",
@@ -127792,6 +127800,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -127959,6 +127968,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
@@ -128110,6 +128120,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
+    "pin": "",
     "dispatchedAt": ""
    },
    "steps": [
