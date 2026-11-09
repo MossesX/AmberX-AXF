@@ -12,6 +12,7 @@ export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'r
 export interface BuildPipeline {
   queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number;
   lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
+  route?: '' | 'api' | 'subscription'; /** '' = Auto, else the saved account this build is pinned to */ pin?: string; dispatchedAt?: string;
 }
 export function accountName(v: unknown): string;
 export function emptyPipeline(): BuildPipeline;

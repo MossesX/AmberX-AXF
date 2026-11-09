@@ -39,3 +39,5 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
+/* a build pinned to one saved account (right-click → Assign to account) */
+.oc-pin { color: var(--fx-accent) }

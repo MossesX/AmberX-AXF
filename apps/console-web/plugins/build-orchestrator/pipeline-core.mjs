@@ -21,6 +21,7 @@
  *              apiOverflow, off by default: every subscription account full or out → an API account). An API account
  *              takes a build only when it has a key, is switched on, is under its daily and weekly caps and has room;
  *              otherwise it is skipped and the reason is said (apiNoAccountWhy()).
+ *   pins       (Brett, Nov 9 2026) pipeline.pin = one saved account: pinnedRoute() runs the build there or waits for it.
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -160,6 +161,8 @@ export function apiNoAccountWhy(accounts, model) {
  * No account = account '' and `why` says what keeps each option out (a missing key, a cap, a full account).
  */
 export function routeFor(b, accounts, model, settings = normSettings()) {
+  const pin = b?.pipeline?.pin || '';
+  if (pin) return pinnedRoute(pin, accounts, model);
   const route = b?.pipeline?.route || '';
   if (route === 'api') {
     const a = apiCandidates(accounts, model)[0];
@@ -174,6 +177,28 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
   const a = apiCandidates(accounts, model)[0];
   return a ? { account: a.name, kind: 'api', rule: 'overflow', why: `every subscription account is full or out, so the overflow rule sends it to API account ${a.name}` }
     : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
+}
+
+/**
+ * A build pinned to one saved account (pipeline.pin; Brett, Nov 9 2026: "right-click jobs in the orchestrator and assign
+ * them to one of my stored accounts"): it runs there or waits for it, never anywhere else. A subscription login takes it
+ * whatever its role (worker, the console's account, any saved login) unless it is switched off, limited, lacks Fable for a
+ * Fable phase or is at its parallel cap; an API account also needs its key and room under its daily and weekly caps.
+ */
+export function pinnedRoute(pin, accounts, model) {
+  const a = list(accounts).find((x) => x.name === pin);
+  const head = `pinned to ${pin}`;
+  if (!a) return { account: '', kind: '', rule: 'pin', why: `${head}, which is not a saved account on the VPS` };
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  if (a.kind === 'api') {
+    if (!a.api?.usable) return { account: '', kind: '', rule: 'pin', why: `${head}: ${a.api?.why || 'not usable'}` };
+  } else {
+    if (a.why === 'switched off for the pipeline') return { account: '', kind: '', rule: 'pin', why: `${head}: switched off for the pipeline` };
+    if (a.limited) return { account: '', kind: '', rule: 'pin', why: `${head}: ${a.why}` };
+  }
+  if (needFable && !a.fable) return { account: '', kind: '', rule: 'pin', why: `${head}, which has no ${MODEL_LABELS[FOUNDATION_MODEL]} for this ${MODEL_LABELS[FOUNDATION_MODEL]} phase` };
+  if (a.free <= 0) return { account: '', kind: '', rule: 'pin', why: `${head}: waiting for its slot (${a.running}/${a.parallel} running)` };
+  return { account: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', rule: 'pin', why: `pinned to ${a.name}` };
 }
 
 /** Why no account takes `model` right now, in plain words. */

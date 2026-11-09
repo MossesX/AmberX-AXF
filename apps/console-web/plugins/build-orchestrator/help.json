@@ -101,6 +101,12 @@
         "title": "API overflow",
         "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
         "kind": "toggle"
+      },
+      {
+        "target": "orch-assign",
+        "title": "Assign to account",
+        "text": "Right-click (or long-press) a build to pin it to one of your saved Claude accounts: a subscription login or an API-key account, or back to Auto. A pinned build runs only there: it waits for that account's free slot and, for an API key, its daily and weekly caps. The card then says \"on <account>\". Voice, MCP and the CLI do the same (pipeline-pin; pipeline.mjs pin <build> <account|auto>).",
+        "kind": "menu"
       }
     ],
     "intros": []

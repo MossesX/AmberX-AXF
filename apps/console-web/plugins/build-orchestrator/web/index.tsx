@@ -4,6 +4,7 @@ import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage } from './ui';
+import { registerAssignMenu } from './assign-menu';
 
 // the tags on every build screen read through this plugin; with it removed they simply draw nothing
 const priorityApi = pluginApi(FOLDER, 'Build priority', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -18,6 +19,8 @@ export const plugin: AxfWebLibrary = {
   label: 'Build orchestrator',
   version: '0.2.0',
   appMenu,
+  // right-click a build (Pipeline or Builds tab) → Assign to account (assign-menu.ts)
+  register: (rt) => registerAssignMenu(rt, pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' })),
   views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],

@@ -133,6 +133,11 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    for account, brett, deny in (("hulu-api", True, False), ("Moses X", False, True), ("auto", False, True)):
+        asyncio.run(srv.pipeline_pin(_Req({"id": "alpha", "account": account}, brett)))
+        cmd = _calls[-1]
+        check(cmd[2] == "pin" and cmd[3] == "alpha" and cmd[4] == account and ("--deny-api" in cmd) == deny,
+              f"pin {account} by {'Brett' if brett else 'a session'}: the CLI resolves it{' and refuses an API account' if deny else ''}")
 finally:
     srv.subprocess.run = _real_run
 

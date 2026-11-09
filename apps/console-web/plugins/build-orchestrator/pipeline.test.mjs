@@ -216,6 +216,27 @@ t('routeFor: subscriptions first; overflow off = wait and say so; overflow on = 
   const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', P.normSettings({ apiOverflow: true }));
   assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
 });
+t('pinnedRoute: a pinned build runs only on its account, waits for its slot, respects API caps, wins over route', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const accts = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, { name: 'w-pro', role: 'worker', plan: 'pro', limited: null, running: ['x'] },
+    { name: 'console', role: 'interactive', plan: 'max', limited: null, running: [] }, apiRow('hulu-api'), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], { 'w-off': {} }, { settings: s });
+  const pinned = (pin, extra = {}) => build('x', 'queued', [], { pipeline: { pin, ...extra } });
+  assert.deepEqual(Object.values(P.routeFor(pinned('console'), accts, 'Opus', s)).slice(0, 3), ['console', 'subscription', 'pin'], 'any saved login, even the console account');
+  const busy = P.routeFor(pinned('w-pro'), accts, 'Opus', s); assert.equal(busy.account, ''); assert.match(busy.why, /pinned to w-pro: waiting for its slot \(1\/1 running\)/);
+  const noFable = P.routeFor(pinned('w-pro'), P.accountViews([{ name: 'w-pro', role: 'worker', plan: 'pro', running: [] }], {}, { settings: s }), 'Fable', s);
+  assert.equal(noFable.account, ''); assert.match(noFable.why, /has no Fable/);
+  assert.deepEqual([P.routeFor(pinned('hulu-api', { route: 'subscription' }), accts, 'Opus', s).account, P.routeFor(pinned('hulu-api'), accts, 'Opus', s).kind], ['hulu-api', 'api'], 'the pin wins over the route');
+  const capped = P.routeFor(pinned('capped-api'), accts, 'Opus', s); assert.equal(capped.account, ''); assert.match(capped.why, /pinned to capped-api: spend cap reached: weekly cap/);
+  assert.match(P.routeFor(pinned('gone'), accts, 'Opus', s).why, /pinned to gone, which is not a saved account/);
+  const off = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', running: [] }], { 'w-max': { use: false } }, { settings: s });
+  assert.match(P.routeFor(pinned('w-max'), off, 'Opus', s).why, /switched off/);
+  // plan: two builds pinned to one account with one slot: the first runs, the second waits for it (never elsewhere)
+  const q = (id, at) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at, pin: 'w-max' } });
+  const r = P.plan({ builds: [q('one', '2026-11-08T00:01:00Z'), q('two', '2026-11-08T00:02:00Z')], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: s });
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.rule]), [['one', 'w-max', 'pin']]);
+  assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /pinned to w-max: waiting for its slot/);
+  assert.equal(BP.normPipeline({ pin: 'hulu-api' }).pin, 'hulu-api'); assert.equal(BP.normPipeline({ pin: 'Bad Name', queuedAt: now }).pin, '');
+});
 t('plan: overflow fills an API account up to its cap, then the rest wait with the reason', () => {
   const s = P.normSettings({ parallelPerAccount: 2, apiOverflow: true });
   const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });
@@ -341,6 +362,11 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     json(pipe('route', r2.id, 'api', '--json')); assert.equal(find(r2.id).pipeline.route, 'api');
     json(pipe('route', r2.id, 'auto', '--json')); assert.equal(find(r2.id).pipeline?.route ?? '', '');
     assert.notEqual(pipe('route', r2.id, 'nowhere', '--json', '--expect-fail').status, 0);
+    // pin: by name or loosely by label / email; auto clears it; an unknown account is refused
+    assert.equal(json(pipe('pin', r2.id, 'w-max', '--json')).pin, 'w-max'); assert.equal(find(r2.id).pipeline.pin, 'w-max');
+    assert.match(find(r2.id).notes.at(-1).text, /Pinned to w-max/);
+    json(pipe('pin', r2.id, 'auto', '--json')); assert.equal(find(r2.id).pipeline?.pin ?? '', '');
+    assert.notEqual(pipe('pin', r2.id, 'nobody-here', '--json', '--expect-fail').status, 0);
     assert.equal(json(pipe('show', r.id, '--json')).build.status, 'queued');
     json(pipe('unqueue', r.id, '--json'));
   });

@@ -516,6 +516,27 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
 
 
+@router.post("/pipeline/pin")
+async def pipeline_pin(request: Request) -> dict[str, Any]:
+    """{id, account}: pin a build to one saved Claude account (a subscription login or an API-key account, by name, label
+    or email) or back to Auto (account "auto" or ""). The dispatcher then runs it only there: it waits for that account's
+    slot and, for an API account, its daily and weekly caps. Pinning to an API account bills per token, so only Brett's own
+    click (or his confirm) does that, like route api; any caller may pin to a subscription login or set Auto."""
+    body = await _json_body(request)
+    account = str(body.get("account") or "").strip()[:200] or "auto"
+    bid = _build_id(body.get("id"))
+    who = brett_click(request)
+    args = ["pin", bid, account, "--by", (who or "console")[:80]]
+    if not who:
+        args.append("--deny-api")
+    try:
+        return _pipeline(*args)
+    except HTTPException as e:
+        if "Brett's own click" in str(e.detail):
+            raise HTTPException(403, str(e.detail)) from None
+        raise
+
+
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",
                   queue: bool = True) -> dict[str, Any]:
     """File a build with the orchestrator (it assigns the id) and, by default, put it in the Queue: the dispatcher starts

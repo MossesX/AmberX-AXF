@@ -22,6 +22,7 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … pin <id> <account|auto>     pin a build to one saved account (name, label or email) or back to Auto
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -405,7 +406,7 @@ export function tick({ env = process.env } = {}) {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.rule === 'pin' ? ` (pinned${l.kind === 'api' ? ', API key' : ''})` : l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
@@ -485,6 +486,39 @@ export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } 
   return out;
 }
 
+/** A saved account by name, label or email, loosely ("Moses X API" = mossesx-api); null when none or ambiguous. */
+export function findAccount(accounts, q) {
+  const k = (v) => str(v, 200).toLowerCase().replace(/[^a-z0-9@.]+/g, '');
+  const want = k(q); if (!want) return null;
+  const list = Array.isArray(accounts) ? accounts : [];
+  const exact = list.find((a) => a.name === str(q, 40)); if (exact) return exact;
+  const hits = list.filter((a) => k(a.name) === want || (a.label && k(a.label) === want) || (a.email && (k(a.email) === want || k(a.email.split('@')[0]) === want)));
+  return hits.length === 1 ? hits[0] : null;
+}
+
+/**
+ * Pin a build to one saved account (subscription login or API-key account), or back to Auto ('auto' / ''). The dispatcher
+ * then runs it only there: it waits for that account's slot and an API account's caps (pipeline-core.mjs pinnedRoute()).
+ * Pending, Queue or Building: a running build keeps its session; the pin applies from its next run.
+ */
+export function setPin(id, account, { by = process.env.AXF_ACTOR || 'console', accounts = null, denyApi = false } = {}) {
+  const auto = !account || /^auto$/i.test(String(account).trim());
+  let a = null;
+  if (!auto) {
+    const all = accounts ?? accountsNow(loadStore());
+    a = findAccount(all, account);
+    if (!a) throw Object.assign(new Error(`no saved account "${str(account, 60)}" (saved: ${all.map((x) => x.name).join(', ') || 'none'})`), { code: 2 });
+    // an API account bills per token: the console passes denyApi unless the request is Brett's own click
+    if (denyApi && a.kind === 'api') throw Object.assign(new Error(`pinning a build to an API account (${a.name}) is Brett's own click in the console (it bills per token)`), { code: 2 });
+  }
+  const cur = storeCore.findBuild(loadStore(), id);
+  if (!cur) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const later = cur.status === 'running' || cur.status === 'waiting' ? ' from its next run' : '';
+  const out = setPipeline(id, { pin: a ? a.name : '' }, { note: a ? `Pinned to ${a.label || a.name}${a.kind === 'api' ? ' (API key, billed per token under its caps)' : ''}${later} (${by}).` : `Account back to Auto: the dispatcher picks${later} (${by}).`, by, action: 'pipeline:pin' });
+  logLine({ event: 'pin', build: id, account: a ? a.name : 'auto', by });
+  return { build: out, account: a ? { name: a.name, label: a.label, kind: a.kind } : null };
+}
+
 // ------------------------------------------------------------------ probe
 
 /** Ask an account's login whether it can run Fable: one tiny call; the answer is recorded on the account for probeDays. */
@@ -541,6 +575,11 @@ async function main(argv) {
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'pin') {
+    if (!rest[0] || !rest[1]) throw Object.assign(new Error('usage: pipeline.mjs pin <id> <account|auto>'), { code: 2 });
+    const r = setPin(rest[0], rest.slice(1, (rest.findIndex((x, i) => i > 0 && x.startsWith('--')) + 1 || rest.length + 1) - 1).join(' '), { by, denyApi: has('deny-api') });
+    return out({ ok: true, id: r.build.id, pin: r.build.pipeline?.pin || 'auto', account: r.account }, `${r.build.id}: account ${r.build.pipeline?.pin || 'auto'}`);
+  }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
@@ -562,7 +601,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | pin <id> <account|auto> [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab } from './pipeline';
+import { refreshAssign } from './assign-menu';
 import './orchestrator.css';
 
 /*
@@ -54,7 +55,7 @@ export function OrchestratorPage() {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
-  useEffect(() => { void load(); }, []);
+  useEffect(() => { void load(); void refreshAssign(api); }, []); // refreshAssign: the right-click Assign to account menu has the accounts ready
 
   const act: Act = async (change) => {
     setBusy(true);

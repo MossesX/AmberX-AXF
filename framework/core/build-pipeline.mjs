@@ -23,6 +23,9 @@
  *   note       one plain line the Pipeline view shows (why it waits, what happened last)
  *   route      '' (auto: subscriptions, then API only when the overflow rule is on) | 'api' (run on an API-key account,
  *              billed per token, under its caps) | 'subscription' (never an API account). Brett's per-build override.
+ *   pin        '' (Auto: the dispatcher picks) | a saved account name (subscription login or API-key account): Brett's
+ *              per-build pin (Nov 9 2026, "right-click jobs in the orchestrator and assign them to one of my stored
+ *              accounts"). The dispatcher waits for that account's slot and, for an API account, its caps; it wins over route.
  *   dispatchedAt  ISO of the orchestrator dispatch that started the current run (its token is in the dispatcher's files)
  */
 
@@ -44,7 +47,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', pin: '', dispatchedAt: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -59,7 +62,7 @@ export function normPipeline(p) {
     lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120) } : null,
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
-    route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
+    route: ROUTES.includes(p.route) ? p.route : '', pin: accountName(p.pin), dispatchedAt: iso(p.dispatchedAt),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;

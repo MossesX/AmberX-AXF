@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
+import { accountLabel, onAssigned, setAssignStatus } from './assign-menu';
 
 /*
  * Pipeline tab (Brett, Nov 8 2026): the three tables of the build pipeline, Pending / Queue / Building, the Claude
@@ -9,10 +10,11 @@ import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
  * next tick starts or why it waits. The orchestrator is the only thing that starts builds (Brett, Nov 9 2026). API jobs:
  * the API overflow switch (off by default) and each build's route (Auto / API / Subscriptions) decide when a build may
  * run on an API-key account; API accounts show their key, caps and room. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
- * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock.
+ * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock. Right-click
+ * (or long-press) a build → Assign to account pins it to one saved account (assign-menu.ts); the card says "on <account>".
  */
 
-type Pipeline = { route?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
+type Pipeline = { route?: string; pin?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type Row = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
@@ -34,7 +36,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   const [busy, setBusy] = useState('');
   const timer = useRef<number | null>(null);
   const load = async () => {
-    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
+    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setAssignStatus(r); setError(''); }
     catch (e) { setError((e as Error).message); }
   };
   useEffect(() => {
@@ -43,7 +45,8 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
     const tickIt = () => { if (document.visibilityState === 'visible') void load(); };
     timer.current = window.setInterval(tickIt, REFRESH_MS);
     document.addEventListener('visibilitychange', tickIt);
-    return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); };
+    const off = onAssigned(() => void load()); // a pin picked from the right-click menu shows at once
+    return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); off(); };
   }, []);
   const act = async (path: string, body: Record<string, unknown>, what: string) => {
     setBusy(String(body.id ?? body.name ?? path));
@@ -98,6 +101,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
           </div>
         )}
       </section>
+      <p className="fx-small fx-muted"><Icon name="user" size={13} /> Right-click (or long-press) a build to assign it to one of the saved accounts, or back to Auto.</p>
       <div className="pl-cols">
         {(['pending', 'queued', 'building'] as const).map((t) => (
           <section key={t} className="fx-stack pl-col" aria-label={TABLE_LABEL[t]}>
@@ -106,7 +110,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
               {t === 'queued' && <span className="fx-muted fx-small"> · in start order</span>}
             </h2>
             {s.table[t].length === 0 ? <div className="fx-empty">{t === 'pending' ? 'Nothing pending.' : t === 'queued' ? 'The Queue is empty.' : 'Nothing is building.'}</div>
-              : s.table[t].map((r) => <PipelineCard key={r.id} r={r} table={t} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} />)}
+              : s.table[t].map((r) => <PipelineCard key={r.id} r={r} table={t} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} pinned={r.pipeline?.pin ? accountLabel(s.accounts, r.pipeline.pin) : ''} act={act} />)}
           </section>
         ))}
       </div>
@@ -124,7 +128,7 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
+function PipelineCard({ r, table, busy, wait, launch, pinned, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; pinned: string; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
   const p = r.pipeline;
   return (
     <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
@@ -138,13 +142,14 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
         {r.nextModel && <span className={`oc-model is-${r.nextModel.toLowerCase()}`} title="The model of the next step: a Fable step needs an account with Fable">{r.nextModel} next</span>}
         {r.needsSplit && <span className="pd-split" title="No steps yet, a step over 30 min or one without an estimate: the orchestrator splits it (or tap Split now)"><Icon name="alert" size={13} />needs split</span>}
         {r.needsApproval && <span className="oc-flag"><Icon name="alert" size={13} />needs your upgrade approval</span>}
+        {pinned && <span className="oc-pin" title="Pinned: runs only on this account (right-click → Assign to account to change it)"><Icon name="user" size={13} />on {pinned}</span>}
         {p?.account && table === 'building' && <span title={`Session ${p.session || '(queued in agent slots)'}`}><Icon name="user" size={13} />{p.account} · run {p.runs}{p.model ? ` · ${p.model}` : ''}</span>}
         {p?.launchedAt && table === 'building' && <span className="fx-muted" title={fmtTime(p.launchedAt)}><Icon name="clock" size={13} />{ago(p.launchedAt)}</span>}
         {p?.queuedAt && table === 'queued' && <span className="fx-muted" title={`Queued ${fmtTime(p.queuedAt)} by ${p.queuedBy}`}><Icon name="clock" size={13} />queued {ago(p.queuedAt)}</span>}
         {p?.lastRun && table !== 'building' && <span className="fx-muted" title={`Last run ended ${fmtTime(p.lastRun.at)}`}><Icon name="clock" size={13} />last run: {p.lastRun.outcome}{p.lastRun.exit != null ? ` (exit ${p.lastRun.exit})` : ''}</span>}
         {table === 'building' && <WatchLiveFor branch={r.branch} text={r.id} />}
       </div>
-      {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}
+      {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.rule === 'pin' ? ' · pinned' : launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}
       {!launch && wait && table === 'queued' && <p className="fx-small fx-muted"><Icon name="clock" size={13} /> {wait}</p>}
       {p?.note && <p className="fx-small fx-muted">{p.note}</p>}
       <div className="fx-row fx-row--wrap">
