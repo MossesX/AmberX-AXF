@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 22:41 UTC · `rebase-land-approve-button-fix-approve-goes-stra` note (all) · orchestrator
 - 2026-11-08 22:42 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · pipeline
 - 2026-11-08 22:30 UTC · `tabs-api-control` added (4 steps) (all) · orchestrator
 - 2026-11-08 22:46 UTC · `tabs-api-control` s1 done, → running (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:18 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · pipeline
 - 2026-11-09 20:18 UTC · `test-button-on-every-claude-account-subscription` → running, note (all) · pipeline
 - 2026-11-09 20:18 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
+- 2026-11-09 20:19 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

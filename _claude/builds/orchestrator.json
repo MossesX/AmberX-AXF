@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:18:27.662Z",
+ "updatedAt": "2026-11-09T20:19:04.172Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80045,7 +80045,7 @@
    "title": "Test button on every Claude account (subscription and API)",
    "category": "",
    "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80053,7 +80053,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:18:26.232Z",
+   "updatedAt": "2026-11-09T20:19:02.804Z",
    "builtAt": "",
    "notes": [
     {
@@ -80091,6 +80091,10 @@
     {
      "text": "Headless run axf-test-button-on-every-claude-account-subscription--paulie: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T20:18:26.232Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T20:19:02.804Z"
     }
    ],
    "approvals": [],
