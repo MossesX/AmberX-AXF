@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "windows",
+  "name": "Windows",
+  "version": "1.0.0",
+  "description": "Segoe UI type, small radii, thin scrollbars and an acrylic blur on glass surfaces.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "fontFamily": "'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif",
+    "fontDisplay": "'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif",
+    "fontMono": "'Cascadia Mono', Consolas, ui-monospace, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 3,
+      "md": 4,
+      "lg": 8
+    },
+    "space": 8,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 2px 4px var(--fx-shadow)",
+      "lg": "0 8px 16px var(--fx-shadow)"
+    },
+    "density": "compact",
+    "motion": 100,
+    "blur": 24,
+    "headingWeight": 600,
+    "tracking": 0,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.7,
+    "opacityHover": 0.06,
+    "opacityTint": 0.1,
+    "opacityScrim": 0.4,
+    "opacityGlass": 0.8,
+    "scrollbar": "thin"
+  }
+}

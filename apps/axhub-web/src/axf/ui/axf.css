@@ -142,6 +142,8 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
   gap: var(--fx-dens-gap-xl); padding: 0 var(--fx-dens-gap-2xl); background: var(--fx-bg); color: var(--fx-muted);
   font-size: var(--fx-type-root-sm); line-height: 1; position: relative; z-index: 30; min-width: 0;
 }
+/* themed scrollbars: unset unless the style theme names them (engines/theme.ts) */
+* { scrollbar-width: var(--fx-scrollbar-width); scrollbar-color: var(--fx-scrollbar-color); }
 .fx-banner::-webkit-scrollbar, .fx-toolbar::-webkit-scrollbar, .fx-menubar__menus::-webkit-scrollbar { display: none; }
 .fx-banner.is-raised { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 .fx-banner.is-accent { background: var(--fx-accent); color: var(--fx-accent-text); }
@@ -1539,6 +1541,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 
 /* interface scopes (react/components/InterfaceScope.tsx): a subtree drawn under another interface; vars + attrs on this element */
 .fx-scope { display: contents; }
+.fx-ui-scope { display: contents; } /* a view root as a UI level of the skin chain (components/SkinScope.tsx) */
 /* inherited text properties are resolved once on <body>; a scope re-declares them so its subtree reads the scope's
    tokens (interface tabs: dark text on a dark interface otherwise) */
 [data-fx-scope] { color: var(--fx-text); font-family: var(--fx-font); font-size: var(--fx-font-size); }

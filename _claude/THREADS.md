@@ -41,6 +41,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Builds journal parts (hotfix) | in the merge queue | claude/builds-journal-parts | #381 | lands by itself | Nov 7 2026 |
 | Glossary, index + demonstrations (`glossary-index-demos`, s1 Opus, s2–s6 Fable (r3, agent Janitor Joey); Brett voice: "a glossary in an index … as if it's indexing an encyclopedia … generate a demonstration … write my own book with it … interactive HTML, TypeScript documentation … every time we generate a clip it needs to automatically attach a shitload of keywords") | built (branch pushed, PR to open; shots in UI Review → Screenshots "Glossary demos - Nov 7") | `claude/glossary-index-demos-r3` (r2's s1 merged in) | – | s2 contracts demonstration@1 / book@1 / clip@1 / docs@1 (`framework/core/engines/demo-rules.mjs`, fixture + `check-demo.mts`, starters, schemas, PORTING gap) + Demonstration Designer + player; s3 Book Builder (wizard, tree, drag, chapter editor, content picker, live sandbox preview, Preview book, Record video → Walkthrough producer job); s4 docs output (`docs.mjs`: markdown / html / interactive HTML + TS, live frames through `?axf-view=`); s5 `build-hooks.mjs` rebuilds the catalog on every build event + rule in RULES.md / BRIEF-TEMPLATE; s6 clips (`clip from-demo`, Register a clip, large keyword set). Report `_claude/builds/reports/glossary-index-demos.md`. To carry on: Brett's session lands the PR through the merge queue; gaps: recorder data-script input (build-docs) for a book's video, the formal UI Review submission with 3 asset options. Checks: `npx -y tsx framework/spec/check-demo.mts`, `npx -y tsx apps/console-web/plugins/glossary-index/test.mts`, `node apps/console-web/plugins/glossary-index/catalog.mjs --check`, help-coverage / check-theme / check-controls / plugin-lifecycle. | 2026-11-07 |
 | Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
+| Skins cover every asset type, at any scope (Current `skins-asset-types`, Fable, agent Greenlight Gina; Brett Nov 7 voice: "Is skins gonna um, be upgraded since we've we've made um so many more asset types?" + the brief: "Upgrade the skins system so it styles EVERY asset type now in the registry … Skins apply at any scope: global/app/UI/plugin … add a CI check that fails if a registered asset type has no skin coverage"): skin-coverage@1 derived from the registry (51/51 types: slot / parts / reference / bundle / none), scope chain hub-wide → app → screen → plugin (child overrides parent), skin@1 iconPack + parts, Settings → Appearance Where / Covers in 3 layouts, CLI / API / MCP / voice parity, `check-skin-coverage.mjs` in CI; claude/skins-r4 (build `skins`) merged in and its s9–s11 closed. 4 UI Review items (group "skins-asset-types - Nov 7, 12:30 AM"). Report `_claude/builds/reports/skins-asset-types.md`. | review | claude/skins-asset-types | #383 | in the merge queue; UI Review approval of one of the 3 options (default: Rows) | Nov 7 2026 |
 | UI Review phone notifications + truthful wake + auto session recording and transcripts (`ui-review-notify-session-audio`) | built, waiting on UI Review | claude/ui-review-notify-audio | #365 | Brett approves 5 items, then the merge queue takes it; a new AmberX APK for the phone half | 2026-11-06 |
 | Fast talk: Gizmo and the console assistant answer plain chat without tools (`assistant-chat-mode`, Current, Opus; r1 and r2 hit the usage limit, r3 unpushed, r4 finished it) | built | `claude/assistant-chat-mode-r4` | see build | Report `_claude/builds/reports/assistant-chat-mode.md`. Plain talk: first word about 1 s, was about 8 s. Waiting on Brett's UI Review, then the merge queue | 2026-11-06 |
 | Every headless build keeps its own Claude login (Current `build-own-login`, Opus; Brett Nov 5 voice: "Yeah, it should be like that already."): per-build `CLAUDE_CONFIG_DIR` copy of the active saved account (`deploy/claude-login.mjs`), inherited OAuth token dropped, account recorded (log, tmux tag, event, build note), `--account` per launch, swarm runner too | built, in the merge queue | `claude/build-own-login-r2` | (see Live build log) | Report `_claude/builds/reports/build-own-login.md`. Brett: none | 2026-11-05 |
@@ -212,6 +213,17 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Skins cover every asset type, at any scope (`skins-asset-types`)
+
+- **Asked (in full):** Brett (voice, Nov 7 2026): "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types?" Brief: upgrade the skins system so it styles every asset type in the registry (embeddable widget, icon pack, composite assets, data set bar, embed, text blocks / labels); skins at any scope global / app / UI / plugin with child-overrides-parent inheritance (the design / icon pack model); a skin is a design pack that may reference an icon pack; the type list comes from the registry dynamically with a CI check that fails on an uncovered type; voice + API / MCP / CLI parity; at least 3 UI options to UI Review first.
+- **Model:** Fable (all steps). **Branch:** `claude/skins-asset-types` (contains `claude/skins-r4` = build `skins`, whose s9–s11 are closed by this build).
+- **Done:** skin-coverage@1 engine + fixtures + `check-skin-coverage.mjs` (CI), skin@1 iconPack + parts, app-look@1 scopes + follow, appearance@1 hub-wide skin, runtime `skinScoped` views + `<SkinScope>` on view and plugin roots, Settings → Appearance Where / Covers (rows / dialog / matrix), skins.mjs + theme-manager routes + actions, docs (APPEARANCE-SOURCE, PORTING, rules, README), help texts, re-bake of the four apps, report, 4 UI Review items.
+- **Left:** push, PR into the merge queue, link the PR on builds `skins-asset-types` and `skins`; after Brett picks an option in UI Review, make it the default of `axf.skin.whereLayout` (`framework/libs/settings/skinwhere.tsx`, `useWhereLayout`).
+- **Read first:** `framework/core/engines/skin-coverage.mjs`, `engines/skin.ts`, `engines/skin-rules.mjs`, `framework/libs/settings/skinwhere.tsx`, `framework/react/components/SkinScope.tsx`, `framework/spec/APPEARANCE-SOURCE.md` (skin-coverage@1 section), the report.
+- **Checks:** `npx -y tsx framework/spec/check-skin.mts`, `node framework/spec/check-skin-coverage.mjs`, `npx -y tsx framework/spec/check-customize.mts`, `node framework/cli/axf.mjs validate --framework`, console tsc.
+- **Waits on:** UI Review (which of the 3 layouts) and the merge queue.
+- **First message:** "Carry on build skins-asset-types on claude/skins-asset-types: read the To carry on block in _claude/THREADS.md, open the PR if it isn't open, and make Brett's UI Review pick the default layout."
 
 ### approvals-in-place-r2
 
@@ -757,66 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 15:14 UTC · `console-android-app-tabs` note (all) · orchestrator
-- 2026-11-07 15:14 UTC · `console-android-app-tabs` → running (all) · orchestrator
-- 2026-11-07 15:29 UTC · `console-android-app-tabs` s1 done (all) · orchestrator
-- 2026-11-07 15:29 UTC · `console-android-app-tabs` s2 done (all) · orchestrator
-- 2026-11-07 15:29 UTC · `console-android-app-tabs` s3 done (all) · orchestrator
-- 2026-11-07 15:29 UTC · `console-android-app-tabs` s4 done (all) · orchestrator
-- 2026-11-07 15:34 UTC · `console-android-app-tabs` s5 done (all) · orchestrator
-- 2026-11-07 15:34 UTC · `console-android-app-tabs` s6 done (all) · orchestrator
-- 2026-11-07 15:38 UTC · `console-android-app-tabs` s7 done, → complete (all) · orchestrator
-- 2026-11-07 15:38 UTC · `console-android-app-tabs` note (all) · orchestrator
-- 2026-11-07 15:38 UTC · `console-android-app-tabs` branch claude/console-android-wrapper (all) · builds-live
-- 2026-11-07 15:38 UTC · `console-android-app-tabs` → built (all) · orchestrator
-- 2026-11-07 15:40 UTC · `postgres-console` → pending, note (all) · reconciler
-- 2026-11-07 16:09 UTC · `full-api-control` added (6 steps) (all) · orchestrator
-- 2026-11-07 16:17 UTC · `full-api-control` s1 done, → running (all) · orchestrator
-- 2026-11-07 16:17 UTC · `full-api-control` s2 done (all) · orchestrator
-- 2026-11-07 16:34 UTC · `full-api-control` s3 done (all) · orchestrator
-- 2026-11-07 16:34 UTC · `full-api-control` s4 done (all) · orchestrator
-- 2026-11-07 16:34 UTC · `full-api-control` s3 done (all) · foreign-write
-- 2026-11-07 16:36 UTC · `full-api-control` s5 done (all) · orchestrator
-- 2026-11-07 16:36 UTC · `full-api-control` s6 done (all) · orchestrator
-- 2026-11-07 16:36 UTC · `approve-button-fix` added (5 steps) (all) · orchestrator
-- 2026-11-07 16:40 UTC · `shipped-features-r2` → complete, merged, note (all) · reconciler
-- 2026-11-07 16:40 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, merged, note (all) · reconciler
-- 2026-11-07 16:48 UTC · `full-api-control` s7 done (all) · orchestrator
-- 2026-11-07 16:48 UTC · `full-api-control` s8 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `settings-placement-everywhere` note (all) · orchestrator
-- 2026-11-07 16:49 UTC · `full-api-control` note (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s1 done, → running (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s2 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s3 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s4 done (all) · orchestrator
-- 2026-11-07 16:50 UTC · `approve-button-fix` s5 done, → complete (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` s9 done, → complete (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` → waiting (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` → complete, note (all) · orchestrator
-- 2026-11-07 17:00 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` added (8 steps) (all) · claude-ai-voice
-- 2026-11-07 17:01 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 17:11 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 17:15 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 18:27 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` added (2 steps) (all) · claude-ai-voice
-- 2026-11-07 21:00 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` added (2 steps) (all) · claude-ai-voice
-- 2026-11-07 21:09 UTC · `glossary-index-demos` → running, note (all) · orchestrator
-- 2026-11-07 21:33 UTC · `glossary-index-demos` s2 done, note (all) · orchestrator
-- 2026-11-07 21:33 UTC · `glossary-index-demos` note (all) · orchestrator
-- 2026-11-07 21:39 UTC · `investor-demo-player-shell-with-login-gate-skins` added (0 steps) (all) · pending
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s3 done (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s4 done (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s5 done (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s6 done, → complete (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` note (all) · orchestrator
-- 2026-11-07 21:59 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r3 (all) · builds-live
-- 2026-11-07 22:04 UTC · `molly-ri-court-records` removed (all) · orchestrator
-- 2026-11-07 23:36 UTC · `idle-alert-phone-flag-when-nothing-is-building` added (0 steps) (all) · pending
-- 2026-11-07 23:57 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` added (7 steps) (all) · Gizmo
-- 2026-11-07 23:59 UTC · `brief-approval-dialog-before-every-headless-sess` added (0 steps) (all) · pending
-- 2026-11-08 00:00 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` → archived (all) · Gizmo
-- 2026-11-08 00:00 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` → archived (all) · foreign-write
-- 2026-11-08 00:01 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` added (0 steps) (all) · pending
-- 2026-11-08 00:01 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:02 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:23 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` added (0 steps) (all) · pending
 - 2026-11-08 00:32 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → running (all) · orchestrator
@@ -1157,6 +1109,66 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:16 UTC · `x.lib.notifications` → running (all) · build-queue
 - 2026-11-09 02:16 UTC · `x.lib.files` → running (all) · build-queue
 - 2026-11-09 02:16 UTC · `x.lib.hub` → running (all) · build-queue
+- 2026-11-09 02:24 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` added (0 steps) (all) · pending
+- 2026-11-09 02:25 UTC · `urgent-approval-links-say-method-not-allowed` added (0 steps) (all) · pending
+- 2026-11-09 02:25 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
+- 2026-11-09 02:25 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` note (all) · orchestrator
+- 2026-11-09 02:26 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · orchestrator
+- 2026-11-09 02:28 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
+- 2026-11-09 02:28 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` added (3 steps) (all) · foreign-write
+- 2026-11-09 02:28 UTC · `urgent-approval-links-say-method-not-allowed` added (3 steps) (all) · foreign-write
+- 2026-11-09 02:29 UTC · `urgent-approval-links-say-method-not-allowed` s1 done, → running (all) · orchestrator
+- 2026-11-09 02:29 UTC · `urgent-approval-links-say-method-not-allowed` s2 done (all) · orchestrator
+- 2026-11-09 02:30 UTC · `urgent-approval-links-say-method-not-allowed` branch claude/approval-links-fix, PR #403 (all) · builds-live
+- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
+- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` branch claude/plan-studio-receives-a-valid-shipped-feature-man (all) · pipeline
+- 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 02:46 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (0 steps) (all) · pending
+- 2026-11-09 02:47 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` note (all) · orchestrator
+- 2026-11-09 02:52 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
+- 2026-11-09 02:54 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
+- 2026-11-09 02:55 UTC · `urgent-approval-links-say-method-not-allowed` → pending, note (all) · reconciler
+- 2026-11-09 02:57 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (0 steps) (all) · pending
+- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · orchestrator
+- 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → built (all) · orchestrator
+- 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
+- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
+- 2026-11-09 02:58 UTC · `skins-asset-types` → built, branch claude/skins-finish (all) · builds-live
+- 2026-11-09 02:58 UTC · `skins-asset-types` branch claude/skins-finish (all) · builds-live
+- 2026-11-09 02:59 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (0 steps) (all) · pending
+- 2026-11-09 02:59 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (0 steps) (all) · foreign-write
+- 2026-11-09 03:00 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · orchestrator
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · pending
+- 2026-11-09 03:02 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
+- 2026-11-09 03:02 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `plan-studio-receives-a-valid-shipped-feature-man` PR #404 (all) · builds-live
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · pending
+- 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · foreign-write
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · foreign-write
+- 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · orchestrator
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · orchestrator
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 03:04 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → queued, note (all) · pipeline
+- 2026-11-09 04:07 UTC · `demonstration-designer-plugin-new-standalone` s1 done, → running (all) · orchestrator
+- 2026-11-09 04:07 UTC · `demonstration-designer-plugin-new-standalone` branch claude/demo-designer, PR #405 (all) · builds-live
+- 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
+- 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 04:12 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s2 done, → running (all) · orchestrator
+- 2026-11-09 04:13 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s3 done, → built (all) · orchestrator
+- 2026-11-09 04:14 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 04:19 UTC · `demonstration-designer-plugin-new-standalone` note (all) · pending
+- 2026-11-09 04:20 UTC · `demonstration-designer-plugin-new-standalone` merged, note (all) · reconciler
+- 2026-11-09 04:21 UTC · `session-transcripts-api-search-what-was-said-fin` added (0 steps) (all) · pending
+- 2026-11-09 04:21 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
+- 2026-11-09 04:22 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · orchestrator
+- 2026-11-09 04:22 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
+- 2026-11-09 04:23 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
 
 ## Token passes (log)
 

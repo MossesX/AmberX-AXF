@@ -12,6 +12,7 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -35,6 +36,8 @@ export const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '.
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
 export const spec = readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json'));
+/** The style targets skins and the customize engine draw with (skin-coverage@1). */
+const customizeSpec = readJson(join(FRAMEWORK_DIR, 'schemas/customize.json'));
 /** Port-specific asset types (android first) layered on the shared spec. They are optional slots: validation never requires them. */
 const ANDROID_SPEC = join(FRAMEWORK_DIR, 'schemas/asset-types.android.json');
 if (existsSync(ANDROID_SPEC)) {
@@ -114,6 +117,8 @@ export function validateAsset(raw) {
   if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
     for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
+  // skin@1 — mirrors skinErrors in core/engines/skin.ts (check-skin.mts keeps them equal)
+  if (raw.type === 'skin') errors.push(...skinErrors(raw.data));
   // design-package@1 — mirrors designPackageErrors in core/engines/designpackage.ts (theme ids + extras slot rules)
   if (raw.type === 'design-package') {
     const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -192,6 +197,35 @@ export function validateAsset(raw) {
     errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/* skin@1 — mirrors core/engines/skin.ts (check-skin.mts keeps the messages equal). */
+const SKIN_THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' };
+const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+export function skinErrors(d) {
+  const isO = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const ID = /^[a-z0-9][a-z0-9-]*$/;
+  if (!isO(d)) return ['data must be an object'];
+  const errors = [];
+  for (const [k, t] of Object.entries(SKIN_THEMES)) if (typeof d[k] !== 'string' || !ID.test(d[k])) errors.push(`data.${k} must be a ${t} asset id`);
+  if (!isO(d.assets)) errors.push('data.assets must be an object (slot → asset id)');
+  else for (const [t, id] of Object.entries(d.assets)) {
+    if (SKIN_NEVER.includes(t) || Object.values(SKIN_THEMES).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
+    else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.assets.${t} must be an asset id`);
+  }
+  if ('iconPack' in d && (typeof d.iconPack !== 'string' || !ID.test(d.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
+  errors.push(...skinPartsErrors(d.parts, spec.types, customizeSpec.targets));
+  if ('preview' in d && !isO(d.preview)) errors.push('data.preview must be an object');
+  if ('extras' in d) {
+    const x = d.extras;
+    if (!isO(x)) errors.push('data.extras must be an object');
+    else {
+      if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
+      if ('hidden' in x && (!isO(x.hidden) || Object.values(x.hidden).some((v) => typeof v !== 'boolean'))) errors.push('data.extras.hidden must map asset types to true / false');
+      if ('settings' in x && !isO(x.settings)) errors.push('data.extras.settings must be an object');
+    }
+  }
+  return errors;
 }
 
 /* behavior-theme@1 + design-package@1 — mirrors core/engines/behavior.ts and designpackage.ts (kept equal by check-design-package.mts). */

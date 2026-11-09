@@ -1,0 +1,1054 @@
+{
+  "contract": "skin@1",
+  "normalize": {
+    "good": {
+      "layoutTheme": "windows-explorer",
+      "colorTheme": "windows-light",
+      "styleTheme": "windows",
+      "assets": {
+        "button": "windows",
+        "banner": "windows-titlebar"
+      },
+      "preview": {
+        "caption": "Windows"
+      },
+      "extras": {
+        "spacing": "compact",
+        "hidden": {
+          "toolbar": false
+        }
+      }
+    },
+    "junk": {
+      "layoutTheme": "",
+      "colorTheme": "",
+      "styleTheme": "",
+      "assets": {
+        "button": "ok"
+      },
+      "extras": {}
+    }
+  },
+  "errors": {
+    "good": [],
+    "noThemes": [
+      "data.layoutTheme must be a layout asset id",
+      "data.colorTheme must be a color-theme asset id",
+      "data.styleTheme must be a style-theme asset id"
+    ],
+    "never": [
+      "data.assets.uac-policy: a skin never sets uac-policy here",
+      "data.assets.layout: a skin never sets layout here"
+    ],
+    "badExtras": [
+      "data.extras.spacing must be tight, compact or regular",
+      "data.extras.hidden must map asset types to true / false"
+    ]
+  },
+  "slots": {
+    "button": "windows",
+    "banner": "windows-titlebar",
+    "layout": "windows-explorer",
+    "color-theme": "windows-light",
+    "style-theme": "windows"
+  },
+  "fromDesignPackage": {
+    "layoutTheme": "l",
+    "colorTheme": "c",
+    "styleTheme": "s",
+    "assets": {
+      "button": "x",
+      "behavior-theme": "b"
+    },
+    "extras": {
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true
+      }
+    }
+  },
+  "look": {
+    "shared": {
+      "$axf": "appearance@1",
+      "slots": {
+        "layout": "focus-top",
+        "color-theme": "arctic-daylight",
+        "style-theme": "hub",
+        "button": "rounded-solid",
+        "design-package": "hub-default"
+      },
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true
+      },
+      "settings": {
+        "axf.banners.group": "a",
+        "axf.tokens.button": "x"
+      }
+    },
+    "snapshot": {
+      "slots": {
+        "layout": "focus-top",
+        "color-theme": "arctic-daylight",
+        "style-theme": "hub",
+        "button": "rounded-solid",
+        "design-package": "hub-default"
+      },
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true
+      },
+      "settings": {
+        "axf.banners.group": "a",
+        "axf.tokens.button": "x"
+      }
+    },
+    "off": {
+      "$axf": "appearance@1",
+      "slots": {
+        "layout": "focus-top",
+        "color-theme": "arctic-daylight",
+        "style-theme": "hub",
+        "button": "rounded-solid",
+        "design-package": "hub-default"
+      },
+      "hidden": {
+        "toolbar": true
+      },
+      "settings": {
+        "axf.banners.group": "a",
+        "axf.tokens.button": "x"
+      },
+      "spacing": "tight"
+    },
+    "offSharedMoved": {
+      "$axf": "appearance@1",
+      "slots": {
+        "layout": "focus-top",
+        "color-theme": "arctic-daylight",
+        "style-theme": "hub",
+        "button": "rounded-solid",
+        "design-package": "hub-default"
+      },
+      "hidden": {
+        "toolbar": true
+      },
+      "settings": {
+        "axf.banners.group": "a",
+        "axf.tokens.button": "y"
+      },
+      "spacing": "tight"
+    },
+    "on": {
+      "$axf": "appearance@1",
+      "slots": {
+        "layout": "windows-explorer",
+        "color-theme": "windows-light",
+        "style-theme": "windows",
+        "button": "windows",
+        "design-package": "hub-default",
+        "banner": "windows-titlebar"
+      },
+      "hidden": {
+        "toolbar": false
+      },
+      "settings": {
+        "axf.banners.group": "a",
+        "axf.tokens.button": "x",
+        "axf.appearance.overrides": {
+          "style-theme": "windows",
+          "color-theme": "windows-light"
+        }
+      },
+      "spacing": "compact"
+    },
+    "unknownSkin": {
+      "$axf": "appearance@1",
+      "slots": {
+        "layout": "focus-top",
+        "color-theme": "arctic-daylight",
+        "style-theme": "hub",
+        "button": "rounded-solid",
+        "design-package": "hub-default"
+      },
+      "hidden": {
+        "toolbar": true
+      },
+      "settings": {
+        "axf.banners.group": "a",
+        "axf.tokens.button": "x"
+      },
+      "spacing": "tight"
+    },
+    "overridden": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "color-theme": "aurora-night"
+          }
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "composed": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "windows-explorer",
+          "color-theme": "aurora-night",
+          "style-theme": "windows",
+          "button": "windows",
+          "design-package": "hub-default",
+          "banner": "windows-titlebar"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x",
+          "axf.appearance.overrides": {
+            "style-theme": "windows",
+            "color-theme": "aurora-night"
+          }
+        },
+        "spacing": "compact"
+      },
+      "backToSkin": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "windows-explorer",
+          "color-theme": "windows-light",
+          "style-theme": "windows",
+          "button": "windows",
+          "design-package": "hub-default",
+          "banner": "windows-titlebar"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x",
+          "axf.appearance.overrides": {
+            "style-theme": "windows",
+            "color-theme": "windows-light"
+          }
+        },
+        "spacing": "compact"
+      }
+    },
+    "own": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "button": "terminal"
+          },
+          "hidden": {
+            "toolbar": false
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "composed": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "terminal",
+          "design-package": "hub-default"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        },
+        "spacing": "tight"
+      }
+    },
+    "restored": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "color-theme": "aurora-night"
+            }
+          },
+          "scopes": {},
+          "at": "2026-11-05T00:00:00Z"
+        }
+      },
+      "composed": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        },
+        "spacing": "tight"
+      },
+      "undone": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {
+          "color-theme": "aurora-night"
+        }
+      },
+      "undoneTwice": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {
+          "color-theme": "aurora-night"
+        }
+      }
+    }
+  },
+  "coverage": {
+    "table": [
+      {
+        "type": "button",
+        "label": "Button",
+        "group": "Controls",
+        "also": [
+          "parts"
+        ],
+        "elements": [
+          "box",
+          "text",
+          "icon"
+        ],
+        "declared": false,
+        "via": "",
+        "why": "",
+        "by": "slot"
+      },
+      {
+        "type": "label",
+        "label": "Label",
+        "group": "Widgets",
+        "also": [],
+        "elements": [
+          "box",
+          "text",
+          "icon"
+        ],
+        "declared": false,
+        "via": "",
+        "why": "",
+        "by": "parts"
+      },
+      {
+        "type": "badge",
+        "label": "Badge",
+        "group": "Chrome",
+        "also": [],
+        "elements": [],
+        "declared": false,
+        "via": "",
+        "why": "a widget or attachable type with no style target (schemas/customize.json targets)",
+        "by": "uncovered"
+      },
+      {
+        "type": "icon-pack",
+        "label": "Icon pack",
+        "group": "Brand",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "via": "iconPack",
+        "why": "named by the skin",
+        "by": "reference"
+      },
+      {
+        "type": "uac-policy",
+        "label": "Access policy",
+        "group": "System",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "via": "",
+        "why": "no look",
+        "by": "none"
+      },
+      {
+        "type": "help",
+        "label": "Help",
+        "group": "System",
+        "also": [],
+        "elements": [],
+        "declared": false,
+        "via": "",
+        "why": "excluded from appearance slots and not declared (add \"skin\": { \"by\": … } to its registry entry)",
+        "by": "uncovered"
+      },
+      {
+        "type": "design-package",
+        "label": "Design package",
+        "group": "System",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "via": "",
+        "why": "",
+        "by": "bundle"
+      },
+      {
+        "type": "mystery",
+        "label": "Mystery",
+        "group": "Data",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "via": "",
+        "why": "mystery: skin.by must be one of slot, parts, reference, bundle, none",
+        "by": "uncovered"
+      },
+      {
+        "type": "hush",
+        "label": "Hush",
+        "group": "System",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "via": "",
+        "why": "hush: skin.by \"none\" needs a why",
+        "by": "uncovered"
+      }
+    ],
+    "uncovered": [
+      "badge",
+      "help",
+      "mystery",
+      "hush"
+    ],
+    "summary": {
+      "total": 9,
+      "uncovered": 4,
+      "slot": 1,
+      "parts": 1,
+      "reference": 1,
+      "bundle": 1,
+      "none": 1
+    },
+    "partsTypes": [
+      "button",
+      "label"
+    ],
+    "elements": {
+      "plain": [
+        "box",
+        "text",
+        "icon"
+      ],
+      "items": [
+        "box",
+        "text",
+        "icon",
+        "items"
+      ],
+      "none": []
+    },
+    "partsErrors": {
+      "good": [],
+      "bad": [
+        "data.parts.nope: not a registered asset type",
+        "data.parts.badge: this type has no style target, so a skin can't style its parts",
+        "data.parts.label must be an object (token → value)"
+      ],
+      "notObject": [
+        "data.parts must be an object (asset type → style parts)"
+      ]
+    },
+    "declarationErrors": [
+      "mystery: skin.by must be one of slot, parts, reference, bundle, none",
+      "hush: skin.by \"none\" needs a why"
+    ]
+  },
+  "scopes": {
+    "skinned": {
+      "layoutTheme": "windows-explorer",
+      "colorTheme": "windows-light",
+      "styleTheme": "windows",
+      "assets": {
+        "button": "windows",
+        "banner": "windows-titlebar"
+      },
+      "iconPack": "lucide-sharp",
+      "parts": {
+        "button": {
+          "radius": "pill",
+          "fontWeight": "600"
+        },
+        "label": {
+          "textColor": "accent"
+        }
+      },
+      "preview": {
+        "caption": "Windows"
+      },
+      "extras": {
+        "spacing": "compact",
+        "hidden": {
+          "toolbar": false
+        }
+      }
+    },
+    "chain": {
+      "leaf": [
+        "plugin:notes",
+        "ui:home",
+        "app",
+        "global"
+      ],
+      "app": [
+        "app",
+        "global"
+      ],
+      "keys": [
+        "plugin:notes",
+        "ui:home",
+        "app"
+      ],
+      "kinds": [
+        "global",
+        "app",
+        "ui",
+        "plugin"
+      ],
+      "selectors": [
+        "",
+        "[data-fx-scope=\"skin-ui-home\"]",
+        "[data-fx-scope=\"skin-plugin-notes\"]",
+        ""
+      ],
+      "normalized": {
+        "app": "",
+        "ui": "home",
+        "plugin": "ai.amberx.notes"
+      }
+    },
+    "resolve": {
+      "appOff": {
+        "id": "",
+        "overrides": {},
+        "from": "app"
+      },
+      "appOn": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app"
+      },
+      "inheritNoGlobal": {
+        "id": "",
+        "overrides": {},
+        "from": "global"
+      },
+      "inheritGlobal": {
+        "id": "aurora",
+        "overrides": {
+          "button": "global-button"
+        },
+        "from": "global"
+      },
+      "ownBeatsGlobal": {
+        "id": "",
+        "overrides": {},
+        "from": "app"
+      },
+      "pluginOn": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "plugin:notes"
+      },
+      "pluginOff": {
+        "id": "",
+        "overrides": {},
+        "from": "plugin:notes"
+      },
+      "pluginInheritsApp": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app"
+      },
+      "uiOverride": {
+        "id": "windows",
+        "overrides": {
+          "button": "ui-button"
+        },
+        "from": "app"
+      },
+      "chainOverrides": {
+        "id": "aurora",
+        "overrides": {
+          "dialog": "plugin-dialog"
+        },
+        "from": "plugin:notes"
+      }
+    },
+    "composed": {
+      "app": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "windows-light",
+            "style-theme": "windows",
+            "button": "windows",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.icons.pack.app": "lucide-sharp",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "windows-light"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {
+          "button": {
+            "radius": "pill",
+            "fontWeight": "600"
+          },
+          "label": {
+            "textColor": "accent"
+          }
+        },
+        "skin": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "scopeKey": "app"
+      },
+      "global": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "aurora-night",
+            "style-theme": "windows",
+            "button": "global-button",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "aurora-night"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "skin": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "from": "global"
+        },
+        "scopeKey": "app"
+      },
+      "plugin": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "aurora-night",
+            "style-theme": "windows",
+            "button": "windows",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "aurora-night"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "skin": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "plugin:notes"
+        },
+        "scopeKey": "plugin:notes"
+      },
+      "pluginOff": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "",
+          "overrides": {},
+          "from": "plugin:notes"
+        },
+        "scopeKey": "plugin:notes"
+      },
+      "unknown": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "",
+          "overrides": {},
+          "from": "app"
+        },
+        "scopeKey": "app"
+      }
+    },
+    "doc": {
+      "pluginOn": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      },
+      "dropped": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "entries": [
+        {
+          "key": "plugin:notes",
+          "use": "on",
+          "id": "aurora",
+          "overrides": {
+            "dialog": "plugin-dialog"
+          }
+        }
+      ],
+      "state": {
+        "use": "on",
+        "id": "aurora",
+        "overrides": {
+          "dialog": "plugin-dialog"
+        }
+      },
+      "appState": {
+        "use": "inherit",
+        "id": "",
+        "overrides": {}
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {
+              "dialog": "plugin-dialog"
+            }
+          }
+        },
+        "undo": null
+      },
+      "restored": {},
+      "undone": {
+        "plugin:notes": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {
+            "dialog": "plugin-dialog"
+          }
+        }
+      }
+    },
+    "covers": [
+      {
+        "type": "toolbar",
+        "by": "slot",
+        "covered": false,
+        "how": []
+      },
+      {
+        "type": "button",
+        "by": "slot",
+        "covered": true,
+        "how": [
+          "slot windows",
+          "parts radius, fontWeight"
+        ]
+      },
+      {
+        "type": "label",
+        "by": "parts",
+        "covered": true,
+        "how": [
+          "parts textColor"
+        ]
+      },
+      {
+        "type": "skin",
+        "by": "bundle",
+        "covered": true,
+        "how": [
+          "the skin itself"
+        ]
+      },
+      {
+        "type": "logo-mark",
+        "by": "reference",
+        "covered": false,
+        "how": []
+      },
+      {
+        "type": "icon-pack",
+        "by": "reference",
+        "covered": true,
+        "how": [
+          "iconPack lucide-sharp"
+        ]
+      },
+      {
+        "type": "branding",
+        "by": "slot",
+        "covered": false,
+        "how": []
+      },
+      {
+        "type": "uac-policy",
+        "by": "none",
+        "covered": true,
+        "how": [
+          "no look"
+        ]
+      }
+    ],
+    "globalSkin": {
+      "good": {
+        "id": "aurora",
+        "overrides": {
+          "button": "global-button"
+        }
+      },
+      "none": null,
+      "junk": null
+    }
+  }
+}

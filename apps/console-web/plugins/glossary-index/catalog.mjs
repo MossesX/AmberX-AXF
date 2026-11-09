@@ -279,10 +279,32 @@ function demoLinks(type, d) {
  * asset@1 files in this plugin's data folder, <dataDir>/<type>/<id>.json): every one is a registry entry too, so it is
  * searchable, filterable and sortable like everything else and droppable into books.
  */
+/**
+ * Other plugins that keep demonstrations (they provide `service:demonstrations@1`; found by capability, never by
+ * folder): their lifecycle data folders are indexed like this plugin's own, so every demo made anywhere is a registry entry.
+ */
+function demoStoreDirs() {
+  const dirs = [DATA_DIR];
+  const plugins = join(ROOT, 'apps/console-web/plugins');
+  if (!existsSync(plugins)) return dirs;
+  for (const folder of readdirSync(plugins).filter((n) => !n.startsWith('_') && !n.startsWith('.')).sort()) {
+    const pj = join(plugins, folder, 'plugin.json');
+    if (!existsSync(pj)) continue;
+    try {
+      const p = readJson(pj);
+      if ((p.provides ?? []).includes('service:demonstrations@1') && p.lifecycle?.dataDir) dirs.push(join(ROOT, p.lifecycle.dataDir));
+    } catch { /* not a plugin */ }
+  }
+  return [...new Set(dirs)];
+}
+
 function demoStoreEntries() {
   const out = [];
+  const seen = new Set();
   for (const type of DEMO_KINDS) {
-    for (const f of listJson(join(DATA_DIR, type))) {
+    for (const f of demoStoreDirs().flatMap((d) => listJson(join(d, type)))) {
+      if (seen.has(f)) continue;
+      seen.add(f);
       let a;
       try { a = readJson(f); } catch { continue; }
       if (a?.$axf !== 'asset@1' || a.type !== type || !a.id) continue;

@@ -94,6 +94,7 @@
         ]
       },
       "optional_fields": {
+        "scrollbar": "'thin' — thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
         "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
       }
     },
@@ -630,7 +631,7 @@
       "label": "Banner",
       "group": "Chrome",
       "icon": "menu",
-      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
+      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo (logo.text \"{app}\" = the app's own name) and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
       "required": [
         "height",
         "surface",
@@ -1254,7 +1255,38 @@
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A design package is a whole look that reads as a skin (skinFromDesignPackage)."
+      }
+    },
+    "skin": {
+      "label": "Skin",
+      "group": "System",
+      "icon": "palette",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "required": [
+        "layoutTheme",
+        "colorTheme",
+        "styleTheme",
+        "assets"
+      ],
+      "optional_fields": {
+        "preview": "{ caption, image }: what the picker shows",
+        "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }",
+        "iconPack": "icon-pack asset id — the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
+        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A skin is the whole look; it never contains another skin."
+      }
     },
     "style-package": {
       "label": "Style package",
@@ -1281,7 +1313,11 @@
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A style package is one matched set of styles; a skin picks its themes and assets itself."
+      }
     },
     "interface": {
       "label": "Interface",
@@ -1304,7 +1340,11 @@
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "An interface wraps a design package plus slots: a whole look, like a skin."
+      }
     },
     "logo-mark": {
       "label": "Logo mark",
@@ -1334,6 +1374,11 @@
         "safeArea": "number 0-1 (default 0.25): clear space as a fraction of the height",
         "minSize": "number px (default 16)",
         "brand": "string: the brand this mark belongs to"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "branding",
+        "why": "Logo marks are named by the branding asset the skin picks."
       }
     },
     "animated-logo": {
@@ -1368,6 +1413,11 @@
         "loop": "true (default) | false | \"hover\"",
         "still": "first | last: which frame shows when it does not move",
         "intensity": "number 0.1-1 (default 0.6)"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "branding",
+        "why": "Animated logos are named by the branding asset the skin picks."
       }
     },
     "icon-pack": {
@@ -1398,6 +1448,11 @@
         "stroke": "number 0.5-4 (default 1.75)",
         "linecap": "round | square | butt",
         "fallback": "framework (default) | none"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "iconPack",
+        "why": "A skin may name the icon pack it draws its icons from (data.iconPack)."
       }
     },
     "branding": {
@@ -1576,6 +1631,10 @@
         "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
         "command": "a command the job runs (e.g. a re-record command), shown in the brief",
         "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A job type is recurring work for a hired agent, not UI."
       }
     },
     "card": {
@@ -1632,6 +1691,10 @@
         "limit": "items shown (1-200)",
         "unit": "after a number (USD, ms)",
         "view": "auto (picked from the data's shape) or a registered view: number, list, meter, chart, feed, table, status, panel (the host's own renderer for a host read), plus views a host registers"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A Home card is a data binding, not a design: the card UI takes the container and typography the skin sets."
       }
     },
     "help": {
@@ -1646,7 +1709,11 @@
         "entries": "[{ id?, target, title, text, more?, tryIt?, link?: path | https URL | { label, href }, related?: [help ids], kind?, draft? }]",
         "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "none",
+        "why": "Help text has no look of its own: the Help UI that shows it is drawn with parts a skin styles."
+      }
     },
     "uac-policy": {
       "label": "User account control",
@@ -1663,6 +1730,10 @@
           "hide",
           "disable"
         ]
+      },
+      "skin": {
+        "by": "none",
+        "why": "An access policy decides who may do what; it has no look."
       }
     }
   },

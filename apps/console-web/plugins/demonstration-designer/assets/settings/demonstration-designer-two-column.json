@@ -1,0 +1,37 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "demonstration-designer-two-column",
+ "name": "demonstration-designer: Two columns",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Compact: the sections side by side in two columns on a wide screen (one on a phone), all open, no section blurbs; Stage and Music first because they are changed most while pitching.",
+ "tags": [
+  "ui-choice",
+  "choice-set:demonstration-designer",
+  "choice-option:two-column"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": false,
+  "descriptions": false,
+  "view": "two-column",
+  "order": [
+   "stage",
+   "music",
+   "script",
+   "narration",
+   "export",
+   "advanced"
+  ],
+  "open": [
+   "stage",
+   "music",
+   "script",
+   "narration",
+   "export",
+   "advanced"
+  ]
+ }
+}

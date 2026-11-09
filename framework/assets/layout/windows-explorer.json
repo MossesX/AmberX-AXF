@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "windows-explorer",
+  "name": "Windows Explorer",
+  "version": "1.0.0",
+  "description": "Title bar and menu bar on top, a toolbar under them, a navigation pane on the left and a status bar along the bottom.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 240,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 0
+  }
+}

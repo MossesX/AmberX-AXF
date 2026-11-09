@@ -142,7 +142,7 @@ export function PlayerWindow() {
       <div className="fx-stack axp-glossary-index__player">
         <EmptyState compact icon="play">{g.error || 'Nothing is playing. Pick a demonstration in the Demonstration Designer, or Generate one from any glossary entry.'}</EmptyState>
         <div className="fx-row">
-          <Button size="sm" icon="list" onClick={() => rt.navigate('demo-designer')}>Demonstration Designer</Button>
+          <Button size="sm" icon="list" onClick={() => rt.navigate('demo-designer')}>Open the designer</Button>
           {last && <Button size="sm" icon="play" onClick={() => playWalkthrough(last!)}>Replay</Button>}
         </div>
       </div>
