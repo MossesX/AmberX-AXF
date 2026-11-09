@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1981,
- "updatedAt": "2026-11-09T20:39:42.735Z",
+ "rev": 1982,
+ "updatedAt": "2026-11-09T20:41:05.064Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96244,7 +96244,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -116915,7 +116918,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:39:21.996Z"
+    "dispatchedAt": "2026-11-09T20:39:21.996Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -124902,7 +124908,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z"
+    "dispatchedAt": "2026-11-09T02:31:11.152Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -126013,7 +126022,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -126173,7 +126185,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -126337,7 +126352,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -126517,7 +126535,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -126742,7 +126763,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 4 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z"
+    "dispatchedAt": "2026-11-09T20:25:15.903Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -127291,7 +127315,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 2 steps left: back in the Queue (run 2).",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z"
+    "dispatchedAt": "2026-11-09T18:53:07.552Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -127574,7 +127601,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 5 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -127890,7 +127920,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z"
+    "dispatchedAt": "2026-11-09T18:10:30.633Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -128053,7 +128086,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -128220,7 +128256,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -128387,7 +128426,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -128593,7 +128635,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z"
+    "dispatchedAt": "2026-11-09T17:58:10.111Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -128823,7 +128868,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:05:17.080Z"
+    "dispatchedAt": "2026-11-09T18:05:17.080Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -128970,7 +129018,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -129196,7 +129247,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 11 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:09:09.055Z"
+    "dispatchedAt": "2026-11-09T18:09:09.055Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -129578,7 +129632,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z"
+    "dispatchedAt": "2026-11-09T18:02:10.280Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -129784,7 +129841,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z"
+    "dispatchedAt": "2026-11-09T18:49:06.246Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -129990,7 +130050,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z"
+    "dispatchedAt": "2026-11-09T19:23:07.733Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -130196,7 +130259,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z"
+    "dispatchedAt": "2026-11-09T18:55:16.286Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -130402,7 +130468,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:13:07.725Z"
+    "dispatchedAt": "2026-11-09T19:13:07.725Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -130608,7 +130677,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z"
+    "dispatchedAt": "2026-11-09T19:25:10.063Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -130814,7 +130886,10 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z"
+    "dispatchedAt": "2026-11-09T19:27:06.719Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -130992,7 +131067,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -131220,7 +131298,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z"
+    "dispatchedAt": "2026-11-09T20:19:06.480Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -131325,7 +131406,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T20:26:06.899Z",
-   "updatedAt": "2026-11-09T20:32:12.629Z",
+   "updatedAt": "2026-11-09T20:41:02.361Z",
    "builtAt": "",
    "notes": [
     {
@@ -131362,12 +131443,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:26:07.785Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-per-account-queues-long-press-a-queued-build-to--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T20:32:08.323Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T20:27:15.271Z",
@@ -131377,9 +131458,12 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:32:08.323Z"
+    "dispatchedAt": "",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {
@@ -131397,12 +131481,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:41:02.361Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T20:27:15.271Z",
-     "updatedAt": "2026-11-09T20:27:15.271Z"
+     "updatedAt": "2026-11-09T20:41:02.552Z"
     },
     {
      "id": "s2",
@@ -131546,7 +131630,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:31:07.999Z"
+    "dispatchedAt": "2026-11-09T20:31:07.999Z",
+    "pin": "",
+    "pinnedAt": "",
+    "pinnedBy": ""
    },
    "steps": [
     {

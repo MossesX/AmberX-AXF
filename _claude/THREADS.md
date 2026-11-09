@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 01:01 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · shipped-manifest-api
 - 2026-11-09 01:01 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · shipped-manifest-api
 - 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` → running, note (all) · pipeline
 - 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` branch claude/one-builds-page-pending-queued-built-tabs-remove (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
 - 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` → running, note (all) · pipeline
 - 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` branch claude/fix-owner-check-bug-dead-start-button (all) · pipeline
+- 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
