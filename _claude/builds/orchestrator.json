@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:26:23.838Z",
+ "updatedAt": "2026-11-09T19:27:04.427Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79787,7 +79787,7 @@
    "title": "Let voice/API route a build to an API account (with owner approval)",
    "category": "",
    "detail": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79795,7 +79795,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:26:22.756Z",
+   "updatedAt": "2026-11-09T19:27:03.009Z",
    "builtAt": "",
    "notes": [
     {
@@ -79833,6 +79833,10 @@
     {
      "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:26:22.756Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T19:27:03.009Z"
     }
    ],
    "approvals": [],
