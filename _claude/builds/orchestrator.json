@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:54:33.584Z",
+ "updatedAt": "2026-11-09T18:54:46.488Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77243,7 +77243,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T18:54:22.957Z",
+   "updatedAt": "2026-11-09T18:54:45.135Z",
    "builtAt": "",
    "notes": [
     {
@@ -77317,6 +77317,10 @@
     {
      "text": "Started run 3 on account-3 (Fable, Phase 2): axf-skins-restyle-everything-badges-banner-and-every--gina.",
      "at": "2026-11-09T18:54:17.842Z"
+    },
+    {
+     "text": "Headless run axf-skins-restyle-everything-badges-banner-and-every--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T18:54:45.135Z"
     }
    ],
    "approvals": [],
