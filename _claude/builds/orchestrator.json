@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:09:00.992Z",
+ "updatedAt": "2026-11-09T13:09:44.596Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77141,9 +77141,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T13:08:59.722Z",
+   "updatedAt": "2026-11-09T13:09:43.815Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: AmberX is integrated with the console, one and the same. Do NOT build a new toolbar system: reuse the existing console toolbar/drop-on system and its shared settings on axHub, so items can be dragged from the console onto the AmberX floating toolbar and vice versa.",
+     "at": "2026-11-09T13:09:43.815Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
