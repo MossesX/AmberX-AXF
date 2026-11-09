@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1745,
- "updatedAt": "2026-11-09T16:39:28.522Z",
+ "rev": 1746,
+ "updatedAt": "2026-11-09T16:39:38.182Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116575,12 +116575,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-08T17:54:59.048Z",
+   "updatedAt": "2026-11-09T16:39:29.301Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Overlap: slot-watchdog (branch claude/slot-watchdog) builds the stale reaper part (s3 dead/hung sessions released, s4 running-with-no-session reconciled on a 30 s timer). s1/s2 (per-account slot registry, heartbeats) stay here.",
      "at": "2026-11-08T17:54:59.048Z"
+    },
+    {
+     "text": "PR #406 covers part of s4 (builds marked running on an account with no session and no live agent slot go back to the Queue on the self-check) and the per-account state. Heartbeats (s2) and killing sessions (s3) are not done.",
+     "at": "2026-11-09T16:39:29.301Z"
     }
    ],
    "approvals": [],
@@ -116701,7 +116705,7 @@
     "all"
    ],
    "order": {
-    "all": 434
+    "all": 435
    },
    "kind": "build",
    "planRef": "",
@@ -127186,15 +127190,15 @@
    "title": "Fix: stale running counts per Claude account not cleared",
    "category": "Builds",
    "detail": "Seen Nov 9: claude_accounts shows Hulu 1/3, Moses X 4/3, account-1 4/3 running while the VPS has 0 tmux axf-* sessions and 0 claude -p processes. Rule (Brett): every time the console loads, and on the watchdog tick, the orchestrator checks for stale runs and releases any slot or running entry with no live process (agent-slots, claude-workers.mjs counts, orchestrator.json statuses). Find why the existing check didn't run or didn't clear these; fix; add a test with fake stale entries; log each release.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T14:33:29.282Z",
-   "updatedAt": "2026-11-09T16:39:27.394Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T16:39:28.294Z",
+   "builtAt": "2026-11-09T16:39:28.294Z",
    "notes": [
     {
      "text": "ROOT CAUSE (found live): deploy/claude-workers.mjs liveSessions() runs `tmux ls`; when NO tmux sessions exist, tmux exits non-zero ('no server running'), so it returns null = 'can't ask tmux'. Then ledger() counts every open session as running and liveClaims keeps claims for 12 h. So the stale entries survive exactly when nothing is running. Fix: treat 'no server running' (tmux present, exit 1) as an empty Set; only return null when tmux binary is missing. Test it.",
@@ -127223,12 +127227,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T16:39:28.294Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T14:33:29.283Z",
-     "updatedAt": "2026-11-09T14:33:29.283Z"
+     "updatedAt": "2026-11-09T16:39:28.428Z"
     }
    ],
    "profiles": [
@@ -127239,7 +127243,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
