@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1752,
- "updatedAt": "2026-11-09T16:45:07.129Z",
+ "rev": 1753,
+ "updatedAt": "2026-11-09T16:45:17.335Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127561,7 +127561,7 @@
    "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
    "category": "",
    "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127569,8 +127569,8 @@
    "pr": "#407",
    "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-09T16:45:04.417Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T16:45:08.306Z",
+   "builtAt": "2026-11-09T16:45:08.306Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -127587,6 +127587,10 @@
     {
      "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
      "at": "2026-11-09T16:40:15.588Z"
+    },
+    {
+     "text": "PR #407 supersedes #406 (carries its commit). Added: self-check runs on every orchestrator load, the dispatcher's first tick after downtime, stuck ticks and a 30 min sweep. UI Review shots of the Self-check card still owed: no branch preview here.",
+     "at": "2026-11-09T16:45:06.486Z"
     }
    ],
    "approvals": [],
@@ -127688,12 +127692,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T16:45:08.306Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T16:26:19.535Z",
-     "updatedAt": "2026-11-09T16:26:19.535Z"
+     "updatedAt": "2026-11-09T16:45:08.573Z"
     }
    ],
    "profiles": [
@@ -127704,7 +127708,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
