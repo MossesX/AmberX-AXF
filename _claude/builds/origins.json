@@ -3711,6 +3711,18 @@
    "from": "brief",
    "addenda": []
   },
+  "ui-roller-roll-a-random-style-on-any-ui-element": {
+   "said": "I need a UI roller plugin for every single UI element dialog window. Every single UI element needs a roll style. So you pick the context menu and the element you're over, it comes up and you can go roll style. Or reset element, if it's already been changed, and it'll just roll a random style and save it to the tokens. When you click roll, it opens a dialogue, and you can select what things you want in the roll. Every plugin or app, in the main settings there needs to be a rolled assets page that lists all the plugins and any rolled assets so you can view the asset itself in a preview and reset it, reset all, and reset selected. Whenever you apply a skin or a design pack or a theme, it resets the rolled assets; rolled assets that it doesn't touch go back to default before the roll.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "urgent-amberx-veto-notice-alarm-too-loud-approve": {
    "said": "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.",
    "at": "",
