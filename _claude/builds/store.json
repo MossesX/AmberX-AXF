@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1625,
- "updatedAt": "2026-11-08T23:52:03.415Z",
+ "rev": 1626,
+ "updatedAt": "2026-11-09T00:10:00.428Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25343,23 +25343,48 @@
    "title": "Module system: modules, extension points, services, placeholders",
    "category": "Kernel & engines",
    "detail": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-09T00:09:58.947Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Watchdog: no session and no claude process; last sign of life 8 days ago (8 steps left). Back in Pending, not relaunched: queue it again if it is still wanted.",
+     "at": "2026-11-09T00:09:58.947Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": {
+     "at": "2026-11-09T00:09:58.653Z",
+     "exit": null,
+     "outcome": "returned",
+     "stepsLeft": 8,
+     "account": "",
+     "session": ""
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "watchdog: stale"
+   },
    "steps": [
     {
      "id": "s1",
@@ -25547,7 +25572,7 @@
    "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
