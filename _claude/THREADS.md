@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 03:00 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · orchestrator
-- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · pending
-- 2026-11-09 03:02 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
 - 2026-11-09 03:02 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
 - 2026-11-09 03:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
 - 2026-11-09 03:02 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · foreign-write
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 23:44 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` → queued, note (all) · console
 - 2026-11-09 23:45 UTC · `standing-rule-in-every-brief-fix-problems-yourse` added (0 steps) (all) · console
 - 2026-11-09 23:45 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` note (all) · orchestrator
+- 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` → running, note (all) · pipeline
+- 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` branch claude/fix-log-fyi-phone-notifications-from-claude-sess (all) · pipeline
+- 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` note (all) · orchestrator
 
 ## Token passes (log)
 
