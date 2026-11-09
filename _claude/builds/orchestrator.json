@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:50:54.667Z",
+ "updatedAt": "2026-11-09T20:51:08.791Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14997,7 +14997,7 @@
    "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:50:52.512Z",
+   "updatedAt": "2026-11-09T20:51:03.589Z",
    "builtAt": "2026-11-09T20:48:11.014Z",
    "notes": [
     {
@@ -15088,7 +15088,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T20:46:32.867Z",
+     "doneAt": "2026-11-09T20:50:54.448Z",
      "note": "",
      "uid": "st-mw9q4bht0237gx"
     },
@@ -15106,7 +15106,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T20:47:21.285Z",
+     "doneAt": "2026-11-09T20:50:56.761Z",
      "note": "",
      "uid": "st-mw9q4bht03ly9b"
     },
@@ -15124,7 +15124,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T20:47:23.798Z",
+     "doneAt": "2026-11-09T20:50:58.615Z",
      "note": "",
      "uid": "st-mw9q4bhv04n9ex"
     },
@@ -15142,7 +15142,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T20:47:28.252Z",
+     "doneAt": "2026-11-09T20:51:00.104Z",
      "note": "",
      "uid": "st-mw9q4bhv05he21"
     },
@@ -15160,7 +15160,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T20:47:30.167Z",
+     "doneAt": "2026-11-09T20:51:01.644Z",
      "note": "",
      "uid": "st-mw9q4bhv0611xh"
     },
@@ -15181,7 +15181,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T20:48:11.014Z",
+     "doneAt": "2026-11-09T20:51:03.589Z",
      "note": "",
      "uid": "st-mw9q4bhv07c1a2"
     }
