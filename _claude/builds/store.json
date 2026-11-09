@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1658,
- "updatedAt": "2026-11-09T01:26:14.285Z",
+ "rev": 1659,
+ "updatedAt": "2026-11-09T01:26:58.277Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125738,7 +125738,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:26:11.114Z",
+   "updatedAt": "2026-11-09T01:26:56.278Z",
    "builtAt": "",
    "notes": [
     {
@@ -125760,6 +125760,10 @@
     {
      "text": "Brett: \"also make an errors column that's hideable. With a collapse button.\" In the Terminal plugin (console-terminal), add an Errors column: a side column next to the output showing only the file-related errors (file, line, message, build, time; click opens the file at the bad code, centered and highlighted). It has a collapse button (collapses to a thin strip with an error count badge) and can be hidden entirely from the Terminal toolbar/settings; state remembered. Filters by build, severity, plugin. Full API/MCP/CLI/voice control.",
      "at": "2026-11-09T01:26:11.114Z"
+    },
+    {
+     "text": "Brett: prompt field to jump into a headless session. A running claude -p can't take input, so: a prompt field (on the build's Shipped Features entry, the Errors column line, and the session window) that, on send, does NOT send right away: it opens a confirm dialog warning that the running session will be stopped and any unfinished, uncommitted work in progress may be lost, showing what's at risk (current step, uncommitted files count, time/cost so far). Only on Confirm: stop the session cleanly (let it commit if it can), then resume the SAME session (claude --resume <session id>) with Brett's prompt so its context is kept; logged as a build note and a manifest update. Cancel keeps the prompt as a draft. Full API/MCP/CLI/voice control, with the same confirm step.",
+     "at": "2026-11-09T01:26:56.278Z"
     }
    ],
    "approvals": [],
@@ -125877,7 +125881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
