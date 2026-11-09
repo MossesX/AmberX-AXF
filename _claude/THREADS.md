@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` branch claude/one-builds-page-pending-queued-built-tabs-remove (all) · pipeline
 - 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · orchestrator
 - 2026-11-09 01:23 UTC · `shipped-features-live-manifests-from-dispatch-to` added (0 steps) (all) · pending
 - 2026-11-09 01:23 UTC · `shipped-features-live-manifests-from-dispatch-to` added (0 steps) (all) · foreign-write
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s1 done, → running (all) · orchestrator
 - 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s2 done (all) · orchestrator
 - 2026-11-09 20:41 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` → queued, note (all) · console
+- 2026-11-09 20:42 UTC · `fix-owner-check-bug-dead-start-button` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
