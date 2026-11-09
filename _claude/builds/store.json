@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1833,
- "updatedAt": "2026-11-09T18:06:25.422Z",
+ "rev": 1834,
+ "updatedAt": "2026-11-09T18:06:47.943Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128270,7 +128270,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-09T18:06:21.579Z",
+   "updatedAt": "2026-11-09T18:06:46.407Z",
    "builtAt": "",
    "notes": [
     {
@@ -128332,6 +128332,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-split-builds-pages-build-manager-pending-complet--rhonda, own login copy)",
      "at": "2026-11-09T18:06:21.579Z"
+    },
+    {
+     "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T18:06:46.406Z"
     }
    ],
    "approvals": [],
@@ -128456,7 +128460,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
