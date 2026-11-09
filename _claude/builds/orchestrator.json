@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:53:25.577Z",
+ "updatedAt": "2026-11-09T00:53:40.645Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76075,7 +76075,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:53:23.874Z",
+   "updatedAt": "2026-11-09T00:53:38.909Z",
    "builtAt": "",
    "notes": [
     {
@@ -76105,6 +76105,10 @@
     {
      "text": "Brett: \"as you type in the field, it automatically drops down the list of all the ones that match. Whatever you type. In real time. Letter per letter.\" Every parameter field is a type-ahead combobox: the match list drops down on the first letter and updates on every keystroke (fuzzy match, matched letters highlighted, within the active filters), keyboard up/down/enter and tap to pick. Fast on large lists (indexed/virtualized, no lag).",
      "at": "2026-11-09T00:53:23.874Z"
+    },
+    {
+     "text": "Brett: \"And they pop up in a categorized tree.\" The live type-ahead drop-down shows its matches as a categorized collapsible tree (e.g. app > plugin > folder > file; queue > build > step; account type > account), branches with matches auto-expand, counts per branch, empty branches hidden; picking a branch can select all under it where the rule allows several.",
+     "at": "2026-11-09T00:53:38.909Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1646,
- "updatedAt": "2026-11-09T00:53:25.577Z",
+ "rev": 1647,
+ "updatedAt": "2026-11-09T00:53:40.645Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125497,7 +125497,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:53:23.874Z",
+   "updatedAt": "2026-11-09T00:53:38.909Z",
    "builtAt": "",
    "notes": [
     {
@@ -125527,6 +125527,10 @@
     {
      "text": "Brett: \"as you type in the field, it automatically drops down the list of all the ones that match. Whatever you type. In real time. Letter per letter.\" Every parameter field is a type-ahead combobox: the match list drops down on the first letter and updates on every keystroke (fuzzy match, matched letters highlighted, within the active filters), keyboard up/down/enter and tap to pick. Fast on large lists (indexed/virtualized, no lag).",
      "at": "2026-11-09T00:53:23.874Z"
+    },
+    {
+     "text": "Brett: \"And they pop up in a categorized tree.\" The live type-ahead drop-down shows its matches as a categorized collapsible tree (e.g. app > plugin > folder > file; queue > build > step; account type > account), branches with matches auto-expand, counts per branch, empty branches hidden; picking a branch can select all under it where the rule allows several.",
+     "at": "2026-11-09T00:53:38.909Z"
     }
    ],
    "approvals": [],
@@ -125644,7 +125648,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
