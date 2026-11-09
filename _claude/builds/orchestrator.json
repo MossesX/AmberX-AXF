@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:05:09.911Z",
+ "updatedAt": "2026-11-09T18:05:25.618Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78226,7 +78226,7 @@
    "title": "Split builds pages: Build Manager = Pending + Complete; Orchestrator = Queued + Active",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded). Build Manager owns builds before and after the orchestrator: Pending tab (create, edit, prioritize, Send to orchestrator) and Complete tab (finished builds sent back by the orchestrator, with account that actually built it, model, cost, PR, land status). Build orchestrator owns only what it was sent: Queued and Active tabs, with steps, assigned/actual account, model, progress and actions (route, assign account, hold, cancel/return to Pending). When a build finishes, the orchestrator sends it back to Build Manager's Complete. Remove every other builds table and the separate Build queue screen (redirect to these). Full API/voice control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78234,7 +78234,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-09T18:05:05.102Z",
+   "updatedAt": "2026-11-09T18:05:20.508Z",
    "builtAt": "",
    "notes": [
     {
@@ -78272,6 +78272,14 @@
     {
      "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--earl: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:04:37.198Z"
+    },
+    {
+     "text": "Started run 3 on account-1 (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--gina.",
+     "at": "2026-11-09T18:05:17.568Z"
+    },
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-split-builds-pages-build-manager-pending-complet--gina, own login copy)",
+     "at": "2026-11-09T18:05:20.508Z"
     },
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
