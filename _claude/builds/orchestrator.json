@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T16:03:40.317Z",
+ "updatedAt": "2026-11-09T16:04:15.786Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77825,12 +77825,16 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-09T16:03:37.031Z",
+   "updatedAt": "2026-11-09T16:04:14.593Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T16:03:37.031Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T16:04:14.593Z"
     }
    ],
    "approvals": [],
@@ -77847,7 +77851,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9gbkw101jm9k"
+    },
+    {
+     "id": "s2",
+     "text": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9gbkw102t6qc"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9gbkw1038x4q"
+    }
+   ]
   }
  ]
 }
