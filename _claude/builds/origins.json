@@ -1914,6 +1914,18 @@
    "from": "brief",
    "addenda": []
   },
+  "home-page-build-queue-card-opens-the-orchestrato": {
+   "said": "Build queue doesn't open the orchestrator. It opens the old build queue.",
+   "at": "2026-11-09T19:21:03.353Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "hotfix-build-manager": {
    "said": "Can you check build manager to see what's going? It says 21 things are going. ... When I click them, they don't open up, and the steps in the build menu don't work.",
    "at": "2026-11-04T00:00:00Z",

@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 19:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
-- 2026-11-08 19:25 UTC · `adopt-today-s-direct-launched-builds-record-only` note (all) · orchestrator
 - 2026-11-08 19:26 UTC · `standing-rule-every-ui-ships-with-full-api-contr` note (all) · orchestrator
 - 2026-11-08 19:26 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · orchestrator
 - 2026-11-08 19:26 UTC · `demonstration-designer-plugin-new-standalone` note (all) · orchestrator
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:14 UTC · `vps-orchestrator-only-rule-vps-settings-console` → failed, note (all) · pipeline
 - 2026-11-09 19:20 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → queued, note (all) · console
 - 2026-11-09 19:20 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
+- 2026-11-09 19:21 UTC · `home-page-build-queue-card-opens-the-orchestrato` added (0 steps) (all) · console
+- 2026-11-09 19:21 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · console
 
 ## Token passes (log)
 
