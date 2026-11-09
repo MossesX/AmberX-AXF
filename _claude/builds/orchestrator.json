@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:24:28.252Z",
+ "updatedAt": "2026-11-09T02:25:10.280Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76373,6 +76373,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "I need a UI roller plugin for every single UI element dialog window. Every single UI element needs a roll style. So you pick the context menu and the element you're over, it comes up and you can go roll style. Or reset element, if it's already been changed, and it'll just roll a random style and save it to the tokens. When you click roll, it opens a dialogue, and you can select what things you want in the roll. Every plugin or app, in the main settings there needs to be a rolled assets page that lists all the plugins and any rolled assets so you can view the asset itself in a preview and reset it, reset all, and reset selected. Whenever you apply a skin or a design pack or a theme, it resets the rolled assets; rolled assets that it doesn't touch go back to default before the roll.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "urgent-approval-links-say-method-not-allowed",
+   "title": "URGENT: approval links say 'Method not allowed'",
+   "category": "",
+   "detail": "Approval links sent in notices and by Claude (https://axhub.amberxai.com/auth/admin/approvals/<id>) answer 'Method not allowed' when Brett taps Approve. The hub's plain HTML approval pages were removed when every axhub.amberxai.com route moved to the axhub-web app, so the old link/form posts to a route that no longer takes it. Fix: the approval link opens the approval in axhub-web (or the console) with working Approve/Deny that call the hub's decide API with the right method; keep the old URL working as a redirect. Check every place that builds approval links (notices, AmberX push, console banner, axHub tool results approvalUrl). Test Approve and Deny end to end on a veto hold and a confirm hold. Land it the same day.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "urgent-approval-links-say-method-not-allowed",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:25:05.067Z",
+   "updatedAt": "2026-11-09T02:25:05.067Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click approve, it says method not allowed. You can't have it broken.",
     "at": "",
     "source": "",
     "session": "",
