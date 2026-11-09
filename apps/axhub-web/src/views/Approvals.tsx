@@ -12,7 +12,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubPost } from '../hub/api';
-import { countdownKey, nextSort, relTime, replyBase, requestedKey, sameJson, showReading, shownRow, sourceChips, sourceKind, sourceWho, SOURCE_LABEL, SOURCE_ORDER, waitingCount, waitingTitle, type KeptReply } from '../hub/core';
+import { AUTO_PRESETS, autoGrantBody, countdownKey, isAutoPass, isUntilOff, nextSort, passClock, passSecondsLeft, relTime, untilOffExtend, waitGroups, type AutoPresetId, replyBase, requestedKey, sameJson, showReading, shownRow, sourceChips, sourceKind, sourceWho, SOURCE_LABEL, SOURCE_ORDER, waitingCount, waitingTitle, type KeptReply } from '../hub/core';
 import { clearDatasetTransform, DataGrid, setDatasetTransform, type GridColumn, type GridGroup, type GridSort } from '../axf/libs/datagrid';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, SOURCE_TONE, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
@@ -20,6 +20,7 @@ import { HUB } from '../hub/useHub';
 import { ApprovalDetailsPanel } from '../axf/libs/approvals/react';
 import { approvalsOpenStore, detailsOfHubEntry, type ApprovalDecision } from '../axf/libs/approvals';
 import { HubGate, TapTwice, useHubJson } from './hubPage';
+import type { PassesPage } from './Passes';
 import { actHeld, HeldBar, HeldChip, isHeld } from './HeldCall';
 
 export function Approvals() {
@@ -69,7 +70,7 @@ function ApprovalsGrid() {
       </header>
 
       {grid.error && <Note tone="danger" icon="alert">{grid.error}</Note>}
-      {g && g.auto.available && <AutoApprove auto={g.auto} onChange={() => void after()} />}
+      {g && <AutoApprove auto={g.auto} onChange={() => void after()} />}
 
       {g && (
         <div className="fx-row fx-row--wrap" role="group" aria-label="Show">
@@ -98,37 +99,94 @@ function ApprovalsGrid() {
   );
 }
 
-/** The 5 / 10 / 30 minute window that approves everything (decision #94). Deny policies still deny; Stop any time. */
+/** Re-renders every second while something counts down. */
+function useSecond(on: boolean): number {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { if (!on) return; const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, [on]);
+  return now;
+}
+
+/**
+ * "Approve everything automatically" (Brett, Nov 9 2026: "one hour, two hours, and until I turn it off, and it needs to be
+ * able to be turned off on that same container"): a hub pass on every service and tool, so every call runs at once
+ * instead of waiting on the countdown (90 s becomes 0). The console's own Auto-approve (its all pass, read by the hub)
+ * shows here too and turns off here. Until off is the longest pass the hub allows, extended while it is on. Destructive
+ * tools are never passed by the hub: they still ask, and the control says so. The hub's short window (decision #94,
+ * 5 / 10 / 30 min, which also approves requests outright) stays below.
+ */
 function AutoApprove({ auto, onChange }: { auto: AutoState; onChange: () => void }) {
   const rt = useRuntime();
+  const passes = useHubJson<PassesPage>('/auth/api/passes', 30_000);
   const [busy, setBusy] = useState(false);
-  const send = async (path: string, body: unknown) => {
+  const [fetchedAt, setFetchedAt] = useState(Date.now());
+  const d = passes.data;
+  useEffect(() => setFetchedAt(Date.now()), [d]);
+  const on = d?.active.find(isAutoPass) ?? null;
+  const now = useSecond(!!on && !isUntilOff(on));
+  const send = async (path: string, body: unknown, done = 'Done.') => {
     setBusy(true);
-    try { const r = await hubPost<{ message: string }>(path, body); rt.toast(r.message || 'Done.', 'success'); onChange(); }
+    try { const r = await hubPost<{ message?: string }>(path, body); rt.toast(r.message || done, 'success'); await passes.reload(); onChange(); }
     catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); }
     finally { setBusy(false); }
   };
+  // Until off: keep the pass going (extend to the longest allowed once under half is left), while it is on.
+  const extendBy = on && d ? untilOffExtend(on, d.minutes.max) : 0;
+  useEffect(() => {
+    if (!on || !extendBy || !on.canExtend) return;
+    void hubPost(`/auth/api/passes/${encodeURIComponent(on.id)}/extend`, { minutes: extendBy }).then(() => passes.reload(), () => undefined);
+  }, [on?.id, extendBy]); // eslint-disable-line react-hooks/exhaustive-deps
   const w = auto.window;
+  const untilOff = !!on && isUntilOff(on);
+  const left = on ? passSecondsLeft(on.secondsLeft, fetchedAt, now) : 0;
+  const state = on ? (untilOff ? 'On until you turn it off' : `On · ${passClock(left)} left`) : w ? `On · ${relTime(w.until)}` : 'Off';
+  const turnOn = (id: AutoPresetId) => { const b = d && autoGrantBody(id, d.minutes); if (b) void send('/auth/api/passes', b, 'Auto-approve on'); };
   return (
-    <Container title="Approve everything automatically" icon="clock">
-      {w ? (
-        <div className="fx-stack">
-          <Note tone="warning" icon="alert">
-            Approving every request until {new Date(w.until).toLocaleTimeString()} ({relTime(w.until)}), started by {w.by}.
-            {' '}{w.approvedCount} approved so far.
-          </Note>
-          <div className="fx-row"><Button tone="danger" icon="x" disabled={busy} onClick={() => void send('/auth/api/approvals/auto/stop', {})}>Stop now</Button></div>
-        </div>
-      ) : (
-        <div className="fx-stack">
-          <p className="fx-muted">For a few minutes, every call that asks is approved by itself, what's waiting now too. Services set to deny stay denied. Tap twice.</p>
-          <div className="fx-row fx-row--wrap">
+    <Container title="Approve everything automatically" icon="check-circle" actions={<Chip tone={on || w ? 'success' : undefined}>{state}</Chip>}>
+      <div className="fx-stack" data-axf-auto-approve={on ? (untilOff ? 'until-off' : 'timed') : w ? 'window' : 'off'}>
+        {passes.error && <Note tone="danger" icon="alert">{passes.error}</Note>}
+        {on ? (
+          <>
+            <p>
+              Every call runs at once instead of waiting on the countdown{untilOff ? ', until you turn it off' : `, until ${new Date(on.expiresAt).toLocaleTimeString()}`}.
+              {' '}Started by {on.grantedBy}{on.grantedVia === 'feed' ? ' in the console' : ''} · {on.uses} call{on.uses === 1 ? '' : 's'} ran under it.
+            </p>
+            <div className="fx-row fx-row--wrap">
+              {on.canRevoke && <Button tone="danger" icon="x" disabled={busy} onClick={() => void send(`/auth/api/passes/${encodeURIComponent(on.id)}/revoke`, {}, 'Auto-approve off')}>Turn off</Button>}
+              {!on.canRevoke && <p className="fx-muted">Turn it off in the console, where it was switched on.</p>}
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="fx-muted">Every call waiting here and every new one runs at once instead of waiting on the countdown (90 s becomes 0).</p>
+            <div className="fx-row fx-row--wrap" role="group" aria-label="Auto-approve for">
+              {AUTO_PRESETS.map((p) => {
+                const ok = !!d && !!autoGrantBody(p.id, d.minutes);
+                return (
+                  <Button key={p.id} tone="success" icon={p.minutes ? 'clock' : 'check-circle'} disabled={busy || !ok} onClick={() => turnOn(p.id)}
+                    title={d && !ok ? `The hub allows passes of ${d.minutes.min}–${d.minutes.max} min` : undefined}>{p.label}</Button>
+                );
+              })}
+            </div>
+          </>
+        )}
+        <p className="fx-muted">Destructive tools are never passed: they still ask you. Services set to deny stay denied.</p>
+        {w ? (
+          <div className="fx-stack">
+            <Note tone="warning" icon="alert">
+              Also approving every request until {new Date(w.until).toLocaleTimeString()} ({relTime(w.until)}), started by {w.by}.
+              {' '}{w.approvedCount} approved so far.
+            </Note>
+            <div className="fx-row"><Button tone="danger" icon="x" disabled={busy} onClick={() => void send('/auth/api/approvals/auto/stop', {})}>Stop now</Button></div>
+          </div>
+        ) : auto.available && (
+          <div className="fx-row fx-row--wrap" role="group" aria-label="Approve every request for a few minutes">
+            <span className="fx-muted">Or approve requests outright for a few minutes:</span>
             {auto.minutes.map((m) => (
               <TapTwice key={m} label={`${m} min`} again={`Approve all for ${m} min`} icon="clock" disabled={busy} onConfirm={() => void send('/auth/api/approvals/auto', { minutes: m })} />
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </Container>
   );
 }
@@ -175,6 +233,8 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
   const [expanded, setExpanded] = useState<string[]>(() => items.filter((i) => approvalsOpenStore.isOpen('axhub', i.id)).map((i) => i.id));
   const toggleRow = useCallback((id: string) => setExpanded((e) => { const on = !e.includes(id); approvalsOpenStore.set('axhub', id, on); return on ? [...e, id] : e.filter((x) => x !== id); }), []);
   const [only, setOnly] = useState<string>('');
+  const [closed, setClosed] = useState<string[]>([]);
+  const toggleGroup = useCallback((id: string) => setClosed((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id])), []);
   const [replies, setReplies] = useState<Record<string, KeptReply<ApprovalItem>>>({});
   // Same JSON as the last read = the same object (flicker fix, Nov 1 2026): memoised cells of unchanged rows don't redraw.
   const kept = useRef(new Map<string, ApprovalItem>());
@@ -213,9 +273,16 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
   ];
   const waiting = rows.filter((r) => isHeld(r) || r.status === 'pending');
   const rest = rows.filter((r) => !waiting.includes(r));
+  // Waiting requests in collapsible containers, one per build / session that asked, else per service (Brett, Nov 9 2026).
+  const sub = waitGroups(waiting);
   const groups: GridGroup<ApprovalItem>[] = [
-    ...(waiting.length ? [{ id: 'waiting', title: 'Waiting on you', icon: 'shield', rows: waiting, groups: [], fixed: true }] : []),
-    ...(rest.length ? [{ id: 'earlier', title: 'Earlier', icon: 'list', rows: rest, groups: [], fixed: true }] : []),
+    ...(waiting.length ? [{
+      id: 'waiting', title: 'Waiting on you', icon: 'shield', fixed: true, collapsed: closed.includes('waiting'),
+      ...(sub.length > 1
+        ? { rows: [], groups: sub.map((x) => ({ id: `waiting:${x.id}`, title: `${x.title} · ${x.rows.length}`, icon: x.kind === 'build' ? 'play' : 'shield', rows: x.rows, groups: [], fixed: true, collapsed: closed.includes(`waiting:${x.id}`) })) }
+        : { rows: waiting, groups: [] }),
+    }] : []),
+    ...(rest.length ? [{ id: 'earlier', title: 'Earlier', icon: 'list', rows: rest, groups: [], fixed: true, collapsed: closed.includes('earlier') }] : []),
   ];
   return (
     <div className="fx-stack">
@@ -243,6 +310,7 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
         onSort={(c) => setSort((s0) => nextSort(s0, c))}
         expanded={expanded}
         onToggleExpand={toggleRow}
+        onToggleGroup={toggleGroup}
         // A tap on the row opens it in place (no navigation); taps on its buttons and links do their own thing.
         onRowClick={(r, e) => { if (!(e.target as Element).closest?.('button, a, input, select, textarea')) toggleRow(r.id); }}
         renderDetail={(r) => <RowDetail item={r} onDone={onDone} />}

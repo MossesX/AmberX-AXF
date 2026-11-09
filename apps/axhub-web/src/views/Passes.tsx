@@ -11,7 +11,7 @@ import { passClock, passCovers, passSecondsLeft, patternList, relTime } from '..
 import { go } from '../hub/route';
 import { HubGate, TapTwice, useHubJson, when } from './hubPage';
 
-interface PassView {
+export interface PassView {
   id: string;
   service: string;
   tools: string[];
@@ -32,7 +32,7 @@ interface PassView {
   canExtend: boolean;
   canRevoke: boolean;
 }
-interface PassesPage {
+export interface PassesPage {
   active: PassView[];
   recent: PassView[];
   minutes: { min: number; max: number; presets: number[] };

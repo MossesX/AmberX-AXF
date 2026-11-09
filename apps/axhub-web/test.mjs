@@ -7,6 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
+import { autoGrantBody, isAutoPass, isUntilOff, untilOffExtend, waitGroups, AUTO_PRESETS } from './src/hub/core.ts';
 import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './src/hub/core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
@@ -378,6 +379,29 @@ console.log('Approvals log — calls that ran without an approval (decision 110)
   eq(rows.pass, 'p1 · granted by web:brett · ends 2026-11-03T15:30:00.000Z', 'the pass is named on the row');
   eq(rows.why, 'pass p1 (web:brett)', 'why it ran: the pass');
   eq(Object.fromEntries(directRunRows({ ...under, status: 'failed under pass', resultStatus: undefined }).map((r) => [r.key, r.value])).result.split(' · ')[0], 'error', 'failed under a pass reads as an error');
+}
+
+{
+  // Auto-approve (Brett, Nov 9 2026): 1 hour, 2 hours, until I turn it off; waiting requests grouped per build / service.
+  eq(AUTO_PRESETS.map((p) => p.label), ['1 hour', '2 hours', 'Until I turn it off'], 'the three presets');
+  const lim = { min: 1, max: 240 };
+  eq(autoGrantBody('1h', lim), { service: '*', tools: ['*'], minutes: 60, reason: 'Auto-approve for 1 hour' }, '1 hour: every service and tool for 60 min');
+  eq(autoGrantBody('until-off', lim)?.minutes, 240, 'until off starts at the longest pass the hub allows');
+  eq(autoGrantBody('2h', { min: 1, max: 90 }), null, 'a preset over the hub limit is not offered');
+  const p = { service: '*', tools: ['*'], title: 'Auto-approve until turned off', grantedVia: 'web', secondsLeft: 3600, active: true };
+  ok(isAutoPass(p) && isUntilOff(p), 'an every-service pass granted here is Auto-approve, until off by its reason');
+  ok(isAutoPass({ ...p, service: 'axf-console', tools: [], grantedVia: 'feed', title: 'x' }), "the console's all pass (feed) is Auto-approve too");
+  ok(!isAutoPass({ ...p, service: 'axf-console', tools: ['control_set'] }), 'a narrow pass is not');
+  eq(untilOffExtend(p, 240), 240, 'until off: under half left → extend to the longest');
+  eq(untilOffExtend({ ...p, secondsLeft: 200 * 60 }, 240), 0, 'more than half left → nothing yet');
+  eq(untilOffExtend({ ...p, title: 'Auto-approve for 1 hour' }, 240), 0, 'a timed pass is never extended');
+  const g = waitGroups([
+    { id: '1', tool: 'vps.run', code: { service: 'vps' }, source: { kind: 'headless', label: 'Headless', who: 'build-x' } },
+    { id: '2', tool: 'github.merge', code: { service: 'github' } },
+    { id: '3', tool: 'vps.run', source: { kind: 'headless', label: 'Headless', who: 'build-x' } },
+    { id: '4', tool: 'github.comment' },
+  ]);
+  eq(g.map((x) => [x.id, x.rows.map((r) => r.id)]), [['build:build-x', ['1', '3']], ['service:github', ['2', '4']]], 'grouped by build, else by service');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
