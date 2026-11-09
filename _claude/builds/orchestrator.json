@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:22:40.842Z",
+ "updatedAt": "2026-11-09T19:22:50.256Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79189,7 +79189,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T19:22:25.257Z",
+   "updatedAt": "2026-11-09T19:22:43.027Z",
    "builtAt": "",
    "notes": [
     {
@@ -79223,6 +79223,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-urgent-terminal-pops-up-every-time-the-console-o--gina, own login copy)",
      "at": "2026-11-09T19:22:25.257Z"
+    },
+    {
+     "text": "Headless run axf-urgent-terminal-pops-up-every-time-the-console-o--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:22:43.027Z"
     }
    ],
    "approvals": [],
