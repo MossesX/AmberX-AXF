@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:38 UTC · `orchestrator-full-api-control` note (all) · orchestrator
 - 2026-11-08 17:38 UTC · `ui-api-parity-builds` note (all) · orchestrator
 - 2026-11-08 17:39 UTC · `ui-api-parity-rule` s4 done (all) · orchestrator
 - 2026-11-08 17:44 UTC · `account-health-failover` s3 done (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:17 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` s3 done, → built (all) · orchestrator
 - 2026-11-09 18:17 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` note (all) · orchestrator
 - 2026-11-09 18:43 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` added (0 steps) (all) · console
+- 2026-11-09 18:43 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → queued, note (all) · console
 
 ## Token passes (log)
 
