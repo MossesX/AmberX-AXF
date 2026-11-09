@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1908,
- "updatedAt": "2026-11-09T19:23:36.626Z",
+ "rev": 1909,
+ "updatedAt": "2026-11-09T19:23:48.096Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130367,6 +130367,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T19:22:16.340Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "let-voice-api-route-a-build-to-an-api-account-wi",
+   "title": "Let voice/API route a build to an API account (with owner approval)",
+   "category": "",
+   "detail": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T19:23:46.981Z",
+   "updatedAt": "2026-11-09T19:23:46.981Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They have to run on the API. There's no more Fable credits. Run them on API, man. ... You need to. Fix it. Make it so you can.",
+    "at": "2026-11-09T19:23:46.981Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 506
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
