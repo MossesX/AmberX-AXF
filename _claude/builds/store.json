@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1724,
- "updatedAt": "2026-11-09T13:17:26.683Z",
+ "rev": 1725,
+ "updatedAt": "2026-11-09T13:19:41.310Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126883,9 +126883,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T13:17:25.806Z",
+   "updatedAt": "2026-11-09T13:19:40.469Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ROOT CAUSE (found live Nov 9): framework/schemas/asset-types.json 'badge' type (line ~1085) has no 'skin' entry, so the skin engine never styles badges (only tone colour via BADGE_TONE_TOKEN in banner.ts). Fix: add a skin declaration for badge, and every other type missing one (list coming from Brett's audit). Then make spec/check-skin uncoveredTypes a REQUIRED CI gate so no asset type without a skin entry can merge.",
+     "at": "2026-11-09T13:19:40.469Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -127008,7 +127013,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

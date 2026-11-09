@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:17:26.683Z",
+ "updatedAt": "2026-11-09T13:19:41.310Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77448,9 +77448,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T13:17:25.806Z",
+   "updatedAt": "2026-11-09T13:19:40.469Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ROOT CAUSE (found live Nov 9): framework/schemas/asset-types.json 'badge' type (line ~1085) has no 'skin' entry, so the skin engine never styles badges (only tone colour via BADGE_TONE_TOKEN in banner.ts). Fix: add a skin declaration for badge, and every other type missing one (list coming from Brett's audit). Then make spec/check-skin uncoveredTypes a REQUIRED CI gate so no asset type without a skin entry can merge.",
+     "at": "2026-11-09T13:19:40.469Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
