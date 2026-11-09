@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1956,
- "updatedAt": "2026-11-09T20:25:41.722Z",
+ "rev": 1957,
+ "updatedAt": "2026-11-09T20:26:06.164Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126439,14 +126439,14 @@
    "title": "AmberX floating toolbar (always on top): mic + approvals + build status",
    "category": "amberx",
    "detail": "AmberX Android app: a small floating toolbar (overlay bubble, draw over other apps) that stays on top everywhere. Main items: mic button (talk to Claude / hands-free toggle) and approvals (badge with count of waiting axHub approvals; tap to approve/deny in place). Also build status (running count, failures). Draggable, collapsible, snaps to edges; every piece an asset, styled from tokens, configurable in settings (items, size, opacity, position). Brett: \"add a floating toolbar to AmberX that's always on top... the main thing was the mic and the approvals.\"",
-   "status": "running",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T20:25:35.690Z",
+   "updatedAt": "2026-11-09T20:26:04.712Z",
    "builtAt": "",
    "notes": [
     {
@@ -126504,6 +126504,10 @@
     {
      "text": "Headless run axf-amberx-floating-toolbar-always-on-top-mic-approv--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T20:25:35.690Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 4 steps left after 3 runs: failed.",
+     "at": "2026-11-09T20:26:04.712Z"
     }
    ],
    "approvals": [],
@@ -126532,22 +126536,22 @@
     "queuedAt": "2026-11-09T20:21:47.553Z",
     "queuedBy": "console",
     "account": "account-3",
-    "session": "axf-amberx-floating-toolbar-always-on-top-mic-approv--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T20:25:15.903Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-09T20:24:05.267Z",
+     "at": "2026-11-09T20:26:04.481Z",
      "exit": 1,
-     "outcome": "requeued",
+     "outcome": "failed",
      "stepsLeft": 4,
      "account": "account-3",
-     "session": "axf-amberx-floating-toolbar-always-on-top-mic-approv--gina"
+     "session": "axf-amberx-floating-toolbar-always-on-top-mic-approv--rhonda"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-3 ended (exit 1) with 4 steps left after 3 runs: failed.",
     "route": "",
     "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
@@ -126649,7 +126653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
