@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
-- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
 - 2026-11-09 02:58 UTC · `skins-asset-types` → built, branch claude/skins-finish (all) · builds-live
 - 2026-11-09 02:58 UTC · `skins-asset-types` branch claude/skins-finish (all) · builds-live
 - 2026-11-09 02:59 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (0 steps) (all) · pending
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 21:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 21:40 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
 - 2026-11-09 23:43 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · console
+- 2026-11-09 23:44 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
+- 2026-11-09 23:44 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 
 ## Token passes (log)
 
