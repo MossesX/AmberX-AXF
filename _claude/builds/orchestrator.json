@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T04:23:14.360Z",
+ "updatedAt": "2026-11-09T04:23:31.910Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77000,7 +77000,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:23:10.596Z",
+   "updatedAt": "2026-11-09T04:23:29.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -77022,6 +77022,10 @@
     {
      "text": "Brett: \"there's a column on the left with all the hits. All the sessions that match: the session name and the type of thing we were talking about.\" Results window layout: left column lists every session with hits (session name, date, hit count, and a topic tag for what it was about, e.g. builds, skins, approvals, AmberX); tapping one shows its hits on the right, keywords centered and highlighted. Topic tags: from the linked Claude session's title and the builds it touched (plain code, zero tokens); optionally a cheap one-time tag per session after transcription, off by default.",
      "at": "2026-11-09T04:23:10.596Z"
+    },
+    {
+     "text": "Brett: \"I want a RAG database made of all the transcripts.\" Build a RAG store over every transcript: chunk each transcript (with session, date, timestamps, speaker, topic tags), embed the chunks with a local embedding model on the VPS (no Claude tokens), store them in Postgres with pgvector (reuse the postgres-console container plan if it exists, else its own table), and index every new transcript automatically after transcription. Two ways in: 1) semantic search (meaning, not just exact words) in the same results window, mixed with the keyword hits; 2) 'Ask' (API/MCP/voice): Claude or Gizmo retrieve the top chunks and answer with the sessions and timestamps as sources, each linking to that moment. Share the store with the Agent Manager's RAG knowledge (agent-profile build) so employees can use it. Settings: on/off, re-index, what gets indexed. Tests: retrieval returns the right session for a paraphrased question.",
+     "at": "2026-11-09T04:23:29.791Z"
     }
    ],
    "approvals": [],
