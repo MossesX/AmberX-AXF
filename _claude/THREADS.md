@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
 - 2026-11-08 17:26 UTC · `memory-restructure-chunked-claude-md-store-memor` s9 done, → complete (all) · foreign-write
 - 2026-11-08 17:26 UTC · `orchestrator-checks-shipped-features-before-spli` added (0 steps) (all) · foreign-write
 - 2026-11-08 17:26 UTC · `adopt-today-s-direct-launched-builds-record-only` added (0 steps) (all) · foreign-write
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · pipeline
 - 2026-11-09 18:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-09 18:01 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
+- 2026-11-09 18:02 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
