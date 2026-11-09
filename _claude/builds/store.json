@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1630,
- "updatedAt": "2026-11-09T00:24:49.756Z",
+ "rev": 1631,
+ "updatedAt": "2026-11-09T00:37:45.174Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25383,9 +25383,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "watchdog: stale"
    },
    "steps": [
     {
@@ -88072,9 +88070,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "watchdog: stale"
    },
    "steps": [
     {
@@ -97560,9 +97556,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "watchdog: stale"
    },
    "steps": [
     {
@@ -104716,9 +104710,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: phase-done",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "watchdog: phase-done"
    },
    "steps": [
     {
@@ -106299,9 +106291,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: waiting",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "watchdog: waiting"
    },
    "steps": [
     {
@@ -122915,9 +122905,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": ""
+    "note": ""
    },
    "steps": [
     {
@@ -123381,9 +123369,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: phase-done",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "watchdog: phase-done"
    },
    "steps": [
     {
@@ -124673,9 +124659,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": ""
+    "note": ""
    },
    "steps": [
     {
@@ -124756,7 +124740,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124766,9 +124750,13 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T22:22:59.195Z",
-    "builtAt": "",
+    "builtAt": "2026-11-08T22:41:09.244Z",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8ef93s01lvki": "2026-11-08T22:23:20.536Z",
+     "st-mw8ef93s024buh": "2026-11-08T22:23:20.536Z",
+     "st-mw8ef93s032vl0": "2026-11-08T22:23:20.536Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T22:23:20.536Z",
@@ -124829,9 +124817,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
+    "note": "steps made by rules: review them"
    },
    "steps": [
     {
@@ -124912,7 +124898,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124924,7 +124910,11 @@
     "createdAt": "2026-11-08T22:32:08.043Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8esfk2012nyu": "2026-11-08T22:33:35.426Z",
+     "st-mw8esfk202sq17": "2026-11-08T22:33:35.426Z",
+     "st-mw8esfk203qlg4": "2026-11-08T22:33:35.426Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T22:33:35.426Z",
@@ -125061,12 +125051,86 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-08T22:30:52.988Z",
+    "builtAt": "2026-11-08T22:46:45.882Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw8eoyc005hmgx": "2026-11-08T22:30:52.990Z",
+     "st-mw8eoyc006njrf": "2026-11-08T22:30:52.990Z",
+     "st-mw8eoyc007no72": "2026-11-08T22:30:52.990Z",
+     "st-mw8eoyc008ieem": "2026-11-08T22:30:52.990Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-08T22:30:52.990Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "plan-studio-receives-a-valid-shipped-feature-man",
+   "title": "Plan Studio receives a valid shipped-feature manifest",
+   "category": "",
+   "detail": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:37:43.238Z",
+   "updatedAt": "2026-11-09T00:37:43.238Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 474
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T00:37:43.238Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

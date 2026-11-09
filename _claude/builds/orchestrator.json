@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:24:49.756Z",
+ "updatedAt": "2026-11-09T00:37:45.174Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75816,6 +75816,37 @@
      "uid": "st-mw8esfk203qlg4"
     }
    ]
+  },
+  {
+   "id": "plan-studio-receives-a-valid-shipped-feature-man",
+   "title": "Plan Studio receives a valid shipped-feature manifest",
+   "category": "",
+   "detail": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:37:43.238Z",
+   "updatedAt": "2026-11-09T00:37:43.238Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

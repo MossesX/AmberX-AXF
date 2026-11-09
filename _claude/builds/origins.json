@@ -2728,6 +2728,18 @@
     }
    ]
   },
+  "plan-studio-receives-a-valid-shipped-feature-man": {
+   "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "planner-select-items-and-build-them": {
    "said": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
    "at": "",

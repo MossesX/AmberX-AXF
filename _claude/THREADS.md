@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 13:46 UTC · `maintenance-redundancy-scan` added (5 steps) (all) · earl
 - 2026-11-07 13:53 UTC · `maintenance-redundancy-scan` s1 done, → running (all) · earl
 - 2026-11-07 13:54 UTC · `maintenance-redundancy-scan` s2 done (all) · earl
 - 2026-11-07 13:57 UTC · `maintenance-redundancy-scan` s3 done (all) · earl
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` s2 done (all) · orchestrator
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` branch claude/orchestrator-only-launcher (all) · builds-live
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · orchestrator
+- 2026-11-09 00:37 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (0 steps) (all) · pending
 
 ## Token passes (log)
 
