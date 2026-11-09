@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:37 UTC · `workers-api-routing` s4 done (all) · orchestrator
-- 2026-11-08 16:37 UTC · `workers-api-routing` s5 done (all) · orchestrator
-- 2026-11-08 16:37 UTC · `workers-api-routing` branch claude/workers-api-routing, PR #389 (all) · builds-live
 - 2026-11-08 16:37 UTC · `workers-api-routing` s6 done, → built (all) · orchestrator
 - 2026-11-08 16:42 UTC · `brief-only-headless` s6 done, → built (all) · orchestrator
 - 2026-11-08 16:57 UTC · `molly-one-shell` added (14 steps) (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` PR #409 (all) · builds-live
 - 2026-11-09 17:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 17:11 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
+- 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
+- 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` branch claude/appearance-skins-colour-themes-only-remove-design-packs (all) · pipeline
+- 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 
 ## Token passes (log)
 
