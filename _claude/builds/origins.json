@@ -569,6 +569,18 @@
    "from": "detail",
    "addenda": []
   },
+  "assign-an-employee-to-every-role-action-type-and": {
+   "said": "The orchestrator has somebody who runs it, one of my employees. Assign employees to every single type of action and app, so I can understand easily what's what. If it's something they did, it will have their avatar next to it, like in a text message. You'll be able to click that person with hooks to the employee's information, their history. And I need a way to see who has which job.",
+   "at": "2026-11-09T23:50:13.944Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "assistant-chat-mode": {
    "said": "\"What's up with the Claude chat in AmberX? Gizmo was loading all the tools, and we were supposed to fix that. So we didn't load the tools, so I could talk quick, like I'm talking to you.\" (Nov 5 2026, voice). Started by, Nov 4 2026, voice: \"In the Claude in my app, it calls all kinds of tools. It takes forever. Why is it calling all these tools?\" … \"Yeah, build that right now.\"",
    "at": "2026-11-05T18:36:01.911Z",

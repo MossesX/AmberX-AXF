@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:50:04.190Z",
+ "updatedAt": "2026-11-09T23:50:16.853Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81023,6 +81023,37 @@
    "origin": {
     "said": "I need an activity log for the console. Every time something clicks, or any time something is being done, or any time an agent or employee asks for something or an approval... if you receive an error, it should note the error, and then what you do to fix it, in a very beautiful colored output window... beautiful interactive log with collapsible panes, maybe tabs... allow me to select an action and make rules, so if this happens again, you do that... see everything the console is doing, axHub's doing, any of the apps are doing through axHub... like Molly reached out to Patches through axHub to download a file. Joey sent this to the orchestrator who rejected it, and the orchestrator sent it to Patches who fixed it and sent it back... very detailed log of everything in English words.",
     "at": "2026-11-09T23:49:14.622Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "assign-an-employee-to-every-role-action-type-and",
+   "title": "Assign an employee to every role, action type and app; avatars in the Activity Monitor; who-has-which-job board",
+   "category": "",
+   "detail": "Goes with the Activity Monitor build. 1) Every role gets a named employee (crew agent profile): orchestrator, dispatcher, each app (console, AmberX, Molly, axHub, Patches...), each action type (builds, approvals, fixes, deploys, accounts, notifications, git/merge, etc.). Use existing crew where they fit, create the rest with names and avatars. 2) Every Activity Monitor entry shows the acting employee's avatar and name like a chat message; click opens their profile: role, jobs, current work, full activity history. 3) A Who does what board: every job/role and the employee that holds it, reassignable. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T23:50:13.944Z",
+   "updatedAt": "2026-11-09T23:50:13.944Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The orchestrator has somebody who runs it, one of my employees. Assign employees to every single type of action and app, so I can understand easily what's what. If it's something they did, it will have their avatar next to it, like in a text message. You'll be able to click that person with hooks to the employee's information, their history. And I need a way to see who has which job.",
+    "at": "2026-11-09T23:50:13.944Z",
     "source": "",
     "session": "",
     "link": "",

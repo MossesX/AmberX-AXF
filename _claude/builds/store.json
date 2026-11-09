@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2040,
- "updatedAt": "2026-11-09T23:50:04.190Z",
+ "rev": 2041,
+ "updatedAt": "2026-11-09T23:50:16.853Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132165,6 +132165,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "assign-an-employee-to-every-role-action-type-and",
+   "title": "Assign an employee to every role, action type and app; avatars in the Activity Monitor; who-has-which-job board",
+   "category": "",
+   "detail": "Goes with the Activity Monitor build. 1) Every role gets a named employee (crew agent profile): orchestrator, dispatcher, each app (console, AmberX, Molly, axHub, Patches...), each action type (builds, approvals, fixes, deploys, accounts, notifications, git/merge, etc.). Use existing crew where they fit, create the rest with names and avatars. 2) Every Activity Monitor entry shows the acting employee's avatar and name like a chat message; click opens their profile: role, jobs, current work, full activity history. 3) A Who does what board: every job/role and the employee that holds it, reassignable. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T23:50:13.944Z",
+   "updatedAt": "2026-11-09T23:50:13.944Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The orchestrator has somebody who runs it, one of my employees. Assign employees to every single type of action and app, so I can understand easily what's what. If it's something they did, it will have their avatar next to it, like in a text message. You'll be able to click that person with hooks to the employee's information, their history. And I need a way to see who has which job.",
+    "at": "2026-11-09T23:50:13.944Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 514
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
