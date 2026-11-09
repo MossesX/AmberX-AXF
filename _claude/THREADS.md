@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:01 UTC · `handoff-2` note (all) · orchestrator
 - 2026-11-08 17:05 UTC · `memory-restructure-chunked-claude-md-store-memor` s5 done (all) · orchestrator
 - 2026-11-08 17:05 UTC · `memory-restructure-chunked-claude-md-store-memor` s6 done (all) · orchestrator
 - 2026-11-08 17:11 UTC · `account-failover-notify` s1 done, → running (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:49 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-09 17:50 UTC · `split-builds-pages-build-manager-pending-complet-3` added (0 steps) (all) · console
 - 2026-11-09 17:50 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · console
+- 2026-11-09 17:51 UTC · `split-builds-pages-build-manager-pending-complet-2` note (all) · orchestrator
 
 ## Token passes (log)
 
