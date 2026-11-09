@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 19:23 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · orchestrator
 - 2026-11-08 19:24 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` note (all) · orchestrator
 - 2026-11-08 19:24 UTC · `approve-button-fix` branch claude/approve-button-fix, note (all) · reconciler
 - 2026-11-08 19:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:13 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · pipeline
 - 2026-11-09 19:13 UTC · `vps-orchestrator-only-rule-vps-settings-console` → running, note (all) · pipeline
 - 2026-11-09 19:13 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
+- 2026-11-09 19:14 UTC · `vps-orchestrator-only-rule-vps-settings-console` → failed, note (all) · pipeline
 
 ## Token passes (log)
 
