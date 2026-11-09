@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:13:25.608Z",
+ "updatedAt": "2026-11-09T17:13:35.000Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77408,7 +77408,7 @@
    "branch": "claude/appearance-skins-colour-themes-only-remove-design-packs",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T17:13:24.324Z",
+   "updatedAt": "2026-11-09T17:13:30.447Z",
    "builtAt": "",
    "notes": [
     {
@@ -77444,42 +77444,6 @@
    },
    "steps": [
     {
-     "id": "s1",
-     "text": "Inventory design packs and every reference; convert each pack to a skin asset",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw9ai6p6045lit"
-    },
-    {
-     "id": "s2",
-     "text": "Remove Design packs screen, settings, menus and design-package/style-package types; redirect references to skins; migrations for saved settings",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw9ai6p605j0u3"
-    },
-    {
      "id": "s4",
      "text": "FIRST, before any change: write a regression suite and record a baseline on current main (tag pre-skins-only-2026-11-09): screenshot every screen/dialog in every framework app (console, Molly, AmberX web, axHub, studios) in the default look; every plugin loads with no console errors; every settings tab opens; saved settings and axHub shared settings round-trip; control@1 tokens/list/act API and every MCP/axHub tool still answer; theme token names resolve (aliases); asset manifest validation passes; app builds and CI pass. Hidden-breakage checks: no JS errors in logs, no missing CSS variables (computed style audit), no 404 assets, data files unchanged except intended migrations. LAST step: rerun everything, diff against baseline, block landing on any unexpected difference; post report + diffs to UI Review.",
      "model": "Fable",
@@ -77498,8 +77462,44 @@
      "uid": "st-mw9auynu01ktuh"
     },
     {
+     "id": "s1",
+     "text": "Inventory design packs, style packages and colour/style/layout/behaviour themes (see build note); convert each pack/theme into skin sections (colours, style, layout, behaviour kept separate); default look identical",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9ai6p6045lit"
+    },
+    {
+     "id": "s2",
+     "text": "Remove design-package/style-package and the theme asset types, their screens, settings and menus; aliases so other apps and axHub keep resolving; migrations for saved settings; framework/core first, then regenerate spec fixtures and app copies",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9ai6p605j0u3"
+    },
+    {
      "id": "s3",
-     "text": "Appearance shows only Skin + Colour theme; report on style/layout themes; tests, before/after screenshots to UI Review",
+     "text": "Appearance shows only the Skin picker (scope change Nov 9); API parity for skin pick (REST, MCP, CLI, voice); tests; before/after screenshots to UI Review",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -77514,6 +77514,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw9ai6p606isiz"
+    },
+    {
+     "id": "s5",
+     "text": "Rerun the s4 regression suite, diff against the pre-skins-only baseline, block landing on any unexpected difference; report and diffs to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9isnnq019fb5"
     }
    ]
   },
