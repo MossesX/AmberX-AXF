@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1627,
- "updatedAt": "2026-11-09T00:10:25.775Z",
+ "rev": 1628,
+ "updatedAt": "2026-11-09T00:20:47.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124580,14 +124580,15 @@
    "title": "URGENT: AmberX veto notice alarm too loud + Approve must go straight through",
    "category": "",
    "detail": "Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-amberx-veto-notice-alarm-too-loud-approve",
    "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
    "pr": "#397",
+   "mergedAt": "2026-11-09T00:06:38Z",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-08T22:42:04.773Z",
+   "updatedAt": "2026-11-09T00:20:45.297Z",
    "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
@@ -124609,6 +124610,10 @@
     {
      "text": "Session axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny on account-3 ended (exit 0); the build was already built.",
      "at": "2026-11-08T22:42:04.773Z"
+    },
+    {
+     "text": "Reconciler: PR #397 merged",
+     "at": "2026-11-09T00:20:45.297Z"
     }
    ],
    "approvals": [],
@@ -124731,7 +124736,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
