@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2021,
- "updatedAt": "2026-11-09T21:00:56.669Z",
+ "rev": 2022,
+ "updatedAt": "2026-11-09T21:01:06.631Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124573,8 +124573,8 @@
    "pr": "#417",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-09T21:00:45.690Z",
-   "builtAt": "2026-11-09T21:00:45.690Z",
+   "updatedAt": "2026-11-09T21:00:47.340Z",
+   "builtAt": "2026-11-09T21:00:47.340Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -124595,6 +124595,10 @@
     {
      "text": "Headless run axf-approvals-page-auto-approve-toggle-1-h-2-h-until--gina: brief only · start 11.3K tokens ($0.03) · cost $4.29 · 87 turns · 6 tools, MCP none",
      "at": "2026-11-09T21:00:45.690Z"
+    },
+    {
+     "text": "Reconciler: PR #417",
+     "at": "2026-11-09T21:00:47.340Z"
     },
     {
      "text": "PR #417. UI Review shots not taken (no running preview in the headless phase). axHub acceptance of service * passes unverified; parked plan filed.",
