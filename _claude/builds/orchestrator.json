@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:48:51.182Z",
+ "updatedAt": "2026-11-09T00:49:06.685Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76008,6 +76008,37 @@
      "uid": "st-mw8jm46003wr1s"
     }
    ]
+  },
+  {
+   "id": "headless-loop-guards-stop-endless-loops-and-sear",
+   "title": "Headless loop guards: stop endless loops and searches",
+   "category": "",
+   "detail": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "headless-loop-guards-stop-endless-loops-and-sear",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:48:58.297Z",
+   "updatedAt": "2026-11-09T00:48:58.297Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

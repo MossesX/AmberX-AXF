@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1637,
- "updatedAt": "2026-11-09T00:48:51.182Z",
+ "rev": 1638,
+ "updatedAt": "2026-11-09T00:49:06.685Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125394,7 +125394,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125406,10 +125406,73 @@
     "createdAt": "2026-11-09T00:47:08.187Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8jm46001il4k": "2026-11-09T00:48:38.808Z",
+     "st-mw8jm460028jdn": "2026-11-09T00:48:38.808Z",
+     "st-mw8jm46003wr1s": "2026-11-09T00:48:38.808Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T00:48:38.808Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "headless-loop-guards-stop-endless-loops-and-sear",
+   "title": "Headless loop guards: stop endless loops and searches",
+   "category": "",
+   "detail": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "headless-loop-guards-stop-endless-loops-and-sear",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:48:58.297Z",
+   "updatedAt": "2026-11-09T00:48:58.297Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 476
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T00:48:58.297Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
