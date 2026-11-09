@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:06:06.148Z",
+ "updatedAt": "2026-11-09T17:08:46.788Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77243,7 +77243,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:06:03.772Z",
+   "updatedAt": "2026-11-09T17:08:45.745Z",
    "builtAt": "",
    "notes": [
     {
@@ -77327,8 +77327,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T17:08:45.745Z",
      "note": "",
      "uid": "st-mw9ad24o08ed3o"
     },
