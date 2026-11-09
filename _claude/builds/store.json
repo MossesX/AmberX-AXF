@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1683,
- "updatedAt": "2026-11-09T02:55:11.595Z",
+ "rev": 1684,
+ "updatedAt": "2026-11-09T02:57:32.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125655,6 +125655,65 @@
    },
    "queue": null,
    "defaultAt": "2026-11-09T02:47:41.066Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skins-are-a-complete-rework-look-layout-behavior",
+   "title": "Skins are a complete rework: look + layout + behavior, and professional skins",
+   "category": "",
+   "detail": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "skins-are-a-complete-rework-look-layout-behavior",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:57:30.536Z",
+   "updatedAt": "2026-11-09T02:57:30.536Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the skins to be everything. I want a skin to be a complete rework. Everything. The skins are gonna rewrite the navigation menu, the app menu, the context menu, all the colors in the grids, the hover colors, the text sizes. All the behavior, everything. I need the entire UI reworked to look professional.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 481
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "4 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T02:57:30.536Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
