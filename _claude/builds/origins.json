@@ -621,6 +621,13 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "Open the group chat in a multi-tab group where you can open a new tab with Jim and John's conversation. You can drag an employee from one tab to another to put him in a separate conversation. You can click multiple people and drag them into their own tab. Filter, sort, all that. The employee list needs to show the right thing: ID, their picture, a link to their profile, when they were hired, how much work they've done, etc. And their skills and tools: we have to be able to assign them skills, tools and personas. That's where their personas will be managed. If that stuff is anywhere else, put it all in one place.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },

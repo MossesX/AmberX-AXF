@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2055,
- "updatedAt": "2026-11-09T23:55:14.457Z",
+ "rev": 2056,
+ "updatedAt": "2026-11-09T23:55:23.835Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132280,7 +132280,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:54:08.105Z",
+   "updatedAt": "2026-11-09T23:55:18.311Z",
    "builtAt": "",
    "notes": [
     {
@@ -132350,6 +132350,13 @@
      },
      {
       "said": "Actually, no, it's not separate. It is the group chat. This is where the orchestrator will always hand out jobs. This is where they reach out to the employee. This is the group chat. So there has to be a back and forth when somebody replies to somebody else. Only if it's a reply, though. If not, it [stays in the same feed].",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "Open the group chat in a multi-tab group where you can open a new tab with Jim and John's conversation. You can drag an employee from one tab to another to put him in a separate conversation. You can click multiple people and drag them into their own tab. Filter, sort, all that. The employee list needs to show the right thing: ID, their picture, a link to their profile, when they were hired, how much work they've done, etc. And their skills and tools: we have to be able to assign them skills, tools and personas. That's where their personas will be managed. If that stuff is anywhere else, put it all in one place.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132458,7 +132465,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
