@@ -2507,6 +2507,18 @@
    "from": "",
    "addenda": []
   },
+  "one-source-of-truth-for-claude-accounts-the-orch": {
+   "said": "Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.",
+   "at": "2026-11-09T20:26:33.987Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "one-way-to-start-builds-the-orchestrator-dispatc": {
    "said": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
    "at": "",

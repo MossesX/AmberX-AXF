@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1958,
- "updatedAt": "2026-11-09T20:26:14.683Z",
+ "rev": 1959,
+ "updatedAt": "2026-11-09T20:26:35.155Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131173,6 +131173,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "one-source-of-truth-for-claude-accounts-the-orch",
+   "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
+   "category": "",
+   "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T20:26:33.987Z",
+   "updatedAt": "2026-11-09T20:26:33.987Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.",
+    "at": "2026-11-09T20:26:33.987Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 510
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

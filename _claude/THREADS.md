@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 00:10 UTC · `claude-settings-tabs-veto` → queued, note (all) · watchdog
 - 2026-11-09 00:10 UTC · `notes-tasks-calendar` → pending, note (all) · watchdog
 - 2026-11-09 00:10 UTC · `nested-menus-for-console-amberx-and-molly-overri` → queued, note (all) · watchdog
 - 2026-11-09 00:20 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` → complete, merged, note (all) · reconciler
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:26 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → failed, note (all) · pipeline
 - 2026-11-09 20:26 UTC · `per-account-queues-long-press-a-queued-build-to` added (0 steps) (all) · console
 - 2026-11-09 20:26 UTC · `per-account-queues-long-press-a-queued-build-to` → queued, note (all) · console
+- 2026-11-09 20:26 UTC · `one-source-of-truth-for-claude-accounts-the-orch` added (0 steps) (all) · console
 
 ## Token passes (log)
 
