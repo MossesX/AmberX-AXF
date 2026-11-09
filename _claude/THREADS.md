@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 00:49 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
 - 2026-11-09 00:50 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
 - 2026-11-09 00:51 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
 - 2026-11-09 00:52 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:37 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · console
 - 2026-11-09 20:37 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · builds-live
 - 2026-11-09 20:37 UTC · `fix-owner-check-bug-dead-start-button` → queued, note (all) · builds-live
+- 2026-11-09 20:38 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 
 ## Token passes (log)
 
