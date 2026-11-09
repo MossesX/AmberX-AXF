@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
 - 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
 - 2026-11-09 04:12 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s2 done, → running (all) · orchestrator
 - 2026-11-09 04:13 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s3 done, → built (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 23:54 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` s1 done, → running (all) · orchestrator
 - 2026-11-09 23:55 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` s2 done (all) · orchestrator
 - 2026-11-09 23:59 UTC · `walkthrough-player-ide-layout-setting-collapsibl` added (0 steps) (all) · console
+- 2026-11-09 23:59 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → queued, note (all) · console
 
 ## Token passes (log)
 
