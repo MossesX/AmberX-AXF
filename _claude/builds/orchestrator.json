@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T04:19:21.031Z",
+ "updatedAt": "2026-11-09T04:20:33.029Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -74283,8 +74283,9 @@
    "pendingId": "demonstration-designer-plugin-new-standalone",
    "branch": "claude/demo-designer",
    "pr": "#405",
+   "mergedAt": "2026-11-09T04:16:30Z",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-09T04:19:19.323Z",
+   "updatedAt": "2026-11-09T04:20:31.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -74302,6 +74303,10 @@
     {
      "text": "Brett: \"Why doesn't the exported video have the narrator's voice? AmberX can screen record it.\" Phase 1 export uses browser speech, which Chrome doesn't route into tab capture, so videos have captions and music but no voice. Fix: add an export option 'Record on AmberX': the demo plays on Brett's phone and AmberX records it with the narration audio (reuse AmberX's Audio Output Recorder, extend it to screen + app audio), then uploads the video back to the demo asset. Also a default export path that doesn't need the phone: generate the narration as real audio (a TTS voice) and mix it into the exported MP4. Full API/MCP/CLI/voice control.",
      "at": "2026-11-09T04:19:19.323Z"
+    },
+    {
+     "text": "Reconciler: PR #405 merged",
+     "at": "2026-11-09T04:20:31.717Z"
     }
    ],
    "approvals": [],
