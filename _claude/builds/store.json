@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2002,
- "updatedAt": "2026-11-09T20:47:37.848Z",
+ "rev": 2003,
+ "updatedAt": "2026-11-09T20:48:09.791Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96195,10 +96195,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-only-settings-brett-s-admin-console-login-counts-as-owner",
-   "pr": "",
+   "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:47:30.167Z",
+   "updatedAt": "2026-11-09T20:48:07.360Z",
    "builtAt": "",
    "notes": [
     {
@@ -96441,7 +96441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
