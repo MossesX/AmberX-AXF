@@ -3,7 +3,7 @@
 .axp-toolbar-designer__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-xl); min-height: 0; }
 .axp-toolbar-designer__col { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); min-width: 0; max-height: 60vh; overflow: auto; padding: calc(var(--fx-space) / 2); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
 .axp-toolbar-designer__col h3 { margin: 0; }
-.axp-toolbar-designer__group > summary { cursor: pointer; font-weight: 600; padding-block: calc(var(--fx-space) / 2); }
+.axp-toolbar-designer__group > summary { cursor: pointer; font-weight: var(--fx-type-weights-strong); padding-block: calc(var(--fx-space) / 2); }
 .axp-toolbar-designer__list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) / 2); }
 .axp-toolbar-designer__row { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); min-width: 0; }
 .axp-toolbar-designer__row--on { flex-wrap: wrap; padding-block: calc(var(--fx-space) / 2); border-bottom: var(--fx-border-w) solid var(--fx-border); }

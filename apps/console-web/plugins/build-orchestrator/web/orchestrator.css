@@ -13,7 +13,7 @@ button.oc-model { cursor: pointer }
 .oc-steptools { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); margin-left: auto }
 .pd-entry:has(.oc-steptools) { align-items: center }
 .oc-group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
-.oc-group__head { margin: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-root-md); font-weight: 600 }
+.oc-group__head { margin: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-root-md); font-weight: var(--fx-type-weights-strong) }
 .oc-grid { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
 .oc-subgrid { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .oc-cell-title { display: flex; flex-direction: column; min-width: 0; gap: var(--fx-dens-gap-2xs) }

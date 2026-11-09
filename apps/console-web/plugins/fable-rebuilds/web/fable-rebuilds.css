@@ -4,9 +4,9 @@
 .axp-fable__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
 .axp-fable__row + .axp-fable__row { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-fable__hit { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--fx-dens-gap-xl); width: 100%; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); cursor: pointer }
-.axp-fable__hit:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-fable__hit:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
 .axp-fable__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
-.axp-fable__title { font-weight: 600; overflow-wrap: anywhere }
+.axp-fable__title { font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
 .axp-fable__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
 .axp-fable__flags { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); color: var(--fx-muted) }
 .axp-fable__badge { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: 0 var(--fx-dens-gap-md); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted); font-size: var(--fx-type-root-xs) }

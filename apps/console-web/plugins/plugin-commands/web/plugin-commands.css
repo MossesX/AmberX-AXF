@@ -3,7 +3,7 @@
 .axf-pc__list, .axf-pc__ways { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axf-pc__row { padding-block: var(--fx-dens-gap-xs); border-block-end: var(--fx-border-w) solid var(--fx-border); }
 .axf-pc__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); }
-.axf-pc__id { font-family: var(--fx-font-mono); font-weight: 600; }
+.axf-pc__id { font-family: var(--fx-font-mono); font-weight: var(--fx-type-weights-strong); }
 .axf-pc__muted { margin: 0; color: var(--fx-muted); }
 .axf-pc__body { padding-block-start: var(--fx-dens-gap-sm); }
 .axf-pc__actions { display: flex; gap: var(--fx-dens-gap-sm); }

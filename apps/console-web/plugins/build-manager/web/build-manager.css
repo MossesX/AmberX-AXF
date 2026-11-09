@@ -2,13 +2,13 @@
 .axp-build-manager { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
 
 /* badges + small action buttons (the systems check's axp-systems-check-act look) */
-.axp-build-manager__badge, .axp-build-manager__model, .axp-build-manager__toggle { box-sizing: border-box; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: none; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); border-radius: 999px; font-size: var(--fx-type-root-xs); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2); font-variant-numeric: tabular-nums }
+.axp-build-manager__badge, .axp-build-manager__model, .axp-build-manager__toggle { box-sizing: border-box; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: none; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); border-radius: 999px; font-size: var(--fx-type-root-xs); font-weight: var(--fx-type-weights-strong); line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2); font-variant-numeric: tabular-nums }
 .axp-build-manager__badge.is-warn { color: var(--fx-warning); border-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__badge.is-ok { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__badge.is-danger { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__badge.is-muted { color: var(--fx-muted) }
 a.axp-build-manager__act { text-decoration: none }
-.axp-build-manager__head:focus-visible, .axp-build-manager__toggle:focus-visible, .axp-build-manager-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-build-manager__head:focus-visible, .axp-build-manager__toggle:focus-visible, .axp-build-manager-banner__main:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-build-manager__model.is-fable { color: var(--fx-info); border-color: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__model.is-opus { color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); background: var(--fx-accent-soft) }
 .axp-build-manager__model.is-sonnet { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
@@ -28,7 +28,7 @@ a.axp-build-manager__act { text-decoration: none }
 .axp-build-manager__live.is-done { border-color: var(--fx-success) }
 .axp-build-manager__live.is-failed { border-color: var(--fx-danger) }
 .axp-build-manager__live-head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
-.axp-build-manager__live-title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-build-manager__live-title { flex: 1; min-width: 0; font-weight: var(--fx-type-weights-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-build-manager__live-meta { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center }
 .axp-build-manager__live-step { margin: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-muted); font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
 
@@ -58,9 +58,9 @@ a.axp-build-manager__act { text-decoration: none }
 button.axp-build-manager__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg) }
 .axp-build-manager__head:hover { background: var(--fx-surface2) }
 .axp-build-manager__title-line { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: 0 }
-.axp-build-manager__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere }
+.axp-build-manager__title { flex: 1; min-width: 0; font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
 .axp-build-manager__chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center }
-.axp-build-manager__left { font-size: var(--fx-type-root-sm); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-build-manager__left { font-size: var(--fx-type-root-sm); font-weight: var(--fx-type-weights-strong); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-build-manager__progress { display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
 .axp-build-manager__count { font-size: var(--fx-type-root-xs); color: var(--fx-muted); white-space: nowrap; font-variant-numeric: tabular-nums }
 .axp-build-manager__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md) }
@@ -133,7 +133,7 @@ button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex
 /* toolbar toggles are framework chips (fx-chip, is-on when pressed); this class only lays them out: icon over label */
 button.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space) * 5.5); display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-xs); white-space: nowrap }
 .axp-build-manager__tool-icon { position: relative; display: inline-flex }
-.axp-build-manager__tool-n { position: absolute; top: calc(var(--fx-space) * -0.7); left: calc(100% - var(--fx-space) * 0.5); min-width: calc(var(--fx-space) * 1.7); padding: 0 var(--fx-dens-gap-sm); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-surface); background: var(--fx-surface3); color: var(--fx-text); font-size: var(--fx-type-root-2xs); font-weight: 700; line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums }
+.axp-build-manager__tool-n { position: absolute; top: calc(var(--fx-space) * -0.7); left: calc(100% - var(--fx-space) * 0.5); min-width: calc(var(--fx-space) * 1.7); padding: 0 var(--fx-dens-gap-sm); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-surface); background: var(--fx-surface3); color: var(--fx-text); font-size: var(--fx-type-root-2xs); font-weight: calc(var(--fx-type-weights-strong) + 100); line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums }
 .axp-build-manager__tool.is-on .axp-build-manager__tool-n { background: var(--fx-accent); color: var(--fx-surface) }
 .axp-build-manager__dialog { width: min(calc(var(--fx-space) * 48), 100%) }
 .axp-build-manager__dialog-body { display: grid; gap: var(--fx-dens-gap-xl) }
@@ -161,7 +161,7 @@ button.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space)
 .axp-build-manager-banner__open { flex: 1 0 100%; display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 .axp-build-manager-banner__more li { flex-wrap: wrap }
 button.axp-build-manager-banner__more-head { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); cursor: pointer }
-.axp-build-manager-banner__more-head:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-build-manager-banner__more-head:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-build-manager-banner__detail { flex: 1 0 100%; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding-left: var(--fx-dens-gap-2xl) }
 
 /* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an

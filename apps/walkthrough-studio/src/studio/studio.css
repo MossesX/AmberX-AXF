@@ -28,7 +28,7 @@
 .ws-row:hover { background: var(--fx-surface2); }
 .ws-row.is-active { background: var(--fx-accent-soft); }
 :where(button[data-fx-row]) { all: unset; box-sizing: border-box; cursor: pointer; }
-:where(button[data-fx-row]):focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); }
+:where(button[data-fx-row]):focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); }
 .ws-card { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
 .ws-card.is-active { border-color: var(--fx-accent); }
 
@@ -68,7 +68,7 @@
 .ws-stage--tall { aspect-ratio: 9 / 16; flex: none; max-height: 70vh; margin-inline: auto; }
 .ws-stage.is-recording { border-color: var(--fx-danger); box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-danger); }
 .ws-stage__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--fx-surface); }
-.ws-rec-badge { position: absolute; top: var(--fx-space); left: var(--fx-space); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-xl); border-radius: 999px; background: var(--fx-danger); color: var(--fx-accent-text); font-weight: 700; font-size: var(--fx-type-root-sm); pointer-events: none; }
+.ws-rec-badge { position: absolute; top: var(--fx-space); left: var(--fx-space); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-xl); border-radius: 999px; background: var(--fx-danger); color: var(--fx-accent-text); font-weight: calc(var(--fx-type-weights-strong) + 100); font-size: var(--fx-type-root-sm); pointer-events: none; }
 .ws-rec-dot { width: calc(var(--fx-space)); height: calc(var(--fx-space)); border-radius: 999px; background: currentColor; animation: ws-blink 1s steps(2) infinite; }
 @keyframes ws-blink { 50% { opacity: var(--fx-opacity-muted); } }
 .ws-caption { position: absolute; left: 50%; bottom: calc(var(--fx-space) * 2); transform: translateX(-50%); max-width: 86%; text-align: center; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-scrim) * 100%), transparent); color: var(--fx-bg); font-size: var(--fx-type-root-lg); line-height: 1.4; }

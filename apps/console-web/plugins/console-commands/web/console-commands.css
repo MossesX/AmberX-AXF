@@ -1,5 +1,5 @@
 /* Console commands settings panel (theme tokens only: framework/spec/THEMING.md). Layout only; controls keep the framework's look. */
 .axf-cc__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axf-cc__row { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-2xl); padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
-.axf-cc__id { font-family: var(--fx-font-mono); font-weight: 600; }
+.axf-cc__id { font-family: var(--fx-font-mono); font-weight: var(--fx-type-weights-strong); }
 .axf-cc__muted { color: var(--fx-muted); }

@@ -3,9 +3,9 @@
 .axp-push-banner__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0 }
 .axp-push-banner__icon { display: inline-flex; color: var(--fx-accent); flex: none }
 .axp-push-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); cursor: pointer }
-.axp-push-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-push-banner__main:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-push-banner__top { display: inline-flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
-.axp-push-banner__count { color: var(--fx-success); font-size: var(--fx-type-root-sm); font-weight: 600 }
+.axp-push-banner__count { color: var(--fx-success); font-size: var(--fx-type-root-sm); font-weight: var(--fx-type-weights-strong) }
 .axp-push-banner__lead { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100% }
 .axp-push-banner__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md); max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto }
 .axp-push-banner__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
@@ -14,8 +14,8 @@
 .axp-push-banner__item.is-ci-failure { border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-push-banner__entry { flex: 1 1 calc(var(--fx-space) * 22); min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .axp-push-banner__line { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); min-width: 0 }
-.axp-push-banner__chip { flex: none; padding: 0 var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted); font-size: var(--fx-type-root-xs); font-weight: 600; line-height: 1.5 }
-.axp-push-banner__name { flex: 1; min-width: 0; font-weight: 600; color: var(--fx-text); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--fx-font-mono) }
+.axp-push-banner__chip { flex: none; padding: 0 var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted); font-size: var(--fx-type-root-xs); font-weight: var(--fx-type-weights-strong); line-height: 1.5 }
+.axp-push-banner__name { flex: 1; min-width: 0; font-weight: var(--fx-type-weights-strong); color: var(--fx-text); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--fx-font-mono) }
 a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); font-variant-numeric: tabular-nums }
 .axp-push-banner__meta .is-danger { color: var(--fx-danger) }
@@ -33,22 +33,22 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner.is-ready { --axf-banner-tone: var(--fx-success) }
 .axp-push-banner.is-ready .axp-push-banner__icon { color: var(--fx-success) }
 .axp-push-banner__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
-.axp-push-banner__group-title { margin: 0; font-size: var(--fx-type-root-xs); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fx-muted) }
+.axp-push-banner__group-title { margin: 0; font-size: var(--fx-type-root-xs); font-weight: calc(var(--fx-type-weights-strong) + 100); letter-spacing: 0.05em; text-transform: uppercase; color: var(--fx-muted) }
 .axp-push-banner__group-head { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
 .axp-push-banner__group-act { display: inline-flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); margin-inline-start: auto }
 .axp-push-banner__group-title span { font-variant-numeric: tabular-nums; color: var(--fx-text) }
 .axp-push-banner__item.is-ready { border-color: var(--fx-success) }
 .axp-push-banner__name.is-title { font-family: inherit }
 .axp-push-banner__ref { font-family: var(--fx-font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
-.axp-push-banner__pill { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: 0 var(--fx-dens-gap-md); border-radius: 999px; font-weight: 600; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted) }
+.axp-push-banner__pill { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: 0 var(--fx-dens-gap-md); border-radius: 999px; font-weight: var(--fx-type-weights-strong); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted) }
 .axp-push-banner__pill.is-ready, .axp-push-banner__pill.is-success { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-push-banner__pill.is-failure { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-push-banner__pill.is-running { color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); background: var(--fx-accent-soft) }
 /* tap an entry for its details; a finished one (merged / main pulled in) has a trash can (Oct 22 2026) */
 .axp-push-banner__expand { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; width: 100%; cursor: pointer; color: var(--fx-muted) }
-.axp-push-banner__expand:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-push-banner__expand:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-push-banner__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); margin-top: var(--fx-dens-gap-xs); padding-top: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border) }
-.axp-push-banner__sec h5 { margin: 0 0 var(--fx-dens-gap-xs); font-size: var(--fx-type-root-xs); font-weight: 700; color: var(--fx-muted) }
+.axp-push-banner__sec h5 { margin: 0 0 var(--fx-dens-gap-xs); font-size: var(--fx-type-root-xs); font-weight: calc(var(--fx-type-weights-strong) + 100); color: var(--fx-muted) }
 .axp-push-banner__sec ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .axp-push-banner__sec li { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; font-size: var(--fx-type-root-sm) }
 .axp-push-banner__sec li > a, .axp-push-banner__sec li > span:not(.axp-push-banner__meta) { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-text) }
@@ -82,7 +82,7 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__top > strong { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 /* merge queue (Nov 4 2026): the line, each PR's state, the banner chip */
 .axp-mq__row { cursor: grab }
-.axp-mq__pos { flex: none; min-width: calc(var(--fx-space) * 3); text-align: center; font-weight: 700; color: var(--fx-muted); font-variant-numeric: tabular-nums }
+.axp-mq__pos { flex: none; min-width: calc(var(--fx-space) * 3); text-align: center; font-weight: calc(var(--fx-type-weights-strong) + 100); color: var(--fx-muted); font-variant-numeric: tabular-nums }
 .axp-mq__state { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axp-mq__state.is-testing { color: var(--fx-accent) }
 .axp-mq__state.is-passed, .axp-mq__state.is-merging { color: var(--fx-success) }

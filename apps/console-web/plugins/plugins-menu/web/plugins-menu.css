@@ -21,7 +21,7 @@
 .axp-plugins-menu__item:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent) }
 .axp-plugins-menu__item.is-on { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent) }
 .axp-plugins-menu__item.is-off { color: var(--fx-muted) }
-.axp-plugins-menu__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600 }
+.axp-plugins-menu__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--fx-type-weights-strong) }
 .axp-plugins-menu__head { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 .axp-plugins-menu__title { margin: 0; font-size: var(--fx-type-root-lg) }
 .axp-plugins-menu__params { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }

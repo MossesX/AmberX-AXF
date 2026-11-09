@@ -9,7 +9,7 @@
 
 .axf-ashes-tip { position: fixed; pointer-events: none; max-width: min(calc(var(--fx-font-size) * 24), calc(100vw - var(--fx-space) * 2)); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-md); font-size: var(--fx-type-root-sm); line-height: 1.35 }
 .axf-ashes-tip__head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); margin-bottom: var(--fx-dens-gap-xs) }
-.axf-ashes-tip__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-family: var(--fx-font-mono) }
+.axf-ashes-tip__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--fx-type-weights-strong); font-family: var(--fx-font-mono) }
 .axf-ashes-tip__owner { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); margin-bottom: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axf-ashes-tip__rows { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); margin: 0 }
 .axf-ashes-tip__rows dt { color: var(--fx-muted) }
@@ -46,12 +46,12 @@
 .axf-ashes-tree__owner { flex: none; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 var(--fx-dens-gap-xs); border-radius: var(--fx-radius-sm); color: var(--fx-muted); font-family: var(--fx-font); font-size: var(--fx-type-root-2xs); border: var(--fx-border-w) solid var(--fx-border) }
 .axf-ashes-tree__owner.is-plugin { color: var(--fx-warning); border-color: var(--fx-warning) }
 
-.axf-ashes-ptree__branch { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); width: 100%; min-height: calc(var(--fx-row-h) * 0.8); text-align: left; font-weight: 600 }
+.axf-ashes-ptree__branch { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); width: 100%; min-height: calc(var(--fx-row-h) * 0.8); text-align: left; font-weight: var(--fx-type-weights-strong) }
 .axf-ashes-ptree__leaf, .axf-ashes-grid__row { display: grid; grid-template-columns: minmax(calc(var(--fx-font-size) * 8), 2fr) minmax(0, 3fr); align-items: center; gap: var(--fx-dens-gap-md); min-height: calc(var(--fx-row-h) * 0.8); padding: 0 var(--fx-dens-gap-sm); border-bottom: var(--fx-border-w) solid color-mix(in srgb, var(--fx-border) calc(var(--fx-opacity-muted) * 100%), transparent); font-size: var(--fx-type-root-sm) }
 .axf-ashes-ptree__k, .axf-ashes-grid__k { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axf-ashes-ptree__v, .axf-ashes-grid__v { min-width: 0; font-family: var(--fx-font-mono); overflow-wrap: anywhere }
 .axf-ashes-grid { display: flex; flex-direction: column }
-.axf-ashes-grid__group { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); width: 100%; min-height: var(--fx-row-h); padding: 0 var(--fx-dens-gap-xs); text-align: left; font-weight: 600; background: var(--fx-surface); position: sticky; top: 0 }
+.axf-ashes-grid__group { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); width: 100%; min-height: var(--fx-row-h); padding: 0 var(--fx-dens-gap-xs); text-align: left; font-weight: var(--fx-type-weights-strong); background: var(--fx-surface); position: sticky; top: 0 }
 .axf-ashes-edit { width: 100%; min-width: 0; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm) }
 
 .axf-ashes-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 12), 1fr)); gap: var(--fx-dens-gap-xl) }

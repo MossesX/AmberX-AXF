@@ -85,3 +85,11 @@ Look values written in, which no theme, asset or part changes:
   target's items include the dropdown's `.fx-menu__item`; the badge target includes the count badges on tool buttons,
   nav items, tabs and menu items; the popup target includes the banner's pop-up bubble. Literals left in axf.css:
   44 pill / circle radii (shapes; parts override them on typed roots).
+- **s4**: the same for every plugin, library and app stylesheet (console plugins, framework libraries with their
+  console copies, molly, walkthrough-studio): 124 `font-weight` numbers now read the typography weights. Focus rings,
+  outlines and SVG chart / graph strokes (gauge ticks and needle, plugin graph edges, recorder, avatars) read
+  `--fx-border-w` with a floor (`max(calc(var(--fx-border-w) * 2), 2px)`), so a skin with heavier borders thickens
+  them and a look token that sets the border width to 0 can't hide focus rings or chart lines. Same values by default.
+- **Still theme-only (no asset type)**: tables (`.fx-table`, datagrid), inputs and fields, chips, switches, toasts,
+  scrollbars, terminal, cards that aren't containers (`.fx-idcard`, `.fx-dcard`). They follow the skin's colour, style,
+  typography, density and sizing assets; a skin can't give them their own parts until they get asset types (Fable).
