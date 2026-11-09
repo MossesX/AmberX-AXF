@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 13:57 UTC · `maintenance-redundancy-scan` s3 done (all) · earl
 - 2026-11-07 13:59 UTC · `orchestrator-gate` s2 done (all) · orchestrator
 - 2026-11-07 14:06 UTC · `maintenance-redundancy-scan` s4 done (all) · earl
 - 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` s5 done, → complete (all) · earl
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:37 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (0 steps) (all) · pending
 - 2026-11-09 00:38 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → queued (all) · claude-voice
 - 2026-11-09 00:38 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 00:41 UTC · `one-builds-page-pending-queued-built-tabs-remove` → queued (all) · claude-voice
 
 ## Token passes (log)
 

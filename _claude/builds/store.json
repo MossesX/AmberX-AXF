@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1633,
- "updatedAt": "2026-11-09T00:38:27.199Z",
+ "rev": 1634,
+ "updatedAt": "2026-11-09T00:41:12.279Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25383,7 +25383,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale"
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -88070,7 +88072,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale"
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -97556,7 +97560,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale"
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -104710,7 +104716,9 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: phase-done"
+    "note": "watchdog: phase-done",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -106291,7 +106299,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: waiting"
+    "note": "watchdog: waiting",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -122905,7 +122915,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": ""
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -123369,7 +123381,9 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: phase-done"
+    "note": "watchdog: phase-done",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124032,14 +124046,14 @@
    "title": "One builds page: Pending, Queued, Built tabs; remove every other builds table",
    "category": "",
    "detail": "Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-builds-page-pending-queued-built-tabs-remove",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-08T21:18:13.459Z",
+   "updatedAt": "2026-11-09T00:41:08.263Z",
    "builtAt": "",
    "notes": [
     {
@@ -124140,7 +124154,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124659,7 +124673,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": ""
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124817,7 +124833,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them"
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -125129,7 +125147,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them"
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
