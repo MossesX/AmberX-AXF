@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:33 UTC · `ui-api-parity-rule` s1 done, → running (all) · orchestrator
-- 2026-11-08 17:34 UTC · `ui-api-parity-rule` s2 done (all) · orchestrator
-- 2026-11-08 17:35 UTC · `account-health-failover` s1 done (all) · orchestrator
 - 2026-11-08 17:35 UTC · `account-health-failover` s2 done (all) · orchestrator
 - 2026-11-08 17:27 UTC · `molly-one-shell` → pending, note (all) · reconciler
 - 2026-11-08 17:28 UTC · `molly-one-shell` → running, note (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:05 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · pipeline
 - 2026-11-09 18:05 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-09 18:06 UTC · `split-builds-pages-build-manager-pending-complet` → failed, note (all) · pipeline
+- 2026-11-09 18:06 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · pipeline
+- 2026-11-09 18:06 UTC · `split-builds-pages-build-manager-pending-complet-3` branch claude/split-builds-pages-build-manager-pending-complet-3 (all) · pipeline
+- 2026-11-09 18:06 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 
 ## Token passes (log)
 
