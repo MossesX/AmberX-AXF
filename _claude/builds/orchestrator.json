@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:50:36.754Z",
+ "updatedAt": "2026-11-09T23:50:46.878Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77526,8 +77526,8 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T23:50:03.680Z",
-   "builtAt": "2026-11-09T23:50:03.680Z",
+   "updatedAt": "2026-11-09T23:50:28.253Z",
+   "builtAt": "2026-11-09T23:50:28.253Z",
    "notes": [
     {
      "text": "ROOT CAUSE (found live Nov 9): framework/schemas/asset-types.json 'badge' type (line ~1085) has no 'skin' entry, so the skin engine never styles badges (only tone colour via BADGE_TONE_TOKEN in banner.ts). Fix: add a skin declaration for badge, and every other type missing one (list coming from Brett's audit). Then make spec/check-skin uncoveredTypes a REQUIRED CI gate so no asset type without a skin entry can merge.",
@@ -77648,6 +77648,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-restyle-everything-badges-banner-and-every--lenny, own login copy)",
      "at": "2026-11-09T23:44:08.003Z"
+    },
+    {
+     "text": "Headless run axf-skins-restyle-everything-badges-banner-and-every--lenny: brief only · start 11.0K tokens ($0.03) · cost $1.87 · 50 turns · 6 tools, MCP none",
+     "at": "2026-11-09T23:50:28.253Z"
     }
    ],
    "approvals": [
@@ -77660,14 +77664,6 @@
      "via": "policy",
      "kind": "upgrade",
      "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
-    },
-    {
-     "phase": 2,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-09T23:50:03.680Z",
-     "by": "auto",
-     "kind": "downgrade"
     }
    ],
    "upgradeRequests": [],
@@ -81047,7 +81043,7 @@
    "title": "Assign an employee to every role, action type and app; avatars in the Activity Monitor; who-has-which-job board",
    "category": "",
    "detail": "Goes with the Activity Monitor build. 1) Every role gets a named employee (crew agent profile): orchestrator, dispatcher, each app (console, AmberX, Molly, axHub, Patches...), each action type (builds, approvals, fixes, deploys, accounts, notifications, git/merge, etc.). Use existing crew where they fit, create the rest with names and avatars. 2) Every Activity Monitor entry shows the acting employee's avatar and name like a chat message; click opens their profile: role, jobs, current work, full activity history. 3) A Who does what board: every job/role and the employee that holds it, reassignable. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81055,9 +81051,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:50:15.837Z",
+   "updatedAt": "2026-11-09T23:50:17.483Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T23:50:17.483Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
