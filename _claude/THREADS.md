@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:29 UTC · `urgent-approval-links-say-method-not-allowed` s1 done, → running (all) · orchestrator
-- 2026-11-09 02:29 UTC · `urgent-approval-links-say-method-not-allowed` s2 done (all) · orchestrator
 - 2026-11-09 02:30 UTC · `urgent-approval-links-say-method-not-allowed` branch claude/approval-links-fix, PR #403 (all) · builds-live
 - 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
 - 2026-11-09 02:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` branch claude/plan-studio-receives-a-valid-shipped-feature-man (all) · pipeline
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` s4 done, → built (all) · orchestrator
 - 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
 - 2026-11-09 20:52 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · console
+- 2026-11-09 20:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
+- 2026-11-09 20:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 
 ## Token passes (log)
 
