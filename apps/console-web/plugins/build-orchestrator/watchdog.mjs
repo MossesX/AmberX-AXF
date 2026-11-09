@@ -125,7 +125,7 @@ export function check({ env = process.env, dry = false, force = false, alert = n
   if (!force && prev.at && Date.now() - Date.parse(prev.at) < settings.watchdogEverySec * 1000 - 5000) return { ...prev, skipped: `checked ${Math.round((Date.now() - Date.parse(prev.at)) / 1000)} s ago` };
   const r = reality(env);
   if (!r) return { ...prev, skipped: 'tmux is not reachable here: the watchdog only runs on the VPS host' };
-  const send = alert ?? ((kind, d) => { const api = makeConsole(env); api('POST', '/api/alerts', P.alertFor(kind, d)); });
+  const send = alert ?? ((kind, d) => { const res = makeConsole(env)('POST', '/api/alerts', P.alertFor(kind, d)); if (env.AXF_PIPELINE_CONSOLE !== 'off' && !res?.ok) print(`watchdog: alert for ${d.id} not delivered: ${JSON.stringify(res?.detail ?? res ?? 'no answer').slice(0, 200)}`); });
   const store = loadStore();
   const builds = store.builds.filter((b) => !b.deleted);
   const running = builds.filter((b) => b.status === 'running');
