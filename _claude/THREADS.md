@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:54 UTC · `slot-watchdog` added (7 steps) (all) · orchestrator
 - 2026-11-08 17:54 UTC · `slot-watchdog` branch claude/slot-watchdog (all) · builds-live
 - 2026-11-08 17:54 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-08 17:57 UTC · `amberx-notify-panel` s1 done (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` added (0 steps) (all) · builds-live
 - 2026-11-09 18:52 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
 - 2026-11-09 18:52 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · builds-live
+- 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 
 ## Token passes (log)
 
