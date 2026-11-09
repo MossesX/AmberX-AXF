@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 00:47 UTC · `briefs-list-the-existing-files-each-step-needs` added (0 steps) (all) · pending
-- 2026-11-09 00:47 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (3 steps) (all) · foreign-write
-- 2026-11-09 00:47 UTC · `briefs-list-the-existing-files-each-step-needs` added (0 steps) (all) · foreign-write
 - 2026-11-09 00:48 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` → pending, note (all) · reconciler
 - 2026-11-09 00:48 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · orchestrator
 - 2026-11-09 00:48 UTC · `headless-loop-guards-stop-endless-loops-and-sear` added (0 steps) (all) · pending
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` → running, note (all) · pipeline
 - 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` branch claude/one-source-of-truth-for-claude-accounts-the-orch (all) · pipeline
 - 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
+- 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` → running, note (all) · pipeline
+- 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` branch claude/per-account-queues-long-press-a-queued-build-to (all) · pipeline
+- 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 
 ## Token passes (log)
 
