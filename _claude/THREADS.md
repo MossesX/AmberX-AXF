@@ -757,15 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 16:49 UTC · `approve-button-fix` s3 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s4 done (all) · orchestrator
-- 2026-11-07 16:50 UTC · `approve-button-fix` s5 done, → complete (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` s9 done, → complete (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` → waiting (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` → complete, note (all) · orchestrator
-- 2026-11-07 17:00 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` added (8 steps) (all) · claude-ai-voice
-- 2026-11-07 17:01 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 17:11 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
 - 2026-11-07 17:15 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
 - 2026-11-07 18:27 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` added (2 steps) (all) · claude-ai-voice
 - 2026-11-07 21:00 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` added (2 steps) (all) · claude-ai-voice
@@ -1157,6 +1148,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:59 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (0 steps) (all) · foreign-write
 - 2026-11-09 03:00 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · orchestrator
 - 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · pending
+- 2026-11-09 03:02 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
+- 2026-11-09 03:02 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `plan-studio-receives-a-valid-shipped-feature-man` PR #404 (all) · builds-live
 
 ## Token passes (log)
 

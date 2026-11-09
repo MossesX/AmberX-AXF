@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1691,
- "updatedAt": "2026-11-09T03:02:18.343Z",
+ "rev": 1692,
+ "updatedAt": "2026-11-09T03:02:42.386Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -108301,7 +108301,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-07T04:45:35.257Z",
-     "updatedAt": "2026-11-09T02:58:28.647Z"
+     "updatedAt": "2026-11-09T03:02:40.608Z"
     }
    ],
    "profiles": [
@@ -124578,9 +124578,9 @@
    "source": "mcp",
    "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
-   "pr": "",
+   "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T02:31:13.728Z",
+   "updatedAt": "2026-11-09T03:02:41.009Z",
    "builtAt": "",
    "notes": [
     {
@@ -124609,6 +124609,28 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "account-3",
+    "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--sully",
+    "slot": "",
+    "model": "Fable",
+    "launchedAt": "2026-11-09T02:31:11.152Z",
+    "runs": 1,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T00:38:25.943Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -124689,7 +124711,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
