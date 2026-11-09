@@ -28,7 +28,7 @@ writeFileSync(join(A, 'w3', '.claude.json'), JSON.stringify({ oauthAccount: { em
 writeFileSync(join(A, '.active'), 'console\n');
 writeFileSync(join(SH, '.credentials.json'), creds('console'));
 writeFileSync(join(SH, 'settings.json'), '{}');
-const ENV = { AXF_CLAUDE_ACCOUNTS: A, AXF_CLAUDE_HOME: SH, AXF_CLAUDE_GLOBAL: join(tmp, 'g.json'), AXF_CLAUDE_SEEN: join(W, 'seen.json'), AXF_CLAUDE_WORKERS: W, AXF_HEADLESS_DIR: HD };
+const ENV = { AXF_CLAUDE_ACCOUNTS: A, AXF_CLAUDE_HOME: SH, AXF_CLAUDE_GLOBAL: join(tmp, 'g.json'), AXF_CLAUDE_SEEN: join(W, 'seen.json'), AXF_CLAUDE_WORKERS: W, AXF_HEADLESS_DIR: HD, AXF_TOKEN_KEEP: 'off' /* fake tokens never reach Anthropic */ };
 Object.assign(process.env, ENV);
 const X = await import('./claude-workers.mjs');
 const env = { ...process.env };
@@ -76,6 +76,16 @@ ok(X.route({}, env, now) === 'console', 'every worker out = the console\'s own a
 X.markLimit('console', { kind: 'usage' }, env, now);
 ok(X.route({}, env, now) === '', 'every account out = nothing free');
 rmSync(join(W, 'worker-state.json'));
+// spent-refresh-token (Nov 9 2026): a saved login Anthropic refused is out until it is signed in again
+const { tokenHash: th } = await import('./claude-token-save.mjs');
+writeFileSync(join(A, '.dead.json'), JSON.stringify({ $axf: 'token-dead@1', dead: { [th('fake-w1-r')]: { at: '2026-11-09T20:00:00.000Z', why: 'refresh refused (400: invalid_grant)' } } }));
+const sd = X.status(env, now);
+ok(sd.accounts.find((a) => a.name === 'w1').limited?.kind === 'dead' && X.route({}, env, now) === 'w2', 'a dead login is skipped: no run is burned on it');
+ok(X.route({}, env, Date.parse('2027-06-01T00:00:00Z')) === 'w2', 'and it does not come back on a timer');
+ok(sd.alerts.some((x) => x.account === 'w1' && x.level === 'error' && x.kind === 'login' && /sign it in again/i.test(x.text)), 'the systems check gets an error alert naming it');
+writeFileSync(join(A, 'w1', '.credentials.json'), JSON.stringify({ claudeAiOauth: { accessToken: 'fake-w1b', refreshToken: 'fake-w1b-r' } }));
+ok(X.route({}, env, now) === 'w1' && !X.status(env, now).alerts.some((x) => x.kind === 'login'), 'signed in again: back at once, alert gone');
+writeFileSync(join(A, 'w1', '.credentials.json'), creds('w1')); rmSync(join(A, '.dead.json'));
 
 console.log('claims: 3 building per account, then a queue of 5, oldest first');
 writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'], excluded: ['w3'], interactiveTakesJobs: false, limits: { building: 2, queue: 1 } }));

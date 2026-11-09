@@ -210,8 +210,9 @@ export function askSplitter(prompt, settings, env = process.env) {
     let text = r.stdout; try { const j = JSON.parse(r.stdout); text = typeof j?.result === 'string' ? j.result : r.stdout; } catch { /* plain text */ }
     return { text, provider: 'claude', error: '' };
   } finally {
-    if (snap) { try { releaseLogin({ dir, session: 'split' }); } catch { /* best effort */ } }
-    try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ }
+    let kept = false;   // a copy whose token could not be saved back stays for the sweep (never deleted with it)
+    if (snap) { try { kept = !!releaseLogin({ dir, session: 'split' })?.kept; } catch { /* best effort */ } }
+    if (!kept) try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ }
   }
 }
 
@@ -500,7 +501,11 @@ export function probe(name, env = process.env) {
     const ok = !r.error && r.status === 0 && !/not available|no access|permission|does not exist|invalid model|not found/i.test(out);
     rec = { fable: ok, at: nowIso(), error: ok ? '' : str((r.error?.message || out).trim().split('\n').pop(), 200) };
   } catch (e) { rec = { fable: false, at: nowIso(), error: str(e.message, 200) }; }
-  finally { if (snap) { try { releaseLogin({ dir, session: 'probe' }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
+  finally {
+    let kept = false;   // a copy whose token could not be saved back stays for the sweep (never deleted with it)
+    if (snap) { try { kept = !!releaseLogin({ dir, session: 'probe' })?.kept; } catch { /* best effort */ } }
+    if (!kept) try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ }
+  }
   saveOwnAccount(name, { probe: rec });
   return rec;
 }

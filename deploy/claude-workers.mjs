@@ -142,6 +142,8 @@ export function markLimit(name, { kind = 'usage', text = '' } = {}, env = proces
 }
 
 const limitOf = (state, name, now) => { const l = state.limits[name]; return l && Date.parse(l.until) > now ? l : null; };
+/** A saved login Anthropic refused (claude-token-save.mjs marks it): out until it is signed in again, not on a timer. */
+const deadLimit = (a) => (a.dead ? { at: a.deadAt || '', until: '9999-12-31T00:00:00.000Z', kind: 'dead', reason: 'login dead: sign in again' } : null);
 
 /** Every line of events.jsonl, oldest first. */
 function readEvents(env) {
@@ -214,7 +216,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
     return {
       name: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', active: a.active, hasKey: a.kind === 'api' ? true : undefined,
       email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
-      limited: limitOf(state, a.name, now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
+      limited: limitOf(state, a.name, now) || deadLimit(a), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
     };
   });

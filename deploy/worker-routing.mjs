@@ -219,6 +219,8 @@ export function decide(config, accounts, job) {
 /** Alerts for the banner: API accounts near or over a cap, API workers without a key. */
 export function alerts(config, accounts) {
   return roster(config, accounts).flatMap((r) => {
+    // a dead saved login (spent or revoked refresh token): launches skip it until Brett signs it in again
+    if (r.limited?.kind === 'dead') return [{ account: r.name, level: 'error', kind: 'login', text: `${r.label || r.name}: saved Claude login is dead (refresh token spent or revoked); builds skip it. Sign it in again: Settings → Claude accounts → Sign in, or node deploy/claude-workers.mjs signin ${r.name}` }];
     if (r.kind !== 'api' || r.role !== 'api-worker') return [];
     const out = [];
     if (r.spend && r.spend.state !== 'ok') out.push({ account: r.name, level: r.spend.state === 'capped' ? 'error' : 'warn', kind: 'spend', text: `${r.label || r.name}: ${r.spend.why}` });

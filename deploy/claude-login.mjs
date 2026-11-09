@@ -9,7 +9,7 @@
  * verified on Claude Code 2.1.318). A token refresh during the build lands in that copy and is saved back at once to
  * every store of that login (deploy/claude-token-save.mjs), so the next run never starts on a spent token.
  *
- *   node deploy/claude-login.mjs snapshot --dir <build folder> --session <name> [--account active|live|<saved name>] [--sh|--json]
+ *   node deploy/claude-login.mjs snapshot --dir <build folder> --session <name> [--account active|live|<saved name>] [--pid <run pid>] [--sh|--json]
  *   node deploy/claude-login.mjs release  --dir <build folder> --session <name>
  *   node deploy/claude-login.mjs who      --dir <build folder> --session <name>
  *   node deploy/claude-login.mjs accounts [--json]                 saved account names, the active one, emails
@@ -39,18 +39,24 @@
  * (0|1, whether a saved token is used). Paths: AXF_CLAUDE_ACCOUNTS (default ~/.claude-accounts), AXF_CLAUDE_HOME
  * (the shared config dir, default $CLAUDE_CONFIG_DIR or ~/.claude), AXF_CLAUDE_GLOBAL (default ~/.claude.json, or
  * <AXF_CLAUDE_HOME>/.claude.json when CLAUDE_CONFIG_DIR is set), AXF_CLAUDE_SEEN (emails last seen per account).
- * Exit 0 ok, 2 bad usage / unknown account, 4 no login to snapshot.
+ * Before the copy is made, the saved login is checked (spent-refresh-token, Nov 9 2026): a pair with less than 90 min left
+ * is renewed once, under the host lock (claude-token-save.mjs freshen), so the build starts on a fresh pair and never
+ * has to refresh. A login Anthropic refuses is marked dead and the launch fails with exit 5: the worker router skips that
+ * account and the systems check says which one to sign in again. Network trouble never blocks a launch.
+ * Exit 0 ok, 2 bad usage / unknown account, 4 no login to snapshot, 5 the saved login is dead (sign in again).
  */
+import { spawnSync } from 'node:child_process';
 import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, rmdirSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy } from './claude-token-save.mjs';
+import { beginChain, deadSet, places as tokenPlaces, saveBack, syncLive, tokenHash, unregisterCopy, watchCopy, withLock } from './claude-token-save.mjs';
 
 export { watchCopy };
 export const MARKER = 'build-login.json';
 export const FOLDER = '.axf-claude';
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
+const TOKEN_JS = fileURLToPath(new URL('./claude-token-save.mjs', import.meta.url));
 const SKIP = new Set(['.credentials.json', '.claude.json', MARKER, 'token.env', 'token-chain.json']);
 
 export function paths(env = process.env) {
@@ -77,11 +83,16 @@ export function accounts(env = process.env) {
   const seen = readJson(p.seen) || {};
   let names = [];
   try { names = readdirSync(p.accounts).filter((n) => NAME_RE.test(n)).sort(); } catch { /* no store */ }
+  const dead = deadSet({ accounts: p.accounts });
   return names.map((name) => {
     const d = join(p.accounts, name);
     const apikey = readText(join(d, 'apikey')) !== '';
-    return { name, active: name === active, creds: isFile(join(d, '.credentials.json')), token: readText(join(d, 'token')) !== '', apikey,
-      kind: apikey ? 'api' : 'subscription', email: String(seen?.[name]?.email || '') };
+    const token = readText(join(d, 'token')) !== '';
+    const creds = isFile(join(d, '.credentials.json'));
+    // dead: the saved refresh token was refused (spent or revoked). A saved long-lived token or API key still works.
+    const h = creds && !apikey && !token ? tokenHash(readJson(join(d, '.credentials.json'))?.claudeAiOauth?.refreshToken) : '';
+    return { name, active: name === active, creds, token, apikey,
+      kind: apikey ? 'api' : 'subscription', email: String(seen?.[name]?.email || ''), dead: !!(h && dead[h]), deadAt: h && dead[h] ? dead[h].at : '' };
   }).filter((a) => a.creds || a.token || a.apikey);
 }
 
@@ -130,23 +141,48 @@ export const loginDir = (dir, session) => join(resolve(dir), FOLDER, slug(sessio
  * Snapshot a login into <dir>/.axf-claude/<session>. Returns { dir, account, email, source, token } plus `env` /
  * `unset` for a node launcher to spawn `claude` with (env carries the token only when the account has one).
  */
-export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUNT || 'active', env = process.env } = {}) {
+/**
+ * Is this saved login alive? Renews it when its pair is short (one refresh, under the host lock, written to every store).
+ * Throws code 5 when Anthropic refuses it. Network trouble = carry on (Claude Code may still manage).
+ */
+export function checkAlive(choice, env = process.env) {
+  if (String(env.AXF_TOKEN_KEEP || 'on') === 'off' || !choice.creds || choice.kind === 'api') return { ok: true, checked: false };
+  const p = paths(env);
+  const h = tokenHash(readJson(choice.creds)?.claudeAiOauth?.refreshToken);
+  const dead = () => Object.assign(new Error(`the saved Claude login "${choice.account}" is dead (its refresh token was spent or revoked): sign it in again (Settings → Claude accounts, or node deploy/claude-workers.mjs signin ${choice.account})`), { code: 5, account: choice.account });
+  if (h && deadSet({ accounts: p.accounts })[h]) throw dead();
+  const r = spawnSync(process.execPath, [TOKEN_JS, 'freshen', '--file', choice.creds], { env: { ...env, AXF_CLAUDE_ACCOUNTS: p.accounts, AXF_CLAUDE_HOME: p.shared }, encoding: 'utf8', timeout: 45_000 });
+  if (r.status === 5) throw dead();
+  return { ok: true, checked: true, refreshed: /"refreshed":true/.test(r.stdout || '') };
+}
+
+export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUNT || 'active', env = process.env, pid = 0 } = {}) {
   if (!dir) throw Object.assign(new Error('--dir <build folder> is required'), { code: 2 });
   const p = paths(env);
-  const choice = pick(account, env);
+  const tp = { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys };
+  let choice = pick(account, env);
   const token = choice.tokenFile ? readText(choice.tokenFile) : '';
   const apiKey = choice.keyFile ? readText(choice.keyFile) : '';
   if (!choice.creds && !token && !apiKey) throw Object.assign(new Error(`no Claude login to snapshot for "${choice.account}" (log in, or save the account first)`), { code: 4 });
+  if (!token && !apiKey) checkAlive(choice, env);   // a dead login is never launched on; a short pair is renewed first
   const parent = join(resolve(dir), FOLDER);
   const out = loginDir(dir, session);
   mkdirSync(parent, { recursive: true, mode: 0o700 }); chmodSync(parent, 0o700);
   try { saveBack(out); } catch { /* no earlier copy */ }   // a crashed run under this name may hold the newest token
+  unregisterCopy(out, tp);
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { mode: 0o700 }); chmodSync(out, 0o700);
-  // the login itself: a real file, so Claude's refresh writes land here; saveBack carries them to the login's stores
+  // the login itself: a real file, so Claude's refresh writes land here; saveBack carries them to the login's stores.
+  // Copied under the host lock, after the live login's latest renewal went out, so the copy never starts on a token
+  // that was spent a moment ago, and registered at once, so every later rotation of this login reaches it.
   if (choice.creds) {
-    copyFileSync(choice.creds, join(out, '.credentials.json')); chmodSync(join(out, '.credentials.json'), 0o600);
-    beginChain(out, { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys });
+    withLock(tp, () => {
+      try { syncLive(tp); } catch { /* the sweep does it within a minute */ }
+      choice = pick(account, env);   // the live login may have moved on while we waited
+      if (!choice.creds) throw Object.assign(new Error(`no Claude login to snapshot for "${choice.account}"`), { code: 4 });
+      copyFileSync(choice.creds, join(out, '.credentials.json')); chmodSync(join(out, '.credentials.json'), 0o600);
+      beginChain(out, tp, { pid });
+    });
   }
   // the global config: MCP servers, onboarding, trust. The cached account belongs to the live login only.
   const g = readJson(p.global);
@@ -190,7 +226,12 @@ export function release({ dir, session } = {}) {
   const out = loginDir(dir, session);
   if (!existsSync(out)) return { released: false, why: 'nothing to release' };
   if (lstatSync(out).isSymbolicLink() || readJson(join(out, MARKER))?.$axf !== 'build-login@1') return { released: false, why: 'not a build login copy; left alone' };
-  try { saveBack(out); } catch { /* the watcher already saved it, or nothing to save */ }
+  // The copy may hold the only live token of this login: it is deleted only once that token is safely saved back.
+  const chain = readJson(join(out, 'token-chain.json'));
+  try { saveBack(out); } catch (e) {
+    if (chain?.$axf === 'token-chain@1') return { released: false, kept: true, why: `could not save its token back (${e.message}); kept for the sweep` };
+  }
+  if (chain?.places) unregisterCopy(out, chain.places);
   rmSync(out, { recursive: true, force: true });   // symlinks are removed, never followed
   try { rmdirSync(join(resolve(dir), FOLDER)); } catch { /* other builds' copies still there */ }
   return { released: true };
@@ -212,7 +253,7 @@ const main = () => {
   const dir = flag('dir', process.cwd()); const session = flag('session', basename(resolve(dir)));
   try {
     if (cmd === 'snapshot') {
-      const s = snapshot({ dir, session, account: flag('account', process.env.AXF_CLAUDE_ACCOUNT || 'active') });
+      const s = snapshot({ dir, session, account: flag('account', process.env.AXF_CLAUDE_ACCOUNT || 'active'), pid: Number(flag('pid', '0')) || 0 });
       const pub = { dir: s.dir, account: s.account, email: s.email, source: s.source, token: s.token };
       if (has('json')) console.log(JSON.stringify(pub));
       else if (has('sh')) console.log(`login_dir=${q(s.dir)} login_account=${q(s.account)} login_email=${q(s.email)} login_source=${s.source} login_token=${s.token ? 1 : 0} login_kind=${s.kind}`);
@@ -223,12 +264,12 @@ const main = () => {
       const r = who({ dir, session }); console.log(has('json') ? JSON.stringify(r) : describe(r));
     } else if (cmd === 'accounts') {
       const l = accounts();
-      if (has('json')) console.log(JSON.stringify(l.map(({ name, active, email, token, kind }) => ({ name, active, email, token, kind }))));
-      else for (const a of l) console.log(`${a.active ? '*' : ' '} ${a.name}${a.email ? ` (${a.email})` : ''}${a.kind === 'api' ? ' [api key]' : a.token ? ' [token]' : ''}`);
+      if (has('json')) console.log(JSON.stringify(l.map(({ name, active, email, token, kind, dead }) => ({ name, active, email, token, kind, dead }))));
+      else for (const a of l) console.log(`${a.active ? '*' : ' '} ${a.name}${a.email ? ` (${a.email})` : ''}${a.kind === 'api' ? ' [api key]' : a.token ? ' [token]' : ''}${a.dead ? ' [dead: sign in again]' : ''}`);
     } else {
       console.error('usage: claude-login.mjs snapshot|release|who --dir <build folder> --session <name> [--account active|live|<name>] [--sh|--json] · accounts');
       process.exit(2);
     }
-  } catch (e) { console.error(`claude-login: ${e.message}`); process.exit(e.code === 4 ? 4 : 2); }
+  } catch (e) { console.error(`claude-login: ${e.message}`); process.exit(e.code === 4 || e.code === 5 ? e.code : 2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

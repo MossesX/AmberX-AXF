@@ -137,11 +137,13 @@ LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
 login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind=""
-own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
+own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; returns 5 only when that saved login is dead
   [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
   command -v node >/dev/null && [[ -f "$LOGIN_JS" ]] || { printf 'claude-login: not available; this run uses the shared login\n' >&2; return 0; }
   local out sh
-  out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" --sh 2>&1)"
+  out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" ${inner:+--pid "$$"} --sh 2>&1)"
+  # a dead saved login (its refresh token was spent or revoked, spent-refresh-token Nov 9 2026): never run on it
+  if grep -q 'is dead (its refresh token' <<<"$out"; then printf '\033[31m%s\033[0m\n' "${out##*$'\n'}" >&2; return 5; fi
   sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?\$" <<<"$out" | tail -1)"
   if [[ -z "$sh" ]]; then printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; return 0; fi
   eval "$sh"
@@ -304,7 +306,13 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       build_note "No Claude account free (every one out or its queue full): this run uses the console's account"
     fi
   fi
-  own_login "${account:-active}"
+  while ! own_login "${account:-active}"; do   # that saved login is dead: the next worker takes the run, or it never starts
+    build_note "Claude account ${account:-active}: saved login is dead (refresh token spent or revoked), skipped; the systems check says to sign it in again"
+    [[ -n "$on_worker" ]] || { echo "claude-headless: the Claude login for ${account:-active} is dead (sign it in again); not starting" >&2; exit 3; }
+    wait_for_worker "$tried_workers"
+    [[ -n "$worker" ]] || { echo "claude-headless: no live Claude account left; not starting" >&2; exit 3; }
+    account="$worker" tried_workers="$tried_workers,$worker"
+  done
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
@@ -350,7 +358,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
         printf 'No worker account left to take over.\n'; break
       fi
       tried_workers="$tried_workers,$worker"
-      release_login; own_login "$worker"
+      release_login; own_login "$worker" || { build_note "Worker $worker: saved login is dead, skipped: the run stopped here"; break; }
       build_note "Worker $gone stopped ($hit): the run moved to $worker"
       prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
       switches=$((switches + 1))
@@ -439,7 +447,7 @@ elif slots_on; then
   slot="$slot_id"
 fi
 if ! command -v tmux >/dev/null; then
-  login_session="$session"; own_login "${account:-active}"
+  login_session="$session"; own_login "${account:-active}" || { echo "claude-headless: the Claude login for ${account:-active} is dead (sign it in again); not starting" >&2; exit 3; }
   ctx_plan "$session"; [[ -n "$brief_only" ]] && set -- "$@" "${ctx_args[@]}"
   fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
