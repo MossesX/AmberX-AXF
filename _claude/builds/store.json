@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1689,
- "updatedAt": "2026-11-09T02:59:28.908Z",
+ "rev": 1690,
+ "updatedAt": "2026-11-09T03:00:35.837Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125832,9 +125832,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:59:26.044Z",
-   "updatedAt": "2026-11-09T02:59:26.044Z",
+   "updatedAt": "2026-11-09T03:00:33.356Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T03:00:33.356Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -125849,7 +125854,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T03:00:33.356Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8obr2k01uilk",
+     "title": "",
+     "text": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:00:33.356Z",
+     "updatedAt": "2026-11-09T03:00:33.356Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8obr2k02jyvm",
+     "title": "",
+     "text": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:00:33.356Z",
+     "updatedAt": "2026-11-09T03:00:33.356Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8obr2k03rhvl",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/reserve-build-ids-at-once-add-returns-the-id-wit.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/reserve-build-ids-at-once-add-returns-the-id-wit.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:00:33.356Z",
+     "updatedAt": "2026-11-09T03:00:33.356Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -125858,7 +125955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125873,7 +125970,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T03:00:33.356Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
