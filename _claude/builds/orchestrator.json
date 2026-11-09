@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:49:24.717Z",
+ "updatedAt": "2026-11-09T17:49:42.589Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78186,12 +78186,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-09T17:48:22.181Z",
+   "updatedAt": "2026-11-09T17:49:32.211Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T17:48:22.181Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T17:49:32.211Z"
     }
    ],
    "approvals": [],
@@ -78208,7 +78212,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded). Build Manager owns builds before and after the orchestrator: Pending tab (create, edit, prioritize, Send to orchestrator) and Complete tab (finished builds sent back by the orchestrator, with account that actually built it, model, cost, PR, land status). Build orchestrator owns only what it was sent: Queued and Active tabs, with steps, assigned/actual account, model, progress and actions (route, assign account, hold, cancel/return to Pending). When a build finishes, the orchestrator sends it back to Build Manager's Complete. Remove every other builds table and the separate Build queue screen (redirect to these). Full API/voice control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9k2zlf012u04"
+    },
+    {
+     "id": "s2",
+     "text": "Build manager will have pending and complete. Orchestrator will have active and queued. They need to be sent to the orchestrator, so they gotta be sent from somewhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9k2zlf02ekhh"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/split-builds-pages-build-manager-pending-complet.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/split-builds-pages-build-manager-pending-complet.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9k2zlf03wpcl"
+    }
+   ]
   },
   {
    "id": "split-builds-pages-build-manager-pending-complet-2",
@@ -78221,8 +78283,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-09T17:49:22.125Z",
-   "updatedAt": "2026-11-09T17:49:22.125Z",
+   "updatedAt": "2026-11-09T17:49:23.700Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
