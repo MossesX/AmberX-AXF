@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:20 UTC · `workers-api-routing` s1 done, → running (all) · orchestrator
 - 2026-11-08 16:21 UTC · `brief-only-headless` s2 done (all) · orchestrator
 - 2026-11-08 16:23 UTC · `brief-only-headless` s3 done (all) · orchestrator
 - 2026-11-08 16:23 UTC · `workers-api-routing` s2 done (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 16:46 UTC · `orchestrator-settings-api-account-limits-and-rou` → running, note (all) · pipeline
 - 2026-11-09 16:46 UTC · `orchestrator-settings-api-account-limits-and-rou` branch claude/orchestrator-settings-api-account-limits-and-rou (all) · pipeline
 - 2026-11-09 16:46 UTC · `orchestrator-settings-api-account-limits-and-rou` note (all) · orchestrator
+- 2026-11-09 16:50 UTC · `orchestrator-settings-api-account-limits-and-rou` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
