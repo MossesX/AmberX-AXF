@@ -2793,6 +2793,18 @@
    "from": "notes",
    "addenda": []
   },
+  "per-account-queues-long-press-a-queued-build-to": {
+   "said": "I want to be able to hold a job down in the build manager or in the orchestrator in the queue and send it to an API immediately. An API queue. I want every account to have its own queue.",
+   "at": "2026-11-09T20:26:06.899Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "permissions-control-panel-every-axhub-tool-s-pol": {
    "said": "I need a control panel for all those settings, those permission settings.",
    "at": "",

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:26:06.164Z",
+ "updatedAt": "2026-11-09T20:26:14.683Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80288,6 +80288,43 @@
      "uid": "st-mw9pd3t203qtt5"
     }
    ]
+  },
+  {
+   "id": "per-account-queues-long-press-a-queued-build-to",
+   "title": "Per-account queues + long-press a queued build to send it to an API account now",
+   "category": "",
+   "detail": "1) Every Claude account (subscription and API) gets its own queue in the orchestrator and the Build Manager, showing what's waiting and running on it. 2) Long-press (hold) a build in Pending or the Queue to get a menu to send it to any account's queue, including an API account's queue (e.g. Hulu API), so it starts there right away, still under the API caps. Drag between account queues too. Full API control per standing rule.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-09T20:26:06.899Z",
+   "updatedAt": "2026-11-09T20:26:08.035Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:26:08.035Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to be able to hold a job down in the build manager or in the orchestrator in the queue and send it to an API immediately. An API queue. I want every account to have its own queue.",
+    "at": "2026-11-09T20:26:06.899Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
