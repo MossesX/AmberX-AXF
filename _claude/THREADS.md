@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:57 UTC · `molly-one-shell` added (14 steps) (all) · orchestrator
-- 2026-11-08 16:58 UTC · `molly-native-expenses` added (4 steps) (all) · orchestrator
 - 2026-11-08 16:59 UTC · `molly-sign-in-once` added (3 steps) (all) · orchestrator
 - 2026-11-08 16:59 UTC · `molly-multi-instance-tabs` note (all) · orchestrator
 - 2026-11-08 16:59 UTC · `molly-banner-match` → running, note (all) · orchestrator
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-09 17:13 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-09 17:14 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
+- 2026-11-09 17:15 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
+- 2026-11-09 17:15 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 
 ## Token passes (log)
 
