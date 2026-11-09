@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1776,
- "updatedAt": "2026-11-09T17:12:20.744Z",
+ "rev": 1777,
+ "updatedAt": "2026-11-09T17:13:25.608Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127087,14 +127087,14 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/appearance-skins-colour-themes-only-remove-design-packs",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T17:12:13.804Z",
+   "updatedAt": "2026-11-09T17:13:24.324Z",
    "builtAt": "",
    "notes": [
     {
@@ -127127,22 +127127,6 @@
     "verbatim": false,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "account-3",
-    "session": "axf-appearance-skins-colour-themes-only-remove-desig--gina",
-    "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T17:12:09.976Z",
-    "runs": 1,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "2026-11-09T17:12:09.976Z"
    },
    "steps": [
     {
@@ -127190,28 +127174,6 @@
      "updatedAt": "2026-11-09T13:21:25.005Z"
     },
     {
-     "id": "s3",
-     "uid": "st-mw9ai6p606isiz",
-     "title": "",
-     "text": "Appearance shows only Skin + Colour theme; report on style/layout themes; tests, before/after screenshots to UI Review",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-09T13:21:25.005Z",
-     "updatedAt": "2026-11-09T13:21:25.005Z"
-    },
-    {
      "id": "s4",
      "uid": "st-mw9auynu01ktuh",
      "title": "",
@@ -127232,6 +127194,28 @@
      "rev": 1,
      "createdAt": "2026-11-09T13:31:21.139Z",
      "updatedAt": "2026-11-09T13:31:21.211Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9ai6p606isiz",
+     "title": "",
+     "text": "Appearance shows only Skin + Colour theme; report on style/layout themes; tests, before/after screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T13:21:25.005Z",
+     "updatedAt": "2026-11-09T13:21:25.005Z"
     }
    ],
    "profiles": [
