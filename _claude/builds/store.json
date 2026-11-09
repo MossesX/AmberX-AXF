@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1969,
- "updatedAt": "2026-11-09T20:31:07.538Z",
+ "rev": 1970,
+ "updatedAt": "2026-11-09T20:31:19.828Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131279,15 +131279,15 @@
    "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
    "category": "",
    "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/one-source-of-truth-for-claude-accounts-the-orch",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:31:06.216Z",
+   "updatedAt": "2026-11-09T20:31:11.413Z",
    "builtAt": "",
    "notes": [
     {
@@ -131297,6 +131297,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T20:27:49.018Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-source-of-truth-for-claude-accounts-the-orch--lenny.",
+     "at": "2026-11-09T20:31:08.358Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-for-claude-accounts-the-orch--lenny, own login copy)",
+     "at": "2026-11-09T20:31:11.413Z"
     }
    ],
    "approvals": [],
@@ -131316,12 +131324,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:26:35.079Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-one-source-of-truth-for-claude-accounts-the-orch--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-09T20:31:07.999Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T20:27:49.018Z",
@@ -131331,9 +131339,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-09T20:31:07.999Z"
    },
    "steps": [
     {
@@ -131414,7 +131422,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
