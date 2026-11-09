@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1942,
- "updatedAt": "2026-11-09T20:19:35.523Z",
+ "rev": 1943,
+ "updatedAt": "2026-11-09T20:20:09.320Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130786,7 +130786,7 @@
    "title": "Test button on every Claude account (subscription and API)",
    "category": "",
    "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
-   "status": "running",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130794,7 +130794,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:19:33.959Z",
+   "updatedAt": "2026-11-09T20:20:05.777Z",
    "builtAt": "",
    "notes": [
     {
@@ -130848,6 +130848,10 @@
     {
      "text": "Headless run axf-test-button-on-every-claude-account-subscription--sully: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T20:19:21.263Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
+     "at": "2026-11-09T20:20:05.777Z"
     }
    ],
    "approvals": [],
@@ -130890,18 +130894,18 @@
     "queuedAt": "2026-11-09T20:16:04.178Z",
     "queuedBy": "console",
     "account": "account-3",
-    "session": "axf-test-button-on-every-claude-account-subscription--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T20:19:06.480Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-09T20:19:02.432Z",
+     "at": "2026-11-09T20:20:05.208Z",
      "exit": 1,
-     "outcome": "requeued",
+     "outcome": "failed",
      "stepsLeft": 3,
      "account": "account-3",
-     "session": "axf-test-button-on-every-claude-account-subscription--paulie"
+     "session": "axf-test-button-on-every-claude-account-subscription--sully"
     },
     "split": {
      "at": "2026-11-09T20:17:22.310Z",
@@ -130911,7 +130915,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
     "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
@@ -130994,7 +130998,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
