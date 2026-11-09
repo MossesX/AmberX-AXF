@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1993,
- "updatedAt": "2026-11-09T20:44:39.209Z",
+ "rev": 1994,
+ "updatedAt": "2026-11-09T20:44:59.906Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96244,10 +96244,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -116918,10 +116915,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124579,10 +124573,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124940,10 +124931,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -126054,10 +126042,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126217,10 +126202,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126384,10 +126366,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126567,10 +126546,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126795,10 +126771,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 4 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
    "steps": [
     {
@@ -127347,10 +127320,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 2 steps left: back in the Queue (run 2).",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:53:07.552Z"
    },
    "steps": [
     {
@@ -127633,10 +127603,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 5 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
    "steps": [
     {
@@ -127952,10 +127919,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
    "steps": [
     {
@@ -128118,10 +128082,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128288,10 +128249,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128458,10 +128416,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128667,10 +128622,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
    "steps": [
     {
@@ -128900,10 +128852,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:05:17.080Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:05:17.080Z"
    },
    "steps": [
     {
@@ -129050,10 +128999,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -129279,10 +129225,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 11 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:09:09.055Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:09:09.055Z"
    },
    "steps": [
     {
@@ -129664,10 +129607,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:02:10.280Z"
    },
    "steps": [
     {
@@ -129873,10 +129813,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
    "steps": [
     {
@@ -130082,10 +130019,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
    "steps": [
     {
@@ -130291,10 +130225,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T18:55:16.286Z"
    },
    "steps": [
     {
@@ -130500,10 +130431,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:13:07.725Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T19:13:07.725Z"
    },
    "steps": [
     {
@@ -130709,10 +130637,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
    "steps": [
     {
@@ -130918,10 +130843,7 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
    "steps": [
     {
@@ -131099,10 +131021,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -131330,10 +131249,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
    "steps": [
     {
@@ -131496,10 +131412,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -131596,7 +131509,7 @@
    "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
    "category": "",
    "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131604,8 +131517,8 @@
    "pr": "#414",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:44:21.386Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T20:44:24.810Z",
+   "builtAt": "2026-11-09T20:44:24.811Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131666,10 +131579,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "pin": "",
-    "pinnedAt": "",
-    "pinnedBy": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -131734,12 +131644,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:44:24.810Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T20:27:49.018Z",
-     "updatedAt": "2026-11-09T20:27:49.018Z"
+     "updatedAt": "2026-11-09T20:44:25.658Z"
     }
    ],
    "profiles": [
@@ -131750,7 +131660,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

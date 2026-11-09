@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:44:39.209Z",
+ "updatedAt": "2026-11-09T20:44:59.906Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80558,7 +80558,7 @@
    "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
    "category": "",
    "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80566,8 +80566,8 @@
    "pr": "#414",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:44:21.386Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T20:44:24.810Z",
+   "builtAt": "2026-11-09T20:44:24.811Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80661,8 +80661,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:44:24.810Z",
      "note": "",
      "uid": "st-mw9pqjdm06hauw"
     }
