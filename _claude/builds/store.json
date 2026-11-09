@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1807,
- "updatedAt": "2026-11-09T17:56:25.064Z",
+ "rev": 1808,
+ "updatedAt": "2026-11-09T17:56:53.953Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128064,7 +128064,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-09T17:56:18.935Z",
+   "updatedAt": "2026-11-09T17:56:52.147Z",
    "builtAt": "",
    "notes": [
     {
@@ -128082,6 +128082,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-account-failover-chain-subscription-next-subscri--earl, own login copy)",
      "at": "2026-11-09T17:56:18.935Z"
+    },
+    {
+     "text": "Headless run axf-account-failover-chain-subscription-next-subscri--earl: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T17:56:52.147Z"
     }
    ],
    "approvals": [],
@@ -128199,7 +128203,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
