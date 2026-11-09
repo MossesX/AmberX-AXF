@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "demonstration-designer-wizard",
+  "name": "Demonstration Designer settings: numbered walk",
+  "version": "1.0.0",
+  "description": "Numbered sections that read top to bottom like the pitch itself (1. Script, 2. Narration, 3. Stage, 4. Music, 5. Export, 6. Advanced); the first three open, the rest folded. For setting the designer up once.",
+  "author": "Demonstration Designer plugin",
+  "tags": [
+    "demonstration-designer",
+    "pitch-settings",
+    "ui-choices:demonstration-designer-settings"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "full",
+    "search": false,
+    "descriptions": true,
+    "view": "wizard",
+    "order": [
+      "script",
+      "narration",
+      "stage",
+      "music",
+      "export",
+      "advanced"
+    ],
+    "open": [
+      "script",
+      "narration",
+      "stage"
+    ]
+  }
+}

@@ -143,6 +143,8 @@ jobs:
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
         run: npx -y tsx apps/console-web/plugins/glossary-index/test.mts && node apps/console-web/plugins/glossary-index/catalog.mjs --check  # axf-plugin:glossary-index
+      - name: Demonstration Designer plugin (pitch-script@1 — benefit sentences, scripts fitted to their length, registry topics, store, chain, clips, settings, CLI)  # axf-plugin:demonstration-designer
+        run: node apps/console-web/plugins/demonstration-designer/test.mjs  # axf-plugin:demonstration-designer
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings

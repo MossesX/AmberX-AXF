@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "demonstration-designer-two-column",
+  "name": "Demonstration Designer settings: two columns",
+  "version": "1.0.0",
+  "description": "Compact: the sections side by side in two columns on a wide screen (one on a phone), all open, no section blurbs; Stage and Music first because they are changed most while pitching.",
+  "author": "Demonstration Designer plugin",
+  "tags": [
+    "demonstration-designer",
+    "pitch-settings",
+    "ui-choices:demonstration-designer-settings"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": false,
+    "view": "two-column",
+    "order": [
+      "stage",
+      "music",
+      "script",
+      "narration",
+      "export",
+      "advanced"
+    ],
+    "open": [
+      "stage",
+      "music",
+      "script",
+      "narration",
+      "export",
+      "advanced"
+    ]
+  }
+}
