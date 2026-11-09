@@ -4011,6 +4011,18 @@
    "from": "",
    "addenda": []
   },
+  "urgent-terminal-pops-up-every-time-the-console-o": {
+   "said": "Every time I open the console, the terminal seems to pop up. You need to stop that.",
+   "at": "2026-11-09T18:51:17.675Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "veto-everywhere": {
    "said": "it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
    "at": "2026-10-30",

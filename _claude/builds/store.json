@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1863,
- "updatedAt": "2026-11-09T18:51:07.698Z",
+ "rev": 1864,
+ "updatedAt": "2026-11-09T18:51:20.232Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126880,14 +126880,14 @@
    "title": "Skins restyle EVERYTHING: badges, banner and every visual element",
    "category": "Appearance",
    "detail": "Bug: applying a skin doesn't change the banner badges (Claude, VPS, axHub, AmberX, usage). Rule: a skin must change every single visual thing everywhere, in every framework app: banner, badges, toolbars, menus, dialogs, toasts, tables, buttons, icons, inputs, scrollbars, charts. Audit every component for hard-coded colours/styles or styles not read from skin tokens and move them to tokens/assets. Add an automated check: apply each skin, screenshot every screen, and fail on any element whose style didn't change from the default. Result must look professional. Brett: \"the skin literally needs to change every single visual thing everywhere... I need it to look professional.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T18:51:05.631Z",
+   "updatedAt": "2026-11-09T18:51:14.918Z",
    "builtAt": "",
    "notes": [
     {
@@ -126921,6 +126921,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-09T18:49:57.674Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Fable, Phase 2): axf-skins-restyle-everything-badges-banner-and-every--joey.",
+     "at": "2026-11-09T18:51:10.198Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-skins-restyle-everything-badges-banner-and-every--joey, own login copy)",
+     "at": "2026-11-09T18:51:14.917Z"
     }
    ],
    "approvals": [],
@@ -126940,18 +126948,18 @@
    "pipeline": {
     "queuedAt": "2026-11-09T18:49:57.449Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "account-3",
+    "session": "axf-skins-restyle-everything-badges-banner-and-every--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-09T18:51:09.793Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-09T18:51:09.793Z"
    },
    "steps": [
     {
@@ -127095,7 +127103,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129487,6 +129495,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T18:44:36.717Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "urgent-terminal-pops-up-every-time-the-console-o",
+   "title": "URGENT: Terminal pops up every time the console opens",
+   "category": "",
+   "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-09T18:51:17.675Z",
+   "updatedAt": "2026-11-09T18:51:18.877Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Every time I open the console, the terminal seems to pop up. You need to stop that.",
+    "at": "2026-11-09T18:51:17.675Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 502
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

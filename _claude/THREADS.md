@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:50 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
-- 2026-11-08 17:50 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
-- 2026-11-08 17:37 UTC · `molly-one-shell` s5 done (all) · orchestrator
 - 2026-11-08 17:37 UTC · `molly-one-shell` s6 done (all) · orchestrator
 - 2026-11-08 17:51 UTC · `molly-one-shell` s9 done (all) · orchestrator
 - 2026-11-08 17:51 UTC · `molly-one-shell` note (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:49 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · console
 - 2026-11-09 18:49 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · console
 - 2026-11-09 18:50 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → failed, note (all) · pipeline
+- 2026-11-09 18:51 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
+- 2026-11-09 18:51 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
+- 2026-11-09 18:51 UTC · `urgent-terminal-pops-up-every-time-the-console-o` added (0 steps) (all) · console
 
 ## Token passes (log)
 
