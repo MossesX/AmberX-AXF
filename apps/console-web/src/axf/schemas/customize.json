@@ -598,7 +598,7 @@
       "root": ".fx-search"
     },
     "badge": {
-      "root": ".fx-badge"
+      "root": ".fx-badge, .fx-banner__badge"
     },
     "clock": {
       "root": ".fx-banner__clock"
