@@ -155,7 +155,7 @@ export function diffWeb(base, cur, allow, findings, { baseDir, curDir, reportDir
       const fa = join(baseDir, 'shots', k, A[name].file), fb = join(curDir, 'shots', k, B[name].file);
       if (!existsSync(fa) || !existsSync(fb)) { findings.push({ area: 'shots', key: `${pre}${name}`, kind: 'failed', detail: 'png missing', allowed: false }); continue; }
       let d;
-      try { d = diffPng(decodePng(readFileSync(fa)), decodePng(readFileSync(fb))); } catch (e) { findings.push({ area: 'shots', key: `${pre}${name}`, kind: 'failed', detail: String(e), allowed: false }); continue; }
+      try { d = diffPng(decodePng(readFileSync(fa)), decodePng(readFileSync(fb)), { masks: [...(A[name].masks ?? []), ...(B[name].masks ?? [])] }); } catch (e) { findings.push({ area: 'shots', key: `${pre}${name}`, kind: 'failed', detail: String(e), allowed: false }); continue; }
       const stateChanged = JSON.stringify([A[name].dialogs, A[name].heads]) !== JSON.stringify([B[name].dialogs, B[name].heads]);
       if (d.ratio > shotThreshold || d.sizeChanged || stateChanged) {
         let diffFile = '';

@@ -20,7 +20,8 @@ import { setTimeout as sleep } from 'node:timers/promises';
 export const APPS = ['console-web', 'molly', 'axhub-web', 'amberx-droid', 'walkthrough-studio'];
 export const VIEWPORTS = { desktop: { width: 1280, height: 800 }, phone: { width: 412, height: 900 } };
 const BASE_PORT = Number(process.env.LOOK_REGRESSION_PORT) || 7310;
-const SKIP_LABEL = /sign out|log out|logout|reload|restart|shut ?down|delete|remove|reset|uninstall|\bstop\b|kill|clear|sync|publish|land|merge|push|install|download|export|start|run\b|send|approve|deny|cancel/i;
+// verbs with side effects, and data rows (a build, a session, a plan: "<title> · Fable · 7.5 h left", "#12 …") that change with the data, not the look
+const SKIP_LABEL = /sign out|log out|logout|reload|restart|shut ?down|delete|remove|reset|uninstall|\bstop\b|kill|clear|sync|publish|land|merge|push|install|download|export|start|run\b|send|approve|deny|cancel| · |\d+(\.\d+)? ?(h|min|s) left|^#?\d+\b/i;
 const slug = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'x';
 
 async function waitUp(url, ms = 60_000) {
@@ -107,10 +108,14 @@ export class Walker {
   constructor(page, outDir, rec, home) { this.page = page; this.out = outDir; this.rec = rec; this.home = home; this.n = 0; mkdirSync(outDir, { recursive: true }); }
   async freeze() { await this.page.addStyleTag({ content: FREEZE_CSS }).catch(() => {}); }
   async shot(name, extra = {}) {
+    this.current = name;
     const file = `${String(this.n += 1).padStart(3, '0')}-${slug(name)}.png`;
+    await this.page.evaluate(() => { window.scrollTo(0, 0); for (const el of document.querySelectorAll('.axf-settings__panel, .axf-settings__split, main')) el.scrollTo?.(0, 0); }).catch(() => {});
     await this.page.screenshot({ path: join(this.out, file), animations: 'disabled', caret: 'hide' });
     const st = await this.page.evaluate(pageState).catch(() => ({}));
-    this.rec.shots.push({ name, file, ...st, ...extra });
+    // live regions (the banner bar with its clock and counters, the banner strip and group) are masked in the pixel diff
+    const masks = await this.page.evaluate(() => [...document.querySelectorAll('[role="banner"], .fx-banner-strip, .fx-banner-group, .fx-banner-strip__widgets')].map((e) => { const r = e.getBoundingClientRect(); return [Math.floor(r.left), Math.floor(r.top), Math.ceil(r.width), Math.ceil(r.height)]; }).filter((r) => r[2] > 0 && r[3] > 0)).catch(() => []);
+    this.rec.shots.push({ name, file, ...st, masks, ...extra });
     return file;
   }
   async closeOverlays() {
@@ -241,6 +246,21 @@ export class Walker {
       await this.freeze();
       const entry = { section: row.label, tabs: [] };
       await this.shot(`settings ${row.label}`, { settings: row.label });
+      // a section with many sub-sections lists them as rows (Plugins): each row is a sub-section of its own
+      const subRows = await this.page.locator('.axf-settings__navlist--subs .axf-settings__nav, .axf-settings__navlist--subs [role="button"], .axf-settings__navlist--subs button').evaluateAll((els) => els.map((e) => (e.querySelector('.axf-settings__navlabel') ?? e).textContent.trim().slice(0, 40)));
+      for (let i = 0; i < (process.env.LOOK_REGRESSION_SKIP_SUBROWS ? 0 : Math.min(subRows.length, 80)); i += 1) {
+        const sel = '.axf-settings__navlist--subs .axf-settings__nav, .axf-settings__navlist--subs [role="button"], .axf-settings__navlist--subs button';
+        let el = this.page.locator(sel).nth(i);
+        if (!(await el.count())) { if (!(await this.openSettings())) break; await rowEl.click({ timeout: 2000 }).catch(() => {}); await sleep(400); el = this.page.locator(sel).nth(i); if (!(await el.count())) continue; }
+        await el.click({ timeout: 1500 }).catch(() => {});
+        await sleep(400);
+        await this.expandAll();
+        await this.freeze();
+        entry.tabs.push(subRows[i]);
+        await this.shot(`settings ${row.label} ${subRows[i]}`, { settings: row.label, tab: subRows[i] });
+        const back = this.page.locator('.axf-settings__crumbs button').first();
+        if (await back.count()) { await back.click({ timeout: 1500 }).catch(() => {}); await sleep(300); }
+      }
       const tabs = await this.page.locator('.axf-settings__panel [role="tablist"] [role="tab"], .axf-settings__subtabs [role="tab"]').evaluateAll((els) => els.map((e) => e.textContent.trim().slice(0, 40)));
       for (let i = 0; i < Math.min(tabs.length, 40); i += 1) {
         const tab = this.page.locator('.axf-settings__panel [role="tablist"] [role="tab"], .axf-settings__subtabs [role="tab"]').nth(i);
@@ -277,8 +297,8 @@ export class Walker {
     if (row) { await this.page.locator('.axf-settings__navlist .axf-settings__nav, .axf-settings__navlist [role="button"], .axf-settings__navlist button, .axf-settings__tabs [role="tab"]').nth(row.i).click({ timeout: 2000 }).catch(() => {}); await sleep(400); }
     await this.expandAll();
     let select = null;
-    for (const slot of ['color-theme', 'skin', 'design-package']) {
-      const s = this.page.locator(`[data-axf-anchor="settings-slot:${slot}"] select`).first();
+    for (const [slot, sel] of [['color-theme', '[data-axf-anchor="settings-slot:color-theme"] select, select[aria-label="Colour theme"], select[aria-label="Color theme"]'], ['skin', '[data-axf-anchor="settings-slot:skin"] select, select[aria-label="Skin"]'], ['design-package', '[data-axf-anchor="settings-slot:design-package"] select, select[aria-label="Design package"], select[aria-label="AmberX Design Package"]']]) {
+      const s = this.page.locator(sel).first();
       if (await s.count()) { select = s; result.slot = slot; break; }
     }
     if (!select) { result.note = 'no slot picker (color-theme / skin / design-package)'; this.rec.roundTrip = result; return; }
@@ -309,7 +329,8 @@ export async function walkApp({ chromium, root, app, url, outDir, viewport, full
   const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
   const page = await browser.newPage({ viewport: VIEWPORTS[viewport], colorScheme: 'light', locale: 'en-GB', timezoneId: 'UTC' });
   await page.clock?.install?.({ time: new Date('2026-11-09T12:00:00Z') }).catch(() => {});
-  page.on('pageerror', (e) => rec.errors.push(String(e).slice(0, 300)));
+  let w;
+  page.on('pageerror', (e) => rec.errors.push(`${String(e).slice(0, 300)} @ ${w?.current ?? 'load'}`));
   page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|ECONNREFUSED/.test(m.text())) rec.consoleErrors.push(m.text().slice(0, 300)); });
   page.on('response', (r) => { if (r.status() >= 400) rec.failed.push({ url: r.url().replace(url, ''), status: r.status() }); });
   page.on('requestfailed', (r) => { if (!/\/api\/events|ws:/.test(r.url())) rec.failed.push({ url: r.url().replace(url, ''), status: 'failed' }); });
@@ -318,7 +339,7 @@ export async function walkApp({ chromium, root, app, url, outDir, viewport, full
   }
   // the live hub is never read in a regression run: every hub file is "not there", deterministically (the default look)
   await page.route(/^https?:\/\/[^/]*axhub\.amberxai\.com\//, (r) => r.fulfill({ status: 404, contentType: 'application/json', headers: { 'access-control-allow-origin': url, 'access-control-allow-credentials': 'true' }, body: '{}' }));
-  const w = new Walker(page, outDir, rec, `${url}/`);
+  w = new Walker(page, outDir, rec, `${url}/`);
   try {
     await page.goto(`${url}/`, { waitUntil: 'load', timeout: 60_000 });
     await sleep(2000);
@@ -327,7 +348,7 @@ export async function walkApp({ chromium, root, app, url, outDir, viewport, full
     rec.storage = await page.evaluate(storageShape);
     if (app === 'console-web') rec.plugins = await fetch(`${url}/api/plugins`).then((r) => r.json()).then((j) => (Array.isArray(j) ? j : j.items ?? j.plugins ?? j)).catch((e) => ({ error: String(e) }));
     await w.shot('home');
-    if (full) await w.walkMenus(`${url}/`);
+    if (full && !process.env.LOOK_REGRESSION_SETTINGS_ONLY) await w.walkMenus(`${url}/`);
     else {
       // phone: the menu tree is recorded (what is reachable) but only home + settings are shot
       const btns = await page.locator('[data-axf-menu-btn]').evaluateAll((els) => els.map((e) => e.getAttribute('data-axf-menu-btn')));

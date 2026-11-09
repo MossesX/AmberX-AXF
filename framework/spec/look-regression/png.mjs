@@ -85,14 +85,16 @@ export function encodePng({ width, height, data }) {
  * Compare two decoded images. `tolerance` is the per-channel difference that still counts as equal (anti-aliasing).
  * Returns { same, changed, total, ratio, sizeChanged, diff } where diff is an encodable image or null when identical.
  */
-export function diffPng(a, b, { tolerance = 16 } = {}) {
+export function diffPng(a, b, { tolerance = 16, masks = [] } = {}) {
   const width = Math.max(a.width, b.width), height = Math.max(a.height, b.height);
   const sizeChanged = a.width !== b.width || a.height !== b.height;
   const out = Buffer.alloc(width * height * 4);
+  const masked = (x, y) => masks.some(([mx, my, mw, mh]) => x >= mx && x < mx + mw && y >= my && y < my + mh);
   let changed = 0;
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const o = (y * width + x) * 4;
+      if (masks.length && masked(x, y)) { out[o] = 60; out[o + 1] = 60; out[o + 2] = 80; out[o + 3] = 255; continue; }
       const inA = x < a.width && y < a.height, inB = x < b.width && y < b.height;
       const ia = (y * a.width + x) * 4, ib = (y * b.width + x) * 4;
       let diff = !inA || !inB;
