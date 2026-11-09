@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1751,
- "updatedAt": "2026-11-09T16:44:19.579Z",
+ "rev": 1752,
+ "updatedAt": "2026-11-09T16:45:07.129Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127566,10 +127566,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/orchestrator-self-check-when-stuck-verify-each-a",
-   "pr": "",
+   "pr": "#407",
    "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-09T16:44:09.880Z",
+   "updatedAt": "2026-11-09T16:45:04.417Z",
    "builtAt": "",
    "notes": [
     {
@@ -127704,7 +127704,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

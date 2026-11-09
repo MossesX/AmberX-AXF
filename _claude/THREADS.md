@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 02:52 UTC · `glossary-walkthrough-generator-investor-demos` branch claude/glossary-walkthrough-generator (all) · builds-live
 - 2026-11-08 03:25 UTC · `glossary-walkthrough-generator-investor-demos` s6 done, → complete (all) · orchestrator
 - 2026-11-08 03:26 UTC · `glossary-walkthrough-generator-investor-demos` → built, PR #385 (all) · builds-live
 - 2026-11-08 16:15 UTC · `workers-api-routing` added (6 steps) (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 16:40 UTC · `orchestrator-self-check-when-stuck-verify-each-a` branch claude/orchestrator-self-check-when-stuck-verify-each-a (all) · pipeline
 - 2026-11-09 16:44 UTC · `orchestrator-self-check-when-stuck-verify-each-a` s1 done, → running (all) · orchestrator
 - 2026-11-09 16:44 UTC · `orchestrator-self-check-when-stuck-verify-each-a` s2 done (all) · orchestrator
+- 2026-11-09 16:45 UTC · `orchestrator-self-check-when-stuck-verify-each-a` PR #407 (all) · builds-live
 
 ## Token passes (log)
 
