@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2027,
- "updatedAt": "2026-11-09T21:40:29.578Z",
+ "rev": 2028,
+ "updatedAt": "2026-11-09T23:43:18.016Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127261,7 +127261,7 @@
    "title": "Skins restyle EVERYTHING: badges, banner and every visual element",
    "category": "Appearance",
    "detail": "Bug: applying a skin doesn't change the banner badges (Claude, VPS, axHub, AmberX, usage). Rule: a skin must change every single visual thing everywhere, in every framework app: banner, badges, toolbars, menus, dialogs, toasts, tables, buttons, icons, inputs, scrollbars, charts. Audit every component for hard-coded colours/styles or styles not read from skin tokens and move them to tokens/assets. Add an automated check: apply each skin, screenshot every screen, and fail on any element whose style didn't change from the default. Result must look professional. Brett: \"the skin literally needs to change every single visual thing everywhere... I need it to look professional.\"",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127269,7 +127269,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T21:40:28.270Z",
+   "updatedAt": "2026-11-09T23:43:17.081Z",
    "builtAt": "",
    "notes": [
     {
@@ -127379,6 +127379,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-09T21:40:28.270Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T23:43:17.081Z"
     }
    ],
    "approvals": [
@@ -127407,7 +127411,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-09T20:52:36.417Z",
+    "queuedAt": "2026-11-09T23:43:16.751Z",
     "queuedBy": "console",
     "account": "account-3",
     "session": "",
@@ -127571,7 +127575,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
