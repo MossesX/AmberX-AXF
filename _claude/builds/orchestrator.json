@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:41:12.279Z",
+ "updatedAt": "2026-11-09T00:47:10.247Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75910,6 +75910,37 @@
      "uid": "st-mw8j8z9z03wha6"
     }
    ]
+  },
+  {
+   "id": "briefs-list-the-existing-files-each-step-needs",
+   "title": "Briefs list the existing files each step needs",
+   "category": "",
+   "detail": "Today every orchestrator brief says 'read only the files listed' but lists no files. When the orchestrator splits a build into steps, it looks up the existing files each step will need (plugin folders, plugin.json, server/web entry points, schemas, the CLI/engine files it extends) from the plugin/UI registry, the Shipped features ledger and a quick grep, and writes them into the brief per step as 'Start with these files'. New files are not listed. Keep the list short (the files that matter, not whole folders). Also trim the brief: Brett's words once (not twice), steps, files, how to tick steps; drop boilerplate that doesn't apply to the step (look/token rules only for UI steps). Tests: brief template lists files per step; a UI step gets the look rules, a non-UI step doesn't; Brett's words appear once.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "briefs-list-the-existing-files-each-step-needs",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:47:08.187Z",
+   "updatedAt": "2026-11-09T00:47:08.187Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Better to have it list the files that it already knows it's gonna need, and then it can read those files and determine what to do. It will help it determine what to do.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
