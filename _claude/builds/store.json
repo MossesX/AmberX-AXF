@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1975,
- "updatedAt": "2026-11-09T20:36:36.634Z",
+ "rev": 1976,
+ "updatedAt": "2026-11-09T20:37:07.482Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116766,7 +116766,7 @@
    "title": "Fix owner check bug + dead start button",
    "category": "bug fix",
    "detail": "Signed in to the console as admin (the only account), Gizmo could raise Max parallel builds but 'Launch builds without asking' says owner only and won't toggle. The owner check must treat the admin login as the owner for every owner-only setting. Also: the Build Manager start button on a pending build does nothing (no log line).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -116774,19 +116774,23 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:36:26.559Z",
+   "updatedAt": "2026-11-09T20:37:05.198Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split asked for by console.",
      "at": "2026-11-09T20:36:26.559Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:37:05.198Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-09T20:37:04.244Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -116876,7 +116880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
