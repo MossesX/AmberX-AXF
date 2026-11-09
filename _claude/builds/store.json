@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1647,
- "updatedAt": "2026-11-09T00:53:40.645Z",
+ "rev": 1648,
+ "updatedAt": "2026-11-09T01:01:50.356Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124610,7 +124610,7 @@
    "pr": "#397",
    "mergedAt": "2026-11-09T00:06:38Z",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-09T00:20:45.297Z",
+   "updatedAt": "2026-11-09T01:01:48Z",
    "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
@@ -124636,6 +124636,10 @@
     {
      "text": "Reconciler: PR #397 merged",
      "at": "2026-11-09T00:20:45.297Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-amberx-veto-notice-alarm-too-loud-approve rev 1 sent to Shipped features (backfill): landed 661901740, 18 file(s), 5 test line(s), 4 open.",
+     "at": "2026-11-09T01:01:48Z"
     }
    ],
    "approvals": [],
@@ -124680,6 +124684,12 @@
     "note": "",
     "route": "",
     "dispatchedAt": ""
+   },
+   "shipped": {
+    "id": "sm-urgent-amberx-veto-notice-alarm-too-loud-approve",
+    "rev": 1,
+    "at": "2026-11-09T01:01:48Z",
+    "landedCommit": "661901740ba21f9767d70f7cf3c101c2e2c35a27"
    },
    "steps": [
     {
@@ -124760,7 +124770,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {

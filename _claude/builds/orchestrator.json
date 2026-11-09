@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:53:40.645Z",
+ "updatedAt": "2026-11-09T01:01:50.356Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75520,7 +75520,7 @@
    "pr": "#397",
    "mergedAt": "2026-11-09T00:06:38Z",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-09T00:20:45.297Z",
+   "updatedAt": "2026-11-09T01:01:48Z",
    "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
@@ -75546,6 +75546,10 @@
     {
      "text": "Reconciler: PR #397 merged",
      "at": "2026-11-09T00:20:45.297Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-amberx-veto-notice-alarm-too-loud-approve rev 1 sent to Shipped features (backfill): landed 661901740, 18 file(s), 5 test line(s), 4 open.",
+     "at": "2026-11-09T01:01:48Z"
     }
    ],
    "approvals": [],
