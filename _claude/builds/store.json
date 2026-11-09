@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1789,
- "updatedAt": "2026-11-09T17:42:30.621Z",
+ "rev": 1790,
+ "updatedAt": "2026-11-09T17:43:05.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127373,7 +127373,7 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127381,7 +127381,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-09T17:42:29.359Z",
+   "updatedAt": "2026-11-09T17:43:03.731Z",
    "builtAt": "",
    "notes": [
     {
@@ -127419,6 +127419,10 @@
     {
      "text": "Headless run axf-prompt-caching-and-batch-api-support-in-the-buil--paulie: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T17:42:29.359Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T17:43:03.731Z"
     }
    ],
    "approvals": [],
@@ -127439,18 +127443,18 @@
     "queuedAt": "2026-11-09T16:02:31.432Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-prompt-caching-and-batch-api-support-in-the-buil--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T17:42:07.862Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-09T17:42:03.013Z",
+     "at": "2026-11-09T17:43:03.064Z",
      "exit": 1,
      "outcome": "requeued",
      "stepsLeft": 3,
      "account": "account-1",
-     "session": "axf-prompt-caching-and-batch-api-support-in-the-buil--lenny"
+     "session": "axf-prompt-caching-and-batch-api-support-in-the-buil--paulie"
     },
     "split": {
      "at": "2026-11-09T16:03:30.605Z",
@@ -127460,7 +127464,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-09T17:42:07.862Z"
    },
@@ -127543,7 +127547,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

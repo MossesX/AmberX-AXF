@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 16:59 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
 - 2026-11-08 16:54 UTC · `memory-restructure-chunked-claude-md-store-memor` branch claude/memory-manager-r2 (all) · orchestrator
 - 2026-11-08 16:54 UTC · `memory-restructure-chunked-claude-md-store-memor` → running (all) · orchestrator
 - 2026-11-08 17:00 UTC · `molly-one-shell` s2 done (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:42 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · pipeline
 - 2026-11-09 17:42 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
 - 2026-11-09 17:42 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
+- 2026-11-09 17:43 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
