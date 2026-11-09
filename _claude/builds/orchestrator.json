@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:02:06.795Z",
+ "updatedAt": "2026-11-09T18:02:19.257Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78699,7 +78699,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78707,7 +78707,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-09T18:02:04.255Z",
+   "updatedAt": "2026-11-09T18:02:13.509Z",
    "builtAt": "",
    "notes": [
     {
@@ -78749,6 +78749,14 @@
     {
      "text": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T18:02:04.255Z"
+    },
+    {
+     "text": "Started run 3 on account-3 (Fable, Phase 1): axf-skins-own-everything-colour-theme-swaps-independ--paulie.",
+     "at": "2026-11-09T18:02:10.636Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-skins-own-everything-colour-theme-swaps-independ--paulie, own login copy)",
+     "at": "2026-11-09T18:02:13.509Z"
     }
    ],
    "approvals": [],
