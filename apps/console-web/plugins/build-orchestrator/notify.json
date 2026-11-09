@@ -17,6 +17,21 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.selfcheck",
+      "label": "Dispatcher self-check",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The dispatcher checked every Claude account one by one (signed in, limited, API key saved and not rejected, free slots) and either fixed something (released a slot held by an ended session, cleared an expired limit, put a build that never ran back in the Queue) or found an account it can't use, with what to do.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:selfcheck"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.launched",
       "label": "Build started",
       "group": "builds",

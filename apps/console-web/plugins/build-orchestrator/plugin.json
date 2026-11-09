@@ -245,7 +245,24 @@
         "title": "Pipeline status",
         "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
         "readOnly": true,
-        "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
+        "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
+      },
+      {
+        "id": "pipeline-selfcheck",
+        "route": "POST /pipeline/selfcheck",
+        "title": "Dispatcher self-check",
+        "description": "Ask the dispatcher to check every Claude account one by one (signed in, limited, API key saved and not rejected, free slots), release slots and builds held by sessions that ended, and rebuild its account list. Runs on the VPS on the next tick (within a minute); the result shows on the Pipeline tab and in pipeline status (state.selfCheck), and AmberX hears when it fixed something or found an account it can't use. Say 'check the build accounts' or 'why is nothing building'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "enum": ["on demand", "voice", "console-load"],
+              "description": "Why the check was asked for"
+            }
+          }
+        },
+        "output": "{ ran: false, requested, last: { at, line, fixes, problems, findings } }"
       },
       {
         "id": "pipeline-queue",

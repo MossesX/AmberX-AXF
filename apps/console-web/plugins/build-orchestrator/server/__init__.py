@@ -435,6 +435,24 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
+
+
+@router.post("/pipeline/selfcheck")
+async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
+    """{reason?: console-load | on demand | voice}: ask the dispatcher for a self-check (every Claude account one by one,
+    stale claims / slots / builds released). The console can't see the logins, so the host runs it on its next tick
+    (within a minute); the answer carries the last result (state.selfCheck in GET /pipeline after that)."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    reason = str((body or {}).get("reason") or "on demand") if isinstance(body, dict) else "on demand"
+    if reason not in SELFCHECK_REASONS:
+        reason = "on demand"
+    return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
