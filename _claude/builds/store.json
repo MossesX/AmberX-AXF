@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1655,
- "updatedAt": "2026-11-09T01:24:48.141Z",
+ "rev": 1656,
+ "updatedAt": "2026-11-09T01:25:17.958Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125717,7 +125717,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:24:45.981Z",
+   "updatedAt": "2026-11-09T01:25:14.245Z",
    "builtAt": "",
    "notes": [
     {
@@ -125731,6 +125731,10 @@
     {
      "text": "Brett: \"when you open the file, it will jump to the feature that you found it through and highlight it. In focus, centered in screen.\" The manifest records, per touched file, the line ranges each step/feature changed. Opening a file from a Shipped Features entry scrolls the editor to that feature's code, centers it on screen, and highlights the changed lines (theme highlight colour); if a feature touched several spots, next/previous buttons jump between them. Same when opened via API/deep link (file + feature + range).",
      "at": "2026-11-09T01:24:45.981Z"
+    },
+    {
+     "text": "Brett: \"Any failed, any errors that are file related get sent to the log with links to the file with the bad code there, the conflicted code, and highlighted and in focus.\" Every file-related failure (test/typecheck/lint/CI errors, merge conflicts, guard stops, parse errors in JSON) is written to the terminal log and the Shipped Features entry's manifest with file path + line range + message. Each log line carries a link; clicking it opens the file in the read-only editor scrolled to the bad or conflicted code, centered and highlighted (conflicts show both sides). Same via API/deep link.",
+     "at": "2026-11-09T01:25:14.245Z"
     }
    ],
    "approvals": [],
@@ -125848,7 +125852,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
