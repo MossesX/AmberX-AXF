@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1921,
- "updatedAt": "2026-11-09T19:27:15.434Z",
+ "rev": 1922,
+ "updatedAt": "2026-11-09T19:27:25.880Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130425,7 +130425,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:27:08.440Z",
+   "updatedAt": "2026-11-09T19:27:24.202Z",
    "builtAt": "",
    "notes": [
     {
@@ -130475,6 +130475,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda, own login copy)",
      "at": "2026-11-09T19:27:08.440Z"
+    },
+    {
+     "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:27:24.202Z"
     }
    ],
    "approvals": [],
@@ -130599,7 +130603,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

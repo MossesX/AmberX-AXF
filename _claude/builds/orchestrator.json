@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:27:15.434Z",
+ "updatedAt": "2026-11-09T19:27:25.880Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79795,7 +79795,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:27:08.440Z",
+   "updatedAt": "2026-11-09T19:27:24.202Z",
    "builtAt": "",
    "notes": [
     {
@@ -79845,6 +79845,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda, own login copy)",
      "at": "2026-11-09T19:27:08.440Z"
+    },
+    {
+     "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:27:24.202Z"
     }
    ],
    "approvals": [],
