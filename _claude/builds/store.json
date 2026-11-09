@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1865,
- "updatedAt": "2026-11-09T18:51:33.962Z",
+ "rev": 1866,
+ "updatedAt": "2026-11-09T18:52:00.660Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129544,6 +129544,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-and-build-manager-search-bar-collap",
+   "title": "Orchestrator and Build Manager: search bar + Collapse all / Expand all",
+   "category": "",
+   "detail": "In the Build orchestrator and Build Manager tables (and the shared build-table asset): a search bar that filters builds by title, id, branch, account and words; Collapse all / Expand all buttons for rows and sections; collapsible section headers (Queued, Active, etc.) remembered across reloads. Voice/API control for search and collapse. Fold into the split-builds-pages table work if it hasn't started. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T18:51:58.882Z",
+   "updatedAt": "2026-11-09T18:51:58.882Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Is there no search bar in the orchestrator? I can't find this. I need to collapse all.",
+    "at": "2026-11-09T18:51:58.881Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 503
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

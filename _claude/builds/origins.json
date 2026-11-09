@@ -2533,6 +2533,18 @@
    "from": "detail",
    "addenda": []
   },
+  "orchestrator-and-build-manager-search-bar-collap": {
+   "said": "Is there no search bar in the orchestrator? I can't find this. I need to collapse all.",
+   "at": "2026-11-09T18:51:58.881Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-api-rule-in-every-brief-plan-studio": {
    "said": "Now I want to make sure he makes the orchestrator is going to include in the briefs, everything comes with an API. It also needs to make the stepped plan in Plan Studio for the build. And it needs to update any plan in the Plan Studio. So the Plan Studio needs to be uh, somehow synced with future builds.",
    "at": "",
