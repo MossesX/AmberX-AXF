@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:51:08.791Z",
+ "updatedAt": "2026-11-09T20:51:21.229Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70132,10 +70132,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-owner-check-bug-dead-start-button",
-   "pr": "",
+   "pr": "#416",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:48:09.282Z",
+   "updatedAt": "2026-11-09T20:51:18.508Z",
    "builtAt": "",
    "notes": [
     {

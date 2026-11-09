@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2009,
- "updatedAt": "2026-11-09T20:51:08.791Z",
+ "rev": 2010,
+ "updatedAt": "2026-11-09T20:51:21.229Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116886,10 +116886,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-owner-check-bug-dead-start-button",
-   "pr": "",
+   "pr": "#416",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:48:09.282Z",
+   "updatedAt": "2026-11-09T20:51:18.508Z",
    "builtAt": "",
    "notes": [
     {
