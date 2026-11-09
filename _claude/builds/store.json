@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1705,
- "updatedAt": "2026-11-09T04:20:33.029Z",
+ "rev": 1706,
+ "updatedAt": "2026-11-09T04:21:07.477Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126206,6 +126206,65 @@
    },
    "queue": null,
    "defaultAt": "2026-11-09T03:03:15.234Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "session-transcripts-api-search-what-was-said-fin",
+   "title": "Session transcripts API: search what was said, find which session",
+   "category": "",
+   "detail": "Builds on ui-review-notify-session-audio (landed Nov 7): sessions are recorded by AmberX's Audio Output Recorder (output-recorder plugin) and transcribed by the faster-whisper worker, transcripts saved on the hub, readable in the recorder page. Today output-recorder's plugin.json declares no transcript commands, so nothing outside the page can read them. Add full API (plugin-commands@1, so MCP/axHub, REST, CLI, voice come for free): list sessions with transcripts (date, length, linked Claude session, title); read one transcript (whole or a time range, with timestamps); search across all transcripts (words or phrase, date range, fuzzy), returning the matching session, timestamp, a few lines of context, and a deep link that opens the recorder page at that moment (and plays the audio there). Also a 'find the session where we talked about X' command that ranks sessions by match. Reachable from Claude chat/voice sessions through axHub so Claude or Gizmo can answer 'which session did we talk about this'. Read-only; respects the recorder's settings. Tests; report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "session-transcripts-api-search-what-was-said-fin",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T04:21:03.588Z",
+   "updatedAt": "2026-11-09T04:21:03.588Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 484
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T04:21:03.588Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

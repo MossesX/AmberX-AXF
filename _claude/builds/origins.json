@@ -3040,6 +3040,18 @@
    "from": "detail",
    "addenda": []
   },
+  "session-transcripts-api-search-what-was-said-fin": {
+   "said": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "settings-asset": {
    "said": "make the settings interface an asset type so several apps use the same settings interface with the same options. New optional asset type `settings`: layout tabs-top / tabs-side / list, header, search, descriptions, tab order + labels, hide (tab/group/panel/setting ids), data-only option groups the app gets while the asset is active. Engine core/engines/settingsui.ts, fixture settings-ui.json, web settings library reads it, starters standard (default) / side-tabs / developer-apps. Android twin deferred.",
    "at": "2026-10-23",
