@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1688,
- "updatedAt": "2026-11-09T02:58:36.877Z",
+ "rev": 1689,
+ "updatedAt": "2026-11-09T02:59:28.908Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125795,7 +125795,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125807,10 +125807,73 @@
     "createdAt": "2026-11-09T02:57:30.536Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8o8qzg0137x2": "2026-11-09T02:58:13.276Z",
+     "st-mw8o8qzg02erav": "2026-11-09T02:58:13.276Z",
+     "st-mw8o8qzg03ksrd": "2026-11-09T02:58:13.276Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T02:58:13.276Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "title": "Reserve build IDs at once: add returns the ID with the veto countdown",
+   "category": "",
+   "detail": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:59:26.044Z",
+   "updatedAt": "2026-11-09T02:59:26.044Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 482
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "45 min",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T02:59:26.044Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

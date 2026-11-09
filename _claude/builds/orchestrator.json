@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:58:36.877Z",
+ "updatedAt": "2026-11-09T02:59:28.908Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76757,6 +76757,37 @@
      "uid": "st-mw8o8qzg03ksrd"
     }
    ]
+  },
+  {
+   "id": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "title": "Reserve build IDs at once: add returns the ID with the veto countdown",
+   "category": "",
+   "detail": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:59:26.044Z",
+   "updatedAt": "2026-11-09T02:59:26.044Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
