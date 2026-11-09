@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2012,
- "updatedAt": "2026-11-09T20:51:42.671Z",
+ "rev": 2013,
+ "updatedAt": "2026-11-09T20:51:52.281Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116897,8 +116897,8 @@
    "pr": "#416",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:51:20.568Z",
-   "builtAt": "2026-11-09T20:51:20.569Z",
+   "updatedAt": "2026-11-09T20:51:39.392Z",
+   "builtAt": "2026-11-09T20:51:39.392Z",
    "notes": [
     {
      "text": "Split asked for by console.",
@@ -116923,6 +116923,10 @@
     {
      "text": "Owner-check half is in PR #415 (owner-only-settings build): owner_approval() accepts the signed wall admin session. Leave token-control/claude-settings alone; this build only needs the Build manager Start fix.",
      "at": "2026-11-09T20:48:09.282Z"
+    },
+    {
+     "text": "Headless run axf-fix-owner-check-bug-dead-start-button--paulie: brief only · start 10.7K tokens ($0.02) · cost $2.59 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:51:39.392Z"
     }
    ],
    "approvals": [],

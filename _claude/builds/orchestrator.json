@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:51:42.671Z",
+ "updatedAt": "2026-11-09T20:51:52.281Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70143,8 +70143,8 @@
    "pr": "#416",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:51:20.568Z",
-   "builtAt": "2026-11-09T20:51:20.569Z",
+   "updatedAt": "2026-11-09T20:51:39.392Z",
+   "builtAt": "2026-11-09T20:51:39.392Z",
    "notes": [
     {
      "text": "Split asked for by console.",
@@ -70169,6 +70169,10 @@
     {
      "text": "Owner-check half is in PR #415 (owner-only-settings build): owner_approval() accepts the signed wall admin session. Leave token-control/claude-settings alone; this build only needs the Build manager Start fix.",
      "at": "2026-11-09T20:48:09.282Z"
+    },
+    {
+     "text": "Headless run axf-fix-owner-check-bug-dead-start-button--paulie: brief only · start 10.7K tokens ($0.02) · cost $2.59 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:51:39.392Z"
     }
    ],
    "approvals": [],
