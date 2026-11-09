@@ -160,7 +160,7 @@ function WatchdogLine({ w, save, busy }: { w: Watchdog; save: (patch: Record<str
   return (
     <details className="pd-add pl-watchdog">
       <summary title={`Every ${w.settings.everySec} s · stalled after ${w.settings.stallMin} min without log output · ${w.settings.maxRetries} auto retries`}>
-        <span className="pl-stat"><Icon name="eye" size={14} />Watchdog {w.settings.on ? '' : '(off) '}· checked {ago(w.at)} · <b>{w.marked}</b> marked running, <b>{w.real}</b> really running{fixed ? ` · ${fixed} fixed today` : ''}</span>
+        <span className="pl-stat"><Icon name="eye" size={14} /><span>{`Watchdog${w.settings.on ? '' : ' (off)'} · checked ${ago(w.at)} · ${w.marked} marked running, ${w.real} really running${fixed ? ` · ${fixed} fixed today` : ''}`}</span></span>
         {off && <Chip tone="warning">mismatch</Chip>}
       </summary>
       <div className="fx-stack">
