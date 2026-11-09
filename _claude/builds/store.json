@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1812,
- "updatedAt": "2026-11-09T17:58:06.404Z",
+ "rev": 1813,
+ "updatedAt": "2026-11-09T17:58:18.177Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128056,7 +128056,7 @@
    "title": "Account failover chain: subscription, next subscription, then API; record who actually built it",
    "category": "",
    "detail": "When the orchestrator launches a step on its chosen account and the login fails or is limited, it marks that account limited and retries on the next subscription account in priority order; if no subscription can run it, it goes to an API-key account under its caps. Whichever account or API key actually ran the step is recorded on the step and build (account, email, model, cost) and shown in the orchestrator. Never silently fall back outside this chain. Builds on fix-account-attribution (running now, which records the real login) and overlaps pending running-builds-follow-the-active-claude-account-fail-over-when-it-dies and auto-switch-claude-account-when-the-active-one-r: fold them in.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128064,7 +128064,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-09T17:58:03.844Z",
+   "updatedAt": "2026-11-09T17:58:12.876Z",
    "builtAt": "",
    "notes": [
     {
@@ -128106,6 +128106,14 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T17:58:03.844Z"
+    },
+    {
+     "text": "Started run 3 on account-1 (Opus, Phase 1): axf-account-failover-chain-subscription-next-subscri--rhonda.",
+     "at": "2026-11-09T17:58:10.441Z"
+    },
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-account-failover-chain-subscription-next-subscri--rhonda, own login copy)",
+     "at": "2026-11-09T17:58:12.876Z"
     }
    ],
    "approvals": [],
@@ -128126,11 +128134,11 @@
     "queuedAt": "2026-11-09T17:44:49.712Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "",
+    "session": "axf-account-failover-chain-subscription-next-subscri--rhonda",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T17:57:12.892Z",
-    "runs": 2,
+    "launchedAt": "2026-11-09T17:58:10.111Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-09T17:58:03.152Z",
      "exit": 1,
@@ -128147,9 +128155,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:57:12.892Z"
+    "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
    "steps": [
     {
@@ -128230,7 +128238,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
