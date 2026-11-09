@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:00 UTC · `molly-one-shell` s2 done (all) · orchestrator
 - 2026-11-08 17:00 UTC · `molly-one-shell` s3 done (all) · orchestrator
 - 2026-11-08 17:00 UTC · `memory-restructure-chunked-claude-md-store-memor` s1 done (all) · orchestrator
 - 2026-11-08 17:00 UTC · `memory-restructure-chunked-claude-md-store-memor` s2 done (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:43 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · pipeline
 - 2026-11-09 17:44 UTC · `account-failover-chain-subscription-next-subscri` added (0 steps) (all) · console
 - 2026-11-09 17:44 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · console
+- 2026-11-09 17:45 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 
 ## Token passes (log)
 

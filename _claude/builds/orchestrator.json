@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:44:59.586Z",
+ "updatedAt": "2026-11-09T17:45:59.480Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78087,12 +78087,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-09T17:44:50.203Z",
+   "updatedAt": "2026-11-09T17:45:57.126Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T17:44:50.203Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T17:45:57.126Z"
     }
    ],
    "approvals": [],
@@ -78109,7 +78113,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "When the orchestrator launches a step on its chosen account and the login fails or is limited, it marks that account limited and retries on the next subscription account in priority order; if no subscription can run it, it goes to an API-key account under its caps. Whichever account or API key actually ran the step is recorded on the step and build (account, email, model, cost) and shown in the orchestrator. Never silently fall back outside this chain. Builds on fix-account-attribution (running now, which records the real login) and overlaps pending running-builds-follow-the-active-claude-account-fail-over-when-it-dies and auto-switch-claude-account-when-the-active-one-r: fold them in.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9jydmv01f771"
+    },
+    {
+     "id": "s2",
+     "text": "The orchestrator assigns a model; if it doesn't work, it goes to another subscription, and if there's no subscriptions, it goes to an API. Whatever account or API actually does the job, the orchestrator notes it: this account is the one who built it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9jydmv028u9h"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/account-failover-chain-subscription-next-subscri.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/account-failover-chain-subscription-next-subscri.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9jydmv03yq8x"
+    }
+   ]
   }
  ]
 }
