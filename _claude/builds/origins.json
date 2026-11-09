@@ -2944,6 +2944,18 @@
    "from": "brief",
    "addenda": []
   },
+  "prompt-caching-and-batch-api-support-in-the-buil": {
+   "said": "Build up prompt caching and batch API plugin... Actually, it's for the orchestrator, not an agent.",
+   "at": "2026-11-09T16:02:30.370Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "push-banner-merge-all": {
    "said": "add pending merges to the push banner, a button to fix conflicts and merge all, and a button to fix conflicts and pull main into all. Every merge goes to axHub for approval (github.pulls/merge). Conflicts get a Copy fix brief for a Claude session (automatic Claude conflict fixing was refused by the session safety check).",
    "at": "2026-10-22",

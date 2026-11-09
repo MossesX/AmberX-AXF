@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T14:33:54.161Z",
+ "updatedAt": "2026-11-09T16:02:31.608Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77712,6 +77712,37 @@
      "uid": "st-mw9d2vbc02m4k8"
     }
    ]
+  },
+  {
+   "id": "prompt-caching-and-batch-api-support-in-the-buil",
+   "title": "Prompt caching and Batch API support in the build orchestrator",
+   "category": "",
+   "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T16:02:30.370Z",
+   "updatedAt": "2026-11-09T16:02:30.370Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Build up prompt caching and batch API plugin... Actually, it's for the orchestrator, not an agent.",
+    "at": "2026-11-09T16:02:30.370Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

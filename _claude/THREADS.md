@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` PR #384 (all) · builds-live
 - 2026-11-08 01:05 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s8 done, → built (all) · orchestrator
 - 2026-11-08 02:31 UTC · `x.state` → pending (all) · claude-voice
 - 2026-11-08 02:31 UTC · `x.deploy.console` → pending (all) · claude-voice
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 14:31 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued (all) · claude-ai-voice
 - 2026-11-09 14:33 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` added (1 steps) (all) · claude-ai-voice
 - 2026-11-09 14:33 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` note (all) · claude-ai-voice
+- 2026-11-09 16:02 UTC · `prompt-caching-and-batch-api-support-in-the-buil` added (0 steps) (all) · console
 
 ## Token passes (log)
 
