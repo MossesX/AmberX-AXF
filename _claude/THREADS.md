@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 01:00 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · orchestrator
 - 2026-11-08 01:00 UTC · `idle-alert-phone-flag-when-nothing-is-building` → complete (all) · orchestrator
 - 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` s1 done, → running (all) · orchestrator
 - 2026-11-08 01:00 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` s2 done, → complete (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 13:19 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · claude-ai-voice
 - 2026-11-09 13:21 UTC · `appearance-skins-colour-themes-only-remove-design-packs` added (3 steps) (all) · claude-ai-voice
 - 2026-11-09 13:22 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · claude-ai-voice
+- 2026-11-09 13:25 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · claude-ai-voice
 
 ## Token passes (log)
 

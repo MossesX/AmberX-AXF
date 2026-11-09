@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1728,
- "updatedAt": "2026-11-09T13:22:05.037Z",
+ "rev": 1729,
+ "updatedAt": "2026-11-09T13:25:26.317Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127058,12 +127058,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T13:22:04.141Z",
+   "updatedAt": "2026-11-09T13:25:25.454Z",
    "builtAt": "",
    "notes": [
     {
      "text": "SCOPE CHANGE (Brett, Nov 9): SKINS ONLY. Remove design packs, colour themes, style themes, layout themes and behaviour themes as separate concepts. A skin covers everything: colours, styling, layouts, behaviour. Convert every existing pack/theme into skin sections (nothing lost), remove their pickers, screens, settings and asset types (redirect references and migrate saved settings), Appearance shows only the Skin picker. Keep the skin's internal sections (colours, style, layout, behaviour) cleanly separated so the later Skin Designer can edit each section. Overrides step 3's 'Skin + Colour theme'. Default look identical.",
      "at": "2026-11-09T13:22:04.141Z"
+    },
+    {
+     "text": "MODEL (Brett): not Fable for every step. Orchestrator uses its judgment: Fable for the risky, cross-cutting work (converting packs/themes into skin sections, settings migration, removing theme plugins/asset types, aliases so other apps and axHub don't break). Opus or cheaper for routine work (UI picker cleanup, screenshots, reports).",
+     "at": "2026-11-09T13:25:25.454Z"
     }
    ],
    "approvals": [],
@@ -127144,7 +127148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

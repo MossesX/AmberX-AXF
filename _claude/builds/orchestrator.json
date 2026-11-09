@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:22:05.037Z",
+ "updatedAt": "2026-11-09T13:25:26.317Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77581,12 +77581,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T13:22:04.141Z",
+   "updatedAt": "2026-11-09T13:25:25.454Z",
    "builtAt": "",
    "notes": [
     {
      "text": "SCOPE CHANGE (Brett, Nov 9): SKINS ONLY. Remove design packs, colour themes, style themes, layout themes and behaviour themes as separate concepts. A skin covers everything: colours, styling, layouts, behaviour. Convert every existing pack/theme into skin sections (nothing lost), remove their pickers, screens, settings and asset types (redirect references and migrate saved settings), Appearance shows only the Skin picker. Keep the skin's internal sections (colours, style, layout, behaviour) cleanly separated so the later Skin Designer can edit each section. Overrides step 3's 'Skin + Colour theme'. Default look identical.",
      "at": "2026-11-09T13:22:04.141Z"
+    },
+    {
+     "text": "MODEL (Brett): not Fable for every step. Orchestrator uses its judgment: Fable for the risky, cross-cutting work (converting packs/themes into skin sections, settings migration, removing theme plugins/asset types, aliases so other apps and axHub don't break). Opus or cheaper for routine work (UI picker cleanup, screenshots, reports).",
+     "at": "2026-11-09T13:25:25.454Z"
     }
    ],
    "approvals": [],
