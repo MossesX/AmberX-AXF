@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1767,
- "updatedAt": "2026-11-09T17:03:59.941Z",
+ "rev": 1768,
+ "updatedAt": "2026-11-09T17:06:06.148Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126887,7 +126887,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:03:56.117Z",
+   "updatedAt": "2026-11-09T17:06:03.772Z",
    "builtAt": "",
    "notes": [
     {
@@ -126959,12 +126959,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T17:06:03.772Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T13:17:25.807Z",
-     "updatedAt": "2026-11-09T13:17:25.807Z"
+     "updatedAt": "2026-11-09T17:06:03.936Z"
     },
     {
      "id": "s3",
@@ -127063,7 +127063,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
