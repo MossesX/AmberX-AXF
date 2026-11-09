@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:25:31.283Z",
+ "updatedAt": "2026-11-09T19:25:40.882Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79648,7 +79648,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:25:12.995Z",
+   "updatedAt": "2026-11-09T19:25:31.021Z",
    "builtAt": "",
    "notes": [
     {
@@ -79698,6 +79698,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-home-page-build-queue-card-opens-the-orchestrato--earl, own login copy)",
      "at": "2026-11-09T19:25:12.995Z"
+    },
+    {
+     "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--earl: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:25:31.021Z"
     }
    ],
    "approvals": [],
@@ -79787,7 +79791,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:24:53.282Z",
+   "updatedAt": "2026-11-09T19:25:34.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -79805,6 +79809,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--sully, own login copy)",
      "at": "2026-11-09T19:24:53.282Z"
+    },
+    {
+     "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--sully: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:25:34.626Z"
     }
    ],
    "approvals": [],

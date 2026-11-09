@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1915,
- "updatedAt": "2026-11-09T19:25:31.283Z",
+ "rev": 1916,
+ "updatedAt": "2026-11-09T19:25:40.882Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130219,7 +130219,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:25:12.995Z",
+   "updatedAt": "2026-11-09T19:25:31.021Z",
    "builtAt": "",
    "notes": [
     {
@@ -130269,6 +130269,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-home-page-build-queue-card-opens-the-orchestrato--earl, own login copy)",
      "at": "2026-11-09T19:25:12.995Z"
+    },
+    {
+     "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--earl: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:25:31.021Z"
     }
    ],
    "approvals": [],
@@ -130393,7 +130397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130417,7 +130421,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:24:53.282Z",
+   "updatedAt": "2026-11-09T19:25:34.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -130435,6 +130439,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--sully, own login copy)",
      "at": "2026-11-09T19:24:53.282Z"
+    },
+    {
+     "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--sully: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:25:34.626Z"
     }
    ],
    "approvals": [],
@@ -130552,7 +130560,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
