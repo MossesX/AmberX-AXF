@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:54:07.110Z",
+ "updatedAt": "2026-11-09T23:54:18.015Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81121,7 +81121,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:53:29.404Z",
+   "updatedAt": "2026-11-09T23:54:08.105Z",
    "builtAt": "",
    "notes": [
     {
@@ -81184,6 +81184,13 @@
      },
      {
       "said": "We're just gonna upgrade and soup up the old stuff.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "Actually, no, it's not separate. It is the group chat. This is where the orchestrator will always hand out jobs. This is where they reach out to the employee. This is the group chat. So there has to be a back and forth when somebody replies to somebody else. Only if it's a reply, though. If not, it [stays in the same feed].",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",

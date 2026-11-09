@@ -614,6 +614,13 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "Actually, no, it's not separate. It is the group chat. This is where the orchestrator will always hand out jobs. This is where they reach out to the employee. This is the group chat. So there has to be a back and forth when somebody replies to somebody else. Only if it's a reply, though. If not, it [stays in the same feed].",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },
