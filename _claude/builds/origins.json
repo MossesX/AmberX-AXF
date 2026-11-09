@@ -3617,6 +3617,18 @@
    "from": "brief",
    "addenda": []
   },
+  "test-button-on-every-claude-account-subscription": {
+   "said": "Why is there no way to test these accounts? There's no fucking button to test them.",
+   "at": "2026-11-09T20:16:02.957Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "theme-editor": {
    "said": "theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
    "at": "2026-11-02",

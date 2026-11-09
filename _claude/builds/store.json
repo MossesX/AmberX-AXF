@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1928,
- "updatedAt": "2026-11-09T20:15:50.700Z",
+ "rev": 1929,
+ "updatedAt": "2026-11-09T20:16:04.251Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130776,6 +130776,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T20:15:39.174Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "test-button-on-every-claude-account-subscription",
+   "title": "Test button on every Claude account (subscription and API)",
+   "category": "",
+   "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T20:16:02.957Z",
+   "updatedAt": "2026-11-09T20:16:02.957Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why is there no way to test these accounts? There's no fucking button to test them.",
+    "at": "2026-11-09T20:16:02.957Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 508
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
