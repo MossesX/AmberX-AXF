@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T04:31:16.063Z",
+ "updatedAt": "2026-11-09T13:08:04.083Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77126,6 +77126,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw8r8vo603igcy"
+    }
+   ]
+  },
+  {
+   "id": "amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
+   "title": "AmberX floating toolbar (always on top): mic + approvals + build status",
+   "category": "amberx",
+   "detail": "AmberX Android app: a small floating toolbar (overlay bubble, draw over other apps) that stays on top everywhere. Main items: mic button (talk to Claude / hands-free toggle) and approvals (badge with count of waiting axHub approvals; tap to approve/deny in place). Also build status (running count, failures). Draggable, collapsible, snaps to edges; every piece an asset, styled from tokens, configurable in settings (items, size, opacity, position). Brett: \"add a floating toolbar to AmberX that's always on top... the main thing was the mic and the approvals.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T13:08:03.151Z",
+   "updatedAt": "2026-11-09T13:08:03.151Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Overlay permission + floating draggable bubble/toolbar service, always on top, snap/collapse",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9a0zz404ac6j"
+    },
+    {
+     "id": "s2",
+     "text": "Mic button wired to hands-free/talk listener; approvals badge with live count and approve/deny in place",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9a0zz4058ljf"
+    },
+    {
+     "id": "s3",
+     "text": "Build status item, settings (items, size, opacity), token-styled assets; screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9a0zz406wz2o"
     }
    ]
   }
