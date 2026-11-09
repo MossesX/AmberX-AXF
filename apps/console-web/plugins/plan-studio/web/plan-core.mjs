@@ -457,7 +457,10 @@ export function searchText(p) {
   return [p.title, p.summary, p.goal, p.why, p.category, p.tags.join(' '), p.project, p.profile, p.status, p.priority, p.owner, p.body,
     ...p.steps.map((s) => `${s.text} ${s.model}`), ...LIST_IDS.flatMap((k) => p[k].map((x) => `${x.text} ${x.answer ?? ''} ${x.mitigation ?? ''}`)),
     ...p.links.map((l) => `${l.ref} ${l.label}`), ...p.features.map((f) => `${f.entry} ${f.feature} ${f.title}`), ...p.touches.map((t) => t.key),
-    ...p.comments.map((c) => c.text), ...p.attachments.map((a) => `${a.name} ${a.transcript}`)].join('\n').toLowerCase();
+    ...p.comments.map((c) => c.text), ...p.attachments.map((a) => `${a.name} ${a.transcript}`),
+    // the shipped manifest (plan-shipped.mjs): build id, branch, PR, landed commit, files, accounts, what is open
+    ...(p.shipped ? [str(p.shipped.build?.id), str(p.shipped.branch), p.shipped.pr?.number ? `#${p.shipped.pr.number} pr ${p.shipped.pr.number}` : '', str(p.shipped.landedCommit), ...arr(p.shipped.files), ...arr(p.shipped.accounts), ...arr(p.shipped.open)] : []),
+    str(p.origin?.said)].join('\n').toLowerCase();
 }
 /** filter: {q, statuses[], priorities[], categories[] (a category includes its sub-categories), tags[], projects[], profiles[], models[], hasBuild} */
 export function filterPlans(plans, f = {}) {

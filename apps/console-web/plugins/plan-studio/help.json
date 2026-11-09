@@ -19,6 +19,30 @@
         "kind": "button"
       },
       {
+        "target": "shipped",
+        "title": "Shipped",
+        "text": "What the orchestrator sent when this build landed: Brett's words, the brief, every step with its estimate and actual time, branch, PR, landed commit, files, tests, UI Review, cost and tokens, the report and what is still open. A manifest that fails the shipped-manifest@1 check is refused and shown here as a flag with the field errors.",
+        "kind": "section"
+      },
+      {
+        "target": "brief-the-session-ran-on",
+        "title": "Brief the session ran on",
+        "text": "The full brief the build session was given. Tap to open or close it.",
+        "kind": "button"
+      },
+      {
+        "target": "steps-estimate-vs-actual",
+        "title": "Steps: estimate vs actual",
+        "text": "Each step with the time it was given and the time it really took.",
+        "kind": "button"
+      },
+      {
+        "target": "still-open",
+        "title": "Still open",
+        "text": "What the build left open, from its report and its unfinished steps.",
+        "kind": "button"
+      },
+      {
         "target": "remove-link",
         "title": "Remove link",
         "text": "Removes link. Depending on your behaviour theme it asks first. Part of Plan Studio.",

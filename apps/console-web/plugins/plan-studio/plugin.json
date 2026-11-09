@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every plan in one place (plan@1: JSON + a Markdown body). Enter plans by hand in a full sectioned editor (templates, autosave, quick capture), file them in nested categories, and view them as a tree, grid, sub-grids, board, roadmap or reader. Plain-English AI edits plans as a diff to apply or undo, and AmberX talks plans through by voice. Turn a plan into an orchestrator build and follow its progress. The Catalog lists every plugin, app, library, framework module and axHub with its features checked off as have, partial, planned or idea. Plans live in the hub's shared data (plan-studio/), so claude.ai and VPS sessions read and write them through axhub.memory_read / memory_write; plans.mjs is the CLI.",
+  "description": "Every plan in one place (plan@1: JSON + a Markdown body). Enter plans by hand in a full sectioned editor (templates, autosave, quick capture), file them in nested categories, and view them as a tree, grid, sub-grids, board, roadmap or reader. Plain-English AI edits plans as a diff to apply or undo, and AmberX talks plans through by voice. Turn a plan into an orchestrator build and follow its progress. When a build lands, the orchestrator's shipped manifest (shipped-manifest@1: Brett's verbatim prompt, the full brief, models and accounts, steps with estimates and actual times, branch, PR, landed commit, files, tests, UI Review, cost and tokens, report, what is open) reaches the build's plan through build-hook@1, validated against the shared schema module; an invalid one is refused and flagged on the plan. The Catalog lists every plugin, app, library, framework module and axHub with its features checked off as have, partial, planned or idea. Plans live in the hub's shared data (plan-studio/), so claude.ai and VPS sessions read and write them through axhub.memory_read / memory_write; plans.mjs is the CLI.",
   "targets": [
     "axf-console",
     "amberx-droid"
@@ -30,6 +30,7 @@
     "label": "Plan Studio",
     "icon": "layout"
   },
+  "buildHooks": "build-hooks.mjs",
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/plan-studio",
@@ -42,7 +43,64 @@
       "_claude/memory/docs/plan-studio/README.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "POST /shipped",
+        "id": "shipped",
+        "title": "Send a shipped manifest to Plan Studio",
+        "description": "Receive a build's shipped manifest (shipped-manifest@1): the build's plan is created or updated with every field (Brett's verbatim prompt, brief, models, accounts, steps with estimates and actual times, branch, PR, landed commit, files, tests, UI Review, cost, report, open items). Give the manifest, or just the build id to take its stored sidecar. An invalid manifest is refused with the field errors and the plan is flagged. Say 'send the shipped manifest for the veto build to Plan Studio'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": { "type": "string", "description": "Build id (builds@1): its sidecar manifest is used" },
+            "manifest": { "type": "object", "description": "A full shipped-manifest@1 (wins over the sidecar)" },
+            "source": { "type": "string", "description": "orchestrator | backfill | api | manual" }
+          },
+          "additionalProperties": true
+        },
+        "output": "{ ok, plan, created, unchanged, manifest } or { ok: false, refused: true, reason, errors: [{ field, message }], plan }"
+      },
+      {
+        "route": "GET /shipped/{plan}",
+        "id": "shipped-get",
+        "title": "Read the shipped manifest on a plan",
+        "description": "The shipped manifest a plan carries (by plan or build id), its summary, actual cost and tokens, and the flag when the last manifest was refused. Say 'what shipped on the veto plan'.",
+        "readOnly": true,
+        "output": "{ ok, plan, title, status, shipped, problem, summary, actual }"
+      },
+      {
+        "route": "POST /shipped/backfill",
+        "id": "shipped-backfill",
+        "title": "Backfill shipped manifests into plans",
+        "description": "Every stored shipped manifest the plans have not taken yet (or have an older rev of) is received; since = only landings from that date; dry = list only. Say 'backfill tonight's shipped builds into Plan Studio'.",
+        "input": {
+          "type": "object",
+          "properties": { "since": { "type": "string", "description": "YYYY-MM-DD" }, "dry": { "type": "boolean" } },
+          "additionalProperties": false
+        },
+        "output": "{ ok, since, dry, found, received: [{ build, plan, ok, refused, reason, created, unchanged }] }"
+      },
+      {
+        "route": "GET /shipped-log",
+        "id": "shipped-log",
+        "title": "Shipped manifest receipts",
+        "description": "The last receipts: each manifest Plan Studio took or refused, with the reason. Say 'which shipped manifests were refused'.",
+        "readOnly": true,
+        "output": "{ ok, entries: [{ at, build, plan, ok, refused, reason, id, rev, source, by }] }"
+      },
+      {
+        "route": "GET /check-builds",
+        "id": "check-builds",
+        "title": "Check shipped builds against their plans",
+        "description": "Every shipped manifest has its plan, at the manifest's rev, valid shipped-manifest@1 and matching (steps, landed commit, status); flagged plans are listed. Say 'check the shipped builds'.",
+        "readOnly": true,
+        "output": "{ ok, checked, plans, problems: [{ build, plan, problem }], warnings: [{ plan, warning }] }"
+      }
+    ]
+  },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-30"

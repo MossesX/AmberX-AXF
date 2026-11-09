@@ -23,15 +23,25 @@
  *   … categories                      the category tree
  *   … api '<json {op,…}>'             everything the console page does (the server calls this); also reads stdin
  *   … where                           the store folder
+ *   … shipped <build | file.json | ->  receive a shipped-manifest@1 for a build (the sidecar _claude/builds/shipped/<build>.json,
+ *                                     a file, or stdin): the build's plan is created / updated with every field; an
+ *                                     invalid one is refused with the field errors and flagged on the plan (exit 2)
+ *   … shipped backfill [--since d]     every sidecar manifest the plans have not taken yet (tonight's landed builds)
+ *   … shipped show <build>             the manifest a plan carries (+ its flag)
+ *   … shipped log [n]                  the last n receipts (ok / refused, with the reason)
+ *   … check-builds                     every shipped manifest has its plan, at the manifest's rev, valid and matching (exit 1 if not)
  *   --json on any command prints one JSON line.
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
+import * as ps from './web/plan-shipped.mjs';
 import { discover, readMatrices, writeBack } from './catalog.mjs';
 import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import * as SM from '../../../../framework/core/shipped-manifest.mjs';
+import { listManifests as sidecarManifests, readManifest as readSidecar } from '../../../../framework/cli/shipped-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -164,6 +174,88 @@ export function syncBuilds() {
   return changed;
 }
 
+/* ------------------------------------------------------------------ shipped manifests (shipped-manifest@1 → the build's plan) */
+
+const planIdOk = (id) => ID_RE.test(id ?? '');
+const logShipped = (entry) => { try { mkdirSync(storeDir(), { recursive: true }); appendFileSync(P('shipped-log.jsonl'), `${JSON.stringify(entry)}\n`); } catch { /* the log is a convenience */ } };
+/** The last n receipts (newest last). */
+export function shippedLog(n = 50) {
+  let lines = []; try { lines = readFileSync(P('shipped-log.jsonl'), 'utf8').split('\n').filter(Boolean); } catch { return []; }
+  return lines.slice(-Math.max(1, n)).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+}
+
+/**
+ * Receive one shipped-manifest@1 (what the orchestrator sends Shipped features when a build lands): validated against
+ * the shared schema module first. Valid → the build's plan (plan id = build id) is created or updated with every field
+ * (plan-shipped.mjs applyManifest), a version kept, the receipt logged. Invalid → refused: the manifest is not stored,
+ * the plan is flagged with the field errors (created with only the flag when the build has no plan yet), the receipt
+ * logged, and { ok: false, refused: true, reason, errors } comes back so the caller (CLI, hook, API) can say why.
+ * A manifest with no build id cannot be attached to anything and throws (exit 2 on the CLI).
+ */
+export function receiveManifest(raw, { by = 'orchestrator', source = '', now = new Date().toISOString(), why = '' } = {}) {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  const v = SM.validateManifest(r);
+  const id = ps.planIdFor(r);
+  if (!v.ok) {
+    const reason = SM.rejection(v.errors);
+    if (!id || !planIdOk(id)) throw Object.assign(new Error(`shipped-manifest@1 refused: ${reason}`), { code: 2, errors: v.errors, refused: true });
+    const before = getPlan(id);
+    const flagged = ps.flagManifest(before, r, v.errors, { now, source: source || r.source, by });
+    const saved = savePlan(flagged, { by, kind: 'shipped', note: `Shipped manifest refused: ${reason}`.slice(0, 300), force: true });
+    logShipped({ at: now, build: id, plan: saved.plan.id, ok: false, refused: true, id: String(r.id ?? ''), rev: Number(r.rev) || 0, source: String(source || r.source || ''), by, reason, why });
+    return { ok: false, refused: true, reason, errors: v.errors, plan: saved.plan, created: !before };
+  }
+  const m = SM.normManifest(r, { now });
+  const before = getPlan(m.build.id);
+  const applied = ps.applyManifest(before, m, { now });
+  if (!applied.changed) return { ok: true, plan: before, unchanged: true, stale: applied.stale, created: false, manifest: SM.summaryOf(m) };
+  const landed = m.landedCommit ? `landed ${m.landedCommit.slice(0, 9)}` : m.pr.number ? `PR #${m.pr.number}` : m.mergedAt ? `merged ${m.mergedAt}` : 'not landed';
+  const note = `Shipped manifest ${m.id} rev ${m.rev} (${m.source}): ${landed}, ${m.steps.filter((s) => s.done).length}/${m.steps.length} steps, ${m.files.length} file(s), ${m.tests.length} test line(s), ${m.open.length} open.`;
+  const saved = savePlan(applied.plan, { by, kind: 'shipped', note, force: true });
+  logShipped({ at: now, build: m.build.id, plan: saved.plan.id, ok: true, id: m.id, rev: m.rev, source: m.source, by, created: !before, why });
+  return { ok: true, plan: saved.plan, created: !before, manifest: SM.summaryOf(m) };
+}
+/** The sidecar manifest of a build (framework/cli/shipped-files.mjs), or null. */
+export const sidecarOf = (buildId) => readSidecar(buildId);
+/** Every sidecar manifest the plans have not taken yet (or have an older rev of) → received. `since`: landings from that date. */
+export function backfillShipped({ since = '', by = 'backfill', dry = false } = {}) {
+  const from = SM.iso(since) || '';
+  const out = [];
+  for (const m of sidecarManifests()) {
+    if (from && (m.landedAt || m.shippedAt) < from) continue;
+    const plan = planIdOk(m.build.id) ? getPlan(m.build.id) : null;
+    const have = plan?.shipped;
+    if (have && have.id === m.id && Number(have.rev) >= m.rev) { out.push({ build: m.build.id, plan: plan.id, ok: true, unchanged: true }); continue; }
+    if (dry) { out.push({ build: m.build.id, plan: plan?.id ?? '', ok: true, would: plan ? 'update' : 'create', rev: m.rev }); continue; }
+    try { const r = receiveManifest(m, { by, source: m.source, why: 'backfill' }); out.push({ build: m.build.id, plan: r.plan?.id ?? '', ok: r.ok, refused: r.refused, reason: r.reason, created: r.created, rev: m.rev }); }
+    catch (e) { out.push({ build: m.build.id, ok: false, error: e.message }); }
+  }
+  return { ok: true, since: from, dry, found: out.length, received: out };
+}
+/**
+ * check-builds: every shipped manifest (sidecar) has its plan, at the manifest's rev, the manifest the plan carries is
+ * a valid shipped-manifest@1 and the plan agrees with it (plan-shipped.mjs checkPlanAgainstManifest), and every plan
+ * is a valid plan@1. Flagged plans (a refused manifest) are listed as warnings. { ok, checked, problems, warnings }.
+ */
+export function checkBuilds() {
+  const problems = []; const warnings = []; let checked = 0;
+  const plans = loadPlans();
+  for (const m of sidecarManifests()) {
+    checked += 1;
+    const plan = plans.find((p) => p.id === m.build.id) ?? plans.find((p) => p.build?.id === m.build.id);
+    if (!plan) { problems.push({ build: m.build.id, problem: `no plan for shipped build ${m.build.id} (plans.mjs shipped ${m.build.id})` }); continue; }
+    const v = plan.shipped ? SM.validateManifest(plan.shipped) : { ok: false, errors: [{ field: 'shipped', message: 'the plan carries no manifest' }] };
+    if (!v.ok) problems.push({ build: m.build.id, plan: plan.id, problem: `the plan's manifest is not a valid shipped-manifest@1: ${SM.rejection(v.errors)}` });
+    for (const x of ps.checkPlanAgainstManifest(plan, m)) problems.push({ build: m.build.id, plan: plan.id, problem: x });
+    const bad = pc.validate(plan); if (bad.length) problems.push({ build: m.build.id, plan: plan.id, problem: `not a valid plan@1: ${bad.join('; ')}` });
+  }
+  for (const p of plans) {
+    if (p.shippedProblem) warnings.push({ plan: p.id, build: p.build?.id ?? p.id, warning: `flagged: a shipped manifest was refused ${p.shippedProblem.at}: ${p.shippedProblem.reason}` });
+    if (p.shipped && p.shipped.build?.id !== p.id) problems.push({ plan: p.id, build: p.shipped.build?.id ?? '', problem: `plan ${p.id} carries the manifest of build ${p.shipped.build?.id}` });
+  }
+  return { ok: !problems.length, checked, plans: plans.filter((p) => p.shipped).length, problems, warnings };
+}
+
 /* ------------------------------------------------------------------ catalog */
 
 export async function catalog() {
@@ -258,6 +350,20 @@ export async function api(req) {
     }
     case 'build': return turnIntoBuild(r.id, { profile: r.profile, buildId: r.buildId, preview: !!r.preview, by, said: typeof r.said === 'string' ? r.said : '' });
     case 'sync-builds': return { ok: true, changed: syncBuilds() };
+    case 'shipped': { // a shipped-manifest@1 for a build (the manifest given, else the build's sidecar)
+      const m = r.manifest && typeof r.manifest === 'object' ? r.manifest : r.build ? sidecarOf(r.build) : null;
+      if (!m) throw new Error(r.build ? `no shipped manifest for build "${r.build}" yet (the orchestrator sends one when it lands)` : 'give a manifest or a build id');
+      return receiveManifest(m, { by: by || 'api', source: typeof r.source === 'string' && r.source ? r.source : (r.manifest ? 'api' : m.source), why: 'api' });
+    }
+    case 'shipped-get': {
+      const id = String(r.id ?? r.build ?? '');
+      const plan = planIdOk(id) ? getPlan(id) ?? loadPlans().find((p) => p.build?.id === id) ?? null : loadPlans().find((p) => p.build?.id === id) ?? null;
+      if (!plan) throw new Error(`no plan for ${id}`);
+      return { ok: true, plan: plan.id, title: plan.title, status: plan.status, shipped: plan.shipped ?? null, problem: plan.shippedProblem ?? null, summary: ps.shippedSummary(plan), actual: plan.actual ?? null };
+    }
+    case 'shipped-backfill': return backfillShipped({ since: typeof r.since === 'string' ? r.since : '', by: by || 'backfill', dry: !!r.dry });
+    case 'shipped-log': return { ok: true, entries: shippedLog(Number(r.n) || 50) };
+    case 'check-builds': return checkBuilds();
     case 'ai': return aiTurn(r.text, { planId: r.plan, reply: r.reply ?? null, apply: !!r.apply, by: by || 'AI' });
     case 'ai-apply': { // apply edits the page already showed as a diff
       const plans = loadPlans(); const plan = r.plan ? plans.find((p) => p.id === r.plan) ?? null : null;
@@ -324,12 +430,29 @@ async function main(argv) {
     return out(r, r.ok ? `${r.say}${r.applied ? ' (applied)' : r.ops?.some((o) => !['answer', 'ask'].includes(o.op)) ? ' (not applied: add --apply)' : ''}` : `✗ ${r.error}`);
   }
   if (cmd === 'sync-builds') { const c = syncBuilds(); return out({ ok: true, changed: c }, c.length ? `updated ${c.join(', ')}` : 'nothing changed'); }
+  if (cmd === 'shipped') {
+    const [what = '', arg] = rest;
+    const receiptLine = (x) => `${x.ok ? (x.unchanged ? '·' : '✓') : '✗'} ${x.build}${x.plan ? ` → plan ${x.plan}` : ''}${x.created ? ' [created]' : ''}${x.unchanged ? ' (already at this rev)' : ''}${x.would ? ` (would ${x.would}, rev ${x.rev})` : ''}${x.refused ? ` refused: ${x.reason}` : ''}${x.error ? `: ${x.error}` : ''}`;
+    if (what === 'backfill') { const r = backfillShipped({ since: typeof f.since === 'string' ? f.since : '', by: 'cli', dry: !!f.dry }); return out(r, r.received.length ? r.received.map(receiptLine).join('\n') : 'no shipped manifests found'); }
+    if (what === 'show') { const r = await api({ op: 'shipped-get', id: arg }); return out(r, r.shipped ? JSON.stringify({ plan: r.plan, problem: r.problem, shipped: r.shipped }, null, 1) : `plan ${r.plan} carries no shipped manifest${r.problem ? `; flagged ${r.problem.at}: ${r.problem.reason}` : ''}`); }
+    if (what === 'log') { const es = shippedLog(Number(arg) || 30); return out({ ok: true, entries: es }, es.map((e) => `${e.at}  ${e.ok ? '✓' : '✗'} ${e.build} ${e.id || ''}${e.rev ? ` rev ${e.rev}` : ''} ${e.source || ''}${e.refused ? `  refused: ${e.reason}` : e.created ? '  [created]' : ''}`).join('\n') || 'no receipts yet'); }
+    if (!what) throw new Error('shipped <build | file.json | -> | backfill [--since d] | show <build> | log [n]');
+    const m = what === '-' ? JSON.parse(readFileSync(0, 'utf8')) : /\.json$/i.test(what) || what.includes('/') ? JSON.parse(readFileSync(what, 'utf8')) : sidecarOf(what);
+    if (!m) throw Object.assign(new Error(`no shipped manifest for build "${what}" yet (the orchestrator sends one when it lands; or give a manifest file)`), { code: 2 });
+    const r = receiveManifest(m, { by: process.env.AXF_ACTOR || 'cli', source: typeof f.source === 'string' ? f.source : (what === '-' || what.includes('.json') ? 'manual' : m.source), why: 'cli' });
+    if (!r.ok) process.exitCode = 2;
+    return out(r, r.ok ? `${r.unchanged ? 'already there' : 'received'}: plan ${r.plan.id}${r.created ? ' created' : ''}${r.manifest ? ` ← ${r.manifest.id} rev ${r.plan.shipped?.rev ?? 1}${r.manifest.landedCommit ? `, landed ${r.manifest.landedCommit.slice(0, 9)}` : ''}, ${r.manifest.steps.done}/${r.manifest.steps.total} steps, ${r.manifest.files} files, $${r.manifest.costUsd}` : ''}` : `✗ shipped-manifest@1 refused for plan ${r.plan.id} (flagged):\n${r.errors.map((e) => `  ${e.field}: ${e.message}`).join('\n')}`);
+  }
+  if (cmd === 'check-builds') {
+    const r = checkBuilds(); if (!r.ok) process.exitCode = 1;
+    return out(r, [`${r.ok ? '✓' : '✗'} ${r.checked} shipped manifest(s), ${r.plans} plan(s) carry one`, ...r.problems.map((p) => `  ✗ ${p.build || p.plan}: ${p.problem}`), ...r.warnings.map((w) => `  ! ${w.plan}: ${w.warning}`)].join('\n'));
+  }
   throw new Error(`unknown command ${cmd}`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main(process.argv.slice(2)).catch((e) => {
-    if (process.argv.includes('--json') || process.argv[2] === 'api') console.log(JSON.stringify({ ok: false, error: e.message })); else console.error(e.message);
-    process.exitCode = 1;
+    if (process.argv.includes('--json') || process.argv[2] === 'api') console.log(JSON.stringify({ ok: false, error: e.message, ...(e.errors ? { errors: e.errors, refused: true } : {}) })); else console.error(e.message);
+    process.exitCode = e.code === 2 ? 2 : 1;
   });
 }

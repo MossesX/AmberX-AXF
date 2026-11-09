@@ -7,6 +7,7 @@ import { call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, use
 import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
+import { shippedLine } from './shipped';
 import { canListen } from './voice';
 import './plan-studio.css';
 
@@ -25,10 +26,18 @@ const LAYOUTS: { value: Layout; label: string; icon: string }[] = [
 ];
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: string) => { try { const v = rt.settings.get(k); return typeof v === 'string' && v ? v : d; } catch { return d; } };
 
-/** A plan to open when the page shows (quick capture, "Plan this", a search hit). */
-let pendingOpen: { id?: string; plan?: Plan } | null = null;
+/** A plan to open when the page shows (quick capture, "Plan this", a search hit, a deep link, the show action). `id` may be a build id. */
+let pendingOpen: { id?: string; plan?: Plan; section?: string } | null = null;
 const openers = new Set<() => void>();
-export function openPlan(o: { id?: string; plan?: Plan }) { pendingOpen = o; openers.forEach((f) => f()); }
+export function openPlan(o: { id?: string; plan?: Plan; section?: string }) { pendingOpen = o; openers.forEach((f) => f()); }
+/** Deep links: ?plan=<plan or build id> opens the plan; ?shipped=<build id> opens it on its Shipped section (also after #…?). */
+const openFromUrl = () => {
+  const read = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k);
+  const plan = (read('plan') ?? '').trim(); const shipped = (read('shipped') ?? '').trim();
+  return plan ? { id: plan } : shipped ? { id: shipped, section: 'shipped' } : null;
+};
+/** The plan with that id, or the plan of that build (plan id = build id, else the build link, else the shipped manifest). */
+export const findPlan = (plans: Plan[], id: string) => { const k = id.trim().toLowerCase(); return plans.find((x) => x.id === k) ?? plans.find((x) => x.build?.id === k) ?? plans.find((x) => x.shipped?.build?.id === k) ?? null; };
 
 export function Head({ count }: { count?: number }) {
   return (
@@ -45,25 +54,27 @@ export function Head({ count }: { count?: number }) {
 export function PlanStudioPage() {
   const { state, error } = useStudio();
   const [tab, setTab] = useState<Tab>('plans');
-  const [open, setOpen] = useState<{ plan: Plan; isNew: boolean } | null>(null);
+  const [open, setOpen] = useState<{ plan: Plan; isNew: boolean; section?: string } | null>(null);
   const [voice, setVoice] = useState(false);
+  const rt = useRuntime();
 
-  // open what quick capture / Plan this asked for
+  // open what quick capture / Plan this / a deep link / the show action asked for
   useEffect(() => {
+    if (!pendingOpen) pendingOpen = openFromUrl();
     const take = () => {
       if (!pendingOpen || !state) return;
       const o = pendingOpen; pendingOpen = null;
-      if (o.plan) { setOpen({ plan: o.plan, isNew: !state.plans.some((p) => p.id === o.plan!.id) }); setTab('plans'); }
-      else if (o.id) { const p = state.plans.find((x) => x.id === o.id); if (p) { setOpen({ plan: p, isNew: false }); setTab('plans'); } }
+      if (o.plan) { setOpen({ plan: o.plan, isNew: !state.plans.some((p) => p.id === o.plan!.id), section: o.section }); setTab('plans'); }
+      else if (o.id) { const p = findPlan(state.plans, o.id); if (p) { setOpen({ plan: p, isNew: false, section: o.section }); setTab('plans'); } else rt.toast(`No plan for "${o.id}".`, 'warning', 'Plan Studio'); }
     };
     openers.add(take); take();
     return () => { openers.delete(take); };
-  }, [state]);
+  }, [state]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!state) return <div className="fx-stack axp-plan-studio"><Head />{error ? <EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => void reload() }}>{error}</EmptyState> : <LoadingSkeleton rows={8} label="Loading plans" />}</div>;
   const openId = (id: string) => { const p = state.plans.find((x) => x.id === id); if (p) setOpen({ plan: p, isNew: false }); };
 
-  if (open) return <div className="fx-stack axp-plan-studio"><PlanEditor key={open.plan.id} initial={open.plan} isNew={open.isNew} onClose={() => setOpen(null)} onOpen={openId} /></div>;
+  if (open) return <div className="fx-stack axp-plan-studio"><PlanEditor key={open.plan.id} initial={open.plan} isNew={open.isNew} section={open.section} onClose={() => setOpen(null)} onOpen={openId} /></div>;
 
   return (
     <div className="fx-stack axp-plan-studio">
@@ -205,6 +216,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
           {p.goal && <p><b>Goal:</b> {p.goal}</p>}
           {p.steps.length > 0 && <ol className="axp-plan-studio__psteps">{p.steps.slice(0, 12).map((s) => <li key={s.id} className={s.done ? 'is-done' : ''}>{s.text} <span className="fx-muted">({s.model}{s.minutes ? `, ${pc.fmtMinutes(s.minutes)}` : ''})</span></li>)}{p.steps.length > 12 && <li className="fx-muted">…{p.steps.length - 12} more</li>}</ol>}
           <p className="fx-muted axp-plan-studio__hint">{[p.tags.map((x) => `#${x}`).join(' '), p.profile && `profile ${p.profile}`, p.build && `build ${p.build.id} · ${p.build.progress ?? 0}%`, pc.fmtCost(p.cost.usd) && `${pc.fmtCost(p.cost.usd)} est.`, `changed ${fmtDay(p.updatedAt)}`].filter(Boolean).join(' · ')}</p>
+          {shippedLine(p) && <p className={`axp-plan-studio__hint axp-plan-studio__shline${p.shippedProblem ? ' is-flag' : ''}`}><Icon name={p.shippedProblem ? 'alert' : 'check-circle'} size={11} /> {shippedLine(p)}</p>}
           <div className="fx-row"><Button size="sm" tone="primary" icon="edit" onClick={() => onOpen(p)}>Open</Button></div>
         </div>
       )}

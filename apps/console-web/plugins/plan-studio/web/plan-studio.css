@@ -146,6 +146,37 @@
 .axp-plan-studio__build { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--axp-ps-fs); }
 .axp-plan-studio__build p { margin: 0; }
 
+/* shipped manifest (shipped-manifest@1) on a plan */
+.axp-plan-studio__ship { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--axp-ps-fs); min-width: 0; }
+.axp-plan-studio__ship p { margin: 0; }
+.axp-plan-studio__shhead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-plan-studio__shbranch { color: var(--fx-muted); font-size: var(--axp-ps-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.axp-plan-studio__said { margin: 0; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border: var(--axp-ps-hair); border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-accent); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface2)); display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-plan-studio__said.is-paraphrase { border-inline-start-color: var(--fx-warning); background: var(--fx-surface2); }
+.axp-plan-studio__saidh { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--axp-ps-xs); }
+.axp-plan-studio__saidtext { font-size: var(--fx-font-size); white-space: pre-wrap; overflow-wrap: anywhere; }
+.axp-plan-studio__saidadd { font-size: var(--axp-ps-fs); white-space: pre-wrap; overflow-wrap: anywhere; }
+.axp-plan-studio__shflag { border: var(--axp-ps-hair); border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-danger); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-plan-studio__shflag ul { margin: 0; padding-inline-start: var(--fx-dens-gap-2xl); }
+.axp-plan-studio__shflag li { color: var(--fx-danger); }
+.axp-plan-studio__shsec { border-top: var(--axp-ps-hair); min-width: 0; }
+.axp-plan-studio__shsec > summary { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md) 0; cursor: pointer; list-style: none; font-weight: 600; }
+.axp-plan-studio__shsec > summary::-webkit-details-marker { display: none; }
+.axp-plan-studio__shsec > summary:hover { color: var(--fx-accent); }
+.axp-plan-studio__shsec[open] > summary .fx-icon { transform: rotate(90deg); }
+.axp-plan-studio__shbody { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: 0 0 var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); min-width: 0; overflow-wrap: anywhere; }
+.axp-plan-studio__shlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-plan-studio__shlist li { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-plan-studio__shsteps { list-style: none; margin: 0; padding: 0; border-top: var(--axp-ps-hair); }
+.axp-plan-studio__shsteps li { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--axp-ps-hair); }
+.axp-plan-studio__shsteps li.is-done .axp-plan-studio__shstext { color: var(--fx-muted); }
+.axp-plan-studio__shstext { flex: 1 1 calc(var(--fx-font-size) * 16); min-width: 0; }
+.axp-plan-studio__shsmeta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--axp-ps-xs); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.axp-plan-studio__sharea { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-plan-studio__sharea p { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-plan-studio__shline { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); color: var(--fx-success); }
+.axp-plan-studio__shline.is-flag { color: var(--fx-danger); }
+
 /* catalog coverage matrix */
 .axp-plan-studio__matrix { display: flex; flex-direction: column; font-size: var(--axp-ps-fs); border-top: var(--axp-ps-hair); overflow-x: auto; }
 .axp-plan-studio__mrow { display: grid; grid-template-columns: minmax(calc(var(--fx-font-size) * 9), 1fr) repeat(4, calc(var(--fx-font-size) * 3.4)) calc(var(--fx-font-size) * 3.2); align-items: center; border-bottom: var(--axp-ps-hair); padding-block: var(--fx-dens-gap-xs); }

@@ -1,4 +1,7 @@
 /** Types for plan-core.mjs (plan@1). Every object keeps unknown fields. */
+import type { Manifest } from '@console/axf/core/shipped-manifest.mjs';
+import type { Actual, ShippedProblem } from './plan-shipped.mjs';
+
 export type Status = 'idea' | 'draft' | 'parked' | 'ready' | 'building' | 'done' | 'dropped';
 export type Priority = 'P0' | 'P1' | 'P2' | 'P3';
 export type Model = 'Fable' | 'Opus' | 'Sonnet';
@@ -10,14 +13,19 @@ export interface Link { kind: string; ref: string; label: string; [k: string]: u
 export interface PlanFeature { entry: string; feature: string; title: string; state: FeatureState; [k: string]: unknown }
 export interface Attachment { id: string; kind: 'image' | 'file' | 'voice'; name: string; url: string; size: number; transcript: string; [k: string]: unknown }
 export interface Comment { id: string; by: string; at: string; text: string; [k: string]: unknown }
-export interface BuildLink { profile: string; id: string; linkedAt?: string; status?: string; progress?: number; title?: string; branch?: string; pr?: string; [k: string]: unknown }
+export interface BuildLink { profile: string; id: string; linkedAt?: string; status?: string; progress?: number; title?: string; branch?: string; pr?: string; landedCommit?: string; landedAt?: string; shipped?: { id: string; rev: number; at: string; source: string }; [k: string]: unknown }
+/** build-origin@1: Brett's words that started the build (verbatim unless said otherwise). */
+export interface Origin { said: string; verbatim?: boolean; at?: string; source?: string; by?: string; addenda?: { said: string; at?: string; source?: string; verbatim?: boolean }[]; [k: string]: unknown }
 export interface Plan {
   $axf: 'plan@1'; id: string; title: string; summary: string; goal: string; why: string; category: string; tags: string[]; project: string;
   touches: { key: string; name?: string }[]; profile: string; status: Status; priority: Priority; targetDate: string; owner: string;
   steps: Step[]; requirements: TextItem[]; acceptance: TextItem[]; decisions: TextItem[]; questions: TextItem[]; risks: TextItem[]; outOfScope: TextItem[];
   links: Link[]; features: PlanFeature[]; attachments: Attachment[]; body: string; comments: Comment[]; build: BuildLink | null;
   createdAt: string; updatedAt: string; createdBy: string; version: number; effort: { minutes: number; left: number }; cost: { usd: number; estimated: boolean };
-  template?: string; [k: string]: unknown;
+  template?: string;
+  /** The shipped-manifest@1 the orchestrator sent when the build landed (plan-shipped.mjs); a refused one only flags. */
+  shipped?: Manifest | null; shippedProblem?: ShippedProblem | null; actual?: Actual | null; origin?: Origin | null;
+  [k: string]: unknown;
 }
 export interface Version { v: number; at: string; by: string; note: string; kind: string; plan: Plan }
 export interface History { $axf: string; id: string; versions: Version[] }

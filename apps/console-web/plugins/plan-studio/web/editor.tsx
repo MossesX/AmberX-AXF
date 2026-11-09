@@ -4,6 +4,7 @@ import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
 import { CommandBox, VoicePanel } from './ai';
+import { ShippedPanel } from './shipped';
 import { canListen } from './voice';
 
 /*
@@ -15,8 +16,9 @@ import { canListen } from './voice';
 const SECTIONS = [
   { id: 'basics', label: 'Basics', icon: 'edit' }, { id: 'filing', label: 'Filing', icon: 'folder' }, { id: 'steps', label: 'Steps', icon: 'list' },
   { id: 'lists', label: 'Requirements & risks', icon: 'check-circle' }, { id: 'links', label: 'Links & catalog', icon: 'external' }, { id: 'notes', label: 'Notes', icon: 'file' },
-  { id: 'files', label: 'Attachments', icon: 'upload' }, { id: 'build', label: 'Build', icon: 'play' }, { id: 'history', label: 'History', icon: 'clock' }, { id: 'comments', label: 'Comments', icon: 'info' },
+  { id: 'files', label: 'Attachments', icon: 'upload' }, { id: 'build', label: 'Build', icon: 'play' }, { id: 'shipped', label: 'Shipped', icon: 'check-circle' }, { id: 'history', label: 'History', icon: 'clock' }, { id: 'comments', label: 'Comments', icon: 'info' },
 ] as const;
+export type SectionId = (typeof SECTIONS)[number]['id'];
 const draftKey = (id: string) => `plan-studio.draft.${id}`;
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: unknown) => { try { const v = rt.settings.get(k); return v === undefined || v === null ? d : v; } catch { return d; } };
 
@@ -29,7 +31,7 @@ function Sec({ id, title, icon, children, aside }: { id: string; title: string; 
   );
 }
 
-export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan; isNew: boolean; onClose: () => void; onOpen: (id: string) => void }) {
+export function PlanEditor({ initial, isNew, onClose, onOpen, section }: { initial: Plan; isNew: boolean; onClose: () => void; onOpen: (id: string) => void; section?: string }) {
   const rt = useRuntime();
   const { state } = useStudio();
   const [plan, setPlan] = useState<Plan>(() => {
@@ -77,6 +79,8 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
   const t = pc.totals(plan);
   const cats = useMemo(() => pc.withParents([...(state?.categories.paths ?? []), ...(state?.plans ?? []).map((p) => p.category).filter(Boolean)]), [state]);
   const jump = (id: string) => document.getElementById(`axp-ps-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // a deep link (?shipped=<build>) or the plan-studio.shipped action asked for one section
+  useEffect(() => { if (section) { const t = window.setTimeout(() => jump(section), 50); return () => window.clearTimeout(t); } return undefined; }, [section]);
 
   return (
     <div className="axp-plan-studio__editor">
@@ -161,6 +165,10 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
 
       <Sec id="build" title="Build" icon="play">
         {isNew ? <p className="fx-muted">Save the plan first.</p> : <BuildPanel plan={saved ?? plan} dirty={dirty} />}
+      </Sec>
+
+      <Sec id="shipped" title="Shipped" icon="check-circle" aside={plan.shipped ? <Chip tone="success">{plan.shipped.id} rev {plan.shipped.rev}</Chip> : plan.shippedProblem ? <Chip tone="danger">manifest refused</Chip> : undefined}>
+        <ShippedPanel plan={plan} />
       </Sec>
 
       <Sec id="history" title={`History${hist ? ` (${hist.versions.length})` : ''}`} icon="clock">

@@ -78,6 +78,36 @@ svc = plugin_services.get("plans@1")
 check(svc is not None and svc.park("Later thing")["plan"]["status"] == "parked", 'plans@1: "put it in a plan for later" parks a plan')
 check(len(c.get("/p/catalog").json()["entries"]) > 20, "catalog: every plugin, app and library")
 
+# shipped-manifest@1 → the build's plan (what the orchestrator sends Shipped features reaches Plan Studio too)
+MANIFEST = {
+    "$axf": "shipped-manifest@1", "id": "sm-ship-it-py", "rev": 1, "source": "orchestrator", "shippedAt": "2026-11-09T01:00:00Z",
+    "build": {"id": "ship-it-py", "title": "Ship it (py)", "profile": "all"},
+    "said": {"text": "Make the shipping thing work. It has to be valid.", "verbatim": True},
+    "brief": "# Build\n\nDo it.", "models": ["Opus"], "accounts": ["account-3"],
+    "steps": [{"id": "s1", "text": "Do A", "model": "Opus", "estimate": "20 min", "startedAt": "2026-11-08T22:10:00Z", "doneAt": "2026-11-08T22:35:00Z", "done": True}],
+    "branch": "claude/ship-it-py", "pr": {"number": 401}, "landedCommit": "661901740ba21f9767d70f7cf3c101c2e2c35a27", "mergedAt": "2026-11-09T00:06:38Z",
+    "files": ["apps/console-web/plugins/plan-studio/plans.mjs"], "tests": [{"name": "test.py", "result": "pass"}], "cost": {"usd": 1.5, "tokens": {"input": 1, "output": 2}}, "report": "", "open": [],
+}
+check(c.post("/p/shipped", json={}).status_code == 400, "shipped: a manifest or a build id is required")
+r = c.post("/p/shipped", json={"manifest": MANIFEST}).json()
+check(r["ok"] and r["created"] and r["plan"]["id"] == "ship-it-py" and r["plan"]["shipped"]["id"] == "sm-ship-it-py" and r["plan"]["status"] == "done", "shipped: a valid manifest creates the build's plan, done, with the manifest on it")
+check(r["plan"]["origin"]["said"] == MANIFEST["said"]["text"] and r["plan"]["actual"]["usd"] == 1.5 and r["plan"]["build"]["landedCommit"] == MANIFEST["landedCommit"], "shipped: Brett's words, actual cost and the landed commit are on the plan")
+check(c.post("/p/shipped", json=MANIFEST).json().get("unchanged") is True, "shipped: the manifest posted as the body works too; same rev = unchanged")
+g = c.get("/p/shipped/ship-it-py").json()
+check(g["ok"] and g["summary"]["pr"] == 401 and g["problem"] is None and g["shipped"]["rev"] == 1, "shipped/{plan}: the manifest, its summary and no flag")
+check(c.get("/p/shipped/no-such-plan").status_code == 404, "shipped/{plan}: 404 for an unknown plan")
+bad = c.post("/p/shipped", json={"manifest": {"build": {"id": "ship-it-py-bad"}, "said": {"text": "w"}, "landedCommit": "zz", "models": ["Sonnet"]}}).json()
+check(bad["ok"] is False and bad["refused"] and any(e["field"] == "models" for e in bad["errors"]) and "landedCommit must be a git sha" in bad["reason"], "shipped: an invalid manifest is refused with the field errors")
+fl = c.get("/p/shipped/ship-it-py-bad").json()
+check(fl["shipped"] is None and fl["problem"]["reason"] == bad["reason"], "shipped: the plan is flagged, nothing stored as its manifest")
+check(c.post("/p/shipped/backfill", json={"since": "nope"}).status_code == 400, "shipped/backfill: since must be a date")
+check(c.post("/p/shipped/backfill", json={"dry": True}).json()["ok"], "shipped/backfill: runs (no sidecars in the scratch data folder)")
+log = c.get("/p/shipped-log").json()["entries"]
+check(len(log) == 2 and log[0]["ok"] and log[1]["refused"], "shipped-log: one taken, one refused")
+ck = c.get("/p/check-builds").json()
+check(ck["ok"] and ck["plans"] == 1 and len(ck["warnings"]) == 1, "check-builds: green, the flagged plan is a warning")
+check(svc.shipped({**MANIFEST, "rev": 2, "open": ["one thing"]}, by="other-plugin")["plan"]["shipped"]["rev"] == 2, "plans@1: another plugin can send a manifest (rev 2 applied)")
+
 shutil.rmtree(scratch, ignore_errors=True)
 print(f"plan-studio server: {ok} checks passed", flush=True)
 

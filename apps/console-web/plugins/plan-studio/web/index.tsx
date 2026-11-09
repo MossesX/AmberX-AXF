@@ -9,7 +9,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Button, useRuntime } from '@console/axf/react';
 import { appMenu } from './menu';
 import { CaptureDialog } from './capture';
-import { PlanStudioPage } from './ui';
+import { openPlan, PlanStudioPage } from './ui';
 import { FOLDER, KEYS, VIEW } from './api';
 
 const ID = 'ai.amberx.axf.console.plan-studio';
@@ -31,6 +31,14 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('plan-studio.open', () => rt.navigate(VIEW), { label: 'Open Plan Studio' });
     rt.actions.register('plan-studio.capture', () => rt.openDialog(DIALOG), { label: 'New plan (quick capture)' });
+    // deep links for the console API / MCP / voice: show a plan (by plan or build id), or its Shipped section (?plan= / ?shipped= do the same)
+    const show = (section?: string) => (args: string[], ctx: { payload?: unknown }) => {
+      const id = (args.length ? args.join(' ') : typeof ctx.payload === 'string' ? ctx.payload : '').trim();
+      if (!id) { rt.toast('Say which plan or build, e.g. orchestrator-only-launcher.', 'warning', 'Plan Studio'); return; }
+      rt.navigate(VIEW); openPlan({ id, section });
+    };
+    rt.actions.register('plan-studio.show', show(), { label: 'Show a plan (by plan or build id)', params: true });
+    rt.actions.register('plan-studio.shipped', show('shipped'), { label: "Show a build's shipped manifest on its plan", params: true });
     // the banner "+ Plan": the framework's action-button widget (opens quick capture; Settings → Plugins → Plan Studio hides it)
     const paint = () => {
       const on = rt.settings.get(KEYS.banner) !== false;

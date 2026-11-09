@@ -10,12 +10,19 @@ claude.ai sessions (axHub memory_write on the same files) and the AmberX app sha
   GET  ai/status    is an AI provider there (axf.llm@1, the AI assistant's providers)?
   POST ai           {text, plan?} plain English → edits (not applied: the page shows them as a diff, then ai-apply).
                     Rules first (no model); anything else goes to axf.llm@1 with the plugin's prompt.
+  POST shipped      {manifest} or {build}: a shipped-manifest@1 for a build → the build's plan is created / updated with
+                    every field; an invalid one is refused ({ok: false, refused, reason, errors}) and the plan flagged
+  GET  shipped/{plan}   the manifest a plan carries (by plan or build id), its summary, actual cost, the flag
+  POST shipped/backfill {since?, dry?} every stored manifest the plans have not taken yet
+  GET  shipped-log  the last receipts (taken / refused, with the reason)
+  GET  check-builds every shipped manifest has its plan, at its rev, valid and matching
 
-Capability plans@1: other plugins read and add plans through plugin_services.get("plans@1") (list/get/save/ai).
+Capability plans@1: other plugins read and add plans through plugin_services.get("plans@1") (list/get/save/ai/shipped).
 """
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -29,7 +36,9 @@ FOLDER = "plan-studio"
 CLI = Path(__file__).resolve().parent.parent / "plans.mjs"
 ROOT = CLI.parents[4]
 OPS = {"get", "save", "delete", "restore", "bulk", "category", "template-save", "template-delete", "view-save", "view-delete",
-       "import", "export", "catalog", "feature", "plan-feature", "build", "sync-builds", "ai-apply"}
+       "import", "export", "catalog", "feature", "plan-feature", "build", "sync-builds", "ai-apply",
+       "shipped", "shipped-get", "shipped-backfill", "shipped-log", "check-builds"}
+PLAN_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
 
 
 def run(req: dict[str, Any], timeout: int = 90) -> dict[str, Any]:
@@ -106,6 +115,62 @@ async def ai(request: Request) -> dict[str, Any]:
     return {**run({"op": "ai", "text": text, "plan": plan, "reply": out.get("text") or ""}), "model": out.get("model") or ""}
 
 
+# ------------------------------------------------------------------ shipped manifests (shipped-manifest@1 → the build's plan)
+
+
+@router.post("/shipped")
+async def shipped(request: Request) -> dict[str, Any]:
+    """Receive a build's shipped manifest: the build's plan is created or updated with every field; an invalid manifest is refused with the field errors and the plan flagged."""
+    body = await request.json()
+    body = body if isinstance(body, dict) else {}
+    manifest = body.get("manifest") if isinstance(body.get("manifest"), dict) else (body if isinstance(body.get("build"), dict) else None)
+    build = str(body.get("build") or body.get("build_id") or "").strip() if not isinstance(body.get("build"), dict) else ""
+    if manifest is None and not PLAN_ID.match(build):
+        raise HTTPException(400, "give a manifest (shipped-manifest@1) or a build id")
+    req: dict[str, Any] = {"op": "shipped", "by": _by(request)}
+    if manifest is not None:
+        req["manifest"] = manifest
+    else:
+        req["build"] = build
+    if body.get("source"):
+        req["source"] = str(body["source"])[:40]
+    return run(req, timeout=120)
+
+
+@router.get("/shipped/{plan}")
+def shipped_get(plan: str) -> dict[str, Any]:
+    """The shipped manifest a plan carries (by plan or build id), its summary, actual cost and tokens, and the flag when the last one was refused."""
+    if not PLAN_ID.match(plan):
+        raise HTTPException(400, "bad plan id")
+    r = run({"op": "shipped-get", "id": plan})
+    if not r.get("ok"):
+        raise HTTPException(404, r.get("error") or "no plan")
+    return r
+
+
+@router.post("/shipped/backfill")
+async def shipped_backfill(request: Request) -> dict[str, Any]:
+    """Receive every stored shipped manifest the plans have not taken yet (since = landings from that date; dry = list only)."""
+    body = await request.json()
+    body = body if isinstance(body, dict) else {}
+    since = str(body.get("since") or "")[:25]
+    if since and not re.match(r"^\d{4}-\d{2}-\d{2}", since):
+        raise HTTPException(400, "since is a date (YYYY-MM-DD)")
+    return run({"op": "shipped-backfill", "since": since, "dry": bool(body.get("dry")), "by": _by(request)}, timeout=600)
+
+
+@router.get("/shipped-log")
+def shipped_log(n: int = 50) -> dict[str, Any]:
+    """The last shipped-manifest receipts: taken or refused, with the reason."""
+    return run({"op": "shipped-log", "n": max(1, min(int(n), 500))})
+
+
+@router.get("/check-builds")
+def check_builds() -> dict[str, Any]:
+    """Every shipped manifest has its plan, at the manifest's rev, valid and matching; flagged plans are listed as warnings."""
+    return run({"op": "check-builds"}, timeout=120)
+
+
 class PlansService:
     """plans@1: other plugins' server parts read and add plans without naming this folder."""
 
@@ -127,6 +192,10 @@ class PlansService:
 
     def ai(self, text: str, plan_id: str = "") -> dict[str, Any]:
         return run({"op": "ai", "text": text, "plan": plan_id})
+
+    def shipped(self, manifest: dict[str, Any], by: str = "", source: str = "") -> dict[str, Any]:
+        """A shipped-manifest@1 for a build → its plan (refused with the field errors when invalid)."""
+        return run({"op": "shipped", "manifest": manifest, "by": by, **({"source": source} if source else {})}, timeout=120)
 
 
 plugin_services.provide("plans@1", PlansService(), FOLDER)

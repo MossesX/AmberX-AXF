@@ -5,12 +5,14 @@
 // replies (no live model), and the voice turn loop with fake speech in/out, mic-lease handoff and undo by voice.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
+import * as ps from './web/plan-shipped.mjs';
 import * as voice from './web/voice.ts';
+import * as SM from '../../../../framework/core/shipped-manifest.mjs';
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.error(`FAIL ${name}`); throw e; } };
@@ -27,7 +29,12 @@ await t('plugin@1 manifest, lifecycle, targets, model, capabilities', () => {
   assert.deepEqual(m.targets, ['axf-console', 'amberx-droid']);
   assert.deepEqual(m.builtWith, { model: 'opus', builtAt: '2026-10-30' });
   assert.ok(m.provides.includes('service:plans@1')); assert.ok(m.optional.includes('axf.llm@1'));
-  for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'plans.mjs', 'catalog.mjs', 'schema/plan.schema.json', 'server/__init__.py']) assert.ok(existsSync(join(here, f)), f);
+  for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'plans.mjs', 'catalog.mjs', 'schema/plan.schema.json', 'server/__init__.py', 'build-hooks.mjs', 'web/plan-shipped.mjs', 'web/shipped.tsx']) assert.ok(existsSync(join(here, f)), f);
+  // the orchestrator's shipped manifest reaches Plan Studio through build-hook@1 (the `shipped` event), with its own API
+  assert.equal(m.buildHooks, 'build-hooks.mjs');
+  for (const id of ['shipped', 'shipped-get', 'shipped-backfill', 'shipped-log', 'check-builds']) assert.ok(m.commands.items.some((c) => c.id === id), `command ${id}`);
+  assert.match(readFileSync(join(here, 'plans.mjs'), 'utf8'), /framework\/core\/shipped-manifest\.mjs/, 'validation comes from the shared schema module, no copy');
+  assert.doesNotMatch(readFileSync(join(here, 'web/plan-shipped.mjs'), 'utf8'), /validateManifest|\$axf must be/, 'the plugin does not re-implement the schema');
   const web = readFileSync(join(here, 'web/index.tsx'), 'utf8');
   assert.match(web, /parent: 'plugins'/); assert.match(web, /PluginLifecyclePanel/); assert.match(web, /plan-studio\.capture/);
   assert.match(readFileSync(join(here, 'web/menu.ts'), 'utf8'), /nav:plan-studio/);
@@ -180,6 +187,61 @@ await t('turn into a build: orchestrator add change, links both ways, live progr
   assert.equal(pc.syncBuild(done.plan, { status: 'complete', steps: [{ text: 'A', done: true }, { text: 'B', done: true }], pr: '200' }).changed, false);
 });
 
+// ---------------------------------------------------------------- shipped-manifest@1 → the build's plan (pure)
+const MANIFEST = SM.normManifest({
+  $axf: 'shipped-manifest@1', id: 'sm-ship-it-live', rev: 1, source: 'orchestrator', by: 'orchestrator', shippedAt: '2026-11-09T01:00:00Z',
+  build: { id: 'ship-it-live', title: 'Ship it live', profile: 'all', category: 'Console', priority: 'P1' },
+  said: { text: 'Make the shipping thing work. It has to be valid.', verbatim: true, at: '2026-11-08T22:00:00Z', source: 'voice', by: 'Brett', addenda: [{ text: 'And show it on the plan.', at: '2026-11-08T22:05:00Z' }] },
+  brief: '# Build: ship-it-live\n\nDo the thing.', models: ['Opus', 'Fable'], accounts: ['account-3'],
+  runs: [{ session: 'axf-ship-it-live--lenny', account: 'account-3', model: 'Opus', startedAt: '2026-11-08T22:10:00Z', endedAt: '2026-11-08T23:00:00Z', exit: 0, costUsd: 4.25 }],
+  steps: [{ id: 's1', text: 'Do A', model: 'Opus', estimate: '20 min', startedAt: '2026-11-08T22:10:00Z', doneAt: '2026-11-08T22:35:00Z', done: true }, { id: 's2', text: 'Do B', model: 'Fable', estimate: '30 min', startedAt: '2026-11-08T22:35:00Z', doneAt: '2026-11-08T22:58:00Z', done: true }],
+  branch: 'claude/ship-it-live', pr: { repo: 'amberx-axf', number: 397 }, landedCommit: '661901740ba21f9767d70f7cf3c101c2e2c35a27', commits: ['864ab0549c64cf17f6a64d6d757b4885b5262909'], mergedAt: '2026-11-09T00:06:38Z',
+  files: ['apps/console-web/plugins/plan-studio/plans.mjs', 'framework/core/shipped-manifest.mjs', '_claude/builds/reports/ship-it-live.md'],
+  tests: [{ name: 'plan-studio test.mjs: 40 checks', result: 'pass' }, { name: 'something', command: 'node x.mjs', result: 'fail', detail: '1 failing' }],
+  uiReview: [{ id: 'r-9', name: 'Shipped section', status: 'waiting', group: 'ship-it-live - Nov 9', url: '/review/r-9' }],
+  cost: { usd: 4.25, estimated: false, tokens: { input: 100, output: 2000, cacheRead: 5000000, cacheWrite: 90000 } }, report: '_claude/builds/reports/ship-it-live.md', open: ['Kotlin twin deferred'],
+}, { now: '2026-11-09T01:00:00Z' });
+const BAD = { build: { id: 'ship-it-bad', title: 'Ship it badly' }, said: { text: 'words' }, landedCommit: 'zz', models: ['Sonnet'], tests: [{ result: 'great' }] };
+await t('shipped (pure): a valid manifest becomes the build\'s plan with every field; verbatim words are never replaced; same rev = no change', () => {
+  assert.equal(ps.planIdFor(MANIFEST), 'ship-it-live'); assert.equal(ps.planIdFor({ said: { text: 'x' } }), '');
+  const made = ps.applyManifest(null, MANIFEST, { now: NOW });
+  assert.ok(made.changed && !made.stale);
+  const p = pc.normalize(made.plan, { now: NOW });
+  assert.deepEqual(pc.validate(p), []);
+  assert.equal(p.id, 'ship-it-live'); assert.equal(p.title, 'Ship it live'); assert.equal(p.category, 'Builds > Console'); assert.equal(p.priority, 'P1'); assert.equal(p.profile, 'all');
+  assert.equal(p.status, 'done', 'landed with every step done'); assert.ok(p.tags.includes('shipped'));
+  assert.equal(p.origin.said, MANIFEST.said.text); assert.equal(p.origin.verbatim, true); assert.equal(p.origin.addenda[0].said, 'And show it on the plan.');
+  assert.equal(p.summary, MANIFEST.said.text);
+  assert.deepEqual(p.steps.map((s) => [s.id, s.text, s.model, s.minutes, s.done, s.actualMin, s.estimate]), [['s1', 'Do A', 'Opus', 20, true, 25, '20 min'], ['s2', 'Do B', 'Fable', 30, true, 23, '30 min']]);
+  assert.deepEqual(p.links.map((l) => [l.kind, l.ref]), [['build', 'all:ship-it-live'], ['branch', 'claude/ship-it-live'], ['pr', '397'], ['doc', '_claude/builds/reports/ship-it-live.md']]);
+  assert.equal(p.build.id, 'ship-it-live'); assert.equal(p.build.status, 'complete'); assert.equal(p.build.progress, 100); assert.equal(p.build.landedCommit, MANIFEST.landedCommit); assert.equal(p.build.pr, '#397'); assert.deepEqual(p.build.shipped, { id: 'sm-ship-it-live', rev: 1, at: '2026-11-09T01:00:00Z', source: 'orchestrator' });
+  assert.deepEqual(p.actual, { usd: 4.25, estimated: false, tokens: { input: 100, output: 2000, cacheRead: 5000000, cacheWrite: 90000 }, minutes: 48, estimateMinutes: 50, runs: 1, models: ['Opus', 'Fable'], accounts: ['account-3'] });
+  assert.equal(p.cost.usd, Math.round((20 * 0.14 + 30 * 0.275) * 100) / 100, 'plan cost stays the estimate from the steps');
+  assert.deepEqual(p.shipped, MANIFEST, 'the whole manifest, every field, is on the plan');
+  assert.ok(pc.searchText(p).includes('#397') && pc.searchText(p).includes('claude/ship-it-live') && pc.searchText(p).includes('kotlin twin deferred'), 'search finds manifest fields');
+  // an existing plan: its own words (verbatim) stay when the manifest's are a paraphrase; matching steps tick, new ones are added; planned features → have
+  const mine = pc.normalize({ id: 'ship-it-live', title: 'My title', status: 'building', origin: { said: 'My exact words', verbatim: true }, steps: [{ id: 'a', text: 'Do A', model: 'Opus', minutes: 15 }, { id: 'x', text: 'Extra', model: 'Opus', minutes: 5 }], features: [{ entry: 'plugin:plan-studio', feature: 'f', title: 'F', state: 'planned' }], tags: ['mine'] }, { now: NOW });
+  const para = { ...MANIFEST, said: { ...MANIFEST.said, text: 'Something paraphrased', verbatim: false } };
+  const upd = pc.normalize(ps.applyManifest(mine, para, { now: NOW }).plan, { now: NOW });
+  assert.equal(upd.title, 'My title'); assert.equal(upd.origin.said, 'My exact words'); assert.deepEqual(upd.tags, ['mine', 'shipped']);
+  assert.deepEqual(upd.steps.map((s) => [s.id, s.done, s.minutes, s.actualMin ?? null]), [['a', true, 15, 25], ['x', false, 5, null], ['s2', true, 30, 23]]);
+  assert.equal(upd.features[0].state, 'have'); assert.equal(upd.status, 'done');
+  assert.equal(ps.applyManifest(upd, para, { now: NOW }).changed, false, 'same id + rev again: nothing');
+  assert.equal(ps.applyManifest(upd, { ...para, rev: 0 }, { now: NOW }).stale, true);
+  assert.ok(ps.applyManifest(upd, { ...para, rev: 2 }, { now: NOW }).changed, 'a newer rev applies');
+  assert.deepEqual(ps.checkPlanAgainstManifest(p, MANIFEST), []);
+  assert.ok(ps.checkPlanAgainstManifest({ ...p, steps: [p.steps[0]] }, MANIFEST).some((x) => /step s2 missing/.test(x)));
+  assert.equal(ps.shippedSummary(p).steps.actualMin, 48); assert.equal(ps.shippedSummary(p).tests.fail, 1); assert.equal(ps.shippedSummary(pc.normalize({ title: 'x' })), null);
+  // an invalid one only flags; a later valid one clears the flag
+  const errs = SM.validateManifest(BAD).errors; assert.ok(errs.length >= 2);
+  const flagged = pc.normalize(ps.flagManifest(null, BAD, errs, { now: NOW, source: 'api', by: 'test' }), { now: NOW });
+  assert.equal(flagged.id, 'ship-it-bad'); assert.equal(flagged.title, 'Ship it badly'); assert.equal(flagged.shipped, undefined); assert.equal(flagged.shippedProblem.errors.length, errs.length); assert.match(flagged.shippedProblem.reason, /models must be from Opus, Fable/);
+  assert.deepEqual(pc.validate(flagged), []);
+  const ok = ps.applyManifest(flagged, { ...MANIFEST, id: 'sm-ship-it-bad', build: { ...MANIFEST.build, id: 'ship-it-bad' } }, { now: NOW }).plan;
+  assert.equal(ok.shippedProblem, undefined); assert.equal(ok.shipped.id, 'sm-ship-it-bad');
+  assert.throws(() => ps.applyManifest(null, { said: { text: 'x' } }), /names no build/);
+});
+
 // ---------------------------------------------------------------- the plain-English AI (rules + fixed model replies)
 const catalogFix = [{ key: 'app:amberx-droid', name: 'AmberX', kind: 'app', features: [{ id: 'app-plugin:voice', title: 'AmberX voice', state: 'partial' }] }, { key: 'plugin:build-breaker', name: 'Build Breaker', kind: 'plugin', features: [] }];
 const cur = pc.normalize({ id: 'selling', title: 'AmberX Selling It', steps: [{ id: 's1', text: 'Price page', model: 'Opus', minutes: 20 }] }, { now: NOW });
@@ -290,7 +352,7 @@ await t('voice: silence ends it; intents', async () => {
 
 // ---------------------------------------------------------------- the CLI + store on scratch folders
 const scratch = mkdtempSync(join(tmpdir(), 'plan-studio-'));
-const env = { ...process.env, AXF_PLANS_DIR: join(scratch, 'store'), AXF_ORCH_FILE: join(scratch, 'orch.json'), AXF_DATA_DIR: join(scratch, 'data') };
+const env = { ...process.env, AXF_PLANS_DIR: join(scratch, 'store'), AXF_ORCH_FILE: join(scratch, 'orch.json'), AXF_DATA_DIR: join(scratch, 'data'), AXF_SHIPPED_DIR: join(scratch, 'shipped') };
 const node = (args) => { let out; try { out = execFileSync('node', args, { env, encoding: 'utf8' }); } catch (e) { out = e.stdout ?? ''; } return JSON.parse(out.trim().split('\n').at(-1)); };
 const cli = (...a) => node([join(here, 'plans.mjs'), ...a, '--json']);
 const apiCall = (o) => node([join(here, 'plans.mjs'), 'api', JSON.stringify(o)]);
@@ -349,6 +411,52 @@ await t('API: turn into a build (preview, add to the orchestrator file, link bot
   assert.deepEqual(apiCall({ op: 'sync-builds' }).changed, [id]); assert.equal(apiCall({ op: 'get', id }).plan.build.progress, 50);
   b.steps[1].done = true; b.status = 'complete'; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
   apiCall({ op: 'sync-builds' }); assert.equal(apiCall({ op: 'get', id }).plan.status, 'done');
+});
+await t('shipped (store + CLI + hook): the sidecar manifest creates the matching plan; an invalid one is refused with the reason; backfill; check-builds green', () => {
+  const shippedDir = env.AXF_SHIPPED_DIR; mkdirSync(shippedDir, { recursive: true });
+  writeFileSync(join(shippedDir, 'ship-it-live.json'), JSON.stringify(MANIFEST));
+  // the build-hook@1 `shipped` event, as the orchestrator's store write fires it (the listener runs in its own process on the scratch store)
+  const hook = (events) => JSON.parse(execFileSync('node', ['--input-type=module', '-e', `import('./build-hooks.mjs').then((m) => m.onBuildEvents(${JSON.stringify(events)})).then((r) => console.log(JSON.stringify(r)))`], { env, cwd: here, encoding: 'utf8' }).trim().split('\n').at(-1));
+  let r = hook([{ event: 'created', build: { id: 'ship-it-live' } }, { event: 'shipped', id: 'ship-it-live:3:shipped:1', by: 'orchestrator', build: { id: 'ship-it-live' }, shipped: { id: 'sm-ship-it-live', rev: 1 } }, { event: 'shipped', build: { id: 'never-shipped' }, shipped: { id: 'sm-never', rev: 1 } }]);
+  assert.deepEqual(r.applied.map((x) => [x.build, x.ok ?? null, x.created ?? null, x.missing ?? null]), [['ship-it-live', true, true, null], ['never-shipped', null, null, true]]);
+  const got = apiCall({ op: 'get', id: 'ship-it-live' });
+  assert.ok(got.ok); assert.equal(got.plan.shipped.id, 'sm-ship-it-live'); assert.equal(got.plan.status, 'done'); assert.equal(got.plan.origin.said, MANIFEST.said.text); assert.equal(got.plan.actual.usd, 4.25); assert.deepEqual(got.plan.links.map((l) => l.kind), ['build', 'branch', 'pr', 'doc']);
+  assert.equal(got.history.versions.at(-1).kind, 'shipped'); assert.match(got.history.versions.at(-1).note, /sm-ship-it-live rev 1 \(orchestrator\): landed 661901740, 2\/2 steps, 3 file\(s\)/);
+  assert.equal(got.plan.createdBy, 'orchestrator');
+  // replay: the same event again changes nothing
+  r = hook([{ event: 'shipped', build: { id: 'ship-it-live' }, shipped: { id: 'sm-ship-it-live', rev: 1 } }]);
+  assert.equal(r.applied[0].unchanged, true); assert.equal(apiCall({ op: 'get', id: 'ship-it-live' }).history.versions.length, 1);
+  // the API: shipped-get, the CLI: shipped <build> (already there), show, log
+  const g = apiCall({ op: 'shipped-get', id: 'ship-it-live' }); assert.equal(g.summary.pr, 397); assert.equal(g.summary.steps.actualMin, 48); assert.equal(g.problem, null);
+  const c = cli('shipped', 'ship-it-live'); assert.ok(c.ok && c.unchanged);
+  // an invalid manifest (the API, as MCP / voice / REST send it): refused with the field errors, the plan flagged, nothing stored as shipped
+  const bad = apiCall({ op: 'shipped', manifest: BAD });
+  assert.equal(bad.ok, false); assert.equal(bad.refused, true); assert.deepEqual([...new Set(bad.errors.map((e) => e.field))], ['landedCommit', 'models', 'tests']); assert.match(bad.reason, /landedCommit must be a git sha/);
+  const flagged = apiCall({ op: 'get', id: 'ship-it-bad' }).plan;
+  assert.equal(flagged.shipped, undefined); assert.equal(flagged.shippedProblem.reason, bad.reason); assert.equal(flagged.shippedProblem.source, 'api'); assert.equal(flagged.title, 'Ship it badly');
+  // the CLI on stdin: exit 2 and the reasons in the terminal
+  let term = ''; let code = 0;
+  try { term = execFileSync('node', [join(here, 'plans.mjs'), 'shipped', '-'], { env, input: JSON.stringify(BAD), encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }); } catch (e) { code = e.status; term = `${e.stdout}${e.stderr}`; }
+  assert.equal(code, 2); assert.match(term, /refused for plan ship-it-bad \(flagged\)/); assert.match(term, /models: models must be from Opus, Fable/);
+  // no build id at all: nothing to attach, refused outright
+  const none = apiCall({ op: 'shipped', manifest: { said: { text: 'x' } } }); assert.equal(none.ok, false); assert.match(none.error, /build\.id is missing/);
+  assert.equal(apiCall({ op: 'shipped' }).ok, false);
+  // the log says what happened
+  const log = apiCall({ op: 'shipped-log' }).entries; assert.deepEqual(log.map((e) => [e.build, e.ok, e.refused ?? false, e.why]), [['ship-it-live', true, false, 'ship-it-live:3:shipped:1'], ['ship-it-bad', false, true, 'api'], ['ship-it-bad', false, true, 'cli']]);
+  // check-builds: green; a sidecar with no plan turns it red; backfill fixes it; a flagged plan is a warning, not a failure
+  let ck = cli('check-builds'); assert.ok(ck.ok); assert.equal(ck.checked, 1); assert.equal(ck.warnings.length, 1); assert.match(ck.warnings[0].warning, /refused/);
+  writeFileSync(join(shippedDir, 'ship-it-later.json'), JSON.stringify({ ...MANIFEST, id: 'sm-ship-it-later', build: { ...MANIFEST.build, id: 'ship-it-later', title: 'Later one' }, pr: { number: 0 }, mergedAt: '', steps: [MANIFEST.steps[0], { ...MANIFEST.steps[1], done: false, doneAt: '' }] }));
+  ck = cli('check-builds'); assert.equal(ck.ok, false); assert.match(ck.problems[0].problem, /no plan for shipped build ship-it-later/);
+  const dry = apiCall({ op: 'shipped-backfill', dry: true }); assert.deepEqual(dry.received.map((x) => [x.build, x.unchanged ?? x.would]).sort(), [['ship-it-later', 'create'], ['ship-it-live', true]]);
+  const bf = cli('shipped', 'backfill'); assert.equal(bf.received.find((x) => x.build === 'ship-it-later').created, true);
+  const later = apiCall({ op: 'get', id: 'ship-it-later' }).plan; assert.equal(later.status, 'building', 'landed with a step open keeps building'); assert.equal(later.build.status, 'complete'); assert.equal(later.build.progress, 50);
+  ck = cli('check-builds'); assert.ok(ck.ok, JSON.stringify(ck.problems)); assert.equal(ck.checked, 2); assert.equal(ck.plans, 2);
+  // a newer rev of a manifest updates the plan (a second version); the plan's own edits survive
+  apiCall({ op: 'save', plan: { ...later, summary: 'my own summary', title: 'My later title' }, force: true });
+  writeFileSync(join(shippedDir, 'ship-it-later.json'), JSON.stringify({ ...MANIFEST, id: 'sm-ship-it-later', rev: 2, build: { ...MANIFEST.build, id: 'ship-it-later' }, open: [] }));
+  assert.equal(cli('shipped', 'ship-it-later').plan.shipped.rev, 2);
+  const v2 = apiCall({ op: 'get', id: 'ship-it-later' }).plan; assert.equal(v2.summary, 'my own summary'); assert.equal(v2.title, 'My later title'); assert.equal(v2.status, 'done'); assert.equal(v2.build.shipped.rev, 2);
+  ck = cli('check-builds'); assert.ok(ck.ok);
 });
 await t('API: AI turn with a fixed reply; AI edits recorded in history as "AI, from: …"', () => {
   const id = apiCall({ op: 'save', plan: { title: 'AI target' }, force: true }).plan.id;
