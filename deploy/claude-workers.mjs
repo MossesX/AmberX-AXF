@@ -17,6 +17,7 @@
  *   node deploy/claude-workers.mjs route [--exclude a,b]         the account a new job would run on now ('' = none)
  *   node deploy/claude-workers.mjs test [--job '{json}' | --name n --model m --priority p --steps n --type t --profile p]
  *   node deploy/claude-workers.mjs limit <name> --kind usage|auth [--log <file>]   take an account out until it can work again
+ *   node deploy/claude-workers.mjs mismatch <picked> --real <name> [--email e] [--session s]   a run on another login than picked
  *   node deploy/claude-workers.mjs hit --log <file> --exit <n>  prints usage or auth when that log ended on one
  *   node deploy/claude-workers.mjs status [--json]              every account: role, kind, limit, running/queued, cost, caps
  *   node deploy/claude-workers.mjs alerts [--json]              API accounts near/over a cap or without a key
@@ -92,7 +93,8 @@ export function editConfig(fn, env = process.env, opts = {}) {
 
 const loadState = (env) => {
   const s = readJson(paths(env).state);
-  return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {} };
+  return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {},
+    mismatches: s?.mismatches && typeof s.mismatches === 'object' ? s.mismatches : {} };
 };
 const saveState = (state, env) => atomic(paths(env).state, state);
 
@@ -140,6 +142,23 @@ export function markLimit(name, { kind = 'usage', text = '' } = {}, env = proces
     return state.limits[name];
   });
 }
+
+/**
+ * A run picked `picked` but Claude Code was signed in as another login (deploy/claude-whoami.mjs). Kept a day per
+ * picked account (the newest one): Claude accounts and the systems check raise it as an error until it is fixed.
+ */
+export function markMismatch(picked, { real = 'unknown', email = '', session = '' } = {}, env = process.env, now = Date.now()) {
+  if (!NAME_RE.test(picked)) throw Object.assign(new Error(`not an account name: ${picked}`), { code: 2 });
+  return withLock(env, () => {
+    const state = loadState(env);
+    const was = state.mismatches[picked];
+    state.mismatches[picked] = { at: new Date(now).toISOString(), real: NAME_RE.test(real) ? real : 'unknown', email: String(email).slice(0, 120), session: String(session).slice(0, 80),
+      count: (was && now - Date.parse(was.at) < DAY ? Number(was.count) || 1 : 0) + 1 };
+    saveState(state, env);
+    return state.mismatches[picked];
+  });
+}
+const mismatchOf = (state, name, now) => { const m = state.mismatches[name]; return m && now - Date.parse(m.at) < DAY ? m : null; };
 
 const limitOf = (state, name, now) => { const l = state.limits[name]; return l && Date.parse(l.until) > now ? l : null; };
 
@@ -214,7 +233,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
     return {
       name: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', active: a.active, hasKey: a.kind === 'api' ? true : undefined,
       email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
-      limited: limitOf(state, a.name, now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
+      limited: limitOf(state, a.name, now), mismatch: mismatchOf(state, a.name, now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
     };
   });
@@ -375,6 +394,7 @@ const main = async () => {
       else { console.log(decisionLine(d)); for (const c of d.considered) console.log(`  ${c.match ? '✓' : '·'} ${c.name}: ${c.why}`); }
     } else if (cmd === 'hit') console.log(hitOf(tail(flag('log')), Number(flag('exit', '0'))));
     else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out until ${l.until} (${l.reason})`); }
+    else if (cmd === 'mismatch') { const m = markMismatch(rest[0], { real: flag('real', 'unknown'), email: flag('email'), session: flag('session') }); console.log(`${rest[0]}: runs signed in as ${m.real}${m.email ? ` (${m.email})` : ''} (${m.count} today)`); }
     else if (cmd === 'status') { const s = status(); out(s, statusLines(s).join('\n')); }
     else if (cmd === 'alerts') { const a = status().alerts; out(a, a.map((x) => `${x.level} ${x.text}`).join('\n') || 'no alerts'); }
     else if (cmd === 'config' || cmd === 'rules') {

@@ -163,7 +163,7 @@ if [ "$who" = "fake-w1" ]; then echo "You've hit your limit · resets 3pm (UTC)"
 echo finished
 `);
   chmodSync(join(bin, 'claude'), 0o755);
-  const runEnv = { ...env, HOME: home, PATH: `${bin}:${process.env.PATH}`, TMUX_TMPDIR: sock, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_TOKEN: '' };
+  const runEnv = { ...env, HOME: home, PATH: `${bin}:${process.env.PATH}`, TMUX_TMPDIR: sock, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_TOKEN: '', AXF_WHOAMI: 'off' };
   for (const k of ['TMUX', 'CLAUDE_CONFIG_DIR', 'AXF_AGENT', 'AXF_AGENT_NAME', 'AXF_AGENT_BOOKED', 'AXF_SESSION', 'AXHUB_TOKEN', 'AXF_CLAUDE_ACCOUNT', 'AXF_MODEL']) delete runEnv[k];
   const w = join(tmp, 'build'); mkdirSync(w); writeFileSync(join(w, 'brief.md'), 'Do the thing.\n');
   setWorkers(['w1', 'w2']);

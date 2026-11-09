@@ -111,12 +111,12 @@ hdir_ready() { mkdir -p "$HDIR" 2>/dev/null && { [[ -O "$HDIR" ]] && chmod 1777 
 event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (end only); one JSON line, never fails the run
   hdir_ready || return 0
   command -v node >/dev/null || return 0
-  EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
+  EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" PICKED="${login_picked:-}" node -e '
     const e = process.env; const fs = require("fs"); const path = require("path");
     let cost = 0; try { cost = Number(JSON.parse(fs.readFileSync(path.join(e.HDIR, `${e.SES}.meter.json`), "utf8")).costUsd) || 0; } catch {}
     const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
       surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}),
-      ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}), ...(/^session-(part|end)$/.test(e.EV) && cost ? { costUsd: cost } : {}) };
+      ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}), ...(e.PICKED && e.ACCT && e.PICKED !== e.ACCT ? { picked: e.PICKED, mismatch: true } : {}), ...(/^session-(part|end)$/.test(e.EV) && cost ? { costUsd: cost } : {}) };
     fs.appendFileSync(path.join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
 }
 export HDIR
@@ -136,29 +136,95 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
-login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind=""
-own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
-  [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
-  command -v node >/dev/null && [[ -f "$LOGIN_JS" ]] || { printf 'claude-login: not available; this run uses the shared login\n' >&2; return 0; }
-  local out sh
-  out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" --sh 2>&1)"
-  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?\$" <<<"$out" | tail -1)"
-  if [[ -z "$sh" ]]; then printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; return 0; fi
+login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind="" login_picked="" login_check=""
+# Who the run really is (fix-account-attribution, Nov 9 2026): an account's saved token, an inherited
+# CLAUDE_CODE_OAUTH_TOKEN / ANTHROPIC_API_KEY or the shared login can each be someone other than the account the
+# dispatcher picked (account-3's saved token was Moses X's). Before the run starts, deploy/claude-whoami.mjs asks Claude
+# Code in the run's own environment. The log, the session-login event and claude-workers' cost use the real login; a
+# mismatch is noted on the build and raised in Claude accounts / the systems check. A dead login stops the launch: the
+# account is taken out and nothing falls back to another login or an API key. AXF_WHOAMI=off skips the check.
+WHOAMI_JS="$HERE/claude-whoami.mjs"
+verify_login() {   # login_account/login_email = the picked login; afterwards = the real one. 1 = this login can't run
+  login_picked="$login_account" login_check=""
+  command -v node >/dev/null && [[ -f "$WHOAMI_JS" ]] || { login_check="identity not checked"; return 0; }
+  local out sh who_state="" who_account="" who_email="" who_method="" who_org="" who_why=""
+  out="$(node "$WHOAMI_JS" check --account "$login_account" --email "$login_email" --kind "${login_kind:-subscription}" --session "$login_session" --sh 2>/dev/null)"
+  sh="$(grep -E "^who_state=(ok|mismatch|dead|unverified) who_account='[a-z0-9][a-z0-9-]{0,31}' who_email='[^' ]*' who_method='[^']*' who_org='[0-9a-f-]*' who_why='[^']*'\$" <<<"$out" | tail -1)"
+  [[ -n "$sh" ]] || { login_check="identity not checked"; return 0; }
   eval "$sh"
-  [[ -d "$login_dir" && -O "$login_dir" ]] || return 0
+  case "$who_state" in
+    dead)
+      printf '\033[1;31m# login %s%s is dead: %s. Not falling back to another login or an API key.\033[0m\n' "$login_picked" "${login_email:+ ($login_email)}" "$who_why"
+      [[ "$login_picked" != shared && -f "$WORKERS_JS" ]] && node "$WORKERS_JS" limit "$login_picked" --kind auth >/dev/null 2>&1
+      build_note "Claude account $login_picked could not sign in ($who_why): taken out, no fallback"
+      return 1 ;;
+    mismatch)
+      login_check="MISMATCH: picked ${login_picked}${login_email:+ (${login_email})}, Claude Code is signed in as ${who_account}${who_email:+ (${who_email})}; cost counts on ${who_account}"
+      printf '\033[1;33m# login %s\033[0m\n' "$login_check" >&2
+      build_note "Claude login mismatch: $login_check"
+      login_account="$who_account" login_email="$who_email" ;;
+    ok) login_account="$who_account" login_email="${who_email:-$login_email}" login_check="verified${who_method:+ (${who_method})}" ;;
+    *) login_check="not verified: ${who_why:-no answer}" ;;
+  esac
+  return 0
+}
+shared_login() {   # no own copy: still say who the shared login is (or stop when it is dead)
+  login_account="shared" login_email="" login_kind=""
+  verify_login || return 1
+  login_line="# login ${login_account}${login_email:+ (${login_email})} · shared login · ${login_check}"
+  [[ "$login_account" == shared ]] && login_account="" login_picked=""   # nobody known: no account is charged
+  [[ -n "$login_account" ]] && event session-login "$login_session"
+  return 0
+}
+own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run and check who it is. 1 = can't run
+  local want="${1:-active}" named=""
+  [[ "$want" != active && "$want" != live ]] && named=1
+  if [[ "${AXF_OWN_LOGIN:-on}" == off ]]; then shared_login; return $?; fi
+  if ! command -v node >/dev/null || [[ ! -f "$LOGIN_JS" ]]; then
+    [[ -n "$named" ]] && { printf '\033[1;31mclaude-login: not available; account %s can not be used and nothing falls back\033[0m\n' "$want" >&2; return 1; }
+    printf 'claude-login: not available; this run uses the shared login\n' >&2; shared_login; return $?
+  fi
+  local out sh
+  out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "$want" --sh 2>&1)"
+  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?\$" <<<"$out" | tail -1)"
+  if [[ -z "$sh" ]]; then
+    if [[ -n "$named" ]]; then   # a named account never quietly becomes another login
+      printf '\033[1;31mclaude-login: %s · account %s can not be used; nothing falls back\033[0m\n' "${out##*$'\n'}" "$want" >&2
+      [[ -f "$WORKERS_JS" ]] && node "$WORKERS_JS" limit "$want" --kind auth >/dev/null 2>&1
+      build_note "Claude account $want has no usable login (${out##*$'\n'}): taken out, no fallback"
+      return 1
+    fi
+    printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; shared_login; return $?
+  fi
+  eval "$sh"
+  [[ -d "$login_dir" && -O "$login_dir" ]] || return 1
   export CLAUDE_CONFIG_DIR="$login_dir"
   # shellcheck disable=SC1091
   source "$login_dir/token.env"   # the account's saved token, else `unset CLAUDE_CODE_OAUTH_TOKEN`: the copy wins
   # a rotated token goes back to the saved login straight away; the watcher ends with the copy or this run
   [[ -f "$TOKEN_JS" ]] && { nohup node "$TOKEN_JS" watch --copy "$login_dir" ${inner:+--parent "$$"} >/dev/null 2>&1 & disown; }
-  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
+  verify_login || return 1   # after the watcher: a refresh during the check is saved back
+  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}${login_check:+ · ${login_check}}"
   tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
   event session-login "$login_session"
   local bid=""   # the orchestrator build this run belongs to: a note says which account it runs on
   read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && \
-    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, own login copy)" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
+    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, own login copy${login_check:+, ${login_check}})" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
   return 0
+}
+start_login() {   # own_login for $account; a worker that can't sign in is out, and the next worker is tried. 1 = none can run
+  while :; do
+    own_login "${account:-active}" && return 0
+    release_login
+    [[ -n "$on_worker" ]] || return 1
+    release_worker
+    local gone="$account"
+    wait_for_worker "$tried_workers"
+    [[ -n "$worker" ]] || return 1
+    build_note "Worker $gone could not sign in: the run moved to $worker"
+    account="$worker" tried_workers="$tried_workers,$worker"
+  done
 }
 WORKERS_JS="$HERE/claude-workers.mjs"
 on_worker="" tried_workers=""
@@ -191,7 +257,7 @@ build_note() {   # one line on the orchestrator build this run belongs to
 release_login() {
   [[ -n "$login_dir" && -f "$LOGIN_JS" ]] && node "$LOGIN_JS" release --dir "$(pwd)" --session "$login_session" >/dev/null 2>&1
   [[ -n "$login_dir" && "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" ]] && unset CLAUDE_CONFIG_DIR
-  login_dir="" login_line=""; return 0
+  login_dir="" login_line="" login_check=""; return 0
 }
 
 GATE="$HERE/../framework/cli/model-gate.mjs"
@@ -296,6 +362,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
   command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
   login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  account_given="$account"   # named at launch (--account / AXF_CLAUDE_ACCOUNT): it never switches to another login
   if [[ -z "$account" ]]; then
     wait_for_worker ""
     if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="$worker"
@@ -304,7 +371,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       build_note "No Claude account free (every one out or its queue full): this run uses the console's account"
     fi
   fi
-  own_login "${account:-active}"
+  login_failed=""
+  start_login || { login_failed=1; printf '\033[1;31m── no usable Claude login for this run: not started ──\033[0m\n' | tee "$log"; }
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
@@ -328,6 +396,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   while :; do
+    [[ -n "$login_failed" ]] && { st=4; break; }
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --build "${run_build:-}")
@@ -350,13 +419,20 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
         printf 'No worker account left to take over.\n'; break
       fi
       tried_workers="$tried_workers,$worker"
-      release_login; own_login "$worker"
-      build_note "Worker $gone stopped ($hit): the run moved to $worker"
+      release_login; account="$worker"
+      start_login || { build_note "Worker $gone stopped ($hit) and no worker left could sign in: the run stopped here"; printf 'No worker account left that can sign in.\n'; break; }
+      build_note "Worker $gone stopped ($hit): the run moved to ${account}"
       prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
       switches=$((switches + 1))
       continue
     fi
     tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
+    if [[ -n "$account_given" ]]; then   # a named account stops here: it is marked out, never swapped for another login
+      [[ -n "$login_account" && "$login_account" != shared && -f "$WORKERS_JS" ]] && \
+        printf '\n\033[1;31m── account %s: %s · not switching to another login ──\033[0m\n' "$login_account" "$(node "$WORKERS_JS" limit "$login_account" --kind usage --log "$log" 2>&1)"
+      build_note "Claude account ${login_account:-$account_given} hit its limit: marked out, the run stopped (no fallback)"
+      break
+    fi
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
@@ -439,7 +515,7 @@ elif slots_on; then
   slot="$slot_id"
 fi
 if ! command -v tmux >/dev/null; then
-  login_session="$session"; own_login "${account:-active}"
+  login_session="$session"; own_login "${account:-active}" || { echo "claude-headless: no usable Claude login for ${account:-the active account}; not started" >&2; exit 4; }
   ctx_plan "$session"; [[ -n "$brief_only" ]] && set -- "$@" "${ctx_args[@]}"
   fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
@@ -450,7 +526,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE AXF_WHOAMI AXF_WHOAMI_PROBE AXF_WHOAMI_URL AXF_CLAUDE_ORGS; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux

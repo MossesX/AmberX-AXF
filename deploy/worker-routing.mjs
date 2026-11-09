@@ -218,9 +218,12 @@ export function decide(config, accounts, job) {
 
 /** Alerts for the banner: API accounts near or over a cap, API workers without a key. */
 export function alerts(config, accounts) {
-  return roster(config, accounts).flatMap((r) => {
-    if (r.kind !== 'api' || r.role !== 'api-worker') return [];
-    const out = [];
+  return roster(config, accounts).flatMap((r, i) => {
+    // a run picked this account but Claude Code was signed in as another login: its cost went there instead
+    const m = accounts[i]?.mismatch;
+    const wrong = m ? [{ account: r.name, level: 'error', kind: 'login', text: `${r.label || r.name}: a run picked it but was signed in as ${m.real}${m.email ? ` (${m.email})` : ''}; its saved login is wrong (cost counted on ${m.real})` }] : [];
+    if (r.kind !== 'api' || r.role !== 'api-worker') return wrong;
+    const out = wrong;
     if (r.spend && r.spend.state !== 'ok') out.push({ account: r.name, level: r.spend.state === 'capped' ? 'error' : 'warn', kind: 'spend', text: `${r.label || r.name}: ${r.spend.why}` });
     if (r.why === 'no key saved yet') out.push({ account: r.name, level: 'warn', kind: 'key', text: `${r.label || r.name}: no API key saved yet` });
     return out;

@@ -137,7 +137,7 @@ echo '{"type":"result","result":"done"}'
   chmodSync(join(bin, 'claude'), 0o755);
   const sock = mkdtempSync(join(tmpdir(), 'axf-login-tmux-'));
   const runEnv = { ...env, PATH: `${bin}:${process.env.PATH}`, TMUX_TMPDIR: sock, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off',
-    AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_ACCOUNT_SWITCHES: '0', AXF_WORKERS: 'off', /* own login of the active account, not worker routing */ AXF_HEADLESS_DIR: join(tmp, 'headless'), CLAUDE_CODE_OAUTH_TOKEN: INHERITED };
+    AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_ACCOUNT_SWITCHES: '0', AXF_WORKERS: 'off', AXF_WHOAMI: 'off', /* claude-whoami.test.mjs covers the check */ /* own login of the active account, not worker routing */ AXF_HEADLESS_DIR: join(tmp, 'headless'), CLAUDE_CODE_OAUTH_TOKEN: INHERITED };
   // HOME is a temp folder too: the launcher puts ~/.local/bin first on PATH, where the real claude lives
   runEnv.HOME = join(tmp, 'home'); mkdirSync(runEnv.HOME);
   for (const k of ['TMUX', 'CLAUDE_CONFIG_DIR', 'AXF_AGENT', 'AXF_AGENT_NAME', 'AXF_AGENT_BOOKED', 'AXF_SESSION', 'AXHUB_TOKEN']) delete runEnv[k];
@@ -166,7 +166,7 @@ echo '{"type":"result","result":"done"}'
   ok(read(join(SH, '.credentials.json')) === credsOf(SECRET_B) && read(join(A, 'account-b', '.credentials.json')) === credsOf(SECRET_B), 'and to no other account (the shared login moved to account-b: untouched)');
   ok(await until(() => !existsSync(cfg)), 'the copy is deleted when the session ends');
   const log1 = read(join(d1, 'run.log'));
-  ok(/^# login account-a \(a@example\.com\) · own copy \(live\)$/m.test(log1), 'the log says which account it ran on');
+  ok(/^# login account-a \(a@example\.com\) · own copy \(live\)( · not verified: check switched off)?$/m.test(log1), 'the log says which account it ran on');
   const ev = read(join(tmp, 'headless', 'events.jsonl')).split('\n').filter(Boolean).map((l) => JSON.parse(l));
   ok(ev.some((e) => e.event === 'session-login' && e.account === 'account-a' && e.email === 'a@example.com'), 'session-login event names the account');
   ok(!/fake-secret|fake-token|fake-inherited/.test(log1 + read(join(d1, 'run.jsonl')) + r1.stdout + r1.stderr + JSON.stringify(ev)), 'no credential printed anywhere');

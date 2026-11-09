@@ -130,7 +130,7 @@ ok(names == [f"account-{i}" for i in range(1, 7)], "token and API-key accounts a
 ok(active == "account-6" and kinds["account-2"] == "login" and kinds["account-3"] == "token" and kinds["account-5"] == "api-key", "each row keeps its type")
 ok(not any(x == "bad" for x in names), "an unknown tag is still malformed")
 svc = plugin_services.get("axf.claude-accounts@1")
-ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits and usage, nothing else")
+ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "mismatch", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits and usage, nothing else")
 
 print("use")
 reset()

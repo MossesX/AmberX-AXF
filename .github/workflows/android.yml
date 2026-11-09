@@ -99,6 +99,7 @@ jobs:
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
+      - run: node deploy/claude-whoami.test.mjs                     # fix-account-attribution: the run is logged and charged as the login Claude Code really uses; mismatch alert; dead login stops with no fallback
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator

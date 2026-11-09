@@ -263,7 +263,7 @@ def view() -> dict[str, Any]:
     if active and login.get("email") and not changed:
         _remember(active, login)
         seen[active] = login
-    idle = {"limited": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": [], "label": "", "queued": 0, "building": 0, "queue": 0, "spend": None, "why": "", "takesJobs": False}
+    idle = {"limited": None, "mismatch": None, "running": [], "runsToday": 0, "costToday": 0.0, "costWeek": 0.0, "recent": [], "label": "", "queued": 0, "building": 0, "queue": 0, "spend": None, "why": "", "takesJobs": False}
 
     def row(n: str) -> dict[str, Any]:
         host = v["host"].get(n, {})
@@ -434,7 +434,7 @@ def _owner(request: Request) -> bool:
 def routing_view() -> dict[str, Any]:
     v = view()
     cfg = config()
-    host_rows = [{"name": a["name"], "kind": a["kind"], "active": a["active"], "hasKey": a.get("hasKey", True), "limited": a["limited"], "running": len(a["running"]),
+    host_rows = [{"name": a["name"], "kind": a["kind"], "active": a["active"], "hasKey": a.get("hasKey", True), "limited": a["limited"], "mismatch": a.get("mismatch"), "running": len(a["running"]),
                   "queued": a["queued"], "costToday": a["costToday"], "costWeek": a["costWeek"]} for a in v["accounts"]]
     return {"ok": True, "ready": v["ready"], "why": v["why"], "config": cfg, "accounts": v["accounts"], "alerts": route("alerts", {"config": cfg, "accounts": host_rows}),
             "fields": {"jobTypes": _job_types(), "models": ["fable", "opus"], "priorities": ["P0", "P1", "P2", "P3"], "profiles": ["all"], "subs": ["any", "busy"]}, "note": NOTE}
@@ -611,7 +611,7 @@ def worker_health() -> dict[str, Any]:
 
 
 def api_health() -> dict[str, Any]:
-    """Systems check: API accounts near or over a spend cap, or set up without a key."""
+    """Systems check: API accounts near or over a spend cap or set up without a key, and runs signed in as another login than picked."""
     try:
         alerts = routing_view()["alerts"]
     except HTTPException as e:
