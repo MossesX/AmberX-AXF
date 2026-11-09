@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:51 UTC · `molly-one-shell` s9 done (all) · orchestrator
 - 2026-11-08 17:51 UTC · `molly-one-shell` note (all) · orchestrator
 - 2026-11-08 17:51 UTC · `molly-one-shell` PR #395 (all) · builds-live
 - 2026-11-08 17:52 UTC · `account-health-failover` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:51 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 18:51 UTC · `urgent-terminal-pops-up-every-time-the-console-o` added (0 steps) (all) · console
 - 2026-11-09 18:51 UTC · `orchestrator-and-build-manager-search-bar-collap` added (0 steps) (all) · console
+- 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` → queued, note (all) · console
 
 ## Token passes (log)
 
