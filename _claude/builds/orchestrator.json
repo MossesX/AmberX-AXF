@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:03:15.715Z",
+ "updatedAt": "2026-11-09T17:03:40.640Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77243,7 +77243,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:03:14.279Z",
+   "updatedAt": "2026-11-09T17:03:39.518Z",
    "builtAt": "",
    "notes": [
     {
@@ -77295,8 +77295,8 @@
     {
      "id": "s6",
      "text": "Add skin entries in asset-types.json for all 44 uncovered types: color-theme, style-theme, layout, app-menu, toolbar, nav-menu, context-menu, tab-group, dialog, popup, button, slider, container, gauge, meter, banner, clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge, settings, dock-layout, xlayout, nav-style, behavior-theme, branding, typography, density, sizing, agent-card, demonstration, book, clip, docs. Types that ARE skin ingredients (themes, typography, density, sizing) get an explicit exclusion instead. Additive only: default skin must look identical (before/after screenshot diff). Do this BEFORE enabling the CI gate so open PRs aren't blocked.",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Edits the asset-type registry (framework/schemas/asset-types.json): asset types run on Fable (Brett, Nov 4 2026).",
      "phase": "",
      "group": "",
      "estimate": "30 min",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1764,
- "updatedAt": "2026-11-09T17:03:15.715Z",
+ "rev": 1765,
+ "updatedAt": "2026-11-09T17:03:40.640Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126887,7 +126887,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:03:14.279Z",
+   "updatedAt": "2026-11-09T17:03:39.518Z",
    "builtAt": "",
    "notes": [
     {
@@ -126945,8 +126945,8 @@
      "uid": "st-mw9agzql018t5d",
      "title": "",
      "text": "Add skin entries in asset-types.json for all 44 uncovered types: color-theme, style-theme, layout, app-menu, toolbar, nav-menu, context-menu, tab-group, dialog, popup, button, slider, container, gauge, meter, banner, clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge, settings, dock-layout, xlayout, nav-style, behavior-theme, branding, typography, density, sizing, agent-card, demonstration, book, clip, docs. Types that ARE skin ingredients (themes, typography, density, sizing) get an explicit exclusion instead. Additive only: default skin must look identical (before/after screenshot diff). Do this BEFORE enabling the CI gate so open PRs aren't blocked.",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Edits the asset-type registry (framework/schemas/asset-types.json): asset types run on Fable (Brett, Nov 4 2026).",
      "phase": "",
      "group": "",
      "estimate": "30 min",
@@ -126958,9 +126958,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T13:20:29.341Z",
-     "updatedAt": "2026-11-09T13:20:29.421Z"
+     "updatedAt": "2026-11-09T17:03:39.641Z"
     },
     {
      "id": "s2",
@@ -127059,7 +127059,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
