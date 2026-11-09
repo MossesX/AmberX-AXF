@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1980,
- "updatedAt": "2026-11-09T20:39:22.466Z",
+ "rev": 1981,
+ "updatedAt": "2026-11-09T20:39:42.735Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116849,15 +116849,15 @@
    "title": "Fix owner check bug + dead start button",
    "category": "bug fix",
    "detail": "Signed in to the console as admin (the only account), Gizmo could raise Max parallel builds but 'Launch builds without asking' says owner only and won't toggle. The owner check must treat the admin login as the owner for every owner-only setting. Also: the Build Manager start button on a pending build does nothing (no log line).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-owner-check-bug-dead-start-button",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-09T20:39:16.711Z",
+   "updatedAt": "2026-11-09T20:39:24.411Z",
    "builtAt": "",
    "notes": [
     {
@@ -116871,6 +116871,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T20:39:05.871Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-owner-check-bug-dead-start-button--paulie.",
+     "at": "2026-11-09T20:39:22.743Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-owner-check-bug-dead-start-button--paulie, own login copy)",
+     "at": "2026-11-09T20:39:24.411Z"
     }
    ],
    "approvals": [],
@@ -116890,12 +116898,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:37:04.244Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-owner-check-bug-dead-start-button--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-09T20:39:21.996Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T20:39:05.871Z",
@@ -116905,9 +116913,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-09T20:39:21.996Z"
    },
    "steps": [
     {
@@ -117010,7 +117018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
