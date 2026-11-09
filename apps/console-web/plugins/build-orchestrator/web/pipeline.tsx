@@ -20,8 +20,12 @@ type Status = {
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
-  state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
+  accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
+  state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
+type Finding = { name: string; kind: string; role: string; state: 'ready' | 'busy' | 'standby' | 'blocked'; running: number; parallel: number; note: string };
+type SelfCheck = { at: string; reason: string; by: string; line: string; fixes: string[]; problems: string[]; findings: Finding[]; notified: boolean };
+const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'danger'> = { ready: 'success', busy: 'accent', standby: undefined, blocked: 'danger' };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
@@ -39,6 +43,8 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   };
   useEffect(() => {
     void load();
+    // console load: the dispatcher checks every account on its next tick (quietly: no toast)
+    void api.post('pipeline/selfcheck', { reason: 'console-load' }).catch(() => undefined);
     // one timer, only while the page is on screen (the console's pollers once starved the picture fetches: never per render)
     const tickIt = () => { if (document.visibilityState === 'visible') void load(); };
     timer.current = window.setInterval(tickIt, REFRESH_MS);
@@ -56,6 +62,9 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   const launchFor = (id: string) => s.plan.launches.find((l) => l.id === id);
   const idle = s.state.idle ?? s.plan.idle;
   const tickAge = s.state.at ? ago(s.state.at) : '';
+  const check = s.state.selfCheck ?? null;
+  const from = s.accountsFrom;
+  const asked = !!s.state.selfCheckRequested && (!check || s.state.selfCheckRequested > check.at);
   return (
     <div className="fx-stack fx-stack--lg">
       {error && <Note tone="warning">{error}</Note>}
@@ -71,8 +80,21 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       <section className="fx-stack">
-        <h2 className="pd-card__title">Claude accounts on the VPS <span className="fx-muted fx-small">· the dispatcher sends Fable phases to accounts with Fable, the rest to Opus</span></h2>
-        {s.accounts.length === 0 ? <div className="fx-empty">No Claude account is signed in on the VPS.</div> : (
+        <h2 className="pd-card__title">Claude accounts on the VPS <span className="fx-muted fx-small">· the dispatcher sends Fable phases to accounts with Fable, the rest to Opus{from?.source === 'snapshot' && from.at ? ` · as the dispatcher saw them ${ago(from.at)}` : ''}</span></h2>
+        {from?.why && <Note tone="warning">{from.why}</Note>}
+        <article className="pd-card pl-selfcheck" aria-label="Dispatcher self-check">
+          <div className="pd-card__top">
+            <h3 className="pd-card__title">Self-check<span className="fx-muted fx-small">{check ? ` · ${ago(check.at)} (${check.reason})` : ' · not run yet'}</span></h3>
+            <Button size="sm" tone="neutral" icon="refresh" disabled={busy === 'pipeline/selfcheck' || asked} title="Check every account one by one (signed in, limited, key, free slots) and release slots and builds held by ended sessions. Runs on the VPS on the next tick." onClick={() => act('pipeline/selfcheck', { reason: 'on demand' }, 'Self-check asked for: the dispatcher runs it within a minute')}>{asked ? 'Checking…' : 'Check accounts now'}</Button>
+          </div>
+          {check ? <>
+            <p className="fx-small">{check.line}{check.notified ? ' · AmberX told' : ''}</p>
+            {check.fixes.map((f) => <p key={f} className="fx-small"><Icon name="check" size={13} /> Fixed: {f}</p>)}
+            {check.problems.map((p) => <p key={p} className="fx-small oc-flag"><Icon name="alert" size={13} /> Can't use {p}</p>)}
+            <div className="fx-row fx-row--wrap">{check.findings.map((f) => <span key={f.name} title={f.note}><Chip tone={CHECK_TONE[f.state]}>{f.name}: {f.state} {f.running}/{f.parallel}</Chip></span>)}</div>
+          </> : <p className="fx-small fx-muted">The dispatcher checks every account when queued builds wait and nothing starts, on console load and when asked.</p>}
+        </article>
+        {s.accounts.length === 0 ? <div className="fx-empty">{from?.why || 'No Claude account is signed in on the VPS.'}</div> : (
           <div className="pl-cols pl-cols--accounts">
             {s.accounts.map((a) => (
               <article key={a.name} className={`pd-card pl-acct ${a.usable || a.api?.usable ? '' : 'is-off'}`}>

@@ -164,6 +164,29 @@ t('needsSplit: no steps, a step over the limit or without an estimate; never a f
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '' }])), true);
   assert.equal(P.needsSplit(build('x', 'complete', [])), false);
 });
+t('self-check: each account gets a state; blocked ones are the alert; a new problem or a fix notifies, the same one does not', () => {
+  const s = P.normSettings({});
+  const rows = [
+    { name: 'w', role: 'worker', plan: 'max', running: [] },
+    { name: 'full', role: 'worker', plan: 'max', running: ['x'] },
+    { name: 'lim', role: 'worker', plan: 'max', running: [], limited: { kind: 'auth', until: '2099-01-01T00:00:00Z', reason: 'login failed' } },
+    { name: 'con', role: 'interactive', plan: 'max', running: [] },
+    { name: 'k', role: 'api-worker', kind: 'api', hasKey: true, building: 2, running: [] },
+    { name: 'nokey', role: 'api-worker', kind: 'api', hasKey: false, building: 2, running: [] },
+  ];
+  const views = P.accountViews(rows, {}, { settings: s });
+  const f = Object.fromEntries(views.map((v, i) => [v.name, P.checkAccount(v, rows[i])]));
+  assert.equal(f.w.state, 'ready'); assert.equal(f.full.state, 'busy'); assert.equal(f.lim.state, 'blocked'); assert.equal(f.lim.signedIn, false);
+  assert.equal(f.con.state, 'standby'); assert.equal(f.k.state, 'ready'); assert.equal(f.k.keyOk, true); assert.equal(f.nokey.state, 'blocked'); assert.equal(f.nokey.keySaved, false);
+  const sum = P.checkSummary(Object.values(f), ['released x']);
+  assert.match(sum.line, /6 accounts: 2 ready, 1 busy, 1 standby, 2 blocked · fixed 1/); assert.equal(sum.problems.length, 2);
+  const cur = { findings: Object.values(f), fixes: [], signature: sum.signature };
+  assert.equal(P.checkNotify(cur, null), true, 'first sight of a blocked account');
+  assert.equal(P.checkNotify(cur, { signature: sum.signature, findings: cur.findings }), false, 'the same problem again: quiet');
+  assert.equal(P.checkNotify({ ...cur, fixes: ['x'] }, { signature: sum.signature }), true, 'a fix always tells');
+  const a = P.alertFor('selfcheck', { fixes: ['released x'], problems: sum.problems, line: sum.line });
+  assert.equal(a.key, 'pipeline:selfcheck'); assert.equal(a.severity, 'warning'); assert.match(a.title, /fixed 1, 2 accounts can't work/); assert.match(a.body, /Can't use lim/);
+});
 t('alertFor: idle keyed once, per-build run keys, every kind has a title', () => {
   const idle = P.alertFor('idle', { kind: 'stuck', reason: 'why' }); assert.equal(idle.key, 'pipeline:idle'); assert.equal(idle.severity, 'warning'); assert.equal(idle.source, 'pipeline');
   assert.equal(P.alertFor('idle', { kind: 'empty', reason: 'why' }).severity, 'info');
@@ -379,6 +402,35 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(find('gamma').pipeline.splitRequested);
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['gamma']);
     assert.equal(find('gamma').steps.length, 2); assert.equal(find('gamma').pipeline.splitRequested, '');
+  });
+  t('e2e self-check: every account one by one, the host snapshot, and the console container reads it', () => {
+    const r = json(pipe('selfcheck', '--reason', 'test', '--json'));
+    assert.equal(r.ran, true); assert.equal(r.findings.length, 3); assert.match(r.line, /^3 accounts:/);
+    assert.ok(r.findings.every((f) => ['ready', 'busy', 'standby', 'blocked'].includes(f.state)));
+    assert.equal(r.findings.find((f) => f.name === 'console').state, 'standby', 'workers exist: the console account stands by');
+    assert.ok(existsSync(join(pipeDir, 'accounts-host.json')));
+    // the console runs in a container with no ~/.claude-accounts: it reads the host's snapshot (was: no account at all)
+    const box = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'status', '--json'], { cwd: ROOT, env: { ...env, AXF_CLAUDE_ACCOUNTS: join(tmp, 'no-such-dir') }, encoding: 'utf8', timeout: 120000 });
+    const s = JSON.parse(box.stdout.trim().split('\n').pop());
+    assert.equal(s.accountsFrom.source, 'snapshot'); assert.equal(s.accounts.length, 3); assert.equal(s.state.selfCheck.line, r.line);
+    assert.ok(!s.plan.waits.some((w) => /no Claude account is signed in/.test(w.why)));
+    // in the container a self-check is a request the next host tick runs
+    const ask = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'selfcheck', '--json'], { cwd: ROOT, env: { ...env, AXF_CLAUDE_ACCOUNTS: join(tmp, 'no-such-dir') }, encoding: 'utf8', timeout: 120000 });
+    const a = JSON.parse(ask.stdout.trim().split('\n').pop()); assert.equal(a.ran, false); assert.ok(a.requested);
+    assert.ok(existsSync(join(pipeDir, 'selfcheck-request.json')));
+    const tk = json(pipe('tick', '--json')); assert.equal(tk.selfCheck?.reason, 'on demand'); assert.ok(!existsSync(join(pipeDir, 'selfcheck-request.json')), 'the tick ran it');
+  });
+  t('e2e stale reaper: a build marked running on an account with no session and no slot goes back to the Queue', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'ghost', title: 'Ghost', steps: [{ text: 'never ran', model: 'Opus', estimate: '20 min' }] }));
+    json(pipe('queue', 'ghost', '--json'));
+    const old = new Date(Date.now() - 3600e3).toISOString();
+    const st = store(); const g = st.builds.find((b) => b.id === 'ghost');
+    g.status = 'running'; g.pipeline = { ...g.pipeline, account: 'w-max', session: '', slot: 'hl-gone', launchedAt: old };
+    writeFileSync(storeFile, JSON.stringify(st));
+    const r = json(pipe('selfcheck', '--json'));
+    assert.ok(r.fixes.some((f) => /requeued ghost/.test(f)), r.fixes.join('; '));
+    assert.equal(find('ghost').status, 'queued'); assert.equal(find('ghost').pipeline.account || '', '');
+    json(pipe('unqueue', 'ghost', '--json'));
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');

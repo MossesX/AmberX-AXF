@@ -320,6 +320,52 @@ export const ALERT_LINK = '#/build-orchestrator';
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
  * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
  */
+// ------------------------------------------------------------------ self-check
+
+/**
+ * One account as the self-check finds it, from its view (accountView) and its claude-workers row:
+ *   { name, kind, role, state: ready | busy | standby | blocked, signedIn, keySaved, keyOk, limited, running, parallel, free, note }
+ * ready = takes the next build; busy = takes builds, every slot full; standby = by design not taking one now (not a worker,
+ * an API key only takes routed builds, switched off by Brett); blocked = can't work until something changes (a limit, an
+ * expired login, no key, a rejected key, a spend cap). A key is checked locally: saved and not rejected by its last run.
+ */
+export function checkAccount(v, row = {}) {
+  const api = v.kind === 'api';
+  const limited = v.limited ?? null;
+  const signedIn = api ? null : !(limited && limited.kind === 'auth');
+  const keySaved = api ? row?.hasKey !== false : null;
+  const keyOk = api ? keySaved && !(limited && limited.kind === 'auth') : null;
+  let state; let note;
+  if (api) {
+    const why = v.api?.why || '';
+    if (!keySaved) { state = 'blocked'; note = why || 'no API key saved'; }
+    else if (limited || /spend cap|rejected/i.test(why)) { state = 'blocked'; note = why; }
+    else if (why && !/^full/.test(why)) { state = 'standby'; note = why; }
+    else { state = v.free > 0 ? 'ready' : 'busy'; note = v.free > 0 ? 'takes routed builds' : why || 'full'; }
+  } else if (limited) { state = 'blocked'; note = v.why; }
+  else if (!v.usable) { state = 'standby'; note = v.why; }
+  else { state = v.free > 0 ? 'ready' : 'busy'; note = v.free > 0 ? `${v.free} free` : 'every slot is in use'; }
+  return { name: v.name, kind: v.kind, role: v.role, state, signedIn, keySaved, keyOk, limited: limited ? { kind: str(limited.kind, 20), until: str(limited.until, 40), reason: str(limited.reason, 80) } : null,
+    running: v.running, parallel: v.parallel, free: v.free, note: str(note, 300) };
+}
+
+/** The self-check's verdict in one line, and the problems worth a phone alert (an account it can't use). */
+export function checkSummary(findings, fixes = []) {
+  const f = list(findings);
+  const count = (s) => f.filter((x) => x.state === s).length;
+  const blocked = f.filter((x) => x.state === 'blocked');
+  const line = !f.length ? 'no Claude account found'
+    : `${f.length} accounts: ${count('ready')} ready, ${count('busy')} busy, ${count('standby')} standby, ${blocked.length} blocked${fixes.length ? ` · fixed ${fixes.length}` : ''}`;
+  return { line, problems: blocked.map((x) => `${x.name}: ${x.note}`), signature: blocked.map((x) => `${x.name}:${x.limited?.kind || x.note}`).sort().join('|') };
+}
+
+/** Should the self-check tell Brett? When it fixed something, or an account it can't use shows up that wasn't there last time. */
+export function checkNotify(cur, prev) {
+  if (list(cur?.fixes).length) return true;
+  const was = new Set(String(prev?.signature || '').split('|').filter(Boolean));
+  return String(cur?.signature || '').split('|').filter(Boolean).some((s) => !was.has(s)) || (!list(cur?.findings).length && list(prev?.findings).length > 0);
+}
+
 export function alertFor(kind, d = {}) {
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
   switch (kind) {
@@ -327,6 +373,9 @@ export function alertFor(kind, d = {}) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
+      title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
+      body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
