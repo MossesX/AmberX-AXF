@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T02:58:20.776Z",
+ "updatedAt": "2026-11-09T04:14:06.043Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -23258,10 +23258,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
-   "branch": "claude/skins-asset-types",
+   "branch": "claude/skins-finish",
    "pr": "#383",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-09T02:58:18.211Z",
+   "updatedAt": "2026-11-09T02:58:35.329Z",
    "builtAt": "2026-11-09T02:58:18.212Z",
    "notes": [
     {
@@ -74277,14 +74277,14 @@
    "title": "Demonstration Designer plugin (new, standalone)",
    "category": "",
    "detail": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "demonstration-designer-plugin-new-standalone",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/demo-designer",
+   "pr": "#405",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-08T21:13:19.379Z",
+   "updatedAt": "2026-11-09T04:07:29.603Z",
    "builtAt": "",
    "notes": [
     {
@@ -74328,8 +74328,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:07:28.625Z",
      "note": "",
      "uid": "st-mw883wk507uzgy"
     },
@@ -75897,15 +75897,15 @@
    "title": "Plan Studio receives a valid shipped-feature manifest",
    "category": "",
    "detail": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
-   "pr": "",
+   "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T02:31:13.728Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T04:14:04.658Z",
+   "builtAt": "2026-11-09T04:13:50.725Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -75918,9 +75918,38 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-plan-studio-receives-a-valid-shipped-feature-man--sully, own login copy)",
      "at": "2026-11-09T02:31:13.728Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--sully: brief only · start 12.7K tokens ($0.10) · cost $16.09 · 152 turns · 6 tools, MCP none",
+     "at": "2026-11-09T03:03:27.933Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T03:04:03.717Z"
+    },
+    {
+     "text": "Started run 2 on account-3 (Opus, Phase 2): axf-plan-studio-receives-a-valid-shipped-feature-man--lenny.",
+     "at": "2026-11-09T04:10:11.562Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-plan-studio-receives-a-valid-shipped-feature-man--lenny, own login copy)",
+     "at": "2026-11-09T04:10:12.815Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--lenny: brief only · start 10.9K tokens ($0.03) · cost $1.01 · 31 turns · 6 tools, MCP none",
+     "at": "2026-11-09T04:14:04.658Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-09T04:12:37.472Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
@@ -75929,7 +75958,7 @@
     "session": "",
     "link": "",
     "by": "plan-studio-receives-a-valid-shipped-feature-man",
-    "brief": "# Build: plan-studio-receives-a-valid-shipped-feature-man\n\n## Brett said (verbatim)\n> Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n\n## What to build\nContinue build \"Plan Studio receives a valid shipped-feature manifest\" (plan-studio-receives-a-valid-shipped-feature-man) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plan-studio-receives-a-valid-shipped-feature-man --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plan-studio-receives-a-valid-shipped-feature-man \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: plan-studio-receives-a-valid-shipped-feature-man\n\n## Brett said (verbatim)\n> Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n\n## What to build\nContinue build \"Plan Studio receives a valid shipped-feature manifest\" (plan-studio-receives-a-valid-shipped-feature-man) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/plan-studio-receives-a-valid-shipped-feature-man · PR #404\nSteps in this phase (2 left, ~50 min):\n[ ] s2 (~30 min) Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plan-studio-receives-a-valid-shipped-feature-man --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plan-studio-receives-a-valid-shipped-feature-man \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -75948,8 +75977,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T03:03:12.967Z",
      "note": "",
      "uid": "st-mw8j8z9z0160g3"
     },
@@ -75966,8 +75995,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:12:37.472Z",
      "note": "",
      "uid": "st-mw8j8z9z02tix6"
     },
@@ -75987,8 +76016,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:13:50.725Z",
      "note": "",
      "uid": "st-mw8j8z9z03wha6"
     }
@@ -76755,6 +76784,198 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw8o8qzg03ksrd"
+    }
+   ]
+  },
+  {
+   "id": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "title": "Reserve build IDs at once: add returns the ID with the veto countdown",
+   "category": "",
+   "detail": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:59:26.044Z",
+   "updatedAt": "2026-11-09T03:00:33.356Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T03:00:33.356Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8obr2k01uilk"
+    },
+    {
+     "id": "s2",
+     "text": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8obr2k02jyvm"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/reserve-build-ids-at-once-add-returns-the-id-wit.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/reserve-build-ids-at-once-add-returns-the-id-wit.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8obr2k03rhvl"
+    }
+   ]
+  },
+  {
+   "id": "permissions-control-panel-every-axhub-tool-s-pol",
+   "title": "Permissions control panel: every axHub tool's policy in one place",
+   "category": "",
+   "detail": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "permissions-control-panel-every-axhub-tool-s-pol",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T03:02:16.421Z",
+   "updatedAt": "2026-11-09T03:03:15.234Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett: \"Can I make it so that employees like Molly or Amber or Moses can use it, and then I assign one of the employees to the orchestrator so the orchestrator can say run it, change it?\" Permissions are granted per employee (agent from the one roster: Molly, Amber, Moses, Brownie, etc.), not just per session type. Brett assigns an employee to the orchestrator; the orchestrator acts with that employee's permissions. Brett can grant an employee permission to change policies, but only within a ceiling Brett sets: an employee can never raise its own or another's permissions above the ceiling, never touch owner-only settings or the ceiling itself, every change it makes is logged with the employee's name and sends Brett a notification, and Brett can revoke instantly. Panel shows per-employee view and per-tool view.",
+     "at": "2026-11-09T03:02:50.247Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T03:03:15.234Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a control panel for all those settings, those permission settings.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8of7z701qzlf"
+    },
+    {
+     "id": "s2",
+     "text": "I need a control panel for all those settings, those permission settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8of7z7023tt9"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8of7z703zubg"
     }
    ]
   }
