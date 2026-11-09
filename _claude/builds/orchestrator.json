@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:20:21.467Z",
+ "updatedAt": "2026-11-09T19:20:55.048Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77236,14 +77236,14 @@
    "title": "Skins restyle EVERYTHING: badges, banner and every visual element",
    "category": "Appearance",
    "detail": "Bug: applying a skin doesn't change the banner badges (Claude, VPS, axHub, AmberX, usage). Rule: a skin must change every single visual thing everywhere, in every framework app: banner, badges, toolbars, menus, dialogs, toasts, tables, buttons, icons, inputs, scrollbars, charts. Audit every component for hard-coded colours/styles or styles not read from skin tokens and move them to tokens/assets. Add an automated check: apply each skin, screenshot every screen, and fail on any element whose style didn't change from the default. Result must look professional. Brett: \"the skin literally needs to change every single visual thing everywhere... I need it to look professional.\"",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T18:54:45.135Z",
+   "updatedAt": "2026-11-09T19:20:53.853Z",
    "builtAt": "",
    "notes": [
     {
@@ -77321,6 +77321,10 @@
     {
      "text": "Headless run axf-skins-restyle-everything-badges-banner-and-every--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:54:45.135Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-09T19:20:53.853Z"
     }
    ],
    "approvals": [],
