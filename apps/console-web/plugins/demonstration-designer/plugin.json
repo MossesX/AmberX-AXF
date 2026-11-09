@@ -1,0 +1,67 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.demonstration-designer",
+  "name": "Demonstration Designer",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Pitch the product in three picks and one button. Pick a plugin, screen or UI element from the live registry, pick a length in minutes, pick a narrator voice, press Generate: the designer writes a pitch script with zero tokens (a hook up front, benefits instead of specs, a closing call to action), picks the best screens, and plays a polished demo on the console's real data with a spotlight on each control, smooth zooms and pans, captions, soft background music and a logo intro and outro. Afterwards tweak the words, preview again, export the recording as a video (MP4 when the server has ffmpeg, WebM otherwise) or copy a share link that opens and plays it. Demos are demonstration@1 assets (reusable, chainable into tours, indexed by the glossary); recordings are clip@1 assets. Advanced work (a step timeline, record a demo by doing it) stays folded away. Every action and setting is also on REST, the MCP tools demonstration_designer_*, `axf demonstration-designer …` and the voice actions pitch.*; the deep link ?axf-demo=<id> opens it.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:demonstration-designer",
+    "settings-tab:demonstration-designer",
+    "service:demonstrations@1"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/demonstration-designer",
+    "env": [
+      "AXF_DEMO_DESIGNER_DIR",
+      "AXF_FFMPEG"
+    ],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      ".github/workflows/android.yml",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "registry", "route": "GET /registry", "title": "What can be pitched", "description": "Every plugin, screen and UI element the repo registers, with the plain words a pitch is written from; q filters by words, kind by plugin, screen or ui-element.", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string", "description": "words to look for" }, "kind": { "type": "string", "description": "plugin, screen or ui-element" } } }, "output": "{ items: [{ id, kind, label, description, screens }] }" },
+      { "id": "demos", "route": "GET /demos", "title": "List pitch demos", "description": "Every saved demo with its steps, running time, topic, narrator, chain and recordings.", "readOnly": true, "output": "{ items: [summary] }" },
+      { "id": "demo", "route": "GET /demo", "title": "One pitch demo", "description": "The demonstration@1 asset of a demo plus its pitch facts (minutes, topic, product, call to action, plan).", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] }, "output": "asset@1 + pitch" },
+      { "id": "generate", "route": "POST /generate", "title": "Generate a pitch", "description": "Write the pitch script of a topic with zero tokens: a hook, the best screens with highlighted controls, a call to action, fitted to the minutes asked for, in the narrator voice given; saved unless save is false.", "readOnly": false, "input": { "type": "object", "properties": { "topic": { "type": "string", "description": "a registry id: plugin:ui-review, screen:home, ui-element:console-web:x" }, "minutes": { "type": "integer", "description": "1 to 30 (default from settings)" }, "voice": { "type": "string", "description": "narrator voice name, blank = device default, silent = captions only" }, "speed": { "type": "number", "description": "0.5 to 2" }, "save": { "type": "boolean" } }, "required": ["topic"] }, "output": "the demo (asset@1 + pitch)" },
+      { "id": "save", "route": "POST /demo", "title": "Save a pitch demo", "description": "Store a demo (an asset@1 object with demonstration@1 data and optional pitch facts), validated and normalised.", "readOnly": false, "input": { "type": "object", "properties": { "asset": { "type": "object" } }, "required": ["asset"] }, "output": "the stored demo" },
+      { "id": "delete", "route": "DELETE /demo", "title": "Delete a pitch demo", "description": "Remove a demo; its recordings stay as clips.", "readOnly": false, "destructive": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] }, "output": "{ removed }" },
+      { "id": "script", "route": "GET /script", "title": "The script as text", "description": "The demo's words as plain text: one block per step, a '# Title' line then what the narrator says.", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] }, "output": "text" },
+      { "id": "script-apply", "route": "POST /script", "title": "Apply a tweaked script", "description": "The text (blocks split on blank lines) becomes the steps' words; each block keeps the action and target of the step at its position.", "readOnly": false, "input": { "type": "object", "properties": { "id": { "type": "string" }, "text": { "type": "string" } }, "required": ["id", "text"] }, "output": "the stored demo" },
+      { "id": "chain", "route": "POST /chain", "title": "Chain demos into a tour", "description": "Set the demos that play after this one; an empty list clears the chain.", "readOnly": false, "input": { "type": "object", "properties": { "id": { "type": "string" }, "chain": { "type": "array", "items": { "type": "string" } } }, "required": ["id"] }, "output": "the demo summary" },
+      { "id": "walkthrough", "route": "GET /walkthrough", "title": "The demo as walkthrough@1", "description": "The demo and its chain as one playable walkthrough@1 (steps of say, do, target).", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] }, "output": "walkthrough@1" },
+      { "id": "share", "route": "GET /share", "title": "Share link", "description": "The deep link that opens the designer on this demo, and the one that plays it at once (?axf-demo=<id>&axf-autoplay=1).", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] }, "output": "{ path, play, url, view }" },
+      { "id": "settings", "route": "GET /settings", "title": "Designer settings", "description": "Every setting: script (minutes, product, call to action, pace), narration (voice, speed, captions), stage (zoom, highlight, controls, logo), music (on, volume, mood), export (format, transcode, keep) and advanced.", "readOnly": true, "output": "pitch-settings@1" },
+      { "id": "settings-set", "route": "POST /settings", "title": "Change a setting", "description": "Change settings: { section: { key: value } } or { key: 'music.volume', value: 12 }. Unknown keys are dropped; values are clamped.", "readOnly": false, "input": { "type": "object", "properties": { "key": { "type": "string" }, "value": {} } }, "output": "the settings" },
+      { "id": "media", "route": "GET /media", "title": "List recordings", "description": "Every recording kept as a clip@1: the demo it shows, its file, seconds and whether an MP4 exists.", "readOnly": true, "output": "{ items: [{ id, name, demo, video, seconds, recordedAt, mp4 }] }" },
+      { "id": "media-upload", "route": "POST /media", "title": "Upload a recording", "description": "Raw video bytes of a recording the stage made (query: id, seconds, mime); kept under media/, registered as a clip, transcoded to MP4 when ffmpeg is on the server and the export setting says so.", "readOnly": false, "input": { "type": "object", "properties": { "id": { "type": "string" }, "seconds": { "type": "number" }, "mime": { "type": "string" } }, "required": ["id"] }, "output": "{ clip, file, bytes, keywords, mp4? }" },
+      { "id": "media-file", "route": "GET /media/file", "title": "One recording file", "description": "The video file of a recording by its name under media/.", "readOnly": true, "input": { "type": "object", "properties": { "name": { "type": "string" } }, "required": ["name"] }, "output": "the file" },
+      { "id": "export", "route": "POST /export", "title": "Export a recording as MP4", "description": "Transcode a recording (clip id) to MP4 with the server's ffmpeg; answers with an error naming the gap when there is none.", "readOnly": false, "input": { "type": "object", "properties": { "clip": { "type": "string" } }, "required": ["clip"] }, "output": "{ clip, mp4, ffmpeg }" }
+    ]
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-09"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

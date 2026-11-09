@@ -1,52 +1,10 @@
 {
  "$axf": "builds@1",
- "rev": 1683,
- "updatedAt": "2026-11-09T02:55:11.595Z",
+ "rev": 1712,
+ "updatedAt": "2026-11-09T04:23:31.910Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "main-framework": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "refactor": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "angel": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "breakroom": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "urgent": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "big-dog": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "current": {
    "sameSession": true,
    "subAgents": false,
    "approveModelSwitch": true,
@@ -108127,15 +108085,15 @@
    "title": "skins-asset-types",
    "category": "",
    "detail": "Upgrade skins to style every registry asset type (widgets, icon packs, composites, embeds, text blocks), scoped inheritance, registry-driven coverage + CI check. Brief: /root/axf-builds/skins-asset-types/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
-   "branch": "claude/skins-asset-types",
+   "branch": "claude/skins-finish",
    "pr": "#383",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-07T06:10:22.457Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T02:58:35.329Z",
+   "builtAt": "2026-11-09T02:58:18.212Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
@@ -108338,12 +108296,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T02:58:18.211Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-07T04:45:35.257Z",
-     "updatedAt": "2026-11-07T04:45:35.353Z"
+     "updatedAt": "2026-11-09T03:02:40.608Z"
     }
    ],
    "profiles": [
@@ -108354,7 +108312,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108364,7 +108322,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-07T04:02:15.774Z",
-    "builtAt": "",
+    "builtAt": "2026-11-09T02:58:18.212Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mw5x61qz0d3lr4": "2026-11-07T04:02:15.785Z",
@@ -122286,14 +122244,15 @@
    "title": "Demonstration Designer plugin (new, standalone)",
    "category": "",
    "detail": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "demonstration-designer-plugin-new-standalone",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/demo-designer",
+   "pr": "#405",
+   "mergedAt": "2026-11-09T04:16:30Z",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-08T21:13:19.379Z",
+   "updatedAt": "2026-11-09T04:20:31.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -122307,6 +122266,14 @@
     {
      "text": "Queued by cli.",
      "at": "2026-11-08T21:13:19.379Z"
+    },
+    {
+     "text": "Brett: \"Why doesn't the exported video have the narrator's voice? AmberX can screen record it.\" Phase 1 export uses browser speech, which Chrome doesn't route into tab capture, so videos have captions and music but no voice. Fix: add an export option 'Record on AmberX': the demo plays on Brett's phone and AmberX records it with the narration audio (reuse AmberX's Audio Output Recorder, extend it to screen + app audio), then uploads the video back to the demo asset. Also a default export path that doesn't need the phone: generate the narration as real audio (a TTS voice) and mix it into the exported MP4. Full API/MCP/CLI/voice control.",
+     "at": "2026-11-09T04:19:19.323Z"
+    },
+    {
+     "text": "Reconciler: PR #405 merged",
+     "at": "2026-11-09T04:20:31.717Z"
     }
    ],
    "approvals": [],
@@ -122339,12 +122306,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:07:28.625Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:26:33.365Z",
-     "updatedAt": "2026-11-08T19:26:33.365Z"
+     "updatedAt": "2026-11-09T04:07:28.761Z"
     },
     {
      "id": "s2",
@@ -122402,7 +122369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124615,15 +124582,15 @@
    "title": "Plan Studio receives a valid shipped-feature manifest",
    "category": "",
    "detail": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
-   "pr": "",
+   "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T02:31:13.728Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T04:14:04.658Z",
+   "builtAt": "2026-11-09T04:13:50.725Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -124636,9 +124603,38 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-plan-studio-receives-a-valid-shipped-feature-man--sully, own login copy)",
      "at": "2026-11-09T02:31:13.728Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--sully: brief only · start 12.7K tokens ($0.10) · cost $16.09 · 152 turns · 6 tools, MCP none",
+     "at": "2026-11-09T03:03:27.933Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T03:04:03.717Z"
+    },
+    {
+     "text": "Started run 2 on account-3 (Opus, Phase 2): axf-plan-studio-receives-a-valid-shipped-feature-man--lenny.",
+     "at": "2026-11-09T04:10:11.562Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-plan-studio-receives-a-valid-shipped-feature-man--lenny, own login copy)",
+     "at": "2026-11-09T04:10:12.815Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--lenny: brief only · start 10.9K tokens ($0.03) · cost $1.01 · 31 turns · 6 tools, MCP none",
+     "at": "2026-11-09T04:14:04.658Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-09T04:12:37.472Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
@@ -124647,10 +124643,39 @@
     "session": "",
     "link": "",
     "by": "plan-studio-receives-a-valid-shipped-feature-man",
-    "brief": "# Build: plan-studio-receives-a-valid-shipped-feature-man\n\n## Brett said (verbatim)\n> Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n\n## What to build\nContinue build \"Plan Studio receives a valid shipped-feature manifest\" (plan-studio-receives-a-valid-shipped-feature-man) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plan-studio-receives-a-valid-shipped-feature-man --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plan-studio-receives-a-valid-shipped-feature-man \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: plan-studio-receives-a-valid-shipped-feature-man\n\n## Brett said (verbatim)\n> Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n\n## What to build\nContinue build \"Plan Studio receives a valid shipped-feature manifest\" (plan-studio-receives-a-valid-shipped-feature-man) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/plan-studio-receives-a-valid-shipped-feature-man · PR #404\nSteps in this phase (2 left, ~50 min):\n[ ] s2 (~30 min) Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plan-studio-receives-a-valid-shipped-feature-man --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step plan-studio-receives-a-valid-shipped-feature-man <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plan-studio-receives-a-valid-shipped-feature-man \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "account-3",
+    "session": "",
+    "slot": "",
+    "model": "Fable",
+    "launchedAt": "2026-11-09T02:31:11.152Z",
+    "runs": 1,
+    "lastRun": {
+     "at": "2026-11-09T03:04:03.174Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 2,
+     "account": "account-3",
+     "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--sully"
+    },
+    "split": {
+     "at": "2026-11-09T00:38:25.943Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+    "route": "",
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -124668,12 +124693,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T03:03:12.967Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T00:38:25.943Z",
-     "updatedAt": "2026-11-09T00:38:25.943Z"
+     "updatedAt": "2026-11-09T03:03:14.712Z"
     },
     {
      "id": "s2",
@@ -124690,12 +124715,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:12:37.472Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T00:38:25.943Z",
-     "updatedAt": "2026-11-09T00:38:25.943Z"
+     "updatedAt": "2026-11-09T04:12:37.586Z"
     },
     {
      "id": "s3",
@@ -124715,12 +124740,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:13:50.725Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T00:38:25.943Z",
-     "updatedAt": "2026-11-09T00:38:25.943Z"
+     "updatedAt": "2026-11-09T04:13:50.852Z"
     }
    ],
    "profiles": [
@@ -124731,7 +124756,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124741,7 +124766,7 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-09T00:37:43.238Z",
-    "builtAt": "",
+    "builtAt": "2026-11-09T04:13:50.725Z",
     "prefixSteps": false,
     "stepAt": {
      "st-mw8j8z9z0160g3": "2026-11-09T00:38:25.943Z",
@@ -125697,6 +125722,670 @@
    },
    "queue": null,
    "defaultAt": "2026-11-09T02:47:41.066Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skins-are-a-complete-rework-look-layout-behavior",
+   "title": "Skins are a complete rework: look + layout + behavior, and professional skins",
+   "category": "",
+   "detail": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "skins-are-a-complete-rework-look-layout-behavior",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:57:30.536Z",
+   "updatedAt": "2026-11-09T02:58:13.276Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T02:58:13.276Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the skins to be everything. I want a skin to be a complete rework. Everything. The skins are gonna rewrite the navigation menu, the app menu, the context menu, all the colors in the grids, the hover colors, the text sizes. All the behavior, everything. I need the entire UI reworked to look professional.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T02:58:13.276Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8o8qzg0137x2",
+     "title": "",
+     "text": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:58:13.276Z",
+     "updatedAt": "2026-11-09T02:58:13.276Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8o8qzg02erav",
+     "title": "",
+     "text": "I want the skins to be everything. I want a skin to be a complete rework. Everything. The skins are gonna rewrite the navigation menu, the app menu, the context menu, all the colors in the grids, the hover colors, the text sizes. All the behavior, everything. I need the entire UI reworked to look professional.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:58:13.276Z",
+     "updatedAt": "2026-11-09T02:58:13.276Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8o8qzg03ksrd",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:58:13.276Z",
+     "updatedAt": "2026-11-09T02:58:13.276Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 481
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "4 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T02:57:30.536Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8o8qzg0137x2": "2026-11-09T02:58:13.276Z",
+     "st-mw8o8qzg02erav": "2026-11-09T02:58:13.276Z",
+     "st-mw8o8qzg03ksrd": "2026-11-09T02:58:13.276Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T02:58:13.276Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "title": "Reserve build IDs at once: add returns the ID with the veto countdown",
+   "category": "",
+   "detail": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "reserve-build-ids-at-once-add-returns-the-id-wit",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T02:59:26.044Z",
+   "updatedAt": "2026-11-09T03:00:33.356Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T03:00:33.356Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T03:00:33.356Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8obr2k01uilk",
+     "title": "",
+     "text": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:00:33.356Z",
+     "updatedAt": "2026-11-09T03:00:33.356Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8obr2k02jyvm",
+     "title": "",
+     "text": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:00:33.356Z",
+     "updatedAt": "2026-11-09T03:00:33.356Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8obr2k03rhvl",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/reserve-build-ids-at-once-add-returns-the-id-wit.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/reserve-build-ids-at-once-add-returns-the-id-wit.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:00:33.356Z",
+     "updatedAt": "2026-11-09T03:00:33.356Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 482
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "45 min",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T02:59:26.044Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8obr2k01uilk": "2026-11-09T03:00:33.356Z",
+     "st-mw8obr2k02jyvm": "2026-11-09T03:00:33.356Z",
+     "st-mw8obr2k03rhvl": "2026-11-09T03:00:33.356Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T03:00:33.356Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "permissions-control-panel-every-axhub-tool-s-pol",
+   "title": "Permissions control panel: every axHub tool's policy in one place",
+   "category": "",
+   "detail": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "permissions-control-panel-every-axhub-tool-s-pol",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T03:02:16.421Z",
+   "updatedAt": "2026-11-09T03:03:15.234Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett: \"Can I make it so that employees like Molly or Amber or Moses can use it, and then I assign one of the employees to the orchestrator so the orchestrator can say run it, change it?\" Permissions are granted per employee (agent from the one roster: Molly, Amber, Moses, Brownie, etc.), not just per session type. Brett assigns an employee to the orchestrator; the orchestrator acts with that employee's permissions. Brett can grant an employee permission to change policies, but only within a ceiling Brett sets: an employee can never raise its own or another's permissions above the ceiling, never touch owner-only settings or the ceiling itself, every change it makes is logged with the employee's name and sends Brett a notification, and Brett can revoke instantly. Panel shows per-employee view and per-tool view.",
+     "at": "2026-11-09T03:02:50.247Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T03:03:15.234Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a control panel for all those settings, those permission settings.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T03:03:15.234Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8of7z701qzlf",
+     "title": "",
+     "text": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:03:15.234Z",
+     "updatedAt": "2026-11-09T03:03:15.234Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8of7z7023tt9",
+     "title": "",
+     "text": "I need a control panel for all those settings, those permission settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:03:15.234Z",
+     "updatedAt": "2026-11-09T03:03:15.234Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8of7z703zubg",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T03:03:15.234Z",
+     "updatedAt": "2026-11-09T03:03:15.234Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 483
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "2 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T03:02:16.421Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8of7z701qzlf": "2026-11-09T03:03:15.234Z",
+     "st-mw8of7z7023tt9": "2026-11-09T03:03:15.234Z",
+     "st-mw8of7z703zubg": "2026-11-09T03:03:15.234Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T03:03:15.234Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "session-transcripts-api-search-what-was-said-fin",
+   "title": "Session transcripts API: search what was said, find which session",
+   "category": "",
+   "detail": "Builds on ui-review-notify-session-audio (landed Nov 7): sessions are recorded by AmberX's Audio Output Recorder (output-recorder plugin) and transcribed by the faster-whisper worker, transcripts saved on the hub, readable in the recorder page. Today output-recorder's plugin.json declares no transcript commands, so nothing outside the page can read them. Add full API (plugin-commands@1, so MCP/axHub, REST, CLI, voice come for free): list sessions with transcripts (date, length, linked Claude session, title); read one transcript (whole or a time range, with timestamps); search across all transcripts (words or phrase, date range, fuzzy), returning the matching session, timestamp, a few lines of context, and a deep link that opens the recorder page at that moment (and plays the audio there). Also a 'find the session where we talked about X' command that ranks sessions by match. Reachable from Claude chat/voice sessions through axHub so Claude or Gizmo can answer 'which session did we talk about this'. Read-only; respects the recorder's settings. Tests; report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "session-transcripts-api-search-what-was-said-fin",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T04:21:03.588Z",
+   "updatedAt": "2026-11-09T04:23:29.791Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett: \"I can find that internally without AI, right?\" Yes: all search is plain code with zero tokens (full-text index over the transcripts, phrase + fuzzy + date filters). Add a search box with live type-ahead results on the recorder page and in the console's Search everything, so Brett can find a session himself without any AI. Claude/Gizmo only call the same plain search through the API.",
+     "at": "2026-11-09T04:21:48.439Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T04:22:18.198Z"
+    },
+    {
+     "text": "Brett: results pop up in a scrolling window. As Brett types in Search everything (or the recorder page), matching transcript snippets pop up live in a scrolling results window: each hit shows the session (date, title), timestamp and a few lines around the match with the words highlighted; infinite scroll, grouped by session, newest first with a sort switch. Tapping a hit opens the recorder at that moment and plays the audio. Plain search also drops filler phrases like 'find the session where', 'when we talked about' so a whole sentence still works, zero tokens.",
+     "at": "2026-11-09T04:22:38.915Z"
+    },
+    {
+     "text": "Brett: \"With the keywords in focus.\" In the scrolling results window each snippet is centered on the matched keywords, highlighted. Opening a hit scrolls the transcript so the keyword is centered on screen, highlighted and focused, with next/previous match buttons inside that session.",
+     "at": "2026-11-09T04:22:42.519Z"
+    },
+    {
+     "text": "Brett: \"there's a column on the left with all the hits. All the sessions that match: the session name and the type of thing we were talking about.\" Results window layout: left column lists every session with hits (session name, date, hit count, and a topic tag for what it was about, e.g. builds, skins, approvals, AmberX); tapping one shows its hits on the right, keywords centered and highlighted. Topic tags: from the linked Claude session's title and the builds it touched (plain code, zero tokens); optionally a cheap one-time tag per session after transcription, off by default.",
+     "at": "2026-11-09T04:23:10.596Z"
+    },
+    {
+     "text": "Brett: \"I want a RAG database made of all the transcripts.\" Build a RAG store over every transcript: chunk each transcript (with session, date, timestamps, speaker, topic tags), embed the chunks with a local embedding model on the VPS (no Claude tokens), store them in Postgres with pgvector (reuse the postgres-console container plan if it exists, else its own table), and index every new transcript automatically after transcription. Two ways in: 1) semantic search (meaning, not just exact words) in the same results window, mixed with the keyword hits; 2) 'Ask' (API/MCP/voice): Claude or Gizmo retrieve the top chunks and answer with the sessions and timestamps as sources, each linking to that moment. Share the store with the Agent Manager's RAG knowledge (agent-profile build) so employees can use it. Settings: on/off, re-index, what gets indexed. Tests: retrieval returns the right session for a paraphrased question.",
+     "at": "2026-11-09T04:23:29.791Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T04:22:18.198Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8r8vo6018865",
+     "title": "",
+     "text": "Builds on ui-review-notify-session-audio (landed Nov 7): sessions are recorded by AmberX's Audio Output Recorder (output-recorder plugin) and transcribed by the faster-whisper worker, transcripts saved on the hub, readable in the recorder page. Today output-recorder's plugin.json declares no transcript commands, so nothing outside the page can read them. Add full API (plugin-commands@1, so MCP/axHub, REST, CLI, voice come for free): list sessions with transcripts (date, length, linked Claude session, title); read one transcript (whole or a time range, with timestamps); search across all transcripts (words or phrase, date range, fuzzy), returning the matching session, timestamp, a few lines of context, and a deep link that opens the recorder page at that moment (and plays the audio there). Also a 'find the session where we talked about X' command that ranks sessions by match. Reachable from Claude chat/voice sessions through axHub so Claude or Gizmo can answer 'which session did we talk about this'. Read-only; respects the recorder's settings. Tests; report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T04:22:18.198Z",
+     "updatedAt": "2026-11-09T04:22:18.198Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8r8vo6028jhq",
+     "title": "",
+     "text": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T04:22:18.198Z",
+     "updatedAt": "2026-11-09T04:22:18.198Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8r8vo603igcy",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/session-transcripts-api-search-what-was-said-fin.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/session-transcripts-api-search-what-was-said-fin.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T04:22:18.198Z",
+     "updatedAt": "2026-11-09T04:22:18.198Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 484
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T04:21:03.588Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8r8vo6018865": "2026-11-09T04:22:18.198Z",
+     "st-mw8r8vo6028jhq": "2026-11-09T04:22:18.198Z",
+     "st-mw8r8vo603igcy": "2026-11-09T04:22:18.198Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T04:22:18.198Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

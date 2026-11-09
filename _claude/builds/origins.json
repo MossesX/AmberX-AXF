@@ -2677,6 +2677,18 @@
    "from": "notes",
    "addenda": []
   },
+  "permissions-control-panel-every-axhub-tool-s-pol": {
+   "said": "I need a control panel for all those settings, those permission settings.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "pilot-remove-console-duplicates": {
    "said": "uninstall from Pilot every plugin that is installed in the Console. The only duplicates were Pilot's own AI assistant and agent manager (Console plugins ai-assistant + agent-manager); Pilot's 7 designer plugins are not in the Console. Removed from Build-Pilot (web UI, /api/assistant + /api/agents, server modules, contract bake); assembly runs on the Console's agent manager (BP_AGENT=console). Kept: settings interface, Plugins page + catalog installs, metering, the pilot-assembler add-on.",
    "at": "",
@@ -2992,6 +3004,18 @@
    "from": "",
    "addenda": []
   },
+  "reserve-build-ids-at-once-add-returns-the-id-wit": {
+   "said": "Why do you have to guess its ID? Why can't you get it? ... Yeah, of course.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "screens-compact": {
    "said": "'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
    "at": "2026-10-30",
@@ -3014,6 +3038,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "session-transcripts-api-search-what-was-said-fin": {
+   "said": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "settings-asset": {
@@ -3147,6 +3183,18 @@
    "said": "Can the design pack alone make the app look exactly like a Windows program? ... We'll call it a skin. It will include its own assets, its own layout, its own colors, and its own style. You use the style theme, a layout theme and a color theme, and call it a skin. ... I don't want all the apps to inherit just file and colors from that, so I want there to be a switch to do it, but by default they're all their own. And every one has a reset, restore to default. So as of now, store the apps as default, for all. And then create a new one. ... Okay, Opus, but add it for a possible later review.",
    "at": "2026-11-04T00:00:00Z",
    "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "skins-are-a-complete-rework-look-layout-behavior": {
+   "said": "I want the skins to be everything. I want a skin to be a complete rework. Everything. The skins are gonna rewrite the navigation menu, the app menu, the context menu, all the colors in the grids, the hover colors, the text sizes. All the behavior, everything. I need the entire UI reworked to look professional.",
+   "at": "",
+   "source": "",
    "session": "",
    "link": "",
    "by": "",

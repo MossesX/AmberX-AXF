@@ -1,0 +1,81 @@
+/* Demonstration Designer: layout only plus theme tokens; every control is a framework control. */
+/* the main flow: three picks + Generate; the arrangement is the page asset picked in UI Review (stacked / three-up / wide) */
+.axp-demonstration-designer__flow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--fx-dens-gap-xl); align-items: start }
+.axp-demonstration-designer__pick[data-pick='1'], .axp-demonstration-designer__go, .axp-demonstration-designer__flow-note { grid-column: 1 / -1 }
+.axp-demonstration-designer--three-up .axp-demonstration-designer__flow { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+.axp-demonstration-designer--three-up .axp-demonstration-designer__pick { grid-column: auto; padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
+.axp-demonstration-designer--three-up .axp-demonstration-designer__go { justify-content: center }
+.axp-demonstration-designer--wide .axp-demonstration-designer__flow { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) }
+.axp-demonstration-designer--wide .axp-demonstration-designer__pick[data-pick='1'] { grid-column: 1; grid-row: 1 / span 3 }
+.axp-demonstration-designer--wide .axp-demonstration-designer__pick[data-pick='2'], .axp-demonstration-designer--wide .axp-demonstration-designer__pick[data-pick='3'], .axp-demonstration-designer--wide .axp-demonstration-designer__go { grid-column: 2 }
+.axp-demonstration-designer--wide .axp-demonstration-designer__go { flex-direction: column; align-items: stretch }
+:where([data-fx-narrow]) .axp-demonstration-designer__flow, :where([data-fx-narrow]) .axp-demonstration-designer--three-up .axp-demonstration-designer__flow, :where([data-fx-narrow]) .axp-demonstration-designer--wide .axp-demonstration-designer__flow { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-narrow]) .axp-demonstration-designer__pick, :where([data-fx-narrow]) .axp-demonstration-designer__go { grid-column: 1; grid-row: auto }
+.axp-demonstration-designer__pickbar { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-md) }
+.axp-demonstration-designer__search { flex: 1 1 calc(var(--fx-font-size) * 18); min-width: 0 }
+.axp-demonstration-designer__voice { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-md) }
+.axp-demonstration-designer__voice > :first-child { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
+.axp-demonstration-designer__go { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-demonstration-designer__generate { min-width: calc(var(--fx-font-size) * 10) }
+
+.axp-demonstration-designer__kind { display: inline-block; padding: 0 var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-scale-xs); font-weight: var(--fx-type-weights-strong); color: var(--fx-muted); background: var(--fx-surface2); white-space: nowrap }
+.axp-demonstration-designer__kind[data-kind='plugin'] { color: var(--fx-accent-text); background: var(--fx-accent) }
+.axp-demonstration-designer__clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere }
+
+.axp-demonstration-designer__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-demonstration-designer__row { display: flex; flex-direction: column; align-items: start; gap: var(--fx-dens-gap-xs); width: 100%; padding: var(--fx-dens-gap-sm); border: 0; border-radius: var(--fx-radius-sm); background: none; color: var(--fx-text); font: inherit; text-align: start; cursor: pointer; overflow-wrap: anywhere }
+.axp-demonstration-designer__row:hover { background: var(--fx-surface2) }
+.axp-demonstration-designer__row:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-demonstration-designer__row > .fx-muted { font-size: var(--fx-type-scale-sm) }
+.axp-demonstration-designer__saved { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs); border-radius: var(--fx-radius-sm) }
+.axp-demonstration-designer__saved.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-demonstration-designer__saved > .axp-demonstration-designer__row { flex: 1 1 auto; min-width: 0 }
+
+.axp-demonstration-designer__picked { display: flex; align-items: start; justify-content: space-between; gap: var(--fx-dens-gap-md); padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-accent); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-demonstration-designer__picked-body { min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-demonstration-designer__picked-body p { margin: 0 }
+
+.axp-demonstration-designer__head { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: var(--fx-dens-gap-md) }
+.axp-demonstration-designer__head h2 { margin: var(--fx-dens-gap-xs) 0 0; font-family: var(--fx-font-display); font-size: var(--fx-type-scale-lg); overflow-wrap: anywhere }
+.axp-demonstration-designer__tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-demonstration-designer__result { display: flex; flex-direction: column }
+.axp-demonstration-designer__link { padding: 0; border: 0; background: none; color: var(--fx-accent); font: inherit; cursor: pointer; text-decoration: underline; overflow-wrap: anywhere }
+.axp-demonstration-designer__chip-x { display: inline-flex; margin-inline-start: var(--fx-dens-gap-xs); padding: 0; border: 0; background: none; color: inherit; cursor: pointer }
+.axp-demonstration-designer__note { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-scale-sm) }
+
+/* advanced: timeline */
+.axp-demonstration-designer__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-demonstration-designer__step { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-demonstration-designer__step-head { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: end; gap: var(--fx-dens-gap-md) }
+:where([data-fx-narrow]) .axp-demonstration-designer__step-head { grid-template-columns: max-content minmax(0, 1fr) }
+.axp-demonstration-designer__step-n { display: inline-flex; align-items: center; justify-content: center; min-width: var(--fx-row-h); min-height: var(--fx-row-h); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-weight: var(--fx-type-weights-strong) }
+.axp-demonstration-designer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 14), 1fr)); gap: var(--fx-dens-gap-md) }
+
+/* settings: the three layouts (settings assets) */
+.axp-demonstration-designer-settings__grid { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-demonstration-designer-settings--two-column .axp-demonstration-designer-settings__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 22), 1fr)); align-items: start }
+.axp-demonstration-designer-settings__about { margin: 0 0 var(--fx-dens-gap-md); font-size: var(--fx-type-scale-sm) }
+
+/* ---------------- the stage (a full-screen overlay over the live console) ---------------- */
+.axp-demonstration-designer-stage { position: fixed; inset: 0; z-index: 180; pointer-events: none; font-family: var(--fx-font) }
+.axp-demonstration-designer-stage__progress { position: absolute; inset-block-start: 0; inset-inline-start: 0; height: calc(var(--fx-border-w) * 3); width: 0; background: var(--fx-accent); transition: width calc(var(--fx-motion) * 4) var(--fx-ease) }
+.axp-demonstration-designer-stage__spot { position: absolute; border-radius: var(--fx-radius-md); outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-dens-gap-xs) * 1); transition: left calc(var(--fx-motion) * 4) var(--fx-ease), top calc(var(--fx-motion) * 4) var(--fx-ease), width calc(var(--fx-motion) * 4) var(--fx-ease), height calc(var(--fx-motion) * 4) var(--fx-ease) }
+.axp-demonstration-designer-stage[data-highlight='spotlight'] .axp-demonstration-designer-stage__spot { box-shadow: 0 0 0 200vmax var(--fx-scrim) }
+.axp-demonstration-designer-stage[data-highlight='outline'] .axp-demonstration-designer-stage__spot { box-shadow: var(--fx-shadow-lg) }
+.axp-demonstration-designer-stage__spot-label { position: absolute; inset-block-end: 100%; inset-inline-start: 0; margin-block-end: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-scale-sm); font-weight: var(--fx-type-weights-strong); white-space: nowrap }
+.axp-demonstration-designer-stage__spot-label:empty { display: none }
+.axp-demonstration-designer-stage__logo { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-2xl); text-align: center; background: var(--fx-bg); color: var(--fx-text); animation: axp-demonstration-designer-fade calc(var(--fx-motion) * 5) var(--fx-ease) }
+.axp-demonstration-designer-stage__logo-mark { display: flex; align-items: center; justify-content: center; max-width: min(60vw, calc(var(--fx-font-size) * 24)); max-height: 30vh }
+.axp-demonstration-designer-stage__logo-mark svg { width: 100%; height: auto; max-height: 30vh }
+.axp-demonstration-designer-stage__logo-mark--word { width: calc(var(--fx-row-h) * 3); height: calc(var(--fx-row-h) * 3); border-radius: var(--fx-radius-lg); background: var(--fx-accent); color: var(--fx-accent-text); font-family: var(--fx-font-display); font-size: var(--fx-type-scale-2xl); font-weight: var(--fx-type-weights-strong) }
+.axp-demonstration-designer-stage__logo-title { margin: 0; font-family: var(--fx-font-display); font-size: var(--fx-type-scale-2xl); overflow-wrap: anywhere }
+.axp-demonstration-designer-stage__logo-sub { margin: 0; max-width: calc(var(--fx-font-size) * 40); color: var(--fx-muted); font-size: var(--fx-type-scale-lg) }
+.axp-demonstration-designer-stage__caption { position: absolute; inset-inline: 0; inset-block-end: calc(var(--fx-row-h) * 2); display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-xs); padding: 0 var(--fx-dens-gap-2xl); text-align: center; animation: axp-demonstration-designer-fade calc(var(--fx-motion) * 3) var(--fx-ease) }
+.axp-demonstration-designer-stage__caption p { margin: 0; max-width: calc(var(--fx-font-size) * 48); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-bg) calc(var(--fx-opacity-glass) * 100%), transparent); color: var(--fx-text); box-shadow: var(--fx-shadow-md) }
+.axp-demonstration-designer-stage__caption p:empty { display: none }
+.axp-demonstration-designer-stage__caption-title { font-size: var(--fx-type-scale-sm); font-weight: var(--fx-type-weights-strong); color: var(--fx-accent) }
+.axp-demonstration-designer-stage__caption-say { font-size: var(--fx-type-scale-lg) }
+.axp-demonstration-designer-stage[data-captions='sm'] .axp-demonstration-designer-stage__caption-say { font-size: var(--fx-type-scale-md) }
+.axp-demonstration-designer-stage[data-captions='lg'] .axp-demonstration-designer-stage__caption-say { font-size: var(--fx-type-scale-2xl) }
+.axp-demonstration-designer-stage__bar { position: absolute; inset-inline-end: var(--fx-dens-gap-lg); inset-block-end: var(--fx-dens-gap-lg); display: flex; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); box-shadow: var(--fx-shadow-md); pointer-events: auto }
+@keyframes axp-demonstration-designer-fade { from { opacity: 0 } to { opacity: 1 } }

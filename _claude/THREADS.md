@@ -769,47 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 16:36 UTC · `full-api-control` s5 done (all) · orchestrator
-- 2026-11-07 16:36 UTC · `full-api-control` s6 done (all) · orchestrator
-- 2026-11-07 16:36 UTC · `approve-button-fix` added (5 steps) (all) · orchestrator
-- 2026-11-07 16:40 UTC · `shipped-features-r2` → complete, merged, note (all) · reconciler
-- 2026-11-07 16:40 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, merged, note (all) · reconciler
-- 2026-11-07 16:48 UTC · `full-api-control` s7 done (all) · orchestrator
-- 2026-11-07 16:48 UTC · `full-api-control` s8 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `settings-placement-everywhere` note (all) · orchestrator
-- 2026-11-07 16:49 UTC · `full-api-control` note (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s1 done, → running (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s2 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s3 done (all) · orchestrator
-- 2026-11-07 16:49 UTC · `approve-button-fix` s4 done (all) · orchestrator
-- 2026-11-07 16:50 UTC · `approve-button-fix` s5 done, → complete (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` s9 done, → complete (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` → waiting (all) · orchestrator
-- 2026-11-07 16:58 UTC · `full-api-control` → complete, note (all) · orchestrator
-- 2026-11-07 17:00 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` added (8 steps) (all) · claude-ai-voice
-- 2026-11-07 17:01 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 17:11 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 17:15 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` note (all) · claude-ai-voice
-- 2026-11-07 18:27 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` added (2 steps) (all) · claude-ai-voice
-- 2026-11-07 21:00 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` added (2 steps) (all) · claude-ai-voice
-- 2026-11-07 21:09 UTC · `glossary-index-demos` → running, note (all) · orchestrator
-- 2026-11-07 21:33 UTC · `glossary-index-demos` s2 done, note (all) · orchestrator
-- 2026-11-07 21:33 UTC · `glossary-index-demos` note (all) · orchestrator
-- 2026-11-07 21:39 UTC · `investor-demo-player-shell-with-login-gate-skins` added (0 steps) (all) · pending
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s3 done (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s4 done (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s5 done (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s6 done, → complete (all) · orchestrator
-- 2026-11-07 21:58 UTC · `glossary-index-demos` note (all) · orchestrator
-- 2026-11-07 21:59 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r3 (all) · builds-live
-- 2026-11-07 22:04 UTC · `molly-ri-court-records` removed (all) · orchestrator
-- 2026-11-07 23:36 UTC · `idle-alert-phone-flag-when-nothing-is-building` added (0 steps) (all) · pending
-- 2026-11-07 23:57 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` added (7 steps) (all) · Gizmo
-- 2026-11-07 23:59 UTC · `brief-approval-dialog-before-every-headless-sess` added (0 steps) (all) · pending
-- 2026-11-08 00:00 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` → archived (all) · Gizmo
-- 2026-11-08 00:00 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` → archived (all) · foreign-write
-- 2026-11-08 00:01 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` added (0 steps) (all) · pending
-- 2026-11-08 00:01 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:02 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:23 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` added (0 steps) (all) · pending
 - 2026-11-08 00:32 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → running (all) · orchestrator
@@ -1169,6 +1128,47 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:52 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
 - 2026-11-09 02:54 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
 - 2026-11-09 02:55 UTC · `urgent-approval-links-say-method-not-allowed` → pending, note (all) · reconciler
+- 2026-11-09 02:57 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (0 steps) (all) · pending
+- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · orchestrator
+- 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → built (all) · orchestrator
+- 2026-11-09 02:58 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
+- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
+- 2026-11-09 02:58 UTC · `skins-asset-types` → built, branch claude/skins-finish (all) · builds-live
+- 2026-11-09 02:58 UTC · `skins-asset-types` branch claude/skins-finish (all) · builds-live
+- 2026-11-09 02:59 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (0 steps) (all) · pending
+- 2026-11-09 02:59 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (0 steps) (all) · foreign-write
+- 2026-11-09 03:00 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · orchestrator
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · pending
+- 2026-11-09 03:02 UTC · `skins-asset-types` s8 done, → complete (all) · foreign-write
+- 2026-11-09 03:02 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · foreign-write
+- 2026-11-09 03:02 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` added (3 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` added (0 steps) (all) · foreign-write
+- 2026-11-09 03:02 UTC · `plan-studio-receives-a-valid-shipped-feature-man` PR #404 (all) · builds-live
+- 2026-11-09 03:02 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · pending
+- 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · foreign-write
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · foreign-write
+- 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · orchestrator
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · orchestrator
+- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 03:04 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → queued, note (all) · pipeline
+- 2026-11-09 04:07 UTC · `demonstration-designer-plugin-new-standalone` s1 done, → running (all) · orchestrator
+- 2026-11-09 04:07 UTC · `demonstration-designer-plugin-new-standalone` branch claude/demo-designer, PR #405 (all) · builds-live
+- 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
+- 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 04:12 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s2 done, → running (all) · orchestrator
+- 2026-11-09 04:13 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s3 done, → built (all) · orchestrator
+- 2026-11-09 04:14 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 04:19 UTC · `demonstration-designer-plugin-new-standalone` note (all) · pending
+- 2026-11-09 04:20 UTC · `demonstration-designer-plugin-new-standalone` merged, note (all) · reconciler
+- 2026-11-09 04:21 UTC · `session-transcripts-api-search-what-was-said-fin` added (0 steps) (all) · pending
+- 2026-11-09 04:21 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
+- 2026-11-09 04:22 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · orchestrator
+- 2026-11-09 04:22 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
+- 2026-11-09 04:23 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
 
 ## Token passes (log)
 
