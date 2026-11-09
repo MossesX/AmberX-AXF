@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:55:23.835Z",
+ "updatedAt": "2026-11-09T23:56:08.906Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81121,7 +81121,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:55:18.311Z",
+   "updatedAt": "2026-11-09T23:56:06.837Z",
    "builtAt": "",
    "notes": [
     {
@@ -81198,6 +81198,13 @@
      },
      {
       "said": "Open the group chat in a multi-tab group where you can open a new tab with Jim and John's conversation. You can drag an employee from one tab to another to put him in a separate conversation. You can click multiple people and drag them into their own tab. Filter, sort, all that. The employee list needs to show the right thing: ID, their picture, a link to their profile, when they were hired, how much work they've done, etc. And their skills and tools: we have to be able to assign them skills, tools and personas. That's where their personas will be managed. If that stuff is anywhere else, put it all in one place.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "You can also assign them jobs or move their job or fire them, and you select from a dialog of jobs and you can add everything you want. It's a sortable, filterable, multi-column, collapsible and expandable rows. Make it sick, dude. Make an HR department that's off the meat rack.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
