@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1733,
- "updatedAt": "2026-11-09T14:33:30.337Z",
+ "rev": 1734,
+ "updatedAt": "2026-11-09T14:33:54.161Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127193,9 +127193,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T14:33:29.282Z",
-   "updatedAt": "2026-11-09T14:33:29.282Z",
+   "updatedAt": "2026-11-09T14:33:53.355Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ROOT CAUSE (found live): deploy/claude-workers.mjs liveSessions() runs `tmux ls`; when NO tmux sessions exist, tmux exits non-zero ('no server running'), so it returns null = 'can't ask tmux'. Then ledger() counts every open session as running and liveClaims keeps claims for 12 h. So the stale entries survive exactly when nothing is running. Fix: treat 'no server running' (tmux present, exit 1) as an empty Set; only return null when tmux binary is missing. Test it.",
+     "at": "2026-11-09T14:33:53.355Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -127230,7 +127235,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
