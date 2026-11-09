@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1659,
- "updatedAt": "2026-11-09T01:26:58.277Z",
+ "rev": 1660,
+ "updatedAt": "2026-11-09T01:27:07.519Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -92027,7 +92027,7 @@
    "pr": "#364",
    "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T23:01:17.835Z",
-   "updatedAt": "2026-11-07T16:40:42.034Z",
+   "updatedAt": "2026-11-09T01:27:04Z",
    "builtAt": "2026-11-06T20:04:15.490Z",
    "notes": [
     {
@@ -92041,6 +92041,10 @@
     {
      "text": "Reconciler: PR #364 merged",
      "at": "2026-11-07T16:40:42.034Z"
+    },
+    {
+     "text": "Shipped manifest sm-fable-review-shipped-features-build-hook-contrac rev 1 sent to Shipped features (orchestrator): landed aeccdb0a8, 43 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-09T01:27:04Z"
     }
    ],
    "approvals": [],
@@ -92057,6 +92061,12 @@
     "from": "",
     "addenda": []
    },
+   "shipped": {
+    "id": "sm-fable-review-shipped-features-build-hook-contrac",
+    "rev": 1,
+    "at": "2026-11-09T01:27:04Z",
+    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -92067,7 +92077,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "fable-review-shipped-features-build-hook-contrac",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
