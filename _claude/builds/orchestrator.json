@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:43:28.254Z",
+ "updatedAt": "2026-11-09T20:43:43.181Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80452,10 +80452,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-account-queues-long-press-a-queued-build-to",
-   "pr": "",
+   "pr": "#413",
    "priority": "P1",
    "createdAt": "2026-11-09T20:26:06.899Z",
-   "updatedAt": "2026-11-09T20:41:04.863Z",
+   "updatedAt": "2026-11-09T20:42:16.547Z",
    "builtAt": "",
    "notes": [
     {
