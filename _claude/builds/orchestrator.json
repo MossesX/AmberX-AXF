@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:49:58.763Z",
+ "updatedAt": "2026-11-09T18:50:14.313Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77409,14 +77409,14 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/appearance-skins-colour-themes-only-remove-design-packs",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T17:40:31.294Z",
+   "updatedAt": "2026-11-09T18:49:58.840Z",
    "builtAt": "",
    "notes": [
     {
@@ -77454,6 +77454,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-09T17:40:31.294Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T18:49:58.840Z"
     }
    ],
    "approvals": [],
@@ -78966,7 +78970,7 @@
    "title": "File watchdog plugin: watch files, run scripts or console commands, optional AI prompt (off by default)",
    "category": "",
    "detail": "New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78974,7 +78978,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-09T18:49:39.923Z",
+   "updatedAt": "2026-11-09T18:50:08.751Z",
    "builtAt": "",
    "notes": [
     {
@@ -79028,6 +79032,10 @@
     {
      "text": "Headless run axf-file-watchdog-plugin-watch-files-run-scripts-or--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:49:39.923Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+     "at": "2026-11-09T18:50:08.751Z"
     }
    ],
    "approvals": [],
