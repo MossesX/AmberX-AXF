@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1961,
- "updatedAt": "2026-11-09T20:27:17.316Z",
+ "rev": 1962,
+ "updatedAt": "2026-11-09T20:27:46.181Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130730,7 +130730,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:14:49.766Z",
-   "updatedAt": "2026-11-09T20:20:28.063Z",
+   "updatedAt": "2026-11-09T20:27:44.701Z",
    "builtAt": "",
    "notes": [
     {
@@ -130765,6 +130765,13 @@
     "addenda": [
      {
       "said": "The orchestrator doesn't test before he runs the build. If the build fails, that's the check. ... The refresh token fail is different than the no credits fail. ... Yeah, and its status needs to be listed in the orchestrator and in the Claude settings.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "The orchestrator needs to be able to know if an account is out of credit until a certain day. It needs to know that. When you try to sign in, it'll say out of credits until, so. Don't try signing back in again until then.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -130873,7 +130880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

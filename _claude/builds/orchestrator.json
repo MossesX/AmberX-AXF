@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:27:17.316Z",
+ "updatedAt": "2026-11-09T20:27:46.181Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80018,7 +80018,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:14:49.766Z",
-   "updatedAt": "2026-11-09T20:20:28.063Z",
+   "updatedAt": "2026-11-09T20:27:44.701Z",
    "builtAt": "",
    "notes": [
     {
@@ -80053,6 +80053,13 @@
     "addenda": [
      {
       "said": "The orchestrator doesn't test before he runs the build. If the build fails, that's the check. ... The refresh token fail is different than the no credits fail. ... Yeah, and its status needs to be listed in the orchestrator and in the Claude settings.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "The orchestrator needs to be able to know if an account is out of credit until a certain day. It needs to know that. When you try to sign in, it'll say out of credits until, so. Don't try signing back in again until then.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",

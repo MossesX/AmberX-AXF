@@ -3197,6 +3197,13 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "The orchestrator needs to be able to know if an account is out of credit until a certain day. It needs to know that. When you try to sign in, it'll say out of credits until, so. Don't try signing back in again until then.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },
