@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1654,
- "updatedAt": "2026-11-09T01:24:34.130Z",
+ "rev": 1655,
+ "updatedAt": "2026-11-09T01:24:48.141Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125717,7 +125717,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:24:33.057Z",
+   "updatedAt": "2026-11-09T01:24:45.981Z",
    "builtAt": "",
    "notes": [
     {
@@ -125727,6 +125727,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T01:24:33.057Z"
+    },
+    {
+     "text": "Brett: \"when you open the file, it will jump to the feature that you found it through and highlight it. In focus, centered in screen.\" The manifest records, per touched file, the line ranges each step/feature changed. Opening a file from a Shipped Features entry scrolls the editor to that feature's code, centers it on screen, and highlights the changed lines (theme highlight colour); if a feature touched several spots, next/previous buttons jump between them. Same when opened via API/deep link (file + feature + range).",
+     "at": "2026-11-09T01:24:45.981Z"
     }
    ],
    "approvals": [],
@@ -125844,7 +125848,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125856,7 +125860,11 @@
     "createdAt": "2026-11-09T01:23:14.933Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8kwaea014kow": "2026-11-09T01:24:33.057Z",
+     "st-mw8kwaea02xucn": "2026-11-09T01:24:33.057Z",
+     "st-mw8kwaea03voem": "2026-11-09T01:24:33.057Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T01:24:33.057Z",

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T01:24:34.130Z",
+ "updatedAt": "2026-11-09T01:24:48.141Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76213,7 +76213,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:24:33.057Z",
+   "updatedAt": "2026-11-09T01:24:45.981Z",
    "builtAt": "",
    "notes": [
     {
@@ -76223,6 +76223,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T01:24:33.057Z"
+    },
+    {
+     "text": "Brett: \"when you open the file, it will jump to the feature that you found it through and highlight it. In focus, centered in screen.\" The manifest records, per touched file, the line ranges each step/feature changed. Opening a file from a Shipped Features entry scrolls the editor to that feature's code, centers it on screen, and highlights the changed lines (theme highlight colour); if a feature touched several spots, next/previous buttons jump between them. Same when opened via API/deep link (file + feature + range).",
+     "at": "2026-11-09T01:24:45.981Z"
     }
    ],
    "approvals": [],
