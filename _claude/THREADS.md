@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:27 UTC · `account-failover-notify` note (all) · orchestrator
-- 2026-11-08 17:23 UTC · `ui-api-parity-rule` added (7 steps) (all) · foreign-write
-- 2026-11-08 17:24 UTC · `account-health-failover` added (5 steps) (all) · headless
 - 2026-11-08 17:24 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
 - 2026-11-08 17:24 UTC · `account-health-failover` added (5 steps) (all) · headless
 - 2026-11-08 17:29 UTC · `account-health-failover` s1 done, → running (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:03 UTC · `split-builds-pages-build-manager-pending-complet` branch claude/split-builds-pages-build-manager-pending-complet (all) · pipeline
 - 2026-11-09 18:03 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-09 18:04 UTC · `split-builds-pages-build-manager-pending-complet` → queued, note (all) · pipeline
+- 2026-11-09 18:04 UTC · `skins-own-everything-colour-theme-swaps-independ` → failed, note (all) · pipeline
+- 2026-11-09 18:04 UTC · `split-builds-pages-build-manager-pending-complet` → running, note (all) · pipeline
+- 2026-11-09 18:04 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 
 ## Token passes (log)
 
