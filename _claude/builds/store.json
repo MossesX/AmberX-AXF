@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1769,
- "updatedAt": "2026-11-09T17:08:46.788Z",
+ "rev": 1770,
+ "updatedAt": "2026-11-09T17:08:55.287Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126887,7 +126887,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:08:45.745Z",
+   "updatedAt": "2026-11-09T17:08:52.664Z",
    "builtAt": "",
    "notes": [
     {
@@ -127014,7 +127014,7 @@
      "id": "s6",
      "uid": "st-mw9agzql018t5d",
      "title": "",
-     "text": "Add skin entries in asset-types.json for all 44 uncovered types: color-theme, style-theme, layout, app-menu, toolbar, nav-menu, context-menu, tab-group, dialog, popup, button, slider, container, gauge, meter, banner, clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge, settings, dock-layout, xlayout, nav-style, behavior-theme, branding, typography, density, sizing, agent-card, demonstration, book, clip, docs. Types that ARE skin ingredients (themes, typography, density, sizing) get an explicit exclusion instead. Additive only: default skin must look identical (before/after screenshot diff). Do this BEFORE enabling the CI gate so open PRs aren't blocked.",
+     "text": "Add skin entries in asset-types.json for all 44 uncovered types: color-theme, style-theme, layout, app-menu, toolbar, nav-menu, context-menu, tab-group, dialog, popup, button, slider, container, gauge, meter, banner, clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge, settings, dock-layout, xlayout, nav-style, behavior-theme, branding, typography, density, sizing, agent-card, demonstration, book, clip, docs. Types that ARE skin ingredients (themes, typography, density, sizing) get an explicit exclusion instead. Additive only: default skin must look identical (before/after screenshot diff). Do this BEFORE enabling the CI gate so open PRs aren't blocked. Also (engine, Fable): an optional `text` selector list on schemas/customize.json targets, drawn by customizeCss with the type's text parts, so text children that keep their own look (.fx-banner__logo, .fx-nav__header, .fx-card__head; see framework/spec/SKIN-AUDIT.md shadowed) follow the skin; default look unchanged.",
      "model": "Fable",
      "why": "Edits the asset-type registry (framework/schemas/asset-types.json): asset types run on Fable (Brett, Nov 4 2026).",
      "phase": "",
@@ -127028,9 +127028,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-09T13:20:29.341Z",
-     "updatedAt": "2026-11-09T17:03:39.641Z"
+     "updatedAt": "2026-11-09T17:08:52.833Z"
     },
     {
      "id": "s5",
@@ -127063,7 +127063,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
