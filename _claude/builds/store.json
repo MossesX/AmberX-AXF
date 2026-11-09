@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2031,
- "updatedAt": "2026-11-09T23:44:48.271Z",
+ "rev": 2032,
+ "updatedAt": "2026-11-09T23:44:57.300Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131803,16 +131803,22 @@
    "title": "Fix log + FYI phone notifications from Claude sessions (no approval)",
    "category": "",
    "detail": "An axHub/console tool any Claude session (voice, chat, headless) can call with a short text: it appends to a Fix log (time, session, what was tried, outcome: trying / failed / fixed) and sends an informational notification to Brett's phone through AmberX (and the console bell). Policy allow: no approval, no veto countdown, never asks for anything. Fix log viewable in the console with filters. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-09T23:44:46.980Z",
-   "updatedAt": "2026-11-09T23:44:46.980Z",
+   "updatedAt": "2026-11-09T23:44:48.321Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T23:44:48.321Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -131827,6 +131833,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-09T23:44:48.042Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -131836,7 +131858,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

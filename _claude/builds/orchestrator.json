@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:44:48.271Z",
+ "updatedAt": "2026-11-09T23:44:57.300Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80800,16 +80800,22 @@
    "title": "Fix log + FYI phone notifications from Claude sessions (no approval)",
    "category": "",
    "detail": "An axHub/console tool any Claude session (voice, chat, headless) can call with a short text: it appends to a Fix log (time, session, what was tried, outcome: trying / failed / fixed) and sends an informational notification to Brett's phone through AmberX (and the console bell). Policy allow: no approval, no veto countdown, never asks for anything. Fix log viewable in the console with filters. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-09T23:44:46.980Z",
-   "updatedAt": "2026-11-09T23:44:46.980Z",
+   "updatedAt": "2026-11-09T23:44:48.321Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T23:44:48.321Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
