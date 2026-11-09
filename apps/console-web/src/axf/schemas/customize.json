@@ -551,7 +551,7 @@
   "targets": {
     "app-menu": {
       "root": ".fx-menubar",
-      "item": ".fx-menubar__btn"
+      "item": ".fx-menubar__btn, .fx-menu__item"
     },
     "toolbar": {
       "root": ".fx-toolbar",
@@ -577,7 +577,7 @@
       "root": ".fx-dialog"
     },
     "popup": {
-      "root": ".fx-popover, .fx-dropdown"
+      "root": ".fx-popover, .fx-dropdown, .fx-banner__pop"
     },
     "button": {
       "root": ".fx-btn, .fx-iconbtn"
@@ -598,7 +598,7 @@
       "root": ".fx-search"
     },
     "badge": {
-      "root": ".fx-badge, .fx-banner__badge"
+      "root": ".fx-badge, .fx-banner__badge, .fx-toolbtn__badge, .fx-nav__badge, .fx-tab__badge, .fx-menu__badge"
     },
     "clock": {
       "root": ".fx-banner__clock"

@@ -55,7 +55,8 @@ context-menu list), `.fx-idcard`, `.fx-dcard`, `.fx-agent-avatar`, `.fx-chip`, `
 
 Look values written in, which no theme, asset or part changes:
 
-- `font-weight: 600|700` (43 in axf.css): there is no weight token, so a skin can't make text lighter or heavier.
+- `font-weight: 400…800` (41 in axf.css, 2 in framework TSX): written as numbers instead of the typography asset's
+  `--fx-type-weights-{body,medium,strong}`, so a skin's typography couldn't make text lighter or heavier.
 - `border-radius: 999px | 50%` (44): pill and circle shapes, allowed by check-theme as shapes; parts can still override
   them on typed roots.
 - `outline: 2px …` (12): focus rings at a fixed width instead of the border width.
@@ -70,6 +71,17 @@ Look values written in, which no theme, asset or part changes:
 - **s4, batch 2 (tables, forms, charts, plugin screens)**: same for card / search / widget / slider / gauge / meter
   children; plugin CSS literals moved onto tokens (`scale-adopt.mjs`); table, input and chip rules checked against the
   theme tokens.
-- **Fable (s6)**: explicit `skin` entries in `asset-types.json`. A font-weight token family (style theme) would be a
-  new token contract; it goes to Fable with s6 rather than being invented here.
+- **Fable (s6)**: explicit `skin` entries in `asset-types.json`, and an optional `text` selector list on customize
+  targets (engine change in `customizeCss`: a type's text parts also set the elements that carry its text, such as
+  `.fx-banner__logo`, `.fx-nav__header`, `.fx-card__head`). Shadowed text children wait for that: making them
+  `inherit` in CSS would change the default look.
 - **s5**: the screenshot gate (each skin vs the default, fail on unchanged elements) after s6 lands.
+
+## Done
+
+- **s1**: badge target reaches `.fx-banner__badge`.
+- **s3**: every `font-weight` in axf.css and the framework TSX reads the typography weights (same values by default:
+  700 = `calc(var(--fx-type-weights-strong) + 100)`); every focus ring and outline reads `--fx-border-w`; the app-menu
+  target's items include the dropdown's `.fx-menu__item`; the badge target includes the count badges on tool buttons,
+  nav items, tabs and menu items; the popup target includes the banner's pop-up bubble. Literals left in axf.css:
+  44 pill / circle radii (shapes; parts override them on typed roots).
