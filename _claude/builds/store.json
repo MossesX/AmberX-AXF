@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1684,
- "updatedAt": "2026-11-09T02:57:32.135Z",
+ "rev": 1685,
+ "updatedAt": "2026-11-09T02:58:14.370Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125672,9 +125672,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:57:30.536Z",
-   "updatedAt": "2026-11-09T02:57:30.536Z",
+   "updatedAt": "2026-11-09T02:58:13.276Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T02:58:13.276Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -125689,7 +125694,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T02:58:13.276Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8o8qzg0137x2",
+     "title": "",
+     "text": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:58:13.276Z",
+     "updatedAt": "2026-11-09T02:58:13.276Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8o8qzg02erav",
+     "title": "",
+     "text": "I want the skins to be everything. I want a skin to be a complete rework. Everything. The skins are gonna rewrite the navigation menu, the app menu, the context menu, all the colors in the grids, the hover colors, the text sizes. All the behavior, everything. I need the entire UI reworked to look professional.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:58:13.276Z",
+     "updatedAt": "2026-11-09T02:58:13.276Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8o8qzg03ksrd",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:58:13.276Z",
+     "updatedAt": "2026-11-09T02:58:13.276Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -125698,7 +125795,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125713,7 +125810,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T02:58:13.276Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

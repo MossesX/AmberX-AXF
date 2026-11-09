@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 16:36 UTC · `full-api-control` s6 done (all) · orchestrator
 - 2026-11-07 16:36 UTC · `approve-button-fix` added (5 steps) (all) · orchestrator
 - 2026-11-07 16:40 UTC · `shipped-features-r2` → complete, merged, note (all) · reconciler
 - 2026-11-07 16:40 UTC · `fable-review-shipped-features-build-hook-contrac` → complete, merged, note (all) · reconciler
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:54 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
 - 2026-11-09 02:55 UTC · `urgent-approval-links-say-method-not-allowed` → pending, note (all) · reconciler
 - 2026-11-09 02:57 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (0 steps) (all) · pending
+- 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · orchestrator
 
 ## Token passes (log)
 
