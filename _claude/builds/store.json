@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1825,
- "updatedAt": "2026-11-09T18:03:50.758Z",
+ "rev": 1826,
+ "updatedAt": "2026-11-09T18:04:07.830Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128262,7 +128262,7 @@
    "title": "Split builds pages: Build Manager = Pending + Complete; Orchestrator = Queued + Active",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded). Build Manager owns builds before and after the orchestrator: Pending tab (create, edit, prioritize, Send to orchestrator) and Complete tab (finished builds sent back by the orchestrator, with account that actually built it, model, cost, PR, land status). Build orchestrator owns only what it was sent: Queued and Active tabs, with steps, assigned/actual account, model, progress and actions (route, assign account, hold, cancel/return to Pending). When a build finishes, the orchestrator sends it back to Build Manager's Complete. Remove every other builds table and the separate Build queue screen (redirect to these). Full API/voice control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128270,7 +128270,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-09T18:03:48.304Z",
+   "updatedAt": "2026-11-09T18:04:03.537Z",
    "builtAt": "",
    "notes": [
     {
@@ -128292,6 +128292,10 @@
     {
      "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--sully: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:03:48.304Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T18:04:03.537Z"
     }
    ],
    "approvals": [],
@@ -128312,12 +128316,19 @@
     "queuedAt": "2026-11-09T17:48:21.707Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-split-builds-pages-build-manager-pending-complet--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:03:15.902Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-09T18:04:02.686Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 3,
+     "account": "account-1",
+     "session": "axf-split-builds-pages-build-manager-pending-complet--sully"
+    },
     "split": {
      "at": "2026-11-09T17:49:32.211Z",
      "by": "orchestrator",
@@ -128326,7 +128337,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-09T18:03:15.902Z"
    },
@@ -128409,7 +128420,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
