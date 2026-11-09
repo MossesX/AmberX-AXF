@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1753,
- "updatedAt": "2026-11-09T16:45:17.335Z",
+ "rev": 1754,
+ "updatedAt": "2026-11-09T16:45:26.078Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127569,8 +127569,8 @@
    "pr": "#407",
    "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-09T16:45:08.306Z",
-   "builtAt": "2026-11-09T16:45:08.306Z",
+   "updatedAt": "2026-11-09T16:45:22.046Z",
+   "builtAt": "2026-11-09T16:45:22.046Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -127587,6 +127587,10 @@
     {
      "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
      "at": "2026-11-09T16:40:15.588Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-self-check-when-stuck-verify-each-a--joey: brief only · start 10.9K tokens ($0.03) · cost $1.17 · 38 turns · 6 tools, MCP none",
+     "at": "2026-11-09T16:45:22.046Z"
     },
     {
      "text": "PR #407 supersedes #406 (carries its commit). Added: self-check runs on every orchestrator load, the dispatcher's first tick after downtime, stuck ticks and a 30 min sweep. UI Review shots of the Self-check card still owed: no branch preview here.",
