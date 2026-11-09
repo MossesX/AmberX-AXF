@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1645,
- "updatedAt": "2026-11-09T00:52:52.323Z",
+ "rev": 1646,
+ "updatedAt": "2026-11-09T00:53:25.577Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125497,7 +125497,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:52:50.828Z",
+   "updatedAt": "2026-11-09T00:53:23.874Z",
    "builtAt": "",
    "notes": [
     {
@@ -125523,6 +125523,10 @@
     {
      "text": "Brett: \"list of features. Stack. And the list of predefined search terms based on what the rule is.\" 1) Filters stack (combine) and include a 'feature' filter: pick from the Shipped features list / plugin feature catalog to narrow files, builds and steps to one feature. 2) Each snippet carries predefined search terms and preset filter stacks that fit that rule (e.g. a file-fence rule offers 'server routes', 'web views', 'plugin.json', 'tests', 'schemas'; a model rule offers 'Fable-only steps', 'UI steps'), shown as quick chips in the pick list; tap one to apply. Brett can save his own presets per snippet.",
      "at": "2026-11-09T00:52:50.828Z"
+    },
+    {
+     "text": "Brett: \"as you type in the field, it automatically drops down the list of all the ones that match. Whatever you type. In real time. Letter per letter.\" Every parameter field is a type-ahead combobox: the match list drops down on the first letter and updates on every keystroke (fuzzy match, matched letters highlighted, within the active filters), keyboard up/down/enter and tap to pick. Fast on large lists (indexed/virtualized, no lag).",
+     "at": "2026-11-09T00:53:23.874Z"
     }
    ],
    "approvals": [],
@@ -125640,7 +125644,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
