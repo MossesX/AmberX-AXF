@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1725,
- "updatedAt": "2026-11-09T13:19:41.310Z",
+ "rev": 1726,
+ "updatedAt": "2026-11-09T13:20:30.287Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126883,7 +126883,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T13:19:40.469Z",
+   "updatedAt": "2026-11-09T13:20:29.340Z",
    "builtAt": "",
    "notes": [
     {
@@ -126915,6 +126915,28 @@
      "rev": 1,
      "createdAt": "2026-11-09T13:17:25.807Z",
      "updatedAt": "2026-11-09T13:17:25.807Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw9agzql018t5d",
+     "title": "",
+     "text": "Add skin entries in asset-types.json for all 44 uncovered types: color-theme, style-theme, layout, app-menu, toolbar, nav-menu, context-menu, tab-group, dialog, popup, button, slider, container, gauge, meter, banner, clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge, settings, dock-layout, xlayout, nav-style, behavior-theme, branding, typography, density, sizing, agent-card, demonstration, book, clip, docs. Types that ARE skin ingredients (themes, typography, density, sizing) get an explicit exclusion instead. Additive only: default skin must look identical (before/after screenshot diff). Do this BEFORE enabling the CI gate so open PRs aren't blocked.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T13:20:29.341Z",
+     "updatedAt": "2026-11-09T13:20:29.421Z"
     },
     {
      "id": "s2",
@@ -127013,7 +127035,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
