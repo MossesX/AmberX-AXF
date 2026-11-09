@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1920,
- "updatedAt": "2026-11-09T19:27:04.427Z",
+ "rev": 1921,
+ "updatedAt": "2026-11-09T19:27:15.434Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130417,7 +130417,7 @@
    "title": "Let voice/API route a build to an API account (with owner approval)",
    "category": "",
    "detail": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130425,7 +130425,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:27:03.009Z",
+   "updatedAt": "2026-11-09T19:27:08.440Z",
    "builtAt": "",
    "notes": [
     {
@@ -130467,6 +130467,14 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T19:27:03.009Z"
+    },
+    {
+     "text": "Started run 3 on account-1 (Opus, Phase 1): axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda.",
+     "at": "2026-11-09T19:27:07.009Z"
+    },
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda, own login copy)",
+     "at": "2026-11-09T19:27:08.440Z"
     }
    ],
    "approvals": [],
@@ -130487,11 +130495,11 @@
     "queuedAt": "2026-11-09T19:23:47.923Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "",
+    "session": "axf-let-voice-api-route-a-build-to-an-api-account-wi--rhonda",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T19:26:07.820Z",
-    "runs": 2,
+    "launchedAt": "2026-11-09T19:27:06.719Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-09T19:27:02.638Z",
      "exit": 1,
@@ -130508,9 +130516,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:26:07.820Z"
+    "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
    "steps": [
     {
@@ -130591,7 +130599,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
