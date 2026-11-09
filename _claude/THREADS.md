@@ -757,9 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 14:27 UTC · `plan-designer` s2 done (all) · claude-plan-designer
-- 2026-11-07 14:27 UTC · `slotstest-2208251-b` added (0 steps) (all) · model-gate
-- 2026-11-07 14:29 UTC · `postgres-console` s1 done, → running (all) · orchestrator
 - 2026-11-07 14:29 UTC · `slotstest-2208251-a` removed (all) · orchestrator
 - 2026-11-07 14:29 UTC · `slotstest-2208251-b` removed (all) · orchestrator
 - 2026-11-07 14:36 UTC · `plan-designer` s3 done (all) · claude-plan-designer
@@ -1157,6 +1154,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:53 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
 - 2026-11-09 01:01 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · shipped-manifest-api
 - 2026-11-09 01:01 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · shipped-manifest-api
+- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` → running, note (all) · pipeline
+- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` branch claude/one-builds-page-pending-queued-built-tabs-remove (all) · pipeline
+- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · orchestrator
 
 ## Token passes (log)
 
