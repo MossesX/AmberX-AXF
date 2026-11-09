@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1662,
- "updatedAt": "2026-11-09T01:28:06.320Z",
+ "rev": 1663,
+ "updatedAt": "2026-11-09T01:28:11.933Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -95224,7 +95224,7 @@
    "pr": "#375",
    "mergedAt": "2026-11-07T12:01:20Z",
    "createdAt": "2026-11-06T12:17:13.812Z",
-   "updatedAt": "2026-11-07T12:10:24.118Z",
+   "updatedAt": "2026-11-09T01:28:05Z",
    "builtAt": "2026-11-07T01:33:51.091Z",
    "notes": [
     {
@@ -95242,6 +95242,10 @@
     {
      "text": "Reconciler: PR #375 merged",
      "at": "2026-11-07T12:10:24.118Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-approvals-in-place rev 1 sent to Shipped features (orchestrator): landed e57b6e527, 112 file(s), 0 test line(s), 8 open.",
+     "at": "2026-11-09T01:28:05Z"
     }
    ],
    "approvals": [],
@@ -95293,6 +95297,12 @@
       "verbatim": true
      }
     ]
+   },
+   "shipped": {
+    "id": "sm-console-approvals-in-place",
+    "rev": 1,
+    "at": "2026-11-09T01:28:05Z",
+    "landedCommit": "e57b6e5278d822ca78f67a4dac9fc1fa183973c8"
    },
    "steps": [
     {
@@ -95789,7 +95799,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "console-approvals-in-place",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
