@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 21:23 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` added (0 steps) (all) · pending
 - 2026-11-08 21:24 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` note (all) · orchestrator
 - 2026-11-08 21:29 UTC · `style-rule-every-design-element-overrides-axhub-` added (0 steps) (all) · pending
 - 2026-11-08 21:31 UTC · `style-rule-every-design-element-overrides-axhub-` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:24 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
 - 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` branch claude/let-voice-api-route-a-build-to-an-api-account-wi (all) · pipeline
+- 2026-11-09 19:25 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → failed, note (all) · pipeline
 
 ## Token passes (log)
 
