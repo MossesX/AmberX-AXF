@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 00:00 UTC · `investor-demo-player-shell-with-login-gate-skins-and-branding` → archived (all) · foreign-write
 - 2026-11-08 00:01 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` added (0 steps) (all) · pending
 - 2026-11-08 00:01 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
 - 2026-11-08 00:02 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · pending
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 04:20 UTC · `demonstration-designer-plugin-new-standalone` merged, note (all) · reconciler
 - 2026-11-09 04:21 UTC · `session-transcripts-api-search-what-was-said-fin` added (0 steps) (all) · pending
 - 2026-11-09 04:21 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
+- 2026-11-09 04:22 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · orchestrator
 
 ## Token passes (log)
 
