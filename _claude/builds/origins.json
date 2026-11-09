@@ -1496,6 +1496,18 @@
    "from": "detail",
    "addenda": []
   },
+  "file-watchdog-plugin-watch-files-run-scripts-or": {
+   "said": "I need a watchdog plugin that I can tell to watch files for changes without using AI. I need it to run scripts, or run commands on the console. It can use AI, but it doesn't have to. I can give it a prompt to use AI, and switch it to enable AI.",
+   "at": "2026-11-09T18:43:22.318Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "first-refresh-token-saved-every-time-it-s-used-v": {
    "said": "I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.",
    "at": "2026-11-06T18:07:12.388Z",
