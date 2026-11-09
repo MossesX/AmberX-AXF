@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:26 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · orchestrator
 - 2026-11-09 02:28 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
 - 2026-11-09 02:28 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` added (3 steps) (all) · foreign-write
 - 2026-11-09 02:28 UTC · `urgent-approval-links-say-method-not-allowed` added (3 steps) (all) · foreign-write
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:49 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` branch claude/approvals-page-auto-approve-toggle-1-h-2-h-until (all) · pipeline
 - 2026-11-09 20:49 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
 - 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` PR #416 (all) · builds-live
+- 2026-11-09 20:51 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 
 ## Token passes (log)
 
