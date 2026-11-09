@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:44:57.300Z",
+ "updatedAt": "2026-11-09T23:45:26.439Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80821,6 +80821,37 @@
    "origin": {
     "said": "If something needs to be fixed, you can send me a notification on my phone through AmberX... log it, and then if you try something, notify me that you're trying this, say what it is. If that fails, say that failed... just notify me of doing it, not for permission or veto.",
     "at": "2026-11-09T23:44:46.980Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "standing-rule-in-every-brief-fix-problems-yourse",
+   "title": "Standing rule in every brief: fix problems yourself, log and notify, never stop to ask",
+   "category": "",
+   "detail": "Add to the orchestrator's brief rules (every build it splits and briefs), the headless session rules, agent profiles and the shared CLAUDE rules every Claude session reads: when something blocks the work, try every fix within your permissions (axHub tools, console, VPS check/run, Coolify, hosting, or hand off to an agent with the right permissions) and keep going; don't stop to ask Brett. Log each attempt and send him an FYI notification through AmberX (trying X / X failed / trying Y / fixed) using the fix-log tool; informational, never a permission request. Existing approval gates on VPS writes stay as they are.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T23:45:25.391Z",
+   "updatedAt": "2026-11-09T23:45:25.392Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "From now on, you do whatever in your ability to fix any problem. I don't want to be bothered... just notify me of doing it, not for permission or veto. ... Every single build, put that in the brief... put it where you need to so that anything that's doing anything will be able to follow those rules.",
+    "at": "2026-11-09T23:45:25.391Z",
     "source": "",
     "session": "",
     "link": "",
