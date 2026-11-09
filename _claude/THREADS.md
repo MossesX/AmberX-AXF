@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 21:58 UTC · `glossary-index-demos` note (all) · orchestrator
 - 2026-11-07 21:59 UTC · `glossary-index-demos` branch claude/glossary-index-demos-r3 (all) · builds-live
 - 2026-11-07 22:04 UTC · `molly-ri-court-records` removed (all) · orchestrator
 - 2026-11-07 23:36 UTC · `idle-alert-phone-flag-when-nothing-is-building` added (0 steps) (all) · pending
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 04:07 UTC · `demonstration-designer-plugin-new-standalone` branch claude/demo-designer, PR #405 (all) · builds-live
 - 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → running, note (all) · pipeline
 - 2026-11-09 04:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 04:12 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s2 done, → running (all) · orchestrator
 
 ## Token passes (log)
 

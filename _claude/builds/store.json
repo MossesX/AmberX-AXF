@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1700,
- "updatedAt": "2026-11-09T04:10:19.846Z",
+ "rev": 1701,
+ "updatedAt": "2026-11-09T04:12:38.675Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124580,7 +124580,7 @@
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T04:10:12.815Z",
+   "updatedAt": "2026-11-09T04:12:37.472Z",
    "builtAt": "",
    "notes": [
     {
@@ -124612,7 +124612,16 @@
      "at": "2026-11-09T04:10:12.815Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-09T04:12:37.472Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
@@ -124630,11 +124639,11 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "account-3",
-    "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--lenny",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T04:10:10.962Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-09T02:31:11.152Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-09T03:04:03.174Z",
      "exit": 0,
@@ -124651,9 +124660,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T04:10:10.962Z"
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -124693,12 +124702,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T04:12:37.472Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T00:38:25.943Z",
-     "updatedAt": "2026-11-09T00:38:25.943Z"
+     "updatedAt": "2026-11-09T04:12:37.586Z"
     },
     {
      "id": "s3",
