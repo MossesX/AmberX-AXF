@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1720,
- "updatedAt": "2026-11-09T13:12:04.368Z",
+ "rev": 1721,
+ "updatedAt": "2026-11-09T13:13:04.304Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126642,6 +126642,66 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T13:12:03.227Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "pending-builds-steps-column-first-done-total-sortable",
+   "title": "Pending builds: steps column first (done / total), sortable",
+   "category": "Builds",
+   "detail": "In the Pending builds list/table, make the very first column Steps showing completed and total (e.g. 5 / 6, with a small progress bar). Sortable by it (by steps left, percent done, or total). Same DataGrid/asset rules as other tables; column order and sort saved in settings. Brett: \"the very first column to show the steps, the number total and the number completed, so I can sort them by that.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T13:13:03.323Z",
+   "updatedAt": "2026-11-09T13:13:03.323Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9a7flf02ad9o",
+     "title": "",
+     "text": "Add Steps (done / total) as first column in Pending builds, sortable by done, total, percent and steps left; save sort; screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T13:13:03.324Z",
+     "updatedAt": "2026-11-09T13:13:03.324Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 487
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-09T13:13:03.324Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
