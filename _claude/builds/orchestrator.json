@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:06:47.943Z",
+ "updatedAt": "2026-11-09T18:07:06.007Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78512,7 +78512,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78520,7 +78520,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-09T18:06:18.079Z",
+   "updatedAt": "2026-11-09T18:07:03.896Z",
    "builtAt": "",
    "notes": [
     {
@@ -78534,6 +78534,10 @@
     {
      "text": "Started run 1 on account-1 (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--rhonda.",
      "at": "2026-11-09T18:06:18.079Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 11 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T18:07:03.896Z"
     }
    ],
    "approvals": [],

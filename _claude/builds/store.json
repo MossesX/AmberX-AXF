@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1834,
- "updatedAt": "2026-11-09T18:06:47.943Z",
+ "rev": 1835,
+ "updatedAt": "2026-11-09T18:07:06.007Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128667,7 +128667,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128675,7 +128675,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-09T18:06:18.079Z",
+   "updatedAt": "2026-11-09T18:07:03.896Z",
    "builtAt": "",
    "notes": [
     {
@@ -128689,6 +128689,10 @@
     {
      "text": "Started run 1 on account-1 (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--rhonda.",
      "at": "2026-11-09T18:06:18.079Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 11 steps left: back in the Queue (run 1).",
+     "at": "2026-11-09T18:07:03.896Z"
     }
    ],
    "approvals": [],
@@ -128709,12 +128713,19 @@
     "queuedAt": "2026-11-09T17:50:57.626Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-split-builds-pages-build-manager-pending-complet--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:06:17.454Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-09T18:07:03.330Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 11,
+     "account": "account-1",
+     "session": "axf-split-builds-pages-build-manager-pending-complet--rhonda"
+    },
     "split": {
      "at": "2026-11-09T17:52:20.491Z",
      "by": "orchestrator",
@@ -128723,7 +128734,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 11 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-09T18:06:17.454Z"
    },
@@ -128982,7 +128993,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
