@@ -12,7 +12,7 @@
  * Without --issue a line joins this session's open fix (AXF_SESSION). Send once and keep working: no polling.
  * Reaches the console with AXF_CONSOLE_URL + AXF_TOKEN, else through `docker exec axf-console` on the VPS. Before the
  * plugin is deployed (404), a log line still goes out as a plain console alert so Brett hears it.
- * Same as `axf fix-log log --text … --outcome …` and MCP `fix-log_log`. Exit 0 ok · 1 failed · 2 usage.
+ * Same as `axf fix-log log --text … --outcome …` and MCP `fix_log_log`. Exit 0 ok · 1 failed · 2 usage.
  */
 import { spawnSync } from 'node:child_process';
 

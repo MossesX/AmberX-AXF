@@ -6,7 +6,7 @@
  "kind": "module",
  "apiLevel": 1,
  "author": "Brett",
- "description": "Fix log + FYI phone notifications from Claude sessions (fix-log@1). Any session (voice, chat, headless) writes one short line per step of a fix: found (something needs fixing), trying (what it is trying), failed, fixed. Each line goes into the Fix log and out as an informational notification: the console bell and AmberX on Brett's phone. Never asks for anything: no approval, no veto. Lines of one fix share an issue id, so the bell keeps only the newest. Fix log page with filters (outcome, session, build, text, open issues). Per-outcome notify switches and a per-session flood limit. CLI fixlog.mjs, REST, MCP fix-log_* and axf fix-log … through plugin-commands@1.",
+ "description": "Fix log + FYI phone notifications from Claude sessions (fix-log@1). Any session (voice, chat, headless) writes one short line per step of a fix: found (something needs fixing), trying (what it is trying), failed, fixed. Each line goes into the Fix log and out as an informational notification: the console bell and AmberX on Brett's phone. Never asks for anything: no approval, no veto. Lines of one fix share an issue id, so the bell keeps only the newest. Fix log page with filters (outcome, session, build, text, open issues). Per-outcome notify switches and a per-session flood limit. CLI fixlog.mjs, REST, MCP fix_log_* and axf fix-log … through plugin-commands@1.",
  "targets": [
   "axf-console"
  ],
