@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2051,
- "updatedAt": "2026-11-09T23:53:11.583Z",
+ "rev": 2052,
+ "updatedAt": "2026-11-09T23:53:30.569Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132280,7 +132280,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-09T23:53:10.398Z",
+   "updatedAt": "2026-11-09T23:53:29.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -132336,6 +132336,13 @@
      },
      {
       "said": "All the employees' information is gonna be tapped into the old one, right? So everything only exists in one true source, one true place.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "We're just gonna upgrade and soup up the old stuff.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132444,7 +132451,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
