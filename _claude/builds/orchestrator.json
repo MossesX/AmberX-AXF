@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:36:42.389Z",
+ "updatedAt": "2026-11-09T20:14:50.917Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79932,6 +79932,37 @@
      "uid": "st-mw9nh4o603023b"
     }
    ]
+  },
+  {
+   "id": "saved-claude-logins-never-end-up-on-a-spent-refr",
+   "title": "Saved Claude logins never end up on a spent refresh token",
+   "category": "",
+   "detail": "Builds run on a per-build copy of a saved login (claude-login.mjs). Refresh tokens are single-use: when a build refreshes, the new token lands in the copy; if the copy is deleted before the rotation is written back (claude-token-save.mjs release/sweep), the saved login keeps a spent token and every later launch fails with 'OAuth session expired and could not be refreshed' (seen on account-1 and account-3, Nov 9). Fix: find every path where the rotation is lost (crash, kill, exit 1, sweep timing, two builds refreshing the same login at once), write rotations back atomically with a lock, never let two copies refresh the same login concurrently, and before launch check the saved login is alive; if dead, skip that account, alert the phone, and don't burn runs on it. Tests for each path.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T20:14:49.766Z",
+   "updatedAt": "2026-11-09T20:14:49.766Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why is it expiring when it gets a new refresh token every time? ... Okay, we need to do something about that so it doesn't happen.",
+    "at": "2026-11-09T20:14:49.766Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

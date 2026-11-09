@@ -3136,6 +3136,18 @@
    "from": "",
    "addenda": []
   },
+  "saved-claude-logins-never-end-up-on-a-spent-refr": {
+   "said": "Why is it expiring when it gets a new refresh token every time? ... Okay, we need to do something about that so it doesn't happen.",
+   "at": "2026-11-09T20:14:49.766Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "screens-compact": {
    "said": "'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
    "at": "2026-10-30",
