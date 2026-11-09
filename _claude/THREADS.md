@@ -757,29 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 13:46 UTC · `maintenance-redundancy-scan` added (5 steps) (all) · earl
-- 2026-11-07 13:53 UTC · `maintenance-redundancy-scan` s1 done, → running (all) · earl
-- 2026-11-07 13:54 UTC · `maintenance-redundancy-scan` s2 done (all) · earl
-- 2026-11-07 13:57 UTC · `maintenance-redundancy-scan` s3 done (all) · earl
-- 2026-11-07 13:59 UTC · `orchestrator-gate` s2 done (all) · orchestrator
-- 2026-11-07 14:06 UTC · `maintenance-redundancy-scan` s4 done (all) · earl
-- 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` s5 done, → complete (all) · earl
-- 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` note (all) · earl
-- 2026-11-07 14:10 UTC · `maintenance-redundancy-scan` branch claude/maintenance-redundancy-scan (all) · builds-live
-- 2026-11-07 14:11 UTC · `maintenance-redundancy-scan` → built (all) · earl
-- 2026-11-07 14:11 UTC · `postgres-console` note (all) · orchestrator
-- 2026-11-07 14:11 UTC · `orchestrator-dup-check` added (5 steps) (all) · orchestrator-dup-check
-- 2026-11-07 14:11 UTC · `maintenance-redundancy-scan` → complete, note (all) · orchestrator-dup-check
-- 2026-11-07 14:13 UTC · `orchestrator-gate` s3 done (all) · orchestrator
-- 2026-11-07 14:17 UTC · `orchestrator-dup-check` s5 done, → complete (all) · orchestrator-dup-check
-- 2026-11-07 14:17 UTC · `orchestrator-dup-check` → built (all) · orchestrator-dup-check
-- 2026-11-07 14:17 UTC · `orchestrator-dup-check` → complete, note (all) · orchestrator-dup-check
-- 2026-11-07 14:21 UTC · `plan-designer` added (6 steps) (all) · claude-plan-designer
-- 2026-11-07 14:27 UTC · `plan-designer` s1 done, → running (all) · claude-plan-designer
-- 2026-11-07 14:27 UTC · `slotstest-2208251-a` added (0 steps) (all) · model-gate
-- 2026-11-07 14:27 UTC · `plan-designer` s2 done (all) · claude-plan-designer
-- 2026-11-07 14:27 UTC · `slotstest-2208251-b` added (0 steps) (all) · model-gate
-- 2026-11-07 14:29 UTC · `postgres-console` s1 done, → running (all) · orchestrator
 - 2026-11-07 14:29 UTC · `slotstest-2208251-a` removed (all) · orchestrator
 - 2026-11-07 14:29 UTC · `slotstest-2208251-b` removed (all) · orchestrator
 - 2026-11-07 14:36 UTC · `plan-designer` s3 done (all) · claude-plan-designer
@@ -1157,6 +1134,29 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` s2 done (all) · orchestrator
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` branch claude/orchestrator-only-launcher (all) · builds-live
 - 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · orchestrator
+- 2026-11-09 00:37 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (0 steps) (all) · pending
+- 2026-11-09 00:38 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → queued (all) · claude-voice
+- 2026-11-09 00:38 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-09 00:41 UTC · `one-builds-page-pending-queued-built-tabs-remove` → queued (all) · claude-voice
+- 2026-11-09 00:47 UTC · `briefs-list-the-existing-files-each-step-needs` added (0 steps) (all) · pending
+- 2026-11-09 00:47 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (3 steps) (all) · foreign-write
+- 2026-11-09 00:47 UTC · `briefs-list-the-existing-files-each-step-needs` added (0 steps) (all) · foreign-write
+- 2026-11-09 00:48 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` → pending, note (all) · reconciler
+- 2026-11-09 00:48 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · orchestrator
+- 2026-11-09 00:48 UTC · `headless-loop-guards-stop-endless-loops-and-sear` added (0 steps) (all) · pending
+- 2026-11-09 00:49 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · orchestrator
+- 2026-11-09 00:48 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · foreign-write
+- 2026-11-09 00:48 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · foreign-write
+- 2026-11-09 00:49 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
+- 2026-11-09 00:50 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
+- 2026-11-09 00:51 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
+- 2026-11-09 00:52 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
+- 2026-11-09 00:53 UTC · `headless-loop-guards-stop-endless-loops-and-sear` note (all) · pending
+- 2026-11-09 01:01 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · shipped-manifest-api
+- 2026-11-09 01:01 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` note (all) · shipped-manifest-api
+- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` → running, note (all) · pipeline
+- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` branch claude/one-builds-page-pending-queued-built-tabs-remove (all) · pipeline
+- 2026-11-09 01:16 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · orchestrator
 
 ## Token passes (log)
 

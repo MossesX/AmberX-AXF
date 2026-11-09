@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1630,
- "updatedAt": "2026-11-09T00:24:49.756Z",
+ "rev": 1651,
+ "updatedAt": "2026-11-09T01:16:15.709Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122564,14 +122564,14 @@
    "title": "One way to start builds: the orchestrator dispatches from the queue",
    "category": "",
    "detail": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
    "branch": "claude/orchestrator-only-launcher",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-09T00:24:33.480Z",
+   "updatedAt": "2026-11-09T01:01:49Z",
    "builtAt": "",
    "notes": [
     {
@@ -122581,6 +122581,14 @@
     {
      "text": "Built on claude/orchestrator-only-launcher (8710fed63): dispatch token gate, every other launch path files into the Queue, API routing (override + overflow, off by default), API rule in every brief. Report _claude/builds/reports/orchestrator-only-launcher.md. s3: tests and report done; UI Review shots and the PR are left for build_land.",
      "at": "2026-11-09T00:24:33.480Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-09T00:48:37.325Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-way-to-start-builds-the-orchestrator-dispatc rev 1 sent to Shipped features (backfill): landed e15e52876, 30 file(s), 5 test line(s), 8 open.",
+     "at": "2026-11-09T01:01:49Z"
     }
    ],
    "approvals": [],
@@ -122676,7 +122684,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124046,19 +124054,27 @@
    "title": "One builds page: Pending, Queued, Built tabs; remove every other builds table",
    "category": "",
    "detail": "Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-builds-page-pending-queued-built-tabs-remove",
-   "branch": "",
+   "branch": "claude/one-builds-page-pending-queued-built-tabs-remove",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-08T21:18:13.459Z",
+   "updatedAt": "2026-11-09T01:16:12.612Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T21:18:13.459Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-one-builds-page-pending-queued-built-tabs-remove--joey.",
+     "at": "2026-11-09T01:16:10.581Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-one-builds-page-pending-queued-built-tabs-remove--joey, own login copy)",
+     "at": "2026-11-09T01:16:12.611Z"
     }
    ],
    "approvals": [],
@@ -124069,11 +124085,27 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "one-builds-page-pending-queued-built-tabs-remove",
+    "brief": "# Build: one-builds-page-pending-queued-built-tabs-remove\n\n## Brett said (verbatim)\n> There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.\n\n## What to build\nContinue build \"One builds page: Pending, Queued, Built tabs; remove every other builds table\" (one-builds-page-pending-queued-built-tabs-remove) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.\n[ ] s2 (~30 min) There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-builds-page-pending-queued-built-tabs-remove.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-builds-page-pending-queued-built-tabs-remove.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-builds-page-pending-queued-built-tabs-remove <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-builds-page-pending-queued-built-tabs-remove --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-builds-page-pending-queued-built-tabs-remove <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-builds-page-pending-queued-built-tabs-remove \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "account-3",
+    "session": "axf-one-builds-page-pending-queued-built-tabs-remove--joey",
+    "slot": "",
+    "model": "Opus",
+    "launchedAt": "2026-11-09T01:16:10.347Z",
+    "runs": 1,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-09T01:16:10.347Z"
    },
    "steps": [
     {
@@ -124154,7 +124186,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124606,7 +124638,7 @@
    "pr": "#397",
    "mergedAt": "2026-11-09T00:06:38Z",
    "createdAt": "2026-11-08T22:22:59.195Z",
-   "updatedAt": "2026-11-09T00:20:45.297Z",
+   "updatedAt": "2026-11-09T01:01:48Z",
    "builtAt": "2026-11-08T22:41:09.244Z",
    "notes": [
     {
@@ -124632,6 +124664,10 @@
     {
      "text": "Reconciler: PR #397 merged",
      "at": "2026-11-09T00:20:45.297Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-amberx-veto-notice-alarm-too-loud-approve rev 1 sent to Shipped features (backfill): landed 661901740, 18 file(s), 5 test line(s), 4 open.",
+     "at": "2026-11-09T01:01:48Z"
     }
    ],
    "approvals": [],
@@ -124756,7 +124792,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124766,9 +124802,13 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T22:22:59.195Z",
-    "builtAt": "",
+    "builtAt": "2026-11-08T22:41:09.244Z",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8ef93s01lvki": "2026-11-08T22:23:20.536Z",
+     "st-mw8ef93s024buh": "2026-11-08T22:23:20.536Z",
+     "st-mw8ef93s032vl0": "2026-11-08T22:23:20.536Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T22:23:20.536Z",
@@ -124912,7 +124952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124924,7 +124964,11 @@
     "createdAt": "2026-11-08T22:32:08.043Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8esfk2012nyu": "2026-11-08T22:33:35.426Z",
+     "st-mw8esfk202sq17": "2026-11-08T22:33:35.426Z",
+     "st-mw8esfk203qlg4": "2026-11-08T22:33:35.426Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-08T22:33:35.426Z",
@@ -125061,12 +125105,601 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-08T22:30:52.988Z",
+    "builtAt": "2026-11-08T22:46:45.882Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw8eoyc005hmgx": "2026-11-08T22:30:52.990Z",
+     "st-mw8eoyc006njrf": "2026-11-08T22:30:52.990Z",
+     "st-mw8eoyc007no72": "2026-11-08T22:30:52.990Z",
+     "st-mw8eoyc008ieem": "2026-11-08T22:30:52.990Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-08T22:30:52.990Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "plan-studio-receives-a-valid-shipped-feature-man",
+   "title": "Plan Studio receives a valid shipped-feature manifest",
+   "category": "",
+   "detail": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
+   "status": "queued",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "plan-studio-receives-a-valid-shipped-feature-man",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:37:43.238Z",
+   "updatedAt": "2026-11-09T00:38:25.943Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T00:38:25.943Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T00:38:25.943Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8j8z9z0160g3",
+     "title": "",
+     "text": "Follow-up to build shipped-manifest-api (branch claude/shipped-manifest-api, shipped-manifest@1). When the orchestrator sends a shipped-feature manifest to the Shipped Features ledger, it also sends the same manifest to Plan Studio: create (or update) the build's Plan Studio plan with every manifest field (build id/title, Brett's verbatim prompt highlighted, full brief, models/accounts, steps with estimates and actual times, branch, PR, landed commit, files changed, tests, UI Review item, cost/tokens, report path, open items). Plan Studio validates it against the shipped-manifest@1 schema and rejects or flags an invalid one (shown in the plan and the terminal). Shared schema module, no copy. Backfill tonight's landed builds. Full API control (MCP/CLI/deep link/voice). Tests: valid manifest creates a matching plan, invalid one is refused with the reason; plans.mjs check-builds stays green.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:38:25.943Z",
+     "updatedAt": "2026-11-09T00:38:25.943Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8j8z9z02tix6",
+     "title": "",
+     "text": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:38:25.943Z",
+     "updatedAt": "2026-11-09T00:38:25.943Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8j8z9z03wha6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/plan-studio-receives-a-valid-shipped-feature-man.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:38:25.943Z",
+     "updatedAt": "2026-11-09T00:38:25.943Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 474
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T00:37:43.238Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8j8z9z0160g3": "2026-11-09T00:38:25.943Z",
+     "st-mw8j8z9z02tix6": "2026-11-09T00:38:25.943Z",
+     "st-mw8j8z9z03wha6": "2026-11-09T00:38:25.943Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T00:38:25.943Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "briefs-list-the-existing-files-each-step-needs",
+   "title": "Briefs list the existing files each step needs",
+   "category": "",
+   "detail": "Today every orchestrator brief says 'read only the files listed' but lists no files. When the orchestrator splits a build into steps, it looks up the existing files each step will need (plugin folders, plugin.json, server/web entry points, schemas, the CLI/engine files it extends) from the plugin/UI registry, the Shipped features ledger and a quick grep, and writes them into the brief per step as 'Start with these files'. New files are not listed. Keep the list short (the files that matter, not whole folders). Also trim the brief: Brett's words once (not twice), steps, files, how to tick steps; drop boilerplate that doesn't apply to the step (look/token rules only for UI steps). Tests: brief template lists files per step; a UI step gets the look rules, a non-UI step doesn't; Brett's words appear once.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "briefs-list-the-existing-files-each-step-needs",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:47:08.187Z",
+   "updatedAt": "2026-11-09T00:48:38.808Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T00:48:38.808Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Better to have it list the files that it already knows it's gonna need, and then it can read those files and determine what to do. It will help it determine what to do.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T00:48:38.808Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8jm4p501rndi",
+     "title": "",
+     "text": "Today every orchestrator brief says 'read only the files listed' but lists no files. When the orchestrator splits a build into steps, it looks up the existing files each step will need (plugin folders, plugin.json, server/web entry points, schemas, the CLI/engine files it extends) from the plugin/UI registry, the Shipped features ledger and a quick grep, and writes them into the brief per step as 'Start with these files'. New files are not listed. Keep the list short (the files that matter, not whole folders). Also trim the brief: Brett's words once (not twice), steps, files, how to tick steps; drop boilerplate that doesn't apply to the step (look/token rules only for UI steps). Tests: brief template lists files per step; a UI step gets the look rules, a non-UI step doesn't; Brett's words appear once.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:48:39.428Z",
+     "updatedAt": "2026-11-09T00:48:39.497Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8jm4p502vejm",
+     "title": "",
+     "text": "Better to have it list the files that it already knows it's gonna need, and then it can read those files and determine what to do. It will help it determine what to do.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:48:39.428Z",
+     "updatedAt": "2026-11-09T00:48:39.497Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8jm4p503zkfj",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/briefs-list-the-existing-files-each-step-needs.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:48:39.428Z",
+     "updatedAt": "2026-11-09T00:48:39.497Z"
+    },
+    {
+     "id": "s4-3",
+     "uid": "st-mw8jm46001il4k",
+     "title": "",
+     "text": "Today every orchestrator brief says 'read only the files listed' but lists no files. When the orchestrator splits a build into steps, it looks up the existing files each step will need (plugin folders, plugin.json, server/web entry points, schemas, the CLI/engine files it extends) from the plugin/UI registry, the Shipped features ledger and a quick grep, and writes them into the brief per step as 'Start with these files'. New files are not listed. Keep the list short (the files that matter, not whole folders). Also trim the brief: Brett's words once (not twice), steps, files, how to tick steps; drop boilerplate that doesn't apply to the step (look/token rules only for UI steps). Tests: brief template lists files per step; a UI step gets the look rules, a non-UI step doesn't; Brett's words appear once.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:48:38.808Z",
+     "updatedAt": "2026-11-09T00:48:38.808Z"
+    },
+    {
+     "id": "s5-4",
+     "uid": "st-mw8jm460028jdn",
+     "title": "",
+     "text": "Better to have it list the files that it already knows it's gonna need, and then it can read those files and determine what to do. It will help it determine what to do.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:48:38.808Z",
+     "updatedAt": "2026-11-09T00:48:38.808Z"
+    },
+    {
+     "id": "s6-5",
+     "uid": "st-mw8jm46003wr1s",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/briefs-list-the-existing-files-each-step-needs.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/briefs-list-the-existing-files-each-step-needs.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:48:38.808Z",
+     "updatedAt": "2026-11-09T00:48:38.808Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 475
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T00:47:08.187Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8jm46001il4k": "2026-11-09T00:48:38.808Z",
+     "st-mw8jm460028jdn": "2026-11-09T00:48:38.808Z",
+     "st-mw8jm46003wr1s": "2026-11-09T00:48:38.808Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T00:48:38.808Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "headless-loop-guards-stop-endless-loops-and-sear",
+   "title": "Headless loop guards: stop endless loops and searches",
+   "category": "",
+   "detail": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "headless-loop-guards-stop-endless-loops-and-sear",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T00:48:58.297Z",
+   "updatedAt": "2026-11-09T00:53:38.909Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T00:49:14.856Z"
+    },
+    {
+     "text": "Brett: \"I need a way to manage the safeguards.\" Add a Safeguards panel (orchestrator settings, its own section, also reachable from the build's row): turn each guard on/off; edit turns cap, time cap (x estimate), cost cap, no-tick warn/stop multipliers, repeat-command count, search budget; per-build and per-queue overrides; a live view of each running session against its limits (turns, time, cost, searches used); a log of every guard stop with the reason, last log lines and buttons: Relaunch, Raise limit and relaunch, Send back to pending. Full API/MCP/CLI/voice control and a deep link. Stock controls, 3 layout options to UI Review.",
+     "at": "2026-11-09T00:49:41.461Z"
+    },
+    {
+     "text": "Brett on managing the safeguards: \"I don't want the file itself to be editable. I want it to be view. You can view the file with steps. Make it an MD file with bullet points for the rules. And create a sortable, collapsible tree with a whole shitload of different rules, of snippets. When you click it, it will pop a dialogue to let you add the custom fields that it requires for the snippet and it will insert it.\" Build: 1) The safeguards live as a Markdown rules file (one bullet per rule, grouped by heading), shown READ-ONLY in the panel (rendered view with the steps it applies to); no free-text editing. 2) A snippet library: a sortable, searchable, collapsible tree (category > sub-category > snippet) with a large set of ready rule snippets (turn caps, time/cost caps, no-tick timeouts, repeat-command and search-spree limits, file/folder fences, no sub-agents, model limits, test-before-commit, stop-and-note rules, etc.). 3) Clicking a snippet opens a dialog with the fields it needs (number, duration, $, path, model, scope: global/queue/build/step) with validation and a preview line; Insert adds the bullet to the rules file. 4) Each inserted rule can be toggled, moved, or removed from the panel (structured actions, still no raw edit); every change is versioned with history and undo. 5) The orchestrator and the loop detector read their limits from this file; the brief gets the bullets that apply to the step. Full API/MCP/CLI/voice control; stock controls; 3 layout options to UI Review.",
+     "at": "2026-11-09T00:50:55.438Z"
+    },
+    {
+     "text": "Brett: \"the dialogue that needs custom parameters for the rules, any that are like file names or specific things already have a list to choose from for the custom parameters.\" In the snippet fields dialog, every field whose values already exist is a pick list (searchable dropdown or tree picker), not free text: file and folder paths (from the repo tree / plugin registry), plugins, apps, builds, queues, steps, Claude accounts, API accounts, models, agents/crew, tools, commands, settings keys. Multi-select where a rule takes several. Free text only for true free values (numbers, durations, $ amounts) and those get validated inputs with units.",
+     "at": "2026-11-09T00:51:51.789Z"
+    },
+    {
+     "text": "Brett: \"There has to be filters too, where you put in for the list of certain types of parameters. There's got to be filters.\" Every pick list in the snippet dialog has filters fitting its type, plus search: files/folders by app, plugin, folder, file type/extension, changed recently, owned by a build; plugins by app, category, enabled; builds by status, queue, model, category, date; queues by account type; steps by build and state; accounts by role, model available, health; models by tier; agents by role/skill; tools by service; settings keys by plugin/section. Filters combine, show counts, can be cleared, and remember the last used per field.",
+     "at": "2026-11-09T00:52:25.833Z"
+    },
+    {
+     "text": "Brett: \"list of features. Stack. And the list of predefined search terms based on what the rule is.\" 1) Filters stack (combine) and include a 'feature' filter: pick from the Shipped features list / plugin feature catalog to narrow files, builds and steps to one feature. 2) Each snippet carries predefined search terms and preset filter stacks that fit that rule (e.g. a file-fence rule offers 'server routes', 'web views', 'plugin.json', 'tests', 'schemas'; a model rule offers 'Fable-only steps', 'UI steps'), shown as quick chips in the pick list; tap one to apply. Brett can save his own presets per snippet.",
+     "at": "2026-11-09T00:52:50.828Z"
+    },
+    {
+     "text": "Brett: \"as you type in the field, it automatically drops down the list of all the ones that match. Whatever you type. In real time. Letter per letter.\" Every parameter field is a type-ahead combobox: the match list drops down on the first letter and updates on every keystroke (fuzzy match, matched letters highlighted, within the active filters), keyboard up/down/enter and tap to pick. Fast on large lists (indexed/virtualized, no lag).",
+     "at": "2026-11-09T00:53:23.874Z"
+    },
+    {
+     "text": "Brett: \"And they pop up in a categorized tree.\" The live type-ahead drop-down shows its matches as a categorized collapsible tree (e.g. app > plugin > folder > file; queue > build > step; account type > account), branches with matches auto-expand, counts per branch, empty branches hidden; picking a branch can select all under it where the rule allows several.",
+     "at": "2026-11-09T00:53:38.909Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T00:49:14.856Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8jmvzc01kosm",
+     "title": "",
+     "text": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:49:14.856Z",
+     "updatedAt": "2026-11-09T00:49:14.856Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8jmvzc02dlrs",
+     "title": "",
+     "text": "We need some safeguards in there to, to make sure their fucking headless sessions don't get stuck in endless loops and searches.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:49:14.856Z",
+     "updatedAt": "2026-11-09T00:49:14.856Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8jmvzc03ccrp",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/headless-loop-guards-stop-endless-loops-and-sear.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/headless-loop-guards-stop-endless-loops-and-sear.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T00:49:14.856Z",
+     "updatedAt": "2026-11-09T00:49:14.856Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 476
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 9,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T00:48:58.297Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw8jmvzc01kosm": "2026-11-09T00:49:14.856Z",
+     "st-mw8jmvzc02dlrs": "2026-11-09T00:49:14.856Z",
+     "st-mw8jmvzc03ccrp": "2026-11-09T00:49:14.856Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-09T00:49:14.856Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
