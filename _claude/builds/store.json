@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1629,
- "updatedAt": "2026-11-09T00:24:29.707Z",
+ "rev": 1630,
+ "updatedAt": "2026-11-09T00:24:49.756Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122568,15 +122568,19 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
-   "branch": "",
+   "branch": "claude/orchestrator-only-launcher",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-09T00:24:25.894Z",
+   "updatedAt": "2026-11-09T00:24:33.480Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:26:21.276Z"
+    },
+    {
+     "text": "Built on claude/orchestrator-only-launcher (8710fed63): dispatch token gate, every other launch path files into the Queue, API routing (override + overflow, off by default), API rule in every brief. Report _claude/builds/reports/orchestrator-only-launcher.md. s3: tests and report done; UI Review shots and the PR are left for build_land.",
+     "at": "2026-11-09T00:24:33.480Z"
     }
    ],
    "approvals": [],
@@ -122631,12 +122635,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T00:24:29.567Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:26:21.276Z",
-     "updatedAt": "2026-11-08T19:26:21.276Z"
+     "updatedAt": "2026-11-09T00:24:30.147Z"
     },
     {
      "id": "s3",
@@ -122672,7 +122676,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
