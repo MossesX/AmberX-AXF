@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1635,
- "updatedAt": "2026-11-09T00:47:10.247Z",
+ "rev": 1636,
+ "updatedAt": "2026-11-09T00:48:38.439Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -122564,14 +122564,14 @@
    "title": "One way to start builds: the orchestrator dispatches from the queue",
    "category": "",
    "detail": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
    "branch": "claude/orchestrator-only-launcher",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-09T00:24:33.480Z",
+   "updatedAt": "2026-11-09T00:48:37.325Z",
    "builtAt": "",
    "notes": [
     {
@@ -122581,6 +122581,10 @@
     {
      "text": "Built on claude/orchestrator-only-launcher (8710fed63): dispatch token gate, every other launch path files into the Queue, API routing (override + overflow, off by default), API rule in every brief. Report _claude/builds/reports/orchestrator-only-launcher.md. s3: tests and report done; UI Review shots and the PR are left for build_land.",
      "at": "2026-11-09T00:24:33.480Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-09T00:48:37.325Z"
     }
    ],
    "approvals": [],
@@ -122676,7 +122680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
