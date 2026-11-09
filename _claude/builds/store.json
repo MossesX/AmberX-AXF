@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1904,
- "updatedAt": "2026-11-09T19:22:50.256Z",
+ "rev": 1905,
+ "updatedAt": "2026-11-09T19:23:04.932Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129575,7 +129575,7 @@
    "title": "URGENT: Terminal pops up every time the console opens",
    "category": "",
    "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129583,7 +129583,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T19:22:43.027Z",
+   "updatedAt": "2026-11-09T19:23:03.213Z",
    "builtAt": "",
    "notes": [
     {
@@ -129621,6 +129621,10 @@
     {
      "text": "Headless run axf-urgent-terminal-pops-up-every-time-the-console-o--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:22:43.027Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T19:23:03.213Z"
     }
    ],
    "approvals": [],
@@ -129641,18 +129645,18 @@
     "queuedAt": "2026-11-09T19:20:17.331Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:22:23.270Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-09T19:22:17.811Z",
+     "at": "2026-11-09T19:23:02.725Z",
      "exit": 1,
      "outcome": "requeued",
      "stepsLeft": 3,
      "account": "account-1",
-     "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--sully"
+     "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--gina"
     },
     "split": {
      "at": "2026-11-09T18:52:29.382Z",
@@ -129662,7 +129666,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-09T19:22:23.270Z"
    },
@@ -129745,7 +129749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130181,7 +130185,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:22:36.403Z",
+   "updatedAt": "2026-11-09T19:22:51.985Z",
    "builtAt": "",
    "notes": [
     {
@@ -130199,6 +130203,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-home-page-build-queue-card-opens-the-orchestrato--rhonda, own login copy)",
      "at": "2026-11-09T19:22:36.403Z"
+    },
+    {
+     "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:22:51.985Z"
     }
    ],
    "approvals": [],
@@ -130316,7 +130324,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T19:22:50.256Z",
+ "updatedAt": "2026-11-09T19:23:04.932Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79181,7 +79181,7 @@
    "title": "URGENT: Terminal pops up every time the console opens",
    "category": "",
    "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79189,7 +79189,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T19:22:43.027Z",
+   "updatedAt": "2026-11-09T19:23:03.213Z",
    "builtAt": "",
    "notes": [
     {
@@ -79227,6 +79227,10 @@
     {
      "text": "Headless run axf-urgent-terminal-pops-up-every-time-the-console-o--gina: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:22:43.027Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T19:23:03.213Z"
     }
    ],
    "approvals": [],
@@ -79610,7 +79614,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:22:36.403Z",
+   "updatedAt": "2026-11-09T19:22:51.985Z",
    "builtAt": "",
    "notes": [
     {
@@ -79628,6 +79632,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-home-page-build-queue-card-opens-the-orchestrato--rhonda, own login copy)",
      "at": "2026-11-09T19:22:36.403Z"
+    },
+    {
+     "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--rhonda: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:22:51.985Z"
     }
    ],
    "approvals": [],

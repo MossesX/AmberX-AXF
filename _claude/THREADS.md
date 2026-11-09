@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 21:14 UTC · `nested-menus-for-console-amberx-and-molly-overri` added (0 steps) (all) · pending
 - 2026-11-08 21:14 UTC · `clean-up-plan-studio-simplify-remove-redundancy` added (0 steps) (all) · pending
 - 2026-11-08 21:14 UTC · `terminal-toolbar-responsive-overflow-every-item-` added (0 steps) (all) · pending
 - 2026-11-08 21:15 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` added (0 steps) (all) · pending
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:22 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
 - 2026-11-09 19:22 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
 - 2026-11-09 19:22 UTC · `home-page-build-queue-card-opens-the-orchestrato` branch claude/home-page-build-queue-card-opens-the-orchestrato (all) · pipeline
+- 2026-11-09 19:23 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
