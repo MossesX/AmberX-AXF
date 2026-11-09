@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1708,
- "updatedAt": "2026-11-09T04:22:19.545Z",
+ "rev": 1709,
+ "updatedAt": "2026-11-09T04:22:41.042Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126223,7 +126223,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:22:18.198Z",
+   "updatedAt": "2026-11-09T04:22:38.915Z",
    "builtAt": "",
    "notes": [
     {
@@ -126233,6 +126233,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T04:22:18.198Z"
+    },
+    {
+     "text": "Brett: results pop up in a scrolling window. As Brett types in Search everything (or the recorder page), matching transcript snippets pop up live in a scrolling results window: each hit shows the session (date, title), timestamp and a few lines around the match with the words highlighted; infinite scroll, grouped by session, newest first with a sort switch. Tapping a hit opens the recorder at that moment and plays the audio. Plain search also drops filler phrases like 'find the session where', 'when we talked about' so a whole sentence still works, zero tokens.",
+     "at": "2026-11-09T04:22:38.915Z"
     }
    ],
    "approvals": [],
@@ -126350,7 +126354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126362,7 +126366,11 @@
     "createdAt": "2026-11-09T04:21:03.588Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mw8r8vo6018865": "2026-11-09T04:22:18.198Z",
+     "st-mw8r8vo6028jhq": "2026-11-09T04:22:18.198Z",
+     "st-mw8r8vo603igcy": "2026-11-09T04:22:18.198Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-09T04:22:18.198Z",
