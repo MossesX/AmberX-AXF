@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1682,
- "updatedAt": "2026-11-09T02:54:52.483Z",
+ "rev": 1683,
+ "updatedAt": "2026-11-09T02:55:11.595Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -506,7 +506,6 @@
    "order": {
     "all": 176
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -1270,7 +1269,6 @@
    "order": {
     "all": 177
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -1770,7 +1768,6 @@
    "order": {
     "all": 180
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -3104,7 +3101,6 @@
    "order": {
     "all": 178
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 20,
@@ -4782,7 +4778,6 @@
    "order": {
     "all": 179
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -5298,7 +5293,6 @@
    "order": {
     "all": 181
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -5807,7 +5801,6 @@
    "order": {
     "all": 229
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -6239,7 +6232,6 @@
    "order": {
     "all": 355
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.designer",
    "rev": 11,
@@ -6615,7 +6607,6 @@
    "order": {
     "all": 356
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.browser",
    "rev": 10,
@@ -6748,7 +6739,6 @@
    "order": {
     "all": 357
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.plugins.manager",
    "rev": 10,
@@ -7131,7 +7121,6 @@
    "order": {
     "all": 358
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.assets.templates",
    "rev": 11,
@@ -7276,7 +7265,6 @@
    "order": {
     "all": 230
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.console.pending",
    "rev": 10,
@@ -7348,7 +7336,6 @@
    "order": {
     "all": 231
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "x.lib.mcp",
    "rev": 10,
@@ -7418,7 +7405,6 @@
    "order": {
     "all": 236
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -7842,7 +7828,6 @@
    "order": {
     "all": 237
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -8199,7 +8184,6 @@
    "order": {
     "all": 238
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -8306,7 +8290,6 @@
    "order": {
     "all": 239
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -8379,7 +8362,6 @@
    "order": {
     "all": 240
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -8741,7 +8723,6 @@
    "order": {
     "all": 241
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -8822,7 +8803,6 @@
    "order": {
     "all": 242
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -8885,7 +8865,6 @@
    "order": {
     "all": 243
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -9147,7 +9126,6 @@
    "order": {
     "all": 244
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -9224,7 +9202,6 @@
    "order": {
     "all": 245
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -9740,7 +9717,6 @@
    "order": {
     "all": 246
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -10007,7 +9983,6 @@
    "order": {
     "all": 247
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 33,
@@ -11278,7 +11253,6 @@
    "order": {
     "all": 248
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -11600,7 +11574,6 @@
    "order": {
     "all": 249
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -12016,7 +11989,6 @@
    "order": {
     "all": 250
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -12214,7 +12186,6 @@
    "order": {
     "all": 251
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -12432,7 +12403,6 @@
    "order": {
     "all": 252
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -12655,7 +12625,6 @@
    "order": {
     "all": 253
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -12858,7 +12827,6 @@
    "order": {
     "all": 254
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -12928,7 +12896,6 @@
    "order": {
     "all": 255
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -12991,7 +12958,6 @@
    "order": {
     "all": 256
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13121,7 +13087,6 @@
    "order": {
     "all": 257
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13188,7 +13153,6 @@
    "order": {
     "all": 258
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13296,7 +13260,6 @@
    "order": {
     "all": 259
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13451,7 +13414,6 @@
    "order": {
     "all": 260
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13564,7 +13526,6 @@
    "order": {
     "all": 261
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13630,7 +13591,6 @@
    "order": {
     "all": 262
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13689,7 +13649,6 @@
    "order": {
     "all": 263
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13748,7 +13707,6 @@
    "order": {
     "all": 264
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -13807,7 +13765,6 @@
    "order": {
     "all": 265
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -14047,7 +14004,6 @@
    "order": {
     "all": 266
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -14264,7 +14220,6 @@
    "order": {
     "all": 267
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -14511,7 +14466,6 @@
    "order": {
     "all": 268
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -14583,7 +14537,6 @@
    "order": {
     "all": 269
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -14642,7 +14595,6 @@
    "order": {
     "all": 270
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -14768,7 +14720,6 @@
    "order": {
     "all": 271
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -14898,7 +14849,6 @@
    "order": {
     "all": 272
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -15066,7 +15016,6 @@
    "order": {
     "all": 273
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -15245,7 +15194,6 @@
    "order": {
     "all": 274
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -15489,7 +15437,6 @@
    "order": {
     "all": 275
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -15695,7 +15642,6 @@
    "order": {
     "all": 276
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -15997,7 +15943,6 @@
    "order": {
     "all": 277
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -16226,7 +16171,6 @@
    "order": {
     "all": 278
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -16426,7 +16370,6 @@
    "order": {
     "all": 279
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -16496,7 +16439,6 @@
    "order": {
     "all": 280
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -16555,7 +16497,6 @@
    "order": {
     "all": 281
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -16681,7 +16622,6 @@
    "order": {
     "all": 282
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -16893,7 +16833,6 @@
    "order": {
     "all": 283
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -17108,7 +17047,6 @@
    "order": {
     "all": 284
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -17174,7 +17112,6 @@
    "order": {
     "all": 285
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -17278,7 +17215,6 @@
    "order": {
     "all": 286
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -17423,7 +17359,6 @@
    "order": {
     "all": 287
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -17605,7 +17540,6 @@
    "order": {
     "all": 288
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -17674,7 +17608,6 @@
    "order": {
     "all": 289
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -17804,7 +17737,6 @@
    "order": {
     "all": 290
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -17960,7 +17892,6 @@
    "order": {
     "all": 291
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -18135,7 +18066,6 @@
    "order": {
     "all": 292
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -18253,7 +18183,6 @@
    "order": {
     "all": 293
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -18386,7 +18315,6 @@
    "order": {
     "all": 294
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -18453,7 +18381,6 @@
    "order": {
     "all": 295
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -18512,7 +18439,6 @@
    "order": {
     "all": 296
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -18704,7 +18630,6 @@
    "order": {
     "all": 297
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -18770,7 +18695,6 @@
    "order": {
     "all": 298
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -18833,7 +18757,6 @@
    "order": {
     "all": 299
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -18944,7 +18867,6 @@
    "order": {
     "all": 300
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -19006,7 +18928,6 @@
    "order": {
     "all": 301
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -19202,7 +19123,6 @@
    "order": {
     "all": 302
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -19335,7 +19255,6 @@
    "order": {
     "all": 303
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -19491,7 +19410,6 @@
    "order": {
     "all": 304
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -19908,7 +19826,6 @@
    "order": {
     "all": 305
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -19988,7 +19905,6 @@
    "order": {
     "all": 306
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -20047,7 +19963,6 @@
    "order": {
     "all": 307
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -20177,7 +20092,6 @@
    "order": {
     "all": 308
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -20311,7 +20225,6 @@
    "order": {
     "all": 309
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -20489,7 +20402,6 @@
    "order": {
     "all": 310
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -20643,7 +20555,6 @@
    "order": {
     "all": 311
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -20800,7 +20711,6 @@
    "order": {
     "all": 312
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21089,7 +20999,6 @@
    "order": {
     "all": 313
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21159,7 +21068,6 @@
    "order": {
     "all": 314
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21333,7 +21241,6 @@
    "order": {
     "all": 315
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21513,7 +21420,6 @@
    "order": {
     "all": 316
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21671,7 +21577,6 @@
    "order": {
     "all": 317
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21735,7 +21640,6 @@
    "order": {
     "all": 318
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21794,7 +21698,6 @@
    "order": {
     "all": 319
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21898,7 +21801,6 @@
    "order": {
     "all": 320
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -21960,7 +21862,6 @@
    "order": {
     "all": 321
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -22019,7 +21920,6 @@
    "order": {
     "all": 322
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -22123,7 +22023,6 @@
    "order": {
     "all": 323
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -22299,7 +22198,6 @@
    "order": {
     "all": 213
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -22581,7 +22479,6 @@
    "order": {
     "all": 184
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -22873,7 +22770,6 @@
    "order": {
     "all": 214
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -23072,7 +22968,6 @@
    "order": {
     "all": 215
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -23352,7 +23247,6 @@
    "order": {
     "all": 324
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -23449,7 +23343,6 @@
    "order": {
     "all": 216
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -23574,7 +23467,6 @@
    "order": {
     "all": 217
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -23796,7 +23688,6 @@
    "order": {
     "all": 218
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -23999,7 +23890,6 @@
    "order": {
     "all": 219
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -24103,7 +23993,6 @@
    "order": {
     "all": 232
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.assets",
    "rev": 10,
@@ -24156,7 +24045,6 @@
    "order": {
     "all": 233
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engines",
    "rev": 10,
@@ -24211,7 +24099,6 @@
    "order": {
     "all": 234
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.kernel",
    "rev": 10,
@@ -24267,7 +24154,6 @@
    "order": {
     "all": 235
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.conformance",
    "rev": 10,
@@ -24320,7 +24206,6 @@
    "order": {
     "all": 325
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.windows",
    "rev": 10,
@@ -24375,7 +24260,6 @@
    "order": {
     "all": 326
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.terminal",
    "rev": 10,
@@ -24430,7 +24314,6 @@
    "order": {
     "all": 327
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.android.modules",
    "rev": 10,
@@ -24485,7 +24368,6 @@
    "order": {
     "all": 328
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.android.showcase",
    "rev": 10,
@@ -24541,7 +24423,6 @@
    "order": {
     "all": 329
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.core",
    "rev": 10,
@@ -24596,7 +24477,6 @@
    "order": {
     "all": 330
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.templates",
    "rev": 10,
@@ -24651,7 +24531,6 @@
    "order": {
     "all": 331
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.cli",
    "rev": 10,
@@ -24704,7 +24583,6 @@
    "order": {
     "all": 332
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.install",
    "rev": 10,
@@ -24759,7 +24637,6 @@
    "order": {
     "all": 333
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.libs.browser",
    "rev": 10,
@@ -24815,7 +24692,6 @@
    "order": {
     "all": 334
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.librarytemplates",
    "rev": 10,
@@ -24871,7 +24747,6 @@
    "order": {
     "all": 335
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.web",
    "rev": 10,
@@ -24927,7 +24802,6 @@
    "order": {
     "all": 336
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.api",
    "rev": 10,
@@ -24982,7 +24856,6 @@
    "order": {
     "all": 337
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.plan",
    "rev": 10,
@@ -25038,7 +24911,6 @@
    "order": {
     "all": 338
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.panel",
    "rev": 10,
@@ -25093,7 +24965,6 @@
    "order": {
     "all": 339
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.ci",
    "rev": 10,
@@ -25146,7 +25017,6 @@
    "order": {
     "all": 340
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.site",
    "rev": 10,
@@ -25199,7 +25069,6 @@
    "order": {
     "all": 341
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.web.demo",
    "rev": 10,
@@ -25255,7 +25124,6 @@
    "order": {
     "all": 342
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.build",
    "rev": 10,
@@ -25311,7 +25179,6 @@
    "order": {
     "all": 343
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.mcp",
    "rev": 10,
@@ -25364,29 +25231,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": {
-     "at": "2026-11-09T00:09:58.653Z",
-     "exit": null,
-     "outcome": "returned",
-     "stepsLeft": 8,
-     "account": "",
-     "session": ""
-    },
-    "split": null,
-    "splitRequested": "",
-    "note": "watchdog: stale",
-    "route": "",
-    "dispatchedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -25571,7 +25415,6 @@
    "order": {
     "all": 345
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.modules",
    "rev": 11,
@@ -25674,7 +25517,6 @@
    "order": {
     "all": 346
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.deploy.console",
    "rev": 12,
@@ -25902,7 +25744,6 @@
    "order": {
     "all": 347
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.state",
    "rev": 11,
@@ -26108,7 +25949,6 @@
    "order": {
     "all": 348
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.uikits",
    "rev": 11,
@@ -26424,7 +26264,6 @@
    "order": {
     "all": 349
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.libs.core",
    "rev": 11,
@@ -26586,7 +26425,6 @@
    "order": {
     "all": 350
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.uiport",
    "rev": 11,
@@ -26726,7 +26564,6 @@
    "order": {
     "all": 351
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.engine.dev",
    "rev": 11,
@@ -26932,7 +26769,6 @@
    "order": {
     "all": 352
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.session",
    "rev": 11,
@@ -27358,7 +27194,6 @@
    "order": {
     "all": 353
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.python.port",
    "rev": 10,
@@ -27630,7 +27465,6 @@
    "order": {
     "all": 354
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.plugins",
    "rev": 10,
@@ -27814,7 +27648,6 @@
    "order": {
     "all": 359
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.work",
    "rev": 10,
@@ -27998,7 +27831,6 @@
    "order": {
     "all": 360
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.showcase.packs",
    "rev": 10,
@@ -28182,7 +28014,6 @@
    "order": {
     "all": 361
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.media",
    "rev": 10,
@@ -28366,7 +28197,6 @@
    "order": {
     "all": 362
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.location",
    "rev": 10,
@@ -28550,7 +28380,6 @@
    "order": {
     "all": 363
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.editor",
    "rev": 10,
@@ -28734,7 +28563,6 @@
    "order": {
     "all": 364
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.ai",
    "rev": 10,
@@ -28918,7 +28746,6 @@
    "order": {
     "all": 365
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.vps",
    "rev": 10,
@@ -29102,7 +28929,6 @@
    "order": {
     "all": 366
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.github",
    "rev": 10,
@@ -29286,7 +29112,6 @@
    "order": {
     "all": 367
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.notifications",
    "rev": 11,
@@ -29470,7 +29295,6 @@
    "order": {
     "all": 368
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.sensors",
    "rev": 10,
@@ -29654,7 +29478,6 @@
    "order": {
     "all": 369
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.files",
    "rev": 11,
@@ -29838,7 +29661,6 @@
    "order": {
     "all": 370
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.charts",
    "rev": 10,
@@ -30000,7 +29822,6 @@
    "order": {
     "all": 371
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.console.repo",
    "rev": 10,
@@ -30184,7 +30005,6 @@
    "order": {
     "all": 372
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.lib.hub",
    "rev": 11,
@@ -30235,7 +30055,6 @@
    "order": {
     "all": 344
    },
-   "fromProfile": "main-framework",
    "kind": "epic",
    "planRef": "x.projects",
    "rev": 10,
@@ -30707,7 +30526,6 @@
    "order": {
     "all": 182
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 40,
@@ -30955,7 +30773,6 @@
    "order": {
     "all": 183
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -31149,7 +30966,6 @@
    "order": {
     "all": 185
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -31332,7 +31148,6 @@
    "order": {
     "all": 186
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -31753,7 +31568,6 @@
    "order": {
     "all": 187
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -31877,7 +31691,6 @@
    "order": {
     "all": 188
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -32066,7 +31879,6 @@
    "order": {
     "all": 189
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -32180,7 +31992,6 @@
    "order": {
     "all": 190
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -32290,7 +32101,6 @@
    "order": {
     "all": 191
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -32444,7 +32254,6 @@
    "order": {
     "all": 192
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -32600,7 +32409,6 @@
    "order": {
     "all": 193
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -32994,7 +32802,6 @@
    "order": {
     "all": 194
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -33270,7 +33077,6 @@
    "order": {
     "all": 195
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -33409,7 +33215,6 @@
    "order": {
     "all": 196
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -33585,7 +33390,6 @@
    "order": {
     "all": 197
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -33693,7 +33497,6 @@
    "order": {
     "all": 198
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -33803,7 +33606,6 @@
    "order": {
     "all": 199
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -34044,7 +33846,6 @@
    "order": {
     "all": 200
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -34392,7 +34193,6 @@
    "order": {
     "all": 201
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -34507,7 +34307,6 @@
    "order": {
     "all": 202
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -34761,7 +34560,6 @@
    "order": {
     "all": 203
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -34960,7 +34758,6 @@
    "order": {
     "all": 204
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -35112,7 +34909,6 @@
    "order": {
     "all": 205
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -37234,7 +37030,6 @@
    "order": {
     "all": 206
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -37472,7 +37267,6 @@
    "order": {
     "all": 207
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -37580,7 +37374,6 @@
    "order": {
     "all": 208
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -37743,7 +37536,6 @@
    "order": {
     "all": 209
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -38040,7 +37832,6 @@
    "order": {
     "all": 210
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 23,
@@ -38338,7 +38129,6 @@
    "order": {
     "all": 211
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -38500,7 +38290,6 @@
    "order": {
     "all": 212
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -38655,7 +38444,6 @@
    "order": {
     "all": 220
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -38820,7 +38608,6 @@
    "order": {
     "all": 221
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -39388,7 +39175,6 @@
    "order": {
     "all": 141
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -39624,7 +39410,6 @@
    "order": {
     "all": 142
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -39752,7 +39537,6 @@
    "order": {
     "all": 143
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -39946,7 +39730,6 @@
    "order": {
     "all": 144
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -40139,7 +39922,6 @@
    "order": {
     "all": 145
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -40352,7 +40134,6 @@
    "order": {
     "all": 146
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -40634,7 +40415,6 @@
    "order": {
     "all": 147
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -40816,7 +40596,6 @@
    "order": {
     "all": 148
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 20,
@@ -41008,7 +40787,6 @@
    "order": {
     "all": 149
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -41188,7 +40966,6 @@
    "order": {
     "all": 150
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -41314,7 +41091,6 @@
    "order": {
     "all": 151
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -41552,7 +41328,6 @@
    "order": {
     "all": 152
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 20,
@@ -41944,7 +41719,6 @@
    "order": {
     "all": 153
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -42181,7 +41955,6 @@
    "order": {
     "all": 154
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -42388,7 +42161,6 @@
    "order": {
     "all": 155
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 25,
@@ -42581,7 +42353,6 @@
    "order": {
     "all": 156
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -42789,7 +42560,6 @@
    "order": {
     "all": 157
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -43149,7 +42919,6 @@
    "order": {
     "all": 158
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 23,
@@ -43450,7 +43219,6 @@
    "order": {
     "all": 159
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -43810,7 +43578,6 @@
    "order": {
     "all": 160
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -44067,7 +43834,6 @@
    "order": {
     "all": 161
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -44614,7 +44380,6 @@
    "order": {
     "all": 171
    },
-   "fromProfile": "breakroom",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -44984,7 +44749,6 @@
    "order": {
     "all": 109
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 32,
@@ -45110,7 +44874,6 @@
    "order": {
     "all": 373
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -45292,7 +45055,6 @@
    "order": {
     "all": 374
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -45605,7 +45367,6 @@
    "order": {
     "all": 375
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -45792,7 +45553,6 @@
    "order": {
     "all": 376
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -45951,7 +45711,6 @@
    "order": {
     "all": 377
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -46349,7 +46108,6 @@
    "order": {
     "all": 378
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -46687,7 +46445,6 @@
    "order": {
     "all": 379
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -46828,7 +46585,6 @@
    "order": {
     "all": 380
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -46966,7 +46722,6 @@
    "order": {
     "all": 381
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -47171,7 +46926,6 @@
    "order": {
     "all": 382
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -47242,7 +46996,6 @@
    "order": {
     "all": 383
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -47310,7 +47063,6 @@
    "order": {
     "all": 384
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -47374,7 +47126,6 @@
    "order": {
     "all": 385
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -47438,7 +47189,6 @@
    "order": {
     "all": 386
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -47581,7 +47331,6 @@
    "order": {
     "all": 387
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -47653,7 +47402,6 @@
    "order": {
     "all": 388
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -47866,7 +47614,6 @@
    "order": {
     "all": 389
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -48074,7 +47821,6 @@
    "order": {
     "all": 390
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -48454,7 +48200,6 @@
    "order": {
     "all": 391
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48533,7 +48278,6 @@
    "order": {
     "all": 392
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48597,7 +48341,6 @@
    "order": {
     "all": 393
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48673,7 +48416,6 @@
    "order": {
     "all": 394
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48737,7 +48479,6 @@
    "order": {
     "all": 395
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48801,7 +48542,6 @@
    "order": {
     "all": 396
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48869,7 +48609,6 @@
    "order": {
     "all": 397
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48933,7 +48672,6 @@
    "order": {
     "all": 398
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -48997,7 +48735,6 @@
    "order": {
     "all": 399
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -49253,7 +48990,6 @@
    "order": {
     "all": 172
    },
-   "fromProfile": "breakroom",
    "kind": "build",
    "planRef": "",
    "rev": 31,
@@ -49463,7 +49199,6 @@
    "order": {
     "all": 222
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 20,
@@ -49650,7 +49385,6 @@
    "order": {
     "all": 173
    },
-   "fromProfile": "breakroom",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -49836,7 +49570,6 @@
    "order": {
     "all": 174
    },
-   "fromProfile": "breakroom",
    "kind": "build",
    "planRef": "",
    "rev": 20,
@@ -50066,7 +49799,6 @@
    "order": {
     "all": 223
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 28,
@@ -50320,7 +50052,6 @@
    "order": {
     "all": 224
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 29,
@@ -50505,7 +50236,6 @@
    "order": {
     "all": 225
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -50731,7 +50461,6 @@
    "order": {
     "all": 400
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -51448,7 +51177,6 @@
    "order": {
     "all": 226
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 55,
@@ -51622,7 +51350,6 @@
    "order": {
     "all": 227
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -51921,7 +51648,6 @@
    "order": {
     "all": 168
    },
-   "fromProfile": "big-dog",
    "kind": "build",
    "planRef": "",
    "rev": 40,
@@ -52141,7 +51867,6 @@
    "order": {
     "all": 169
    },
-   "fromProfile": "big-dog",
    "kind": "build",
    "planRef": "",
    "rev": 25,
@@ -52499,7 +52224,6 @@
    "order": {
     "all": 170
    },
-   "fromProfile": "big-dog",
    "kind": "build",
    "planRef": "",
    "rev": 35,
@@ -52631,7 +52355,6 @@
    "order": {
     "all": 228
    },
-   "fromProfile": "refactor",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -52782,7 +52505,6 @@
    "order": {
     "all": 110
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 13,
@@ -53182,7 +52904,6 @@
    "order": {
     "all": 111
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 44,
@@ -53383,7 +53104,6 @@
    "order": {
     "all": 112
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 27,
@@ -53773,7 +53493,6 @@
    "order": {
     "all": 113
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 38,
@@ -54039,7 +53758,6 @@
    "order": {
     "all": 119
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 33,
@@ -54433,7 +54151,6 @@
    "order": {
     "all": 125
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 80,
@@ -54696,7 +54413,6 @@
    "order": {
     "all": 175
    },
-   "fromProfile": "breakroom",
    "kind": "build",
    "planRef": "",
    "rev": 31,
@@ -54905,7 +54621,6 @@
    "order": {
     "all": 122
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 33,
@@ -55172,7 +54887,6 @@
    "order": {
     "all": 123
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 41,
@@ -55407,7 +55121,6 @@
    "order": {
     "all": 120
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 34,
@@ -55597,7 +55310,6 @@
    "order": {
     "all": 121
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 32,
@@ -55851,7 +55563,6 @@
    "order": {
     "all": 117
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 33,
@@ -56064,7 +55775,6 @@
    "order": {
     "all": 114
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 28,
@@ -56275,7 +55985,6 @@
    "order": {
     "all": 124
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 30,
@@ -56508,7 +56217,6 @@
    "order": {
     "all": 115
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 30,
@@ -56698,7 +56406,6 @@
    "order": {
     "all": 118
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 28,
@@ -56908,7 +56615,6 @@
    "order": {
     "all": 116
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 29,
@@ -57096,7 +56802,6 @@
    "order": {
     "all": 126
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -57310,7 +57015,6 @@
    "order": {
     "all": 127
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 27,
@@ -57581,7 +57285,6 @@
    "order": {
     "all": 128
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 30,
@@ -57820,7 +57523,6 @@
    "order": {
     "all": 129
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 30,
@@ -58409,7 +58111,6 @@
    "order": {
     "all": 130
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 36,
@@ -58673,7 +58374,6 @@
    "order": {
     "all": 131
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 31,
@@ -58919,7 +58619,6 @@
    "order": {
     "all": 132
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 29,
@@ -59201,7 +58900,6 @@
    "order": {
     "all": 133
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 31,
@@ -59409,7 +59107,6 @@
    "order": {
     "all": 134
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 32,
@@ -59604,7 +59301,6 @@
    "order": {
     "all": 1
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 28,
@@ -59763,7 +59459,6 @@
    "order": {
     "all": 2
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -59991,7 +59686,6 @@
    "order": {
     "all": 135
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 31,
@@ -60253,7 +59947,6 @@
    "order": {
     "all": 136
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 30,
@@ -60477,7 +60170,6 @@
    "order": {
     "all": 137
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 31,
@@ -60647,7 +60339,6 @@
    "order": {
     "all": 3
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 24,
@@ -60869,7 +60560,6 @@
    "order": {
     "all": 4
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 25,
@@ -61057,7 +60747,6 @@
    "order": {
     "all": 5
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 24,
@@ -61265,7 +60954,6 @@
    "order": {
     "all": 6
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -63228,7 +62916,6 @@
    "order": {
     "all": 7
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -65765,7 +65452,6 @@
    "order": {
     "all": 8
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -65945,7 +65631,6 @@
    "order": {
     "all": 9
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 25,
@@ -66292,7 +65977,6 @@
    "order": {
     "all": 10
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -66475,7 +66159,6 @@
    "order": {
     "all": 11
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -66684,7 +66367,6 @@
    "order": {
     "all": 12
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 24,
@@ -66860,7 +66542,6 @@
    "order": {
     "all": 13
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -71232,7 +70913,6 @@
    "order": {
     "all": 14
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -71415,7 +71095,6 @@
    "order": {
     "all": 15
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -71930,7 +71609,6 @@
    "order": {
     "all": 16
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 34,
@@ -72083,7 +71761,6 @@
    "order": {
     "all": 17
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -72312,7 +71989,6 @@
    "order": {
     "all": 18
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 23,
@@ -72757,7 +72433,6 @@
    "order": {
     "all": 19
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -72980,7 +72655,6 @@
    "order": {
     "all": 20
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -73183,7 +72857,6 @@
    "order": {
     "all": 21
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -74869,7 +74542,6 @@
    "order": {
     "all": 22
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 15,
@@ -75169,7 +74841,6 @@
    "order": {
     "all": 23
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -75328,7 +74999,6 @@
    "order": {
     "all": 24
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -75625,7 +75295,6 @@
    "order": {
     "all": 25
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 20,
@@ -75791,7 +75460,6 @@
    "order": {
     "all": 26
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 23,
@@ -75959,7 +75627,6 @@
    "order": {
     "all": 27
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -76140,7 +75807,6 @@
    "order": {
     "all": 28
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -76374,7 +76040,6 @@
    "order": {
     "all": 29
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 21,
@@ -76587,7 +76252,6 @@
    "order": {
     "all": 30
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -76817,7 +76481,6 @@
    "order": {
     "all": 31
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 23,
@@ -76995,7 +76658,6 @@
    "order": {
     "all": 32
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -77180,7 +76842,6 @@
    "order": {
     "all": 33
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -77344,7 +77005,6 @@
    "order": {
     "all": 34
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -77428,12 +77088,6 @@
     "from": "",
     "addenda": []
    },
-   "shipped": {
-    "id": "sm-gizmo-voice",
-    "rev": 1,
-    "at": "2026-11-09T01:26:04Z",
-    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
-   },
    "steps": [
     {
      "id": "s1",
@@ -77508,7 +77162,6 @@
    "order": {
     "all": 35
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "gizmo-voice",
    "rev": 24,
@@ -78882,7 +78535,6 @@
    "order": {
     "all": 36
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 12,
@@ -80711,7 +80363,6 @@
    "order": {
     "all": 37
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -82884,7 +82535,6 @@
    "order": {
     "all": 38
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -85511,7 +85161,6 @@
    "order": {
     "all": 39
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 15,
@@ -85739,7 +85388,6 @@
    "order": {
     "all": 40
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -85990,7 +85638,6 @@
    "order": {
     "all": 41
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 27,
@@ -86198,7 +85845,6 @@
    "order": {
     "all": 42
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -86415,7 +86061,6 @@
    "order": {
     "all": 43
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -86602,7 +86247,6 @@
    "order": {
     "all": 44
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -86835,7 +86479,6 @@
    "order": {
     "all": 45
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 24,
@@ -87000,7 +86643,6 @@
    "order": {
     "all": 46
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -87215,7 +86857,6 @@
    "order": {
     "all": 47
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -87408,7 +87049,6 @@
    "order": {
     "all": 138
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -87642,7 +87282,6 @@
    "order": {
     "all": 139
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -87947,7 +87586,6 @@
    "order": {
     "all": 49
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 23,
@@ -88063,29 +87701,6 @@
       "verbatim": true
      }
     ]
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": {
-     "at": "2026-11-09T00:09:59.305Z",
-     "exit": null,
-     "outcome": "returned",
-     "stepsLeft": 1,
-     "account": "",
-     "session": ""
-    },
-    "split": null,
-    "splitRequested": "",
-    "note": "watchdog: stale",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -88249,7 +87864,6 @@
    "order": {
     "all": 50
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "build-names-live-to-do-checklists-build-manager-yxjz",
    "rev": 24,
@@ -88581,7 +88195,6 @@
    "order": {
     "all": 51
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 25,
@@ -88795,7 +88408,6 @@
    "order": {
     "all": 162
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -88978,7 +88590,6 @@
    "order": {
     "all": 52
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 14,
@@ -89116,7 +88727,6 @@
    "order": {
     "all": 401
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -89318,7 +88928,6 @@
    "order": {
     "all": 53
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 14,
@@ -89533,7 +89142,6 @@
    "order": {
     "all": 48
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -89719,7 +89327,6 @@
    "order": {
     "all": 54
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 14,
@@ -90025,7 +89632,6 @@
    "order": {
     "all": 55
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -90337,7 +89943,6 @@
    "order": {
     "all": 163
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -90598,7 +90203,6 @@
    "order": {
     "all": 164
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -90810,7 +90414,6 @@
    "order": {
     "all": 165
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 24,
@@ -90970,7 +90573,6 @@
    "order": {
     "all": 166
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "",
    "rev": 12,
@@ -91096,12 +90698,6 @@
       "verbatim": true
      }
     ]
-   },
-   "shipped": {
-    "id": "sm-shipped-features-r2",
-    "rev": 1,
-    "at": "2026-11-09T01:26:05Z",
-    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
    },
    "steps": [
     {
@@ -91595,7 +91191,6 @@
    "order": {
     "all": 167
    },
-   "fromProfile": "angel",
    "kind": "build",
    "planRef": "shipped-features-r2",
    "rev": 20,
@@ -91794,7 +91389,6 @@
    "order": {
     "all": 56
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 12,
@@ -91984,7 +91578,6 @@
    "order": {
     "all": 57
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 14,
@@ -92061,12 +91654,6 @@
     "from": "",
     "addenda": []
    },
-   "shipped": {
-    "id": "sm-fable-review-shipped-features-build-hook-contrac",
-    "rev": 1,
-    "at": "2026-11-09T01:27:04Z",
-    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
-   },
    "steps": [],
    "profiles": [
     "all"
@@ -92074,7 +91661,6 @@
    "order": {
     "all": 58
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "fable-review-shipped-features-build-hook-contrac",
    "rev": 12,
@@ -92260,7 +91846,6 @@
    "order": {
     "all": 59
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 15,
@@ -92332,12 +91917,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "shipped": {
-    "id": "sm-amberx-voice-echo-fix",
-    "rev": 1,
-    "at": "2026-11-09T01:27:06Z",
-    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
    },
    "steps": [
     {
@@ -92417,7 +91996,6 @@
    "order": {
     "all": 402
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 12,
@@ -92658,7 +92236,6 @@
    "order": {
     "all": 60
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -92873,7 +92450,6 @@
    "order": {
     "all": 140
    },
-   "fromProfile": "urgent",
    "kind": "build",
    "planRef": "",
    "rev": 15,
@@ -93087,7 +92663,6 @@
    "order": {
     "all": 61
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 16,
@@ -93340,7 +92915,6 @@
    "order": {
     "all": 62
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -93423,12 +92997,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "shipped": {
-    "id": "sm-assistant-chat-mode",
-    "rev": 1,
-    "at": "2026-11-09T01:28:04Z",
-    "landedCommit": "150913e8b82ccd417800291b070c0350d2e99192"
    },
    "steps": [
     {
@@ -93614,7 +93182,6 @@
    "order": {
     "all": 63
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "assistant-chat-mode",
    "rev": 23,
@@ -93786,7 +93353,6 @@
    "order": {
     "all": 64
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 13,
@@ -94037,7 +93603,6 @@
    "order": {
     "all": 65
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -94229,7 +93794,6 @@
    "order": {
     "all": 66
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -94376,7 +93940,6 @@
    "order": {
     "all": 67
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -94696,7 +94259,6 @@
    "order": {
     "all": 403
    },
-   "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "",
    "rev": 13,
@@ -94890,7 +94452,6 @@
    "order": {
     "all": 68
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -95183,7 +94744,6 @@
    "order": {
     "all": 69
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 14,
@@ -95297,12 +94857,6 @@
       "verbatim": true
      }
     ]
-   },
-   "shipped": {
-    "id": "sm-console-approvals-in-place",
-    "rev": 1,
-    "at": "2026-11-09T01:28:05Z",
-    "landedCommit": "e57b6e5278d822ca78f67a4dac9fc1fa183973c8"
    },
    "steps": [
     {
@@ -95796,7 +95350,6 @@
    "order": {
     "all": 72
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "console-approvals-in-place",
    "rev": 38,
@@ -95962,7 +95515,6 @@
    "order": {
     "all": 70
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 8,
@@ -96117,7 +95669,6 @@
    "order": {
     "all": 71
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -96415,7 +95966,6 @@
    "order": {
     "all": 73
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 10,
@@ -96607,7 +96157,6 @@
    "order": {
     "all": 77
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -96739,7 +96288,6 @@
    "order": {
     "all": 74
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 6,
@@ -97469,7 +97017,6 @@
    "order": {
     "all": 75
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "token-usage-log-accounts-plan-studio-control",
    "rev": 12,
@@ -97602,29 +97149,6 @@
     "verbatim": false,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": {
-     "at": "2026-11-09T00:09:59.981Z",
-     "exit": null,
-     "outcome": "returned",
-     "stepsLeft": 36,
-     "account": "",
-     "session": ""
-    },
-    "split": null,
-    "splitRequested": "",
-    "note": "watchdog: stale",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -98844,7 +98368,6 @@
    "order": {
     "all": 78
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "token-usage-log-accounts-plan-studio-control-small-steps",
    "rev": 39,
@@ -100644,7 +100167,6 @@
    "order": {
     "all": 76
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "headless-progress-file-lean-claude-md-chain",
    "rev": 19,
@@ -101423,7 +100945,6 @@
    "order": {
     "all": 79
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
    "rev": 41,
@@ -101522,7 +101043,6 @@
    "order": {
     "all": 81
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "first-refresh-token-saved-every-time-it-s-used-v",
    "rev": 14,
@@ -101700,7 +101220,6 @@
    "order": {
     "all": 82
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "notes-tasks-sync",
    "rev": 15,
@@ -101969,7 +101488,6 @@
    "order": {
     "all": 83
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "ui-review-notify-session-audio",
    "rev": 22,
@@ -102270,7 +101788,6 @@
    "order": {
     "all": 84
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "claude-badge-vps",
    "rev": 18,
@@ -102605,7 +102122,6 @@
    "order": {
     "all": 85
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "notifications-control-panel",
    "rev": 21,
@@ -103603,7 +103119,6 @@
    "order": {
     "all": 86
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "gizmo-rebuild-fable",
    "rev": 22,
@@ -104018,7 +103533,6 @@
    "order": {
     "all": 87
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
    "rev": 20,
@@ -104433,7 +103947,6 @@
    "order": {
     "all": 88
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "badges-notify-followup",
    "rev": 18,
@@ -104672,7 +104185,6 @@
    "order": {
     "all": 89
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "settings-sections-everywhere",
    "rev": 18,
@@ -104709,7 +104221,7 @@
    "title": "Claude settings: tabs, views, Approvals & veto tab",
    "category": "Builds",
    "detail": "",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -104765,22 +104277,6 @@
       "verbatim": true
      }
     ]
-   },
-   "pipeline": {
-    "queuedAt": "2026-11-09T00:10:01.715Z",
-    "queuedBy": "watchdog",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "watchdog: phase-done",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -105186,7 +104682,6 @@
    "order": {
     "all": 90
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "claude-settings-tabs-veto",
    "rev": 16,
@@ -105521,7 +105016,6 @@
    "order": {
     "all": 91
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
    "rev": 28,
@@ -105743,7 +105237,6 @@
    "order": {
     "all": 92
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 6,
@@ -105926,7 +105419,6 @@
    "order": {
     "all": 93
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "claude-accounts-edit",
    "rev": 11,
@@ -106086,7 +105578,6 @@
    "order": {
     "all": 94
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "amberx-open-any-url",
    "rev": 10,
@@ -106245,7 +105736,6 @@
    "order": {
     "all": 95
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "axhub-google",
    "rev": 10,
@@ -106341,29 +105831,6 @@
       "verbatim": true
      }
     ]
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": {
-     "at": "2026-11-09T00:10:05.737Z",
-     "exit": null,
-     "outcome": "returned",
-     "stepsLeft": 3,
-     "account": "account-1",
-     "session": ""
-    },
-    "split": null,
-    "splitRequested": "",
-    "note": "watchdog: waiting",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -106703,7 +106170,6 @@
    "order": {
     "all": 96
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "notes-tasks-calendar",
    "rev": 24,
@@ -107765,7 +107231,6 @@
    "order": {
     "all": 97
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 15,
@@ -108142,7 +107607,6 @@
    "order": {
     "all": 98
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -108421,7 +107885,6 @@
    "order": {
     "all": 80
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 19,
@@ -108589,7 +108052,6 @@
    "order": {
     "all": 100
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 7,
@@ -108848,7 +108310,6 @@
    "order": {
     "all": 101
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 26,
@@ -109102,7 +108563,6 @@
    "order": {
     "all": 102
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 22,
@@ -109183,12 +108643,6 @@
     "verbatim": false,
     "from": "",
     "addenda": []
-   },
-   "shipped": {
-    "id": "sm-multi-account-headless-workers",
-    "rev": 1,
-    "at": "2026-11-09T02:14:06Z",
-    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
    },
    "steps": [
     {
@@ -109308,7 +108762,6 @@
    "order": {
     "all": 103
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -109568,7 +109021,6 @@
    "order": {
     "all": 99
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 17,
@@ -109719,7 +109171,6 @@
    "order": {
     "all": 104
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 8,
@@ -109904,7 +109355,6 @@
    "order": {
     "all": 105
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 18,
@@ -110140,7 +109590,6 @@
    "order": {
     "all": 106
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 7,
@@ -110333,7 +109782,6 @@
    "order": {
     "all": 107
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 11,
@@ -110569,7 +110017,6 @@
    "order": {
     "all": 425
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 7,
@@ -110837,7 +110284,6 @@
    "order": {
     "all": 426
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 4,
@@ -111117,7 +110563,6 @@
    "order": {
     "all": 108
    },
-   "fromProfile": "current",
    "kind": "build",
    "planRef": "",
    "rev": 9,
@@ -111173,12 +110618,6 @@
     "verbatim": false,
     "from": "brief",
     "addenda": []
-   },
-   "shipped": {
-    "id": "sm-merge-profiles-one",
-    "rev": 1,
-    "at": "2026-11-09T02:14:07Z",
-    "landedCommit": "7babeb6313cdc799a7792142c3fda37178239e98"
    },
    "steps": [
     {
@@ -122996,28 +122435,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "2026-11-08T21:13:18.191Z",
-    "queuedBy": "cli",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-08T19:27:10.365Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -123419,7 +122836,7 @@
    "title": "Nested menus for console, AmberX and Molly (override the shared menus)",
    "category": "",
    "detail": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "nested-menus-for-console-amberx-and-molly-overri",
@@ -123467,22 +122884,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "2026-11-09T00:10:08.847Z",
-    "queuedBy": "watchdog",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "watchdog: phase-done",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124194,29 +123595,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "account-3",
-    "session": "",
-    "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-09T01:16:10.347Z",
-    "runs": 1,
-    "lastRun": {
-     "at": "2026-11-09T02:13:03.029Z",
-     "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 3,
-     "account": "account-3",
-     "session": "axf-one-builds-page-pending-queued-built-tabs-remove--joey"
-    },
-    "split": null,
-    "splitRequested": "",
-    "note": "Session on account-3 stopped on its own with 3 steps left: back in Pending for Brett.",
-    "route": "",
-    "dispatchedAt": "2026-11-09T01:16:10.347Z"
-   },
    "steps": [
     {
      "id": "s1",
@@ -124794,35 +124172,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "2026-11-08T22:27:44.014Z",
-    "queuedBy": "cli",
-    "account": "account-3",
-    "session": "",
-    "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-08T22:27:50.181Z",
-    "runs": 1,
-    "lastRun": {
-     "at": "2026-11-08T22:42:04.301Z",
-     "exit": 0,
-     "outcome": "finished",
-     "stepsLeft": 0,
-     "account": "account-3",
-     "session": "axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny"
-    },
-    "split": {
-     "at": "2026-11-08T22:23:20.536Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -124960,28 +124309,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-08T22:33:35.426Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -125283,28 +124610,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "account-3",
-    "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--sully",
-    "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-09T02:31:11.152Z",
-    "runs": 1,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T00:38:25.943Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z"
-   },
    "steps": [
     {
      "id": "s1",
@@ -125442,28 +124747,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T00:48:38.808Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -125697,28 +124980,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T00:49:14.856Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -125877,28 +125138,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T01:24:33.057Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -126037,28 +125276,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T02:25:49.369Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -126168,19 +125385,23 @@
    "title": "URGENT: approval links say 'Method not allowed'",
    "category": "",
    "detail": "Approval links sent in notices and by Claude (https://axhub.amberxai.com/auth/admin/approvals/<id>) answer 'Method not allowed' when Brett taps Approve. The hub's plain HTML approval pages were removed when every axhub.amberxai.com route moved to the axhub-web app, so the old link/form posts to a route that no longer takes it. Fix: the approval link opens the approval in axhub-web (or the console) with working Approve/Deny that call the hub's decide API with the right method; keep the old URL working as a redirect. Check every place that builds approval links (notices, AmberX push, console banner, axHub tool results approvalUrl). Test Approve and Deny end to end on a veto hold and a confirm hold. Land it the same day.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-approval-links-say-method-not-allowed",
    "branch": "claude/approval-links-fix",
    "pr": "#403",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-09T02:30:12.562Z",
+   "updatedAt": "2026-11-09T02:55:10.115Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T02:26:13.242Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-09T02:55:10.115Z"
     }
    ],
    "approvals": [],
@@ -126196,28 +125417,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T02:26:13.242Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126298,7 +125497,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126356,28 +125555,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-09T02:47:41.066Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
-    },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": ""
    },
    "steps": [
     {
