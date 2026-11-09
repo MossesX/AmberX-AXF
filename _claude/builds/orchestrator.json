@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:48:34.025Z",
+ "updatedAt": "2026-11-09T17:49:24.717Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78199,6 +78199,37 @@
    "origin": {
     "said": "Build manager will have pending and complete. Orchestrator will have active and queued. They need to be sent to the orchestrator, so they gotta be sent from somewhere.",
     "at": "2026-11-09T17:48:20.032Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "split-builds-pages-build-manager-pending-complet-2",
+   "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with one clean shared table design",
+   "category": "",
+   "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator: account that actually built it, model, cost, PR, land status). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: one shared framework build-table asset used by all four tabs so they look the same. Each build is one clean compact line (title, priority, status badge, steps done/total, account, model) that expands; inside the expanded row, collapsible sections/sub-grids (steps with state, runs/sessions, cost, files/PR, Brett's words, log tail). Per-tab columns differ only where needed: Active shows a live elapsed timer, steps complete with a progress bar, current step, account actually running it; Queued shows position and why it's waiting; Complete shows duration, cost, who built it. Clean, minimal, theme tokens only, phone and desktop. Screenshots to UI Review. Full API/voice control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T17:49:22.125Z",
+   "updatedAt": "2026-11-09T17:49:22.125Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Clean those tables up. One line that's expandable, with collapsible grids or sections inside the expanded row. All the tables need to look the same. The active ones need to show the timer, how long they've been going, how many steps are complete. Build manager will have pending and complete. Orchestrator will have active and queued.",
+    "at": "2026-11-09T17:49:22.125Z",
     "source": "",
     "session": "",
     "link": "",

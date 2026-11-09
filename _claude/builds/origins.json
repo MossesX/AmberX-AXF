@@ -3365,6 +3365,18 @@
    "from": "",
    "addenda": []
   },
+  "split-builds-pages-build-manager-pending-complet-2": {
+   "said": "Clean those tables up. One line that's expandable, with collapsible grids or sections inside the expanded row. All the tables need to look the same. The active ones need to show the timer, how long they've been going, how many steps are complete. Build manager will have pending and complete. Orchestrator will have active and queued.",
+   "at": "2026-11-09T17:49:22.125Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "stack-walkthrough": {
    "said": "90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
    "at": "2026-11-01",

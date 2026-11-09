@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:00 UTC · `memory-restructure-chunked-claude-md-store-memor` s3 done (all) · orchestrator
 - 2026-11-08 17:01 UTC · `memory-restructure-chunked-claude-md-store-memor` s4 done (all) · orchestrator
 - 2026-11-08 17:01 UTC · `molly-one-shell` branch claude/molly-one-shell-r3, PR #390 (all) · builds-live
 - 2026-11-08 17:01 UTC · `memory-restructure-chunked-claude-md-store-memor` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:47 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` s1 done, → running (all) · orchestrator
 - 2026-11-09 17:48 UTC · `split-builds-pages-build-manager-pending-complet` added (0 steps) (all) · console
 - 2026-11-09 17:48 UTC · `split-builds-pages-build-manager-pending-complet` → queued, note (all) · console
+- 2026-11-09 17:49 UTC · `split-builds-pages-build-manager-pending-complet-2` added (0 steps) (all) · console
 
 ## Token passes (log)
 
