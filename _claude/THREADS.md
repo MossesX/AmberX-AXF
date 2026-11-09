@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 21:58 UTC · `glossary-index-demos` s3 done (all) · orchestrator
 - 2026-11-07 21:58 UTC · `glossary-index-demos` s4 done (all) · orchestrator
 - 2026-11-07 21:58 UTC · `glossary-index-demos` s5 done (all) · orchestrator
 - 2026-11-07 21:58 UTC · `glossary-index-demos` s6 done, → complete (all) · orchestrator
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · orchestrator
 - 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
 - 2026-11-09 03:04 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → queued, note (all) · pipeline
+- 2026-11-09 04:07 UTC · `demonstration-designer-plugin-new-standalone` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
