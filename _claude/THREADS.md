@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 19:21 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
 - 2026-11-08 19:21 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · builds-live
 - 2026-11-08 19:22 UTC · `slotstest-2208251-a` note (all) · orchestrator
 - 2026-11-08 19:23 UTC · `rebase-land-approve-button-fix-approve-goes-stra` added (0 steps) (all) · pending
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:11 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
 - 2026-11-09 19:11 UTC · `vps-orchestrator-only-rule-vps-settings-console` → running, note (all) · pipeline
 - 2026-11-09 19:11 UTC · `vps-orchestrator-only-rule-vps-settings-console` branch claude/vps-orchestrator-only-rule-vps-settings-console (all) · pipeline
+- 2026-11-09 19:12 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
