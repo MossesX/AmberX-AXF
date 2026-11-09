@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1669,
- "updatedAt": "2026-11-09T02:25:10.280Z",
+ "rev": 1670,
+ "updatedAt": "2026-11-09T02:25:18.932Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124144,7 +124144,7 @@
    "branch": "claude/one-builds-page-pending-queued-built-tabs-remove",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-09T02:13:03.505Z",
+   "updatedAt": "2026-11-09T02:25:04.997Z",
    "builtAt": "",
    "notes": [
     {
@@ -124162,6 +124162,10 @@
     {
      "text": "Session on account-3 stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-09T02:13:03.505Z"
+    },
+    {
+     "text": "Brett (Nov 9): \"the pending build table looks like shit. It needs to be collapsible. There's no tables or nothing. It's trash.\" Pending (and Queued, Built) must be real data grids (stock DataGrid: columns, sort, filter, search, resizable), each build a collapsible row: collapsed = title, status badge, model, estimate, progress, added; expanded = Brett's words, detail, steps checklist, notes. Expand/collapse all, grouping by category or status. Clean, readable; 3 layout options to UI Review.",
+     "at": "2026-11-09T02:25:04.997Z"
     }
    ],
    "approvals": [],
@@ -124280,7 +124284,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
