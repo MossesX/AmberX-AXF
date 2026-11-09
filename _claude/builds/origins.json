@@ -3064,6 +3064,18 @@
    "from": "detail",
    "addenda": []
   },
+  "shipped-features-live-manifests-from-dispatch-to": {
+   "said": "Ship dock features gets manifest as soon as orchestrator sends out the job. then its status is it, it sends a manifest every time it's updated to every time it's a step completed it sends a manifest every time it's completed it sends a manifest and its status in ship features is updated constantly with different badges and a progress meter.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "shipped-features-r2": {
    "said": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
    "at": "2026-11-04T12:00:00Z",

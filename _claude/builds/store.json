@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1651,
- "updatedAt": "2026-11-09T01:16:15.709Z",
+ "rev": 1652,
+ "updatedAt": "2026-11-09T01:23:16.913Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125700,6 +125700,65 @@
    },
    "queue": null,
    "defaultAt": "2026-11-09T00:49:14.856Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "shipped-features-live-manifests-from-dispatch-to",
+   "title": "Shipped Features: live manifests from dispatch to done, badges + progress meter",
+   "category": "",
+   "detail": "Builds on shipped-manifest-api (landed 79ed472c0f1f, shipped-manifest@1). Today the manifest is sent only when a build lands. Change: the orchestrator sends a manifest to Shipped Features (and Plan Studio, per the queued Plan Studio manifest build) at every event: when it dispatches the job, on every build update (model/account change, note, hold, guard stop), on every step completed, and on completion/land. Each manifest is versioned (sequence number, previous version kept as history) and validated. The Shipped Features entry exists from dispatch, not only after landing, and shows a live status badge (dispatched, building, step x/y, waiting on UI Review, held, stopped by guard, failed, landed, shipped) plus a progress meter (steps done / total, time and cost used vs estimate), updated in real time (live push, no refresh). History view per entry shows every manifest. Full API/MCP/CLI/voice control and deep link. Tests: dispatch creates the entry, each step tick bumps the version and meter, land sets shipped; invalid manifest is refused with the reason.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "shipped-features-live-manifests-from-dispatch-to",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T01:23:14.933Z",
+   "updatedAt": "2026-11-09T01:23:14.933Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Ship dock features gets manifest as soon as orchestrator sends out the job. then its status is it, it sends a manifest every time it's updated to every time it's a step completed it sends a manifest every time it's completed it sends a manifest and its status in ship features is updated constantly with different badges and a progress meter.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 477
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "1.5 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-09T01:23:14.933Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
