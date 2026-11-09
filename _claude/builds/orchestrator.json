@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:00:22.778Z",
+ "updatedAt": "2026-11-09T17:00:36.963Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77838,8 +77838,8 @@
    "pr": "#408",
    "priority": "P1",
    "createdAt": "2026-11-09T16:25:54.451Z",
-   "updatedAt": "2026-11-09T17:00:09.345Z",
-   "builtAt": "2026-11-09T17:00:06.636Z",
+   "updatedAt": "2026-11-09T17:00:25.393Z",
+   "builtAt": "2026-11-09T17:00:25.393Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -77856,6 +77856,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-settings-api-account-limits-and-rou--paulie, own login copy)",
      "at": "2026-11-09T16:46:10.087Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-settings-api-account-limits-and-rou--paulie: brief only · start 10.8K tokens ($0.02) · cost $2.72 · 86 turns · 6 tools, MCP none",
+     "at": "2026-11-09T17:00:25.393Z"
     },
     {
      "text": "PR #408. UI Review shots not taken: scratch console (rebuild-shots) never opened the Settings → Plugins → Build orchestrator sub-tab. Capture desktop + phone of 'API limits & routing rules' on the live console and submit to UI Review.",
