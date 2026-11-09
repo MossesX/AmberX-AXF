@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1712,
- "updatedAt": "2026-11-09T04:23:31.910Z",
+ "rev": 1713,
+ "updatedAt": "2026-11-09T04:30:32.190Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -93972,14 +93972,15 @@
    "title": "Skins: one look per app, skin@1 + app-look@1, the Windows skin, Settings > Appearance as the Theme manager",
    "category": "Design",
    "detail": "skin@1 asset type + app-look@1 per-app doc on the hub (shared/settings/looks/<app>.json). A skin never changes other apps. Windows skin renders in console, AmberX web, axHub web, Molly. Earlier runs: claude/skins-r2, claude/skins-r3 (both stopped on usage limits).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-asset-types",
    "pr": "#383",
+   "mergedAt": "2026-11-09T04:24:01Z",
    "createdAt": "2026-11-06T00:15:34.281Z",
-   "updatedAt": "2026-11-07T05:46:29.207Z",
+   "updatedAt": "2026-11-09T04:30:30.691Z",
    "builtAt": "2026-11-07T05:34:58.589Z",
    "notes": [
     {
@@ -93993,6 +93994,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Reconciler: PR #383 merged",
+     "at": "2026-11-09T04:30:30.691Z"
     }
    ],
    "approvals": [],
@@ -94261,7 +94266,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108085,14 +108090,15 @@
    "title": "skins-asset-types",
    "category": "",
    "detail": "Upgrade skins to style every registry asset type (widgets, icon packs, composites, embeds, text blocks), scoped inheritance, registry-driven coverage + CI check. Brief: /root/axf-builds/skins-asset-types/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "skins-asset-types",
    "branch": "claude/skins-finish",
    "pr": "#383",
+   "mergedAt": "2026-11-09T04:24:01Z",
    "createdAt": "2026-11-07T04:02:15.774Z",
-   "updatedAt": "2026-11-09T02:58:35.329Z",
+   "updatedAt": "2026-11-09T04:30:30.691Z",
    "builtAt": "2026-11-09T02:58:18.212Z",
    "notes": [
     {
@@ -108102,6 +108108,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #383 merged",
+     "at": "2026-11-09T04:30:30.691Z"
     }
    ],
    "approvals": [],
@@ -108312,7 +108322,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122244,7 +122254,7 @@
    "title": "Demonstration Designer plugin (new, standalone)",
    "category": "",
    "detail": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "demonstration-designer-plugin-new-standalone",
@@ -122252,8 +122262,8 @@
    "pr": "#405",
    "mergedAt": "2026-11-09T04:16:30Z",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-09T04:20:31.717Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T04:30:30.691Z",
+   "builtAt": "2026-11-09T04:30:30.691Z",
    "notes": [
     {
      "text": "PURPOSE (Brett): it's for PITCHING the product. Keep it dead simple. Main flow = three picks: (1) plugin or topic, (2) length in minutes, (3) narrator voice; then ONE Generate button. Generate writes a pitch script (hook up front, benefits not specs, closing call to action), picks the best screens, and plays a polished demo on real data: highlights, smooth zooms/pans, captions, background music, logo intro/outro. After: optional script tweak, preview, export video (MP4) or share link. Advanced editing (timeline, record-by-doing) stays tucked behind an Advanced section, never in the main flow.",
@@ -122274,6 +122284,10 @@
     {
      "text": "Reconciler: PR #405 merged",
      "at": "2026-11-09T04:20:31.717Z"
+    },
+    {
+     "text": "Reconciler: PR #405 merged: complete",
+     "at": "2026-11-09T04:30:30.691Z"
     }
    ],
    "approvals": [],
@@ -122369,7 +122383,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125458,8 +125472,9 @@
    "pendingId": "urgent-approval-links-say-method-not-allowed",
    "branch": "claude/approval-links-fix",
    "pr": "#403",
+   "mergedAt": "2026-11-09T04:24:12Z",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-09T02:55:10.115Z",
+   "updatedAt": "2026-11-09T04:30:30.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -125469,6 +125484,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-09T02:55:10.115Z"
+    },
+    {
+     "text": "Reconciler: PR #403 merged",
+     "at": "2026-11-09T04:30:30.691Z"
     }
    ],
    "approvals": [],
@@ -125564,7 +125583,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
