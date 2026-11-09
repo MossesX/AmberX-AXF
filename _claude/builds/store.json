@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1727,
- "updatedAt": "2026-11-09T13:21:25.930Z",
+ "rev": 1728,
+ "updatedAt": "2026-11-09T13:22:05.037Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127058,9 +127058,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T13:21:25.004Z",
+   "updatedAt": "2026-11-09T13:22:04.141Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "SCOPE CHANGE (Brett, Nov 9): SKINS ONLY. Remove design packs, colour themes, style themes, layout themes and behaviour themes as separate concepts. A skin covers everything: colours, styling, layouts, behaviour. Convert every existing pack/theme into skin sections (nothing lost), remove their pickers, screens, settings and asset types (redirect references and migrate saved settings), Appearance shows only the Skin picker. Keep the skin's internal sections (colours, style, layout, behaviour) cleanly separated so the later Skin Designer can edit each section. Overrides step 3's 'Skin + Colour theme'. Default look identical.",
+     "at": "2026-11-09T13:22:04.141Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -127139,7 +127144,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
