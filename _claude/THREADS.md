@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 17:20 UTC · `memory-restructure-chunked-claude-md-store-memor` PR #391 (all) · builds-live
 - 2026-11-08 17:21 UTC · `molly-banner-match` → pending, note (all) · reconciler
 - 2026-11-08 17:21 UTC · `account-failover-notify` s4 done (all) · orchestrator
 - 2026-11-08 17:21 UTC · `memory-restructure-chunked-claude-md-store-memor` s9 done, → built (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 17:57 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · pipeline
 - 2026-11-09 17:57 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
 - 2026-11-09 17:57 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
+- 2026-11-09 17:58 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
