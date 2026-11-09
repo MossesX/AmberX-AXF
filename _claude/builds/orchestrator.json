@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T17:10:53.727Z",
+ "updatedAt": "2026-11-09T17:11:08.012Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77243,7 +77243,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T17:10:52.156Z",
+   "updatedAt": "2026-11-09T17:10:53.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -77261,6 +77261,10 @@
     {
      "text": "s1 done: badge customize target now names .fx-badge and .fx-banner__badge, so skin badge parts reach every banner badge. s6 raised to Fable (edits asset-types.json, the asset-type registry) and moved after s4 so it still lands before the s5 CI gate; s2-s4 continue on Opus.",
      "at": "2026-11-09T17:03:56.117Z"
+    },
+    {
+     "text": "Phase 1 (Opus) done: s1-s4 on draft PR #409. Next: s6 on Fable (asset-types skin entries + customize text targets), then s5 (screenshot gate, UI Review).",
+     "at": "2026-11-09T17:10:53.056Z"
     }
    ],
    "approvals": [],
