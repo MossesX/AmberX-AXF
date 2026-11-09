@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1864,
- "updatedAt": "2026-11-09T18:51:20.232Z",
+ "rev": 1865,
+ "updatedAt": "2026-11-09T18:51:33.962Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126887,7 +126887,7 @@
    "branch": "claude/skins-restyle-everything-badges-banner-and-every-visual-element",
    "pr": "#409",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T18:51:14.918Z",
+   "updatedAt": "2026-11-09T18:51:32.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -126929,6 +126929,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-skins-restyle-everything-badges-banner-and-every--joey, own login copy)",
      "at": "2026-11-09T18:51:14.917Z"
+    },
+    {
+     "text": "Headless run axf-skins-restyle-everything-badges-banner-and-every--joey: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T18:51:32.549Z"
     }
    ],
    "approvals": [],
@@ -127103,7 +127107,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
