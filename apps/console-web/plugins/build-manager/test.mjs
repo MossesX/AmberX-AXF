@@ -327,8 +327,6 @@ const vc = o.verifyChecks(['apps/console-web/plugins/build-manager', 'framework/
 ok(vc.includes('build-manager self-test (py)') && vc.includes('console build (tsc + vite)') && vc.includes('theme check') && vc.includes('menu reach') && vc.includes('framework assets'), 'verify checks follow the touched areas (plugin self-tests, console build, theme, menu reach, framework assets)');
 ok(vc.includes('controls check') && o.verifyChecks(['docs']).some((v) => v.name === 'theme check'), 'asset conformance checks run for every build (theme + controls)');
 ok(o.briefFor({ row: { title: 't', source: 'pending', id: 'x' }, model: 'opus', branch: 'b', areas: [], deps: [], dontTouch: [], live: [], verify: [], rules: [], reportCmd: 'r' }).includes(o.ASSET_RULE), 'every brief carries the asset-conformance rule');
-const cmd = o.launchCommand({ brief: "it's $(rm -rf /) `x`", branch: 'fable/designer', model: 'fable', changeId: 'chg-20261021-aaaaaa0009' });
-ok(!cmd.includes('rm -rf /') && cmd.includes(Buffer.from("it's $(rm -rf /) `x`").toString('base64')) && cmd.includes("worktree add -q -B 'fable/designer'") && cmd.includes('AXF_ADOPT_CHANGE=chg-20261021-aaaaaa0009') && cmd.includes('--model fable') && !/push|merge/.test(cmd), 'launch command: brief base64 (no injection), own worktree + branch, adopts the entry, never pushes/merges');
-ok(o.launchCommand({ brief: 'x', branch: '../../etc; rm', model: 'gpt', changeId: 'nope' }).includes("'build/unnamed'") && o.launchCommand({ brief: 'x', branch: 'a', model: 'gpt', changeId: 'nope' }).includes('--model opus') && !o.launchCommand({ brief: 'x', branch: 'a', model: 'opus', changeId: 'x; rm -rf' }).includes('x; rm'), 'bad branch / model / id never reach the shell');
+ok(o.launchCommand === undefined && o.headless === undefined, 'no launch command in the Build manager: the orchestrator is the only way to start a build');
 
 console.log(`all ${n} checks passed`);

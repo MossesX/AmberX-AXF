@@ -100,6 +100,39 @@ try:
         check(False, "a refused move is a 400")
     except srv.HTTPException as e:
         check(e.status_code == 400 and "only a Pending build" in e.detail, "a refused move is a 400 with the reason")
+    # one way to start builds: the dispatch service every other plugin uses; API switches are Brett's own click
+    import asyncio
+    import plugin_services
+
+    class _Req:
+        def __init__(self, body: dict, brett: bool = False) -> None:
+            self._b = json.dumps(body).encode()
+            self.headers: dict[str, str] = {}
+            self.state = type("S", (), {"axf_user": type("U", (), {"via": "session", "admin": True, "name": "Brett"})() if brett else None})()
+
+        async def body(self) -> bytes:
+            return self._b
+
+    svc = plugin_services.get("axf.build-dispatch@1")
+    check(svc is not None, "axf.build-dispatch@1 is provided: the one way for other plugins to start a build")
+    svc.request("Fix systems check: mosh", "Install mosh.", by="systems-check", source="systems-check", priority="P1", queue=True)
+    cmd = _calls[-1]
+    check(cmd[2] == "request" and "--queue" in cmd and cmd[cmd.index("--priority") + 1] == "P1" and cmd[cmd.index("--by") + 1] == "systems-check" and "--detail-file" in cmd, "request: title, detail in a file, priority, by, straight to the Queue")
+    for body, brett, want in (({"apiOverflow": True}, False, 403), ({"apiOverflow": False}, False, 200), ({"apiOverflow": True}, True, 200)):
+        try:
+            asyncio.run(srv.pipeline_settings_set(_Req(body, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"API overflow {'on' if body['apiOverflow'] else 'off'} by {'Brett' if brett else 'a session'}: {want}")
+    check(_calls[-1][-2] == "apiOverflow=true", "a Python bool reaches the CLI as true/false")
+    for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
+        try:
+            asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
 finally:
     srv.subprocess.run = _real_run
 

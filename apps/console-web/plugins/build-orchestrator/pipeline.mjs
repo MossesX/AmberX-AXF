@@ -16,7 +16,20 @@
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
- *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1)
+ *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
+ *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
+ *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
+ *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
+ *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
+ *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *
+ * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
+ * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
+ * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
+ * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
+ * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
+ * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -41,6 +54,9 @@ import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
+import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import { normPriority } from '../../../../framework/core/build-priority.mjs';
+import { act as orchAct } from './orchestrator.mjs';
 import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
@@ -278,7 +294,7 @@ export function ensureWorktree(id, env = process.env) {
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief. */
-export function briefFor(b, rules, { account, model }) {
+export function briefFor(b, rules, { account, model, kind = '' }) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
   return [
@@ -286,18 +302,20 @@ export function briefFor(b, rules, { account, model }) {
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
     '## What to build', orch.brief(b, rules), '',
     `## Pipeline`,
-    `This session was started by the orchestrator's dispatcher on Claude account ${account} for the ${model} phase. Tick every step as you finish it (orchestrator.mjs act step ${b.id} <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
+    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Tick every step as you finish it (orchestrator.mjs act step ${b.id} <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
   ].join('\n');
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model })}\n`);
+  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
+  // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
+  const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
   const args = ['--name', b.id, '--account', account, '--brief', '.axf-brief.md', '--log', `${b.id}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
-  const e = { ...env, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
+  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
   const r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e });
   const text = `${r.stdout || ''}\n${r.stderr || ''}`;
   const session = /started (axf-\S+) in/.exec(text)?.[1] ?? /queued at position \d+ \((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
@@ -384,12 +402,12 @@ export function tick({ env = process.env } = {}) {
     try {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
-      logLine({ event: 'launched', build: b.id, account: l.account, model: l.model, session: r.session });
+      logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       delete state.launchFails[l.id];
     } catch (e) {
       state.launchFails[l.id] = [...fails, nowIso()];
@@ -414,7 +432,45 @@ export function tick({ env = process.env } = {}) {
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
+  for (const fn of TICK_HOOKS) {
+    try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
+  }
   return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+}
+
+/** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
+const TICK_HOOKS = [];
+export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn); return () => { const i = TICK_HOOKS.indexOf(fn); if (i >= 0) TICK_HOOKS.splice(i, 1); }; }
+
+// ------------------------------------------------------------------ the one way in: request a build, route it
+
+const slugId = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48).replace(/-+$/, '') || 'build';
+
+/**
+ * File a build with the orchestrator: it assigns the id (from the title, made unique), the next tick splits it, and with
+ * `queue` it goes straight to the Queue. Returns the build. This replaces every direct launch (Build manager Start,
+ * Fix with Claude, feature assist): they all end here and the dispatcher starts the build.
+ */
+export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
+  const t = str(title, 300).trim(); if (!t) throw Object.assign(new Error('a build needs a title'), { code: 2 });
+  if (route && !BP.ROUTES.includes(route)) throw Object.assign(new Error(`route is api, subscription or auto, not ${route}`), { code: 2 });
+  const taken = new Set(loadStore().builds.map((b) => b.id));
+  const base = slugId(t); let id = base; let k = 2;
+  while (taken.has(id)) id = `${base}-${k++}`;
+  orchAct({ action: 'add', id, title: t, detail: str(detail, 8000), ...(said ? { said: str(said, 6000) } : {}), source: str(source || by, 60) }, by);
+  const p = normPriority(priority);
+  if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
+  logLine({ event: 'requested', build: id, by, queue: !!toQueue, route });
+  return toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+}
+
+/** The per-build override: api (API-key accounts only), subscription (never API), auto ('' = the default rules). */
+export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const r = route === 'auto' ? '' : route;
+  if (!BP.ROUTES.includes(r)) throw Object.assign(new Error('route is api, subscription or auto'), { code: 2 });
+  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (subscriptions; API only by the overflow rule)'} (${by}).`, by, action: 'pipeline:route' });
+  logLine({ event: 'route', build: id, route: r || 'auto', by });
+  return out;
 }
 
 // ------------------------------------------------------------------ probe
@@ -451,7 +507,8 @@ async function main(argv) {
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.unavailable ? ' (no slots store here)' : ''}`,
-      `Accounts: ${s.accounts.map((a) => `${a.name} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
+      `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
+      `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
       `Queue (${s.table.queued.length})`, ...s.table.queued.map(line),
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
@@ -466,6 +523,13 @@ async function main(argv) {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
     const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
   }
+  if (cmd === 'request') {
+    const df = flag('detail-file'); const detail = df ? readFileSync(df, 'utf8') : flag('detail');
+    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
+    return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
+  }
+  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
@@ -486,7 +550,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

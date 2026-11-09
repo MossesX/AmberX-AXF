@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -13,7 +13,8 @@
   "provides": [
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
-    "service:orchestrator@1"
+    "service:orchestrator@1",
+    "service:axf.build-dispatch@1"
   ],
   "scopes": [
     "ROUTES"
@@ -302,6 +303,121 @@
           ]
         },
         "output": "{ id, requested }"
+      },
+      {
+        "id": "pipeline-request",
+        "route": "POST /pipeline/request",
+        "title": "Ask for a build",
+        "description": "File a build with the orchestrator and put it in the Queue: the orchestrator is the only thing that starts builds; it assigns the id, splits it and the dispatcher launches it on the right account and model. Say 'build me …'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "What to build, one line"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Details, steps, files"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's words, verbatim"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "P0",
+                "P1",
+                "P2",
+                "P3"
+              ],
+              "description": "Urgent, High, Normal, Low"
+            },
+            "queue": {
+              "type": "boolean",
+              "description": "Straight to the Queue (default true); false = Pending"
+            }
+          },
+          "required": [
+            "title"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-route",
+        "route": "POST /pipeline/route",
+        "title": "Route a build to API or subscriptions",
+        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; Brett's own click), subscription (never an API account) or auto (subscriptions, API only by the overflow rule).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "route": {
+              "type": "string",
+              "enum": [
+                "api",
+                "subscription",
+                "auto"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "route"
+          ]
+        },
+        "output": "{ id, route }"
+      },
+      {
+        "id": "pipeline-settings",
+        "route": "GET /pipeline/settings",
+        "title": "Pipeline settings",
+        "readOnly": true,
+        "description": "The dispatcher's settings, including the API overflow rule (apiOverflow) and which API accounts it may use.",
+        "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-settings-set",
+        "route": "POST /pipeline/settings",
+        "title": "Change pipeline settings",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apiOverflow": {
+              "type": "boolean"
+            },
+            "apiAccounts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "parallelPerAccount": {
+              "type": "integer"
+            },
+            "maxRuns": {
+              "type": "integer"
+            },
+            "idleAfterMin": {
+              "type": "integer"
+            },
+            "splitProvider": {
+              "type": "string",
+              "enum": [
+                "claude",
+                "rules",
+                "off"
+              ]
+            }
+          }
+        },
+        "output": "{ settings }"
       }
     ]
   },

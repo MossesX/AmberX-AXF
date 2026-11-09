@@ -134,6 +134,7 @@ t('matrix-applied build: skipped step leaves progress, phases and the brief', ()
 t('every brief carries the asset-conformance rule', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
   assert.ok(c.brief(b2).includes(c.ASSET_RULE));
+  assert.ok(c.brief(b2).includes(c.API_RULE), 'every brief carries the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)');
 });
 // Fable upgrades need my approval = off (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable."): upgrades run by themselves, recorded
 t('approvals off: an upgrade phase is clear, ticking it records the switch (approvals + a build note)', () => {

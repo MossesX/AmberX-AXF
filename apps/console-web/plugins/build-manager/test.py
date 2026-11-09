@@ -140,58 +140,37 @@ svc.update(e1["id"], {"result": {"state": "done", "summary": "ok"}})
 cc.store()._scanned = 0.0
 
 
-class FakeHub:
-    def __init__(self, approve_after: int = 2, outcome: str = "ok") -> None:
-        self.calls: list[tuple[str, dict, str | None]] = []
-        self.n = approve_after
-        self.outcome = outcome
-
-    def __call__(self, tool: str, args: dict, confirmation_id: str | None = None, timeout: float = 120) -> dict:
-        self.calls.append((tool, args, confirmation_id))
-        if confirmation_id is None:
-            return {"confirm": "11111111-2222-3333-4444-555555555555"}
-        self.n -= 1
-        if self.n > 0:
-            return {"confirm": confirmation_id}
-        if self.outcome == "rejected":
-            raise RuntimeError("Rejected by the user")
-        return {"ok": "started pid 4242 in /root/axf-builds/x\nexit 0"}
-
-
-alerts: list[dict] = []
-sleeps: list[float] = []
-fake = FakeHub()
+# Send to queue (Brett, Nov 9 2026: "It has to be the orchestrator … Not the build manager"): Start files the build with
+# the orchestrator (axf.build-dispatch@1) and queues it; nothing here launches or calls axHub.
 engine_calls: list[tuple[str, dict]] = []
 mod._engine = lambda op, **kw: engine_calls.append((op, kw)) or {"ok": True}  # the queue reorder goes through engine-rpc: recorded, never written here
-mod.JOBS.call, mod.JOBS.sleep, mod.JOBS.alert = fake, sleeps.append, alerts.append
 mod.JOBS.jobs.clear()
+check(not hasattr(mod, "_call_hub") and not hasattr(mod.JOBS, "start") and not hasattr(mod, "retry_delays"), "no launch path left in the Build manager (no axHub vps.run, no start job)")
+plugin_services.withdraw("build-orchestrator")
 r = c.post("/p/start", json={"key": f"pending:{open_item['id']}"}).json()
-check(r["ok"] and r["job"]["changeId"].startswith("chg-"), "start opens a console-launch entry for the build")
-for _ in range(100):
-    j = mod.JOBS.get(f"pending:{open_item['id']}")
-    if j and j["state"] in ("launched", "failed", "rejected", "expired"):
-        break
-    time.sleep(0.02)
-check(j["state"] == "launched" and "started pid" in j["output"], "after the approval the VPS launch runs and the job says so")
-check(fake.calls[0][0] == "vps.run" and fake.calls[1][2] == "11111111-2222-3333-4444-555555555555", "vps.run is asked through axHub, then retried with the confirmation id")
-check(sleeps[:2] == [15.0, 15.0] and mod.retry_delays()[9] == 15.0 and mod.retry_delays()[10] == 60.0, "retries: every 15 s ten times, then every minute (Brett's rule)")
-check(alerts and alerts[0]["link"].endswith("/approvals/11111111-2222-3333-4444-555555555555"), "an alert carries the one-tap approval link")
-cmd = fake.calls[0][1]["command"]
-check("base64 -d" in cmd and "worktree add" in cmd and "set -- --model" in cmd and "claude-headless.sh' --name 'build-" in cmd and "claude -p \"$@\"" in cmd and "AXF_ADOPT_CHANGE=chg-" in cmd and "git push" not in cmd and "merge" not in cmd, "the command: brief as base64, own worktree, headless Claude Code adopting the entry, no push/merge")
-ent = svc.get(j["changeId"])
-check(ent["surface"] == "console-launch" and ent["status"] == "running" and ent["buildRef"]["id"] == open_item["id"] and ent["model"] == open_item["model"].lower(), "the entry shows running in Live (surface console-launch, its buildRef + model)")
-check(c.get("/p/jobs").json()["items"][0]["state"] == "launched", "jobs lists it")
+check(r["ok"] is False and "only from its Queue" in (r.get("refuse") or ""), "orchestrator off → Start refuses (builds start only from the orchestrator's Queue)")
 
-fake2 = FakeHub(approve_after=1, outcome="rejected")
-mod.JOBS.call = fake2
-other = next(i for i in pend["items"] if i["status"] != "complete" and i["id"] not in (open_item["id"], "build-manager-history"))
-r = c.post("/p/start", json={"key": f"pending:{other['id']}"}).json()
-for _ in range(100):
-    j2 = mod.JOBS.get(f"pending:{other['id']}")
-    if j2 and j2["state"] in ("launched", "failed", "rejected", "expired"):
-        break
-    time.sleep(0.02)
-check(j2["state"] == "rejected" and svc.get(j2["changeId"])["result"]["state"] == "cancelled", "rejected on axHub → nothing runs; the entry is cancelled")
+
+class FakeDispatch:
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, str, dict]] = []
+
+    def request(self, title: str, detail: str = "", **kw: object) -> dict:
+        self.calls.append((title, detail, kw))
+        return {"ok": True, "id": "fake-build-1", "status": "queued"}
+
+
+fd = FakeDispatch()
+plugin_services.provide("axf.build-dispatch@1", fd, "build-orchestrator")
+r = c.post("/p/start", json={"key": f"pending:{open_item['id']}"}).json()
+check(r["ok"] and r["queued"] and r["build"] == "fake-build-1" and r["job"]["state"] == "queued", "Start = send to the orchestrator's Queue; the job says which build it became")
+check(len(fd.calls) == 1 and fd.calls[0][2].get("queue") is True and fd.calls[0][2].get("by") == "build-manager" and "# Build:" in fd.calls[0][1], "the orchestrator gets the title, the planned brief as detail, by build-manager, straight to the Queue")
+r = c.post("/p/start", json={"key": f"pending:{open_item['id']}"}).json()
+check(r.get("existing") and len(fd.calls) == 1, "a second Start on the same item does not file it twice")
+check(c.get("/p/jobs").json()["items"][0]["state"] == "queued", "jobs lists it as queued")
+plugin_services.withdraw("build-orchestrator")
+e2 = svc.open({"kind": "build", "title": "verify me", "status": "running"}, "build-manager")
+j = {"changeId": e2["id"]}
 
 # verify: checks for the areas + CI; never merges
 svc.update(j["changeId"], {"result": {"state": "done", "summary": "built"}, "areas": ["apps/console-web/plugins/build-manager"], "branch": "build/x"})

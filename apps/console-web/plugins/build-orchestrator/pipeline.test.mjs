@@ -7,6 +7,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import * as OC from './web/orchestrator-core.mjs';
+import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
 
@@ -175,6 +177,72 @@ t('settings normalise and clamp', () => {
   assert.equal(s.parallelPerAccount, 12); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
 });
 
+// ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")
+const apiRow = (name, extra = {}) => ({ name, kind: 'api', role: 'api-worker', plan: '', email: '', limited: null, running: [], hasKey: true, building: 1, spend: { day: 0, week: 0, state: 'ok', why: '' }, ...extra });
+const subsFull = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: ['a', 'b'] }];
+t('settings: the API overflow rule is off by default; API account list parsed', () => {
+  assert.equal(P.normSettings({}).apiOverflow, false); assert.deepEqual(P.normSettings({}).apiAccounts, []);
+  assert.equal(P.normSettings({ apiOverflow: true }).apiOverflow, true); assert.equal(P.normSettings({ apiOverflow: 'yes' }).apiOverflow, false);
+  assert.deepEqual(P.normSettings({ apiAccounts: 'hulu-api,Bad Name,mossesx-api' }).apiAccounts, ['hulu-api', 'mossesx-api']);
+});
+t('API accounts: never usable as a subscription; ready only with a key, switched on, under caps, with room', () => {
+  const s = P.normSettings({ parallelPerAccount: 2 });
+  const v = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached ($10.00)' } }), apiRow('off-api', { role: 'api-off', why: 'API worker switched off' })], {}, { settings: s });
+  const by = Object.fromEntries(v.map((a) => [a.name, a]));
+  for (const n of ['hulu-api', 'mossesx-api', 'capped-api', 'off-api']) { assert.equal(by[n].kind, 'api'); assert.equal(by[n].usable, false, `${n} never takes a build by itself`); }
+  assert.equal(by['hulu-api'].api.usable, true); assert.equal(by['hulu-api'].parallel, 1, 'its own building limit');
+  assert.equal(by['mossesx-api'].api.usable, false); assert.match(by['mossesx-api'].api.why, /no API key saved .*savekey mossesx-api/);
+  assert.equal(by['capped-api'].api.usable, false); assert.match(by['capped-api'].api.why, /spend cap reached: daily cap \$10/);
+  assert.equal(by['off-api'].api.usable, false); assert.match(by['off-api'].api.why, /switched off/);
+  assert.equal(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: s })[0].api.usable, false, 'full: no room');
+  assert.match(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: s })[0].api.why, /full \(1\/1\)/);
+  assert.equal(P.accountViews([apiRow('hulu-api')], {}, { settings: P.normSettings({ apiAccounts: ['mossesx-api'] }) })[0].api.usable, false, 'not in the pipeline list');
+});
+t('routeFor: subscriptions first; overflow off = wait and say so; overflow on = API under its caps; override api / subscription', () => {
+  const free = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api')], {}, { settings: P.normSettings({}) });
+  assert.deepEqual([P.routeFor(build('x', 'queued', []), free, 'Opus').account, P.routeFor(build('x', 'queued', []), free, 'Opus').kind], ['w-max', 'subscription']);
+  const full = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
+  const off = P.routeFor(build('x', 'queued', []), full, 'Opus', P.normSettings({ apiOverflow: false }));
+  assert.equal(off.account, ''); assert.match(off.why, /API overflow is off/);
+  const on = P.routeFor(build('x', 'queued', []), full, 'Opus', P.normSettings({ apiOverflow: true }));
+  assert.deepEqual([on.account, on.kind, on.rule], ['hulu-api', 'api', 'overflow']);
+  const noKeys = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
+  const skip = P.routeFor(build('x', 'queued', []), noKeys, 'Opus', P.normSettings({ apiOverflow: true }));
+  assert.equal(skip.account, ''); assert.match(skip.why, /mossesx-api: no API key saved/); assert.match(skip.why, /capped-api: spend cap reached: weekly cap/);
+  const ov = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), free, 'Opus');
+  assert.deepEqual([ov.account, ov.kind, ov.rule], ['hulu-api', 'api', 'override'], 'per-build override: API even while a subscription is free');
+  const ovNone = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), noKeys, 'Opus');
+  assert.equal(ovNone.account, ''); assert.match(ovNone.why, /set to run on API, no API account can take it/);
+  const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', P.normSettings({ apiOverflow: true }));
+  assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
+});
+t('plan: overflow fills an API account up to its cap, then the rest wait with the reason', () => {
+  const s = P.normSettings({ parallelPerAccount: 2, apiOverflow: true });
+  const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });
+  const q = (id, at) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at } });
+  const r = P.plan({ builds: [q('one', '2026-11-08T00:01:00Z'), q('two', '2026-11-08T00:02:00Z')], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: s });
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'overflow']]);
+  assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api: full/);
+  assert.equal(BP.normPipeline({ route: 'api' }).route, 'api'); assert.equal(BP.normPipeline({ route: 'nope', queuedAt: now }).route, '');
+});
+t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {
+  assert.match(OC.API_RULE, /deep link/); assert.match(OC.API_RULE, /every action and setting/); assert.match(OC.API_RULE, /MCP/); assert.match(OC.API_RULE, /CLI/); assert.match(OC.API_RULE, /voice/);
+  const b = OC.normalizeState({ builds: [build('ui-thing', 'queued', [step('s1', 'Opus')])] }).builds[0];
+  assert.ok(OC.brief(b).includes(OC.API_RULE), 'the phase brief');
+  assert.ok(P.splitPrompt(b).includes(OC.API_RULE), 'the split prompt: every UI step names its API part');
+});
+// ---------------- one way to start builds (framework/cli/dispatch-gate.mjs)
+t('dispatch gate: a build launch needs the orchestrator token for that build; other sessions pass', () => {
+  const b = { id: 'alpha' };
+  const rec = { hash: '', account: 'w-max', model: 'Opus', at: new Date().toISOString(), used: '' };
+  assert.equal(dispatchVerdict({ b: null, name: 'walkthrough-x' }).ok, true, 'not a build: passes');
+  assert.match(dispatchVerdict({ b: null, name: 'build-feat-x' }).why, /build launch outside the orchestrator/, 'build-* names are builds even off the store');
+  assert.equal(dispatchVerdict({ b: null, name: 'axf-build:y' }).ok, false);
+  assert.match(dispatchVerdict({ b, name: 'alpha' }).why, /no orchestrator dispatch token.*pipeline\.mjs queue alpha/);
+  assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: null }).why, /not dispatched by the orchestrator/);
+  assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: { ...rec, hash: 'f'.repeat(64) } }).why, /not alpha's/);
+});
+
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
 if (e2e) {
@@ -194,6 +262,7 @@ set -e
 printf '%s\\n' "$*" >> "${tmp}/launches.log"
 name=""; account=""; model=""
 while [[ $# -gt 0 ]]; do case "$1" in --name) name="$2"; shift 2;; --account) account="$2"; shift 2;; --model) model="$2"; shift 2;; --) shift;; *) shift;; esac; done
+node "${ROOT}/framework/cli/dispatch-gate.mjs" consume --name "$name" >> "${tmp}/gate.log" 2>&1 || echo "GATE-REFUSED $name" >> "${tmp}/gate.log"
 echo "{\\"event\\":\\"session-start\\",\\"session\\":\\"axf-$name--fake\\",\\"name\\":\\"$name\\",\\"account\\":\\"$account\\",\\"at\\":\\"$(date -u +%FT%TZ)\\"}" >> "${hdir}/events.jsonl"
 echo "started axf-$name--fake in $(pwd)"
 `); chmodSync(launcher, 0o755);
@@ -246,6 +315,34 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
     assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
+  });
+  t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {
+    const gate = readFileSync(join(tmp, 'gate.log'), 'utf8');
+    assert.match(gate, /ok: alpha: dispatched by the orchestrator on w-max \(Fable\)/); assert.match(gate, /ok: beta: dispatched by the orchestrator on w-pro/); assert.doesNotMatch(gate, /GATE-REFUSED/);
+    const g = (...a) => spawnSync(process.execPath, [join(ROOT, 'framework/cli/dispatch-gate.mjs'), ...a], { cwd: ROOT, env, encoding: 'utf8' });
+    assert.equal(g('check', '--name', 'alpha').status, 3, 'no token: refused');
+    const tokens = JSON.parse(readFileSync(join(pipeDir, 'dispatch.json'), 'utf8')).tokens;
+    assert.ok(tokens.alpha.used && !JSON.stringify(tokens).includes('axd_'), 'spent, and only a hash is on file');
+    // the real launcher: a session (Build manager, axHub vps.build_start, a hand launch) starting alpha without the orchestrator
+    const brief = join(tmp, 'brief.md'); writeFileSync(brief, 'Continue build "Alpha feature" (alpha)\n');
+    const h = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'alpha', '--brief', brief, '--log', 'x.log', '--', '-p'], { cwd: tmp, env: { ...env, AXF_DISPATCH_TOKEN: '' }, encoding: 'utf8', timeout: 60000 });
+    assert.equal(h.status, 3, h.stdout + h.stderr); assert.match(h.stdout, /refused: alpha has no orchestrator dispatch token/);
+    const h2 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'build-anything', '--brief', brief.replace('brief.md', 'none.md'), '--log', 'x.log'], { cwd: tmp, env, encoding: 'utf8', timeout: 60000 });
+    assert.notEqual(h2.status, 0, 'no brief: usage error first');
+    writeFileSync(join(tmp, 'plain.md'), 'Fix the thing.\n');
+    const h3 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'build-feat-x', '--brief', join(tmp, 'plain.md'), '--log', 'x.log', '--', '-p'], { cwd: tmp, env, encoding: 'utf8', timeout: 60000 });
+    assert.equal(h3.status, 3); assert.match(h3.stdout, /build launch outside the orchestrator/);
+  });
+  t('e2e request: every other path files a build with the orchestrator and queues it; route api is the per-build override', () => {
+    const r = json(pipe('request', '--title', 'Fix systems check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'systems-check', '--json'));
+    assert.equal(r.id, 'fix-systems-check-mosh-server'); assert.equal(find(r.id).status, 'queued'); assert.equal(find(r.id).priority, 'P1'); assert.equal(find(r.id).pipeline.queuedBy, 'systems-check');
+    const r2 = json(pipe('request', '--title', 'Fix systems check: mosh server', '--json'));
+    assert.equal(r2.id, 'fix-systems-check-mosh-server-2'); assert.equal(find(r2.id).status, 'pending', 'unique id; without --queue it waits in Pending');
+    json(pipe('route', r2.id, 'api', '--json')); assert.equal(find(r2.id).pipeline.route, 'api');
+    json(pipe('route', r2.id, 'auto', '--json')); assert.equal(find(r2.id).pipeline?.route ?? '', '');
+    assert.notEqual(pipe('route', r2.id, 'nowhere', '--json', '--expect-fail').status, 0);
+    assert.equal(json(pipe('show', r.id, '--json')).build.status, 'queued');
+    json(pipe('unqueue', r.id, '--json'));
   });
   t('e2e session end: a crash requeues (run 2), a clean finish with every step done = complete', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 1, at: new Date().toISOString() }) + '\n');

@@ -1,23 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Chip, Icon, Note, PriorityTag, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
 
 /*
  * Pipeline tab (Brett, Nov 8 2026): the three tables of the build pipeline, Pending / Queue / Building, the Claude
  * accounts the dispatcher can use (Fable yes or no, how many run on each), the agent slots and what the dispatcher's
- * next tick starts or why it waits. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
+ * next tick starts or why it waits. The orchestrator is the only thing that starts builds (Brett, Nov 9 2026). API jobs:
+ * the API overflow switch (off by default) and each build's route (Auto / API / Subscriptions) decide when a build may
+ * run on an API-key account; API accounts show their key, caps and room. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
  * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock.
  */
 
-type Pipeline = { queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
+type Pipeline = { route?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type Row = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string };
-type Account = { name: string; email: string; plan: string; role: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string };
+type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
-  plan: { launches: { id: string; account: string; model: string; phase: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number };
+  plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
 };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
@@ -64,6 +66,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         <span className="pl-stat" title="Builds waiting in Pending for you"><Icon name="clock" size={14} /><b>{s.table.pending.length}</b> pending</span>
         <span className="pl-stat fx-muted" title={s.state.at ? `Last dispatcher tick ${fmtTime(s.state.at)}` : 'The dispatcher has not run yet on this VPS'}><Icon name="refresh" size={14} />{s.state.at ? `tick ${tickAge}` : 'no tick yet'}</span>
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
+        <Switch label="API overflow" text="Every subscription account full or out → an API-key account (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
@@ -72,15 +75,17 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         {s.accounts.length === 0 ? <div className="fx-empty">No Claude account is signed in on the VPS.</div> : (
           <div className="pl-cols pl-cols--accounts">
             {s.accounts.map((a) => (
-              <article key={a.name} className={`pd-card pl-acct ${a.usable ? '' : 'is-off'}`}>
+              <article key={a.name} className={`pd-card pl-acct ${a.usable || a.api?.usable ? '' : 'is-off'}`}>
                 <div className="pd-card__top">
-                  <h3 className="pd-card__title">{a.name}<span className="fx-muted fx-small"> · {a.role}{a.plan ? ` · ${a.plan}` : ''}</span></h3>
+                  <h3 className="pd-card__title">{a.label || a.name}<span className="fx-muted fx-small"> · {a.kind === 'api' ? 'API key' : a.role}{a.plan ? ` · ${a.plan}` : ''}</span></h3>
                   <span className={`oc-model is-${a.fable ? 'fable' : 'opus'}`} title={`Fable access from the ${a.fableFrom}`}>{a.fable ? 'Fable' : 'Opus only'}</span>
                 </div>
                 {a.email && <p className="fx-small fx-muted">{a.email}</p>}
                 <div className="pd-meta">
                   <span title="Sessions running on this account / its parallel cap"><Icon name="play" size={13} />{a.running}/{a.parallel} running</span>
-                  {!a.usable && <span className="oc-flag" title={a.why}><Icon name="alert" size={13} />{a.why}</span>}
+                  {a.kind === 'api' && a.api?.spend && <span title="Spend today / this week against the caps"><Icon name="chart" size={13} />${a.api.spend.day.toFixed(2)}{a.api.spend.dayCap ? `/${a.api.spend.dayCap}` : ''} today · ${a.api.spend.week.toFixed(2)}{a.api.spend.weekCap ? `/${a.api.spend.weekCap}` : ''} week</span>}
+                  {a.kind === 'api' ? (a.api?.usable ? <span title="Takes a build set to API, or overflow when it is on"><Icon name="check" size={13} />ready for API jobs</span> : <span className="oc-flag" title={a.api?.why}><Icon name="alert" size={13} />{a.api?.why}</span>)
+                    : !a.usable && <span className="oc-flag" title={a.why}><Icon name="alert" size={13} />{a.why}</span>}
                 </div>
                 <div className="fx-row fx-row--wrap">
                   <Button size="sm" tone="neutral" icon="zap" disabled={busy === a.name} title={`Fable access is from the ${a.fableFrom}; tap to set it by hand (on, off) or back to auto`} onClick={() => act('pipeline/account', { name: a.name, fable: a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on' }, `${a.name}: Fable ${a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on'}`)}>Toggle Fable</Button>
@@ -114,7 +119,12 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   );
 }
 
-function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
+type RouteStep = { to: string; label: string };
+const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
+const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
+const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
+
+function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
   const p = r.pipeline;
   return (
     <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
@@ -134,12 +144,13 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
         {p?.lastRun && table !== 'building' && <span className="fx-muted" title={`Last run ended ${fmtTime(p.lastRun.at)}`}><Icon name="clock" size={13} />last run: {p.lastRun.outcome}{p.lastRun.exit != null ? ` (exit ${p.lastRun.exit})` : ''}</span>}
         {table === 'building' && <WatchLiveFor branch={r.branch} text={r.id} />}
       </div>
-      {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''})</p>}
+      {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}
       {!launch && wait && table === 'queued' && <p className="fx-small fx-muted"><Icon name="clock" size={13} /> {wait}</p>}
       {p?.note && <p className="fx-small fx-muted">{p.note}</p>}
       <div className="fx-row fx-row--wrap">
         {table === 'pending' && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy} onClick={() => act('pipeline/queue', { id: r.id }, `${r.id} → Queue`)}>Queue</Button>}
         {table === 'queued' && <Button size="sm" tone="neutral" icon="arrow-left" disabled={busy} onClick={() => act('pipeline/unqueue', { id: r.id }, `${r.id} → Pending`)}>Back to Pending</Button>}
+        {table !== 'building' && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions, API only by overflow), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
         {table !== 'building' && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
       </div>
     </article>

@@ -21,6 +21,9 @@
  *   split      { at, by, provider, steps, note }                     how its steps were made (claude | rules | hand)
  *   splitRequested  ISO: the console asked for a (re)split; the next tick does it
  *   note       one plain line the Pipeline view shows (why it waits, what happened last)
+ *   route      '' (auto: subscriptions, then API only when the overflow rule is on) | 'api' (run on an API-key account,
+ *              billed per token, under its caps) | 'subscription' (never an API account). Brett's per-build override.
+ *   dispatchedAt  ISO of the orchestrator dispatch that started the current run (its token is in the dispatcher's files)
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -29,6 +32,8 @@ export const TABLE = Object.freeze({ pending: 'pending', queued: 'queued', runni
 export const TABLE_STATES = ['pending', 'queued', 'building'];
 export const TABLE_LABEL = Object.freeze({ pending: 'Pending', queued: 'Queue', building: 'Building' });
 export const OUTCOMES = ['finished', 'requeued', 'returned', 'failed'];
+/** Where a build may run: auto, only API-key accounts, only subscriptions. */
+export const ROUTES = ['', 'api', 'subscription'];
 export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
 export const DEFAULT_MAX_RUNS = 3;
 
@@ -39,7 +44,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -54,6 +59,7 @@ export function normPipeline(p) {
     lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120) } : null,
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
+    route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;

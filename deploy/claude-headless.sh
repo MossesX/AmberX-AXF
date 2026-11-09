@@ -30,6 +30,9 @@
 # orchestrator build the run belongs to (--name, AXF_BUILD_ID or the brief's "Continue build … (<id>)"): a higher model
 # than its step, or an upgrade phase Brett hasn't approved, is refused with exit 3 and one line saying why. Every brief
 # gets a line saying upgrades need Brett and downgrades are fine.
+# One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): framework/cli/dispatch-gate.mjs refuses a
+# launch that belongs to a build (an orchestrator build, or a session named build-*) unless it carries the orchestrator
+# dispatcher's one-build token (AXF_DISPATCH_TOKEN, from pipeline.mjs tick); the token is spent when the session starts.
 #
 # Who asked (axHub decision 109, Nov 1 2026): the run exports AXF_SESSION=<slug of --name>. When an axHub token is at
 # hand (AXHUB_TOKEN, else the console's env file), Claude gets an `axhub` MCP server whose requests carry
@@ -208,6 +211,15 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
     if (( gate_st == 3 )); then echo "claude-headless: $verdict" >&2; echo "$verdict"; exit 3; fi
   fi
 fi
+# One way to start builds (framework/cli/dispatch-gate.mjs, Brett, Nov 9 2026: "It has to be the orchestrator"): a launch
+# that belongs to a build starts only with the orchestrator dispatcher's token for that build (AXF_DISPATCH_TOKEN, set by
+# pipeline.mjs tick). Anything else (Build manager, a session, axHub vps.build_start, a fix button) is refused here with
+# the way to queue it. Non-build sessions pass. The token is spent below, once the session really starts.
+DISPATCH="$HERE/../framework/cli/dispatch-gate.mjs"
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
+  dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" 2>&1)"; d_st=$?
+  if (( d_st == 3 )); then echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3; fi
+fi
 
 # What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
 # blocks) go onto the build's record in the builds store as origin.said / addenda, with the brief and who launched it,
@@ -232,6 +244,9 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
     echo "queued for look approval in $(pwd): $look_line (starts by itself once Brett approves the look in UI Review)"
     exit 0
   fi
+fi
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
+  node "$DISPATCH" consume --name "$name" --brief "$brief" >/dev/null 2>&1 || { echo "claude-headless: dispatch token no longer valid; not starting" >&2; exit 3; }
 fi
 
 # Brief only: the launch plan (env, claude args, lean settings + MCP files in a private folder that goes with the run).
