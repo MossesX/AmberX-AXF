@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 21:59 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` branch claude/orchestrator-api-rule-in-every-brief-plan-studio (all) · pipeline
-- 2026-11-08 21:59 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` note (all) · orchestrator
-- 2026-11-08 21:59 UTC · `workers-api-routing` → complete, merged, note (all) · reconciler
 - 2026-11-08 22:04 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` s1 done, → running (all) · orchestrator
 - 2026-11-08 22:06 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` s2 done (all) · orchestrator
 - 2026-11-08 22:07 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` s3 done, → complete (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 19:25 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
 - 2026-11-09 19:25 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
 - 2026-11-09 19:26 UTC · `home-page-build-queue-card-opens-the-orchestrato` → failed, note (all) · pipeline
+- 2026-11-09 19:26 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · pipeline
+- 2026-11-09 19:26 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
+- 2026-11-09 19:26 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
 
 ## Token passes (log)
 
