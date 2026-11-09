@@ -1,0 +1,229 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-amberx-veto-notice-alarm-too-loud-approve",
+ "rev": 1,
+ "source": "backfill",
+ "by": "shipped-manifest-api",
+ "shippedAt": "2026-11-09T01:01:48Z",
+ "build": {
+  "id": "urgent-amberx-veto-notice-alarm-too-loud-approve",
+  "title": "URGENT: AmberX veto notice alarm too loud + Approve must go straight through",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.",
+  "verbatim": true,
+  "at": "",
+  "source": "",
+  "by": "urgent-amberx-veto-notice-alarm-too-loud-approve",
+  "addenda": []
+ },
+ "brief": "# Build: urgent-amberx-veto-notice-alarm-too-loud-approve\n\n## Brett said (verbatim)\n> The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\n\n## What to build\nContinue build \"URGENT: AmberX veto notice alarm too loud + Approve must go straight through\" (urgent-amberx-veto-notice-alarm-too-loud-approve) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.\n[ ] s2 (~30 min) The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-amberx-veto-notice-alarm-too-loud-approve <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link urgent-amberx-veto-notice-alarm-too-loud-approve --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step urgent-amberx-veto-notice-alarm-too-loud-approve <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-amberx-veto-notice-alarm-too-loud-approve \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-urgent-amberx-veto-notice-alarm-too-loud-approve--lenny",
+   "account": "account-3",
+   "model": "Opus",
+   "startedAt": "2026-11-08T22:27:50.173Z",
+   "endedAt": "2026-11-08T22:41:44.739Z",
+   "exit": 0,
+   "costUsd": 5.0549
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Brett still gets an alarm/long vibration from the AmberX phone app on every axHub veto hold (it fires again with ~30 s left). axHub's ntfy push is already normal priority (hub hotfix ee5706f), so this comes from the AmberX app's own approval notice. Fix in AmberX: one normal notification per hold, no alarm channel, no repeat at 30 s; a settings switch per notification type (sound, vibration, alarm, repeat) in the AmberX notification panel. Also: the console approval dialog's Approve/Deny must act directly and close the dialog (no 'opened in axHub, approve or deny there'); see queued rebase of approve-button-fix and do it here if not done. Full API + voice control. Tests; report. Create its Plan Studio plan.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T22:27:50.173Z",
+   "doneAt": "2026-11-08T22:40:10.754Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "The approve and deny dialogue is still saying open, and I received the alarm, so it's still stopping.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T22:40:10.754Z",
+   "doneAt": "2026-11-08T22:40:13.684Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-08T22:40:13.684Z",
+   "doneAt": "2026-11-08T22:41:09.244Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/urgent-amberx-veto-notice-alarm-too-loud-approve",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 397,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/397"
+ },
+ "landedCommit": "661901740ba21f9767d70f7cf3c101c2e2c35a27",
+ "commits": [
+  "44862718a364abc2a8b0e43cf83464c4f517de10",
+  "864ab0549c64cf17f6a64d6d757b4885b5262909"
+ ],
+ "mergedAt": "2026-11-09T00:06:38Z",
+ "landedAt": "2026-11-09T00:06:35Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlerts.java",
+  "apps/amberx-droid/server/main.py",
+  "apps/amberx-droid/server/test_server.py",
+  "apps/amberx-droid/src/plugins/approvals/web/deny.ts",
+  "apps/amberx-droid/src/plugins/approvals/web/index.tsx",
+  "apps/amberx-droid/test.mjs",
+  "apps/console-web/plugins/approvals-banner/server/__init__.py",
+  "apps/console-web/plugins/approvals-banner/test.mts",
+  "apps/console-web/plugins/approvals-banner/test.py",
+  "apps/console-web/plugins/approvals-banner/web/alarm.ts",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/veto.tsx",
+  "apps/console-web/plugins/follow-amber/web/index.tsx",
+  "deploy/install-console.sh",
+  "framework/python/axf_server/approvals_relay.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/server/__init__.py",
+    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/approvals-banner/test.py",
+    "apps/console-web/plugins/approvals-banner/web/alarm.ts",
+    "apps/console-web/plugins/approvals-banner/web/index.tsx",
+    "apps/console-web/plugins/approvals-banner/web/veto.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlerts.java",
+    "apps/amberx-droid/server/main.py",
+    "apps/amberx-droid/server/test_server.py",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals",
+   "files": [
+    "apps/amberx-droid/src/plugins/approvals/web/deny.ts",
+    "apps/amberx-droid/src/plugins/approvals/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf_server/approvals_relay.py"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "approvals-banner/test.mts: 17 → 18 checks (new: no alarm by default, new key, notice defaults, phone config).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "approvals-banner/test.py: 57 checks (relay incl. owner sign-in).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "apps/amberx-droid/server/test_server.py: 172 passed (new: 15 relay checks: approve held, approve waiting, hub refusal, no Origin, hub user, bad id/action, machine token, no session, stale session).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "apps/amberx-droid/test.mjs: 2316 → 2321 (Java: no high importance / alarm category, silent updates, old channels deleted, alarm off unless switched on; deny.ts never opens the hub).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "framework/python/axf_server/test.py 397 ok; console + AmberX typecheck clean; check-theme, check-controls, check-toolbars, plugin-lifecycle green.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 5.0549,
+  "estimated": false,
+  "tokens": {
+   "input": 176,
+   "output": 1202,
+   "cacheRead": 12464140,
+   "cacheWrite": 195524
+  }
+ },
+ "report": "_claude/builds/reports/urgent-amberx-veto-notice-alarm-too-loud-approve.md",
+ "open": [
+  "The console's owner sign-in fallback is only used when the browser's hub cookie doesn't arrive; it isn't set (`AXF_HUB_RELAY_USER` / `AXF_HUB_RELAY_PASSWORD` missing). With the hub's cookie domain `.amberxai.com`, a signed-in browser carries the cookie, so it should not be needed; if a tap still comes back with \"no owner sign-in\", the systems check item *Approvals relay* says what to set.",
+  "The Android channel change needs a new AmberX APK (CI builds it); the alarm is already off through the web config.",
+  "UI: only generated settings rows changed (no new screen); no UI Review options submitted.",
+  "Plan Studio plan: `veto-notices-one-quiet-notice-per-hold-approve-g-74bz` (parked)."
+ ]
+}

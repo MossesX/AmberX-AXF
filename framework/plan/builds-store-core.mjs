@@ -46,6 +46,7 @@
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
+import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
@@ -162,6 +163,7 @@ export function normBuild(b, ctx = {}) {
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
+    ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     steps,
     profiles,
     order,

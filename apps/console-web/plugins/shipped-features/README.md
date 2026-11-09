@@ -53,8 +53,29 @@ node framework/cli/build-hooks.mjs listeners | tail | replay --to shipped-featur
 axHub history needs `AXF_AXHUB_REPO=<axHub checkout>` or `GITHUB_TOKEN`. axHub's own installer still has to call
 `axf_deploy_log` for target `axhub` (that change belongs in the axHub repo).
 
+## Shipped manifests (shipped-manifest@1)
+
+When a build lands, the orchestrator's tick (`pipeline.mjs`, after-tick hook) gathers its manifest with
+`framework/cli/shipped.mjs`: Brett's verbatim prompt and the full brief, models and accounts, steps with estimates and
+actual times, branch, PR, landed commit, the branch's own commits and files (by area), tests and open items from the
+report, UI Review items, cost and tokens from the session meters. It is written to `_claude/builds/shipped/<build>.json`
+and its ref goes on the build record through the builds store, so build-hook@1 fires `shipped` and the ledger applies
+it (`ledger/manifest.mjs`): the build's features move to Merged with the commit, PR, files, model and report; a build
+that planned none gets one. The `sync` also takes any sidecar the ledger hasn't seen. Each entry shows the manifest
+(prompt highlighted, collapsible sections).
+
+API (also MCP, axHub, `axf control`, voice through plugin-commands@1): `GET /search?q=`, `GET /manifests`,
+`GET /manifest/{build}`, `POST /manifest` (partial manifest; given fields win), `POST /ship/{build}`, `POST /link`,
+`POST /backfill {since, dry}`. Deep link: `?shipped=<build or feature id>`; action `shipped-features.show <id>`.
+
+```bash
+node framework/cli/shipped.mjs gather <build> | ship <build> [--manifest-file f|-] | show <build> | list [--q text]
+node framework/cli/shipped.mjs backfill --since 2026-11-08 [--dry]   # landed builds with no manifest
+node apps/console-web/plugins/shipped-features/ledger/ledger.mjs search <text> | manifests | manifest <build>
+```
+
 ## Tests
 
 `node apps/console-web/plugins/shipped-features/test.mjs` (store, hook, importers, live) ·
 `python3 apps/console-web/plugins/shipped-features/test.py` (server) · `node framework/spec/check-feature-ledger.mjs` ·
-`node framework/spec/check-build-hook.mjs` · `bash framework/deploy/test.sh`.
+`node framework/spec/check-build-hook.mjs` · `node framework/spec/check-shipped-manifest.mjs` · `bash framework/deploy/test.sh`.

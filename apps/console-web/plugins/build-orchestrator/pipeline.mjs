@@ -30,6 +30,7 @@
  * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
+ * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -55,6 +56,7 @@ import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -441,6 +443,16 @@ export function tick({ env = process.env } = {}) {
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
 const TICK_HOOKS = [];
 export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn); return () => { const i = TICK_HOOKS.indexOf(fn); if (i >= 0) TICK_HOOKS.splice(i, 1); }; }
+
+/**
+ * shipped-manifest@1 (Brett, Nov 9 2026: "The orchestrator should send a manifest with the information on the shipped
+ * feature"): after every tick, builds that landed in the last few days and have no manifest get one, gathered and sent
+ * to Shipped features through the builds store (framework/cli/shipped.mjs). A few per tick; AXF_SHIPPED=off = none.
+ */
+afterTick(({ env }) => {
+  const r = shipLanded({ env });
+  for (const s of r.shipped ?? []) logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+});
 
 // ------------------------------------------------------------------ the one way in: request a build, route it
 

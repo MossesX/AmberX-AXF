@@ -2262,5 +2262,11 @@
     "wave": 1,
     "module": "lib-hubsync",
     "notes": "Oct 24 2026 (Opus): web framework/libs/hubsync on lib-hubstore + HubAppearanceSource; console plugin hub-sync; Voice Vault twin in app code (sync/HubSync.kt). Framework Android module deferred (Android on hold)."
+  },
+  "cx.buildengine.shipped": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
   }
 }

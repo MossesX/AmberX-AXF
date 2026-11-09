@@ -97,5 +97,54 @@ t('full lifecycle on a scratch deploy log: merged → live from the deploy that 
   delete process.env.AXF_DEPLOY_LOG; D.closeDb(':memory:');
 });
 
+// ------------------------------------------------------------------ shipped-manifest@1
+const MANIFEST = {
+  build: { id: 'veto', title: 'Veto notice alarm too loud', profile: 'all' }, said: { text: 'I received the alarm, so it is still stopping.', verbatim: true, at: '2026-11-08T22:20:00Z', source: 'voice' },
+  brief: '# Build: veto', models: ['Opus'], runs: [{ session: 'axf-veto--lenny', account: 'account-3', model: 'Opus', startedAt: '2026-11-08T22:27:50Z' }],
+  steps: [{ id: 's1', text: 'One notice per hold', model: 'Opus', estimate: '30 min', startedAt: '2026-11-08T22:27:50Z', doneAt: '2026-11-08T22:40:10Z' }],
+  branch: 'claude/veto', pr: { number: 397 }, landedCommit: '661901740ba21f97', commits: ['864ab0549c64cf17'], mergedAt: '2026-11-09T00:06:38Z',
+  files: ['apps/console-web/plugins/approvals-banner/web/index.tsx'], tests: [{ name: 'approvals-banner 18 checks', result: 'pass' }], report: '_claude/builds/reports/veto.md', open: ['APK rebuild'],
+};
+t('a manifest moves the build’s planned features to Merged with commit, PR, files, model, report and his words', async () => {
+  const { applyManifest } = await import('./ledger/manifest.mjs');
+  const db = D.openDb(':memory:');
+  const f = D.putFeature(db, { name: 'One notice per hold', plugin: 'approvals-banner', status: 'planned', builds: [{ id: 'veto', profile: 'all', role: 'added' }] });
+  const r = applyManifest(db, MANIFEST);
+  assert.deepEqual(r.features, [f.id]); assert.deepEqual(r.created, []);
+  const g = D.getFeature(db, f.id);
+  assert.equal(g.status, 'merged'); assert.equal(g.mergeCommit, '661901740ba21f97'); assert.equal(g.mergedAt, '2026-11-09T00:06:38Z'); assert.deepEqual(g.prs.map((p) => p.number), [397]);
+  assert.equal(g.links.report, '_claude/builds/reports/veto.md'); assert.equal(g.model, 'Opus'); assert.ok(g.prompts.some((p) => p.id === 'p-veto-0'));
+  assert.equal(D.getPrompt(db, 'p-veto-0').said, MANIFEST.said.text); assert.equal(D.getPrompt(db, 'p-veto-0').verbatim, true);
+  assert.equal(D.manifestsOfBuild(db, 'veto')[0].id, 'sm-veto'); assert.equal(D.getPr(db, 'amberx-axf#397').mergeCommit, '661901740ba21f97');
+  D.closeDb(':memory:');
+});
+t('a build that planned no feature gets one from its manifest; an older rev never replaces a newer one; a paraphrase never replaces his words', async () => {
+  const { applyManifest } = await import('./ledger/manifest.mjs');
+  const db = D.openDb(':memory:');
+  const r = applyManifest(db, { ...MANIFEST, rev: 2 });
+  assert.equal(r.created.length, 1); const f = D.getFeature(db, r.created[0]);
+  assert.equal(f.name, 'Veto notice alarm too loud'); assert.equal(f.plugin, 'approvals-banner'); assert.equal(f.status, 'merged'); assert.ok(f.tags.includes('shipped-manifest'));
+  assert.equal(applyManifest(db, { ...MANIFEST, rev: 1, report: 'old.md' }).stale, true); assert.equal(D.getManifest(db, 'sm-veto').rev, 2);
+  applyManifest(db, { ...MANIFEST, rev: 3, said: { text: 'something like: the alarm', verbatim: false } });
+  assert.equal(D.getPrompt(db, 'p-veto-0').said, MANIFEST.said.text);
+  assert.equal(applyManifest(db, { ...MANIFEST, rev: 4 }).created.length, 0, 'applied again: the feature it created is the build’s feature now');
+  D.closeDb(':memory:');
+});
+t('the build-hook `shipped` event reads the sidecar; the sync takes manifests the hook missed', async () => {
+  const { mkdtempSync } = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+  process.env.AXF_SHIPPED_DIR = mkdtempSync(join(tmpdir(), 'axf-sf-shipped-'));
+  const { writeManifest } = await import('../../../../framework/cli/shipped-files.mjs');
+  const { applyEvents } = await import('./ledger/apply.mjs'); const { syncManifests } = await import('./ledger/manifest.mjs');
+  const db = D.openDb(':memory:');
+  const ev = { id: 'veto:9:shipped:1', event: 'shipped', at: '2026-11-09T00:40:00Z', build: { id: 'veto', profile: 'all', status: 'complete', pr: 397, mergedAt: '2026-11-09T00:06:38Z', rev: 9 }, steps: [], shipped: { id: 'sm-veto', rev: 1 } };
+  applyEvents(db, [ev]); assert.equal(D.counts(db).manifests, 0, 'no sidecar yet: nothing to apply');
+  writeManifest(MANIFEST);
+  assert.deepEqual(syncManifests(db).applied, ['sm-veto']); assert.deepEqual(syncManifests(db).applied, [], 'once');
+  writeManifest({ ...MANIFEST, rev: 2, open: [] }); assert.deepEqual(syncManifests(db).applied, ['sm-veto'], 'a newer rev is taken');
+  D.closeDb(':memory:');
+  const fresh = D.openDb(':memory:'); applyEvents(fresh, [{ ...ev, id: 'veto:10:shipped:2' }]); assert.equal(D.getManifest(fresh, 'sm-veto').rev, 2, 'the event applies the sidecar when it is there');
+  delete process.env.AXF_SHIPPED_DIR; D.closeDb(':memory:');
+});
+
 for (const [name, fn] of tests) { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } }
 console.log(`shipped-features: ${n} checks passed`);

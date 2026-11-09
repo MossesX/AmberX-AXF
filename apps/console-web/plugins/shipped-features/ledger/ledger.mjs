@@ -10,10 +10,17 @@
  *   ledger.mjs stats                                   counts per table and per status
  *   ledger.mjs seed-draft                              the PRs and builds an AI pass should split (stdout, JSON)
  *   ledger.mjs migrate                                 apply pending migrations
+ *   ledger.mjs search <text> [--json]                  features whose name, prompt, edits, PR or build match (the grid's search)
+ *   ledger.mjs manifests [--q text] [--json]           shipped manifests (shipped-manifest@1), newest landing first
+ *   ledger.mjs manifest <build> [--json]               one build's manifest as the ledger has it
+ *   ledger.mjs apply-manifest <file|->                 take one manifest into the ledger now (the hook / sync do this by themselves)
  */
 import * as L from '../../../../../framework/core/feature-ledger.mjs';
 import * as D from './db.mjs';
 import { importAll, importJournal, importPrs } from './importers.mjs';
+import { applyManifest, syncManifests } from './manifest.mjs';
+import { readFileSync } from 'node:fs';
+import * as SM from '../../../../../framework/core/shipped-manifest.mjs';
 
 const args = process.argv.slice(2); const cmd = args[0] || 'stats';
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] ?? true : null; };
@@ -34,6 +41,7 @@ async function main() {
     if (!D.counts(db).events_seen) out.journal = await importJournal(db);
     try { out.prs = await importPrs(db, 'amberx-axf', { max: 300 }); } catch (e) { out.prs = `skipped: ${e.message}`; }
     try { const { syncDeploys } = await import('./live.mjs'); out.deploys = await syncDeploys(db); } catch (e) { out.deploys = `skipped: ${e.message}`; }
+    try { out.manifests = syncManifests(db); } catch (e) { out.manifests = `skipped: ${e.message}`; }
     console.log(JSON.stringify(out)); return 0;
   }
   if (cmd === 'list') {
@@ -64,6 +72,28 @@ async function main() {
     const led = D.ledger(db);
     console.log(JSON.stringify({ instructions: 'Split each PR or build below into the individual user-visible features it shipped. Answer feature-ledger@1 seed JSON: { features: [{ name, description, type, app, plugin, repo, prs: [{repo, number}], builds: [{id, profile}], mergedAt }] }. Keep names short; one feature per thing a user can see or use.', prs: led.prs.filter((p) => p.state === 'merged').map((p) => ({ repo: p.repo, number: p.number, title: p.title, body: p.body.slice(0, 1500), files: p.files.slice(0, 40), mergedAt: p.mergedAt })), builds: led.builds.map((b) => ({ id: b.id, profile: b.profile, title: b.title, pr: b.pr })) })); return 0;
   }
-  console.error('usage: ledger.mjs import|sync|list|show|export|stats|seed-draft|migrate'); return 2;
+  if (cmd === 'search') {
+    const led = D.ledger(db); const q = args.filter((a, i) => i > 0 && !a.startsWith('--')).join(' ');
+    const fs = L.sortFeatures(L.filterFeatures(led.features, { search: q, hideCancelled: false }, { prompts: led.prompts, edits: led.edits }), { by: 'lastChangedAt', dir: 'desc' });
+    const ms = q ? D.listManifests(db).filter((m) => SM.searchText(m).includes(q.toLowerCase())).map(SM.summaryOf) : [];
+    if (json) console.log(JSON.stringify({ q, features: fs, manifests: ms })); else { for (const f of fs) console.log(`${L.STATUS_LABEL[f.status].padEnd(9)} ${f.id.padEnd(50)} ${f.name.slice(0, 80)}`); for (const m of ms) console.log(`manifest  ${m.build.padEnd(50)} ${m.title.slice(0, 80)}`); }
+    return 0;
+  }
+  if (cmd === 'manifests') {
+    const q = typeof flag('q') === 'string' ? flag('q').toLowerCase() : '';
+    const ms = D.listManifests(db).filter((m) => !q || SM.searchText(m).includes(q)).map(SM.summaryOf);
+    if (json) console.log(JSON.stringify(ms)); else for (const m of ms) console.log(`${(m.landedAt || m.shippedAt).slice(0, 16)}  ${m.build.padEnd(50)} ${m.pr ? `#${m.pr}` : ''} ${m.landedCommit.slice(0, 9)}`);
+    return 0;
+  }
+  if (cmd === 'manifest') {
+    const m = D.manifestsOfBuild(db, args[1] || '')[0]; if (!m) { console.error('no manifest for that build'); return 1; }
+    console.log(json ? JSON.stringify(m) : JSON.stringify(m, null, 1)); return 0;
+  }
+  if (cmd === 'apply-manifest') {
+    const doc = JSON.parse(readFileSync(args[1] && args[1] !== '-' ? args[1] : 0, 'utf8'));
+    const v = SM.validateManifest(doc); if (!v.ok) { console.error(SM.rejection(v.errors)); return 2; }
+    console.log(JSON.stringify(D.tx(db, () => applyManifest(db, doc)))); return 0;
+  }
+  console.error('usage: ledger.mjs import|sync|list|show|export|stats|seed-draft|migrate|search|manifests|manifest|apply-manifest'); return 2;
 }
 main().then((c) => process.exit(c), (e) => { console.error(e.stack || e.message); process.exit(1); });

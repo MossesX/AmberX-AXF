@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../../../../../framework/core/feature-ledger.mjs';
+import { normManifest } from '../../../../../framework/core/shipped-manifest.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../../..');
@@ -161,6 +162,23 @@ export function putDeploy(db, deploy) {
 }
 export const listDeploys = (db) => db.prepare('SELECT doc FROM deploys ORDER BY at').all().map(parse);
 
+// ------------------------------------------------------------------ shipped manifests (shipped-manifest@1)
+
+/** Store a build's manifest (one row per manifest id; an older rev never replaces a newer one). Returns the stored one. */
+export function putManifest(db, manifest) {
+  const m = normManifest(manifest); if (!m) return null;
+  const old = getManifest(db, m.id);
+  if (old && old.rev > m.rev) return old;
+  db.prepare('INSERT OR REPLACE INTO manifests (id, build, rev, pr, landed_commit, landed_at, shipped_at, source, said, doc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .run(m.id, m.build.id, m.rev, m.pr.number, m.landedCommit, m.landedAt, m.shippedAt, m.source, m.said.text, JSON.stringify(m));
+  return m;
+}
+export const getManifest = (db, id) => parse(db.prepare('SELECT doc FROM manifests WHERE id = ?').get(id));
+export const manifestsOfBuild = (db, build) => db.prepare('SELECT doc FROM manifests WHERE build = ? ORDER BY rev DESC').all(L.slug(build)).map(parse);
+export const listManifests = (db) => db.prepare("SELECT doc FROM manifests ORDER BY CASE landed_at WHEN '' THEN shipped_at ELSE landed_at END DESC, build").all().map(parse);
+/** id → rev of every stored manifest (what the sync compares the sidecar against). */
+export const manifestRevs = (db) => Object.fromEntries(db.prepare('SELECT id, rev FROM manifests').all().map((r) => [r.id, r.rev]));
+
 // ------------------------------------------------------------------ events + the whole ledger
 
 export const seen = (db, id) => !!db.prepare('SELECT 1 FROM events_seen WHERE id = ?').get(id);
@@ -172,5 +190,5 @@ export function ledger(db) {
   if (!doc.since) { const d = doc.features.map((f) => f.plannedAt).filter(Boolean).sort(); doc.since = d[0] || ''; }
   return doc;
 }
-export const counts = (db) => Object.fromEntries(['features', 'edits', 'prs', 'builds', 'prompts', 'deploys', 'events_seen', 'feature_history', 'feature_builds'].map((t) => [t, db.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get().n]));
+export const counts = (db) => Object.fromEntries(['features', 'edits', 'prs', 'builds', 'prompts', 'deploys', 'manifests', 'events_seen', 'feature_history', 'feature_builds'].map((t) => [t, db.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get().n]));
 export const exists = () => existsSync(dbFile());

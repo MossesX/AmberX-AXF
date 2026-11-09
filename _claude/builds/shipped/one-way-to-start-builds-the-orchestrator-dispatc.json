@@ -1,0 +1,274 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-one-way-to-start-builds-the-orchestrator-dispatc",
+ "rev": 1,
+ "source": "backfill",
+ "by": "shipped-manifest-api",
+ "shippedAt": "2026-11-09T01:01:49Z",
+ "build": {
+  "id": "one-way-to-start-builds-the-orchestrator-dispatc",
+  "title": "One way to start builds: the orchestrator dispatches from the queue",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
+  "verbatim": true,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Orchestrator is the only launcher (urgent, land today)\n\nBrett's words tonight: \"We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator. The orchestrator has to take the build from the queue and then start them. Not the build manager. Anything with the UI gets API control. That has to be in the briefs.\" And: \"I'm also gonna be able to have the orchestrator send jobs to the API, right?\"\n\n## Context\n- The dispatcher was built on branch `claude/pipeline-rebuild` (/root/axf-builds/pipeline-rebuild) but never landed: merges kept stopping on assets.log and axf.lock.json. Bring that dispatcher onto current main (cherry-pick or re-merge; take main's generated lock files, ignore stray assets.log).\n- Pending item 'One way to start builds: the orchestrator dispatches from the queue' has the full spec; tick it off.\n- `workers-api-routing` (report _claude/builds/reports/workers-api-routing.md) added API account slots (hulu-api, mossesx-api) with daily/weekly caps and routing rules, but no rules exist yet.\n- A separate build `running-builds-watchdog` is adding a running-vs-real watchdog to the orchestrator; don't duplicate it, leave a hook for it.\n\n## Do\n1. Land the dispatcher: every 60 s the orchestrator takes the next Queue build, picks model (Fable only where needed) and account from account health (skip expired logins), takes a slot, launches via claude-headless.sh/agent-slots, records the build ID so Build Manager and Plan Studio stay in sync.\n2. One launch path: Build Manager Start becomes 'send to queue'; disable feature-assist, push-banner/systems-check and other direct launches; launcher refuses any start without an orchestrator dispatch token. Build Manager only tracks.\n3. API jobs: the dispatcher can route a build to an API account (hulu-api, mossesx-api) via routing rules: per-build override (account: api) and an overflow rule (all subscriptions full -> API), respecting caps. If the key is missing, skip and say why. Add a default overflow rule, off by default, toggle in settings.\n4. Every brief the orchestrator writes includes: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity.\n5. Tests: only the orchestrator can launch; API routing picks correctly and respects caps/missing keys; brief template contains the API rule. Console typecheck green.\n6. Short report, commit, stop so it can be landed with build_land.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-orchestrator-only-launcher--paulie",
+   "account": "account-3",
+   "model": "Opus",
+   "startedAt": "2026-11-09T00:01:32.253Z",
+   "endedAt": "2026-11-09T00:25:32.801Z",
+   "exit": 0,
+   "costUsd": 9.6152
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-09T00:01:32.253Z",
+   "doneAt": "2026-11-09T00:24:25.894Z",
+   "actualMin": 23,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-09T00:24:25.894Z",
+   "doneAt": "2026-11-09T00:24:29.567Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/one-way-to-start-builds-the-orchestrator-dispatc.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/orchestrator-only-launcher",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "e15e5287681b1c11a80aaf5f2e1be996bb293cc9",
+ "commits": [
+  "8710fed632ff5a850b7f33daabef7632623f23fa"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-09T00:33:56Z",
+ "files": [
+  "_claude/builds/reports/orchestrator-only-launcher.md",
+  "apps/console-web/plugins/build-manager/server/__init__.py",
+  "apps/console-web/plugins/build-manager/test.mjs",
+  "apps/console-web/plugins/build-manager/test.py",
+  "apps/console-web/plugins/build-manager/web/orchestrate.mjs",
+  "apps/console-web/plugins/build-manager/web/plan-cli.mjs",
+  "apps/console-web/plugins/build-manager/web/store.ts",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "apps/console-web/plugins/feature-assist/server/__init__.py",
+  "apps/console-web/plugins/feature-assist/test.py",
+  "apps/console-web/plugins/feature-assist/web/ui.tsx",
+  "apps/console-web/plugins/push-banner/server/claudefix.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/systems-check/server/claudefix.py",
+  "apps/console-web/plugins/systems-check/test.py",
+  "apps/console-web/src/axf/core/build-pipeline.mjs",
+  "deploy/claude-headless.sh",
+  "framework/cli/dispatch-gate.mjs",
+  "framework/core/build-pipeline.mjs",
+  "framework/spec/PORTING.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/server/__init__.py",
+    "apps/console-web/plugins/build-manager/test.mjs",
+    "apps/console-web/plugins/build-manager/test.py",
+    "apps/console-web/plugins/build-manager/web/orchestrate.mjs",
+    "apps/console-web/plugins/build-manager/web/plan-cli.mjs",
+    "apps/console-web/plugins/build-manager/web/store.ts",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-assist",
+   "files": [
+    "apps/console-web/plugins/feature-assist/server/__init__.py",
+    "apps/console-web/plugins/feature-assist/test.py",
+    "apps/console-web/plugins/feature-assist/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/server/claudefix.py",
+    "apps/console-web/plugins/push-banner/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/claudefix.py",
+    "apps/console-web/plugins/systems-check/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/dispatch-gate.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/orchestrator-only-launcher.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "build-orchestrator/pipeline.test.mjs: 27 → 35. New: API settings, API account states (no key, capped, off, full, not in the list), routeFor (override, overflow off and on, missing keys and caps named, subscription-only), overflow filling up to the cap, the brief and split prompt carrying the API rul",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "build-orchestrator/test.py 21 → 31 (dispatch service, owner-only API switches, bools reach the CLI). build-orchestrator/test.mjs 33 (API rule in every brief). Upgrades 12.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "build-manager/test.py 39 and test.mjs 127 (Start = send to queue, orchestrator off = refused, no launch code left). systems-check/test.py: the new claudefix checks pass. push-banner/test.py 176. feature-assist/test.py 30.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Unchanged and green: worker-routing 44, claude-workers 65, claude-login 57, headless-context 38, agent-slots 56, ui-predict 12, agent-swarm 100.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Console tsc --noEmit passes, and so do check-theme, check-controls, check-toolbars, check-chrome-assets and check-plugin-commands.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 9.6152,
+  "estimated": false,
+  "tokens": {
+   "input": 282,
+   "output": 1813,
+   "cacheRead": 26146164,
+   "cacheWrite": 289017
+  }
+ },
+ "report": "_claude/builds/reports/orchestrator-only-launcher.md",
+ "open": [
+  "s3: Tests green, report _claude/builds/reports/one-way-to-start-builds-the-orchestrator-dispatc.md, THREADS row, commit, push, PR",
+  "`systems-check/test.py` stops at \"ask first: red with its Auto fix offered, nothing run\". It fails the same way on a clean main checkout and has nothing to do with this change.",
+  "`help-coverage --check` was already red on main (claude-accounts `help.json` entry 17 has a bad `kind`; 98.5% against a 100% ratchet). The new \"API overflow\" switch has its help entry, so coverage stays at main's 98.5%.",
+  "The push banner's \"git only\" tool limit (shell off) used to be enforced by `--allowedTools` on the launch. The dispatcher runs every build with the same tools, so for fixes that limit is now a rule in the brief.",
+  "Fixes for other repos (axHub, Build-Pilot) start in an AmberX-AXF build worktree, and the brief's setup moves the session to that repo's clone.",
+  "No API key is saved for `hulu-api` or `mossesx-api` yet (see the workers-api-routing report). Until Brett saves one, API routing says so and the build waits.",
+  "The UI changes (Build Manager Queue button, Pipeline tab API switch and Runs-on button, API account cards) still need UI Review shots.",
+  "`framework/core/build-pipeline.mjs` has no Kotlin twin; it is recorded as deferred in `framework/spec/PORTING.md`."
+ ]
+}
