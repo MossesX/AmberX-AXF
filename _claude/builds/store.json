@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1710,
- "updatedAt": "2026-11-09T04:22:48.649Z",
+ "rev": 1711,
+ "updatedAt": "2026-11-09T04:23:14.360Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126223,7 +126223,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:22:42.519Z",
+   "updatedAt": "2026-11-09T04:23:10.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -126241,6 +126241,10 @@
     {
      "text": "Brett: \"With the keywords in focus.\" In the scrolling results window each snippet is centered on the matched keywords, highlighted. Opening a hit scrolls the transcript so the keyword is centered on screen, highlighted and focused, with next/previous match buttons inside that session.",
      "at": "2026-11-09T04:22:42.519Z"
+    },
+    {
+     "text": "Brett: \"there's a column on the left with all the hits. All the sessions that match: the session name and the type of thing we were talking about.\" Results window layout: left column lists every session with hits (session name, date, hit count, and a topic tag for what it was about, e.g. builds, skins, approvals, AmberX); tapping one shows its hits on the right, keywords centered and highlighted. Topic tags: from the linked Claude session's title and the builds it touched (plain code, zero tokens); optionally a cheap one-time tag per session after transcription, off by default.",
+     "at": "2026-11-09T04:23:10.596Z"
     }
    ],
    "approvals": [],
@@ -126358,7 +126362,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
