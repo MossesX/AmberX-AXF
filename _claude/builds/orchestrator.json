@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T18:10:22.720Z",
+ "updatedAt": "2026-11-09T18:10:38.624Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77611,7 +77611,7 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77619,7 +77619,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-09T17:43:03.731Z",
+   "updatedAt": "2026-11-09T18:10:35.233Z",
    "builtAt": "",
    "notes": [
     {
@@ -77661,6 +77661,14 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
      "at": "2026-11-09T17:43:03.731Z"
+    },
+    {
+     "text": "Started run 3 on account-1 (Opus, Phase 1): axf-prompt-caching-and-batch-api-support-in-the-buil--paulie.",
+     "at": "2026-11-09T18:10:31.377Z"
+    },
+    {
+     "text": "Claude account: account-1 (brettspend@gmail.com) (axf-prompt-caching-and-batch-api-support-in-the-buil--paulie, own login copy)",
+     "at": "2026-11-09T18:10:35.233Z"
     }
    ],
    "approvals": [],
