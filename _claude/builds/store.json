@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1628,
- "updatedAt": "2026-11-09T00:20:47.133Z",
+ "rev": 1629,
+ "updatedAt": "2026-11-09T00:24:29.707Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25383,7 +25383,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale"
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -88070,7 +88072,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale"
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -97556,7 +97560,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: stale"
+    "note": "watchdog: stale",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -104710,7 +104716,9 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: phase-done"
+    "note": "watchdog: phase-done",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -106291,7 +106299,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: waiting"
+    "note": "watchdog: waiting",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -122554,14 +122564,14 @@
    "title": "One way to start builds: the orchestrator dispatches from the queue",
    "category": "",
    "detail": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-08T19:26:21.276Z",
+   "updatedAt": "2026-11-09T00:24:25.894Z",
    "builtAt": "",
    "notes": [
     {
@@ -122599,12 +122609,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T00:24:25.894Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:26:21.276Z",
-     "updatedAt": "2026-11-08T19:26:21.276Z"
+     "updatedAt": "2026-11-09T00:24:26.301Z"
     },
     {
      "id": "s2",
@@ -122662,7 +122672,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122901,7 +122911,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": ""
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -123365,7 +123377,9 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: phase-done"
+    "note": "watchdog: phase-done",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124655,7 +124669,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": ""
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124809,7 +124825,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them"
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {

@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 13:44 UTC · `orchestrator-gate` s1 done (all) · orchestrator
 - 2026-11-07 13:50 UTC · `style-override-rule` s7 done (all) · orchestrator
 - 2026-11-07 13:51 UTC · `style-override-rule` s8 done, → complete (all) · orchestrator
 - 2026-11-07 13:51 UTC · `style-override-rule` note (all) · orchestrator
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 00:10 UTC · `notes-tasks-calendar` → pending, note (all) · watchdog
 - 2026-11-09 00:10 UTC · `nested-menus-for-console-amberx-and-molly-overri` → queued, note (all) · watchdog
 - 2026-11-09 00:20 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` → complete, merged, note (all) · reconciler
+- 2026-11-09 00:24 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
