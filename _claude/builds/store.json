@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1916,
- "updatedAt": "2026-11-09T19:25:40.882Z",
+ "rev": 1917,
+ "updatedAt": "2026-11-09T19:26:04.531Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130211,7 +130211,7 @@
    "title": "Home page Build queue card opens the orchestrator, not the old build queue",
    "category": "",
    "detail": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
-   "status": "running",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130219,7 +130219,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:25:31.021Z",
+   "updatedAt": "2026-11-09T19:26:03.236Z",
    "builtAt": "",
    "notes": [
     {
@@ -130273,6 +130273,10 @@
     {
      "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--earl: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:25:31.021Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
+     "at": "2026-11-09T19:26:03.236Z"
     }
    ],
    "approvals": [],
@@ -130293,18 +130297,18 @@
     "queuedAt": "2026-11-09T19:21:06.131Z",
     "queuedBy": "console",
     "account": "account-3",
-    "session": "axf-home-page-build-queue-card-opens-the-orchestrato--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:25:10.063Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-09T19:24:32.338Z",
+     "at": "2026-11-09T19:26:02.794Z",
      "exit": 1,
-     "outcome": "requeued",
+     "outcome": "failed",
      "stepsLeft": 3,
      "account": "account-3",
-     "session": "axf-home-page-build-queue-card-opens-the-orchestrato--joey"
+     "session": "axf-home-page-build-queue-card-opens-the-orchestrato--earl"
     },
     "split": {
      "at": "2026-11-09T19:22:16.340Z",
@@ -130314,7 +130318,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
@@ -130397,7 +130401,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
