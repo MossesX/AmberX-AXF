@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T01:23:16.913Z",
+ "updatedAt": "2026-11-09T01:24:08.104Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76213,9 +76213,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:23:14.933Z",
+   "updatedAt": "2026-11-09T01:24:06.015Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: \"it lists what files were touched too, but they're hidden... in a collapsible, in an expanded row... you gotta expand a few things to get to them. They'll open in a dialog, which also you can click the files and open in a read-only editor. Checkbox to make it editable.\" Each manifest lists the files touched (added/changed/deleted, per step). In Shipped Features they sit tucked away: entry row > expand > Details > collapsed 'Files touched' section (grouped by step and folder, counts). Clicking it opens a dialog with the file list; clicking a file opens it in a read-only code editor (syntax highlight, diff vs before toggle). A 'Make editable' checkbox in the editor switches it to edit mode; saving goes through a normal commit with Brett's name and a change entry, never silent. Full API/MCP/CLI/voice control.",
+     "at": "2026-11-09T01:24:06.015Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
