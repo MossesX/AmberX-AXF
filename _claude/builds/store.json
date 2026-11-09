@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1965,
- "updatedAt": "2026-11-09T20:29:16.564Z",
+ "rev": 1966,
+ "updatedAt": "2026-11-09T20:30:14.899Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130727,10 +130727,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/saved-claude-logins-never-end-up-on-a-spent-refr",
-   "pr": "",
+   "pr": "#412",
    "priority": "P0",
    "createdAt": "2026-11-09T20:14:49.766Z",
-   "updatedAt": "2026-11-09T20:29:15.130Z",
+   "updatedAt": "2026-11-09T20:30:13.045Z",
    "builtAt": "",
    "notes": [
     {
@@ -130880,7 +130880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
