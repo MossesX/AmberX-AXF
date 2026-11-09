@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1670,
- "updatedAt": "2026-11-09T02:25:18.932Z",
+ "rev": 1671,
+ "updatedAt": "2026-11-09T02:25:50.627Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125995,9 +125995,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:24:24.342Z",
-   "updatedAt": "2026-11-09T02:24:24.342Z",
+   "updatedAt": "2026-11-09T02:25:49.369Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T02:25:49.369Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -126012,7 +126017,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T02:25:49.369Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8n332101tdx4",
+     "title": "",
+     "text": "New UI Roller plugin (console, AmberX, Molly, axHub web; every app built on the framework). 1) Context menu on EVERY UI element (dialogs, windows, panels, bars, buttons, inputs, menus, text, widgets; all registry assets): 'Roll style' and, when the element has a roll, 'Reset element'. 2) 'Roll style' opens a dialog: checkboxes for what to roll (colours, typography, spacing/density, size, radius/shape, borders, shadows, motion, icons), optional scope (this element / all of its type / its plugin), live preview, Re-roll, Apply. Rolls stay within valid token ranges and keep contrast readable. Apply saves the result as asset token overrides (local-first, like other overrides). 3) Main Settings > Rolled assets page: lists every app and plugin with its rolled assets (tree, counts, filters, search); each shows a live preview of the asset and its roll; actions: Reset (one), Reset selected (multi-select), Reset all. Undo/history per roll. 4) Applying a skin, design pack or theme clears EVERY rolled asset: covered ones take the new look, all others go back to their defaults. 5) Full API/MCP/CLI/voice control and deep links for roll, reset, reset selected/all and the page. Stock framework controls; 3 layout options to UI Review; tests (roll writes tokens, reset restores, theme apply clears all rolls); report.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:25:49.369Z",
+     "updatedAt": "2026-11-09T02:25:49.369Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8n332102i81z",
+     "title": "",
+     "text": "I need a UI roller plugin for every single UI element dialog window. Every single UI element needs a roll style. So you pick the context menu and the element you're over, it comes up and you can go roll style. Or reset element, if it's already been changed, and it'll just roll a random style and save it to the tokens. When you click roll, it opens a dialogue, and you can select what things you want in the roll. Every plugin or app, in the main settings there needs to be a rolled assets page that lists all the plugins and any rolled assets so you can view the asset itself in a preview and reset it, reset all, and reset selected. Whenever you apply a skin or a design pack or a theme, it resets the rolled assets; rolled assets that it doesn't touch go back to default before the roll.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:25:49.369Z",
+     "updatedAt": "2026-11-09T02:25:49.369Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8n332103utl6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/ui-roller-roll-a-random-style-on-any-ui-element.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/ui-roller-roll-a-random-style-on-any-ui-element.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:25:49.369Z",
+     "updatedAt": "2026-11-09T02:25:49.369Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -126021,7 +126118,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126036,7 +126133,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T02:25:49.369Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
