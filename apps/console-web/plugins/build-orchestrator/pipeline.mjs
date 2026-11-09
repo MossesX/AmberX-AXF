@@ -12,7 +12,8 @@
  *   … unqueue <id>                 Queue → Pending
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
- *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
+ *   … tick [--json]                one dispatcher round: intake, session ends, the running-builds watchdog (watchdog.mjs), launches, idle alert, state file
+ *   … watchdog [check [--dry]]     the watchdog's last check, or run one now (marked running vs really running, and what it fixed)
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
@@ -31,6 +32,8 @@ import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import { authFailed, authLine } from './watchdog-core.mjs';
+import { check as watchdogCheck, loadWatchdog } from './watchdog.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
@@ -41,7 +44,7 @@ import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
-import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { markLimit, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -132,7 +135,13 @@ export function status() {
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails }, watchdog: watchdogView() };
+}
+
+/** The watchdog's last check, trimmed for the console and MCP (null before the first run). */
+export function watchdogView() {
+  const w = loadWatchdog(); if (!w) return null;
+  return { at: w.at, summary: w.summary, marked: w.marked, real: w.real, settings: w.settings, findings: (w.findings ?? []).map((f) => ({ id: f.id, kind: f.kind, why: f.why })), recent: (w.recent ?? []).slice(-15) };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -331,7 +340,16 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     const since = Date.parse(b.pipeline.launchedAt || 0) - 5000;
     const end = events.filter((e) => e.event === 'session-end' && e.session === b.pipeline.session && Date.parse(e.at || 0) >= since).pop();
     let exit = null;
-    if (end) exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
+    if (end) {
+      exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
+      // a dead Claude login is a failure even when claude exited 0 (Nov 9 2026: such runs were reported as success)
+      let tail = ''; try { tail = readFileSync(end.log || join(worktreesRoot(env), b.id, `${b.id}.log`), 'utf8').slice(-6000); } catch { tail = ''; }
+      if (authFailed(tail)) {
+        exit = exit || 1;
+        if (b.pipeline.account) { try { markLimit(b.pipeline.account, { kind: 'auth', until: Date.now() + 24 * 3600e3 }); } catch { /* best effort */ } }
+        alert('watchdog', { id: b.id, account: b.pipeline.account, severity: 'error', title: `Claude login dead: ${b.pipeline.account || 'unknown account'}`, body: `${b.title}: ${authLine(tail)}. Sign the account in again (console → AI keys).` });
+      }
+    }
     else {
       // no end event: the session may have died with tmux (a reboot, a kill). After a grace period, gone = a crash.
       const alive = tmuxHas(b.pipeline.session);
@@ -372,6 +390,7 @@ export function tick({ env = process.env } = {}) {
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
+  let watchdog; try { watchdog = watchdogCheck({ env, alert }); } catch (e) { watchdog = { error: e.message }; }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const accounts = accountsNow(store, settings); const sl = slotsNow();
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
@@ -414,7 +433,7 @@ export function tick({ env = process.env } = {}) {
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, intake: inta, ended, watchdog: watchdog ? { at: watchdog.at, summary: watchdog.summary, skipped: watchdog.skipped, error: watchdog.error, actions: watchdog.actions } : null, launched, failed, plan, idle, alertsSent: sent };
 }
 
 // ------------------------------------------------------------------ probe
@@ -469,8 +488,12 @@ async function main(argv) {
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
-    return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
+    return out(r, [`tick ${r.at}`, r.watchdog ? `watchdog: ${r.watchdog.error || r.watchdog.skipped || r.watchdog.summary}` : '', `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'watchdog') {
+    if (rest[0] === 'check') { const r = watchdogCheck({ dry: has('dry'), force: true, print: json ? () => {} : (l) => console.log(l) }); return out({ ok: true, watchdog: r }, `watchdog: ${r.skipped || r.summary}\n${(r.findings ?? []).map((f) => `  ${f.id}: ${f.kind} · ${f.why}`).join('\n')}`); }
+    const w = watchdogView(); return out({ ok: true, watchdog: w }, w ? `${w.at} · ${w.summary}` : 'the watchdog has not run yet');
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
@@ -486,7 +509,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | watchdog [check [--dry]] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

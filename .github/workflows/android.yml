@@ -102,6 +102,7 @@ jobs:
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/watchdog.test.mjs   # running-builds watchdog: marked running vs the VPS (fake tmux, logs, events), auth / crash / stall / finished / stray actions  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
       - run: node framework/spec/check-card.mjs                     # card@1 + home-layout@1: binding, view pick, live refresh, layout, suggestions, drops, zero tokens, fixture
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store

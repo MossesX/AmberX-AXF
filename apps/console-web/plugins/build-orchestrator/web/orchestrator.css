@@ -34,6 +34,8 @@ button.oc-model { cursor: pointer }
 /* Pipeline tab (Nov 8 2026): layout only; every control is a framework control */
 .pl-strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
 .pl-stat { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm) }
+.pl-watchdog > summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.pl-watchdog__settings { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
 .pl-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 20), 1fr)); gap: var(--fx-dens-gap-xl); align-items: start }
 .pl-cols--accounts { grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 16), 1fr)) }
 .pl-col { min-width: 0 }

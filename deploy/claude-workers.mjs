@@ -127,12 +127,13 @@ export function parseReset(text, now = Date.now()) {
 /** What stopped a run: 'usage', 'auth' or ''. A dead login only counts on a failed exit: a build may print those words. */
 export function hitOf(text, exit = 0) {
   if (LIMIT_RE.test(text)) return 'usage';
-  return exit !== 0 && AUTH_RE.test(text) ? 'auth' : '';
+  // Claude's own "Failed to authenticate" line is a dead login even on exit 0 (it reports that as success)
+  return (exit !== 0 && AUTH_RE.test(text)) || /^(?:\x1b\[[0-9;]*m)*(?:Failed to authenticate|OAuth session expired)\b/m.test(text) ? 'auth' : '';
 }
 
-export function markLimit(name, { kind = 'usage', text = '' } = {}, env = process.env, now = Date.now()) {
+export function markLimit(name, { kind = 'usage', text = '', until: hold = 0 } = {}, env = process.env, now = Date.now()) {
   if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const until = (kind === 'usage' ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
+  const until = hold || (kind === 'usage' ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
   return withLock(env, () => {
     const state = loadState(env);
     state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of credits/i.test(text) ? 'out of API credit' : 'hit its limit') : 'login failed' };
@@ -303,6 +304,8 @@ export function signin(name, env = process.env) {
   const r = spawnSync('tmux', ['new-session', '-d', '-s', session, '-x', '160', '-y', '40', 'bash', '-c', script], { encoding: 'utf8' });
   if (r.status !== 0) throw Object.assign(new Error(`could not start ${session}: ${(r.stderr || 'tmux is missing').trim().slice(0, 200)}`), { code: 2 });
   spawnSync('tmux', ['set-option', '-t', session, '@axf_kind', 'signin'], { encoding: 'utf8' });
+  // a dead-login hold (the running-builds watchdog keeps it for a day) ends with the new sign-in
+  try { withLock(env, () => { const state = loadState(env); if (state.limits[name]?.kind === 'auth') { delete state.limits[name]; saveState(state, env); } }); } catch { /* the hold just runs out */ }
   return session;
 }
 

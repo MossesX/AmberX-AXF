@@ -19,6 +19,7 @@
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
+import { WATCHDOG_DEFAULTS, WATCHDOG_LIMITS } from './watchdog-core.mjs';
 import { estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
@@ -39,8 +40,10 @@ export const DEFAULTS = Object.freeze({
   splitProvider: 'claude',
   /** New builds go straight to the Queue (the Claude setting builds.launchWithoutAsking, read on every tick). */
   autoQueue: false,
+  /** The running-builds watchdog (watchdog.mjs): on/off, how often (s), no log output for this long = stalled, auto relaunches before failed. */
+  ...WATCHDOG_DEFAULTS,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], ...WATCHDOG_LIMITS };
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
@@ -58,6 +61,10 @@ export function normSettings(raw = {}) {
     probeDays: o.probeDays === undefined ? DEFAULTS.probeDays : clamp('probeDays', o.probeDays),
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
+    watchdogOn: o.watchdogOn !== false,
+    watchdogEverySec: o.watchdogEverySec === undefined ? DEFAULTS.watchdogEverySec : clamp('watchdogEverySec', o.watchdogEverySec),
+    watchdogStallMin: o.watchdogStallMin === undefined ? DEFAULTS.watchdogStallMin : clamp('watchdogStallMin', o.watchdogStallMin),
+    watchdogMaxRetries: o.watchdogMaxRetries === undefined ? DEFAULTS.watchdogMaxRetries : clamp('watchdogMaxRetries', o.watchdogMaxRetries),
   };
 }
 
@@ -254,6 +261,7 @@ export function alertFor(kind, d = {}) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'watchdog': return { ...base, key: `pipeline:watchdog:${d.id}`, severity: d.severity || 'warning', title: `Watchdog · ${str(d.title, 140)}`, body: str(d.body, 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

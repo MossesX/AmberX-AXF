@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Chip, Icon, Note, PriorityTag, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Note, PriorityTag, Switch, TextField, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
 
@@ -19,7 +19,10 @@ type Status = {
   plan: { launches: { id: string; account: string; model: string; phase: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
+  watchdog?: Watchdog | null;
 };
+/** The running-builds watchdog's last check (watchdog.mjs): marked running vs really running, and what it fixed. */
+type Watchdog = { at: string; summary: string; marked: number; real: number; settings: { on: boolean; everySec: number; stallMin: number; maxRetries: number }; findings: { id: string; kind: string; why: string }[]; recent: { id: string; kind: string; status: string; at: string; note: string }[] };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
@@ -65,6 +68,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         <span className="pl-stat fx-muted" title={s.state.at ? `Last dispatcher tick ${fmtTime(s.state.at)}` : 'The dispatcher has not run yet on this VPS'}><Icon name="refresh" size={14} />{s.state.at ? `tick ${tickAge}` : 'no tick yet'}</span>
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
       </div>
+      {s.watchdog && <WatchdogLine w={s.watchdog} busy={busy === 'pipeline/settings'} save={(patch) => act('pipeline/settings', patch, 'Watchdog settings saved')} />}
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       <section className="fx-stack">
@@ -143,5 +147,34 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
         {table !== 'building' && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
       </div>
     </article>
+  );
+}
+
+/** One line: last check, marked vs real, what it fixed; the findings and the action log fold out. */
+function WatchdogLine({ w, save, busy }: { w: Watchdog; save: (patch: Record<string, unknown>) => void; busy: boolean }) {
+  const off = w.marked !== w.real;
+  const [every, setEvery] = useState(String(w.settings.everySec));
+  const [stall, setStall] = useState(String(w.settings.stallMin));
+  const [retries, setRetries] = useState(String(w.settings.maxRetries));
+  const fixed = w.recent.filter((a) => Date.now() - new Date(a.at).getTime() < 24 * 3600e3).length;
+  return (
+    <details className="pd-add pl-watchdog">
+      <summary title={`Every ${w.settings.everySec} s · stalled after ${w.settings.stallMin} min without log output · ${w.settings.maxRetries} auto retries`}>
+        <span className="pl-stat"><Icon name="eye" size={14} />Watchdog {w.settings.on ? '' : '(off) '}· checked {ago(w.at)} · <b>{w.marked}</b> marked running, <b>{w.real}</b> really running{fixed ? ` · ${fixed} fixed today` : ''}</span>
+        {off && <Chip tone="warning">mismatch</Chip>}
+      </summary>
+      <div className="fx-stack">
+        {w.findings.filter((f) => f.kind !== 'ok').map((f) => <p key={`f-${f.id}`} className="fx-small">{f.id}: {f.kind} · {f.why}</p>)}
+        {[...w.recent].reverse().map((a, i) => <p key={i} className="fx-small fx-mono">{fmtTime(a.at)} · {a.id} {a.kind} → {a.status}</p>)}
+        {!w.recent.length && !w.findings.some((f) => f.kind !== 'ok') && <p className="fx-small fx-muted">Nothing to fix.</p>}
+        <div className="pl-watchdog__settings" role="group" aria-label="Watchdog settings">
+          <Switch label="Watchdog on" checked={w.settings.on} disabled={busy} onChange={(v) => save({ watchdogOn: v })} />
+          <TextField label="Check every (s)" type="number" value={every} onChange={setEvery} />
+          <TextField label="Stalled after (min)" type="number" value={stall} onChange={setStall} />
+          <TextField label="Auto retries" type="number" value={retries} onChange={setRetries} />
+          <Button size="sm" busy={busy} onClick={() => save({ watchdogEverySec: Number(every), watchdogStallMin: Number(stall), watchdogMaxRetries: Number(retries) })}>Save</Button>
+        </div>
+      </div>
+    </details>
   );
 }

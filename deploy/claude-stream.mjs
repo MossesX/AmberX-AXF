@@ -47,7 +47,9 @@ export function render(ev) {
   if (ev.type === 'result') {
     const secs = ev.duration_ms ? `${Math.round(ev.duration_ms / 1000)} s` : '';
     const cost = typeof ev.total_cost_usd === 'number' ? `$${ev.total_cost_usd.toFixed(2)}` : '';
-    const head = ev.is_error || ev.subtype !== 'success' ? red(`■ ${ev.subtype ?? 'ended'}`) : bold('■ done');
+    // an error result says so: Claude reports a dead login as subtype "success" with is_error set (Nov 9 2026)
+    const auth = /failed to authenticate|oauth (?:session|token) (?:has )?expired|invalid api key/i.test(String(ev.result ?? ''));
+    const head = auth ? red('■ failed (login)') : ev.is_error ? red(`■ failed${ev.subtype && ev.subtype !== 'success' ? ` (${ev.subtype})` : ''}`) : ev.subtype !== 'success' ? red(`■ ${ev.subtype ?? 'ended'}`) : bold('■ done');
     return [head + dim(` · ${[secs, `${ev.num_turns ?? '?'} turns`, cost].filter(Boolean).join(' · ')}`), ...(ev.result ? [String(ev.result).trim()] : [])];
   }
   return [];

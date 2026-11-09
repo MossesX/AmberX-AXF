@@ -476,6 +476,13 @@ async def pipeline_account(request: Request) -> dict[str, Any]:
     return _pipeline(*args)
 
 
+@router.get("/pipeline/watchdog")
+def pipeline_watchdog() -> dict[str, Any]:
+    """The running-builds watchdog's last check (watchdog.mjs, every dispatcher tick): builds marked running vs really
+    running on the VPS, what each finding was and what it fixed."""
+    return _pipeline("watchdog")
+
+
 @router.get("/pipeline/settings")
 def pipeline_settings() -> dict[str, Any]:
     return _pipeline("settings")
@@ -483,10 +490,18 @@ def pipeline_settings() -> dict[str, Any]:
 
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays, splitProvider)."""
+    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
+    splitProvider, and the running-builds watchdog: watchdogOn, watchdogEverySec, watchdogStallMin, watchdogMaxRetries)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider"}
-    pairs = [f"{k}={','.join(map(str, v)) if isinstance(v, list) else v}" for k, v in body.items() if k in allowed]
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider",
+               "watchdogOn", "watchdogEverySec", "watchdogStallMin", "watchdogMaxRetries"}
+
+    def val(v: Any) -> str:
+        if isinstance(v, bool):
+            return "true" if v else "false"
+        return ",".join(map(str, v)) if isinstance(v, list) else str(v)
+
+    pairs = [f"{k}={val(v)}" for k, v in body.items() if k in allowed]
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)

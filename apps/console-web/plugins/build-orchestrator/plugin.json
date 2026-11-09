@@ -247,6 +247,14 @@
         "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
       },
       {
+        "id": "pipeline-watchdog",
+        "route": "GET /pipeline/watchdog",
+        "title": "Running-builds watchdog",
+        "description": "The watchdog's last check of the VPS: how many builds are marked running against how many really run (tmux session, claude process, log), what it found for each (ok, stalled, finished, waiting, auth, crashed) and what it fixed. Say 'are the builds really running' or 'what did the watchdog do'.",
+        "readOnly": true,
+        "output": "{ watchdog: { at, summary, marked, real, settings, findings, recent } }"
+      },
+      {
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
