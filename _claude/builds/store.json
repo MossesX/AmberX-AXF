@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1785,
- "updatedAt": "2026-11-09T17:41:26.591Z",
+ "rev": 1786,
+ "updatedAt": "2026-11-09T17:41:35.876Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127381,7 +127381,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-09T17:41:14.108Z",
+   "updatedAt": "2026-11-09T17:41:34.277Z",
    "builtAt": "",
    "notes": [
     {
@@ -127399,6 +127399,10 @@
     {
      "text": "Claude account: account-1 (brettspend@gmail.com) (axf-prompt-caching-and-batch-api-support-in-the-buil--lenny, own login copy)",
      "at": "2026-11-09T17:41:14.108Z"
+    },
+    {
+     "text": "Headless run axf-prompt-caching-and-batch-api-support-in-the-buil--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-09T17:41:34.277Z"
     }
    ],
    "approvals": [],
@@ -127516,7 +127520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
