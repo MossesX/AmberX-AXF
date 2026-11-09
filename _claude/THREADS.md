@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 02:31 UTC · `amberx-open-any-url` → pending (all) · claude-voice
 - 2026-11-08 02:35 UTC · `fix-owner-check-bug-dead-start-button` added (3 steps) (all) · claude-voice
 - 2026-11-08 02:45 UTC · `git-status-board` → running (all) · build-manager:start
 - 2026-11-08 02:45 UTC · `git-status-board` → pending (all) · build-manager test cleanup
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 16:26 UTC · `orchestrator-self-check-when-stuck-verify-each-a` → queued, note (all) · builds-live
 - 2026-11-09 16:26 UTC · `orchestrator-settings-api-account-limits-and-rou` added (0 steps) (all) · builds-live
 - 2026-11-09 16:26 UTC · `orchestrator-self-check-when-stuck-verify-each-a` note (all) · orchestrator
+- 2026-11-09 16:26 UTC · `orchestrator-self-check-when-stuck-verify-each-a` note (all) · builds-live
 
 ## Token passes (log)
 
