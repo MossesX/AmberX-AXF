@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1661,
- "updatedAt": "2026-11-09T01:27:14.429Z",
+ "rev": 1662,
+ "updatedAt": "2026-11-09T01:28:06.320Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -93386,7 +93386,7 @@
    "pr": "#361",
    "mergedAt": "2026-11-07T04:09:27Z",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-07T04:49:27.594Z",
+   "updatedAt": "2026-11-09T01:28:04Z",
    "builtAt": "2026-11-06T18:57:48.129Z",
    "notes": [
     {
@@ -93404,6 +93404,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-assistant-chat-mode rev 1 sent to Shipped features (orchestrator): landed 150913e8b, 41 file(s), 5 test line(s), 6 open.",
+     "at": "2026-11-09T01:28:04Z"
     }
    ],
    "approvals": [],
@@ -93419,6 +93423,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-assistant-chat-mode",
+    "rev": 1,
+    "at": "2026-11-09T01:28:04Z",
+    "landedCommit": "150913e8b82ccd417800291b070c0350d2e99192"
    },
    "steps": [
     {
@@ -93607,7 +93617,7 @@
    "fromProfile": "current",
    "kind": "build",
    "planRef": "assistant-chat-mode",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
