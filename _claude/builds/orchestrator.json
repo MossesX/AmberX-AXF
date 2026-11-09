@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:44:59.906Z",
+ "updatedAt": "2026-11-09T20:45:19.450Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14997,7 +14997,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:38:31.984Z",
+   "updatedAt": "2026-11-09T20:44:18.990Z",
    "builtAt": "",
    "notes": [
     {
@@ -15023,6 +15023,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "owner-only-settings-brett-s-admin-console-login-counts-as-owner",
+    "brief": "# Build: owner-only-settings-brett-s-admin-console-login-counts-as-owner\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Owner-only settings: Brett's admin console login counts as owner\" (owner-only-settings-brett-s-admin-console-login-counts-as-owner) [Fix] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (7 left, ~3.3 h):\n[ ] s1 (~30 min) ## Brett said (verbatim)\n[ ] s2 (~30 min) Source: voice · At: 2026-11-06\n[ ] s3 (~30 min) > won't let me set it. It says no way enabled by owner only. Only Brett changes it. With his own click in the console. ... I can't click it.\n[ ] s4 (~30 min) > I'm logged in as admin.\n[ ] s5 (~30 min) > Yes, do that.\n[ ] s6 (~30 min) Problem: Settings → Plugins → Claude refuses owner-only switches (No wait) for Brett's signed-in admin console session. Fix the owner check so Brett's own login is recognised as owner. Queue behind the account/badge build (one build at a time).\n[ ] s7 (~20 min) Tests green, report _claude/builds/reports/owner-only-settings-brett-s-admin-console-login-counts-as-owner.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/owner-only-settings-brett-s-admin-console-login-counts-as-owner.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step owner-only-settings-brett-s-admin-console-login-counts-as-owner <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link owner-only-settings-brett-s-admin-console-login-counts-as-owner --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step owner-only-settings-brett-s-admin-console-login-counts-as-owner <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note owner-only-settings-brett-s-admin-console-login-counts-as-owner \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -80455,8 +80467,8 @@
    "pr": "#413",
    "priority": "P1",
    "createdAt": "2026-11-09T20:26:06.899Z",
-   "updatedAt": "2026-11-09T20:42:48.722Z",
-   "builtAt": "2026-11-09T20:42:26.158Z",
+   "updatedAt": "2026-11-09T20:43:19.545Z",
+   "builtAt": "2026-11-09T20:43:19.545Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80473,6 +80485,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-account-queues-long-press-a-queued-build-to--joey, own login copy)",
      "at": "2026-11-09T20:32:12.629Z"
+    },
+    {
+     "text": "Headless run axf-per-account-queues-long-press-a-queued-build-to--joey: brief only · start 11.0K tokens ($0.03) · cost $3.52 · 69 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:43:19.545Z"
     },
     {
      "text": "PR #413 open. Still to do before ready: desktop and phone UI Review shots of Build orchestrator > Pipeline > Account queues and the long-press Send to account queue menu (no console was running this branch in the headless session).",
