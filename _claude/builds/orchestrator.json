@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:30:41.875Z",
+ "updatedAt": "2026-11-09T20:31:07.538Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80412,7 +80412,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:27:49.018Z",
+   "updatedAt": "2026-11-09T20:31:06.216Z",
    "builtAt": "",
    "notes": [
     {
@@ -80432,8 +80432,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "one-source-of-truth-for-claude-accounts-the-orch",
+    "brief": "# Build: one-source-of-truth-for-claude-accounts-the-orch\n\n## Brett said (verbatim)\nAt: 2026-11-09T20:26:33.987Z\n> Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\n\n## What to build\nContinue build \"One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing\" (one-source-of-truth-for-claude-accounts-the-orch) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 20:26):\n\"Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.\n[ ] s2 (~30 min) Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-source-of-truth-for-claude-accounts-the-orch <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-source-of-truth-for-claude-accounts-the-orch --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-source-of-truth-for-claude-accounts-the-orch <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-source-of-truth-for-claude-accounts-the-orch \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
