@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1653,
- "updatedAt": "2026-11-09T01:24:08.104Z",
+ "rev": 1654,
+ "updatedAt": "2026-11-09T01:24:34.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125717,12 +125717,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:24:06.015Z",
+   "updatedAt": "2026-11-09T01:24:33.057Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett: \"it lists what files were touched too, but they're hidden... in a collapsible, in an expanded row... you gotta expand a few things to get to them. They'll open in a dialog, which also you can click the files and open in a read-only editor. Checkbox to make it editable.\" Each manifest lists the files touched (added/changed/deleted, per step). In Shipped Features they sit tucked away: entry row > expand > Details > collapsed 'Files touched' section (grouped by step and folder, counts). Clicking it opens a dialog with the file list; clicking a file opens it in a read-only code editor (syntax highlight, diff vs before toggle). A 'Make editable' checkbox in the editor switches it to edit mode; saving goes through a normal commit with Brett's name and a change entry, never silent. Full API/MCP/CLI/voice control.",
      "at": "2026-11-09T01:24:06.015Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T01:24:33.057Z"
     }
    ],
    "approvals": [],
@@ -125739,7 +125743,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T01:24:33.057Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8kwaea014kow",
+     "title": "",
+     "text": "Builds on shipped-manifest-api (landed 79ed472c0f1f, shipped-manifest@1). Today the manifest is sent only when a build lands. Change: the orchestrator sends a manifest to Shipped Features (and Plan Studio, per the queued Plan Studio manifest build) at every event: when it dispatches the job, on every build update (model/account change, note, hold, guard stop), on every step completed, and on completion/land. Each manifest is versioned (sequence number, previous version kept as history) and validated. The Shipped Features entry exists from dispatch, not only after landing, and shows a live status badge (dispatched, building, step x/y, waiting on UI Review, held, stopped by guard, failed, landed, shipped) plus a progress meter (steps done / total, time and cost used vs estimate), updated in real time (live push, no refresh). History view per entry shows every manifest. Full API/MCP/CLI/voice control and deep link. Tests: dispatch creates the entry, each step tick bumps the version and meter, land sets shipped; invalid manifest is refused with the reason.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T01:24:33.057Z",
+     "updatedAt": "2026-11-09T01:24:33.057Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8kwaea02xucn",
+     "title": "",
+     "text": "Ship dock features gets manifest as soon as orchestrator sends out the job. then its status is it, it sends a manifest every time it's updated to every time it's a step completed it sends a manifest every time it's completed it sends a manifest and its status in ship features is updated constantly with different badges and a progress meter.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T01:24:33.057Z",
+     "updatedAt": "2026-11-09T01:24:33.057Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8kwaea03voem",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/shipped-features-live-manifests-from-dispatch-to.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/shipped-features-live-manifests-from-dispatch-to.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T01:24:33.057Z",
+     "updatedAt": "2026-11-09T01:24:33.057Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -125748,7 +125844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125763,7 +125859,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T01:24:33.057Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

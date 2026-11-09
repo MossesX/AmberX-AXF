@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 14:36 UTC · `plan-designer` s4 done (all) · claude-plan-designer
 - 2026-11-07 14:36 UTC · `plan-designer` s5 done (all) · claude-plan-designer
 - 2026-11-07 14:42 UTC · `plan-designer` s6 done, → complete (all) · claude-plan-designer
 - 2026-11-07 14:42 UTC · `plan-designer` note (all) · claude-plan-designer
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 01:23 UTC · `shipped-features-live-manifests-from-dispatch-to` added (0 steps) (all) · pending
 - 2026-11-09 01:23 UTC · `shipped-features-live-manifests-from-dispatch-to` added (0 steps) (all) · foreign-write
 - 2026-11-09 01:24 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · pending
+- 2026-11-09 01:24 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · orchestrator
 
 ## Token passes (log)
 
