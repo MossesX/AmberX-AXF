@@ -757,9 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 15:29 UTC · `console-android-app-tabs` s4 done (all) · orchestrator
-- 2026-11-07 15:34 UTC · `console-android-app-tabs` s5 done (all) · orchestrator
-- 2026-11-07 15:34 UTC · `console-android-app-tabs` s6 done (all) · orchestrator
 - 2026-11-07 15:38 UTC · `console-android-app-tabs` s7 done, → complete (all) · orchestrator
 - 2026-11-07 15:38 UTC · `console-android-app-tabs` note (all) · orchestrator
 - 2026-11-07 15:38 UTC · `console-android-app-tabs` branch claude/console-android-wrapper (all) · builds-live
@@ -1157,6 +1154,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:25 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
 - 2026-11-09 02:25 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` note (all) · orchestrator
 - 2026-11-09 02:26 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · orchestrator
+- 2026-11-09 02:28 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
+- 2026-11-09 02:28 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` added (3 steps) (all) · foreign-write
+- 2026-11-09 02:28 UTC · `urgent-approval-links-say-method-not-allowed` added (3 steps) (all) · foreign-write
 
 ## Token passes (log)
 
