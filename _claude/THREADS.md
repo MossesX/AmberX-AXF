@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 02:54 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
 - 2026-11-09 02:55 UTC · `urgent-approval-links-say-method-not-allowed` → pending, note (all) · reconciler
 - 2026-11-09 02:57 UTC · `skins-are-a-complete-rework-look-layout-behavior` added (0 steps) (all) · pending
 - 2026-11-09 02:58 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s3 done, → built (all) · orchestrator
 - 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · reconciler
 - 2026-11-09 21:06 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running (all) · builds-live
+- 2026-11-09 21:08 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s6 done, note (all) · orchestrator
 
 ## Token passes (log)
 

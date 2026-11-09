@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2023,
- "updatedAt": "2026-11-09T21:06:13.714Z",
+ "rev": 2024,
+ "updatedAt": "2026-11-09T21:08:48.512Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127269,7 +127269,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T21:06:12.356Z",
+   "updatedAt": "2026-11-09T21:08:47.408Z",
    "builtAt": "",
    "notes": [
     {
@@ -127363,9 +127363,24 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-restyle-everything-badges-banner-and-every--rhonda, own login copy)",
      "at": "2026-11-09T20:53:09.379Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-09T21:08:47.408Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-09T21:08:47.408Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -127506,12 +127521,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T21:08:47.408Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-09T13:20:29.341Z",
-     "updatedAt": "2026-11-09T17:08:52.833Z"
+     "updatedAt": "2026-11-09T21:08:47.528Z"
     },
     {
      "id": "s5",
@@ -127544,7 +127559,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
