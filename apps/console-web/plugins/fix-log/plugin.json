@@ -1,0 +1,109 @@
+{
+ "$axf": "plugin@1",
+ "id": "ai.amberx.axf.console.fix-log",
+ "name": "Fix log",
+ "version": "0.1.0",
+ "kind": "module",
+ "apiLevel": 1,
+ "author": "Brett",
+ "description": "Fix log + FYI phone notifications from Claude sessions (fix-log@1). Any session (voice, chat, headless) writes one short line per step of a fix: found (something needs fixing), trying (what it is trying), failed, fixed. Each line goes into the Fix log and out as an informational notification: the console bell and AmberX on Brett's phone. Never asks for anything: no approval, no veto. Lines of one fix share an issue id, so the bell keeps only the newest. Fix log page with filters (outcome, session, build, text, open issues). Per-outcome notify switches and a per-session flood limit. CLI fixlog.mjs, REST, MCP fix-log_* and axf fix-log … through plugin-commands@1.",
+ "targets": [
+  "axf-console"
+ ],
+ "provides": [
+  "view:fix-log",
+  "settings-tab:fix-log"
+ ],
+ "scopes": [
+  "ROUTES"
+ ],
+ "enabledByDefault": true,
+ "optional": [],
+ "banner": false,
+ "tabable": true,
+ "forFramework": true,
+ "lifecycle": {
+  "$axf": "plugin-lifecycle@1",
+  "dataDir": ".axf-console/plugins/fix-log",
+  "env": [
+   "AXF_FIX_LOG_DATA_DIR",
+   "AXF_CONSOLE_URL",
+   "AXF_TOKEN",
+   "AXF_CONSOLE_CONTAINER"
+  ],
+  "mentions": [
+   "apps/console-web/plugins/README.md"
+  ]
+ },
+ "commands": {
+  "$axf": "plugin-commands@1",
+  "auto": true,
+  "items": [
+   {
+    "route": "POST /log",
+    "id": "log",
+    "title": "Fix log: log one step of a fix and tell Brett on his phone (FYI only, never an approval). outcome found | trying | failed | fixed; text = one short line saying what; issue = the id the first line returned",
+    "input": {
+     "type": "object",
+     "properties": {
+      "text": { "type": "string", "description": "one short line: what needs fixing, what you are trying, what failed, or what fixed it" },
+      "outcome": { "type": "string", "enum": ["found", "trying", "failed", "fixed"] },
+      "detail": { "type": "string", "description": "optional longer note (error, command, file)" },
+      "issue": { "type": "string", "description": "the issue id from the first line of this fix; left out = the session's open fix" },
+      "session": { "type": "string" },
+      "agent": { "type": "string" },
+      "build": { "type": "string" }
+     },
+     "required": ["text", "outcome"]
+    }
+   },
+   {
+    "route": "GET /entries",
+    "id": "entries",
+    "title": "Fix log lines, newest first (filters: outcome, session, build, issue, agent, since, q, limit)"
+   },
+   {
+    "route": "GET /entries/{entry_id}",
+    "id": "entry",
+    "title": "One Fix log line and every line of its fix"
+   },
+   {
+    "route": "GET /issues",
+    "id": "issues",
+    "title": "Fixes, one row each: first line, latest state, tries and failures (state = open | found | trying | failed | fixed)"
+   },
+   {
+    "route": "GET /summary",
+    "id": "summary",
+    "title": "Fix log in short: today's counts per outcome, open and fixed fixes, sessions and builds"
+   },
+   {
+    "route": "GET /settings",
+    "id": "settings",
+    "title": "Fix log settings: which outcomes notify, the per-session flood limit, how many lines are kept"
+   },
+   {
+    "route": "PUT /settings",
+    "id": "set-settings",
+    "title": "Change Fix log settings",
+    "input": {
+     "type": "object",
+     "properties": {
+      "notify": {
+       "type": "object",
+       "properties": { "found": { "type": "boolean" }, "trying": { "type": "boolean" }, "failed": { "type": "boolean" }, "fixed": { "type": "boolean" } }
+      },
+      "perSessionPer10Min": { "type": "integer", "minimum": 1, "maximum": 200 },
+      "keep": { "type": "integer", "minimum": 100, "maximum": 50000 }
+     }
+    }
+   }
+  ]
+ },
+ "builtWith": {
+  "model": "opus",
+  "builtAt": "2026-11-09"
+ },
+ "help": "help.json",
+ "opens": "main"
+}

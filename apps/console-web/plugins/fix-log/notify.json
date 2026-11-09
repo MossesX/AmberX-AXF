@@ -1,0 +1,15 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "fix-log.fyi",
+      "label": "Fix log (FYI)",
+      "group": "health",
+      "app": "console",
+      "source": "Fix log",
+      "description": "A Claude session found something to fix, is trying a fix, a try failed, or it is fixed. Information only: nothing to approve. Which outcomes send at all is in Settings → Plugins → Fix log.",
+      "match": { "source": "fix-log" },
+      "push": true
+    }
+  ]
+}

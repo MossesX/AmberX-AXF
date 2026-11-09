@@ -1,0 +1,10 @@
+/* Fix log plugin: layout only. Every control is a framework control; colours, sizes and spacing come from the tokens. */
+.axp-fixlog__filters { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: end; }
+.axp-fixlog__filters > * { flex: 1 1 10em; min-width: 0; }
+.axp-fixlog__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.axp-fixlog__row { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start; flex-wrap: wrap; padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-fixlog__row:last-child { border-bottom: 0; }
+.axp-fixlog__main { display: flex; flex-direction: column; flex: 1 1 16em; min-width: 0; overflow-wrap: anywhere; gap: var(--fx-dens-gap-xs); }
+.axp-fixlog__when { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.axp-fixlog__counts { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
+.axp-fixlog__detail { margin: 0; white-space: pre-wrap; }

@@ -1,0 +1,102 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "fix-log-help",
+  "name": "Fix log help",
+  "version": "0.1.0",
+  "description": "Help mode entries of the Fix log plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:fix-log",
+    "entries": [
+      {
+        "target": "view:fix-log",
+        "title": "Fix log",
+        "text": "What Claude sessions found that needs fixing, what they tried, what failed and what fixed it. Each line also reached your phone as an FYI; nothing here needs an answer.",
+        "kind": "screen"
+      },
+      {
+        "target": "fix-log",
+        "title": "Fix log settings",
+        "text": "Choose which outcomes ring the bell and your phone, the flood limit per session, and how many lines are kept. Every line is always logged."
+      },
+      {
+        "target": "outcome",
+        "title": "Outcome",
+        "text": "Shows only lines with this outcome: needs fixing, trying, failed or fixed. Not fixed yet shows the first three.",
+        "kind": "field"
+      },
+      {
+        "target": "flood-limit-notifications-per-session-per-minutes",
+        "title": "Flood limit",
+        "text": "How many notifications one session may send in 10 minutes. Past it, lines are still logged but stop ringing your phone until the 10 minutes pass.",
+        "kind": "field"
+      },
+      {
+        "target": "lines-kept",
+        "title": "Lines kept",
+        "text": "How many Fix log lines are kept. The oldest are dropped past this number.",
+        "kind": "field"
+      },
+      {
+        "target": "clear",
+        "title": "Clear",
+        "text": "Clears every filter and shows all lines again."
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Loads the newest lines now. The page also refreshes by itself every 15 seconds."
+      },
+      {
+        "target": "whole-fix",
+        "title": "Whole fix",
+        "text": "Shows only the lines of this one fix, from what needed fixing to fixed."
+      },
+      {
+        "target": "show-all",
+        "title": "Show all",
+        "text": "Leaves the one-fix view and shows every line again."
+      },
+      {
+        "target": "fix-log-found",
+        "title": "Needs fixing",
+        "text": "A session found something broken and is about to fix it."
+      },
+      {
+        "target": "fix-log-trying",
+        "title": "Trying",
+        "text": "What the session is trying now."
+      },
+      {
+        "target": "fix-log-failed",
+        "title": "Failed",
+        "text": "That try did not work. The next line says what it tries next."
+      },
+      {
+        "target": "fix-log-fixed",
+        "title": "Fixed",
+        "text": "The fix worked. The fix is closed."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "fix-log",
+        "title": "Fix log",
+        "steps": [
+          {
+            "say": "Every line here is a step a Claude session took to fix something, and it was sent to your phone as an FYI.",
+            "target": ""
+          },
+          {
+            "say": "Filter by outcome, session or build, or tap Whole fix to see one fix from start to end.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}
