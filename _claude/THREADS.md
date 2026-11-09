@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 01:26 UTC · `gizmo-voice` merged, note (all) · orchestrator
-- 2026-11-09 01:26 UTC · `shipped-features-r2` note (all) · orchestrator
 - 2026-11-09 01:26 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · pending
 - 2026-11-09 01:27 UTC · `fable-review-shipped-features-build-hook-contrac` note (all) · orchestrator
 - 2026-11-09 01:27 UTC · `amberx-voice-echo-fix` merged, note (all) · orchestrator
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` PR #413 (all) · builds-live
 - 2026-11-09 20:43 UTC · `fix-owner-check-bug-dead-start-button` s1 done (all) · foreign-write
 - 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` PR #414 (all) · builds-live
+- 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` s3 done, → built (all) · orchestrator
+- 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 
 ## Token passes (log)
 

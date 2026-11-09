@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:44:24.908Z",
+ "updatedAt": "2026-11-09T20:44:39.209Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80447,7 +80447,7 @@
    "title": "Per-account queues + long-press a queued build to send it to an API account now",
    "category": "",
    "detail": "1) Every Claude account (subscription and API) gets its own queue in the orchestrator and the Build Manager, showing what's waiting and running on it. 2) Long-press (hold) a build in Pending or the Queue to get a menu to send it to any account's queue, including an API account's queue (e.g. Hulu API), so it starts there right away, still under the API caps. Drag between account queues too. Full API control per standing rule.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80455,8 +80455,8 @@
    "pr": "#413",
    "priority": "P1",
    "createdAt": "2026-11-09T20:26:06.899Z",
-   "updatedAt": "2026-11-09T20:42:16.547Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-09T20:42:48.722Z",
+   "builtAt": "2026-11-09T20:42:26.158Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80473,6 +80473,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-account-queues-long-press-a-queued-build-to--joey, own login copy)",
      "at": "2026-11-09T20:32:12.629Z"
+    },
+    {
+     "text": "PR #413 open. Still to do before ready: desktop and phone UI Review shots of Build orchestrator > Pipeline > Account queues and the long-press Send to account queue menu (no console was running this branch in the headless session).",
+     "at": "2026-11-09T20:42:48.722Z"
     }
    ],
    "approvals": [],
@@ -80542,8 +80546,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-09T20:42:26.157Z",
      "note": "",
      "uid": "st-mw9pptc7039jzf"
     }
