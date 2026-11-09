@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1900,
- "updatedAt": "2026-11-09T19:21:54.044Z",
+ "rev": 1901,
+ "updatedAt": "2026-11-09T19:22:17.731Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130147,12 +130147,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:21:06.439Z",
+   "updatedAt": "2026-11-09T19:22:16.340Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T19:21:06.439Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T19:22:16.340Z"
     }
    ],
    "approvals": [],
@@ -130179,13 +130183,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-09T19:22:16.340Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9ne8wk01b3tq",
+     "title": "",
+     "text": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T19:22:16.340Z",
+     "updatedAt": "2026-11-09T19:22:16.340Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9ne8wk026ylw",
+     "title": "",
+     "text": "Build queue doesn't open the orchestrator. It opens the old build queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T19:22:16.340Z",
+     "updatedAt": "2026-11-09T19:22:16.340Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9ne8wk03d2th",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/home-page-build-queue-card-opens-the-orchestrato.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/home-page-build-queue-card-opens-the-orchestrato.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T19:22:16.340Z",
+     "updatedAt": "2026-11-09T19:22:16.340Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -130194,12 +130274,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T19:22:16.340Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
