@@ -769,10 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 01:27 UTC · `amberx-voice-echo-fix` merged, note (all) · orchestrator
-- 2026-11-09 01:28 UTC · `assistant-chat-mode` note (all) · orchestrator
-- 2026-11-09 01:28 UTC · `console-approvals-in-place` note (all) · orchestrator
-- 2026-11-09 02:02 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
 - 2026-11-09 02:10 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
 - 2026-11-09 02:13 UTC · `one-builds-page-pending-queued-built-tabs-remove` → pending, note (all) · pipeline
 - 2026-11-09 02:14 UTC · `multi-account-headless-workers` note (all) · orchestrator
@@ -1169,6 +1165,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 - 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s3 done, → built (all) · orchestrator
 - 2026-11-09 20:43 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
+- 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → running, note (all) · pipeline
+- 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
+- 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` branch claude/owner-only-settings-brett-s-admin-console-login-counts-as-owner (all) · pipeline
+- 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
 
 ## Token passes (log)
 

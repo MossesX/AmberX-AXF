@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:45:19.450Z",
+ "updatedAt": "2026-11-09T20:45:32.942Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14989,15 +14989,15 @@
    "title": "Owner-only settings: Brett's admin console login counts as owner",
    "category": "Fix",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> won't let me set it. It says no way enabled by owner only. Only Brett changes it. With his own click in the console. ... I can't click it.\n> I'm logged in as admin.\n> Yes, do that.\n\nProblem: Settings → Plugins → Claude refuses owner-only switches (No wait) for Brett's signed-in admin console session. Fix the owner check so Brett's own login is recognised as owner. Queue behind the account/badge build (one build at a time).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/owner-only-settings-brett-s-admin-console-login-counts-as-owner",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:44:18.990Z",
+   "updatedAt": "2026-11-09T20:44:34.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -15019,6 +15019,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T20:38:31.984Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-owner-only-settings-brett-s-admin-console-login---sully.",
+     "at": "2026-11-09T20:44:32.977Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-only-settings-brett-s-admin-console-login---sully, own login copy)",
+     "at": "2026-11-09T20:44:34.558Z"
     }
    ],
    "approvals": [],
@@ -80582,8 +80590,8 @@
    "pr": "#414",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:44:24.810Z",
-   "builtAt": "2026-11-09T20:44:24.811Z",
+   "updatedAt": "2026-11-09T20:44:45.045Z",
+   "builtAt": "2026-11-09T20:44:45.045Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80600,6 +80608,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-for-claude-accounts-the-orch--lenny, own login copy)",
      "at": "2026-11-09T20:31:11.413Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-for-claude-accounts-the-orch--lenny: brief only · start 11.1K tokens ($0.03) · cost $3.83 · 61 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:44:45.045Z"
     }
    ],
    "approvals": [],

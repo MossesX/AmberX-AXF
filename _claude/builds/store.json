@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1995,
- "updatedAt": "2026-11-09T20:45:19.450Z",
+ "rev": 1996,
+ "updatedAt": "2026-11-09T20:45:32.942Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96190,15 +96190,15 @@
    "title": "Owner-only settings: Brett's admin console login counts as owner",
    "category": "Fix",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> won't let me set it. It says no way enabled by owner only. Only Brett changes it. With his own click in the console. ... I can't click it.\n> I'm logged in as admin.\n> Yes, do that.\n\nProblem: Settings → Plugins → Claude refuses owner-only switches (No wait) for Brett's signed-in admin console session. Fix the owner check so Brett's own login is recognised as owner. Queue behind the account/badge build (one build at a time).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/owner-only-settings-brett-s-admin-console-login-counts-as-owner",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:44:18.990Z",
+   "updatedAt": "2026-11-09T20:44:34.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -96220,6 +96220,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T20:38:31.984Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-owner-only-settings-brett-s-admin-console-login---sully.",
+     "at": "2026-11-09T20:44:32.977Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-only-settings-brett-s-admin-console-login---sully, own login copy)",
+     "at": "2026-11-09T20:44:34.558Z"
     }
    ],
    "approvals": [],
@@ -96239,12 +96247,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:37:06.160Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-owner-only-settings-brett-s-admin-console-login---sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-09T20:44:27.561Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-09T20:38:31.984Z",
@@ -96254,9 +96262,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-09T20:44:27.561Z"
    },
    "steps": [
     {
@@ -96425,7 +96433,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131533,8 +131541,8 @@
    "pr": "#414",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-09T20:44:24.810Z",
-   "builtAt": "2026-11-09T20:44:24.811Z",
+   "updatedAt": "2026-11-09T20:44:45.045Z",
+   "builtAt": "2026-11-09T20:44:45.045Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131551,6 +131559,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-for-claude-accounts-the-orch--lenny, own login copy)",
      "at": "2026-11-09T20:31:11.413Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-for-claude-accounts-the-orch--lenny: brief only · start 11.1K tokens ($0.03) · cost $3.83 · 61 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:44:45.045Z"
     }
    ],
    "approvals": [],
