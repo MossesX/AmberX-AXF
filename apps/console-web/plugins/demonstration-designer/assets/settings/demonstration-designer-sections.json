@@ -1,32 +1,32 @@
 {
-  "$axf": "asset@1",
-  "type": "settings",
-  "id": "demonstration-designer-sections",
-  "name": "Demonstration Designer settings: sections",
-  "version": "1.0.0",
-  "description": "One column of collapsible sections in the order a pitch is made: Script open, Narration, Stage, Music, Export and Advanced folded. Each section opens with one line on what it is for.",
-  "author": "Demonstration Designer plugin",
-  "tags": [
-    "demonstration-designer",
-    "pitch-settings",
-    "ui-choices:demonstration-designer-settings"
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "demonstration-designer-sections",
+ "name": "demonstration-designer: Sections",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One column of collapsible sections in the order a pitch is made: Script open, Narration, Stage, Music, Export and Advanced folded. Each section opens with one line on what it is for.",
+ "tags": [
+  "ui-choice",
+  "choice-set:demonstration-designer",
+  "choice-option:sections"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": false,
+  "descriptions": true,
+  "view": "sections",
+  "order": [
+   "script",
+   "narration",
+   "stage",
+   "music",
+   "export",
+   "advanced"
   ],
-  "data": {
-    "layout": "list",
-    "header": "compact",
-    "search": false,
-    "descriptions": true,
-    "view": "sections",
-    "order": [
-      "script",
-      "narration",
-      "stage",
-      "music",
-      "export",
-      "advanced"
-    ],
-    "open": [
-      "script"
-    ]
-  }
+  "open": [
+   "script"
+  ]
+ }
 }

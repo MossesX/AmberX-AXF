@@ -1,21 +1,21 @@
 {
-  "$axf": "asset@1",
-  "type": "settings",
-  "id": "demonstration-designer-page-stacked",
-  "name": "Demonstration Designer page: stacked",
-  "version": "1.0.0",
-  "description": "The three picks top to bottom in one card: the search for what to show across the full width, then length and voice side by side, then one big Generate. Reads like a form; the same on a phone.",
-  "author": "Demonstration Designer plugin",
-  "tags": [
-    "demonstration-designer",
-    "pitch-page",
-    "ui-choices:demonstration-designer-page"
-  ],
-  "data": {
-    "layout": "list",
-    "header": "compact",
-    "search": true,
-    "descriptions": true,
-    "view": "stacked"
-  }
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "demonstration-designer-page-stacked",
+ "name": "demonstration-designer-page: Stacked",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The three picks top to bottom in one card: the search for what to show across the full width, then length and voice side by side, then one big Generate. Reads like a form; the same on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:demonstration-designer-page",
+  "choice-option:stacked"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "view": "stacked"
+ }
 }

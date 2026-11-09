@@ -1,21 +1,21 @@
 {
-  "$axf": "asset@1",
-  "type": "settings",
-  "id": "demonstration-designer-page-three-up",
-  "name": "Demonstration Designer page: three cards",
-  "version": "1.0.0",
-  "description": "The three picks as three numbered cards in a row (what, how long, voice) with Generate centred under them: the pitch flow at a glance on a wide screen; the cards stack on a phone.",
-  "author": "Demonstration Designer plugin",
-  "tags": [
-    "demonstration-designer",
-    "pitch-page",
-    "ui-choices:demonstration-designer-page"
-  ],
-  "data": {
-    "layout": "tabs-top",
-    "header": "compact",
-    "search": true,
-    "descriptions": false,
-    "view": "three-up"
-  }
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "demonstration-designer-page-three-up",
+ "name": "demonstration-designer-page: Three cards",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The three picks as three numbered cards in a row (what, how long, voice) with Generate centred under them: the pitch flow at a glance on a wide screen; the cards stack on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:demonstration-designer-page",
+  "choice-option:three-up"
+ ],
+ "data": {
+  "layout": "tabs-top",
+  "header": "compact",
+  "search": true,
+  "descriptions": false,
+  "view": "three-up"
+ }
 }

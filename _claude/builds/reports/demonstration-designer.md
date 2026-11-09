@@ -51,13 +51,16 @@ media | share | settings`. The README's table maps each UI action to its three o
   provides `service:demonstrations@1` (found by capability, never by folder), so each pitch is a registry asset.
 
 ## UI Review
-Two items wait in UI Review (group "demonstration-designer-plugin-new-standalone - Nov 9"), each with three options
-as real `settings` assets in `assets/settings/` (ui-choices@1), desktop and phone shots:
-- **Demonstration Designer page** (kind screen): Stacked · Three cards · Picker beside the dials (setting
-  `axf.demonstration-designer.page.view`).
-- **Demonstration Designer settings** (kind settings): Sections · Numbered walk · Two columns (setting
-  `axf.demonstration-designer.settings.view`).
-Both default to the first option until Brett picks.
+Two items wait in UI Review on the live console (group "demonstration-designer-plugin-new-standalone - Nov 9 4:10 AM",
+branch `claude/demo-designer`, PR #405), each with three options as real `settings` assets in `assets/settings/`
+(ui-choices@1), desktop and phone shots:
+- **Demonstration Designer page** (`r-20261109-eb1a4485`, kind screen): Stacked · Three cards · Picker beside the dials
+  (setting `axf.demonstration-designer.page.view`); the shots also show a generated pitch with Play / Export video /
+  Copy share link and the script box.
+- **Demonstration Designer settings** (`r-20261109-438d0f75`, kind settings): Sections · Numbered walk · Two columns
+  (setting `axf.demonstration-designer.settings.view`).
+Both default to the first option until Brett picks. Shots were taken with the local console pointed at no hub
+(`AXF_APPEARANCE_HUB=off`), so the look is the default theme.
 
 ## Checks
 `test.mjs` (21 checks: engine, registry over the real repo, store + CLI in a scratch folder, manifest vs routes; wired
