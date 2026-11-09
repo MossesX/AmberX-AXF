@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T13:10:08.269Z",
+ "updatedAt": "2026-11-09T13:12:04.368Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77227,6 +77227,62 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw9a0zz406wz2o"
+    }
+   ]
+  },
+  {
+   "id": "approve-deny-anywhere-send-in-background-never-navigate",
+   "title": "Approve/Deny anywhere: send in background, never navigate",
+   "category": "console",
+   "detail": "Bug: clicking Approve keeps bringing Brett to the console. Rule: Approve or Deny anywhere (a dialog, the approvals banner, AmberX notification, the floating toolbar, any framework app, axHub page) sends the decision in the background and does nothing else: no navigation, no opening the console, no app switch. At most a small confirmation flash in place. Brett: \"If I click approve anywhere, I don't want it to do anything... Just send it in the background.\" Check earlier approvals-in-place work first.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-09T13:12:03.226Z",
+   "updatedAt": "2026-11-09T13:12:03.226Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find every Approve/Deny entry point (dialogs, banner, AmberX notification actions, toolbar, axHub links) and make each send the decision in the background via API with no navigation",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9a658i03mr83"
+    },
+    {
+     "id": "s2",
+     "text": "In-place confirmation flash, tests that no route change/app open happens, screenshots to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9a658i04f6td"
     }
    ]
   }
