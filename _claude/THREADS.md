@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · foreign-write
-- 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · foreign-write
 - 2026-11-09 03:03 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · orchestrator
 - 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s1 done (all) · orchestrator
 - 2026-11-09 03:03 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 23:50 UTC · `assign-an-employee-to-every-role-action-type-and` → queued, note (all) · console
 - 2026-11-09 23:50 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 23:51 UTC · `activity-monitor-plugin-live-plain-english-log-o` note (all) · orchestrator
+- 2026-11-09 23:51 UTC · `activity-monitor-plugin-live-plain-english-log-o` → running, note (all) · pipeline
+- 2026-11-09 23:51 UTC · `activity-monitor-plugin-live-plain-english-log-o` branch claude/activity-monitor-plugin-live-plain-english-log-o (all) · pipeline
 
 ## Token passes (log)
 
