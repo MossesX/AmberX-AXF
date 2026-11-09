@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1737,
- "updatedAt": "2026-11-09T16:03:31.870Z",
+ "rev": 1738,
+ "updatedAt": "2026-11-09T16:03:40.317Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127392,6 +127392,77 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-09T16:03:30.605Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "right-click-a-queued-build-to-assign-it-to-a-spe",
+   "title": "Right-click a queued build to assign it to a specific saved Claude account",
+   "category": "",
+   "detail": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P2",
+   "createdAt": "2026-11-09T16:03:35.870Z",
+   "updatedAt": "2026-11-09T16:03:37.031Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:03:37.031Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+    "at": "2026-11-09T16:03:35.870Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-09T16:03:36.807Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 494
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

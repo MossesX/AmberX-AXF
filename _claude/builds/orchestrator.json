@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T16:03:31.870Z",
+ "updatedAt": "2026-11-09T16:03:40.317Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77811,6 +77811,43 @@
      "uid": "st-mw9gamy5034hbt"
     }
    ]
+  },
+  {
+   "id": "right-click-a-queued-build-to-assign-it-to-a-spe",
+   "title": "Right-click a queued build to assign it to a specific saved Claude account",
+   "category": "",
+   "detail": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P2",
+   "createdAt": "2026-11-09T16:03:35.870Z",
+   "updatedAt": "2026-11-09T16:03:37.031Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:03:37.031Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+    "at": "2026-11-09T16:03:35.870Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

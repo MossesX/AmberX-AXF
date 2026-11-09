@@ -3028,6 +3028,18 @@
    "from": "",
    "addenda": []
   },
+  "right-click-a-queued-build-to-assign-it-to-a-spe": {
+   "said": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+   "at": "2026-11-09T16:03:35.870Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "screens-compact": {
    "said": "'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
    "at": "2026-10-30",

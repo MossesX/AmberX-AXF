@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 02:31 UTC · `x.deploy.console` → pending (all) · claude-voice
-- 2026-11-08 02:31 UTC · `x.libs.core` → pending (all) · claude-voice
 - 2026-11-08 02:31 UTC · `x.uikits` → pending (all) · claude-voice
 - 2026-11-08 02:31 UTC · `x.engine.uiport` → pending (all) · claude-voice
 - 2026-11-08 02:31 UTC · `x.session` → pending (all) · claude-voice
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 16:02 UTC · `prompt-caching-and-batch-api-support-in-the-buil` added (0 steps) (all) · console
 - 2026-11-09 16:02 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · console
 - 2026-11-09 16:03 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
+- 2026-11-09 16:03 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` added (0 steps) (all) · console
+- 2026-11-09 16:03 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` → queued, note (all) · console
 
 ## Token passes (log)
 
