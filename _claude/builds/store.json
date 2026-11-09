@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2013,
- "updatedAt": "2026-11-09T20:51:52.281Z",
+ "rev": 2014,
+ "updatedAt": "2026-11-09T20:52:38.446Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127249,7 +127249,7 @@
    "title": "Skins restyle EVERYTHING: badges, banner and every visual element",
    "category": "Appearance",
    "detail": "Bug: applying a skin doesn't change the banner badges (Claude, VPS, axHub, AmberX, usage). Rule: a skin must change every single visual thing everywhere, in every framework app: banner, badges, toolbars, menus, dialogs, toasts, tables, buttons, icons, inputs, scrollbars, charts. Audit every component for hard-coded colours/styles or styles not read from skin tokens and move them to tokens/assets. Add an automated check: apply each skin, screenshot every screen, and fail on any element whose style didn't change from the default. Result must look professional. Brett: \"the skin literally needs to change every single visual thing everywhere... I need it to look professional.\"",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127257,7 +127257,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T19:23:21.566Z",
+   "updatedAt": "2026-11-09T20:52:36.805Z",
    "builtAt": "",
    "notes": [
     {
@@ -127339,6 +127339,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-09T19:20:53.853Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:52:36.805Z"
     }
    ],
    "approvals": [],
@@ -127356,7 +127360,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-09T18:49:57.449Z",
+    "queuedAt": "2026-11-09T20:52:36.417Z",
     "queuedBy": "console",
     "account": "account-3",
     "session": "",
@@ -127374,7 +127378,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 2 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-09T18:53:07.552Z"
    },
@@ -127520,7 +127524,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
