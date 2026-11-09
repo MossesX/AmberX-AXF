@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1845,
- "updatedAt": "2026-11-09T18:15:35.987Z",
+ "rev": 1846,
+ "updatedAt": "2026-11-09T18:16:32.387Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127591,10 +127591,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/right-click-a-queued-build-to-assign-it-to-a-spe",
-   "pr": "",
+   "pr": "#411",
    "priority": "P2",
    "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-09T18:15:34.387Z",
+   "updatedAt": "2026-11-09T18:16:31.101Z",
    "builtAt": "",
    "notes": [
     {
@@ -127730,7 +127730,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
