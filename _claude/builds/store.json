@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1709,
- "updatedAt": "2026-11-09T04:22:41.042Z",
+ "rev": 1710,
+ "updatedAt": "2026-11-09T04:22:48.649Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126223,7 +126223,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:22:38.915Z",
+   "updatedAt": "2026-11-09T04:22:42.519Z",
    "builtAt": "",
    "notes": [
     {
@@ -126237,6 +126237,10 @@
     {
      "text": "Brett: results pop up in a scrolling window. As Brett types in Search everything (or the recorder page), matching transcript snippets pop up live in a scrolling results window: each hit shows the session (date, title), timestamp and a few lines around the match with the words highlighted; infinite scroll, grouped by session, newest first with a sort switch. Tapping a hit opens the recorder at that moment and plays the audio. Plain search also drops filler phrases like 'find the session where', 'when we talked about' so a whole sentence still works, zero tokens.",
      "at": "2026-11-09T04:22:38.915Z"
+    },
+    {
+     "text": "Brett: \"With the keywords in focus.\" In the scrolling results window each snippet is centered on the matched keywords, highlighted. Opening a hit scrolls the transcript so the keyword is centered on screen, highlighted and focused, with next/previous match buttons inside that session.",
+     "at": "2026-11-09T04:22:42.519Z"
     }
    ],
    "approvals": [],
@@ -126354,7 +126358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
