@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1867,
- "updatedAt": "2026-11-09T18:52:13.663Z",
+ "rev": 1868,
+ "updatedAt": "2026-11-09T18:52:30.760Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129517,9 +129517,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T18:51:18.877Z",
+   "updatedAt": "2026-11-09T18:52:29.382Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T18:52:29.382Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -129534,7 +129539,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T18:52:29.382Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9mby2v01moy7",
+     "title": "",
+     "text": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T18:52:29.382Z",
+     "updatedAt": "2026-11-09T18:52:29.382Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9mby2v02kzlo",
+     "title": "",
+     "text": "Every time I open the console, the terminal seems to pop up. You need to stop that.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T18:52:29.382Z",
+     "updatedAt": "2026-11-09T18:52:29.382Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9mby2v03i0c6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/urgent-terminal-pops-up-every-time-the-console-o.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/urgent-terminal-pops-up-every-time-the-console-o.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T18:52:29.382Z",
+     "updatedAt": "2026-11-09T18:52:29.382Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -129543,12 +129640,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T18:52:29.382Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
