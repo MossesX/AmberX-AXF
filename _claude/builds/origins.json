@@ -511,7 +511,15 @@
    "brief": "",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "Yeah, I don't want to have to tap approve every time. ... I want to be able to change 90 seconds to like zero seconds.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
+    }
+   ]
   },
   "approve-button-fix": {
    "said": "Bug: in the console's \"Approval waiting\" dialog (approvals-in-place, landed today on main), clicking Approve repeatedly does nothing; the dialog stays. It says \"This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.\" Brett is signed in to the console as owner (Admin). (launch brief, Nov 7 2026)",

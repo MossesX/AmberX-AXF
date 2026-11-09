@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1984,
- "updatedAt": "2026-11-09T20:42:01.823Z",
+ "rev": 1985,
+ "updatedAt": "2026-11-09T20:42:23.900Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124523,8 +124523,9 @@
    "pendingId": "approvals-page-auto-approve-toggle-1-h-2-h-until",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-09T20:41:58.440Z",
+   "updatedAt": "2026-11-09T20:42:08.754Z",
    "builtAt": "",
    "notes": [
     {
@@ -124548,7 +124549,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "Yeah, I don't want to have to tap approve every time. ... I want to be able to change 90 seconds to like zero seconds.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     }
+    ]
    },
    "pipeline": {
     "queuedAt": "2026-11-09T20:41:57.914Z",
@@ -124645,7 +124654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T20:42:01.823Z",
+ "updatedAt": "2026-11-09T20:42:23.900Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75764,8 +75764,9 @@
    "pendingId": "approvals-page-auto-approve-toggle-1-h-2-h-until",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-09T20:41:58.440Z",
+   "updatedAt": "2026-11-09T20:42:08.754Z",
    "builtAt": "",
    "notes": [
     {
@@ -75789,7 +75790,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "Yeah, I don't want to have to tap approve every time. ... I want to be able to change 90 seconds to like zero seconds.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     }
+    ]
    },
    "steps": [
     {
