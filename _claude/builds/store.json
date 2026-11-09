@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1678,
- "updatedAt": "2026-11-09T02:46:52.990Z",
+ "rev": 1679,
+ "updatedAt": "2026-11-09T02:47:44.207Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126323,9 +126323,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:46:50.916Z",
-   "updatedAt": "2026-11-09T02:46:50.916Z",
+   "updatedAt": "2026-11-09T02:47:41.066Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T02:47:41.066Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -126340,7 +126345,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-09T02:47:41.066Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw8nv76501ltoy",
+     "title": "",
+     "text": "Every Shipped Features entry, build (Pending/Queued/Built) and Plan Studio plan that relates to a UI, screen, dialog, plugin or setting carries go-to hooks. The manifest records the UI targets it touched (view ids, dialogs, settings tabs/keys, plugin, element selectors) from the registry. In the row: an 'Open' button (opens the main target), and in the expanded row a 'Go to' list of every target. Clicking opens it in the console (or Molly/AmberX) via deep link / console_show, focused, scrolled into view, centered and highlighted. Works on desktop and phone; targets that no longer exist show as 'removed'. Backfill hooks for already shipped entries from their reports/plugin.json ui blocks. Full API/MCP/CLI/voice control ('open what build X changed'). Tests: a hook opens the right view and highlights the element.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:47:41.066Z",
+     "updatedAt": "2026-11-09T02:47:41.066Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw8nv76502b4t3",
+     "title": "",
+     "text": "Whenever you click the shipped feature, a built plan or anything related to a UI or setting, it brings you to it. There's got to be a hook to it. Somewhere, either clicking it or a hook somewhere in its expanded row or something.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:47:41.066Z",
+     "updatedAt": "2026-11-09T02:47:41.066Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw8nv76503or1b",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/go-to-hooks-every-shipped-feature-build-and-plan.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/go-to-hooks-every-shipped-feature-build-and-plan.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-09T02:47:41.066Z",
+     "updatedAt": "2026-11-09T02:47:41.066Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -126349,7 +126446,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126364,7 +126461,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-09T02:47:41.066Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
