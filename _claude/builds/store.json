@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1706,
- "updatedAt": "2026-11-09T04:21:07.477Z",
+ "rev": 1707,
+ "updatedAt": "2026-11-09T04:21:50.331Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126223,9 +126223,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:21:03.588Z",
+   "updatedAt": "2026-11-09T04:21:48.439Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: \"I can find that internally without AI, right?\" Yes: all search is plain code with zero tokens (full-text index over the transcripts, phrase + fuzzy + date filters). Add a search box with live type-ahead results on the recorder page and in the console's Search everything, so Brett can find a session himself without any AI. Claude/Gizmo only call the same plain search through the API.",
+     "at": "2026-11-09T04:21:48.439Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -126249,7 +126254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
