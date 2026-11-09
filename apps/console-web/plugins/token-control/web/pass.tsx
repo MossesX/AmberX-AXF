@@ -10,7 +10,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
-import { pluginFetch } from '@console/plugins';
+import { ownerFetch, pluginFetch } from '@console/plugins';
 
 const FOLDER = 'token-control';
 const POLL_MS = 5_000;
@@ -69,9 +69,7 @@ interface Answer { ok: boolean; text?: string; message?: string; code?: string; 
 
 /** Brett's own action: his session first (no bearer token), the console token only when there is no session. */
 async function ownerCall(path: string, body: unknown): Promise<Answer> {
-  const init: RequestInit = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials: 'same-origin', cache: 'no-store' };
-  let r = await fetch(`/api/plugins/${FOLDER}/${path}`, init);
-  if (r.status === 401) r = await pluginFetch(FOLDER, path, init);
+  const r = await ownerFetch(FOLDER, path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   return (await r.json().catch(() => ({ ok: false, message: `HTTP ${r.status}` }))) as Answer;
 }
 async function tokenCall(path: string, body: unknown): Promise<Answer> {

@@ -26,6 +26,17 @@ The change was first written on `claude/fix-owner-check-start-btn` (commit 59f9e
 This build takes only its owner-check part, unchanged; the Build manager Start fix in that commit belongs to the
 running build `fix-owner-check-bug-dead-start-button`.
 
+### Client half (second commit)
+
+The server half only helps when axHub forwards the signed session headers alongside a bearer request. The wall
+passes a request with `Authorization: Bearer` on `/api/` as `X-Auth-Via: token` with no session headers, so behind
+the wall the stored token still hid Brett. `apps/console-web/src/plugins.ts` gains `ownerFetch(folder, path, init)`:
+Brett's own actions go out with his signed-in session and **no** console token, so the hub has to stamp the signed
+session; it falls back to the token only on 401 or a sign-in redirect (no wall, no session), where the server answers
+what the token may do. Used by Claude settings saves (`web/index.tsx` `save()`) and by token-control's veto-pass
+owner calls (`web/pass.tsx` `ownerCall`, which had its own copy of the same idea). Documented in
+`apps/console-web/plugins/README.md`.
+
 ## Reach (API)
 
 No new UI. The setting page is unchanged and keeps its existing routes: deep link Settings → Plugins → Claude,
@@ -39,6 +50,8 @@ signed-in console, by design.
   `owner_approval()` (checked by running them against main's version).
 - `node apps/console-web/plugins/claude-settings/test.mjs`: 47 checks pass.
 - `node apps/console-web/plugins/token-control/test.mjs`: 20 tests pass.
+- `tsc --noEmit -p apps/console-web` clean; `check-theme`, `check-controls`, `plugin-lifecycle check claude-settings` pass.
+- No unit harness covers `src/plugins.ts`; `ownerFetch` is checked by type and by the live check below.
 
 ## Next
 

@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Container, Icon, Note, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { pluginFetch } from '@console/plugins';
+import { ownerFetch, pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './claude-settings.css';
@@ -41,8 +41,9 @@ async function load(): Promise<View> {
   return j;
 }
 
+/** Saves go out as Brett's own click (his signed-in session, not the console token): owner-only switches need it. */
 async function save(values: Record<string, Value>): Promise<void> {
-  const r = await pluginFetch(FOLDER, 'settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ values }) });
+  const r = await ownerFetch(FOLDER, 'settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ values }) });
   const j = (await r.json().catch(() => ({}))) as View;
   if (!r.ok || !j.ok) throw new Error(j.message || `HTTP ${r.status}`);
   publish(j);
