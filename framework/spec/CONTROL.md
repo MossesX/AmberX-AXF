@@ -155,6 +155,12 @@ Brett (Nov 3 2026): "allow everything for the next 30 minutes … It's 30 minute
 through axHub is a veto call (90 s countdown). A **pass** lets every command run at once for a while, after Brett approved the pass
 itself once. By default it covers **everything**; a narrower token scope is still there for "only theme changes".
 
+**Auto-approve** (Nov 9 2026, build `approvals-page-auto-approve-toggle-1-h-2-h-until`): the approvals banner's "Approve <!-- axf-plugin:token-control -->
+everything automatically" container grants the `all` pass for 1 hour, 2 hours or *until I turn it off*. The last is a grant with <!-- axf-plugin:token-control -->
+input `until_off: true` (plugin-side field on the record, `untilOff`; `all` only): each read of the store renews `expiresAt` to <!-- axf-plugin:token-control -->
+the longest pass allowed once less than half of it is left, so axHub sees an ordinary active pass with a normal end time. <!-- axf-plugin:token-control -->
+Revoke ends it. The publication is unchanged; `until_off` and `renewals` appear on the pass's public view. <!-- axf-plugin:token-control -->
+
 ### Scopes
 
 | Scope | Covers | CLI |

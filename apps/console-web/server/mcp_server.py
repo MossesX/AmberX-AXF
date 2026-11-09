@@ -911,6 +911,31 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         named). The pass itself stays as it is."""
         return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "undo", "input": {}, "by": by, "reason": reason})
 
+    # Auto-approve (build approvals-page-auto-approve-toggle, Brett Nov 9 2026): the approvals page's control, 1 hour /
+    # 2 hours / until turned off, as an `all` pass ("until off" renews itself until revoked).
+
+    async def auto_approve_on(duration: Literal["1h", "2h", "until-off"] = "1h", include_irreversible: bool = False, reason: str = "", by: str = "") -> dict[str, Any]:
+        """Ask to approve everything automatically: every call axHub holds and every console command runs at once
+        instead of waiting on the veto countdown (the 90 s becomes zero), for 1h, 2h or until-off (until Brett turns it
+        off). Irreversible deletes still ask unless include_irreversible. From an agent this only files a request Brett
+        approves once (approvals banner → Auto-approve, or axHub); tell him in one line that it is waiting."""
+        inp: dict[str, Any] = {"until_off": True} if duration == "until-off" else {"minutes": 60 if duration == "1h" else 120}
+        inp["reason"] = reason or f"Auto-approve {duration}"
+        if include_irreversible:
+            inp["include_irreversible"] = True
+        return await go({"op": "act", "target": "pass.scopes", "path": "all", "action": "grant", "input": inp, "by": by, "reason": inp["reason"]})
+
+    async def auto_approve_off(by: str = "", reason: str = "") -> dict[str, Any]:
+        """Turn Auto-approve off now (and withdraw a waiting request for it): every call waits for Brett again."""
+        return await go({"op": "act", "target": "pass.scopes", "path": "all", "action": "revoke", "input": {}, "by": by, "reason": reason})
+
+    async def auto_approve_status() -> dict[str, Any]:
+        """Is Auto-approve on, for how long (item.active.until_off, expiresAt, remainingMs), and any request waiting."""
+        return await go({"op": "get", "target": "pass.scopes", "path": "all"})
+
+    for fn, ann in ((auto_approve_on, WRITE), (auto_approve_status, READ), (auto_approve_off, IDEMPOTENT)):
+        mcp.tool(annotations=ann)(fn)
+
     for fn, ann in ((pass_grant, WRITE), (pass_status, READ), (pass_revoke, IDEMPOTENT), (pass_undo, WRITE)):
         mcp.tool(annotations=ann)(fn)
         mcp.tool(name=f"token_{fn.__name__}", annotations=ann, description=f"Same as {fn.__name__} (old name). {fn.__doc__}")(fn)

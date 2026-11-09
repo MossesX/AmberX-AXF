@@ -245,7 +245,40 @@ async def pass_grant(request: Request) -> JSONResponse:
         inp["reason"] = b["reason"]
     if b.get("include_irreversible") is True:
         inp["include_irreversible"] = True
+    if b.get("until_off") is True:
+        inp["until_off"] = True
     return _pass(request, "grant", b, inp)
+
+
+AUTO_MINUTES = {"1h": 60, "2h": 120}
+
+
+@router.get("/pass/auto")
+def pass_auto_status() -> Any:
+    """The approvals page's Auto-approve control: { on, preset, until_off, expiresAt, remainingMs, pending, presets, text }."""
+    return meta("pass-auto")
+
+
+@router.post("/pass/auto")
+async def pass_auto_on(request: Request) -> JSONResponse:
+    """Auto-approve on: {"for": "1h" | "2h" | "until-off", include_irreversible?, reason?}. From Brett's session it is on at
+    once; from a token it is a request he approves once (202)."""
+    b = await _body(request)
+    want = str(b.get("for") or b.get("duration") or "1h").strip().lower()
+    if want not in ("1h", "2h", "until-off"):
+        return JSONResponse({"ok": False, "code": "invalid", "message": "for must be 1h, 2h or until-off"}, status_code=400)
+    inp: dict[str, Any] = {"until_off": True} if want == "until-off" else {"minutes": AUTO_MINUTES[want]}
+    inp["reason"] = str(b.get("reason") or f"Auto-approve {want}")[:300]
+    if b.get("include_irreversible") is True:
+        inp["include_irreversible"] = True
+    return _pass(request, "grant", {**b, "scope": "all"}, inp)
+
+
+@router.post("/pass/auto/off")
+async def pass_auto_off(request: Request) -> JSONResponse:
+    """Auto-approve off now (the all pass is revoked; a waiting request withdrawn)."""
+    b = await _body(request)
+    return _pass(request, "revoke", {**b, "scope": "all"})
 
 
 @router.post("/pass/approve")

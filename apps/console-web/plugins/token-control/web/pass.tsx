@@ -9,14 +9,14 @@
  * (no wall) they fall back to the token, and the server answers what that may do.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 
 const FOLDER = 'token-control';
 const POLL_MS = 5_000;
 const WARN_MS = 2 * 60 * 1000;
 
-export interface PassView { id: string; scope: string; label?: string; state: string; minutes: number; reason: string; include_irreversible?: boolean; requestedBy: string; requestedAt: string; approvedBy?: string; approvedVia?: string; grantedAt?: string; expiresAt?: string; remainingMs: number; warn: boolean; changes: number; undoable?: number; notUndoable?: number; text: string }
+export interface PassView { id: string; scope: string; label?: string; state: string; minutes: number; until_off?: boolean; renewals?: number; reason: string; include_irreversible?: boolean; requestedBy: string; requestedAt: string; approvedBy?: string; approvedVia?: string; grantedAt?: string; expiresAt?: string; remainingMs: number; warn: boolean; changes: number; undoable?: number; notUndoable?: number; text: string }
 interface ScopeRow { id: string; label: string; targets: string[]; active: PassView | null; pending: PassView | null; text: string }
 interface Status { ok: boolean; items?: ScopeRow[]; maxMinutes?: number; recent?: (PassView | null)[]; text?: string; message?: string }
 
@@ -84,7 +84,16 @@ export const passCalls = {
   deny: (scope: string, request: string) => ownerCall('pass/deny', { scope, request }),
   revoke: (scope: string) => tokenCall('pass/revoke', { scope, by: 'console' }),
   undo: (scope: string) => tokenCall('pass/undo', { scope, by: 'console' }),
+  /** Auto-approve (the approvals banner's control): 1h / 2h / until-off; off revokes the all pass. */
+  autoOn: (forId: AutoPreset, includeIrreversible = false) => ownerCall('pass/auto', { for: forId, by: 'console', ...(includeIrreversible ? { include_irreversible: true } : {}) }),
+  autoOff: () => tokenCall('pass/auto/off', { by: 'console' }),
 };
+export type AutoPreset = '1h' | '2h' | 'until-off';
+export const AUTO_PRESETS: { id: AutoPreset; label: string; minutes: number | null }[] = [
+  { id: '1h', label: '1 hour', minutes: 60 },
+  { id: '2h', label: '2 hours', minutes: 120 },
+  { id: 'until-off', label: 'Until I turn it off', minutes: null },
+];
 
 function useAct() {
   const rt = useRuntime();
@@ -125,23 +134,90 @@ export function PassBanner() {
       <div className="axp-pass-banner__main">
         {live.map((p) => (
           <span key={p.id} className="axp-pass-chip" title={`${p.text} Approved by ${p.approvedBy ?? '?'}; ${p.changes} change(s) so far${p.notUndoable ? `, ${p.notUndoable} of them can't be rolled back` : ''}.`}>
-            <span><b>{scopeWord(p)}</b>{p.include_irreversible ? ' +irreversible' : ''}:</span>
-            <span className="fx-mono axp-pass-chip__time">{countdown(p.expiresAt, now)} left</span>
-            {left(p) <= WARN_MS && <span className="axp-pass-chip__warn">ending soon</span>}
-            <Button size="sm" tone="ghost" icon="plus" disabled={!!busy} onClick={() => void act(`x${p.id}`, () => passCalls.grant(p.scope, p.minutes || 30, 'extended from the banner', !!p.include_irreversible))}>Extend</Button>
+            <span><b>{p.scope === 'all' ? 'Auto-approve' : scopeWord(p)}</b>{p.include_irreversible ? ' +irreversible' : ''}:</span>
+            {p.until_off ? <span className="axp-pass-chip__time">until you turn it off</span> : <span className="fx-mono axp-pass-chip__time">{countdown(p.expiresAt, now)} left</span>}
+            {!p.until_off && left(p) <= WARN_MS && <span className="axp-pass-chip__warn">ending soon</span>}
+            {!p.until_off && <Button size="sm" tone="ghost" icon="plus" disabled={!!busy} onClick={() => void act(`x${p.id}`, () => passCalls.grant(p.scope, p.minutes || 30, 'extended from the banner', !!p.include_irreversible))}>Extend</Button>}
             {p.changes > 0 && <Button size="sm" tone="ghost" icon="undo" disabled={!!busy} onClick={() => void act(`u${p.id}`, () => passCalls.undo(p.scope))}>Undo {p.changes}</Button>}
-            <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`r${p.id}`, () => passCalls.revoke(p.scope))}>Revoke</Button>
+            <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`r${p.id}`, () => passCalls.revoke(p.scope))}>{p.scope === 'all' ? 'Turn off' : 'Revoke'}</Button>
           </span>
         ))}
         {pending.map((p) => (
           <span key={p.id} className="axp-pass-chip axp-pass-chip--ask" title={p.reason || p.text}>
-            <span><b>{p.requestedBy}</b> asks: {askWord(p)} without veto for {p.minutes} min</span>
+            <span><b>{p.requestedBy}</b> asks: {askWord(p)} without veto {p.until_off ? 'until you turn it off' : `for ${p.minutes} min`}</span>
             <Button size="sm" tone="primary" icon="check" disabled={!!busy} onClick={() => void act(`a${p.id}`, () => passCalls.approve(p.scope, p.id))}>Approve</Button>
             <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`d${p.id}`, () => passCalls.deny(p.scope, p.id))}>Deny</Button>
           </span>
         ))}
       </div>
     </div>
+  );
+}
+
+/* ---------------- Auto-approve: the approvals banner's container (slot approvals.auto) ---------------- */
+
+/** Which preset an active all pass is (null = off, 'custom' = some other length). */
+export function autoPresetOf(p: Pick<PassView, 'until_off' | 'minutes'> | null | undefined): AutoPreset | 'custom' | null {
+  if (!p) return null;
+  return p.until_off ? 'until-off' : p.minutes === 60 ? '1h' : p.minutes === 120 ? '2h' : 'custom';
+}
+
+/**
+ * "Approve everything automatically" (Brett, Nov 9 2026): 1 hour, 2 hours or Until I turn it off, the time left, and
+ * Turn off in the same container. It is the `all` veto pass: every call axHub holds runs at once instead of waiting on
+ * the countdown (90 s → 0), every console command skips the veto. Irreversible deletes still ask unless switched on.
+ * Rendered by the approvals banner through the `approvals.auto` slot (cross-plugin without naming a folder).
+ */
+export function AutoApprove({ compact = false }: { compact?: boolean }) {
+  const { status, error } = usePasses();
+  const all = status?.items?.find((r) => r.id === 'all');
+  const on = all?.active ?? null;
+  const ask = all?.pending ?? null;
+  const now = useNow(!!on && !on.until_off);
+  const { busy, act } = useAct();
+  const [irreversible, setIrreversible] = useState(false);
+  const max = status?.maxMinutes ?? 240;
+  const preset = autoPresetOf(on);
+  const label = preset === 'until-off' ? 'On until you turn it off' : on ? `On · ${countdown(on.expiresAt, now)} left` : ask ? 'Waiting for your approval' : 'Off';
+  return (
+    <Container className="axp-auto" title="Approve everything automatically" icon="check-circle" collapsible defaultOpen={!compact || !!on}
+      actions={<Chip tone={on ? 'success' : ask ? 'warning' : undefined}>{label}</Chip>}>
+      <div className="fx-stack" data-axf-auto-approve={on ? preset : 'off'}>
+        {error && <Note tone="danger">{error}</Note>}
+        {on ? (
+          <>
+            <p>{on.text}{on.changes ? ` ${on.changes} command(s) ran under it.` : ''}</p>
+            <div className="fx-row fx-row--wrap">
+              <Button tone="danger" icon="x" disabled={!!busy} onClick={() => void act('auto-off', passCalls.autoOff)}>Turn off</Button>
+              {AUTO_PRESETS.filter((p) => p.id !== preset && (p.minutes === null || p.minutes <= max)).map((p) => (
+                <Button key={p.id} size="sm" tone="ghost" disabled={!!busy} onClick={() => void act(`auto-${p.id}`, () => passCalls.autoOn(p.id, !!on.include_irreversible))}>Switch to {p.label.toLowerCase()}</Button>
+              ))}
+            </div>
+          </>
+        ) : ask ? (
+          <>
+            <p>{ask.requestedBy} asks: {ask.text}</p>
+            <div className="fx-row fx-row--wrap">
+              <Button tone="success" icon="check" disabled={!!busy} onClick={() => void act('auto-approve', () => passCalls.approve('all', ask.id))}>Approve</Button>
+              <Button tone="danger" icon="x" disabled={!!busy} onClick={() => void act('auto-deny', () => passCalls.deny('all', ask.id))}>Deny</Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="fx-muted">Every call waiting here and every new one runs at once instead of waiting on the countdown (90 s becomes 0). Services set to deny stay denied.</p>
+            <div className="fx-row fx-row--wrap" role="group" aria-label="Auto-approve for">
+              {AUTO_PRESETS.map((p) => (
+                <Button key={p.id} tone="success" icon={p.minutes ? 'clock' : 'check-circle'} disabled={!!busy || (p.minutes !== null && p.minutes > max)}
+                  title={p.minutes !== null && p.minutes > max ? `Passes last at most ${max} min (Settings → Plugins → Token control)` : undefined}
+                  onClick={() => void act(`auto-${p.id}`, () => passCalls.autoOn(p.id, irreversible))}>{p.label}</Button>
+              ))}
+            </div>
+            <Switch label="Irreversible deletes too" checked={irreversible} onChange={setIrreversible} hint="Off: hard deletes nothing can bring back (tools axHub marks irreversible, AmberX hard deletes) still ask you." />
+          </>
+        )}
+        {on && !on.include_irreversible && <p className="fx-muted">Irreversible deletes still ask you.</p>}
+      </div>
+    </Container>
   );
 }
 

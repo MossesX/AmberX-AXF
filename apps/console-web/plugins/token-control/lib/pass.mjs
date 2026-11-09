@@ -57,11 +57,30 @@ function writeStore(d) {
   return out;
 }
 
+/**
+ * Auto-approve "until I turn it off" (build approvals-page-auto-approve-toggle, Brett Nov 9 2026): an `all` pass granted
+ * with `until_off` keeps itself on. Every read of the store renews it to the longest pass the settings allow once less
+ * than half of that is left, so it never lapses while the console or axHub keeps reading (axHub reads GET /pass before
+ * every held call); a revoke ends it like any pass. Renewals are counted on the record, not logged line by line.
+ */
+export function renewUntilOff(p, now, maxMinutes) {
+  if (!p || p.untilOff !== true || !passActive(p, now)) return false;
+  const span = maxMinutes * 60000;
+  if (Date.parse(p.expiresAt) - now >= span / 2) return false;
+  p.expiresAt = new Date(now + span).toISOString();
+  p.minutes = maxMinutes;
+  p.renewals = (p.renewals ?? 0) + 1;
+  p.renewedAt = new Date(now).toISOString();
+  return true;
+}
+
 /** The store with every state brought up to `now` (an active pass past its end becomes expired, an old request lapsed), logged once. */
 export function loadPasses(now = Date.now()) {
   const d = readStore();
   let moved = false;
+  const { maxMinutes } = passSettings();
   for (const p of d.passes) {
+    if (renewUntilOff(p, now, maxMinutes)) { moved = true; continue; }
     const st = passStateAt(p, now);
     if (st !== p.state) {
       p.state = st;
@@ -166,11 +185,11 @@ function activate(d, req, owner, now) {
 export function runPass(c, { approver = null, proof = null, now = Date.now(), runTokens } = {}) {
   const { maxMinutes, timeZone } = passSettings();
   const d = loadPasses(now);
-  const view = (p) => (p ? passPublic(p, now, timeZone) : null);
+  const view = (p) => (p ? withUntilOff(passPublic(p, now, timeZone), p) : null);
   const scopeRow = (id) => {
     const active = latest(d, id, ['active']);
     const pending = d.passes.find((p) => p.scope === id && passPending(p, now));
-    return { id, label: PASS_SCOPES[id].label, targets: PASS_SCOPES[id].targets, active: view(active), pending: view(pending), text: active ? passSentence(active, now, timeZone) : pending ? passSentence(pending, now, timeZone) : `${PASS_SCOPES[id].what} go${id === 'all' ? 'es' : ''} through the veto.` };
+    return { id, label: PASS_SCOPES[id].label, targets: PASS_SCOPES[id].targets, active: view(active), pending: view(pending), text: active ? view(active).text : pending ? view(pending).text : `${PASS_SCOPES[id].what} go${id === 'all' ? 'es' : ''} through the veto.` };
   };
   if (c.op === 'list') {
     const items = PASS_SCOPE_IDS.map(scopeRow);
@@ -183,23 +202,26 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
   const by = c.by || 'unknown';
   switch (c.action) {
     case 'grant': {
-      const minutes = passMinutes(input.minutes, maxMinutes);
+      // until_off: auto-approve until Brett turns it off (the all scope only; renewed by loadPasses while it is on)
+      const untilOff = input.until_off === true;
+      if (untilOff && c.path !== 'all') throw new ControlError('invalid', 'until_off only goes with the all scope');
+      const minutes = untilOff ? maxMinutes : passMinutes(input.minutes, maxMinutes);
       // a waiting request for the same scope is replaced (one request per scope)
       for (const p of d.passes) if (p.scope === c.path && passPending(p, now)) { p.state = 'lapsed'; p.endedAt = new Date(now).toISOString(); p.endedBy = 'replaced'; }
       const irr = c.path === 'all' && input.include_irreversible === true;
-      const req = { id: newId(), scope: c.path, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), ...(irr ? { includeIrreversible: true } : {}), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
+      const req = { id: newId(), scope: c.path, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), ...(irr ? { includeIrreversible: true } : {}), ...(untilOff ? { untilOff: true } : {}), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
       d.passes.unshift(req);
       const owner = ownerOf(approver, proof, req, now);
       if (owner) {
         activate(d, req, owner, now);
         writeStore(d);
-        logLine(req, `granted ${minutes} min${irr ? ' (irreversible included)' : ''} by ${owner.name} (${owner.via})${req.extends ? `, replacing ${req.extends}` : ''}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'grant' });
-        return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
+        logLine(req, `granted ${untilOff ? 'until turned off' : `${minutes} min`}${irr ? ' (irreversible included)' : ''} by ${owner.name} (${owner.via})${req.extends ? `, replacing ${req.extends}` : ''}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'grant' });
+        return { changed: true, item: view(req), text: view(req).text };
       }
       writeStore(d);
-      logLine(req, `requested ${minutes} min${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
+      logLine(req, `requested ${untilOff ? 'until turned off' : `${minutes} min`}${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
       return {
-        changed: true, item: view(req), text: passSentence(req, now, timeZone),
+        changed: true, item: view(req), text: view(req).text,
         approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or on Token control → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
       };
     }
@@ -217,7 +239,7 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       activate(d, req, owner, now);
       writeStore(d);
       logLine(req, `approved ${req.minutes} min by ${owner.name} (${owner.via}), requested by ${req.requestedBy}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'approve' });
-      return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
+      return { changed: true, item: view(req), text: view(req).text };
     }
     case 'revoke': {
       const p = latest(d, c.path, ['active']);
@@ -250,6 +272,48 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
     }
     default: throw new ControlError('invalid', `pass.scopes has no action ${c.action}`);
   }
+}
+
+/** A pass's public view with the until-off fields: `until_off`, `renewals`, and a sentence that says it stays on. */
+export function withUntilOff(v, p) {
+  if (!v || p?.untilOff !== true) return v;
+  const on = v.state === 'active';
+  const what = v.include_irreversible ? 'every command, irreversible deletes too' : 'every command except irreversible deletes';
+  return { ...v, until_off: true, renewals: p.renewals ?? 0, text: on ? `Auto-approve is on until you turn it off: ${what} skips the veto.` : v.state === 'pending' ? `Waiting for Brett: auto-approve ${what} until turned off.` : v.text };
+}
+
+/* ------------------------------------------------------------------ auto-approve (the approvals page control) */
+
+/** The presets the Auto-approve control offers (Brett, Nov 9 2026): one hour, two hours, until I turn it off. */
+export const AUTO_PRESETS = [
+  { id: '1h', label: '1 hour', minutes: 60 },
+  { id: '2h', label: '2 hours', minutes: 120 },
+  { id: 'until-off', label: 'Until I turn it off', minutes: null },
+];
+/** A word for a preset → its id ('1h', '2h', 'until-off'), or null. Minutes and plain words work too. */
+export function autoPresetId(word) {
+  const w = String(word ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+  if (['1h', '1 h', '60', '1 hour', 'one hour', 'hour', 'an hour'].includes(w)) return '1h';
+  if (['2h', '2 h', '120', '2 hours', 'two hours'].includes(w)) return '2h';
+  if (['until-off', 'until off', 'untiloff', 'until i turn it off', 'on', 'always', 'forever', 'until turned off'].includes(w)) return 'until-off';
+  return null;
+}
+/**
+ * The Auto-approve state for the approvals page, the API, MCP, CLI and voice: { on, preset, until_off, expiresAt,
+ * remainingMs, include_irreversible, pending, maxMinutes, presets, note, text }. It reads the `all` pass.
+ */
+export function autoState(now = Date.now()) {
+  const r = runPass({ op: 'get', target: 'pass.scopes', path: 'all' }, { now });
+  const { maxMinutes } = passSettings();
+  const a = r.item.active; const w = r.item.pending;
+  const preset = a ? (a.until_off ? 'until-off' : a.minutes === 60 ? '1h' : a.minutes === 120 ? '2h' : 'custom') : null;
+  return {
+    on: !!a, preset, until_off: !!a?.until_off, expiresAt: a?.expiresAt ?? null, remainingMs: a?.remainingMs ?? 0, include_irreversible: !!a?.include_irreversible,
+    pass: a ?? null, pending: w ?? null, maxMinutes,
+    presets: AUTO_PRESETS.map((p) => ({ ...p, available: p.minutes === null || p.minutes <= maxMinutes })),
+    note: 'Covers every call axHub holds and every console command: they run at once instead of waiting on the veto countdown. Irreversible deletes still ask unless "irreversible too" is on.',
+    text: a ? a.text : w ? w.text : 'Auto-approve is off: every call waits for you.',
+  };
 }
 
 /* ------------------------------------------------------------------ covered writes */

@@ -338,5 +338,41 @@ await test('pass all: everything by default, ordinary deletes skip the confirm, 
   await runControl({ op: 'reset', target: 'tokens.theme' });
 });
 
+/* ---- Auto-approve (build approvals-page-auto-approve-toggle): 1h / 2h / until off on the all pass */
+await test('auto-approve: until off renews itself, 1h / 2h presets, off from the same control', async () => {
+  const pass = await import('./lib/pass.mjs');
+  const owner = { approver: { via: 'console', name: 'brett' } };
+  const t0 = Date.now();
+  assert.equal(pass.autoState(t0).on, false);
+  assert.deepEqual(['1 hour', '2h', 'until I turn it off', 'off'].map(pass.autoPresetId), ['1h', '2h', 'until-off', null]);
+  const r = pass.runPass({ op: 'act', target: 'pass.scopes', path: 'all', action: 'grant', input: { until_off: true }, by: 'brett' }, { ...owner, now: t0 });
+  assert.equal(r.item.state, 'active'); assert.equal(r.item.until_off, true);
+  assert.match(r.text, /^Auto-approve is on until you turn it off: every command except irreversible deletes skips the veto\.$/);
+  let a = pass.autoState(t0);
+  assert.deepEqual([a.on, a.preset, a.until_off], [true, 'until-off', true]);
+  a = pass.autoState(t0 + 3 * 3600e3); // under half of the 240 min left: renewed to 240 again
+  assert.deepEqual([a.on, Math.round(a.remainingMs / 60000), a.pass.renewals], [true, 240, 1]);
+  const cover = await runControl({ op: 'list', target: 'pass.scopes' });
+  assert.equal(cover.items.find((x) => x.id === 'all').active.until_off, true);
+  pass.runPass({ op: 'act', target: 'pass.scopes', path: 'all', action: 'grant', input: { minutes: 120 }, by: 'brett' }, { ...owner, now: t0 + 3 * 3600e3 });
+  assert.equal(pass.autoState(t0 + 3 * 3600e3).preset, '2h', 'switching to 2 hours replaces until-off');
+  pass.runPass({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke', by: 'brett' }, { now: t0 + 3 * 3600e3 });
+  assert.equal(pass.autoState(t0 + 3 * 3600e3).on, false);
+  assert.throws(() => pass.runPass({ op: 'act', target: 'pass.scopes', path: 'tokens.theme', action: 'grant', input: { until_off: true }, by: 'brett' }, owner), /all scope/);
+  // an agent's until-off grant is only a request
+  const req = await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'grant', input: { until_off: true }, by: 'claude' });
+  assert.equal(req.item.state, 'pending'); assert.equal(req.approval.required, true);
+  assert.equal(pass.autoState().pending.until_off, true);
+  await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke', by: 'brett' });
+  // CLI: axf pass auto <preset|off|status>
+  const cli = (...w) => commandFromArgv(['pass', 'auto', ...w]).command;
+  assert.deepEqual(cli('until-off'), { op: 'act', target: 'pass.scopes', action: 'grant', path: 'all', reason: 'Auto-approve from the CLI', input: { until_off: true, reason: 'Auto-approve from the CLI' } });
+  assert.equal(cli('2h').input.minutes, 120);
+  assert.equal(cli('1', 'hour').input.minutes, 60);
+  assert.deepEqual([cli('off').action, cli('off').path], ['revoke', 'all']);
+  assert.deepEqual([cli('status').op, cli().path], ['get', 'all']);
+  assert.match(commandFromArgv(['pass', 'auto', 'later']).error, /1h \| 2h \| until-off/);
+});
+
 rmSync(T, { recursive: true, force: true });
 console.log(`${process.exitCode ? '✗' : '✓'} token-control: ${n} tests passed`);

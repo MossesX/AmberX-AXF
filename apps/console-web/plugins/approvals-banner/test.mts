@@ -2,6 +2,7 @@
 /** Approvals (veto) banner self-test: the alarm model. node --experimental-strip-types apps/console-web/plugins/approvals-banner/test.mts */
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
+import { groupApprovals, groupKey, serviceOf } from './web/groups.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
@@ -142,5 +143,20 @@ await at('owner sign-in, expired, already decided, no credential, relay down: th
   const d = await h.approvals.decide!({ id: ID, kind: 'held', title: 'T', revision: 2 } as never, 'approve');
   assert.deepEqual([d.ok, d.message], [false, 'That request expired.']);
 });
+
+// Collapsible groups on the opened banner (Brett, Nov 9 2026): per build / session that asked, else per service.
+{
+  assert.equal(serviceOf('vps.run'), 'vps'); assert.equal(serviceOf('axf-console.control_set'), 'axf-console'); assert.equal(serviceOf('bare'), 'bare'); assert.equal(serviceOf(''), 'other');
+  assert.deepEqual(groupKey({ id: 'a', tool: 'vps.run', source: { label: 'Claude Code', who: 'build-x' } }), { id: 'build:build-x', title: 'build-x', kind: 'build' });
+  assert.deepEqual(groupKey({ id: 'a', tool: 'vps.run', source: { label: 'Claude Code', who: 'Claude Code' } }), { id: 'service:vps', title: 'vps', kind: 'service' });
+  const g = groupApprovals([
+    { id: '1', tool: 'vps.run', source: { label: 'Headless', who: 'build-x' } },
+    { id: '2', tool: 'github.merge', source: null },
+    { id: '3', tool: 'vps.run', source: { label: 'Headless', who: 'build-x' } },
+    { id: '4', tool: 'github.comment' },
+  ]);
+  assert.deepEqual(g.map((x) => [x.id, x.items.map((i) => i.id)]), [['build:build-x', ['1', '3']], ['service:github', ['2', '4']]]);
+  n += 6;
+}
 
 console.log(`✓ approvals-banner: ${n} checks passed`);

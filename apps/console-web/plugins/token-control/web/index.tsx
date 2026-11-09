@@ -6,7 +6,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { controlClient, controlForms, type ControlAnswer, type ControlCommand } from './client.mjs';
 import { GUIDES } from './docs';
 import { appMenu } from './menu';
-import { PassBanner, PassSettings, PassesTab } from './pass';
+import { AutoApprove, PassBanner, PassSettings, PassesTab, loadPasses, passCalls, type AutoPreset } from './pass';
 import './token-control.css';
 
 /** The folder name under plugins/: the routes live at /api/plugins/token-control/ (and /api/control/). */
@@ -251,6 +251,18 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'token-control', label: 'Token control', icon: 'sliders', view: 'token-control' }] },
   settingsTabs: [{ id: 'token-control', label: 'Token control', icon: 'sliders', order: 90, parent: 'plugins' }],
   // After Codebase changes (4.7) and the Claude handoff reminder (4.9), before approvals (5): renders nothing without a pass.
+  // The approvals banner's Auto-approve container (it renders the slot; nothing here names that plugin).
+  slots: { 'approvals.auto': [{ id: 'token-control.auto-approve', order: 10, render: () => <AutoApprove compact /> }] },
+  // Auto-approve without the UI (console_show / voice / remote console commands): token-control.auto-approve:<1h|2h|until-off|off>.
+  register(rt) {
+    rt.actions.register('token-control.auto-approve', async ([want = '']) => {
+      const w = want.trim().toLowerCase();
+      const a = w === 'off' ? await passCalls.autoOff() : (['1h', '2h', 'until-off'] as string[]).includes(w) ? await passCalls.autoOn(w as AutoPreset) : null;
+      if (!a) { rt.toast('Auto-approve: 1h, 2h, until-off or off', 'warning', 'Auto-approve'); return; }
+      rt.toast(a.ok ? (a.text ?? 'Done') : `${a.code ?? 'failed'}: ${a.message ?? ''}`, a.ok ? 'success' : 'danger', 'Auto-approve');
+      await loadPasses();
+    }, { label: 'Auto-approve: 1h, 2h, until-off or off', params: true });
+  },
   banners: [{ id: 'token-pass', label: 'Pass', icon: 'key', settingsTab: 'token-control', order: 4.95, render: () => <PassBanner /> }],
   settingsPanels: [{ id: 'token-control.passes', tab: 'token-control', title: 'Veto passes', icon: 'key', order: 20, render: () => <PassSettings /> },
     { id: 'token-control.lifecycle', tab: 'token-control', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],

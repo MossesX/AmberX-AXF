@@ -32,7 +32,8 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Icon, Note, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Container, Icon, Note, Slot, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { groupApprovals } from './groups';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
@@ -327,6 +328,26 @@ function PendingRow({ p, hide }: { p: Pending; hide?: () => void }) {
   );
 }
 
+/**
+ * The opened banner: calls waiting for an approval in collapsible containers, one per build / session that asked, else
+ * per service (groups.ts). One group only: plain rows, no container around them.
+ */
+function PendingGroups({ pending }: { pending: Pending[] }) {
+  const groups = groupApprovals(pending);
+  if (groups.length < 2) return <>{pending.map((p) => <PendingRow key={p.id} p={p} />)}</>;
+  return (
+    <>
+      {groups.map((g) => (
+        <div key={g.id} className="axp-approvals-banner__group" data-axf-approvals-group={g.id}>
+          <Container title={`${g.title} · ${g.items.length}`} icon={g.kind === 'build' ? 'play' : 'shield'} collapsible>
+            {g.items.map((p) => <PendingRow key={p.id} p={p} />)}
+          </Container>
+        </div>
+      ))}
+    </>
+  );
+}
+
 /** Calls waiting for an approval shown as rows while the banner is collapsed (all of them once it's opened). */
 const COLLAPSED_ROWS = 3;
 
@@ -342,6 +363,7 @@ function ApprovalsBanner() {
     return (
       <div className="axp-approvals-banner" role="alert">
         {s.held.map((c) => <HeldRow key={c.id} c={c} />)}
+        <Slot name="approvals.auto" />
       </div>
     );
   }
@@ -353,6 +375,7 @@ function ApprovalsBanner() {
       <div className="axp-approvals-banner" role="alert">
         {s.held.map((c) => <HeldRow key={c.id} c={c} />)}
         <PendingRow p={s.pending[0]!} hide={hide} />
+        <Slot name="approvals.auto" />
       </div>
     );
   }
@@ -370,12 +393,13 @@ function ApprovalsBanner() {
         <a className="fx-btn fx-btn--neutral axp-approvals-banner__go" href={s.approvalsUrl} target="_blank" rel="noopener noreferrer" title="Everything on axHub, in a new tab"><Icon name="external" size={14} /> All</a>
         <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>
       </div>
-      {shown.map((p) => <PendingRow key={p.id} p={p} />)}
+      {open ? <PendingGroups pending={s.pending} /> : shown.map((p) => <PendingRow key={p.id} p={p} />)}
       {more > 0 && (
         <button type="button" data-fx-row className="axp-approvals-banner__more fx-small fx-muted" onClick={() => (open || s.pending.length <= shown.length ? globalThis.open(s.approvalsUrl, '_blank', 'noopener') : setOpen(true))}>
           …and {more} more{open || s.pending.length <= shown.length ? ' on the hub' : ''}
         </button>
       )}
+      <Slot name="approvals.auto" />
     </div>
   );
 }
