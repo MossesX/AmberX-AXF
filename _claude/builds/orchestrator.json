@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T00:49:19.908Z",
+ "updatedAt": "2026-11-09T00:49:45.286Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76075,12 +76075,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:49:14.856Z",
+   "updatedAt": "2026-11-09T00:49:41.461Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T00:49:14.856Z"
+    },
+    {
+     "text": "Brett: \"I need a way to manage the safeguards.\" Add a Safeguards panel (orchestrator settings, its own section, also reachable from the build's row): turn each guard on/off; edit turns cap, time cap (x estimate), cost cap, no-tick warn/stop multipliers, repeat-command count, search budget; per-build and per-queue overrides; a live view of each running session against its limits (turns, time, cost, searches used); a log of every guard stop with the reason, last log lines and buttons: Relaunch, Raise limit and relaunch, Send back to pending. Full API/MCP/CLI/voice control and a deep link. Stock controls, 3 layout options to UI Review.",
+     "at": "2026-11-09T00:49:41.461Z"
     }
    ],
    "approvals": [],
