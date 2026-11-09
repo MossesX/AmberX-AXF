@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1680,
- "updatedAt": "2026-11-09T02:52:49.652Z",
+ "rev": 1681,
+ "updatedAt": "2026-11-09T02:54:06.148Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -118901,7 +118901,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-08T19:24:43.797Z",
+   "updatedAt": "2026-11-09T02:54:04.225Z",
    "builtAt": "",
    "notes": [
     {
@@ -118911,6 +118911,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:24:43.797Z"
+    },
+    {
+     "text": "Brett (Nov 9): \"needs a way to go through all the pending builds and the build queue and search for steps that are gonna break existing work or conflict with it, or it's already done, or it doesn't need it anymore.\" Add a Sweep: a button on the builds page (and API/voice: 'sweep the builds') plus an automatic run on every land. It checks every step of every pending and queued build against the Shipped features ledger, main's code, and the other pending/queued builds, and flags each step: Already done (shipped by build X), Conflicts (would change/break feature Y, shows the files and lines), Duplicate (same as a step in build Z), Obsolete (no longer needed: superseded or its target was removed), OK. Results: badges on each build and step, a Sweep report with a filter per flag, and one-tap fixes per flag: drop step, merge into the other build, move to Conflicts for Brett, keep. Nothing is changed without Brett's tap. Cheap first pass in plain code (ledger + file overlap); Claude only for the unclear ones.",
+     "at": "2026-11-09T02:54:04.225Z"
     }
    ],
    "approvals": [],
@@ -119006,7 +119010,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {

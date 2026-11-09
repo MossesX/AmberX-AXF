@@ -757,7 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 16:34 UTC · `full-api-control` s4 done (all) · orchestrator
 - 2026-11-07 16:34 UTC · `full-api-control` s3 done (all) · foreign-write
 - 2026-11-07 16:36 UTC · `full-api-control` s5 done (all) · orchestrator
 - 2026-11-07 16:36 UTC · `full-api-control` s6 done (all) · orchestrator
@@ -1157,6 +1156,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 02:46 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` added (0 steps) (all) · pending
 - 2026-11-09 02:47 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` note (all) · orchestrator
 - 2026-11-09 02:52 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · pending
+- 2026-11-09 02:54 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pending
 
 ## Token passes (log)
 
