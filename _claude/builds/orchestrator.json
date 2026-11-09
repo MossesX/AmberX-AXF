@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T21:09:50.411Z",
+ "updatedAt": "2026-11-09T21:10:56.383Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77526,7 +77526,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-09T21:09:49.179Z",
+   "updatedAt": "2026-11-09T21:10:55.066Z",
    "builtAt": "",
    "notes": [
     {
@@ -77628,6 +77628,10 @@
     {
      "text": "s6 done (Fable): 44 skin declarations + text children, commit 770788566 pushed to PR #409. Worktree /root/axf-builds/skins-restyle-everything-badges-banner-and-every-visual-element has a stale /opt/axf/.git/worktrees/skins-restyle-everything-badges-banner-and-every-visual-element/index.lock (0 bytes, 20:53, no git process) that the session could not delete (sensitive path). s6 was committed through a temporary index. Before s5: rm that index.lock, then git reset -q in the worktree.",
      "at": "2026-11-09T21:09:49.179Z"
+    },
+    {
+     "text": "Headless run axf-skins-restyle-everything-badges-banner-and-every--rhonda: brief only · start 12.9K tokens ($0.10) · cost $6.88 · 99 turns · 6 tools, MCP none",
+     "at": "2026-11-09T21:10:55.066Z"
     }
    ],
    "approvals": [
