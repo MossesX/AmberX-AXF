@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` branch claude/urgent-amberx-veto-notice-alarm-too-loud-approve (all) · pipeline
-- 2026-11-08 22:27 UTC · `urgent-amberx-veto-notice-alarm-too-loud-approve` note (all) · orchestrator
 - 2026-11-08 22:28 UTC · `nested-menus-for-console-amberx-and-molly-overri` → queued, note (all) · cli
 - 2026-11-08 22:32 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` added (0 steps) (all) · pending
 - 2026-11-08 22:33 UTC · `brief-only-headless` → complete, merged, note (all) · reconciler
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 20:14 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` added (0 steps) (all) · console
 - 2026-11-09 20:14 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` → queued, note (all) · console
 - 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` note (all) · orchestrator
+- 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` → running, note (all) · pipeline
+- 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` branch claude/saved-claude-logins-never-end-up-on-a-spent-refr (all) · pipeline
 
 ## Token passes (log)
 
