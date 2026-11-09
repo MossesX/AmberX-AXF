@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1967,
- "updatedAt": "2026-11-09T20:30:28.498Z",
+ "rev": 1968,
+ "updatedAt": "2026-11-09T20:30:41.875Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130730,8 +130730,8 @@
    "pr": "#412",
    "priority": "P0",
    "createdAt": "2026-11-09T20:14:49.766Z",
-   "updatedAt": "2026-11-09T20:30:14.592Z",
-   "builtAt": "2026-11-09T20:30:14.592Z",
+   "updatedAt": "2026-11-09T20:30:31.836Z",
+   "builtAt": "2026-11-09T20:30:31.836Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -130748,6 +130748,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-saved-claude-logins-never-end-up-on-a-spent-refr--lenny, own login copy)",
      "at": "2026-11-09T20:15:46.538Z"
+    },
+    {
+     "text": "Headless run axf-saved-claude-logins-never-end-up-on-a-spent-refr--lenny: brief only · start 11.1K tokens ($0.03) · cost $3.33 · 65 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:30:31.836Z"
     }
    ],
    "approvals": [],
