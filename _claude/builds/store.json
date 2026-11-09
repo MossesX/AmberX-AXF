@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1657,
- "updatedAt": "2026-11-09T01:26:06.907Z",
+ "rev": 1658,
+ "updatedAt": "2026-11-09T01:26:14.285Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -91012,7 +91012,7 @@
    "pr": "#364",
    "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-07T16:40:42.034Z",
+   "updatedAt": "2026-11-09T01:26:05Z",
    "builtAt": "2026-11-06T20:04:31.580Z",
    "notes": [
     {
@@ -91034,6 +91034,10 @@
     {
      "text": "Reconciler: PR #364 merged",
      "at": "2026-11-07T16:40:42.034Z"
+    },
+    {
+     "text": "Shipped manifest sm-shipped-features-r2 rev 1 sent to Shipped features (orchestrator): landed aeccdb0a8, 43 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-09T01:26:05Z"
     }
    ],
    "approvals": [],
@@ -91092,6 +91096,12 @@
       "verbatim": true
      }
     ]
+   },
+   "shipped": {
+    "id": "sm-shipped-features-r2",
+    "rev": 1,
+    "at": "2026-11-09T01:26:05Z",
+    "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad"
    },
    "steps": [
     {
@@ -91588,7 +91598,7 @@
    "fromProfile": "angel",
    "kind": "build",
    "planRef": "shipped-features-r2",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125728,7 +125738,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:25:14.245Z",
+   "updatedAt": "2026-11-09T01:26:11.114Z",
    "builtAt": "",
    "notes": [
     {
@@ -125746,6 +125756,10 @@
     {
      "text": "Brett: \"Any failed, any errors that are file related get sent to the log with links to the file with the bad code there, the conflicted code, and highlighted and in focus.\" Every file-related failure (test/typecheck/lint/CI errors, merge conflicts, guard stops, parse errors in JSON) is written to the terminal log and the Shipped Features entry's manifest with file path + line range + message. Each log line carries a link; clicking it opens the file in the read-only editor scrolled to the bad or conflicted code, centered and highlighted (conflicts show both sides). Same via API/deep link.",
      "at": "2026-11-09T01:25:14.245Z"
+    },
+    {
+     "text": "Brett: \"also make an errors column that's hideable. With a collapse button.\" In the Terminal plugin (console-terminal), add an Errors column: a side column next to the output showing only the file-related errors (file, line, message, build, time; click opens the file at the bad code, centered and highlighted). It has a collapse button (collapses to a thin strip with an error count badge) and can be hidden entirely from the Terminal toolbar/settings; state remembered. Filters by build, severity, plugin. Full API/MCP/CLI/voice control.",
+     "at": "2026-11-09T01:26:11.114Z"
     }
    ],
    "approvals": [],
@@ -125863,7 +125877,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {

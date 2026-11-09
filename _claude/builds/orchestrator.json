@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T01:26:06.907Z",
+ "updatedAt": "2026-11-09T01:26:14.285Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -35093,7 +35093,7 @@
    "pr": "#364",
    "mergedAt": "2026-11-07T16:33:06Z",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-07T16:40:42.034Z",
+   "updatedAt": "2026-11-09T01:26:05Z",
    "builtAt": "2026-11-06T20:04:31.580Z",
    "notes": [
     {
@@ -35115,6 +35115,10 @@
     {
      "text": "Reconciler: PR #364 merged",
      "at": "2026-11-07T16:40:42.034Z"
+    },
+    {
+     "text": "Shipped manifest sm-shipped-features-r2 rev 1 sent to Shipped features (orchestrator): landed aeccdb0a8, 43 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-09T01:26:05Z"
     }
    ],
    "approvals": [],
@@ -76218,7 +76222,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:25:14.245Z",
+   "updatedAt": "2026-11-09T01:26:11.114Z",
    "builtAt": "",
    "notes": [
     {
@@ -76236,6 +76240,10 @@
     {
      "text": "Brett: \"Any failed, any errors that are file related get sent to the log with links to the file with the bad code there, the conflicted code, and highlighted and in focus.\" Every file-related failure (test/typecheck/lint/CI errors, merge conflicts, guard stops, parse errors in JSON) is written to the terminal log and the Shipped Features entry's manifest with file path + line range + message. Each log line carries a link; clicking it opens the file in the read-only editor scrolled to the bad or conflicted code, centered and highlighted (conflicts show both sides). Same via API/deep link.",
      "at": "2026-11-09T01:25:14.245Z"
+    },
+    {
+     "text": "Brett: \"also make an errors column that's hideable. With a collapse button.\" In the Terminal plugin (console-terminal), add an Errors column: a side column next to the output showing only the file-related errors (file, line, message, build, time; click opens the file at the bad code, centered and highlighted). It has a collapse button (collapses to a thin strip with an error count badge) and can be hidden entirely from the Terminal toolbar/settings; state remembered. Filters by build, severity, plugin. Full API/MCP/CLI/voice control.",
+     "at": "2026-11-09T01:26:11.114Z"
     }
    ],
    "approvals": [],

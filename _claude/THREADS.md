@@ -757,8 +757,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-07 14:42 UTC · `plan-designer` note (all) · claude-plan-designer
-- 2026-11-07 14:47 UTC · `postgres-console` s2 done (all) · orchestrator
 - 2026-11-07 14:51 UTC · `orchestrator-gate` s4 done (all) · orchestrator
 - 2026-11-07 14:45 UTC · `blueprint-notes-tasks` added (7 steps) (all) · orchestrator
 - 2026-11-07 14:52 UTC · `blueprint-notes-tasks` s1 done, → running (all) · orchestrator
@@ -1157,6 +1155,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 01:24 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · orchestrator
 - 2026-11-09 01:25 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · pending
 - 2026-11-09 01:26 UTC · `gizmo-voice` merged, note (all) · orchestrator
+- 2026-11-09 01:26 UTC · `shipped-features-r2` note (all) · orchestrator
+- 2026-11-09 01:26 UTC · `shipped-features-live-manifests-from-dispatch-to` note (all) · pending
 
 ## Token passes (log)
 
