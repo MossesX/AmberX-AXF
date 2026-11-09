@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1641,
- "updatedAt": "2026-11-09T00:49:45.286Z",
+ "rev": 1642,
+ "updatedAt": "2026-11-09T00:50:58.610Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125497,7 +125497,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:49:41.461Z",
+   "updatedAt": "2026-11-09T00:50:55.438Z",
    "builtAt": "",
    "notes": [
     {
@@ -125507,6 +125507,10 @@
     {
      "text": "Brett: \"I need a way to manage the safeguards.\" Add a Safeguards panel (orchestrator settings, its own section, also reachable from the build's row): turn each guard on/off; edit turns cap, time cap (x estimate), cost cap, no-tick warn/stop multipliers, repeat-command count, search budget; per-build and per-queue overrides; a live view of each running session against its limits (turns, time, cost, searches used); a log of every guard stop with the reason, last log lines and buttons: Relaunch, Raise limit and relaunch, Send back to pending. Full API/MCP/CLI/voice control and a deep link. Stock controls, 3 layout options to UI Review.",
      "at": "2026-11-09T00:49:41.461Z"
+    },
+    {
+     "text": "Brett on managing the safeguards: \"I don't want the file itself to be editable. I want it to be view. You can view the file with steps. Make it an MD file with bullet points for the rules. And create a sortable, collapsible tree with a whole shitload of different rules, of snippets. When you click it, it will pop a dialogue to let you add the custom fields that it requires for the snippet and it will insert it.\" Build: 1) The safeguards live as a Markdown rules file (one bullet per rule, grouped by heading), shown READ-ONLY in the panel (rendered view with the steps it applies to); no free-text editing. 2) A snippet library: a sortable, searchable, collapsible tree (category > sub-category > snippet) with a large set of ready rule snippets (turn caps, time/cost caps, no-tick timeouts, repeat-command and search-spree limits, file/folder fences, no sub-agents, model limits, test-before-commit, stop-and-note rules, etc.). 3) Clicking a snippet opens a dialog with the fields it needs (number, duration, $, path, model, scope: global/queue/build/step) with validation and a preview line; Insert adds the bullet to the rules file. 4) Each inserted rule can be toggled, moved, or removed from the panel (structured actions, still no raw edit); every change is versioned with history and undo. 5) The orchestrator and the loop detector read their limits from this file; the brief gets the bullets that apply to the step. Full API/MCP/CLI/voice control; stock controls; 3 layout options to UI Review.",
+     "at": "2026-11-09T00:50:55.438Z"
     }
    ],
    "approvals": [],
@@ -125624,7 +125628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
