@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 00:44 UTC · `demo-sandbox-system-sandbox-settings-panel` added (6 steps) (all) · claude-voice
 - 2026-11-08 00:44 UTC · `glossary-walkthrough-generator-investor-demos` added (6 steps) (all) · claude-voice
 - 2026-11-08 00:45 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` s2 done (all) · orchestrator
 - 2026-11-08 00:45 UTC · `orchestrator-full-api-control` added (5 steps) (all) · claude-voice
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 04:30 UTC · `demonstration-designer-plugin-new-standalone` → complete, note (all) · reconciler
 - 2026-11-09 04:30 UTC · `urgent-approval-links-say-method-not-allowed` merged, note (all) · reconciler
 - 2026-11-09 04:31 UTC · `skins` note (all) · orchestrator
+- 2026-11-09 04:31 UTC · `skins-asset-types` note (all) · orchestrator
 
 ## Token passes (log)
 
