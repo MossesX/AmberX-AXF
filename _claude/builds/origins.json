@@ -642,6 +642,13 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "In the walkthrough, keep the group chat open as picture-in-picture, with the group chat going on while you watch the demo go around the screen clicking stuff. You'll see an alert pop up, and then right in the group chat, John said this or Jim said that, as things go on in the demonstration. Make mock events: a mock build gets done, a mock error is reported, a mock build failed, something being added to the queue or the orchestrator. Make the alerts pop up in the banners and the notifications. Make mock events to demonstrate everything about the human resources department and the employees.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },
