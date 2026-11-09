@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1923,
- "updatedAt": "2026-11-09T19:28:04.628Z",
+ "rev": 1924,
+ "updatedAt": "2026-11-09T19:36:42.389Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127175,7 +127175,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T19:25:05.367Z",
+   "updatedAt": "2026-11-09T19:36:41.200Z",
    "builtAt": "",
    "notes": [
     {
@@ -127249,6 +127249,10 @@
     {
      "text": "Session on account-3 ended (exit 1) with 5 steps left after 3 runs: failed.",
      "at": "2026-11-09T19:25:05.367Z"
+    },
+    {
+     "text": "Headless run axf-appearance-skins-colour-themes-only-remove-desig--rhonda: brief only · start 12.8K tokens ($0.10) · cost $31.77 · 120 turns · 6 tools, MCP none",
+     "at": "2026-11-09T19:36:41.200Z"
     }
    ],
    "approvals": [],
@@ -127408,7 +127412,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
