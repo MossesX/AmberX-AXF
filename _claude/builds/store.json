@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1694,
- "updatedAt": "2026-11-09T03:03:19.411Z",
+ "rev": 1695,
+ "updatedAt": "2026-11-09T03:03:34.770Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124580,7 +124580,7 @@
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T03:03:12.967Z",
+   "updatedAt": "2026-11-09T03:03:27.933Z",
    "builtAt": "",
    "notes": [
     {
@@ -124594,6 +124594,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-plan-studio-receives-a-valid-shipped-feature-man--sully, own login copy)",
      "at": "2026-11-09T02:31:13.728Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--sully: brief only · start 12.7K tokens ($0.10) · cost $16.09 · 152 turns · 6 tools, MCP none",
+     "at": "2026-11-09T03:03:27.933Z"
     }
    ],
    "approvals": [],
@@ -124711,7 +124715,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {

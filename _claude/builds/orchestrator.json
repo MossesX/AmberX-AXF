@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T03:03:19.411Z",
+ "updatedAt": "2026-11-09T03:03:34.770Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75904,7 +75904,7 @@
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-09T03:03:12.967Z",
+   "updatedAt": "2026-11-09T03:03:27.933Z",
    "builtAt": "",
    "notes": [
     {
@@ -75918,6 +75918,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-plan-studio-receives-a-valid-shipped-feature-man--sully, own login copy)",
      "at": "2026-11-09T02:31:13.728Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--sully: brief only · start 12.7K tokens ($0.10) · cost $16.09 · 152 turns · 6 tools, MCP none",
+     "at": "2026-11-09T03:03:27.933Z"
     }
    ],
    "approvals": [],
