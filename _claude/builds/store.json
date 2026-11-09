@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1643,
- "updatedAt": "2026-11-09T00:51:53.325Z",
+ "rev": 1644,
+ "updatedAt": "2026-11-09T00:52:27.434Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -125497,7 +125497,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:51:51.789Z",
+   "updatedAt": "2026-11-09T00:52:25.833Z",
    "builtAt": "",
    "notes": [
     {
@@ -125515,6 +125515,10 @@
     {
      "text": "Brett: \"the dialogue that needs custom parameters for the rules, any that are like file names or specific things already have a list to choose from for the custom parameters.\" In the snippet fields dialog, every field whose values already exist is a pick list (searchable dropdown or tree picker), not free text: file and folder paths (from the repo tree / plugin registry), plugins, apps, builds, queues, steps, Claude accounts, API accounts, models, agents/crew, tools, commands, settings keys. Multi-select where a rule takes several. Free text only for true free values (numbers, durations, $ amounts) and those get validated inputs with units.",
      "at": "2026-11-09T00:51:51.789Z"
+    },
+    {
+     "text": "Brett: \"There has to be filters too, where you put in for the list of certain types of parameters. There's got to be filters.\" Every pick list in the snippet dialog has filters fitting its type, plus search: files/folders by app, plugin, folder, file type/extension, changed recently, owned by a build; plugins by app, category, enabled; builds by status, queue, model, category, date; queues by account type; steps by build and state; accounts by role, model available, health; models by tier; agents by role/skill; tools by service; settings keys by plugin/section. Filters combine, show counts, can be cleared, and remember the last used per field.",
+     "at": "2026-11-09T00:52:25.833Z"
     }
    ],
    "approvals": [],
@@ -125632,7 +125636,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
