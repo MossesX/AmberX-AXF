@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1878,
- "updatedAt": "2026-11-09T18:55:00.411Z",
+ "rev": 1879,
+ "updatedAt": "2026-11-09T18:55:14.244Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129695,7 +129695,7 @@
    "title": "Orchestrator and Build Manager: search bar + Collapse all / Expand all",
    "category": "",
    "detail": "In the Build orchestrator and Build Manager tables (and the shared build-table asset): a search bar that filters builds by title, id, branch, account and words; Collapse all / Expand all buttons for rows and sections; collapsible section headers (Queued, Active, etc.) remembered across reloads. Voice/API control for search and collapse. Fold into the split-builds-pages table work if it hasn't started. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129703,7 +129703,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:58.882Z",
-   "updatedAt": "2026-11-09T18:54:58.949Z",
+   "updatedAt": "2026-11-09T18:55:05.987Z",
    "builtAt": "",
    "notes": [
     {
@@ -129741,6 +129741,10 @@
     {
      "text": "Headless run axf-orchestrator-and-build-manager-search-bar-collap--earl: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:54:58.949Z"
+    },
+    {
+     "text": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
+     "at": "2026-11-09T18:55:05.987Z"
     }
    ],
    "approvals": [],
@@ -129761,18 +129765,18 @@
     "queuedAt": "2026-11-09T18:52:00.400Z",
     "queuedBy": "console",
     "account": "account-1",
-    "session": "axf-orchestrator-and-build-manager-search-bar-collap--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:54:10.612Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-09T18:54:05.363Z",
+     "at": "2026-11-09T18:55:03.728Z",
      "exit": 1,
      "outcome": "requeued",
      "stepsLeft": 3,
      "account": "account-1",
-     "session": "axf-orchestrator-and-build-manager-search-bar-collap--paulie"
+     "session": "axf-orchestrator-and-build-manager-search-bar-collap--earl"
     },
     "split": {
      "at": "2026-11-09T18:52:49.277Z",
@@ -129782,7 +129786,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-1 ended (exit 1) with 3 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-09T18:54:10.612Z"
    },
@@ -129865,7 +129869,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-08 19:19 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → complete, merged, note (all) · builds-live
 - 2026-11-08 19:19 UTC · `x.deploy.console` note (all) · builds-live
 - 2026-11-08 19:21 UTC · `planner-select-items-and-build-them` note (all) · builds-live
 - 2026-11-08 19:19 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits-` → complete, merged, note (all) · reconciler
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 18:54 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
 - 2026-11-09 18:54 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · orchestrator
 - 2026-11-09 18:54 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
+- 2026-11-09 18:55 UTC · `orchestrator-and-build-manager-search-bar-collap` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
