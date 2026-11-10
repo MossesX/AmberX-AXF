@@ -85,6 +85,15 @@ the spend guard is the same for all. The CLI runner drops a `--to` flag, so `mov
   #orchestrator-hold-status) fail the same step, as does a main push at 17:34. Every check this PR touches passes
   locally. The builds-store breakage is the subject of `dispatcher-a-worktree-store-write-can-erase-a-fr`.
 
+## Final re-run (s7, Nov 10)
+
+Same head (`2a586f2f2`). Results did not change: `pipeline.test.mjs` 44 ✓, `build-orchestrator/test.py` 44 ✓,
+`claude-accounts-manager/test.py` 66 ✓, `claude-accounts/test.py` 89 ✓, `worker-routing.test.mjs` 44 ✓,
+check-theme and check-controls pass. GitHub: #449 **MERGEABLE**, state UNSTABLE only because "Light PR checks" still
+fails at `builds-store.mjs verify` (`breakroom … orchestrator-self-check-when-stuck-verify-each-a`). That build belongs to
+another session, not #449. Main is 379 commits ahead, and none of them touch the account manager or orchestrator
+routing files. Following the rules, the branch was not refreshed from main again.
+
 ## Left for after the merge queue
 
 - Merge: the merge queue lands #449 (sessions never merge by hand). It is blocked while the repo-wide builds-store
