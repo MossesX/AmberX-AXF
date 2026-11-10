@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2996,
- "updatedAt": "2026-11-10T23:21:06.483Z",
+ "rev": 2997,
+ "updatedAt": "2026-11-10T23:21:27.654Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153426,7 +153426,7 @@
    "pr": "#479",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-10T23:20:12.300Z",
+   "updatedAt": "2026-11-10T23:20:52.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -153460,6 +153460,10 @@
     {
      "text": "Headless run axf-api-accounts-need-no-approval-builds-route-there--rhonda: brief only · start 10.7K tokens ($0.03) · cost $1.67 · 57 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:20:12.300Z"
+    },
+    {
+     "text": "Reconciler: PR #479",
+     "at": "2026-11-10T23:20:52.378Z"
     }
    ],
    "approvals": [],
@@ -153580,7 +153584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153604,7 +153608,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
-   "updatedAt": "2026-11-10T23:20:13.554Z",
+   "updatedAt": "2026-11-10T23:21:24.841Z",
    "builtAt": "",
    "notes": [
     {
@@ -153638,6 +153642,22 @@
     {
      "text": "Headless run axf-orchestrator-merge-first-switch-separate-merger--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:13:09.184Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T23:21:04.030Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-orchestrator-merge-first-switch-separate-merger--joey.",
+     "at": "2026-11-10T23:21:13.987Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-orchestrator-merge-first-switch-separate-merger--joey, own login copy)",
+     "at": "2026-11-10T23:21:18.598Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-merge-first-switch-separate-merger--gina: brief only · start 10.8K tokens ($0.03) · cost $2.32 · 49 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:21:24.841Z"
     }
    ],
    "approvals": [],
@@ -153657,27 +153677,34 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:08:09.958Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "axf-orchestrator-merge-first-switch-separate-merger--lenny",
+    "account": "account-5",
+    "session": "axf-orchestrator-merge-first-switch-separate-merger--joey",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T23:12:44.901Z",
-    "runs": 1,
-    "lastRun": null,
+    "launchedAt": "2026-11-10T23:21:13.313Z",
+    "runs": 2,
+    "lastRun": {
+     "at": "2026-11-10T23:21:02.652Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 2,
+     "account": "account-3",
+     "session": "axf-orchestrator-merge-first-switch-separate-merger--lenny"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:12:44.901Z",
+    "dispatchedAt": "2026-11-10T23:21:13.313Z",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:21:05.116Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:12:44.901Z"
+    "pickedAt": "2026-11-10T23:21:13.313Z"
    },
    "steps": [
     {
@@ -153758,7 +153785,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
