@@ -772,16 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
-- 2026-11-10 15:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
-- 2026-11-10 15:40 UTC · `projects-create-a-new-project-and-move-builds-be` note (all) · orchestrator
-- 2026-11-10 15:40 UTC · `project-manager-every-project-its-own-console-in` added (0 steps) (all) · console
-- 2026-11-10 15:40 UTC · `project-manager-every-project-its-own-console-in` → queued, note (all) · console
-- 2026-11-10 15:40 UTC · `project-manager-add-on-new-project-prompt-asks-i` added (0 steps) (all) · console
-- 2026-11-10 15:40 UTC · `project-manager-add-on-new-project-prompt-asks-i` → queued, note (all) · console
-- 2026-11-10 15:41 UTC · `project-manager-add-on-new-project-prompt-asks-i` added (0 steps) (all) · builds-live
-- 2026-11-10 15:41 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
-- 2026-11-10 15:41 UTC · `project-manager-every-project-its-own-console-in` note (all) · builds-live
 - 2026-11-10 15:42 UTC · `project-manager-add-on-new-project-prompt-asks-i` note (all) · orchestrator
 - 2026-11-10 15:43 UTC · `project-manager-add-on-drag-a-build-to-another-p` added (0 steps) (all) · console
 - 2026-11-10 15:43 UTC · `project-manager-add-on-drag-a-build-to-another-p` → queued, note (all) · console
@@ -1172,6 +1162,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:53 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` branch claude/orchestrator-assigns-builds-steps-to-employee-ag (all) · pipeline
 - 2026-11-10 18:53 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
 - 2026-11-10 18:55 UTC · `x.modules` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.deploy.console` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.uikits` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.libs.core` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.engine.uiport` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.state` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.session` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.lib.files` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.lib.notifications` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.engine.dev` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `x.lib.hub` → pending (all) · voice
 
 ## Token passes (log)
 
