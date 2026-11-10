@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:50:12.475Z",
+ "updatedAt": "2026-11-10T17:50:29.746Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85449,12 +85449,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:26:25.764Z",
-   "updatedAt": "2026-11-10T04:28:39.599Z",
+   "updatedAt": "2026-11-10T17:50:15.498Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T04:28:39.599Z"
+    },
+    {
+     "text": "Split by Claude into 9 steps (1 Fable).",
+     "at": "2026-11-10T17:50:15.498Z"
     }
    ],
    "approvals": [],
@@ -85474,51 +85478,16 @@
    "steps": [
     {
      "id": "s1",
-     "text": "vps.build_land, build_start, build_stop and build_clean reject names over 40 characters (^[a-z0-9][a-z0-9-]{0,39}$), but the orchestrator makes build IDs up to about 50 characters (e.g. demo-designer-finish-phase-2-s2-s3-resuming-from, skins-restyle-everything-badges-banner-and-every-visual-element). 1) In the axHub vps service, raise the name limit to match the orchestrator's longest IDs (at least 80), keeping the same safe character set. 2) If the orchestrator ever makes an ID the tools can't take, it shortens it consistently (folder, branch, tmux) instead of failing. 3) When build_land fails for any fixable reason (stray files, stale locks, name format), it fixes it and retries automatically, logging to the fix log. Real code clashes go to a conflict-fix build automatically. 4) Tests with long names. Repos: axHub (vps service config) and AmberX-AXF (orchestrator).",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the shared build-name contract used by both repos. Allowed names match ^[a-z0-9][a-z0-9-]{0,79}$ (80 characters). Define one deterministic shortener: trim at a hyphen boundary, then append -<6-char hash of the full ID>, so the same long ID always maps to the same short name. The folder, branch and tmux session all use the short name. The orchestrator records long→short in its build record. Write the contract doc and the reference shortener module with its constants (max length, charset, hash length).",
+     "model": "Fable",
+     "why": "Cross-port contract between the axHub vps service and the AmberX-AXF orchestrator",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwa6wwmo01tqc9"
-    },
-    {
-     "id": "s2",
-     "text": "Why, when it has a problem, when it gets rejected, aren't you just fixing it right away? I keep telling you over and over.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwa6wwmo02lcvo"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/landing-tool-takes-long-build-names-and-auto-fix.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
+     "estimate": "25 min",
      "files": [
-      "_claude/builds/reports/landing-tool-takes-long-build-names-and-auto-fix.md",
-      "_claude/THREADS.md"
+      "AmberX-AXF: apps/orchestrator/lib/build-name.mjs",
+      "AmberX-AXF: _claude/builds/README.md (build name contract section)",
+      "axHub: docs/vps-build-names.md"
      ],
      "checks": [],
      "session": "same",
@@ -85527,7 +85496,181 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwa6wwmo0397qq"
+     "uid": "st-mwazjrnu2bif79"
+    },
+    {
+     "id": "s2",
+     "text": "axHub vps service: replace the hard-coded ^[a-z0-9][a-z0-9-]{0,39}$ in build_land, build_start, build_stop and build_clean with one shared constant from service config allowing up to 80 characters, with the same safe character set. Error messages state the limit and the offending length.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "axHub: services/vps/ (build tool handlers)",
+      "axHub: services/vps/config (build name limit constant)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2cb0oz"
+    },
+    {
+     "id": "s3",
+     "text": "Orchestrator: route every place that makes a build ID, worktree folder, branch name or tmux session through build-name.mjs. When an ID exceeds the tools' limit, shorten it consistently instead of failing. Store long_id and short_id in the build record and journal. Lookups accept either form.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "AmberX-AXF: apps/orchestrator/ (ID creation, worktree, branch, tmux spawn)",
+      "AmberX-AXF: _claude/builds/orchestrator.json",
+      "AmberX-AXF: _claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2d20p5"
+    },
+    {
+     "id": "s4",
+     "text": "Orchestrator: build_land failure classifier. Parse build_land errors into categories: stray_files (untracked or tmp files such as *.json.tmp-*), stale_lock (index.lock or a stale land lock with a dead PID), name_format (rejected name), code_conflict (real merge conflict) and unknown. Unit-testable pure function with fixtures from real failure output.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "AmberX-AXF: apps/orchestrator/lib/land-classify.mjs",
+      "AmberX-AXF: apps/orchestrator/test/fixtures/land-failures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2evrl4"
+    },
+    {
+     "id": "s5",
+     "text": "Orchestrator: auto-fix and retry loop around build_land. For each fixable category, apply the fixer: remove or commit stray tmp files after looking at them, clear stale locks only if the owning PID is dead, re-derive the short name for format rejects. Then retry, up to 3 attempts. Each attempt, fix and outcome is appended to the fix log. Land state (attempt, last error, fix applied) is readable through the existing console build API, MCP, CLI and voice status read.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "AmberX-AXF: apps/orchestrator/land.mjs",
+      "AmberX-AXF: apps/orchestrator/lib/land-fixers.mjs",
+      "AmberX-AXF: _claude/builds/journal/ (fix log entries)",
+      "AmberX-AXF: apps/console-web/ build status route/MCP/CLI land-state fields"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2fctbg"
+    },
+    {
+     "id": "s6",
+     "text": "Orchestrator: on code_conflict, or when retries are used up on an unknown error, automatically queue a conflict-fix build. The queued build links to the parent build, the conflicting files and the failed land log. The parent build is marked waiting-on-fix in place of failed. Log it to the fix log.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "AmberX-AXF: apps/orchestrator/land.mjs",
+      "AmberX-AXF: apps/orchestrator/queue.mjs",
+      "AmberX-AXF: _claude/builds/orchestrator.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2gs7s9"
+    },
+    {
+     "id": "s7",
+     "text": "axHub tests: build_land, build_start, build_stop and build_clean accept the 50 to 64 character real IDs (demo-designer-finish-phase-2-s2-s3-resuming-from, skins-restyle-everything-badges-banner-and-every-visual-element) and an exactly-80-character name. They reject 81 characters, uppercase, a leading hyphen, slashes and dots.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "axHub: services/vps/test/build-names.test.*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2h3m9o"
+    },
+    {
+     "id": "s8",
+     "text": "AmberX-AXF tests: the shortener is deterministic, stays within the limit, keeps the folder, branch and tmux names identical, and has no collisions across the existing shipped build IDs. The classifier fixtures pass. The auto-fix loop recovers from stray files, stale locks and name format errors and logs to the fix log. A code conflict queues a conflict-fix build. A full long-name start, land and clean path is checked end to end against a mock vps.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "AmberX-AXF: apps/orchestrator/test/build-name.test.mjs",
+      "AmberX-AXF: apps/orchestrator/test/land-autofix.test.mjs",
+      "AmberX-AXF: apps/orchestrator/test/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2im4fx"
+    },
+    {
+     "id": "s9",
+     "text": "Run the full test suites in both repos. Write the report: what changed, the name contract, each auto-fix category, the API reach of land state (REST, MCP, CLI, voice) and the test results with before and after. Add the THREADS row. Open PRs in axHub and AmberX-AXF, cross-linked, axHub merged first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "_claude/builds/reports/landing-tool-takes-long-build-names-and-auto-fix.md",
+      "_claude/THREADS.md",
+      "axHub PR",
+      "AmberX-AXF PR"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazjrnu2j9p1v"
     }
    ]
   },
