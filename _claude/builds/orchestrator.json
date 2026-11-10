@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:31:48.893Z",
+ "updatedAt": "2026-11-10T17:32:03.771Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86669,7 +86669,7 @@
    "pr": "#459",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:23.543Z",
-   "updatedAt": "2026-11-10T17:31:33.604Z",
+   "updatedAt": "2026-11-10T17:31:53.379Z",
    "builtAt": "",
    "notes": [
     {
@@ -86687,6 +86687,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-batching-add-on-when-a-batch-fails-ci-spli--gina, own login copy)",
      "at": "2026-11-10T17:22:17.929Z"
+    },
+    {
+     "text": "Headless run axf-merge-batching-add-on-when-a-batch-fails-ci-spli--gina: brief only · start 11.0K tokens ($0.03) · cost $2.99 · 66 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:31:53.379Z"
     }
    ],
    "approvals": [],
@@ -87487,8 +87491,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-10T17:31:45.669Z",
-   "updatedAt": "2026-11-10T17:31:45.669Z",
+   "updatedAt": "2026-11-10T17:31:47.920Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
