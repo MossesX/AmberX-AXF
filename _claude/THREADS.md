@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` branch claude/orchestrator-hold-status-archive-tab-deleted-tab (all) · pipeline
 - 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
 - 2026-11-10 17:57 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:58 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:39 UTC · `molly-one-shell` s14 done, → built (all) · orchestrator
 - 2026-11-10 22:40 UTC · `molly-one-shell` note (all) · orchestrator
 - 2026-11-10 22:40 UTC · `molly-sign-in-once` → pending, note (all) · reconciler
+- 2026-11-10 23:08 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · console
 
 ## Token passes (log)
 

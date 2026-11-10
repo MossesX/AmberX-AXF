@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:41:05.360Z",
+ "updatedAt": "2026-11-10T23:08:06.346Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95455,7 +95455,7 @@
    "title": "Make Hulu actually take builds: dispatcher counts the console account as a worker (5 parallel)",
    "category": "",
    "detail": "Hulu (account-3, max plan) is signed in and switched on (pipeline use=on, interactiveTakesJobs=true, removed from excluded) but the dispatcher still marks it standby 'not a worker (workers take every headless job)' because it is the console's interactive account, so it never takes builds. Make the dispatcher treat the console account as a builder when interactiveTakesJobs is on, at the same priority as workers, 5 parallel. Brett wants 5 per subscription = 10 total. Verify with a real launch; notify on AmberX when Hulu takes its first build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95463,7 +95463,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:45.064Z",
-   "updatedAt": "2026-11-10T21:01:23.036Z",
+   "updatedAt": "2026-11-10T23:08:05.072Z",
    "builtAt": "",
    "notes": [
     {
@@ -95473,6 +95473,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:01:23.036Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:05.072Z"
     }
    ],
    "approvals": [],
