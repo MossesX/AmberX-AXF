@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2602,
- "updatedAt": "2026-11-10T17:51:06.770Z",
+ "rev": 2603,
+ "updatedAt": "2026-11-10T17:51:33.543Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144810,6 +144810,56 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "ollama-own-docker-container-amberx-llama-interna",
+   "title": "Ollama: own Docker container 'amberx-llama', internal-only API wired into console, orchestrator and agents",
+   "category": "",
+   "detail": "Amends Ollama build. Run Ollama in its own Docker container named amberx-llama (Coolify-managed, persistent volume for models, restart always). API internal only: bound to the Docker/internal network, no public port or Traefik route; reachable by the console, orchestrator, agents and search plugin via http://amberx-llama:11434. Register it in axHub as a service and in console AI settings as the local provider (Mistral Small 24B default, Mistral 7B quick). Health check + status widget.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:51:17.543Z",
+   "updatedAt": "2026-11-10T17:51:18.395Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "It's gonna build in its own Docker container named AmberX Llama, and configure the API all for internal building.",
+    "at": "2026-11-10T17:51:17.543Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 576
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
