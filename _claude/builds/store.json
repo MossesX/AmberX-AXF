@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2724,
- "updatedAt": "2026-11-10T19:21:44.762Z",
+ "rev": 2725,
+ "updatedAt": "2026-11-10T19:22:48.866Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144872,7 +144872,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T18:53:13.628Z",
+   "updatedAt": "2026-11-10T19:22:47.640Z",
    "builtAt": "",
    "notes": [
     {
@@ -144913,12 +144913,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:28:06.356Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-orchestrator-assigns-builds-steps-to-employee-ag--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T18:53:10.823Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T16:29:21.276Z",
@@ -144928,9 +144928,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T18:53:10.823Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -144939,7 +144939,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T18:53:10.823Z"
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -144961,12 +144961,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T19:22:47.640Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-10T16:29:21.276Z",
-     "updatedAt": "2026-11-10T17:57:10.727Z"
+     "updatedAt": "2026-11-10T19:22:47.782Z"
     },
     {
      "id": "s2",
