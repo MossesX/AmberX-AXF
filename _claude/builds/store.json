@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2238,
- "updatedAt": "2026-11-10T03:05:10.209Z",
+ "rev": 2239,
+ "updatedAt": "2026-11-10T03:08:48.365Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132940,7 +132940,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132948,7 +132948,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T01:30:51.404Z",
+   "updatedAt": "2026-11-10T03:08:45.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -132978,6 +132978,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T01:30:51.404Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T03:08:45.557Z"
     }
    ],
    "approvals": [],
@@ -133010,7 +133014,7 @@
     ]
    },
    "pipeline": {
-    "queuedAt": "2026-11-09T23:59:21.013Z",
+    "queuedAt": "2026-11-10T03:08:44.725Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -133027,7 +133031,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": ""
    },
@@ -133110,7 +133114,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
