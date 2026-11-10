@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:55:14.348Z",
+ "updatedAt": "2026-11-10T19:55:27.769Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89751,15 +89751,15 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/inline-edit-plugin-install-in-console-molly-and",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-10T19:55:12.679Z",
+   "updatedAt": "2026-11-10T19:55:18.740Z",
    "builtAt": "",
    "notes": [
     {
@@ -89773,6 +89773,14 @@
     {
      "text": "Split by Claude into 10 steps (2 Fable).",
      "at": "2026-11-10T18:01:36.622Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-inline-edit-plugin-install-in-console-molly-and--paulie.",
+     "at": "2026-11-10T19:55:15.378Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-inline-edit-plugin-install-in-console-molly-and--paulie, own login copy)",
+     "at": "2026-11-10T19:55:18.740Z"
     }
    ],
    "approvals": [],
