@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 16:39 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` note (all) · orchestrator
 - 2026-11-09 16:39 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` s1 done, → complete (all) · orchestrator
 - 2026-11-09 16:39 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-09 16:40 UTC · `orchestrator-self-check-when-stuck-verify-each-a` → running, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:25 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` note (all) · orchestrator
 - 2026-11-10 00:25 UTC · `real-time-slot-tracking-stale-data-reaper` s2 done (all) · orchestrator
 - 2026-11-10 00:28 UTC · `real-time-slot-tracking-stale-data-reaper` s3 done (all) · orchestrator
+- 2026-11-10 00:28 UTC · `real-time-slot-tracking-stale-data-reaper` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
