@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:37:09.743Z",
+ "updatedAt": "2026-11-10T20:38:07.147Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89109,7 +89109,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:37:07.695Z",
+   "updatedAt": "2026-11-10T20:38:05.593Z",
    "builtAt": "",
    "notes": [
     {
@@ -89131,6 +89131,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-flagship-skin-premium-sellable-uncluttered--lenny, own login copy)",
      "at": "2026-11-10T19:39:13.952Z"
+    },
+    {
+     "text": "Phase 1 (s1-s4) done on PR #469. UI Review shots pending: this VPS has no browser or dev server. Next phase: take desktop + phone shots of a choice setting open, the axHub status slot green/red, a submenu flipped left+up, a long menu scrolling inside itself, and the right-click item-settings dialog (both tabs), then review.mjs submit --kind menu --app molly.",
+     "at": "2026-11-10T20:38:05.593Z"
     }
    ],
    "approvals": [],

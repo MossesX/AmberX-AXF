@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2790,
- "updatedAt": "2026-11-10T20:37:09.743Z",
+ "rev": 2791,
+ "updatedAt": "2026-11-10T20:38:07.147Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146186,7 +146186,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:37:07.695Z",
+   "updatedAt": "2026-11-10T20:38:05.593Z",
    "builtAt": "",
    "notes": [
     {
@@ -146208,6 +146208,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-flagship-skin-premium-sellable-uncluttered--lenny, own login copy)",
      "at": "2026-11-10T19:39:13.952Z"
+    },
+    {
+     "text": "Phase 1 (s1-s4) done on PR #469. UI Review shots pending: this VPS has no browser or dev server. Next phase: take desktop + phone shots of a choice setting open, the axHub status slot green/red, a submenu flipped left+up, a long menu scrolling inside itself, and the right-click item-settings dialog (both tabs), then review.mjs submit --kind menu --app molly.",
+     "at": "2026-11-10T20:38:05.593Z"
     }
    ],
    "approvals": [],
@@ -146573,7 +146577,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
