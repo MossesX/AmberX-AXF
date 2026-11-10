@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:52 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` → queued, note (all) · console
-- 2026-11-10 17:53 UTC · `ollama-own-docker-container-amberx-llama-interna` note (all) · orchestrator
-- 2026-11-10 17:53 UTC · `ollama-own-docker-container-amberx-llama-interna` note (all) · builds-live
 - 2026-11-10 17:53 UTC · `projects-create-a-new-project-and-move-builds-be` note (all) · builds-live
 - 2026-11-10 17:53 UTC · `projects-create-a-new-project-and-move-builds-be` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:53 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` note (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:59 UTC · `background-is-its-own-asset-type-with-asset-sett` note (all) · orchestrator
 - 2026-11-10 22:03 UTC · `molly-one-shell` s7 done, → running (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-axhub-cors` added (0 steps) (all) · orchestrator
+- 2026-11-10 22:09 UTC · `molly-gap-expenses-cors` added (0 steps) (all) · orchestrator
+- 2026-11-10 22:09 UTC · `molly-gap-console-token-handoff` added (0 steps) (all) · orchestrator
+- 2026-11-10 22:09 UTC · `molly-gap-remote-actions` added (0 steps) (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:09:28.397Z",
+ "updatedAt": "2026-11-10T22:09:39.477Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96488,6 +96488,37 @@
    ]
   },
   {
+   "id": "molly-gap-expenses-cors",
+   "title": "Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger",
+   "category": "",
+   "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
+   "status": "pending",
+   "hidden": false,
+   "source": "molly-sign-in-once",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T22:09:28.380Z",
+   "updatedAt": "2026-11-10T22:09:28.380Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-10T22:09:28.380Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
    "id": "ai-assistant-gizmo-moved-to-the-console-remove-t",
    "title": "AI assistant = Gizmo moved to the console: remove the old console assistant, move the AmberX Gizmo chat plugin into a console plugin named 'AI assistant'",
    "category": "",
@@ -96587,6 +96618,37 @@
    ]
   },
   {
+   "id": "molly-gap-console-token-handoff",
+   "title": "Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin",
+   "category": "",
+   "detail": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
+   "status": "pending",
+   "hidden": false,
+   "source": "molly-sign-in-once",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T22:09:29.615Z",
+   "updatedAt": "2026-11-10T22:09:29.615Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-10T22:09:29.615Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
    "id": "employee-hooks-everywhere-any-mention-of-an-agen",
    "title": "Employee hooks everywhere: any mention of an agent/employee gets a context menu (sub menu of actions) to open its group chats, training, employee info, or its dialogs on the spot; merge Gizmo rebuild into AI assistant",
    "category": "",
@@ -96684,6 +96746,37 @@
      "uid": "st-mwb8c6o203onp0"
     }
    ]
+  },
+  {
+   "id": "molly-gap-remote-actions",
+   "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
+   "category": "",
+   "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "molly-sign-in-once",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T22:09:30.792Z",
+   "updatedAt": "2026-11-10T22:09:30.792Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-10T22:09:30.792Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   },
   {
    "id": "background-token-for-every-ui-background-designe",

@@ -3022,9 +3022,33 @@
    "from": "",
    "addenda": []
   },
+  "molly-gap-console-token-handoff": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-10T22:09:29.615Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-gap-expenses-cors": {
    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
    "at": "2026-11-10T22:09:28.380Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "molly-gap-remote-actions": {
+   "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+   "at": "2026-11-10T22:09:30.792Z",
    "source": "",
    "session": "",
    "link": "",
