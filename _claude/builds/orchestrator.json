@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T06:15:29.791Z",
+ "updatedAt": "2026-11-10T06:16:07.215Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84146,7 +84146,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T06:15:15.367Z",
+   "updatedAt": "2026-11-10T06:16:06.043Z",
    "builtAt": "",
    "notes": [
     {
@@ -84172,6 +84172,10 @@
     {
      "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to write file _claude/builds/journal/2026-11.jsonl\nUpdating files:   0% ",
      "at": "2026-11-10T06:15:15.367Z"
+    },
+    {
+     "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to w",
+     "at": "2026-11-10T06:16:06.043Z"
     }
    ],
    "approvals": [],

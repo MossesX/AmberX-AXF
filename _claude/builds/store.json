@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2357,
- "updatedAt": "2026-11-10T06:15:29.791Z",
+ "rev": 2358,
+ "updatedAt": "2026-11-10T06:16:07.215Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136529,7 +136529,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T06:15:15.367Z",
+   "updatedAt": "2026-11-10T06:16:06.043Z",
    "builtAt": "",
    "notes": [
     {
@@ -136555,6 +136555,10 @@
     {
      "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to write file _claude/builds/journal/2026-11.jsonl\nUpdating files:   0% ",
      "at": "2026-11-10T06:15:15.367Z"
+    },
+    {
+     "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to w",
+     "at": "2026-11-10T06:16:06.043Z"
     }
    ],
    "approvals": [],
@@ -136589,7 +136593,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to write ",
+    "note": "launch failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026",
     "route": "",
     "dispatchedAt": ""
    },
@@ -136672,7 +136676,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
