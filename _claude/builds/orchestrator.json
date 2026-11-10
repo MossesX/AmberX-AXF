@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:21:51.420Z",
+ "updatedAt": "2026-11-10T21:22:06.487Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95554,7 +95554,7 @@
    "title": "Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds",
    "category": "",
    "detail": "Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95562,9 +95562,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
-   "updatedAt": "2026-11-10T21:21:50.247Z",
+   "updatedAt": "2026-11-10T21:21:51.024Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T21:21:51.024Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
