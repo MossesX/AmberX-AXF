@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:01:06.324Z",
+ "updatedAt": "2026-11-10T18:01:38.145Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89446,7 +89446,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-10T16:42:17.833Z",
+   "updatedAt": "2026-11-10T18:01:36.622Z",
    "builtAt": "",
    "notes": [
     {
@@ -89456,6 +89456,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:42:17.833Z"
+    },
+    {
+     "text": "Split by Claude into 10 steps (2 Fable).",
+     "at": "2026-11-10T18:01:36.622Z"
     }
    ],
    "approvals": [],
@@ -89475,13 +89479,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the Molly plugin dedupe contract. When a console page is embedded in Molly, the console's plugin host asks Molly which plugin ids it already provides (a postMessage/bridge handshake with a plugin id and version list) and skips rendering those. Write the contract doc, covering the default when Molly doesn't answer and the version mismatch rule.",
+     "model": "Fable",
+     "why": "Cross-port contract that changes how plugin GUIs render across console and Molly",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/framework/plugin-host/",
+      "apps/molly/src/plugins/",
+      "docs/contracts/molly-plugin-dedupe.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -89489,17 +89497,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax4dbd013fxi"
+     "uid": "st-mwazyd7y5p3itd"
     },
     {
      "id": "s2",
-     "text": "I want it installed in console, Molly, AmberX, except for the Android app. When things are opened in Molly, none of the plugins need to render twice. Molly is only to render the console's plugin if Molly doesn't have it already.",
-     "model": "Opus",
-     "why": "",
+     "text": "Implement the dedupe in the console plugin host. Detect Molly embedding, run the handshake, and skip mounting any plugin Molly already has. Applies to every plugin, not only inline edit.",
+     "model": "Fable",
+     "why": "Engine internals of the shared plugin host used by every app",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/plugin-host/",
+      "apps/console-web/framework/embed/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -89507,11 +89518,162 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax4dbd02z40r"
+     "uid": "st-mwazyd7y5qjevn"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/inline-edit-plugin-install-in-console-molly-and.md, THREADS row, commit, push, PR",
+     "text": "Molly side of the handshake: answer the console's plugin-list query with Molly's installed plugin ids and versions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/molly/src/plugins/",
+      "apps/molly/src/console-embed/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5rp83c"
+    },
+    {
+     "id": "s4",
+     "text": "Install the inline edit plugin in the console: register it in the console plugin manifest and enable it by default.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/",
+      "apps/console-web/plugins/manifest.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5sfgpf"
+    },
+    {
+     "id": "s5",
+     "text": "Install the inline edit plugin in Molly: add it to Molly's plugin registry so Molly owns it, and the console copy is skipped when embedded.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/molly/src/plugins/",
+      "apps/molly/plugins.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5tr1b4"
+    },
+    {
+     "id": "s6",
+     "text": "Install the inline edit plugin in AmberX web only. Add it to the web build's plugin list and explicitly exclude it from the Android app's plugin list and build config.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/amberx/web/plugins.json",
+      "apps/amberx/android/plugins.json",
+      "apps/amberx/shared/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5uuaeg"
+    },
+    {
+     "id": "s7",
+     "text": "API parity for the install state and dedupe. Add a REST route and console action reporting where inline edit is installed (console, Molly, AmberX web, not Android) and which plugins Molly rendered versus skipped. Add a console_show/console_open deep link to the plugin's settings and an enable/disable action. Expose all of it the same way through REST, MCP tools (console actions and plugin commands), the CLI and AmberX voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/api/plugins/",
+      "apps/console-web/mcp/tools/plugins.mjs",
+      "apps/console-web/cli/plugins.mjs",
+      "apps/amberx/voice/intents/plugins.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5vrmoc"
+    },
+    {
+     "id": "s8",
+     "text": "Tests for the console plugin host dedupe: Molly has the plugin, so it is skipped; Molly lacks it, so it renders; no handshake reply, so it renders once; a non-Molly embed is unchanged.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/framework/plugin-host/__tests__/",
+      "apps/molly/src/console-embed/__tests__/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5w97v2"
+    },
+    {
+     "id": "s9",
+     "text": "Install tests: inline edit loads in the console, Molly and AmberX web, and is absent from the Android build. API, MCP, CLI and voice parity tests for the new actions and deep link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx/web/__tests__/",
+      "apps/amberx/android/__tests__/",
+      "apps/console-web/api/plugins/__tests__/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazyd7y5xkpzl"
+    },
+    {
+     "id": "s10",
+     "text": "Run the full test suites. Write the report at _claude/builds/reports/inline-edit-plugin-install-in-console-molly-and.md, add the THREADS row, and open a PR. The PR says how each feature is reached: deep link, state read, actions and settings via REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -89528,7 +89690,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax4dbd03oqbn"
+     "uid": "st-mwazyd7y5yazpr"
     }
    ]
   },
