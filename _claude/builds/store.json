@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2372,
- "updatedAt": "2026-11-10T15:10:36.761Z",
+ "rev": 2373,
+ "updatedAt": "2026-11-10T15:10:47.957Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135050,8 +135050,8 @@
    "pr": "#443",
    "priority": "P1",
    "createdAt": "2026-11-10T02:44:38.021Z",
-   "updatedAt": "2026-11-10T15:10:22.011Z",
-   "builtAt": "2026-11-10T15:10:22.011Z",
+   "updatedAt": "2026-11-10T15:10:28.257Z",
+   "builtAt": "2026-11-10T15:10:28.257Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135072,6 +135072,10 @@
     {
      "text": "Headless run axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully: brief only · start 12.3K tokens ($0.04) · cost $4.77 · 77 turns · 6 tools, MCP none",
      "at": "2026-11-10T15:10:22.011Z"
+    },
+    {
+     "text": "Reconciler: PR #443",
+     "at": "2026-11-10T15:10:28.257Z"
     },
     {
      "text": "PR #443 open. UI Review screenshots (desktop + phone) not taken in this session: needed before the PR counts as ready.",
