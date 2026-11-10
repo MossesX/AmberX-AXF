@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:28:04.911Z",
+ "updatedAt": "2026-11-10T04:28:25.580Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10677,7 +10677,7 @@
    "title": "Molly's banner = the console's banner asset; embedded apps hide their own",
    "category": "Molly",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -10685,7 +10685,7 @@
    "pr": "#341",
    "priority": "P0",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-10T04:27:40.226Z",
    "builtAt": "",
    "notes": [
     {
@@ -10723,6 +10723,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-08T17:21:06.886Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-10T04:27:40.226Z"
     }
    ],
    "approvals": [],
@@ -70765,14 +70769,14 @@
    "title": "Molly is the one native shell for every app (no embedding); all-apps menus; layout modes with IDE + tab-group containers; Patches leftovers retired",
    "category": "Molly",
    "detail": "Brief: /root/axf-builds/molly-one-shell-r2/.brief.md (r1/r2 runs died before doing anything; r3 = this run). Patches itself was already removed by kill-patches-pilot; this build clears what is left.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-one-shell-r4",
    "pr": "#395",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-08T18:30:30.986Z",
+   "updatedAt": "2026-11-10T04:27:36.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -70802,6 +70806,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-08T18:30:30.986Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-10T04:27:36.024Z"
     }
    ],
    "approvals": [
@@ -71115,16 +71123,21 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-08T16:58:59.537Z",
+   "updatedAt": "2026-11-10T04:27:42.548Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-10T04:27:42.548Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -78888,7 +78901,7 @@
    "pr": "#432",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-10T04:19:11.263Z",
+   "updatedAt": "2026-11-10T04:27:48.100Z",
    "builtAt": "2026-11-10T02:47:27.970Z",
    "notes": [
     {
@@ -79018,6 +79031,10 @@
     {
      "text": "Claude account: account-5 (axf-split-builds-pages-build-manager-pending-complet--earl, own login copy)",
      "at": "2026-11-10T04:19:11.263Z"
+    },
+    {
+     "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--earl: brief only · start 0 tokens · cost $1.06 · 57 turns · 6 tools, MCP none",
+     "at": "2026-11-10T04:27:48.100Z"
     }
    ],
    "approvals": [],

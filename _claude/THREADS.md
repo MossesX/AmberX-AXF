@@ -771,10 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
-- 2026-11-09 20:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-09 20:57 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s1 done, → running (all) · orchestrator
-- 2026-11-09 20:59 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s2 done (all) · orchestrator
 - 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` PR #417 (all) · builds-live
 - 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
 - 2026-11-09 21:00 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` s3 done, → built (all) · orchestrator
@@ -1171,6 +1167,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:27 UTC · `audit-pending-fable-builds-against-main-close-wh` note (all) · orchestrator
 - 2026-11-10 04:27 UTC · `molly-sign-in-once` → queued, note (all) · brett
 - 2026-11-10 04:27 UTC · `split-builds-pages-build-manager-pending-complet-3` s11 done, → built (all) · orchestrator
+- 2026-11-10 04:28 UTC · `molly-banner-match` → queued, note (all) · builds-live
+- 2026-11-10 04:28 UTC · `molly-one-shell` → queued, note (all) · builds-live
+- 2026-11-10 04:28 UTC · `molly-native-expenses` → queued, note (all) · builds-live
+- 2026-11-10 04:28 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · builds-live
 
 ## Token passes (log)
 

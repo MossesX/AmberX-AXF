@@ -770,6 +770,18 @@
    "from": "detail",
    "addenda": []
   },
+  "auto-land-every-build-the-moment-it-finishes-red": {
+   "said": "You realize when you don't merge stuff right away you have to pull in main again, and tests are gonna fail. Why do you not just merge this as soon as it's done? ... Right, so when something lands, update the console. Period.",
+   "at": "2026-11-10T04:28:17.210Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-switch-claude-account-when-the-active-one-r": {
    "said": "And yeah, I make it automatically do it through the through the um, app hub though and through the console. You do not use AI to fucking use this remote to change accounts. That, it, that the console has to recognize there's no active connection and then connect to the next one without AI.",
    "at": "",
