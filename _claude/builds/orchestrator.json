@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:34:22.344Z",
+ "updatedAt": "2026-11-10T21:34:32.865Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70751,8 +70751,9 @@
    "pendingId": "",
    "branch": "claude/molly-one-shell-r4",
    "pr": "#395",
+   "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-10T04:27:36.024Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -71105,8 +71106,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-10T04:27:42.548Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -71214,8 +71216,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T04:27:31.671Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -85425,9 +85428,9 @@
    "pendingId": "",
    "branch": "claude/molly-fable-version-the-one-interface-for-amberx",
    "pr": "#447",
-   "priority": "P1",
+   "priority": "P0",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T19:44:21.932Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "2026-11-10T19:44:21.932Z",
    "notes": [
     {
@@ -89111,9 +89114,9 @@
    "pendingId": "",
    "branch": "claude/molly-flagship-skin-premium-sellable-uncluttered",
    "pr": "#469",
-   "priority": "P1",
+   "priority": "P0",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T21:14:12.079Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "2026-11-10T21:13:50.883Z",
    "notes": [
     {

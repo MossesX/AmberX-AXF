@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2885,
- "updatedAt": "2026-11-10T21:34:22.344Z",
+ "rev": 2886,
+ "updatedAt": "2026-11-10T21:34:32.865Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120004,8 +120004,9 @@
    "pendingId": "",
    "branch": "claude/molly-one-shell-r4",
    "pr": "#395",
+   "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-10T04:27:36.024Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -120439,7 +120440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120487,8 +120488,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-10T04:27:42.548Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -120633,7 +120635,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120670,8 +120672,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T04:27:31.671Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -120794,7 +120797,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -141150,9 +141153,9 @@
    "pendingId": "",
    "branch": "claude/molly-fable-version-the-one-interface-for-amberx",
    "pr": "#447",
-   "priority": "P1",
+   "priority": "P0",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T19:44:21.932Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "2026-11-10T19:44:21.932Z",
    "notes": [
     {
@@ -141331,7 +141334,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -146188,9 +146191,9 @@
    "pendingId": "",
    "branch": "claude/molly-flagship-skin-premium-sellable-uncluttered",
    "pr": "#469",
-   "priority": "P1",
+   "priority": "P0",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T21:14:12.079Z",
+   "updatedAt": "2026-11-10T21:34:31.434Z",
    "builtAt": "2026-11-10T21:13:50.883Z",
    "notes": [
     {
@@ -146653,7 +146656,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
