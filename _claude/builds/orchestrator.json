@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:47:53.731Z",
+ "updatedAt": "2026-11-10T02:48:17.413Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79176,7 +79176,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T02:21:27.504Z",
+   "updatedAt": "2026-11-10T02:47:22.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -79222,6 +79222,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--sully.",
      "at": "2026-11-10T02:17:14.425Z"
+    },
+    {
+     "text": "s2: the page split itself landed as 440d17303 on claude/split-builds-pages-build-manager-pending-complet (parallel run). This run rebased on it and does the row design (s3-s10) on top.",
+     "at": "2026-11-10T02:47:22.691Z"
     }
    ],
    "approvals": [],

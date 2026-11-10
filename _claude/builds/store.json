@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2219,
- "updatedAt": "2026-11-10T02:47:53.731Z",
+ "rev": 2220,
+ "updatedAt": "2026-11-10T02:48:17.413Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129540,7 +129540,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T02:21:27.504Z",
+   "updatedAt": "2026-11-10T02:47:22.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -129586,6 +129586,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--sully.",
      "at": "2026-11-10T02:17:14.425Z"
+    },
+    {
+     "text": "s2: the page split itself landed as 440d17303 on claude/split-builds-pages-build-manager-pending-complet (parallel run). This run rebased on it and does the row design (s3-s10) on top.",
+     "at": "2026-11-10T02:47:22.691Z"
     }
    ],
    "approvals": [],
@@ -129889,7 +129893,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
