@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2711,
- "updatedAt": "2026-11-10T18:57:39.724Z",
+ "rev": 2712,
+ "updatedAt": "2026-11-10T18:57:49.892Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -141320,7 +141320,7 @@
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
    "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -141328,7 +141328,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T18:56:07.951Z",
+   "updatedAt": "2026-11-10T18:57:38.799Z",
    "builtAt": "",
    "notes": [
     {
@@ -141495,7 +141495,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -151238,7 +151238,7 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T18:57:16.814Z",
+   "updatedAt": "2026-11-10T18:57:36.584Z",
    "builtAt": "",
    "notes": [
     {
@@ -151260,6 +151260,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-conflicts-and-land-pr-449-account-order--lenny, own login copy)",
      "at": "2026-11-10T18:29:39.036Z"
+    },
+    {
+     "text": "Headless run axf-resolve-conflicts-and-land-pr-449-account-order--lenny: brief only · start 11.7K tokens ($0.03) · cost $6.46 · 144 turns · 6 tools, MCP none",
+     "at": "2026-11-10T18:57:36.584Z"
     },
     {
      "text": "s1-s6 done. PR #449 has main merged in, is mergeable/clean on GitHub, and has full API reach for the account order (read/set/move/reset over REST, MCP, CLI, voice). Tests green locally. s7 left open: (1) CI Light PR checks is red on every PR and on main because builds-store.mjs verify fails (1471 breakroom findings on clean origin/main; see dispatcher-a-worktree-store-write-can-erase-a-fr), so the merge queue can't land #449 yet; (2) sessions never merge a PR by hand, so the merge queue lands it; (3) console redeploy, live check and the 'landed' AmberX message wait for that. Report: _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md",
@@ -153392,16 +153396,22 @@
    "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
    "category": "",
    "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T18:57:34.689Z",
+   "updatedAt": "2026-11-10T18:57:37.701Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T18:57:37.701Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -153416,6 +153426,25 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-10T18:57:35.804Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -153425,7 +153454,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
