@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:53 UTC · `projects-create-a-new-project-and-move-builds-be` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:53 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` note (all) · orchestrator
 - 2026-11-10 17:54 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` note (all) · builds-live
 - 2026-11-10 17:54 UTC · `conversation-rag-amendment-store-only-short-key` s2 done (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:09 UTC · `molly-gap-console-token-handoff` added (0 steps) (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-remote-actions` added (0 steps) (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-one-shell` s8 done (all) · orchestrator
+- 2026-11-10 22:10 UTC · `molly-sign-in-once` note (all) · orchestrator
 
 ## Token passes (log)
 
