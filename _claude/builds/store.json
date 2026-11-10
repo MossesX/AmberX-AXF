@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2985,
- "updatedAt": "2026-11-10T23:17:55.250Z",
+ "rev": 2986,
+ "updatedAt": "2026-11-10T23:18:27.935Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153209,10 +153209,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/make-hulu-actually-take-builds-dispatcher-counts",
-   "pr": "",
+   "pr": "#478",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:45.064Z",
-   "updatedAt": "2026-11-10T23:17:37.224Z",
+   "updatedAt": "2026-11-10T23:18:26.534Z",
    "builtAt": "",
    "notes": [
     {
@@ -153390,7 +153390,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
