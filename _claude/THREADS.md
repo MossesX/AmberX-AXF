@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:30 UTC · `skin-checker-flags-anything-that-breaks-a-profes` PR #466 (all) · builds-live
 - 2026-11-10 19:31 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s13 done, → built (all) · orchestrator
 - 2026-11-10 19:31 UTC · `full-api-cli-control-of-everything-plus-an-offli` s1 done, → running (all) · orchestrator
 - 2026-11-10 19:31 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:43 UTC · `resolve-conflicts-and-land-pr-449-account-order` → queued, note (all) · auto-requeue (Brett: re-queue them)
 - 2026-11-10 23:43 UTC · `convert-every-app-into-a-molly-module-expenses-c` → queued, note (all) · auto-requeue (Brett: re-queue them)
 - 2026-11-10 23:43 UTC · `auto-requeue-builds-whose-session-stops-early-go` s2 done (all) · orchestrator
+- 2026-11-10 23:44 UTC · `molly-banner-match` → running, note (all) · pipeline
 
 ## Token passes (log)
 
