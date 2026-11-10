@@ -196,6 +196,18 @@
    "from": "",
    "addenda": []
   },
+  "ai-assistant-in-molly-console-drives-by-api-open": {
+   "said": "Give Molly and the AI assistant access to the API so she can drive the console, open screens and configure settings. Easy to reach, hands free. A setting in AI assistant.",
+   "at": "2026-11-10T23:46:07.460Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ai-keys-console-store": {
    "said": "AI keys: store every key in the console, not per user\n\nBrett saved 4 Claude subscription accounts and 1 API key (5 keys) in AI keys while logged into the console as himself. The VPS side (apps/console-web/plugins/ai-keys/switch.mjs, deploy/claude-headless.sh, the /api/plugins/ai-keys routes called with AXF_TOKEN from /opt/axf/.axf-console/env) authenticates as a different console identity, and GET /keys returns NO keys. So Amber and the VPS can't see or switch accounts without Brett pressing a button.",
    "at": "2026-11-05T23:51:02.650Z",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3052,
- "updatedAt": "2026-11-10T23:46:06.628Z",
+ "rev": 3053,
+ "updatedAt": "2026-11-10T23:46:12.571Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156855,6 +156855,80 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T23:37:48.400Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "ai-assistant-in-molly-console-drives-by-api-open",
+   "title": "AI assistant in Molly + console drives by API (open screens, change settings) + hands-free voice setting",
+   "category": "",
+   "detail": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T23:46:07.460Z",
+   "updatedAt": "2026-11-10T23:46:09.171Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:46:09.171Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Give Molly and the AI assistant access to the API so she can drive the console, open screens and configure settings. Easy to reach, hands free. A setting in AI assistant.",
+    "at": "2026-11-10T23:46:07.460Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T23:46:08.866Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 610
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
