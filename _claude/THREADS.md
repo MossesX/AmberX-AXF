@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` branch claude/urgent-terminal-pops-up-every-time-the-console-o (all) · pipeline
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
 - 2026-11-09 19:21 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` added (0 steps) (all) · console
 - 2026-11-10 02:49 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · pipeline
 - 2026-11-10 02:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → queued, note (all) · console
+- 2026-11-10 02:47 UTC · `split-builds-pages-build-manager-pending-complet-3` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
