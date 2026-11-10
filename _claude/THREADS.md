@@ -771,16 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → running, note (all) · pipeline
-- 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` branch claude/demo-designer-finish-phase-2-s2-s3-resuming-from (all) · pipeline
-- 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
-- 2026-11-10 03:41 UTC · `one-amberx-build-notification-veto-approval-befo` s1 done, → running (all) · orchestrator
-- 2026-11-10 03:41 UTC · `one-amberx-build-notification-veto-approval-befo` s2 done (all) · orchestrator
-- 2026-11-10 03:42 UTC · `one-amberx-build-notification-veto-approval-befo` PR #436 (all) · builds-live
-- 2026-11-10 03:43 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
-- 2026-11-10 03:43 UTC · `one-amberx-build-notification-veto-approval-befo` s3 done, → built (all) · orchestrator
-- 2026-11-10 03:44 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → running, note (all) · pipeline
-- 2026-11-10 03:44 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 - 2026-11-10 03:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s1 done (all) · orchestrator
 - 2026-11-10 03:50 UTC · `orchestrator-table-columns-model-queue-assigned` → pending, note (all) · reconciler
 - 2026-11-10 03:52 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` PR #437 (all) · builds-live
@@ -1171,6 +1161,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:09 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
 - 2026-11-10 17:09 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · pipeline
 - 2026-11-10 17:09 UTC · `search-bar-plugin-add-on-search-builds-session-h` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `project-manager-add-on-drag-a-build-to-another-p` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `project-manager-every-project-its-own-console-in` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `project-manager-add-on-new-project-prompt-asks-i` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `skins-own-everything-colour-theme-swaps-independ` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `skins-restyle-finish` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `projects-create-a-new-project-and-move-builds-be` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `auto-land-every-build-the-moment-it-finishes-red` → pending (all) · voice
+- 2026-11-10 17:09 UTC · `skins-theme-rule` → pending (all) · voice
 
 ## Token passes (log)
 

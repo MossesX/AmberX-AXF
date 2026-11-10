@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:09:44.486Z",
+ "updatedAt": "2026-11-10T17:09:57.724Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77178,14 +77178,14 @@
    "title": "AmberX floating toolbar (always on top): mic + approvals + build status",
    "category": "amberx",
    "detail": "AmberX Android app: a small floating toolbar (overlay bubble, draw over other apps) that stays on top everywhere. Main items: mic button (talk to Claude / hands-free toggle) and approvals (badge with count of waiting axHub approvals; tap to approve/deny in place). Also build status (running count, failures). Draggable, collapsible, snaps to edges; every piece an asset, styled from tokens, configurable in settings (items, size, opacity, position). Brett: \"add a floating toolbar to AmberX that's always on top... the main thing was the mic and the approvals.\"",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-10T03:09:40.766Z",
+   "updatedAt": "2026-11-10T17:09:47.648Z",
    "builtAt": "",
    "notes": [
     {
@@ -77846,7 +77846,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77854,7 +77854,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T17:09:05.834Z",
+   "updatedAt": "2026-11-10T17:09:49.573Z",
    "builtAt": "",
    "notes": [
     {
@@ -79529,7 +79529,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79537,8 +79537,8 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T17:01:03.907Z",
-   "builtAt": "2026-11-10T17:00:27.581Z",
+   "updatedAt": "2026-11-10T17:09:48.572Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -82693,14 +82693,14 @@
    "title": "Skins: a colour theme pick is its own setting, never a skin override (resume after credits ran out)",
    "category": "",
    "detail": "Rerun of a headless Fable session (axf-skins-theme-rule--earl, Moses X, Nov 9 18:38-18:47 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-theme-rule (11 files: framework/core/engines/appearance.ts, skin-coverage, skin-rules …). Its own words: \"the colour pick becomes its own colorTheme field in the skin state (never an override, never a new skin), with old documents migrated on read. Engine and runtime are changed; now updating the tests and fixture to pin the rule, then the CLI/API, pickers and docs.\" Read git diff and the run log first; keep that work.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "failed-launches-auto-retry-on-another-wo",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:40.704Z",
-   "updatedAt": "2026-11-10T03:09:25.078Z",
+   "updatedAt": "2026-11-10T17:09:53.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -82784,14 +82784,14 @@
    "title": "Skins restyle: finish the coverage engine, registry and text targets (resume after credits ran out)",
    "category": "",
    "detail": "Rerun of a headless Fable session (axf-skins-restyle-finish--sully, Moses X, Nov 9 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-restyle-finish (28 files). It was finishing s6 of skins-restyle-everything-badges-banner-and-every-visual-element. Its own words: \"coverage engine first (explicit entries required, parts and ingredient flags), then the registry, then the customize text targets … s6 tests pass (skin spec, customize spec, coverage check). Now finishing the surrounding pieces: CLI output, the coverage panel hint, the audit and the docs.\" Read git diff and the run log first; keep that work.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "failed-launches-auto-retry-on-another-wo",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:42.579Z",
-   "updatedAt": "2026-11-10T03:09:26.648Z",
+   "updatedAt": "2026-11-10T17:09:50.461Z",
    "builtAt": "",
    "notes": [
     {
@@ -84205,14 +84205,14 @@
    "title": "Auto-land every build the moment it finishes, redeploy the console on every land, and backfill the 134 unlanded",
    "category": "",
    "detail": "Plain code in the orchestrator dispatcher, no AI. 1) The moment a build's session finishes with its steps ticked and tests green, the orchestrator lands it straight away: clean sync files and stray logs, clear stale locks, merge origin/main, rerun the build's own tests, push to main. No waiting on a person or a later session. 2) UPDATE THE CONSOLE ON EVERY LAND: right after each push to main, trigger the console redeploy immediately (the same path as install-console.sh's auto-update, run now, not on the 5-minute timer), and rebuild any other app the change touched (AmberX web, axHub web, Molly and so on). Wait for it to come up healthy, then refresh open consoles. If the deploy fails, roll back to the last good image and queue a fix. 3) UI Review never blocks landing: screenshots and picks can follow after landing, and changes come as follow-up builds. 4) If main moved and tests fail after the merge, or there's a code clash, the orchestrator immediately queues a conflict-fix run on the same branch (top priority, any working account) and lands when green. It retries until it's on main. 5) Land in finish order, one at a time (a merge lock), so each lands on the newest main. Batch redeploys if several land within a minute. 6) Backfill now: land every finished-but-unlanded build (about 134), oldest first, skipping ones superseded or already on main, with conflict-fix runs where needed. 7) Each land and deploy shows in the Activity Monitor and fix log, with a phone FYI only for failures that need Brett. Tests with fake clashes and a fake failed deploy. Supersedes any auto-land pieces in other builds; don't duplicate.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T04:28:17.210Z",
-   "updatedAt": "2026-11-10T04:32:49.690Z",
+   "updatedAt": "2026-11-10T17:09:52.513Z",
    "builtAt": "",
    "notes": [
     {
@@ -85108,7 +85108,7 @@
    "title": "Projects: create a new project and move builds between projects; move every pending build older than 2 days into a new project",
    "category": "",
    "detail": "1) Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85116,7 +85116,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:38:42.207Z",
-   "updatedAt": "2026-11-10T16:30:41.533Z",
+   "updatedAt": "2026-11-10T17:09:51.476Z",
    "builtAt": "",
    "notes": [
     {
@@ -85207,7 +85207,7 @@
    "title": "Project Manager: every project its own console instance, multi-project tab view, project types (self/framework dev vs new app), live app preview window",
    "category": "",
    "detail": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85215,8 +85215,8 @@
    "pr": "#453",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
-   "updatedAt": "2026-11-10T17:01:18.101Z",
-   "builtAt": "2026-11-10T17:01:18.101Z",
+   "updatedAt": "2026-11-10T17:09:45.177Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -85318,7 +85318,7 @@
    "title": "Project Manager add-on: new-project prompt asks internal build or boilerplate for an external app",
    "category": "",
    "detail": "Amends the Project Manager build. When starting a new project, ask: Internal build (framework/self development) or External app (start from a boilerplate template). External app shows boilerplate choices. Full API control.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85326,7 +85326,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:48.813Z",
-   "updatedAt": "2026-11-10T15:42:08.969Z",
+   "updatedAt": "2026-11-10T17:09:46.374Z",
    "builtAt": "",
    "notes": [
     {
@@ -85417,7 +85417,7 @@
    "title": "Project Manager add-on: drag a build to another project's tab/window, drop dialog picks Pending, Queued (with position) or Planned",
    "category": "",
    "detail": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85425,7 +85425,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:43:05.952Z",
-   "updatedAt": "2026-11-10T15:44:54.065Z",
+   "updatedAt": "2026-11-10T17:09:43.992Z",
    "builtAt": "",
    "notes": [
     {
