@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:05:17.120Z",
+ "updatedAt": "2026-11-10T01:05:38.545Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77852,7 +77852,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77860,7 +77860,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T01:05:13.272Z",
+   "updatedAt": "2026-11-10T01:05:23.941Z",
    "builtAt": "",
    "notes": [
     {
@@ -77942,6 +77942,14 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
      "at": "2026-11-10T00:50:47.288Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-appearance-skins-colour-themes-only-remove-desig--earl.",
+     "at": "2026-11-10T01:05:20.268Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-appearance-skins-colour-themes-only-remove-desig--earl, own login copy)",
+     "at": "2026-11-10T01:05:23.941Z"
     }
    ],
    "approvals": [],
