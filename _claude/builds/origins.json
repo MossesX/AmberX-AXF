@@ -2599,6 +2599,18 @@
    "from": "",
    "addenda": []
   },
+  "local-ai-ollama-mistral-on-the-vps-wired-into-th": {
+   "said": "I need to get that Llama build going with Mistral.",
+   "at": "2026-11-10T17:50:25.480Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "maintenance-redundancy-scan": {
    "said": "Maintenance: redundancy scan (Brett, Nov 7)\n\nAdd a job to the Maintenance plan/runner (reuse maintenance-vps-monitor / AmberX Maintenance / syscheck pieces where they exist) that searches for redundant data sets in a controlled, methodical way and REPORTS them. It never deletes or merges anything.",
    "at": "2026-11-07T13:46:06.752Z",
@@ -2979,6 +2991,18 @@
      "verbatim": true
     }
    ]
+  },
+  "ollama-model-pick-mistral-small-24b-q4-default-m": {
+   "said": "Pick the model. I got 64 gigs now.",
+   "at": "2026-11-10T17:50:42.350Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
   },
   "one-amberx-build-notification-veto-approval-befo": {
    "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",

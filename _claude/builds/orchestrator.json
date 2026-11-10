@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:50:29.746Z",
+ "updatedAt": "2026-11-10T17:50:50.032Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89742,6 +89742,43 @@
      "uid": "st-mwazasxd03kxpx"
     }
    ]
+  },
+  {
+   "id": "local-ai-ollama-mistral-on-the-vps-wired-into-th",
+   "title": "Local AI: Ollama + Mistral on the VPS, wired into the AI-assist switch",
+   "category": "",
+   "detail": "Install Ollama with a Mistral model (7B, quantized) as the local AI the console/search/agents use when the AI switch is on (zero-cost fallback before Claude). Check VPS RAM/disk first: the VPS was hitting memory/swap limits, so pick a model size that fits, add swap or report if it won't. Run as a service behind Coolify, internal-only endpoint, health check, axHub service entry. Full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:50:25.480Z",
+   "updatedAt": "2026-11-10T17:50:27.203Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:50:27.203Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to get that Llama build going with Mistral.",
+    "at": "2026-11-10T17:50:25.480Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
