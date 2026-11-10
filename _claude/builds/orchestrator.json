@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:53:29.989Z",
+ "updatedAt": "2026-11-10T19:53:42.510Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88388,7 +88388,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T19:53:28.799Z",
+   "updatedAt": "2026-11-10T19:53:29.858Z",
    "builtAt": "",
    "notes": [
     {
@@ -88410,6 +88410,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-cli-control-of-everything-plus-an-offli--earl, own login copy)",
      "at": "2026-11-10T19:12:15.294Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: control-registry@1 contract + schema, offline index (1364 entries, 1531 actions, every token path with its allowed values), deterministic dispatcher with the AI gate on the new owner-only Claude setting 'Make Claude available to the console' (off by default). PR #468. 136 spec checks green. Next phase (Opus): REST s4, MCP s5, axf ctl s6 wrap dispatch(); the model call is a seam they attach.",
+     "at": "2026-11-10T19:53:29.858Z"
     }
    ],
    "approvals": [],
