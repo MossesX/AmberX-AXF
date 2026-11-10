@@ -770,8 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` PR #412 (all) · builds-live
-- 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s3 done, → built (all) · orchestrator
 - 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` note (all) · orchestrator
 - 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` → running, note (all) · pipeline
 - 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` branch claude/one-source-of-truth-for-claude-accounts-the-orch (all) · pipeline
@@ -1170,6 +1168,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:41 UTC · `one-amberx-build-notification-veto-approval-befo` s1 done, → running (all) · orchestrator
 - 2026-11-10 03:41 UTC · `one-amberx-build-notification-veto-approval-befo` s2 done (all) · orchestrator
 - 2026-11-10 03:42 UTC · `one-amberx-build-notification-veto-approval-befo` PR #436 (all) · builds-live
+- 2026-11-10 03:43 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
+- 2026-11-10 03:43 UTC · `one-amberx-build-notification-veto-approval-befo` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

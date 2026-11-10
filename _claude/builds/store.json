@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2283,
- "updatedAt": "2026-11-10T03:42:58.104Z",
+ "rev": 2284,
+ "updatedAt": "2026-11-10T03:43:12.359Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134831,7 +134831,7 @@
    "title": "One AmberX build notification: veto approval before every start, pop-up on every finish",
    "category": "",
    "detail": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134839,8 +134839,8 @@
    "pr": "#436",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:42:56.826Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:43:03.611Z",
+   "builtAt": "2026-11-10T03:43:03.612Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -134857,6 +134857,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-amberx-build-notification-veto-approval-befo--sully, own login copy)",
      "at": "2026-11-10T03:28:19.516Z"
+    },
+    {
+     "text": "Built, PR #436 (folds in and closes #433). Veto before every start on the AmberX start notification, 90 s default, Approve / Deny / auto-approve, console Waiting to start card. UI Review shots not taken (VPS headless browser broke on #433): capture Pipeline tab Waiting to start + Phone pop-ups, desktop and phone, and submit. Real phone test after merge.",
+     "at": "2026-11-10T03:43:00.518Z"
     }
    ],
    "approvals": [],
@@ -134958,12 +134962,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:43:03.611Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T02:26:28.473Z",
-     "updatedAt": "2026-11-10T02:26:28.473Z"
+     "updatedAt": "2026-11-10T03:43:03.845Z"
     }
    ],
    "profiles": [
@@ -134974,7 +134978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
