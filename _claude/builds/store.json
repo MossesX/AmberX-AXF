@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2307,
- "updatedAt": "2026-11-10T04:11:26.603Z",
+ "rev": 2308,
+ "updatedAt": "2026-11-10T04:13:19.171Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96312,7 +96312,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -116837,7 +116840,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z"
+    "dispatchedAt": "2026-11-10T00:16:15.395Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -117065,7 +117071,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -124756,7 +124765,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -125119,7 +125131,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z"
+    "dispatchedAt": "2026-11-09T02:31:11.152Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126231,7 +126246,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126391,7 +126409,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126555,7 +126576,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126735,7 +126759,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126972,7 +126999,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z"
+    "dispatchedAt": "2026-11-09T20:25:15.903Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -127576,7 +127606,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z"
+    "dispatchedAt": "2026-11-09T18:53:07.552Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -127899,7 +127932,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128227,7 +128263,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z"
+    "dispatchedAt": "2026-11-09T18:10:30.633Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128390,7 +128429,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128557,7 +128599,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128724,7 +128769,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128966,7 +129014,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z"
+    "dispatchedAt": "2026-11-09T17:58:10.111Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129240,7 +129291,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T01:57:09.377Z"
+    "dispatchedAt": "2026-11-10T01:57:09.377Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129387,7 +129441,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129536,7 +129593,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T04:05:22.551Z",
+   "updatedAt": "2026-11-10T04:13:17.761Z",
    "builtAt": "",
    "notes": [
     {
@@ -129600,6 +129657,10 @@
      "at": "2026-11-10T03:22:11.280Z"
     },
     {
+     "text": "VPS disk hit 0 MB free twice in this session (/root/axf-builds worktrees use 109G of 193G). Space recovered to 6.8G. Earlier uncommitted work saved and pushed as c3b40c33a. Continuing from s3.",
+     "at": "2026-11-10T04:13:17.761Z"
+    },
+    {
      "text": "Started run 2 on account-5 (API key, this build is set to API) (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--sully.",
      "at": "2026-11-10T04:05:22.551Z"
     }
@@ -129613,7 +129674,7 @@
     "session": "",
     "link": "",
     "by": "split-builds-pages-build-manager-pending-complet-3",
-    "brief": "# Build: split-builds-pages-build-manager-pending-complet-3\n\n## Brett said (verbatim)\nAt: 2026-11-09T17:50:55.358Z\n> It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n\n## What to build\nContinue build \"Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design\" (split-builds-pages-build-manager-pending-complet-3) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 17:50):\n\"It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/split-builds-pages-build-manager-pending-complet-3\nSteps in this phase (9 left, ~4.3 h):\n[x] s1 (~30 min) Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n[x] s2 (~30 min) Pages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n[ ] s3 (~30 min) Design: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n[ ] s4 (~30 min) Every row: dates (created, started, finished as relevant), steps total and steps completed.\n[ ] s5 (~30 min) Pending: no timer; created date, steps, priority, Send to orchestrator.\n[ ] s6 (~30 min) Queued: queue position, why it's waiting, account/model planned.\n[ ] s7 (~30 min) Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n[ ] s8 (~30 min) Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\n[ ] s9 (~30 min) Theme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.\n[ ] s10 (~30 min) It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n[ ] s11 (~20 min) Tests green, report _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link split-builds-pages-build-manager-pending-complet-3 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note split-builds-pages-build-manager-pending-complet-3 \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: split-builds-pages-build-manager-pending-complet-3\n\n## Brett said (verbatim)\nAt: 2026-11-09T17:50:55.358Z\n> It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n\n## What to build\nContinue build \"Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design\" (split-builds-pages-build-manager-pending-complet-3) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 17:50):\n\"It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/split-builds-pages-build-manager-pending-complet-3\nSteps in this phase (11 left, ~5.3 h):\n[ ] s1 (~30 min) Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n[ ] s2 (~30 min) Pages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n[ ] s3 (~30 min) Design: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n[ ] s4 (~30 min) Every row: dates (created, started, finished as relevant), steps total and steps completed.\n[ ] s5 (~30 min) Pending: no timer; created date, steps, priority, Send to orchestrator.\n[ ] s6 (~30 min) Queued: queue position, why it's waiting, account/model planned.\n[ ] s7 (~30 min) Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n[ ] s8 (~30 min) Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\n[ ] s9 (~30 min) Theme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.\n[ ] s10 (~30 min) It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n[ ] s11 (~20 min) Tests green, report _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link split-builds-pages-build-manager-pending-complet-3 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note split-builds-pages-build-manager-pending-complet-3 \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -129621,12 +129682,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T17:50:57.626Z",
     "queuedBy": "console",
-    "account": "account-5",
-    "session": "axf-split-builds-pages-build-manager-pending-complet--sully",
+    "account": "mossesx-max-",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T04:05:22.085Z",
-    "runs": 2,
+    "launchedAt": "2026-11-10T02:17:13.935Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-10T03:22:06.774Z",
      "exit": 1,
@@ -129643,9 +129704,12 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 1) with 9 steps left: back in the Queue (run 1).",
     "route": "api",
-    "dispatchedAt": "2026-11-10T04:05:22.085Z"
+    "dispatchedAt": "2026-11-10T02:17:13.935Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130059,7 +130123,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z"
+    "dispatchedAt": "2026-11-09T18:02:10.280Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130277,7 +130344,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z"
+    "dispatchedAt": "2026-11-09T18:49:06.246Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130499,7 +130569,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z"
+    "dispatchedAt": "2026-11-09T19:23:07.733Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130721,7 +130794,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z"
+    "dispatchedAt": "2026-11-09T18:55:16.286Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130959,7 +131035,10 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "api",
-    "dispatchedAt": "2026-11-10T02:17:28.580Z"
+    "dispatchedAt": "2026-11-10T02:17:28.580Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131177,7 +131256,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z"
+    "dispatchedAt": "2026-11-09T19:25:10.063Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131403,7 +131485,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z"
+    "dispatchedAt": "2026-11-09T19:27:06.719Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131581,7 +131666,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131833,7 +131921,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z"
+    "dispatchedAt": "2026-11-09T20:19:06.480Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132000,7 +132091,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132171,7 +132265,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132338,7 +132435,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132485,7 +132585,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132663,7 +132766,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132908,7 +133014,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133106,7 +133215,10 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133269,7 +133381,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133436,7 +133551,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133607,7 +133725,10 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133785,7 +133906,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z"
+    "dispatchedAt": "2026-11-10T00:42:13.778Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133944,7 +134068,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134091,7 +134218,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134231,7 +134361,10 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134364,7 +134497,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134532,7 +134668,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134750,7 +134889,10 @@
     "splitRequested": "",
     "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-10T02:48:43.040Z"
+    "dispatchedAt": "2026-11-10T02:48:43.040Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134917,7 +135059,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135068,7 +135213,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135246,7 +135394,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:33:16.699Z"
+    "dispatchedAt": "2026-11-10T03:33:16.699Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135429,7 +135580,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135588,7 +135742,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:55:23.238Z"
+    "dispatchedAt": "2026-11-10T03:55:23.238Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135747,7 +135904,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T04:04:16.333Z"
+    "dispatchedAt": "2026-11-10T04:04:16.333Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
