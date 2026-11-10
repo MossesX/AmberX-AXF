@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:38 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 - 2026-11-09 20:38 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · builds-live
 - 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
 - 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` → running, note (all) · pipeline
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` → running, note (all) · pipeline
 - 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` branch claude/ui-review-timeout-after-1-hour-notify-brett-and (all) · pipeline
 - 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
+- 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
