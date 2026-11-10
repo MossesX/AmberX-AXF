@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:31:47.854Z",
+ "updatedAt": "2026-11-10T01:32:54.248Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79678,10 +79678,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-terminal-pops-up-every-time-the-console-o",
-   "pr": "",
+   "pr": "#427",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-10T01:31:34.960Z",
+   "updatedAt": "2026-11-10T01:32:52.625Z",
    "builtAt": "",
    "notes": [
     {
