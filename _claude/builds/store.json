@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3016,
- "updatedAt": "2026-11-10T23:26:16.359Z",
+ "rev": 3017,
+ "updatedAt": "2026-11-10T23:26:29.804Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154990,7 +154990,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:54:10.024Z",
-   "updatedAt": "2026-11-10T23:25:17.743Z",
+   "updatedAt": "2026-11-10T23:26:28.515Z",
    "builtAt": "",
    "notes": [
     {
@@ -155012,6 +155012,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-gizmo-moved-to-the-console-remove-t--lenny, own login copy)",
      "at": "2026-11-10T23:12:37.631Z"
+    },
+    {
+     "text": "Headless run axf-ai-assistant-gizmo-moved-to-the-console-remove-t--lenny: brief only · start 11.2K tokens ($0.03) · cost $4.57 · 86 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:26:28.515Z"
     }
    ],
    "approvals": [],
@@ -155031,18 +155035,18 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:08:09.084Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-ai-assistant-gizmo-moved-to-the-console-remove-t--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T23:12:33.007Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T23:12:33.007Z",
     "planned": {
      "model": "Opus",
      "account": "account-3",
@@ -155051,7 +155055,7 @@
      "why": "subscription account account-3"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T23:12:33.007Z"
    },
    "steps": [
     {
@@ -155132,7 +155136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
