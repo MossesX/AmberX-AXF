@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:26 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
-- 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` → running, note (all) · pipeline
-- 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` branch claude/fix-the-orchestrator-s-splitter-claude-print-get (all) · pipeline
 - 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
 - 2026-11-10 17:27 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s1 done, → running (all) · orchestrator
 - 2026-11-10 17:30 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s2 done (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:28 UTC · `inline-element-editing-plugin-right-click-any-el` → running, note (all) · orchestrator
 - 2026-11-10 21:28 UTC · `inline-element-editing-plugin-right-click-any-el` s13 done, → built, note (all) · reconciler
 - 2026-11-10 21:28 UTC · `remove-the-old-theme-manager-style-and-layout-se` → pending, note (all) · reconciler
+- 2026-11-10 21:29 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` → running, note (all) · pipeline
+- 2026-11-10 21:29 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` branch claude/no-veto-timer-on-navigation-follow-amber-open-x (all) · pipeline
+- 2026-11-10 21:29 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
 
 ## Token passes (log)
 

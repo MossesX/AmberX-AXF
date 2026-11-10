@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2881,
- "updatedAt": "2026-11-10T21:29:13.417Z",
+ "rev": 2882,
+ "updatedAt": "2026-11-10T21:29:25.956Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154366,15 +154366,15 @@
    "title": "No veto timer on navigation/Follow Amber; 'open X' brings Chrome + console to the front instantly",
    "category": "",
    "detail": "1) axHub policy: console_action calls that only navigate (open a screen, tab, page; Follow Amber) run immediately with no veto countdown; only data-changing actions keep the veto. 2) Every 'open X' from voice: if the console isn't open in Chrome on the phone, AmberX opens Chrome on the console and brings it to the front; if Chrome is behind, bring Chrome to the front; then navigate to the page. Uses the open_url notification fix (#454) and 'Display over other apps'. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/no-veto-timer-on-navigation-follow-amber-open-x",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-10T21:29:07.761Z",
+   "updatedAt": "2026-11-10T21:29:11.812Z",
    "builtAt": "",
    "notes": [
     {
@@ -154384,6 +154384,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:47:16.823Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie.",
+     "at": "2026-11-10T21:29:10.093Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie, own login copy)",
+     "at": "2026-11-10T21:29:11.812Z"
     }
    ],
    "approvals": [],
@@ -154403,12 +154411,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T20:45:53.653Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T21:29:09.633Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T20:47:16.823Z",
@@ -154418,9 +154426,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T21:29:09.633Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -154429,7 +154437,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T21:29:09.633Z"
    },
    "steps": [
     {
@@ -154510,7 +154518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
