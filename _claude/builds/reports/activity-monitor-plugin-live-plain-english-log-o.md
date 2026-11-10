@@ -43,4 +43,4 @@ New plugin `apps/console-web/plugins/activity-monitor/` (not app core; removable
 - Rule "fix" reruns the event's retry or a systems check (`run_one`); the systems check service has no per-id fix method to call.
 - Rule "route" files a build in Pending (`queue: false`) so nothing starts without Brett.
 - `plugin-lifecycle check` reports the gitignored `.axf-focus.json` (the live-focus note naming this plugin); not in the repo.
-- Screens wait in UI Review (group in the PR).
+- Screens wait in UI Review → Screens & pages, item r-20261110-peyh101, group "activity-monitor-plugin-live-plain-english-log-o - Nov 10 12:45 AM" (written to the live UI Review folder: this headless session had no AXF_CONSOLE_URL / AXF_TOKEN for --console). PR #422.
