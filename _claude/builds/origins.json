@@ -112,6 +112,18 @@
    "from": "detail",
    "addenda": []
   },
+  "agent-manager-training-wizard-for-employee-agent": {
+   "said": "I need a training hook for every employee agent. Add onto the agent manager a training dialog where you select from various types of data, how to get it, how to process and store it like RAG. Train employees by pointing them towards data like a website or certain stuff on it, specific product types or code, React, TypeScript, whatever. The training wizard will train agents with certain types, categories, and build its tools, skills and a persona, and an index of categorized vocabulary; auto attach already generated vocabulary files, pairs, tools, skills, personality etc.",
+   "at": "2026-11-10T16:29:30.818Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "agent-pick": {
    "said": "",
    "at": "",
