@@ -207,7 +207,7 @@
           "inherit": false,
           "id": "windows",
           "overrides": {
-            "color-theme": "aurora-night"
+            "button": "terminal"
           }
         },
         "scopes": {},
@@ -217,9 +217,9 @@
         "$axf": "appearance@1",
         "slots": {
           "layout": "windows-explorer",
-          "color-theme": "aurora-night",
+          "color-theme": "windows-light",
           "style-theme": "windows",
-          "button": "windows",
+          "button": "terminal",
           "design-package": "hub-default",
           "banner": "windows-titlebar"
         },
@@ -231,7 +231,7 @@
           "axf.tokens.button": "x",
           "axf.appearance.overrides": {
             "style-theme": "windows",
-            "color-theme": "aurora-night"
+            "color-theme": "windows-light"
           }
         },
         "spacing": "compact"
@@ -353,7 +353,7 @@
             "inherit": false,
             "id": "windows",
             "overrides": {
-              "color-theme": "aurora-night"
+              "button": "terminal"
             }
           },
           "scopes": {},
@@ -383,7 +383,7 @@
         "inherit": false,
         "id": "windows",
         "overrides": {
-          "color-theme": "aurora-night"
+          "button": "terminal"
         }
       },
       "undoneTwice": {
@@ -391,7 +391,7 @@
         "inherit": false,
         "id": "windows",
         "overrides": {
-          "color-theme": "aurora-night"
+          "button": "terminal"
         }
       }
     }
@@ -1034,7 +1034,7 @@
       {
         "type": "uac-policy",
         "by": "none",
-        "covered": true,
+        "covered": false,
         "how": [
           "no look"
         ]
@@ -1049,6 +1049,870 @@
       },
       "none": null,
       "junk": null
+    }
+  },
+  "colour": {
+    "slot": "color-theme",
+    "picked": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {},
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "composed": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "windows-explorer",
+          "color-theme": "plum-noir",
+          "style-theme": "windows",
+          "button": "windows",
+          "design-package": "hub-default",
+          "banner": "windows-titlebar"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x",
+          "axf.appearance.overrides": {
+            "style-theme": "windows",
+            "color-theme": "plum-noir"
+          }
+        },
+        "spacing": "compact"
+      },
+      "overridden": [],
+      "color": {
+        "id": "plum-noir",
+        "own": "windows-light",
+        "picked": true
+      }
+    },
+    "skinsOwn": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "color": {
+        "id": "windows-light",
+        "own": "windows-light",
+        "picked": false
+      }
+    },
+    "back": {
+      "byPick": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "byBackToSkin": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "bySet": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      }
+    },
+    "withOverride": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        }
+      },
+      "own": {},
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {
+          "button": "terminal"
+        },
+        "colorTheme": "plum-noir"
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "sameSkin": {
+      "use": true,
+      "inherit": false,
+      "id": "windows",
+      "overrides": {},
+      "colorTheme": "plum-noir"
+    },
+    "otherSkin": {
+      "use": true,
+      "inherit": false,
+      "id": "aurora",
+      "overrides": {}
+    },
+    "offAndOn": {
+      "use": true,
+      "inherit": false,
+      "id": "windows",
+      "overrides": {},
+      "colorTheme": "plum-noir"
+    },
+    "noSkin": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        }
+      },
+      "own": {
+        "slots": {
+          "color-theme": "plum-noir"
+        }
+      },
+      "skin": {
+        "use": false,
+        "inherit": false,
+        "id": "",
+        "overrides": {}
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "legacy": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "button": "terminal"
+          },
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {},
+            "colorTheme": "harbor"
+          }
+        },
+        "undo": null
+      },
+      "composed": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "windows-explorer",
+          "color-theme": "plum-noir",
+          "style-theme": "windows",
+          "button": "terminal",
+          "design-package": "hub-default",
+          "banner": "windows-titlebar"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x",
+          "axf.appearance.overrides": {
+            "style-theme": "windows",
+            "color-theme": "plum-noir"
+          }
+        },
+        "spacing": "compact"
+      }
+    },
+    "fromOutside": {
+      "skinOn": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {},
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "skinOnOtherSlot": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "button": "terminal"
+          }
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "following": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": true,
+          "id": "",
+          "overrides": {},
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "followingNoHubSkin": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "plum-noir"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": true,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "noSkin": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "plum-noir"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "cleared": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      }
+    },
+    "hub": {
+      "plain": {
+        "id": "aurora",
+        "overrides": {}
+      },
+      "picked": {
+        "id": "aurora",
+        "overrides": {},
+        "colorTheme": "harbor"
+      },
+      "legacy": {
+        "id": "aurora",
+        "overrides": {
+          "button": "global-button"
+        },
+        "colorTheme": "harbor"
+      },
+      "resolved": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global",
+        "colorTheme": "harbor"
+      },
+      "composed": {
+        "layout": "windows-explorer",
+        "color-theme": "harbor",
+        "style-theme": "windows",
+        "button": "windows",
+        "design-package": "hub-default",
+        "banner": "windows-titlebar"
+      },
+      "appPickWins": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global",
+        "colorTheme": "plum-noir"
+      },
+      "sameAsHub": {
+        "use": false,
+        "inherit": true,
+        "id": "",
+        "overrides": {}
+      }
+    },
+    "scope": {
+      "inPlugin": {
+        "doc": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid",
+              "design-package": "hub-default"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            },
+            "settings": {
+              "axf.banners.group": "a",
+              "axf.tokens.button": "x"
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {},
+              "colorTheme": "harbor"
+            }
+          },
+          "undo": null
+        },
+        "resolved": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app",
+          "colorTheme": "harbor"
+        },
+        "outside": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "composed": {
+          "layout": "windows-explorer",
+          "color-theme": "harbor",
+          "style-theme": "windows",
+          "button": "windows",
+          "design-package": "hub-default",
+          "banner": "windows-titlebar"
+        }
+      },
+      "pluginSkin": {
+        "doc": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid",
+              "design-package": "hub-default"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            },
+            "settings": {
+              "axf.banners.group": "a",
+              "axf.tokens.button": "x"
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {},
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {},
+              "colorTheme": "harbor"
+            }
+          },
+          "undo": null
+        },
+        "resolved": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "plugin:notes",
+          "colorTheme": "harbor"
+        },
+        "outside": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app",
+          "colorTheme": "plum-noir"
+        }
+      },
+      "byOverride": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {},
+            "colorTheme": "harbor"
+          }
+        },
+        "undo": null
+      },
+      "dropped": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "otherSkin": {
+        "plugin:notes": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        }
+      },
+      "state": {
+        "use": "on",
+        "id": "windows",
+        "overrides": {},
+        "colorTheme": "plum-noir"
+      }
+    },
+    "restored": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {},
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {},
+          "at": "2026-11-09T00:00:00Z"
+        }
+      },
+      "undone": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {},
+        "colorTheme": "plum-noir"
+      }
+    },
+    "roundTrip": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        }
+      },
+      "own": {},
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {},
+        "colorTheme": "plum-noir"
+      },
+      "scopes": {
+        "plugin:notes": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {},
+          "colorTheme": "harbor"
+        }
+      },
+      "undo": null
     }
   }
 }

@@ -111,8 +111,9 @@ export function skinScopeSelector(key) {
  * Walk a chain of per-level skin states and say which skin is in force at the leaf. Each state is
  * `{ use: 'on' | 'off' | 'inherit', id, overrides }` (a missing level reads as inherit); the first level from the leaf
  * that isn't `inherit` decides. Overrides of the deciding level and of every level nearer the leaf apply, the child's
- * over the parent's. Result: `{ id, overrides, from }` (`from` = the deciding key) or `{ id: '', overrides: {}, from }`
- * when that level says off, or `from: ''` when every level inherits.
+ * over the parent's; so does the colour theme picked inside the skin (`colorTheme`, the nearest level that has one).
+ * Result: `{ id, overrides, from }` (`from` = the deciding key), plus `colorTheme` when a level picked one, or
+ * `{ id: '', overrides: {}, from }` when that level says off, or `from: ''` when every level inherits.
  */
 export function resolveSkinChain(chain, stateOf) {
   const seen = [];
@@ -122,8 +123,12 @@ export function resolveSkinChain(chain, stateOf) {
     if (st.use === 'inherit') continue;
     if (st.use !== 'on' || !st.id) return { id: '', overrides: {}, from: key };
     const overrides = {};
-    for (let i = seen.length - 1; i >= 0; i--) Object.assign(overrides, seen[i].st.overrides ?? {});
-    return { id: st.id, overrides, from: key };
+    let colorTheme = '';
+    for (let i = seen.length - 1; i >= 0; i--) {
+      Object.assign(overrides, seen[i].st.overrides ?? {});
+      if (seen[i].st.colorTheme) colorTheme = seen[i].st.colorTheme;
+    }
+    return colorTheme ? { id: st.id, overrides, from: key, colorTheme } : { id: st.id, overrides, from: key };
   }
   return { id: '', overrides: {}, from: '' };
 }

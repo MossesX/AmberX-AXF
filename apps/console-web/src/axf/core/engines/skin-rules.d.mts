@@ -4,13 +4,15 @@ export const APP_LOOK_FRAME: 'app-look@1';
 export const APP_LOOK_PROJECT: string;
 export const APP_LOOK_MAX_BYTES: number;
 export const SKIN_NEVER: readonly string[];
+/** The section of a skin that is switched on its own: the colour theme slot. */
+export const SKIN_COLOR_SLOT: 'color-theme';
 export const SKIN_USES: readonly ('on' | 'off' | 'inherit')[];
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
-/** The app level: Use skin, follow the hub-wide skin while off, the skin and its overrides. */
-export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string> }
+/** The app level: Use skin, follow the hub-wide skin while off, the skin, its overrides, and the colour theme picked inside it (absent = the skin's own; never an override, never a new skin). */
+export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string }
 /** The hub-wide skin (kept on the shared appearance document). */
-export interface GlobalSkin { id: string; overrides?: Record<string, string> }
+export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string }
 export interface AppLookDocument {
   $axf: typeof APP_LOOK_FRAME;
   app: string;
@@ -33,11 +35,13 @@ export function parseAppLook(text: string | null | undefined): AppLookDocument |
 export function setUseSkin(look: AppLookDocument, on: boolean): AppLookDocument;
 export function setInheritSkin(look: AppLookDocument, on: boolean): AppLookDocument;
 export function pickSkin(look: AppLookDocument, id: string): AppLookDocument;
+export function setSkinColorTheme(look: AppLookDocument, id: string | null, key?: string): AppLookDocument;
+export function skinColorTheme(look: AppLookDocument | null | undefined, key?: string): string;
 export function backToSkin(look: AppLookDocument, slot: string): AppLookDocument;
 export function overriddenSlots(look: AppLookDocument | null): string[];
 export function restoreAppDefault(look: AppLookDocument, at: string): AppLookDocument;
 export function undoRestore(look: AppLookDocument): AppLookDocument;
-export function setLookSlot(look: AppLookDocument, slot: string, id: string | null): AppLookDocument;
+export function setLookSlot(look: AppLookDocument, slot: string, id: string | null, global?: GlobalSkin | null): AppLookDocument;
 export function scopeState(look: AppLookDocument, key: string): SkinScopeState | null;
 export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'off' | 'inherit', id?: string): AppLookDocument;
 export function setScopeOverride(look: AppLookDocument, key: string, slot: string, id: string | null): AppLookDocument;

@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -1967,7 +1967,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid', 'design-package': 'hub-default' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'a', 'axf.tokens.button': 'x' } };
   const look0 = newAppLook('app', snapshotLook(shared as never));
   const on = setUseSkin(pickSkin(look0, 'windows'), true);
-  const overridden = lookAfterChange(on, { slots: { 'color-theme': 'aurora-night' } }, skin as never);
+  const overridden = lookAfterChange(on, { slots: { button: 'terminal' } }, skin as never);
   const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
   const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
   const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
@@ -1983,7 +1983,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       offSharedMoved: composeLook(movedShared as never, look0, null),
       on: composeLook(shared as never, on, skin as never),
       unknownSkin: composeLook(shared as never, on, null),
-      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'color-theme'), skin as never) },
+      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'button'), skin as never) },
       own: { doc: own, composed: composeLook(shared as never, own, null) },
       restored: { doc: restored, composed: composeLook(shared as never, restored, null), undone: undoRestore(restored).skin, undoneTwice: undoRestore(undoRestore(restored)).skin },
     },
@@ -2031,6 +2031,60 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
         covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
         globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
+      };
+    })(),
+    // The colour theme inside a skin (Brett, Nov 9 2026): switched on its own, kept as `colorTheme` beside the skin,
+    // never an override and never another skin. Every way of changing it leaves the skin id where it was.
+    colour: (() => {
+      const skinData = normalizeSkin(skin);
+      const skins: Record<string, typeof skinData> = { windows: skinData, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const pick = { slots: { 'color-theme': 'plum-noir' } };
+      const picked = lookAfterChange(on, pick, skinData);
+      const following = setInheritSkin(look0, true);
+      const hub = { ...shared, skin: { id: 'aurora' } };
+      const hubPicked = { ...shared, skin: { id: 'aurora', colorTheme: 'harbor' } };
+      const hubLegacy = { ...shared, skin: { id: 'aurora', overrides: { 'color-theme': 'harbor', button: 'global-button' } } };
+      const legacy = { ...on, skin: { ...on.skin, overrides: { 'color-theme': 'plum-noir', button: 'terminal' } }, scopes: { 'plugin:notes': { use: 'on', id: 'aurora', overrides: { 'color-theme': 'harbor' } } } };
+      const inPlugin = setSkinColorTheme(on, 'harbor', 'plugin:notes');
+      const pluginSkin = setSkinColorTheme(setScopeSkin(picked, 'plugin:notes', 'on', 'aurora'), 'harbor', 'plugin:notes');
+      return {
+        slot: 'color-theme',
+        picked: { doc: picked, composed: composeLook(shared as never, picked, skinData), overridden: overriddenSlots(picked), color: skinColorOf(skinData, picked.skin) },
+        skinsOwn: { doc: lookAfterChange(picked, { slots: { 'color-theme': skinData.colorTheme } }, skinData), color: skinColorOf(skinData, on.skin) },
+        back: { byPick: lookAfterChange(picked, { slots: { 'color-theme': null } }, skinData), byBackToSkin: backToSkin(picked, 'color-theme'), bySet: setSkinColorTheme(picked, null) },
+        withOverride: lookAfterChange(picked, { slots: { button: 'terminal' } }, skinData),
+        sameSkin: pickSkin(picked, 'windows').skin,
+        otherSkin: pickSkin(picked, 'aurora').skin,
+        offAndOn: setUseSkin(setUseSkin(picked, false), true).skin,
+        noSkin: lookAfterChange(look0, pick, null),
+        legacy: { doc: normalizeAppLook(legacy), composed: composeLook(shared as never, normalizeAppLook(legacy)!, skinData) },
+        fromOutside: {
+          skinOn: setLookSlot(on, 'color-theme', 'plum-noir'),
+          skinOnOtherSlot: setLookSlot(on, 'button', 'terminal'),
+          following: setLookSlot(following, 'color-theme', 'plum-noir', globalSkinOf(hub as never)),
+          followingNoHubSkin: setLookSlot(following, 'color-theme', 'plum-noir', null),
+          noSkin: setLookSlot(look0, 'color-theme', 'plum-noir'),
+          cleared: setLookSlot(picked, 'color-theme', null),
+        },
+        hub: {
+          plain: globalSkinOf(hub as never), picked: globalSkinOf(hubPicked as never), legacy: globalSkinOf(hubLegacy as never),
+          resolved: resolveLookSkin(following, globalSkinOf(hubPicked as never), null),
+          composed: composeLookAt(hubPicked as never, following, skinOf).doc.slots,
+          appPickWins: resolveLookSkin(setSkinColorTheme(following, 'plum-noir'), globalSkinOf(hubPicked as never), null),
+          sameAsHub: lookAfterChange(setSkinColorTheme(following, 'plum-noir'), { slots: { 'color-theme': 'harbor' } }, skins.aurora, 'harbor').skin,
+        },
+        scope: {
+          inPlugin: { doc: inPlugin, resolved: resolveLookSkin(inPlugin, null, place), outside: resolveLookSkin(inPlugin, null, { app: 'app', ui: 'home' }), composed: composeLookAt(shared as never, inPlugin, skinOf, place).doc.slots },
+          pluginSkin: { doc: pluginSkin, resolved: resolveLookSkin(pluginSkin, null, place), outside: resolveLookSkin(pluginSkin, null, { app: 'app' }) },
+          byOverride: setScopeOverride(on, 'plugin:notes', 'color-theme', 'harbor'),
+          dropped: setSkinColorTheme(inPlugin, null, 'plugin:notes'),
+          otherSkin: setScopeSkin(pluginSkin, 'plugin:notes', 'on', 'windows').scopes,
+          state: scopeState(picked, 'app'),
+        },
+        restored: { doc: restoreAppDefault(picked, '2026-11-09T00:00:00Z'), undone: undoRestore(restoreAppDefault(picked, '2026-11-09T00:00:00Z')).skin },
+        roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
       };
     })(),
   });

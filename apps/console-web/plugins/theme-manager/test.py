@@ -50,6 +50,10 @@ def check(cond, msg):
 
 
 print("theme-manager self-test")
+# skins routes: the colour theme inside a skin has its own routes, and the fixed hub-wide path sits before the {app} ones
+paths = [r.path for r in mod.router.routes]
+check("/skins/{app}/color" in paths and "/skins/global/color" in paths, "colour-theme-inside-the-skin routes exist")
+check(paths.index("/skins/global/color") < paths.index("/skins/{app}/at"), "the hub-wide colour route is declared before the {app} routes")
 builtin = json.loads(next((REPO / "framework" / "assets" / "color-theme").glob("*.json")).read_text("utf-8"))
 mine = {**builtin, "id": "my-roll-color-theme", "name": "My roll", "extra": "dropped", "tags": ["rolled"]}
 check(c.get("/p/themes").json()["items"] == [], "starts empty")

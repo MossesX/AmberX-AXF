@@ -272,6 +272,18 @@
         "kind": "button"
       },
       {
+        "target": "skins-colours",
+        "title": "Skin's colours",
+        "text": "Puts the skin's own colour theme back. The skin itself never changed: picking a colour theme only switches the colours inside it.",
+        "kind": "button"
+      },
+      {
+        "target": "colour-theme-inside-this-skin",
+        "title": "Colour theme inside this skin",
+        "text": "Switches the colour theme inside the skin you are wearing. The skin stays the same skin; no new skin is made.",
+        "kind": "field"
+      },
+      {
         "target": "choose",
         "title": "Choose",
         "text": "Opens the skin picker. Tap a skin to see it on this app, then Apply to keep it.",
