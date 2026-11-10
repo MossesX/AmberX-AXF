@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2588,
- "updatedAt": "2026-11-10T17:46:20.238Z",
+ "rev": 2589,
+ "updatedAt": "2026-11-10T17:46:35.511Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -141724,7 +141724,7 @@
    "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
    "category": "",
    "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -141732,8 +141732,8 @@
    "pr": "#461",
    "priority": "P0",
    "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-10T17:46:00.187Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T17:46:09.305Z",
+   "builtAt": "2026-11-10T17:46:09.305Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -141750,6 +141750,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-index-every-voice-chat-session--joey, own login copy)",
      "at": "2026-11-10T17:33:05.345Z"
+    },
+    {
+     "text": "Built (PR #461). Still open: UI Review desktop/phone shots of the Conversations page; Playwright isn't installed in the build worktree, so none were taken.",
+     "at": "2026-11-10T17:46:05.057Z"
     }
    ],
    "approvals": [],
@@ -141851,12 +141855,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:46:09.305Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:51:21.057Z",
-     "updatedAt": "2026-11-10T16:51:21.057Z"
+     "updatedAt": "2026-11-10T17:46:09.679Z"
     }
    ],
    "profiles": [
@@ -141867,7 +141871,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
