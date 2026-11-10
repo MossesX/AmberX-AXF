@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:48:46.200Z",
+ "updatedAt": "2026-11-10T21:48:56.933Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95750,6 +95750,10 @@
     {
      "text": "Headless run axf-convert-every-app-into-a-molly-module-expenses-c--sully: brief only · start 10.9K tokens ($0.03) · cost $0.26 · 8 turns · 6 tools, MCP none",
      "at": "2026-11-10T21:48:30.329Z"
+    },
+    {
+     "text": "Stopped before s1, nothing built: its dependencies are not done. molly-one-shell: s7 (console native host), s8 (axHub/AmberX native host), s10-s14 open; its shell-surface@1 contract (the module manifest + native mount seam this build needs) is only on unmerged PR #395 (claude/molly-one-shell-r4). molly-sign-in-once: 0/3 steps (no credential seam, so Expenses/hub modules cannot sign in). Building modules now would invent a second manifest contract or stack on an unlanded 14k-line PR. Next: land #395, finish molly-one-shell s7/s8 and molly-sign-in-once s1, then re-queue this. Also: s2 is Brett's raw sentence, a duplicate of s1; drop it or fold it into s1 when re-queued.",
+     "at": "2026-11-10T21:48:21.577Z"
     }
    ],
    "approvals": [],
