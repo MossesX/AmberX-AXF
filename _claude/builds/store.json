@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2814,
- "updatedAt": "2026-11-10T20:49:06.694Z",
+ "rev": 2815,
+ "updatedAt": "2026-11-10T20:50:10.449Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146294,10 +146294,10 @@
     "route": "",
     "dispatchedAt": "2026-11-10T19:39:11.590Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T18:53:03.053Z",
+     "at": "2026-11-10T20:50:04.534Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -146621,7 +146621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
