@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2389,
- "updatedAt": "2026-11-10T15:26:58.375Z",
+ "rev": 2390,
+ "updatedAt": "2026-11-10T15:27:26.243Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136950,9 +136950,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:26:32.806Z",
-   "updatedAt": "2026-11-10T15:26:33.494Z",
+   "updatedAt": "2026-11-10T15:27:24.689Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:27:24.689Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -136967,7 +136972,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T15:27:24.689Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaug2du01b98k",
+     "title": "",
+     "text": "axHub approval page settings: 1) Allow all approvals for the next 1 hour, 2 hours, or a custom duration / until a set time. 2) Deny all for a custom duration / until a set time. 3) A setting to change the veto countdown length (today fixed at 90 seconds). Show the active window and let it be cancelled early. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:27:24.689Z",
+     "updatedAt": "2026-11-10T15:27:24.689Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaug2du02tegg",
+     "title": "",
+     "text": "I need a settings on the approval page to allow all for the next hour or two hours or a custom field that I can enter, or deny all for a custom field. Until a certain time or amount of time. And where's the switch? A setting to control the time of the 90 seconds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:27:24.689Z",
+     "updatedAt": "2026-11-10T15:27:24.689Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaug2du03wfew",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/approval-page-allow-all-deny-all-for-a-set-time.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/approval-page-allow-all-deny-all-for-a-set-time.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:27:24.689Z",
+     "updatedAt": "2026-11-10T15:27:24.689Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -136976,12 +137073,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:27:24.689Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
