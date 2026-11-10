@@ -122,18 +122,45 @@ t('plan: an unapproved upgrade phase waits for Brett', () => {
 });
 
 // ---------------- session end
-t('endOutcome: finished → built with a PR, complete without; crash requeues; clean stop returns to Pending; failed after maxRuns', () => {
+t('endOutcome: finished → built with a PR, complete without; crash requeues; clean stop needs something (never Pending); failed after maxRuns', () => {
   const done = build('d', 'running', [step('s1', 'Opus', true)], { pipeline: { runs: 1, account: 'w-pro', session: 'axf-d' } });
   assert.equal(P.endOutcome(done, { exit: 0 }).status, 'complete');
   assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'built');
   const crashed = P.endOutcome(build('c', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, account: 'w-pro' } }), { exit: 1 });
   assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /back in the Queue/);
   const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
-  assert.equal(stopped.status, 'pending'); assert.match(stopped.note, /back in Pending for Brett/);
+  assert.equal(stopped.status, 'blocked'); assert.match(stopped.note, /needs something/);
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });
   assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account');
   const dead = P.endOutcome(build('f', 'running', [step('s1', 'Opus')], { pipeline: { runs: 3 } }), { exit: 137 });
   assert.equal(dead.status, 'failed'); assert.match(dead.note, /failed/);
+});
+
+// ---------------- statuses tell the truth (Nov 10 2026)
+t('buildTruth: Running only with a session; stopped work needs something with the exact need; built = Ready to land, complete = Landed', () => {
+  const stale = build('x.old', 'running', [step('s1', 'Opus', true), step('s2', 'Opus')]);
+  assert.equal(BP.buildTruth(stale).state, 'needs'); assert.equal(BP.buildTruth(stale).need.kind, 'resume'); assert.match(BP.buildTruth(stale).need.text, /1 step left/);
+  assert.equal(BP.buildTruth(stale, { live: true }).state, 'running');
+  assert.equal(BP.buildTruth({ ...stale, pipeline: { session: 'axf-x.old' } }).state, 'running', 'unknown liveness: a recorded session counts');
+  assert.equal(BP.buildTruth({ ...stale, pipeline: { session: 'axf-x.old' } }, { live: false }).state, 'needs');
+  assert.equal(BP.buildTruth(build('b', 'built', [step('s1', 'Opus', true)], { pr: '12' })).label, 'Ready to land');
+  assert.equal(BP.buildTruth(build('c', 'complete', [])).label, 'Landed');
+  const ui = BP.buildTruth(build('u', 'blocked', [step('s1', 'Opus')], { pipeline: { need: { kind: 'review', text: 'Shots wait in UI Review.' } } }));
+  assert.equal(ui.need.kind, 'review'); assert.equal(ui.need.action.href, '#/ui-review');
+  assert.equal(BP.buildTruth(build('w', 'waiting', [step('s1', 'Fable')])).need.kind, 'decision');
+});
+t('needFrom: reads the exact need from a report and notes', () => {
+  assert.equal(BP.needFrom('UI changes are waiting in UI Review before the PR is called ready.').kind, 'review');
+  assert.equal(BP.needFrom('Stopped: login expired on mossesx-max.').kind, 'signin');
+  assert.equal(BP.needFrom('Hit the usage limit, needs an account with credits.').kind, 'credits');
+  assert.equal(BP.needFrom('The GitHub token is missing on the VPS.').kind, 'key');
+  assert.equal(BP.needFrom('No space left on device (ENOSPC).').kind, 'env');
+  assert.equal(BP.needFrom('PR #12 has a merge conflict with main.').kind, 'land');
+  assert.equal(BP.needFrom('Should the list keep the old view as an option?').kind, 'decision');
+  assert.equal(BP.needFrom('All good, nothing to say.'), null);
+  assert.equal(BP.normPipeline({ need: { kind: 'resume', text: 'x' } }).need.kind, 'resume');
+  assert.equal(BP.normPipeline({ need: { kind: 'nope' } }), null);
+  assert.ok(BP.canQueue({ status: 'blocked' }), 'queueing answers a need');
 });
 
 // ---------------- split
@@ -359,11 +386,12 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
   });
-  t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {
+  t('e2e session end: a clean stop with steps left needs something (read from its notes), not Pending', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
     const r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
-    assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending/);
+    assert.equal(find('alpha').status, 'blocked'); assert.match(find('alpha').notes.at(-1).text, /needs something/);
+    assert.ok(find('alpha').pipeline.need?.kind, 'the need is recorded');
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
@@ -379,6 +407,20 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(find('gamma').pipeline.splitRequested);
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['gamma']);
     assert.equal(find('gamma').steps.length, 2); assert.equal(find('gamma').pipeline.splitRequested, '');
+  });
+  t('e2e truth: a Running build with no live session is corrected on the tick (a step tick alone never fakes Running for long)', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'stale', title: 'Stale', steps: [{ text: 'one', model: 'Opus', estimate: '20 min' }, { text: 'two', model: 'Opus', estimate: '20 min' }] }));
+    orch('act', 'note', 'stale', 'just a note');
+    assert.equal(find('stale').status, 'pending', 'a note never makes a build Running');
+    orch('act', 'step', 'stale', 's1', 'done');
+    assert.equal(find('stale').status, 'running', 'a step tick = a session is on it');
+    const live = (v) => { const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_LIVE: v }, encoding: 'utf8', timeout: 120000 }); return JSON.parse(r.stdout.trim().split('\n').pop()); };
+    assert.ok(!live('stale').corrected.some((c) => c.id === 'stale'), 'live: stays Running');
+    const r = live('');
+    assert.deepEqual(r.corrected.find((c) => c.id === 'stale'), { id: 'stale', status: 'blocked', need: 'resume' });
+    assert.equal(find('stale').pipeline.need.kind, 'resume'); assert.match(find('stale').pipeline.need.text, /1 step left/);
+    const t1 = json(orch('truth', 'stale', '--json')).builds[0].truth; assert.equal(t1.state, 'needs'); assert.equal(t1.need.action.action, 'queue');
+    json(pipe('queue', 'stale', '--json')); assert.equal(find('stale').status, 'queued'); assert.equal(find('stale').pipeline.need ?? null, null, 'queueing answers the need');
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');

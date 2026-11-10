@@ -78,6 +78,18 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+@router.get("/truth")
+def truth() -> dict[str, Any]:
+    """Every build's honest state (build-pipeline@1 buildTruth): Running only with a live session, Needs something with
+    the exact need and its answer, Ready to land, Landed. The same state the orchestrator, Builds page and Home card show."""
+    return _run("truth")
+
+
+@router.get("/truth/{build}")
+def truth_one(build: str) -> dict[str, Any]:
+    return _run("truth", _build_id(build))
+
+
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
 PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
 PRIORITY_CACHE_S = 5

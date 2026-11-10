@@ -16,6 +16,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../../../../framework/plan/builds-store-core.mjs';
 import { subtitle } from '../../../../framework/core/build-origin.mjs';
+import { buildTruth } from '../../../../framework/core/build-pipeline.mjs';
 import { applyDraftNow, loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile, readProfiles } from '../../../../framework/cli/persist.mjs';
 
@@ -38,6 +39,7 @@ function buildView(b, profile) {
     profiles: b.profiles, order: b.order[profile] ?? 0, rev: b.rev, createdAt: b.createdAt, updatedAt: b.updatedAt, builtAt: b.builtAt,
     hidden: b.hidden, rearranged: b.rearranged, hasDefault: b.defaultSteps.length > 0, notes: b.notes.slice(-5), pendingStatus: core.pendingStatusOf(b),
     progress: p, minutesLeft, steps, origin: b.origin ?? null, // build-origin@1: what Brett said
+    truth: buildTruth(b), queuedAt: b.pipeline?.queuedAt ?? '', account: b.pipeline?.account || b.pipeline?.lastRun?.account || '', priority: b.priority ?? '', // the honest state every surface shows (Nov 10 2026)
   };
 }
 const estimateMin = (e) => { const m = /^\s*~?\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?|d|days?)?\s*$/i.exec(String(e ?? '')); if (!m) return null; const n = Number(m[1]); const u = (m[2] || 'min').toLowerCase(); return Math.round(u.startsWith('h') ? n * 60 : u.startsWith('d') ? n * 480 : n); };

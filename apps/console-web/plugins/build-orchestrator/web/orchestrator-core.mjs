@@ -11,6 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { buildTruth, NEED_ACTION, NEED_KINDS, NEED_LABEL, TRUTH, TRUTH_LABEL, TRUTH_TONE } from '../../../../../framework/core/build-pipeline.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
@@ -20,11 +21,23 @@ export const MODELS = ['Fable', 'Opus'];
  * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
  */
 export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
+/** Stored status → its label. `blocked` = Needs something (its need is on pipeline.need), built = Ready to land, complete = Landed (Nov 10 2026). */
+export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Needs something', failed: 'Failed', built: 'Ready to land', complete: 'Landed', archived: 'Archived' };
+/** The one honest state every surface shows (framework/core/build-pipeline.mjs buildTruth): Running only with a live session. */
+export { buildTruth, NEED_ACTION, NEED_KINDS, NEED_LABEL, TRUTH, TRUTH_LABEL, TRUTH_TONE };
 /** Finished work: no steps left (built waits only on its PR). */
 export const isFinished = (status) => status === 'built' || status === 'complete';
-export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
-export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
+export const SORTS = ['added', 'updated', 'queued', 'built', 'status', 'left', 'next', 'category', 'title'];
+export const SORT_LABEL = { status: 'Status', added: 'Date added', updated: 'Last updated', queued: 'Date queued', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
+/** The date sorts (Brett, Nov 10 2026: "I can't sort by day either"): both directions, inside groups too. */
+export const DATE_SORTS = ['added', 'updated', 'queued', 'built'];
+/**
+ * How the Builds list groups (Nov 10 2026: "I don't want to be forced to view everything by category. I don't want a flat
+ * list by default, it's got to at least have an expanding row, depending on the root."). `root` (the default) = one row
+ * per root build that expands to its child builds and steps; the others group those root rows under a heading.
+ */
+export const GROUP_BY = ['root', 'category', 'status', 'priority', 'account'];
+export const GROUP_LABEL = { root: 'Root builds', category: 'Category', status: 'Status', priority: 'Priority', account: 'Account' };
 export const UNCATEGORISED = 'Uncategorised';
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
 /** When Fable is worth its price (shown on the page; the session picks a step's model from it). */
@@ -193,16 +206,22 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
   return { needsSplit: reasons.length > 0, reasons };
 }
 
-/** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
-export function derivedStatus(build, rules) {
-  if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
+/**
+ * Status the build should show, from its steps (explicit failed / archived stay). Statuses tell the truth (Nov 10 2026):
+ * only a step being ticked (`ticked`: a session is working on it now) makes a build Running; a note, a rename or an edit
+ * never does. The dispatcher takes Running away again when no live session is left (pipeline.mjs reconcileRunning).
+ */
+export function derivedStatus(build, rules, { ticked = false } = {}) {
+  if (['failed', 'archived'].includes(build.status)) return build.status;
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
   if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
   const n = nextUp(build, rules);
   if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
   if (n.needsApproval) return 'waiting';
-  if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step
-  return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
+  if (ticked) return 'running';
+  if (build.status === 'waiting') return 'queued'; // the upgrade was approved: back in the Queue for the dispatcher
+  if (isFinished(build.status)) return 'blocked'; // finished work reopened: it needs something, it is not Pending again
+  return build.status;
 }
 
 export function counts(builds) {
@@ -212,8 +231,53 @@ export function counts(builds) {
 }
 
 const ORDER = Object.fromEntries(STATUSES.map((s, i) => [s, i]));
+const TRUTH_ORDER = Object.fromEntries(TRUTH.map((s, i) => [s, i]));
+
+/**
+ * Root of every build: { [id]: rootId }. Builds carry no parent link, so the root is read from what they do carry:
+ * `parent` when set, a plan epic whose id / planRef is a dotted prefix of the build's planRef or id (x.assets →
+ * x.assets.designer), and a follow-up's base build (foo-2 → foo). Chains resolve to the top; a build with none is its own root.
+ */
+export function rootsOf(builds) {
+  const ids = new Set(builds.map((b) => b.id));
+  const byRef = new Map(); for (const b of builds) if (b.planRef && !byRef.has(b.planRef)) byRef.set(b.planRef, b.id);
+  const parent = new Map();
+  for (const b of builds) {
+    let p = b.parent && ids.has(b.parent) && b.parent !== b.id ? b.parent : '';
+    if (!p) { // the longest dotted prefix that is another build (id or planRef)
+      const key = b.planRef || b.id; const parts = key.split('.');
+      for (let i = parts.length - 1; i > 0 && !p; i -= 1) { const pre = parts.slice(0, i).join('.'); const hit = ids.has(pre) ? pre : byRef.get(pre); if (hit && hit !== b.id) p = hit; }
+    }
+    if (!p) { const m = /^(.+)-(\d{1,2})$/.exec(b.id); if (m && ids.has(m[1])) p = m[1]; }
+    if (p) parent.set(b.id, p);
+  }
+  const out = {};
+  for (const b of builds) { let r = b.id; const seen = new Set([r]); while (parent.has(r) && !seen.has(parent.get(r))) { r = parent.get(r); seen.add(r); } out[b.id] = r; }
+  return out;
+}
+/** Root rows with their children (sorted the same way), for the default list: [{ build, children }]. A child whose root is filtered out shows as its own row. */
+export function rootTree(builds, sort = 'added', dir = 'desc', rules) {
+  const roots = rootsOf(builds); const shown = new Set(builds.map((b) => b.id));
+  const kids = new Map();
+  for (const b of builds) { const r = roots[b.id]; if (r !== b.id && shown.has(r)) kids.set(r, [...(kids.get(r) ?? []), b]); }
+  const top = builds.filter((b) => roots[b.id] === b.id || !shown.has(roots[b.id]));
+  return sortBuilds(top, sort, dir, rules).map((b) => ({ build: b, children: sortBuilds(kids.get(b.id) ?? [], sort, dir, rules) }));
+}
+/** The heading a build sits under for a Group by choice ('' for root = no heading). */
+export function groupKey(b, by) {
+  if (by === 'category') return b.category || UNCATEGORISED;
+  if (by === 'status') return buildTruth(b).label;
+  if (by === 'priority') return /^P[0-3]$/.test(b.priority || '') ? b.priority : 'P2';
+  if (by === 'account') return b.pipeline?.account || b.pipeline?.lastRun?.account || 'No account';
+  return '';
+}
+/** Group headings in their natural order (status by the truth order, priority P0 first, the rest by name). */
+export function groupOrder(by, a, b) {
+  if (by === 'status') { const i = (l) => TRUTH_ORDER[Object.keys(TRUTH_LABEL).find((k) => TRUTH_LABEL[k] === l)] ?? 99; return i(a) - i(b); }
+  return a.localeCompare(b);
+}
 export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
-  const k = (b) => sort === 'category' ? (b.category || '~').toLowerCase() : sort === 'title' ? b.title.toLowerCase() : sort === 'added' ? b.createdAt : sort === 'built' ? (b.builtAt || '') : sort === 'left' ? progress(b).minutesLeft
+  const k = (b) => sort === 'category' ? (b.category || '~').toLowerCase() : sort === 'title' ? b.title.toLowerCase() : sort === 'added' ? b.createdAt : sort === 'updated' ? (b.updatedAt || b.createdAt) : sort === 'queued' ? (b.pipeline?.queuedAt || '') : sort === 'built' ? (b.builtAt || '') : sort === 'left' ? progress(b).minutesLeft
     : sort === 'next' ? (nextUp(b, rules).step?.model ?? 'z') : ORDER[b.status];
   const out = [...list].sort((a, b) => { const x = k(a); const y = k(b); return x < y ? -1 : x > y ? 1 : a.createdAt < b.createdAt ? -1 : 1; });
   return dir === 'desc' ? out.reverse() : out;
@@ -335,7 +399,7 @@ export function apply(state, change) {
     case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
-  if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }
+  if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules, { ticked: c.action === 'step' && c.done !== false }); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }
   s.updatedAt = now();
   return { state: s, build: b && s.builds.includes(b) ? b : undefined, log };
 }

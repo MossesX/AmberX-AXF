@@ -168,4 +168,32 @@ t('approvals off: an open request filed while they were on is closed when the ph
   try { x = c.apply(x, { action: 'step', id: 'old', step: 's2' }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'approved'); }
   finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
 });
+// Statuses tell the truth + the list (Brett, Nov 10 2026)
+t('a note or edit never makes a build Running; a step tick does; finished work reopened needs something', () => {
+  let x = c.apply(c.emptyState(), { action: 'add', title: 'Truth', steps: [{ text: 'a', estimate: '10 min' }, { text: 'b', estimate: '10 min' }] }).state;
+  x = c.apply(x, { action: 'step', id: 'truth', step: 's1' }).state; assert.equal(x.builds[0].status, 'running');
+  x = c.apply(x, { action: 'status', id: 'truth', status: 'pending' }).state;
+  x = c.apply(x, { action: 'note', id: 'truth', text: 'hello' }).state; assert.equal(x.builds[0].status, 'pending', 'a note keeps Pending');
+  x = c.apply(x, { action: 'step', id: 'truth', step: 's2' }).state; assert.equal(x.builds[0].status, 'complete');
+  x = c.apply(x, { action: 'step', id: 'truth', step: 's2', done: false }).state; assert.equal(x.builds[0].status, 'blocked', 'an undo on finished work: it needs something, not Running');
+  x = c.apply(x, { action: 'status', id: 'truth', status: 'complete' }).state;
+  x = c.apply(x, { action: 'update', id: 'truth', title: 'Truth' }).state; assert.equal(x.builds[0].status, 'blocked', 'reopened finished work needs something, not Pending');
+  assert.equal(c.STATUS_LABEL.blocked, 'Needs something'); assert.equal(c.STATUS_LABEL.built, 'Ready to land'); assert.equal(c.STATUS_LABEL.complete, 'Landed');
+});
+t('roots: plan epics own their dotted children, follow-ups their base; rootTree nests and sorts by date both ways', () => {
+  const B = (id, extra = {}) => ({ id, title: id, createdAt: extra.createdAt ?? '2026-11-01T00:00:00Z', updatedAt: extra.updatedAt ?? '2026-11-01T00:00:00Z', status: 'pending', steps: [], ...extra });
+  const list = [B('x.assets', { kind: 'epic', planRef: 'x.assets', createdAt: '2026-10-01T00:00:00Z' }), B('asset-designer', { planRef: 'x.assets.designer', createdAt: '2026-11-03T00:00:00Z' }), B('x.assets.browser', { createdAt: '2026-11-02T00:00:00Z' }), B('icon-browser', { createdAt: '2026-11-05T00:00:00Z' }), B('icon-browser-2', { createdAt: '2026-11-06T00:00:00Z' }), B('lone', { createdAt: '2026-11-04T00:00:00Z' })];
+  const r = c.rootsOf(list);
+  assert.equal(r['asset-designer'], 'x.assets'); assert.equal(r['x.assets.browser'], 'x.assets'); assert.equal(r['icon-browser-2'], 'icon-browser'); assert.equal(r.lone, 'lone');
+  const desc = c.rootTree(list, 'added', 'desc');
+  assert.deepEqual(desc.map((x) => x.build.id), ['icon-browser', 'lone', 'x.assets']);
+  assert.deepEqual(desc.find((x) => x.build.id === 'x.assets').children.map((k) => k.id), ['asset-designer', 'x.assets.browser'], 'children sorted newest first too');
+  assert.deepEqual(c.rootTree(list, 'added', 'asc').map((x) => x.build.id), ['x.assets', 'lone', 'icon-browser']);
+  const shown = list.filter((b) => b.id !== 'x.assets');
+  assert.ok(c.rootTree(shown).some((x) => x.build.id === 'asset-designer'), 'a child whose root is filtered out is its own row');
+  assert.deepEqual(c.sortBuilds([B('a', { updatedAt: '2026-11-02' }), B('b', { updatedAt: '2026-11-09' })], 'updated', 'desc').map((x) => x.id), ['b', 'a']);
+  assert.deepEqual(c.sortBuilds([B('a', { pipeline: { queuedAt: '2026-11-08' } }), B('b', { pipeline: { queuedAt: '2026-11-02' } })], 'queued', 'asc').map((x) => x.id), ['b', 'a']);
+  assert.equal(c.groupKey(B('q', { status: 'running' }), 'status'), 'Needs something', 'grouping uses the honest state');
+  assert.equal(c.GROUP_BY[0], 'root', 'root rows are the default');
+});
 console.log(`build-orchestrator: ${n} checks passed`);

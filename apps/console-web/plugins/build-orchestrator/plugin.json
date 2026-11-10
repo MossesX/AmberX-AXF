@@ -240,6 +240,22 @@
         "output": "{ id, origin }"
       },
       {
+        "id": "build-truth",
+        "route": "GET /truth",
+        "title": "What every build really is",
+        "description": "Every build's honest state, the same on every surface: Running only while a live session exists, Needs something with the exact need (UI Review, merge / land, sign-in, credits, a key, your decision, Fable, a disk / env fix, a restart) and the button that answers it, Ready to land, Landed. Say 'what do my builds need'.",
+        "readOnly": true,
+        "output": "{ builds: [{ id, title, status, truth: { state, label, need: { kind, label, text, action } | null } }] }"
+      },
+      {
+        "id": "build-truth-one",
+        "route": "GET /truth/{build}",
+        "title": "What one build really is",
+        "description": "One build's honest state and, when it needs something, what and how to answer it (pipeline-queue answers a restart or a Fable need).",
+        "readOnly": true,
+        "input": { "type": "object", "properties": { "build": { "type": "string", "description": "Build id" } }, "required": ["build"] }
+      },
+      {
         "id": "pipeline-status",
         "route": "GET /pipeline",
         "title": "Pipeline status",

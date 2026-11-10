@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, Slot, TabGroup, originSubtitle, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, SelectField, Slot, TabGroup, originSubtitle, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -23,7 +23,9 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Need = { kind: string; label: string; text: string; action: { label: string; href?: string; action?: string } };
+type Truth = { state: string; label: string; tone: string; need: Need | null };
+type Build = { truth?: Truth; pipeline?: { queuedAt?: string; account?: string; need?: unknown; session?: string; lastRun?: { account?: string } | null } | null; planRef?: string; kind?: string; priority?: string; id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
@@ -38,6 +40,10 @@ function headlessRuns(b: Build): { at: string; start: string; cost: string; mode
 }
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
+/** Deep-link params (console_show / console_open target): #/build-orchestrator?tab=builds&group=status&sort=updated&dir=desc&build=<id>. */
+const urlParam = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k) ?? '';
+/** The honest state (server-computed `truth`; the shared core when an older server sent none). */
+const truthOf = (b: Build): Truth => b.truth ?? (core.buildTruth(b) as Truth);
 const TABS = [{ id: 'pipeline', label: 'Pipeline', icon: 'play' }, { id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
@@ -47,7 +53,7 @@ export function OrchestratorPage() {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'pipeline'));
+  const [tab, setTab] = useState<Tab>(() => (TABS.some((t) => t.id === urlParam('tab')) ? urlParam('tab') as Tab : consoleApi.readLocal<Tab>('orch-tab', 'pipeline')));
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
 
   const load = async () => {
@@ -91,32 +97,36 @@ export function OrchestratorPage() {
 }
 
 function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act }) {
-  const [sort, setSort] = useState<string>(() => consoleApi.readLocal('orch-sort', 'status'));
-  const [dir, setDir] = useState<'asc' | 'desc'>(() => consoleApi.readLocal('orch-dir', 'asc'));
+  // Sort and Group by are remembered (orch-sort2 / orch-dir2 / orch-group) and a deep link can set them; date sorts by default, newest first
+  const [sort, setSort] = useState<string>(() => (core.SORTS.includes(urlParam('sort')) ? urlParam('sort') : consoleApi.readLocal('orch-sort2', 'added')));
+  const [dir, setDir] = useState<'asc' | 'desc'>(() => (urlParam('dir') === 'asc' || urlParam('dir') === 'desc' ? urlParam('dir') as 'asc' | 'desc' : consoleApi.readLocal('orch-dir2', 'desc')));
+  const [groupBy, setGroupBy] = useState<string>(() => (core.GROUP_BY.includes(urlParam('group')) ? urlParam('group') : consoleApi.readLocal('orch-group', 'root')));
+  useEffect(() => { consoleApi.writeLocal('orch-group', groupBy); }, [groupBy]);
   const [filter, setFilter] = useState('');
   const [model, setModel] = useState('');
   const [showHidden, setShowHidden] = useState(false);
   const [view, setView] = useState<'list' | 'grid'>(() => consoleApi.readLocal('orch-view', 'grid'));
   const [cat, setCat] = useState('');
   useEffect(() => { consoleApi.writeLocal('orch-view', view); }, [view]);
-  useEffect(() => { consoleApi.writeLocal('orch-sort', sort); consoleApi.writeLocal('orch-dir', dir); }, [sort, dir]);
+  useEffect(() => { consoleApi.writeLocal('orch-sort2', sort); consoleApi.writeLocal('orch-dir2', dir); }, [sort, dir]);
   const builds = useMemo(() => {
     let all = state.builds.filter((b) => (showHidden ? true : !b.hidden));
     if (!filter) all = all.filter((b) => b.status !== 'archived');
-    else all = all.filter((b) => b.status === filter);
+    else all = all.filter((b) => (filter === 'running' ? truthOf(b).state === 'running' : filter === 'blocked' ? truthOf(b).state === 'needs' && b.status !== 'waiting' : b.status === filter));
     if (model) all = all.filter((b) => core.nextUp(b, state.rules).step?.model === model);
     if (cat) all = all.filter((b) => (b.category || core.UNCATEGORISED) === cat);
     return core.sortBuilds(all, sort, dir, state.rules) as Build[];
   }, [state, sort, dir, filter, model, showHidden, cat]);
   const cats = core.categories(state.builds.filter((b) => b.status !== 'archived'));
   const counts = core.counts(state.builds) as Record<string, number>;
+  const stale = state.builds.filter((b) => b.status === 'running' && truthOf(b).state !== 'running').length;
   const hiddenCount = state.builds.filter((b) => b.hidden).length;
   return (
     <>
       <div className="pd-strip" role="group" aria-label="Filter by status">
         {core.STATUSES.map((s) => (
           <button data-fx-row key={s} className={`pd-count is-${s}`} aria-pressed={filter === s} onClick={() => setFilter((f) => (f === s ? '' : s))}>
-            <b>{counts[s]}</b><span>{(core.STATUS_LABEL as Record<string, string>)[s]}</span>
+            <b>{s === 'running' ? counts[s]! - stale : s === 'blocked' ? counts[s]! + stale : counts[s]}</b><span>{(core.STATUS_LABEL as Record<string, string>)[s]}</span>
           </button>
         ))}
       </div>
@@ -130,16 +140,14 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
           <option value="">Any model next</option>
           {core.MODELS.map((m) => <option key={m} value={m}>Next on {m}</option>)}
         </select>
-        {view === 'list' && (
-          <select className="fx-input oc-bar__pick" aria-label="Sort by" value={`${sort}:${dir}`} onChange={(e) => { const [k, d] = e.target.value.split(':'); setSort(k!); setDir(d as 'asc' | 'desc'); }}>
-            {core.SORTS.flatMap((k) => (['asc', 'desc'] as const).map((d) => <option key={`${k}:${d}`} value={`${k}:${d}`}>{(core.SORT_LABEL as Record<string, string>)[k]} {d === 'asc' ? '↑' : '↓'}</option>))}
-          </select>
-        )}
+        <SelectField className="oc-bar__field" label="Group by" value={groupBy} onChange={setGroupBy} options={core.GROUP_BY.map((g) => ({ value: g, label: (core.GROUP_LABEL as Record<string, string>)[g]! }))} />
+        <SelectField className="oc-bar__field" label="Sort by" value={sort} onChange={setSort} options={core.SORTS.map((k) => ({ value: k, label: (core.SORT_LABEL as Record<string, string>)[k]! }))} />
+        <Segmented size="sm" label="Direction" value={dir} onChange={setDir} options={[{ value: 'desc', label: core.DATE_SORTS.includes(sort) ? 'Newest' : 'Z → A', icon: 'chevron-down' }, { value: 'asc', label: core.DATE_SORTS.includes(sort) ? 'Oldest' : 'A → Z', icon: 'chevron-up' }]} />
         {hiddenCount > 0 && <button data-fx-row className="pd-sort" aria-pressed={showHidden} onClick={() => setShowHidden((v) => !v)}><Icon name={showHidden ? 'eye' : 'minimize'} size={13} />Hidden ({hiddenCount})</button>}
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
       </div>
       {builds.length === 0 ? <div className="fx-empty">{filter || cat ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
-        : view === 'grid' ? <BuildGrid builds={builds} rules={state.rules} busy={busy} act={act} />
+        : view === 'grid' ? <BuildGrid builds={builds} rules={state.rules} busy={busy} act={act} groupBy={groupBy} sort={sort} dir={dir} setSort={setSort} setDir={setDir} />
         : <div className="pd-list" role="list">{builds.map((b) => <BuildCard key={b.id} b={b} rules={state.rules} busy={busy} act={act} />)}</div>}
       <AddForm busy={busy} act={act} />
       <ImportForm busy={busy} act={act} known={state.builds.map((b) => b.pendingId).filter(Boolean)} />
@@ -179,8 +187,9 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
     <article className={`${embedded ? 'oc-embedded ' : ''}pd-card is-${core.isFinished(b.status) ? 'complete' : b.status === 'failed' ? 'failed' : b.status === 'blocked' ? 'broken' : 'pending'}`} role={embedded ? undefined : "listitem"} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : b.title}<span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</h2>
-        <button data-fx-row className={`pd-badge oc-badge is-${b.status}`} aria-expanded={statusOpen} aria-label={`Status: ${b.status}. Change`} onClick={() => setStatusOpen((o) => !o)}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</button>
+        <button data-fx-row className={`pd-badge oc-badge is-${truthOf(b).state}`} aria-expanded={statusOpen} aria-label={`Status: ${truthOf(b).label}. Change`} onClick={() => setStatusOpen((o) => !o)}>{truthOf(b).label}</button>
       </div>
+      {!embedded && <NeedLine b={b} busy={busy} act={act} />}
       {statusOpen && (
         <div className="fx-row fx-row--wrap">
           {core.STATUSES.map((s) => <button data-fx-row key={s} className={`pd-badge oc-badge is-${s}`} disabled={busy || s === b.status} onClick={async () => { if (await act({ action: 'status', id: b.id, status: s })) setStatusOpen(false); }}>{(core.STATUS_LABEL as Record<string, string>)[s]}</button>)}
@@ -196,7 +205,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         {b.category && <span><Icon name="layers" size={13} />{b.category}</span>}
         {b.pendingId && <span className="fx-mono">pending:{b.pendingId}</span>}
         {b.branch && <span className="fx-mono">{b.branch}</span>}
-        {(b.status === 'running' || b.status === 'waiting') && <WatchLiveFor branch={b.branch} text={`${b.id} ${b.pendingId ?? ''}`} />}
+        {truthOf(b).state === 'running' && <WatchLiveFor branch={b.branch} text={`${b.id} ${b.pendingId ?? ''}`} />}
       </div>
       {!embedded && n.needsApproval && n.phase && (
         <div className="pl-note is-warn oc-gate"><Icon name="alert" size={14} />Next phase upgrades {n.phase.from} → {n.phase.model}. Only you can approve it; no session starts it before you do.
@@ -411,7 +420,7 @@ const money = (v: number) => (v ? pendingCore.formatUsd(v) : '—');
 const toggleIn = (list: readonly string[], v: string, on?: boolean) => { const has = list.includes(v); const want = on ?? !has; return want ? (has ? [...list] : [...list, v]) : list.filter((x) => x !== v); };
 const nextSort = (cur: GridSort, col: string | null): GridSort => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 });
 const summary = (b: Build) => { const said = originSubtitle(b.origin, 160); if (said) return `“${said}”`; const t = (b.detail || '').replace(/\s+/g, ' ').trim(); const dot = t.search(/[.!?](\s|$)/); return dot > 0 && dot < 160 ? t.slice(0, dot + 1) : t.length > 160 ? `${t.slice(0, 157)}…` : t; };
-const STATUS_TONE: Record<string, string> = { pending: 'muted', running: 'accent', waiting: 'warning', blocked: 'warning', failed: 'danger', complete: 'success', archived: 'muted' };
+const STATUS_TONE: Record<string, string> = { pending: 'muted', running: 'accent', waiting: 'warning', blocked: 'warning', failed: 'danger', built: 'accent', complete: 'success', archived: 'muted' };
 
 /** Time and dollars for a build: total and left, priced per step on the step's own model. */
 function figures(b: Build) {
@@ -420,30 +429,59 @@ function figures(b: Build) {
   return { total, left, cost, costLeft };
 }
 
-/** Grid: one row per build, grouped by category (columns like the Pending builds grid); a row expands to its steps as a subgrid plus the build's actions. */
-function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules; busy: boolean; act: Act }) {
-  const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
-  const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden', ['left']));
+/** The need as a badge, one plain sentence and a button that does it (queue) or jumps to it (UI Review, the PR, accounts…). */
+function NeedLine({ b, busy, act, compact }: { b: Build; busy: boolean; act: Act; compact?: boolean }) {
+  const rt = useRuntime();
+  const n = truthOf(b).need;
+  if (!n) return null;
+  const go = async () => {
+    if (n.action.action === 'queue') { try { const r = await api.post<{ ok: boolean; error?: string }>('pipeline/queue', { id: b.id }); if (!r.ok) throw new Error(r.error); rt.toast(`${b.title}: back in the Queue`, 'success'); await act({ action: 'note', id: b.id, text: `Queued from the need (${n.label}).` }); } catch (e) { rt.toast((e as Error).message, 'danger'); } return; }
+    if (n.kind === 'decision' && !n.action.href) { const answer = window.prompt(`${b.title}: ${n.text}\nYour answer (saved as a build note the next session reads):`); if (answer?.trim()) await act({ action: 'note', id: b.id, text: `Brett: ${answer.trim()}` }); return; }
+    if (n.action.href) { if (/^https?:/.test(n.action.href)) window.open(n.action.href, '_blank', 'noopener'); else location.hash = n.action.href.replace(/^#/, ''); }
+  };
+  return (
+    <div className={`oc-need${compact ? ' is-compact' : ''}`} onClick={(e) => e.stopPropagation()}>
+      <span className="pd-badge oc-badge is-needs" title={n.text}>{n.label}</span>
+      <span className="fx-small oc-need__text">{n.text}</span>
+      {(n.action.action || n.action.href || n.kind === 'decision') && <Button size="sm" tone="primary" disabled={busy} onClick={() => void go()}>{n.action.label}</Button>}
+    </div>
+  );
+}
+
+/** Grid columns that sort by date map onto the Sort by control (one sort, remembered, both directions, inside groups). */
+const COL_SORT: Record<string, string> = { added: 'added', updated: 'updated', queued: 'queued', status: 'status', title: 'title', next: 'next', left: 'left' };
+
+/**
+ * Grid. Default (Group by = Root builds): one row per root build that expands to its child builds and steps. Group by
+ * category / status / priority / account puts those root rows under headings. Rows are sorted by the Sort by control,
+ * inside every group and among each root's children.
+ */
+function BuildGrid({ builds, rules, busy, act, groupBy, sort: sortKey, dir, setSort: setSortKey, setDir }: { builds: Build[]; rules: Rules; busy: boolean; act: Act; groupBy: string; sort: string; dir: 'asc' | 'desc'; setSort: (s: string) => void; setDir: (d: 'asc' | 'desc') => void }) {
+  const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden2', ['left', 'queued']));
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
-  const [open, setOpen] = useState<string[]>([]);
+  const [open, setOpen] = useState<string[]>(() => (urlParam('build') ? [urlParam('build')] : []));
   const [collapsed, setCollapsed] = useState<string[]>([]);
-  useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
+  useEffect(() => { consoleApi.writeLocal('orch-grid-hidden2', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [hidden, stepHidden]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
+  const tree = useMemo(() => core.rootTree(builds, sortKey, dir, rules) as { build: Build; children: Build[] }[], [builds, sortKey, dir, rules]);
+  const kids = useMemo(() => new Map(tree.map((t) => [t.build.id, t.children])), [tree]);
+  const sort: GridSort = COL_SORT[sortKey] ? { col: COL_SORT[sortKey]!, dir: dir === 'asc' ? 1 : -1 } : null;
+  const onSort = (col: string | null) => { const k = Object.entries(COL_SORT).find(([, c]) => c === col)?.[0]; if (!k) return; if (k === sortKey) setDir(dir === 'asc' ? 'desc' : 'asc'); else { setSortKey(k); setDir(core.DATE_SORTS.includes(k) ? 'desc' : 'asc'); } };
   const groups: GridGroup<Build>[] = useMemo(() => {
+    const rows = tree.map((t) => t.build);
+    const sum = (list: Build[]) => { const t = list.reduce((a, b) => { const f = fig.get(b.id)!; const p = core.progress(b); return { left: a.left + f.left, cost: a.cost + f.costLeft, done: a.done + p.done, total: a.total + p.total }; }, { left: 0, cost: 0, done: 0, total: 0 });
+      return { summary: `${core.formatMinutes(t.left) || 'nothing'} left · ${money(t.cost)}`, progress: t.total ? (t.done / t.total) * 100 : undefined }; };
+    if (groupBy === 'root') return [{ id: 'root', title: `Root builds (${rows.length}) · ${builds.length} in all`, icon: 'layers', rows, groups: [], fixed: true, ...sum(builds) }];
     const by = new Map<string, Build[]>();
-    for (const b of builds) { const c = b.category || core.UNCATEGORISED; by.set(c, [...(by.get(c) ?? []), b]); }
-    return [...by.entries()].sort((a, c) => a[0].localeCompare(c[0])).map(([name, rows]) => {
-      const t = rows.reduce((a, b) => { const f = fig.get(b.id)!; const p = core.progress(b); return { left: a.left + f.left, cost: a.cost + f.costLeft, done: a.done + p.done, total: a.total + p.total }; }, { left: 0, cost: 0, done: 0, total: 0 });
-      return { id: `cat:${name}`, title: `${name} (${rows.length})`, icon: 'layers', rows, groups: [], collapsed: collapsed.includes(`cat:${name}`),
-        summary: `${core.formatMinutes(t.left) || 'nothing'} left · ${money(t.cost)}`, progress: t.total ? (t.done / t.total) * 100 : undefined };
-    });
-  }, [builds, fig, collapsed]);
+    for (const b of rows) { const k = core.groupKey(b, groupBy); by.set(k, [...(by.get(k) ?? []), b]); }
+    return [...by.entries()].sort((a, c) => core.groupOrder(groupBy, a[0], c[0])).map(([name, list]) => ({ id: `${groupBy}:${name}`, title: `${name} (${list.length})`, icon: 'layers', rows: list, groups: [], collapsed: collapsed.includes(`${groupBy}:${name}`), ...sum(list) }));
+  }, [tree, builds, fig, collapsed, groupBy]);
   const cols: GridColumn<Build>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
+      render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}{(kids.get(b.id)?.length ?? 0) > 0 && <span className="oc-count" title="Child builds: expand the row">{kids.get(b.id)!.length} child build{kids.get(b.id)!.length === 1 ? '' : 's'}</span>}</strong>{truthOf(b).need ? <span className="fx-small oc-need__text">{truthOf(b).need!.text}</span> : summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 9)', render: (b) => <PriorityTag build={b.id} /> },
-    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
-      render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
+    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
+      render: (b) => { const t = truthOf(b); return <span className="oc-cell-title"><span className={`pd-badge oc-badge is-${t.state}`} title={t.need?.text}>{t.label}</span>{t.need && <span className="fx-small oc-need__kind">{t.need.label}</span>}</span>; } },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
       render: (b) => { const n = core.nextUp(b, rules); return n.done ? <span className="fx-muted">—</span> : n.needsApproval ? <span className="oc-flag" title="The next phase upgrades the model: only you can approve it">your OK → {n.phase?.model}</span> : n.step ? <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model} {n.step.id}</span> : <span className="fx-muted">—</span>; } },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (b) => core.progress(b).total,
@@ -456,6 +494,10 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       render: (b) => { const f = fig.get(b.id)!; return <span className="fx-small" title={`Estimated: minutes × the model’s price per working minute · ${money(f.costLeft)} left`}>{money(f.cost)}</span>; } },
     { id: 'added', label: 'Added', width: 'calc(var(--fx-font-size) * 7)', align: 'end', sortable: true, sortValue: (b) => b.createdAt,
       render: (b) => <span className="fx-small" title={fmtTime(b.createdAt)}>{fmtDate(b.createdAt)}</span> },
+    { id: 'updated', label: 'Updated', width: 'calc(var(--fx-font-size) * 7)', align: 'end', sortable: true, sortValue: (b) => b.updatedAt || b.createdAt,
+      render: (b) => <span className="fx-small" title={fmtTime(b.updatedAt)}>{fmtDate(b.updatedAt)}</span> },
+    { id: 'queued', label: 'Queued', width: 'calc(var(--fx-font-size) * 7)', align: 'end', sortable: true, sortValue: (b) => b.pipeline?.queuedAt || '',
+      render: (b) => <span className="fx-small" title={fmtTime(b.pipeline?.queuedAt || '')}>{b.pipeline?.queuedAt ? fmtDate(b.pipeline.queuedAt) : '—'}</span> },
   ];
   return (
     <>
@@ -465,14 +507,32 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       </div>
       <div className="oc-grid">
         <DataGrid<Build> id="orch-builds" label="Builds" groups={groups} columns={cols} rowId={(b) => b.id} rowLabel={(b) => b.title}
-          rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'}
+          rowTone={(b) => truthOf(b).tone || STATUS_TONE[b.status] || 'muted'}
           hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
-          sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
+          sort={sort} onSort={onSort}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}
           onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
           rowCtx={(b) => ({ target: 'axf-orchestrator-build', payload: b.id })} rowRef={(b) => ({ kind: 'orchestrator', id: b.id })}
           renderDetail={(b) => (
             <div className="oc-detail">
+              <NeedLine b={b} busy={busy} act={act} />
+              {(kids.get(b.id)?.length ?? 0) > 0 && (
+                <div className="oc-subgrid">
+                  <DataGrid<Build> id={`orch-children-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Child builds of ${b.title}`} compact dataset={false}
+                    groups={[{ id: 'kids', title: `Child builds (${kids.get(b.id)!.length})`, icon: 'layers', rows: kids.get(b.id)!, groups: [], fixed: true }]}
+                    columns={cols} rowId={(c) => c.id} rowLabel={(c) => c.title} rowTone={(c) => truthOf(c).tone || 'muted'}
+                    hidden={hidden} sort={sort} onSort={onSort}
+                    expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(c) => setOpen((o) => toggleIn(o, c.id))}
+                    rowCtx={(c) => ({ target: 'axf-orchestrator-build', payload: c.id })} rowRef={(c) => ({ kind: 'orchestrator', id: c.id })}
+                    renderDetail={(c) => (
+                      <div className="oc-detail">
+                        <NeedLine b={c} busy={busy} act={act} />
+                        <StepGrid b={c} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
+                        <BuildCard b={c} rules={rules} busy={busy} act={act} embedded />
+                      </div>
+                    )} />
+                </div>
+              )}
               <BuildOrigin origin={b.origin} showEmpty />
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
               <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />

@@ -40,7 +40,7 @@
  * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
  */
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -135,7 +135,7 @@ export function accountsNow(store, settings = loadSettings()) {
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
-    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt };
+    truth: BP.buildTruth(b), nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt };
 };
 
 /** The whole picture for the console and the CLI. */
@@ -173,9 +173,9 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
 
 export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
-  if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
+  if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build or one that needs something can be queued`), { code: 2 });
   const now = nowIso();
-  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
+  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), need: null, note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}${b.pipeline?.need ? ` (answers: ${BP.NEED_LABEL[b.pipeline.need.kind] ?? b.pipeline.need.kind})` : ''}.`, by, action: 'pipeline:queue' });
   logLine({ event: 'queued', build: b.id, by });
   return r;
 }
@@ -339,6 +339,81 @@ function tmuxHas(name) {
   return r.error ? null : r.status === 0;
 }
 
+/** Every tmux session name on the host, or null when tmux can't be asked (then nothing is called dead). */
+function tmuxSessions() {
+  if (process.env.AXF_SLOTS_TMUX === 'off') return null;
+  const r = spawnSync('tmux', ['list-sessions', '-F', '#{session_name}'], { encoding: 'utf8' });
+  if (r.error) return null;
+  return r.status === 0 ? r.stdout.split('\n').map((x) => x.trim()).filter(Boolean) : []; // no server = no sessions
+}
+/** Working directories of running claude processes (Linux /proc), or [] where /proc isn't there. */
+function claudeCwds(env = process.env) {
+  if (env.AXF_PIPELINE_PROCS === 'off') return [];
+  const out = [];
+  let pids = []; try { pids = readdirSync('/proc').filter((d) => /^\d+$/.test(d)); } catch { return out; }
+  for (const pid of pids) {
+    try { const cmd = readFileSync(`/proc/${pid}/cmdline`, 'utf8'); if (!/(^|\/)claude(\0|$)/.test(cmd.split('\0')[0] ?? '') && !/\bclaude\b/.test(cmd.split('\0').slice(0, 2).join(' '))) continue; out.push(realpathSync(`/proc/${pid}/cwd`)); } catch { /* gone or not ours */ }
+  }
+  return out;
+}
+/**
+ * Is a session for this build alive right now? true / false, or null when the host can't be asked. A build counts as
+ * live when its recorded tmux session exists, any tmux session is named for it (axf-<id>…), or a claude process works in
+ * its worktree. AXF_PIPELINE_LIVE (tests) = a comma list of build ids that are live.
+ */
+export function liveSession(b, { sessions = tmuxSessions(), cwds = null, env = process.env } = {}) {
+  if (env.AXF_PIPELINE_LIVE !== undefined) return env.AXF_PIPELINE_LIVE.split(',').map((x) => x.trim()).includes(b.id);
+  if (sessions === null) return null;
+  const name = b.pipeline?.session || '';
+  if (name && sessions.includes(name)) return true;
+  if (sessions.some((x) => x === `axf-${b.id}` || x.startsWith(`axf-${b.id}--`))) return true;
+  const dir = join(worktreesRoot(env), b.id);
+  return (cwds ?? claudeCwds(env)).some((c) => c === dir || c.startsWith(`${dir}/`));
+}
+
+/** The need a stopped session left: its report in the build's worktree, then the latest notes. */
+export function needOf(b, env = process.env) {
+  let report = '';
+  try { report = readFileSync(join(worktreesRoot(env), b.id, '_claude', 'builds', 'reports', `${b.id}.md`), 'utf8'); } catch { /* no report */ }
+  const notes = [...(b.notes ?? [])].reverse().slice(0, 4).map((n) => n.text);
+  return BP.needFrom(...notes, report.split('\n').slice(-80).join('\n'));
+}
+
+/**
+ * Statuses tell the truth (Brett, Nov 10 2026): a build says Running only while a live session exists for it. Every tick,
+ * a Running build with no live session (past the launch grace) is corrected: every step done → built / complete; a
+ * pipeline run that can run again → back in the Queue by itself (fix-it-yourself: a restart needs nobody); anything
+ * else → Needs something, with the need read from its report and notes (default: restart it).
+ */
+export function reconcileRunning({ alert = () => {}, env = process.env } = {}) {
+  const store = loadStore(); const settings = loadSettings();
+  const sessions = env.AXF_PIPELINE_LIVE !== undefined ? [] : tmuxSessions();
+  if (sessions === null && env.AXF_PIPELINE_LIVE === undefined) return [];
+  const cwds = env.AXF_PIPELINE_LIVE !== undefined ? [] : claudeCwds(env);
+  const out = [];
+  for (const b of live(store)) {
+    if (b.status !== 'running') continue;
+    if (Date.now() - Date.parse(b.pipeline?.launchedAt || 0) < GONE_GRACE_MS) continue;
+    if (liveSession(b, { sessions, cwds, env })) continue;
+    const left = BP.openSteps(b).length;
+    let status; let need = null; let note;
+    if (!left && b.steps.length) { status = b.pr && !b.mergedAt ? 'built' : 'complete'; note = `Marked Running with no live session and every step done: ${status === 'built' ? 'ready to land' : 'landed'}.`; }
+    else if ((b.pipeline?.runs ?? 0) > 0 && (b.pipeline?.runs ?? 0) < settings.maxRuns && !b.pipeline?.need) { status = 'queued'; note = `Marked Running with no live session (${left} step${left === 1 ? '' : 's'} left): back in the Queue by itself to run again.`; }
+    else {
+      status = 'blocked';
+      const found = needOf(b, env);
+      const since = str(b.pipeline?.launchedAt || b.updatedAt, 10);
+      need = found ? { ...found, at: nowIso(), by: 'dispatcher' } : { kind: 'resume', text: `Marked Running${since ? ` since ${since}` : ''} with no live session and ${left} step${left === 1 ? '' : 's'} left: queue it to run again, or archive it.`, at: nowIso(), by: 'dispatcher' };
+      note = `Not running: no live session. Needs something: ${need.text}`;
+    }
+    setPipeline(b.id, { session: '', slot: '', need, ...(status === 'queued' ? { queuedAt: nowIso(), queuedBy: 'dispatcher (restart)' } : {}) }, { status, note, action: 'pipeline:truth' });
+    if (status === 'blocked') alert('ended', { id: b.id, title: b.title, outcome: 'returned', note, account: b.pipeline?.account ?? '' });
+    logLine({ event: 'not-running', build: b.id, status, need: need?.kind ?? '' });
+    out.push({ id: b.id, status, need: need?.kind ?? '' });
+  }
+  return out;
+}
+
 /** Running builds whose session ended: { id, outcome, status, exit }. */
 export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   const store = loadStore(); const settings = loadSettings();
@@ -360,7 +435,13 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     }
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
+    let need = null;
+    if (r.outcome === 'returned') { // stopped on purpose with work left: say exactly what it needs
+      const n = needOf(b, env);
+      need = { ...(n ?? { kind: 'decision', text: 'The session stopped with work left and no reason in its report: look at the notes and say what next.' }), at: nowIso(), by: 'dispatcher' };
+      r.note = BP.outcomeLine(b, { ...r.run, need });
+    }
+    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', need, note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
     alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
@@ -392,6 +473,7 @@ export function tick({ env = process.env } = {}) {
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
+  const corrected = reconcileRunning({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const accounts = accountsNow(store, settings); const sl = slotsNow();
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
@@ -404,7 +486,7 @@ export function tick({ env = process.env } = {}) {
     try {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, need: null, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
@@ -437,7 +519,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, intake: inta, ended, corrected, launched, failed, plan, idle, alertsSent: sent };
 }
 
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
@@ -545,7 +627,7 @@ async function main(argv) {
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
-    return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
+    return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'}${r.corrected.length ? ` · not running: ${r.corrected.map((c) => `${c.id} → ${c.status}${c.need ? ` (${c.need})` : ''}`).join(', ')}` : ''} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
