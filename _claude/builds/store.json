@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2315,
- "updatedAt": "2026-11-10T04:18:22.758Z",
+ "rev": 2316,
+ "updatedAt": "2026-11-10T04:19:04.398Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135546,7 +135546,7 @@
    "pr": "#439",
    "priority": "P0",
    "createdAt": "2026-11-10T03:11:27.944Z",
-   "updatedAt": "2026-11-10T04:18:16.681Z",
+   "updatedAt": "2026-11-10T04:19:03.074Z",
    "builtAt": "2026-11-10T04:18:16.681Z",
    "notes": [
     {
@@ -135572,6 +135572,10 @@
     {
      "text": "PR #439: UI Review items now go ahead after 1 h (phone told, first option picked, logged; changing it files a follow-up build). Upgrades PR #343's alarm, which never landed. Not in UI Review: settings panel screenshots failed (capture console waits on axHub; Playwright 1.56 vs chromium 1234 on the VPS). Report _claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md",
      "at": "2026-11-10T04:17:52.037Z"
+    },
+    {
+     "text": "Session axf-ui-review-timeout-after-1-hour-notify-brett-and--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T04:19:03.074Z"
     }
    ],
    "approvals": [],
@@ -135592,12 +135596,19 @@
     "queuedAt": "2026-11-10T03:11:33.806Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ui-review-timeout-after-1-hour-notify-brett-and--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T03:55:23.238Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T04:19:02.702Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-ui-review-timeout-after-1-hour-notify-brett-and--joey"
+    },
     "split": {
      "at": "2026-11-10T03:13:32.265Z",
      "by": "orchestrator",
@@ -135689,7 +135700,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
