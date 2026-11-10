@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:45 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
-- 2026-11-09 17:47 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` s1 done, → running (all) · orchestrator
 - 2026-11-09 17:48 UTC · `split-builds-pages-build-manager-pending-complet` added (0 steps) (all) · console
 - 2026-11-09 17:48 UTC · `split-builds-pages-build-manager-pending-complet` → queued, note (all) · console
 - 2026-11-09 17:49 UTC · `split-builds-pages-build-manager-pending-complet-2` added (0 steps) (all) · console
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:58 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
 - 2026-11-10 00:58 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-10 01:00 UTC · `account-failover-chain-subscription-next-subscri` s1 done, → running (all) · orchestrator
+- 2026-11-10 01:00 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
+- 2026-11-10 01:00 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
 
 ## Token passes (log)
 

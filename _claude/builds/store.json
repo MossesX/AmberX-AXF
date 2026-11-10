@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2139,
- "updatedAt": "2026-11-10T01:00:35.830Z",
+ "rev": 2140,
+ "updatedAt": "2026-11-10T01:00:52.528Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -95569,7 +95569,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-08T19:21:44.715Z",
+   "updatedAt": "2026-11-10T01:00:37.864Z",
    "builtAt": "",
    "notes": [
     {
@@ -95591,6 +95591,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:21:44.715Z"
+    },
+    {
+     "text": "Folded into account-failover-chain-subscription-next-subscri: pipeline runs now fail over subscription → next subscription → API (pipeline.mjs failover), never the console's account switch; who ran each part is recorded in pipeline.builtBy. Review what is left here once that PR lands.",
+     "at": "2026-11-10T01:00:37.864Z"
     }
    ],
    "approvals": [],
@@ -95686,7 +95690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95723,7 +95727,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-08T17:50:36.587Z",
+   "updatedAt": "2026-11-10T01:00:35.621Z",
    "builtAt": "",
    "notes": [
     {
@@ -95749,6 +95753,10 @@
     {
      "text": "Overlap: account-health-failover (PR #394) adds the shared account-status@1 store and capability axf.account-status@1 (able(name, model)): use it to pick the account to switch to instead of a new check.",
      "at": "2026-11-08T17:50:36.587Z"
+    },
+    {
+     "text": "Folded into account-failover-chain-subscription-next-subscri: pipeline runs now fail over subscription → next subscription → API (pipeline.mjs failover), never the console's account switch; who ran each part is recorded in pipeline.builtBy. Review what is left here once that PR lands.",
+     "at": "2026-11-10T01:00:35.621Z"
     }
    ],
    "approvals": [],
@@ -95983,7 +95991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
