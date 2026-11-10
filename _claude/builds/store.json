@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2397,
- "updatedAt": "2026-11-10T15:30:49.027Z",
+ "rev": 2398,
+ "updatedAt": "2026-11-10T15:31:04.655Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130176,7 +130176,7 @@
    "title": "File watchdog plugin: watch files, run scripts or console commands, optional AI prompt (off by default)",
    "category": "",
    "detail": "New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130184,8 +130184,8 @@
    "pr": "#445",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-10T15:30:35.187Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T15:30:36.288Z",
+   "builtAt": "2026-11-10T15:30:36.288Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -130374,12 +130374,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:30:36.288Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T18:44:36.717Z",
-     "updatedAt": "2026-11-09T18:44:36.717Z"
+     "updatedAt": "2026-11-10T15:30:36.448Z"
     }
    ],
    "profiles": [
@@ -130390,7 +130390,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
