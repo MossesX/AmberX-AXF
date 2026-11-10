@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:31 UTC · `urgent-terminal-pops-up-every-time-the-console-o` s2 done (all) · orchestrator
-- 2026-11-10 01:32 UTC · `urgent-terminal-pops-up-every-time-the-console-o` PR #427 (all) · builds-live
 - 2026-11-10 01:32 UTC · `urgent-terminal-pops-up-every-time-the-console-o` s3 done, → built (all) · orchestrator
 - 2026-11-10 01:33 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
 - 2026-11-10 01:34 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:38 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
 - 2026-11-10 15:38 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
 - 2026-11-10 15:38 UTC · `projects-create-a-new-project-and-move-builds-be` added (0 steps) (all) · console
+- 2026-11-10 15:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
+- 2026-11-10 15:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 
 ## Token passes (log)
 
