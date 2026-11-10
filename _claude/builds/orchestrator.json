@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:50:54.859Z",
+ "updatedAt": "2026-11-10T21:51:31.970Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96267,12 +96267,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:50:48.036Z",
-   "updatedAt": "2026-11-10T21:50:50.153Z",
+   "updatedAt": "2026-11-10T21:51:28.744Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:50:50.153Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:51:28.744Z"
     }
    ],
    "approvals": [],
@@ -96289,7 +96293,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Builds on the per-field asset overrides build (e69479a3). 1) Every settings interface gets a setting: 'Controlled item colour' (colour picker), used to highlight overridden/controlled options everywhere. 2) Top of Settings > Appearance: a notice when any asset has edits ('N assets are controlled by their own settings'). Tapping it opens a list of every edited asset; each row expands to list that asset's changed properties (old app value vs asset value), highlighted in the chosen colour, with a link to the asset's settings and a per-property reset.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb85zah01813r"
+    },
+    {
+     "id": "s2",
+     "text": "Every settings interface needs a setting to select the color of controlled items. The top of Appearance will state if any assets have been edited or are controlled by the asset's own settings. Click it and it lists all the assets that have edits; expand a row and it lists all the asset's properties that have changed, highlighted in whatever color you choose.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb85zah02w1ph"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/overrides-summary-highlight-colour-setting-asset.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/overrides-summary-highlight-colour-setting-asset.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb85zah035ccu"
+    }
+   ]
   }
  ]
 }

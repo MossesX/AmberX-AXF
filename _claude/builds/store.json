@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2919,
- "updatedAt": "2026-11-10T21:50:54.859Z",
+ "rev": 2920,
+ "updatedAt": "2026-11-10T21:51:31.970Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156551,12 +156551,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:50:48.036Z",
-   "updatedAt": "2026-11-10T21:50:50.153Z",
+   "updatedAt": "2026-11-10T21:51:28.744Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:50:50.153Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:51:28.744Z"
     }
    ],
    "approvals": [],
@@ -156583,16 +156587,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T21:51:28.744Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb85zah01813r",
+     "title": "",
+     "text": "Builds on the per-field asset overrides build (e69479a3). 1) Every settings interface gets a setting: 'Controlled item colour' (colour picker), used to highlight overridden/controlled options everywhere. 2) Top of Settings > Appearance: a notice when any asset has edits ('N assets are controlled by their own settings'). Tapping it opens a list of every edited asset; each row expands to list that asset's changed properties (old app value vs asset value), highlighted in the chosen colour, with a link to the asset's settings and a per-property reset.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:51:28.744Z",
+     "updatedAt": "2026-11-10T21:51:28.744Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb85zah02w1ph",
+     "title": "",
+     "text": "Every settings interface needs a setting to select the color of controlled items. The top of Appearance will state if any assets have been edited or are controlled by the asset's own settings. Click it and it lists all the assets that have edits; expand a row and it lists all the asset's properties that have changed, highlighted in whatever color you choose.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:51:28.744Z",
+     "updatedAt": "2026-11-10T21:51:28.744Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb85zah035ccu",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/overrides-summary-highlight-colour-setting-asset.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/overrides-summary-highlight-colour-setting-asset.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:51:28.744Z",
+     "updatedAt": "2026-11-10T21:51:28.744Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -156601,12 +156681,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T21:51:28.744Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
