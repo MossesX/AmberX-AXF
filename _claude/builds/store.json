@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2719,
- "updatedAt": "2026-11-10T19:11:11.573Z",
+ "rev": 2720,
+ "updatedAt": "2026-11-10T19:11:26.266Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153421,7 +153421,7 @@
    "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
    "category": "",
    "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153429,8 +153429,8 @@
    "pr": "#464",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T19:11:09.758Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T19:11:11.523Z",
+   "builtAt": "2026-11-10T19:11:11.523Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153551,12 +153551,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T19:11:11.523Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:58:41.585Z",
-     "updatedAt": "2026-11-10T18:58:41.585Z"
+     "updatedAt": "2026-11-10T19:11:11.753Z"
     }
    ],
    "profiles": [
@@ -153567,7 +153567,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
