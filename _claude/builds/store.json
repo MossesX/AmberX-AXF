@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2289,
- "updatedAt": "2026-11-10T03:50:52.604Z",
+ "rev": 2290,
+ "updatedAt": "2026-11-10T03:52:43.143Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135158,10 +135158,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-speed-profile-and-cut-axf-console-cpu-pl",
-   "pr": "",
+   "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:49:32.308Z",
+   "updatedAt": "2026-11-10T03:52:40.316Z",
    "builtAt": "",
    "notes": [
     {
@@ -135296,7 +135296,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

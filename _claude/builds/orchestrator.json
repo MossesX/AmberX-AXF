@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:50:52.604Z",
+ "updatedAt": "2026-11-10T03:52:43.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83246,10 +83246,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-speed-profile-and-cut-axf-console-cpu-pl",
-   "pr": "",
+   "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:49:32.308Z",
+   "updatedAt": "2026-11-10T03:52:40.316Z",
    "builtAt": "",
    "notes": [
     {
