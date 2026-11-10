@@ -1,4 +1,5 @@
 import type { AxfRuntime } from '../axf/core';
+import CHOICES from '../../menus/choices.json';
 
 /**
  * Molly's look choices as settings (flagship skin s8). The Molly menu's Appearance sub-menu shows each one as a
@@ -14,14 +15,14 @@ import type { AxfRuntime } from '../axf/core';
 export interface LookChoice {
   key: string;
   label: string;
-  /** the values offered; must match the choices on the menu row (apps/molly/src/assets/app-menu/molly.json) */
+  /** the values offered (menus/choices.json); the menu rows offer the same */
   values: readonly string[];
   read(rt: AxfRuntime): string;
   apply(rt: AxfRuntime, value: string): void;
 }
 
-const FLAGSHIP_DAY = 'molly-flagship';
-const FLAGSHIP_NIGHT = 'molly-flagship-night';
+interface ChoiceDef { id: string; key: string; label: string; kind: 'skin' | 'mode' | 'slot'; values: string[]; slot?: string; skins?: Record<string, string>; colors?: Record<string, string> }
+const DEFS = (CHOICES as { choices: ChoiceDef[] }).choices;
 const OWN = 'own';
 
 const skinOn = (rt: AxfRuntime): string => {
@@ -30,44 +31,25 @@ const skinOn = (rt: AxfRuntime): string => {
 };
 const slot = (rt: AxfRuntime, type: string): string => String((rt.getState().active as Record<string, string | undefined>)[type] ?? '');
 const swap = (rt: AxfRuntime, type: string, id: string) => { if (slot(rt, type) !== id) rt.swap(type as never, id); };
-const isNight = (rt: AxfRuntime): boolean => {
-  const sk = skinOn(rt);
-  if (sk !== OWN) return sk === FLAGSHIP_NIGHT;
-  return slot(rt, 'color-theme') === 'molly-flagship-night';
-};
 
-export const LOOK_CHOICES: readonly LookChoice[] = [
-  {
-    key: 'molly.look.skin', label: 'Skin', values: [FLAGSHIP_DAY, FLAGSHIP_NIGHT, OWN],
-    read: skinOn,
-    apply: (rt, v) => { if (v === OWN) rt.useSkin(false); else rt.useSkin(true, v); },
-  },
-  {
-    key: 'molly.look.mode', label: 'Day / night', values: ['day', 'night'],
-    read: (rt) => (isNight(rt) ? 'night' : 'day'),
-    apply: (rt, v) => {
-      const sk = skinOn(rt);
-      // under a flagship skin the mode picks its day or night skin; otherwise the flagship colour theme
-      if (sk === FLAGSHIP_DAY || sk === FLAGSHIP_NIGHT) rt.useSkin(true, v === 'night' ? FLAGSHIP_NIGHT : FLAGSHIP_DAY);
-      else swap(rt, 'color-theme', v === 'night' ? 'molly-flagship-night' : 'molly-flagship-day');
-    },
-  },
-  {
-    key: 'molly.look.density', label: 'Density', values: ['compact', 'standard', 'roomy'],
-    read: (rt) => slot(rt, 'density'),
-    apply: (rt, v) => swap(rt, 'density', v),
-  },
-  {
-    key: 'molly.look.text', label: 'Text size', values: ['compact', 'molly-flagship', 'reader'],
-    read: (rt) => slot(rt, 'typography'),
-    apply: (rt, v) => swap(rt, 'typography', v),
-  },
-  {
-    key: 'molly.look.motion', label: 'Motion', values: ['molly-flagship', 'minimal-motion'],
-    read: (rt) => slot(rt, 'behavior-theme'),
-    apply: (rt, v) => swap(rt, 'behavior-theme', v),
-  },
-];
+function choice(d: ChoiceDef): LookChoice {
+  const base = { key: d.key, label: d.label, values: d.values };
+  if (d.kind === 'skin') return { ...base, read: skinOn, apply: (rt, v) => { if (v === OWN) rt.useSkin(false); else rt.useSkin(true, v); } };
+  if (d.kind === 'mode') {
+    const skins = d.skins ?? {}; const colors = d.colors ?? {};
+    const modeOf = (map: Record<string, string>, id: string) => Object.keys(map).find((m) => map[m] === id);
+    return {
+      ...base,
+      read: (rt) => { const sk = skinOn(rt); return (sk !== OWN ? modeOf(skins, sk) : modeOf(colors, slot(rt, 'color-theme'))) ?? d.values[0]!; },
+      // under one of the mode's skins the mode picks the other; otherwise the mode's colour theme
+      apply: (rt, v) => { if (modeOf(skins, skinOn(rt)) && skins[v]) rt.useSkin(true, skins[v]); else if (colors[v]) swap(rt, 'color-theme', colors[v]!); },
+    };
+  }
+  const type = d.slot ?? '';
+  return { ...base, read: (rt) => slot(rt, type), apply: (rt, v) => swap(rt, type, v) };
+}
+
+export const LOOK_CHOICES: readonly LookChoice[] = DEFS.map(choice);
 
 /** Keep every look choice's key and the live look in step. Returns a remover. */
 export function installLookChoices(rt: AxfRuntime): () => void {

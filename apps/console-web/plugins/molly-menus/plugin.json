@@ -1,0 +1,60 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.molly-menus",
+  "name": "Molly menus",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Molly's menus and skin without the UI: read the skin in force, every look choice (skin, day / night, density, text size, motion) with its current value, the menu tree with paths and live status sources, and the deep links that open Molly's skin picker, application menu, each sub-menu and any row's item settings; switch the skin, set any choice (Molly follows at once through its look document on axHub), run any menu item, and set or reset per-item behaviour and look overrides (control@1 tokens.menu). REST under /api/plugins/molly-menus, MCP tools molly-menus_*, CLI `axf molly-menus …`, AmberX voice.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:molly-menus",
+    "service:molly-menus@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "control@1"
+  ],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/molly-menus",
+    "env": [
+      "AXF_MOLLY_URL",
+      "AXF_APPEARANCE_FILE",
+      "AXF_LOOKS_DIR"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      "apps/molly/menus/inventory.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /state", "id": "state", "title": "Molly state", "description": "The skin in force, every look choice with its current value, live status (axHub, look document, skin) and the deep links." },
+      { "route": "GET /tree", "id": "tree", "title": "Molly menu tree", "description": "Molly's application menu and context menus: each row's path, kind, action, shortcut, current value (choices), status source, sub-menu link and item-settings link.", "input": { "type": "object", "properties": { "root": { "type": "string", "enum": ["app-menu", "context-menu"], "description": "one root only" } }, "additionalProperties": false } },
+      { "route": "GET /choices", "id": "choices", "title": "Molly look choices", "description": "Skin, day / night, density, text size and motion: values offered, the current one, and a deep link per value." },
+      { "route": "PUT /choices/{choice}", "id": "set-choice", "title": "Set a Molly look choice", "description": "Set skin, mode, density, text or motion; Molly applies it at once.", "input": { "type": "object", "properties": { "choice": { "type": "string", "enum": ["skin", "mode", "density", "text", "motion"] }, "value": { "type": "string", "description": "skin: molly-flagship | molly-flagship-night | own; mode: day | night; density: compact | standard | roomy; text: compact | molly-flagship | reader; motion: molly-flagship | minimal-motion" } }, "required": ["choice", "value"], "additionalProperties": false } },
+      { "route": "GET /skin", "id": "skin", "title": "Molly skin", "description": "The skin in force in Molly (own = Molly's own look) and which level decided." },
+      { "route": "PUT /skin", "id": "set-skin", "title": "Switch Molly's skin", "description": "Use a skin in Molly (any skin or design package id), or own for Molly's own look.", "input": { "type": "object", "properties": { "skin": { "type": "string", "description": "molly-flagship, molly-flagship-night, own, or any skin id" } }, "required": ["skin"], "additionalProperties": false } },
+      { "route": "POST /invoke", "id": "invoke", "title": "Run a Molly menu item", "description": "Run a row by its path (tree lists them): a choice is set here; anything else answers the deep link that runs it in Molly.", "input": { "type": "object", "properties": { "path": { "type": "string", "description": "e.g. app-menu/molly/apps/go-axhub, app-menu/molly/appearance/mode, context-menu/molly-app/reload" }, "value": { "type": "string", "description": "a choice's value (a two-way choice flips without one)" }, "payload": { "type": "string", "description": "the app id for context rows that act on one (amberx, axhub, console, expenses)" } }, "required": ["path"], "additionalProperties": false } },
+      { "route": "GET /links", "id": "links", "title": "Molly deep links", "description": "Links that open Molly's skin picker, application menu, each sub-menu, any row's item settings, a choice, an action or an app." },
+      { "route": "GET /status", "id": "status", "title": "Molly live status", "description": "axHub answering, Molly's look document on axHub, the skin in force: on / off / warn with a short text." },
+      { "route": "GET /items/overrides", "id": "overrides", "title": "Molly menu item overrides", "description": "Every per-item behaviour and look override in force (control@1 tokens.menu)." },
+      { "route": "PUT /items/overrides", "id": "set-override", "title": "Override a Molly menu item", "description": "Set one token of one menu row: label, icon, hint, action, shortcut, visible, order, tone, iconTone, weight, emphasis or size.", "input": { "type": "object", "properties": { "path": { "type": "string", "description": "the row's path (tree lists them)" }, "token": { "type": "string" }, "value": { "description": "the token's value" } }, "required": ["path", "token", "value"], "additionalProperties": false } },
+      { "route": "DELETE /items/overrides", "id": "reset-override", "title": "Reset Molly menu item overrides", "description": "Reset one token (path + token), every token of a row (path), or every override (neither). Needs the confirm token.", "input": { "type": "object", "properties": { "path": { "type": "string" }, "token": { "type": "string" }, "confirm": { "type": "string" } }, "additionalProperties": false } }
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-10" },
+  "help": "help.json",
+  "opens": false
+}

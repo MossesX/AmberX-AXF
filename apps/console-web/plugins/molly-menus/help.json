@@ -1,0 +1,33 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-menus-help",
+  "name": "Molly menus help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Molly menus plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:molly-menus",
+    "entries": [
+      {
+        "target": "molly-menus",
+        "title": "Molly menus",
+        "text": "Molly's skin, look choices and live status as the API sees them, and where its REST, MCP, CLI and voice commands are."
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads Molly's look document and status again."
+      },
+      {
+        "target": "open-molly-s-skin-picker",
+        "title": "Open Molly's skin picker",
+        "text": "Opens Molly at Settings → Appearance in a new tab."
+      }
+    ],
+    "intros": []
+  }
+}

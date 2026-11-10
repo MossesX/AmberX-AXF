@@ -1,0 +1,10 @@
+{
+  "$doc": "Molly's look choices (flagship skin s8/s10): one settings key per choice, kept in step with the live look by src/molly/look.ts, and set from outside by the molly-menus console plugin (REST, MCP, CLI, voice) through Molly's look document on axHub. kind: skin = the Use skin switch and skin id ('own' = off); mode = day / night (the flagship day or night skin while one is on, else the flagship colour theme); slot = the asset in one slot. The menu rows (src/assets/app-menu/molly.json, src/assets/context-menu/molly.json) offer the same values.",
+  "choices": [
+    { "id": "skin", "key": "molly.look.skin", "label": "Skin", "kind": "skin", "values": ["molly-flagship", "molly-flagship-night", "own"] },
+    { "id": "mode", "key": "molly.look.mode", "label": "Day / night", "kind": "mode", "values": ["day", "night"], "skins": { "day": "molly-flagship", "night": "molly-flagship-night" }, "colors": { "day": "molly-flagship-day", "night": "molly-flagship-night" } },
+    { "id": "density", "key": "molly.look.density", "label": "Density", "kind": "slot", "slot": "density", "values": ["compact", "standard", "roomy"] },
+    { "id": "text", "key": "molly.look.text", "label": "Text size", "kind": "slot", "slot": "typography", "values": ["compact", "molly-flagship", "reader"] },
+    { "id": "motion", "key": "molly.look.motion", "label": "Motion", "kind": "slot", "slot": "behavior-theme", "values": ["molly-flagship", "minimal-motion"] }
+  ]
+}
