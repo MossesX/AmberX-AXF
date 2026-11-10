@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:54:53.103Z",
+ "updatedAt": "2026-11-10T17:55:23.142Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -90855,12 +90855,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:52:45.615Z",
-   "updatedAt": "2026-11-10T17:52:47.290Z",
+   "updatedAt": "2026-11-10T17:54:43.788Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T17:52:47.290Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:54:43.788Z"
     }
    ],
    "approvals": [],
@@ -90877,7 +90881,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends amberx-llama. Give the container a hostname llama.amberxai.com through Coolify on the VPS (root shell available): set the domain on the Coolify app so Traefik routes it with HTTPS. If *.amberxai.com wildcard DNS already points at the VPS, no Hostinger change is needed; if not, record the exact A record needed (Hostinger API key is missing from the axHub vault, so report it). Put the public route behind axHub auth (forward-auth / token); never expose raw Ollama unauthenticated. Keep the internal http://amberx-llama:11434 for the console and agents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazpioc07zc8b"
+    },
+    {
+     "id": "s2",
+     "text": "Update the hosting with a DNS entry to the container. You have root access to my VPS and Coolify.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazpioc08znxp"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/amberx-llama-llama-amberxai-com-via-coolify-trae.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/amberx-llama-llama-amberxai-com-via-coolify-trae.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazpioc090qtr"
+    }
+   ]
   }
  ]
 }

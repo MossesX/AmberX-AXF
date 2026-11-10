@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:39 UTC · `claude-settings-tabs-veto` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `axhub-web-hub-rules` → running (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `axhub-web-hub-rules` s1 done (all) · audit-pending-fable-builds-against-main-close-wh
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:54 UTC · `conversation-rag-amendment-store-only-short-key` s2 done (all) · orchestrator
 - 2026-11-10 17:54 UTC · `project-manager-add-on-new-project-prompt-asks-i` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:54 UTC · `project-manager-add-on-new-project-prompt-asks-i` note (all) · builds-live
+- 2026-11-10 17:54 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` note (all) · orchestrator
 
 ## Token passes (log)
 
