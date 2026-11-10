@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2282,
- "updatedAt": "2026-11-10T03:42:06.855Z",
+ "rev": 2283,
+ "updatedAt": "2026-11-10T03:42:58.104Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134836,10 +134836,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-amberx-build-notification-veto-approval-befo",
-   "pr": "",
+   "pr": "#436",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:41:49.874Z",
+   "updatedAt": "2026-11-10T03:42:56.826Z",
    "builtAt": "",
    "notes": [
     {
@@ -134974,7 +134974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
