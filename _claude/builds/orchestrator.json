@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:53:21.178Z",
+ "updatedAt": "2026-11-10T15:53:37.951Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84373,7 +84373,7 @@
    "title": "Claude Accounts Manager plugin: one ordered list of every account (subscription + API), usage in dollars, terminal column, banner widget, floating overlay",
    "category": "",
    "detail": "New console plugin. 1) ACCOUNTS LIST: reads every Claude account stored on the VPS and lists each: name/label, email, plan, subscription or API, active builder / active worker / not, out of credits, order number, usage used / total, percent left, plan size; usage converted to dollars everywhere usage is shown. 2) ONE ORDER: drag and drop to set the order; subscriptions and API keys are equal to the orchestrator, it follows the order. Remove the 'fall back to API' concept (apiOverflow); API is just another entry. 3) MANAGE: rename, rearrange, add accounts (API keys or subscriptions) in the console; adding opens the terminal and automatically attempts the Claude login. Right-click any account anywhere: rename, reorder, open a Claude Code session in the terminal. 4) TERMINAL COLUMN: plugin adds a collapsible column (hamburger button) to the Terminal listing all VPS Claude accounts with the same management. Uninstalling the plugin removes the column. 5) BANNER WIDGET: drop-down to pick an account; settings choose what it shows (name, number, usage left, API/subscription, email, any combination). 6) FLOATING OVERLAY WINDOW (not a toolbar): small narrow professional window with customizable buttons; editable behavior and sub-menus in plugin settings; resizable, size lock, dockable where the console allows, minimize to main screen, overlay scope (whole OS vs just the console/browser), styleable like any asset. 7) Full API control for everything.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -84381,8 +84381,8 @@
    "pr": "#448",
    "priority": "P1",
    "createdAt": "2026-11-10T15:25:48.900Z",
-   "updatedAt": "2026-11-10T15:53:19.967Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T15:53:21.015Z",
+   "builtAt": "2026-11-10T15:53:21.016Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -84468,8 +84468,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:53:21.015Z",
      "note": "",
      "uid": "st-mwaufbnx03zbmt"
     }
