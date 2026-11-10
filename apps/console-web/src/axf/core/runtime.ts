@@ -131,6 +131,8 @@ export const SPACING_KEY = 'axf.appearance.spacing';
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 /** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
 export const APP_LOOK_KEY = 'axf.skin.look';
+/** The Skin Builder's throw-away preview skin (skin-sections@1): registered while it previews, never listed or saved. */
+export const SKIN_PREVIEW_ID = 'skin-builder-preview';
 /** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
 const HUB_PALETTE_APP = 'axhub-web';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
@@ -699,9 +701,9 @@ export class AxfRuntime {
     return skin && sections ? skinWithSections(skin, sections, this.sectionResolver) : skin;
   }
 
-  /** Every skin this app can use: the skins, then the design packages. */
+  /** Every skin this app can use: the skins, then the design packages (never the Skin Builder's throw-away preview). */
   skinList(): SkinEntry[] {
-    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never, this.sectionResolver);
+    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never, this.sectionResolver).filter((s) => s.id !== SKIN_PREVIEW_ID);
   }
 
   /* ---- skin-sections@1: sections, picks, mixes, the slice library, packages (engines/skin-sections.mjs) ---- */
@@ -881,7 +883,7 @@ export class AxfRuntime {
    */
   private lastPreviewSections = '';
   previewSections(sections: SkinSections | null): boolean {
-    const PREVIEW_ID = 'skin-builder-preview';
+    const PREVIEW_ID = SKIN_PREVIEW_ID;
     if (!sections) { const was = !!this.lookPreview; this.lookPreview = null; this.lastPreviewSections = ''; if (was) { this.applyAppearance(this.lastAppearance); this.bumpLook(); } return true; }
     const key = JSON.stringify(sections);
     if (key === this.lastPreviewSections && this.lookPreview?.id === PREVIEW_ID) return true; // the same pack again: nothing to redraw

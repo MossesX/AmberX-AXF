@@ -96,6 +96,8 @@ ok(parseAppLook('{"$axf":"appearance@1"}') === null, 'wrong frame refused');
   eq(mixSkins(current, incoming, null), sx.mix.all, 'take everything');
   ok(!sx.mix.all.mixed, 'taking everything is no mix');
   ok(!sx.mix.same.mixed, 'picks from the skin already in force are no mix');
+  eq(mixSkins({ ...current, sections: { ...current.sections, behavior: 'standard' } }, incoming, null), sx.mix.filler, 'a section the skin does not cover keeps the current one');
+  ok(!sx.mix.filler.mixed && sx.mix.filler.from.length === 2, 'that is no mix: applying a whole skin never asks to save a new one');
   eq([...sx.mix.own.from].sort(), ['own', 'windows'], "with no skin on, the app's own look counts as a source");
   const made = skinManifest({ id: 'my-mix', name: 'My mix', description: 'Windows colours on Aurora', tags: ['mix'] }, sx.mix.colorsOnly.sections, { caption: 'A mix' });
   eq(made, sx.manifestFromMix, 'a mix saved as a new skin manifest');

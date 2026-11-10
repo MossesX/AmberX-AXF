@@ -257,7 +257,9 @@ export function normalizeSectionOverrides(raw) {
  *   incoming `{ skin, sections }`: the skin being applied
  *   include  the sections taken from `incoming` (default: every section it has); the rest keep the current's
  * Returns the resulting sections, which skin each came from, whether that is a mix of more than one skin, and the
- * `skin.sections` overrides that give this result when `incoming.skin` is picked.
+ * `skin.sections` overrides that give this result when `incoming.skin` is picked. A mix is a section the incoming
+ * skin has that the result takes from elsewhere (left out or swapped); a section the incoming skin does not cover
+ * keeps the current one without making a mix, so applying a whole skin never asks to save a new one.
  */
 export function mixSkins(current, incoming, include) {
   const cur = { skin: current?.skin ?? '', sections: normalizeSections(current?.sections) };
@@ -278,7 +280,8 @@ export function mixSkins(current, incoming, include) {
     } else if (inc.sections[id]) overrides[id] = null;
   }
   const from = [...new Set(Object.values(sources))];
-  return { sections, sources, mixed: from.length > 1, from, left, overrides };
+  const mixed = SKIN_SECTIONS.some((s) => inc.sections[s.id] && sections[s.id] && sources[s.id] !== inc.skin);
+  return { sections, sources, mixed, from, left, overrides };
 }
 
 /* ---------------------------------------------------------------- manifests, packages, catalog */

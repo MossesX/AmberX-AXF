@@ -388,6 +388,39 @@
           "chrome": null,
           "parts": null
         }
+      },
+      "filler": {
+        "sections": {
+          "colors": "windows-light",
+          "design": "windows",
+          "layout": "windows-explorer",
+          "behavior": "standard",
+          "typography": "windows",
+          "icons": "amberx-outline",
+          "controls": "win",
+          "chrome": "win",
+          "parts": "win"
+        },
+        "sources": {
+          "colors": "windows",
+          "design": "windows",
+          "layout": "windows",
+          "behavior": "aurora",
+          "typography": "windows",
+          "icons": "windows",
+          "controls": "windows",
+          "chrome": "windows",
+          "parts": "windows"
+        },
+        "mixed": false,
+        "from": [
+          "windows",
+          "aurora"
+        ],
+        "left": [],
+        "overrides": {
+          "behavior": "standard"
+        }
       }
     },
     "manifestFromMix": {
