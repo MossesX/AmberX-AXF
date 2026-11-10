@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:09:37.283Z",
+ "updatedAt": "2026-11-10T19:09:50.003Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71441,7 +71441,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-09T02:54:50.404Z",
+   "updatedAt": "2026-11-10T19:09:46.307Z",
    "builtAt": "",
    "notes": [
     {
@@ -71459,6 +71459,10 @@
     {
      "text": "Correction (Brett): the Sweep does NOT run automatically on every land. It runs only (1) when Brett runs it (button / API / voice), and (2) by the orchestrator on a single build at two points: when it receives the job, and again right before it dispatches it (launches the session). Flags found at dispatch hold the build for Brett instead of launching.",
      "at": "2026-11-09T02:54:50.404Z"
+    },
+    {
+     "text": "Merged with orchestrator-checks-each-build-against-main-righ for the 'never build twice' part: every build is now checked against main (Shipped features, its PR, its branch, the files its steps create) right before it is queued and again at dispatch; done = closed, partly done = only what is left is queued. Still open here: the check at split time, the AmberX conflict notice and the ledger backfill.",
+     "at": "2026-11-10T19:09:46.307Z"
     }
    ],
    "approvals": [],
@@ -85534,7 +85538,7 @@
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
    "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85542,7 +85546,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T18:57:38.799Z",
+   "updatedAt": "2026-11-10T19:09:44.874Z",
    "builtAt": "",
    "notes": [
     {
@@ -85576,6 +85580,10 @@
     {
      "text": "Self-check: audit-pending-fable-builds-against-main-close-wh was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T18:56:07.951Z"
+    },
+    {
+     "text": "Replaced by orchestrator-checks-each-build-against-main-righ (Brett, Nov 10 2026: \"Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue\"). No bulk audit: the orchestrator checks each build against main right before it queues it and again at dispatch. Archived.",
+     "at": "2026-11-10T19:09:43.704Z"
     }
    ],
    "approvals": [],

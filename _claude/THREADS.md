@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:06 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
-- 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` → running, note (all) · pipeline
-- 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` branch claude/account-order-switch-custom-drag-and-drop-order (all) · pipeline
 - 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · orchestrator
 - 2026-11-10 16:09 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:09 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s2 done (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:58 UTC · `orchestrator-checks-each-build-against-main-righ` → running, note (all) · pipeline
 - 2026-11-10 18:58 UTC · `orchestrator-checks-each-build-against-main-righ` branch claude/orchestrator-checks-each-build-against-main-righ (all) · pipeline
 - 2026-11-10 19:09 UTC · `orchestrator-checks-each-build-against-main-righ` s1 done, → running (all) · orchestrator
+- 2026-11-10 19:09 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, note (all) · orchestrator
+- 2026-11-10 19:09 UTC · `audit-pending-fable-builds-against-main-close-wh` → archived (all) · orchestrator
+- 2026-11-10 19:09 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
 
 ## Token passes (log)
 
