@@ -256,6 +256,30 @@
         "output": "{ registry: { vps: { cap, used, free, queued, stale }, accounts: [{ name, configured, inUse, free, sessions }], models: { fable, opus }, sessions, stale, ghosts } }"
       },
       {
+        "id": "pipeline-reaper",
+        "route": "GET /pipeline/reaper",
+        "title": "Reaper log",
+        "description": "What the stale reaper and the reconcile did: sessions whose heartbeat went silent (killed, slot freed), and builds marked running with no live session set back to the Queue, Pending or flagged stuck. Say 'what did the reaper do'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "How many lines, newest last (default 50)"
+            }
+          }
+        },
+        "output": "{ log: [{ at, event, build, session, to, stuck, note }] }"
+      },
+      {
+        "id": "pipeline-reconcile",
+        "route": "POST /pipeline/reconcile",
+        "title": "Reap and reconcile now",
+        "description": "Run the stale reaper and the running-status reconcile now instead of waiting for the next dispatcher minute. Only the VPS host sees sessions: elsewhere it reports seen=false and changes nothing. Say 'clean up ghost builds'.",
+        "output": "{ reaped, reconciled, seen }"
+      },
+      {
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",

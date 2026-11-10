@@ -442,6 +442,19 @@ def pipeline_slots() -> dict[str, Any]:
     return _pipeline("slots")
 
 
+@router.get("/pipeline/reaper")
+def pipeline_reaper(limit: int = 50) -> dict[str, Any]:
+    """What the stale reaper and the running-status reconcile did: sessions killed, slots freed, builds set back."""
+    return _pipeline("reaper-log", "--limit", str(max(1, min(500, int(limit)))))
+
+
+@router.post("/pipeline/reconcile")
+async def pipeline_reconcile(request: Request) -> dict[str, Any]:
+    """Run the reaper and the reconcile now. Only the VPS host sees the sessions: in the console container this reports
+    seen=false and changes nothing (the dispatcher does both every minute)."""
+    return _pipeline("reconcile", who=(brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""

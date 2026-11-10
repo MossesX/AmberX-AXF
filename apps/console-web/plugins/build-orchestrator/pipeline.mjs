@@ -22,6 +22,9 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … reap [--json]                kill sessions whose heartbeat went silent, free their slots, set their builds back (reaper.mjs)
+ *   … reconcile [--json]           reaper, then builds marked running with no live session fixed (cron @reboot; every tick does it too)
+ *   … reaper-log [--limit n] [--json]   what the reaper and the reconcile did (<pipeline dir>/reaper.jsonl)
  *   … slots [--json]               the live slot registry (slot-registry@1): configured / in use / free for the VPS, per
  *                                  account and per model, from live heartbeats only; silent sessions and ghost builds
  *
@@ -43,11 +46,12 @@
  */
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir, hostname, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as REG from './slot-registry.mjs';
+import * as REAP from './reaper.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
@@ -60,6 +64,7 @@ import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
+import { liveBuilds } from '../../../../framework/cli/builds-reconcile.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -71,6 +76,7 @@ export const SCHEMA_STATE = 'pipeline-state@1';
 const MAX_SPLITS_PER_TICK = 3;
 const LAUNCH_FAILS_PER_HOUR = 3;
 const GONE_GRACE_MS = 10 * 60e3;
+const RECONCILE_GRACE_MIN = 20;   // a build nobody touched this long with no live session is fixed (sessions outside the pipeline included)
 const CLAUDE_ARGS = ['--permission-mode', 'acceptEdits', '--allowedTools', 'Bash', 'Edit', 'Write', 'MultiEdit', 'Read', 'Grep', 'Glob'];
 const nowIso = () => new Date().toISOString();
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -84,7 +90,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), reaper: join(d, 'reaper.jsonl') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -283,7 +289,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
     for (const b of live(fresh)) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
-      if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || b.pipeline?.lastRun?.outcome === 'returned') continue;
+      if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || ['returned', 'failed'].includes(b.pipeline?.lastRun?.outcome)) continue;
       try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
   }
@@ -387,6 +393,81 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   return out;
 }
 
+// ------------------------------------------------------------------ the reaper and the reconcile (reaper.mjs)
+
+/** The reaper log, newest last (at most `limit` lines). */
+export function reaperLog(limit = 200) {
+  let t = ''; try { t = readFileSync(files().reaper, 'utf8'); } catch { return []; }
+  return t.split('\n').flatMap((l) => { if (!l.trim()) return []; try { return [JSON.parse(l)]; } catch { return []; } }).slice(-limit);
+}
+function reaperLine(line) {
+  try { mkdirSync(files().dir, { recursive: true }); appendFileSync(files().reaper, `${JSON.stringify(line)}\n`); } catch { /* the log is a courtesy */ }
+  const { at: _at, ...rest } = line; logLine(rest);
+}
+const slotHost = () => process.env.AXF_SLOTS_HOST || hostname();
+
+/** Kill a silent session on this host: its tmux session, else its process. Returns what was done. */
+function killEntry(it) {
+  if (it.session && process.env.AXF_SLOTS_TMUX !== 'off') {
+    const r = spawnSync('tmux', ['kill-session', '-t', `=${it.session}`], { encoding: 'utf8' });
+    if (!r.error && r.status === 0) return `tmux ${it.session} killed`;
+  }
+  if (it.pid > 1) { try { process.kill(it.pid, 'SIGTERM'); return `pid ${it.pid} stopped`; } catch { /* gone already */ } }
+  return 'already gone';
+}
+
+/** Set a build back after its session died, only while it is still marked running / waiting (no race with a fresh launch). */
+function moveBuild(id, to, note, it = {}, action = 'pipeline:reap') {
+  withStore((s) => {
+    const b = storeCore.findBuild(s, id);
+    if (!b || !(b.status === 'running' || b.status === 'waiting')) return s;
+    if (it.session && b.pipeline?.session && b.pipeline.session !== it.session) return s;
+    const now = nowIso(); const left = b.steps.filter((x) => !x.done && !x.skip).length;
+    const lastRun = { at: now, exit: null, outcome: to.outcome, stepsLeft: left, account: b.pipeline?.account || it.account || '', session: b.pipeline?.session || it.session || '' };
+    b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), session: '', slot: '', lastRun, ...(to.status === 'queued' ? { queuedAt: now, queuedBy: 'reaper' } : {}), note: to.stuck ? to.why : '' }) ?? undefined;
+    if (!b.pipeline) delete b.pipeline;
+    b.status = to.status; b.builtAt = storeCore.FINISHED.includes(to.status) ? (b.builtAt || now) : '';
+    b.notes.push({ text: str(note, 2000), at: now }); b.updatedAt = now;
+    return s;
+  }, { by: 'reaper', action, note: id });
+}
+
+/** Silent slot entries this host started (only the host that runs a session judges it). */
+function staleHere() {
+  try {
+    const st = slots.loadState(); const set = slots.loadSettings(); const host = slotHost();
+    return slots.staleEntries(st, set).filter((e) => (e.host ?? host) === host).map((e) => ({ ...e, beatAgeSec: slots.beatAge(e) }));
+  } catch { return []; }
+}
+
+/** The reaper: silent sessions killed, their slots freed, their builds back to the Queue (or Pending, stuck). */
+export function runReaper({ alert = () => {} } = {}) {
+  return REAP.reap({
+    stale: staleHere, builds: () => live(loadStore()), history: () => reaperLog(500),
+    kill: killEntry, release: (id) => slots.release(id, 137),
+    move: (id, to, note, it) => moveBuild(id, to, note, it, 'pipeline:reap'), log: reaperLine, alert,
+  });
+}
+
+/** Build ids a live session runs here, or null when processes can't be seen (no tmux: the console container). */
+export function aliveBuilds(store = loadStore()) {
+  const tm = process.env.AXF_PIPELINE_TMUX === 'none' ? [] : tmuxNames();
+  if (!tm) return null;
+  const sl = slotsNow(); if (sl.unavailable) return null;
+  const ids = REG.liveBuildIds(REG.sessionsOf(sl, live(store)), tm);
+  // a session outside the pipeline that still writes the build log (fresh heartbeat there) keeps its build too
+  if (process.env.AXF_PIPELINE_TMUX !== 'none') { try { for (const id of liveBuilds() ?? []) ids.add(id); } catch { /* the build log is optional */ } }
+  return ids;
+}
+
+/** The reconcile: builds marked running / waiting that no live session runs get fixed. */
+export function runReconcile({ alert = () => {} } = {}) {
+  return REAP.reconcile({
+    builds: () => live(loadStore()), alive: () => aliveBuilds(), history: () => reaperLog(500),
+    move: (id, to, note) => moveBuild(id, to, note, {}, 'pipeline:reconcile'), log: reaperLine, alert,
+  }, { limits: { ...REAP.DEFAULTS, graceMin: RECONCILE_GRACE_MIN } });
+}
+
 // ------------------------------------------------------------------ alerts (the console's alerts API, from the host)
 
 export function makeConsole(env = process.env) {
@@ -409,8 +490,10 @@ export function tick({ env = process.env } = {}) {
   const sent = [];
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
+  const reaped = runReaper({ alert });
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
+  const reconciled = runReconcile({ alert });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const sl = slotsNow(); const accounts = accountsNow(store, settings, sl);
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
@@ -451,12 +534,12 @@ export function tick({ env = process.env } = {}) {
   }
   const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
-    recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
+    recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...[...reaped, ...reconciled].filter((x) => x.build).map((x) => ({ at: x.at, event: `${x.event} → ${x.to || 'slot freed'}`, id: x.build })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, intake: inta, ended, reaped, reconciled, launched, failed, plan, idle, alertsSent: sent };
 }
 
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
@@ -564,9 +647,15 @@ async function main(argv) {
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
-    return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
+    return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · reaped ${r.reaped.length} · reconciled ${r.reconciled.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
   }
+  if (cmd === 'reap') { const r = runReaper(); return out({ ok: true, reaped: r }, r.map((x) => x.note).join('\n') || 'no silent sessions'); }
+  if (cmd === 'reconcile') {
+    const reaped = runReaper(); const reconciled = runReconcile(); const seen = aliveBuilds() !== null;
+    return out({ ok: true, reaped, reconciled, seen }, [...reaped, ...reconciled].map((x) => `${x.build || x.session}: ${x.note}`).join('\n') || (seen ? 'nothing to fix' : 'processes are not visible here (no tmux): the VPS tick reconciles every minute'));
+  }
+  if (cmd === 'reaper-log') { const r = reaperLog(Number(flag('limit', '50')) || 50); return out({ ok: true, log: r }, r.map((x) => `${x.at} ${x.event} ${x.build || x.session}: ${x.note}`).join('\n') || 'the reaper has done nothing yet'); }
   if (cmd === 'slots') { const r = slotRegistry(); return out({ ok: true, registry: r }, REG.describe(r)); }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
@@ -582,7 +671,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | slots [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | slots | reap | reconcile | reaper-log [--limit n] [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

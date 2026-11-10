@@ -8,6 +8,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as REG from './slot-registry.mjs';
+import * as REAPER from './reaper.mjs';
 import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
@@ -250,6 +251,41 @@ t('registry: per account / model from live slot entries; silent sessions and gho
   assert.deepEqual(R.ghosts.map((g) => g.id), ['three', 'ghost'], 'running with no live session = ghost; epics skipped');
   assert.deepEqual(REG.registry({ accounts: accts, slots: slotsSum, builds, tmux: ['axf-ghost--z'] }).ghosts.map((g) => g.id), ['three'], 'a live tmux session for the build is enough');
   assert.match(REG.describe(R), /w-max: 1\/2 in use/);
+});
+
+// ---------------- the stale reaper and the reconcile (reaper.mjs)
+t('reaper: a silent session is killed, its slot freed, its build back to the Queue; stuck after maxReaps', () => {
+  const T = Date.parse(now);
+  const b1 = build('r1', 'running', [step('s1', 'Opus')], { pipeline: { session: 'axf-r1--a', account: 'w-max', queuedAt: now, launchedAt: now } });
+  const b2 = build('r2', 'running', [step('s1', 'Opus', true)], { pr: '#9', pipeline: { session: 'axf-r2--b', launchedAt: now } });
+  const stale = [{ id: 'h1', session: 'axf-r1--a', build: 'r1', beatAgeSec: 600 }, { id: 'h2', session: 'axf-r2--b', beatAgeSec: 400 }, { id: 'h3', session: 'axf-loose--c', beatAgeSec: 300 }];
+  const calls = []; const lines = [];
+  const io = { stale: () => stale, builds: () => [b1, b2], history: () => [], kill: (it) => { calls.push(`kill ${it.session}`); return 'tmux killed'; }, release: (id) => calls.push(`release ${id}`), move: (id, to) => calls.push(`move ${id} ${to.status}`), log: (l) => lines.push(l) };
+  const done = REAPER.reap(io, { now: T });
+  assert.deepEqual(calls, ['kill axf-r1--a', 'release h1', 'move r1 queued', 'kill axf-r2--b', 'release h2', 'move r2 built', 'kill axf-loose--c', 'release h3']);
+  assert.deepEqual(done.map((d) => d.to), ['queued', 'built', ''], 'open steps → Queue; every step done with a PR → built; no build → slot freed only');
+  assert.match(done[0].note, /silent 10 min/);
+  const hist = [1, 2].map((k) => ({ at: new Date(T - k * 3600e3).toISOString(), event: 'reaped', build: 'r1', to: 'queued' }));
+  const s3 = REAPER.settle(b1, { history: hist, now: T });
+  assert.deepEqual([s3.status, s3.stuck, s3.outcome], ['pending', true, 'failed'], 'reaped twice in 24 h: Pending, flagged stuck');
+  assert.equal(REAPER.settle(b1, { history: hist, now: T + 30 * 3600e3 }).status, 'queued', 'old reaps fall out of the window');
+});
+t('reconcile: running with no live session and untouched past grace → fixed; live, fresh, epics, unseen untouched', () => {
+  const T = Date.parse(now) + 60 * 60e3;
+  const bs = [
+    build('live', 'running', [step('s1', 'Opus')]),
+    build('fresh', 'running', [step('s1', 'Opus')], { updatedAt: new Date(T - 60e3).toISOString() }),
+    build('dispatched', 'running', [step('s1', 'Opus')], { pipeline: { queuedAt: now, launchedAt: now, session: 'axf-dispatched--x' } }),
+    build('manual', 'waiting', [step('s1', 'Opus')]),
+    build('merged', 'running', [step('s1', 'Opus')], { mergedAt: now }),
+    build('epic', 'running', [step('s1', 'Opus')], { kind: 'epic', planRef: 'x.y' }),
+  ];
+  const p = REAPER.reconcilePlan({ builds: bs, alive: new Set(['live']), now: T });
+  assert.deepEqual(p.map((x) => `${x.build}:${x.to.status}`), ['dispatched:queued', 'manual:pending', 'merged:complete']);
+  assert.deepEqual(REAPER.reconcilePlan({ builds: bs, alive: null, now: T }), [], 'processes unseen: nothing touched');
+  const lines = []; const moved = [];
+  REAPER.reconcile({ builds: () => bs, alive: () => new Set(['live']), history: () => [], move: (id, to) => moved.push(`${id}:${to.status}`), log: (l) => lines.push(l) }, { now: T });
+  assert.deepEqual(moved, ['dispatched:queued', 'manual:pending', 'merged:complete']); assert.equal(lines.length, 3); assert.match(lines[0].note, /axf-dispatched--x is gone/);
 });
 
 // ---------------- one way to start builds (framework/cli/dispatch-gate.mjs)
