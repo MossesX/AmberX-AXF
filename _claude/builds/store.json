@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2163,
- "updatedAt": "2026-11-10T01:30:52.939Z",
+ "rev": 2164,
+ "updatedAt": "2026-11-10T01:31:35.229Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130197,7 +130197,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-10T01:19:10.305Z",
+   "updatedAt": "2026-11-10T01:31:33.659Z",
    "builtAt": "",
    "notes": [
     {
@@ -130286,12 +130286,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T19:20:17.331Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-urgent-terminal-pops-up-every-time-the-console-o--lenny",
+    "account": "account-1",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T01:19:06.950Z",
-    "runs": 1,
+    "launchedAt": "2026-11-09T19:23:07.733Z",
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:24:31.405Z",
      "exit": 1,
@@ -130308,9 +130308,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-10T01:19:06.950Z"
+    "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
    "steps": [
     {
@@ -130328,12 +130328,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:31:33.659Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T18:52:29.382Z",
-     "updatedAt": "2026-11-09T18:52:29.382Z"
+     "updatedAt": "2026-11-10T01:31:33.832Z"
     },
     {
      "id": "s2",
