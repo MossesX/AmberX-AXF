@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2344,
- "updatedAt": "2026-11-10T04:34:53.286Z",
+ "rev": 2345,
+ "updatedAt": "2026-11-10T04:35:29.791Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27506,12 +27506,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-10T04:35:23.951Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: done — work@1 engine (TS + Kotlin) and lib-work on main: commit 78a12bc07; framework/core/engines/work.ts, framework/spec/fixtures/work.json, framework/spec/check-work.mts",
+     "at": "2026-11-10T04:35:23.951Z"
     }
    ],
    "approvals": [],
@@ -27658,7 +27662,7 @@
    },
    "kind": "epic",
    "planRef": "x.work",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:01 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
 - 2026-11-10 00:03 UTC · `fix-it-yourself-rule-in-every-brief-and-session` added (0 steps) (all) · console
 - 2026-11-10 00:03 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → queued, note (all) · console
 - 2026-11-10 00:06 UTC · `assign-an-employee-to-every-role-action-type-and` s1 done, → running (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:34 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · pipeline
 - 2026-11-10 04:34 UTC · `molly-banner-match` → running, note (all) · pipeline
 - 2026-11-10 04:34 UTC · `molly-banner-match` note (all) · orchestrator
+- 2026-11-10 04:35 UTC · `x.work` note (all) · audit-pending-fable-builds-against-main-close-wh
 
 ## Token passes (log)
 
