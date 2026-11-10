@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2380,
- "updatedAt": "2026-11-10T15:17:17.681Z",
+ "rev": 2381,
+ "updatedAt": "2026-11-10T15:17:33.322Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128074,7 +128074,7 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128082,8 +128082,8 @@
    "pr": "#444",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-10T15:17:16.424Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T15:17:17.466Z",
+   "builtAt": "2026-11-10T15:17:17.466Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -128276,12 +128276,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:17:17.466Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T16:03:30.605Z",
-     "updatedAt": "2026-11-09T16:03:30.605Z"
+     "updatedAt": "2026-11-10T15:17:17.645Z"
     }
    ],
    "profiles": [
@@ -128292,7 +128292,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
