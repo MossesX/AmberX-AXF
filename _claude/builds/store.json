@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2185,
- "updatedAt": "2026-11-10T01:56:16.898Z",
+ "rev": 2186,
+ "updatedAt": "2026-11-10T01:57:01.163Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129793,7 +129793,7 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T01:56:14.506Z",
+   "updatedAt": "2026-11-10T01:56:59.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -129871,6 +129871,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-skins-own-everything-colour-theme-swaps-independ--sully, own login copy)",
      "at": "2026-11-10T01:56:14.506Z"
+    },
+    {
+     "text": "Headless run axf-skins-own-everything-colour-theme-swaps-independ--sully: brief only · start 12.9K tokens ($0.06) · cost $15.01 · 172 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:56:59.290Z"
     }
    ],
    "approvals": [],
@@ -129995,7 +129999,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
