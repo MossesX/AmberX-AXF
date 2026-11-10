@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:49:04.146Z",
+ "updatedAt": "2026-11-10T02:49:30.880Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78850,7 +78850,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-10T02:47:27.970Z",
+   "updatedAt": "2026-11-10T02:49:17.334Z",
    "builtAt": "2026-11-10T02:47:27.970Z",
    "notes": [
     {
@@ -78960,6 +78960,10 @@
     {
      "text": "PR #432 open. All 3 steps done; tests and checks green. UI Review shots not taken (headless run, no browser): desktop + phone shots of Build manager (Pending, Complete) and Build orchestrator (Queued, Active) still to submit.",
      "at": "2026-11-10T02:46:53.740Z"
+    },
+    {
+     "text": "Session axf-split-builds-pages-build-manager-pending-complet--paulie on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-10T02:49:17.334Z"
     }
    ],
    "approvals": [],
@@ -83042,6 +83046,42 @@
      "uid": "st-mwa39wtp039y3n"
     }
    ]
+  },
+  {
+   "id": "console-speed-profile-and-cut-axf-console-cpu-pl",
+   "title": "Console speed: profile and cut axf-console CPU, plus plan a separate build VPS",
+   "category": "",
+   "detail": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T02:49:14.121Z",
+   "updatedAt": "2026-11-10T02:49:23.901Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:49:23.901Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
+    "at": "2026-11-10T02:49:14.121Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:20 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
-- 2026-11-09 19:21 UTC · `home-page-build-queue-card-opens-the-orchestrato` added (0 steps) (all) · console
-- 2026-11-09 19:21 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · console
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` branch claude/urgent-terminal-pops-up-every-time-the-console-o (all) · pipeline
 - 2026-11-09 19:21 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:48 UTC · `orchestrator-table-columns-model-queue-assigned` branch claude/orchestrator-table-columns-model-queue-assigned (all) · pipeline
 - 2026-11-10 02:48 UTC · `self-healing-build-folders-auto-clear-stale-git` → running, note (all) · pipeline
 - 2026-11-10 02:48 UTC · `self-healing-build-folders-auto-clear-stale-git` branch claude/self-healing-build-folders-auto-clear-stale-git (all) · pipeline
+- 2026-11-10 02:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` added (0 steps) (all) · console
+- 2026-11-10 02:49 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · pipeline
+- 2026-11-10 02:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → queued, note (all) · console
 
 ## Token passes (log)
 

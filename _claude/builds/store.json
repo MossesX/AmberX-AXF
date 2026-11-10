@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2222,
- "updatedAt": "2026-11-10T02:49:04.146Z",
+ "rev": 2223,
+ "updatedAt": "2026-11-10T02:49:30.880Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129038,7 +129038,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-10T02:47:27.970Z",
+   "updatedAt": "2026-11-10T02:49:17.334Z",
    "builtAt": "2026-11-10T02:47:27.970Z",
    "notes": [
     {
@@ -129148,6 +129148,10 @@
     {
      "text": "PR #432 open. All 3 steps done; tests and checks green. UI Review shots not taken (headless run, no browser): desktop + phone shots of Build manager (Pending, Complete) and Build orchestrator (Queued, Active) still to submit.",
      "at": "2026-11-10T02:46:53.740Z"
+    },
+    {
+     "text": "Session axf-split-builds-pages-build-manager-pending-complet--paulie on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-10T02:49:17.334Z"
     }
    ],
    "approvals": [],
@@ -129168,18 +129172,18 @@
     "queuedAt": "2026-11-09T17:48:21.707Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-split-builds-pages-build-manager-pending-complet--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T01:57:09.377Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-09T18:06:04.417Z",
-     "exit": 1,
-     "outcome": "failed",
-     "stepsLeft": 3,
-     "account": "account-1",
-     "session": "axf-split-builds-pages-build-manager-pending-complet--gina"
+     "at": "2026-11-10T02:49:06.260Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-split-builds-pages-build-manager-pending-complet--paulie"
     },
     "split": {
      "at": "2026-11-09T17:49:32.211Z",
@@ -129272,7 +129276,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -134943,6 +134947,76 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T02:46:47.916Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-speed-profile-and-cut-axf-console-cpu-pl",
+   "title": "Console speed: profile and cut axf-console CPU, plus plan a separate build VPS",
+   "category": "",
+   "detail": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T02:49:14.121Z",
+   "updatedAt": "2026-11-10T02:49:23.901Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:49:23.901Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
+    "at": "2026-11-10T02:49:14.121Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T02:49:21.674Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 528
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
