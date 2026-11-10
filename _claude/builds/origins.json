@@ -1128,6 +1128,18 @@
    "from": "detail",
    "addenda": []
   },
+  "build-notifications-same-notification-per-build": {
+   "said": "It's the same notification, but I want an alert each time at least.",
+   "at": "2026-11-10T20:57:38.838Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-optimizer": {
    "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
    "at": "2026-11-04T20:00:00Z",
