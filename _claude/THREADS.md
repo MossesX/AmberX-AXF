@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
 - 2026-11-10 17:27 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s1 done, → running (all) · orchestrator
 - 2026-11-10 17:30 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s2 done (all) · orchestrator
 - 2026-11-10 17:31 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` PR #459 (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:29 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` → running, note (all) · pipeline
 - 2026-11-10 21:29 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` branch claude/no-veto-timer-on-navigation-follow-amber-open-x (all) · pipeline
 - 2026-11-10 21:29 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
+- 2026-11-10 21:33 UTC · `finish-and-land-the-git-status-board-every-ready` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
