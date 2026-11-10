@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2457,
- "updatedAt": "2026-11-10T16:29:22.571Z",
+ "rev": 2458,
+ "updatedAt": "2026-11-10T16:29:55.613Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138611,6 +138611,77 @@
    ],
    "order": {
     "all": 548
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "agent-manager-training-wizard-for-employee-agent",
+   "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
+   "category": "",
+   "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:29:30.818Z",
+   "updatedAt": "2026-11-10T16:29:32.377Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:29:32.377Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a training hook for every employee agent. Add onto the agent manager a training dialog where you select from various types of data, how to get it, how to process and store it like RAG. Train employees by pointing them towards data like a website or certain stuff on it, specific product types or code, React, TypeScript, whatever. The training wizard will train agents with certain types, categories, and build its tools, skills and a persona, and an index of categorized vocabulary; auto attach already generated vocabulary files, pairs, tools, skills, personality etc.",
+    "at": "2026-11-10T16:29:30.818Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T16:29:32.033Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 549
    },
    "kind": "build",
    "planRef": "",
