@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2433,
- "updatedAt": "2026-11-10T16:07:11.832Z",
+ "rev": 2434,
+ "updatedAt": "2026-11-10T16:07:30.824Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137292,15 +137292,15 @@
    "title": "Account order switch: custom drag-and-drop order or automatic (subscriptions first, then API)",
    "category": "",
    "detail": "Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/account-order-switch-custom-drag-and-drop-order",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:31:10.459Z",
-   "updatedAt": "2026-11-10T16:07:10.322Z",
+   "updatedAt": "2026-11-10T16:07:14.776Z",
    "builtAt": "",
    "notes": [
     {
@@ -137310,6 +137310,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:32:17.511Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-account-order-switch-custom-drag-and-drop-order--sully.",
+     "at": "2026-11-10T16:07:12.789Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-order-switch-custom-drag-and-drop-order--sully, own login copy)",
+     "at": "2026-11-10T16:07:14.776Z"
     }
    ],
    "approvals": [],
@@ -137329,12 +137337,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T15:31:11.733Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-account-order-switch-custom-drag-and-drop-order--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T16:07:12.460Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T15:32:17.511Z",
@@ -137344,9 +137352,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-10T16:07:12.460Z"
    },
    "steps": [
     {
@@ -137427,7 +137435,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

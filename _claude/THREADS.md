@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` PR #429 (all) · builds-live
-- 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` s1 done, → running (all) · orchestrator
-- 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 01:53 UTC · `skins-theme-rule` note (all) · orchestrator
 - 2026-11-10 01:53 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-10 01:54 UTC · `appearance-skins-colour-themes-only-remove-design-packs` s1 done (all) · orchestrator
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:01 UTC · `molly-fable-version-the-one-interface-for-amberx` → pending, note (all) · reconciler
 - 2026-11-10 16:06 UTC · `skins-as-packages-of-slices-every-section-its-ow` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:06 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
+- 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` → running, note (all) · pipeline
+- 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` branch claude/account-order-switch-custom-drag-and-drop-order (all) · pipeline
+- 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · orchestrator
 
 ## Token passes (log)
 
