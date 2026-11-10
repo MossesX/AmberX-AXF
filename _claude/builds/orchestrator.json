@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:48:31.656Z",
+ "updatedAt": "2026-11-10T16:49:15.774Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86647,12 +86647,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:47.022Z",
-   "updatedAt": "2026-11-10T16:45:49.248Z",
+   "updatedAt": "2026-11-10T16:49:13.765Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:45:49.248Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:49:13.765Z"
     }
    ],
    "approvals": [],
@@ -86669,7 +86673,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaxda91078cu3"
+    },
+    {
+     "id": "s2",
+     "text": "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaxda9108dv56"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/claude-md-standing-rule-be-proactive-bring-up-th.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/claude-md-standing-rule-be-proactive-bring-up-th.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaxda9109twrn"
+    }
+   ]
   },
   {
    "id": "fix-the-orchestrator-s-splitter-claude-print-get",
