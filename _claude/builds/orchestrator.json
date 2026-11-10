@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:44:45.320Z",
+ "updatedAt": "2026-11-10T04:45:21.628Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10677,7 +10677,7 @@
    "title": "Molly's banner = the console's banner asset; embedded apps hide their own",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -10685,7 +10685,7 @@
    "pr": "#341",
    "priority": "P0",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-10T04:44:44.068Z",
+   "updatedAt": "2026-11-10T04:45:08.282Z",
    "builtAt": "",
    "notes": [
     {
@@ -10739,6 +10739,10 @@
     {
      "text": "Headless run axf-molly-banner-match--rhonda: brief only · start 10.7K tokens ($0.02) · cost $1.70 · 38 turns · 6 tools, MCP none",
      "at": "2026-11-10T04:44:44.068Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-10T04:45:08.282Z"
     }
    ],
    "approvals": [],
@@ -84130,7 +84134,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T04:34:25.178Z",
+   "updatedAt": "2026-11-10T04:45:19.365Z",
    "builtAt": "",
    "notes": [
     {
@@ -84140,6 +84144,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T04:34:25.178Z"
+    },
+    {
+     "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (new branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l')\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nUpdating files:   0% (26/13024)\rerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nerror: unable to write file _claude/builds",
+     "at": "2026-11-10T04:45:19.365Z"
     }
    ],
    "approvals": [],

@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:17 UTC · `build-statuses-tell-the-truth-orchestrator-list` note (all) · orchestrator
-- 2026-11-10 00:19 UTC · `failed-launches-auto-retry-on-another-working-ac` added (0 steps) (all) · console
 - 2026-11-10 00:19 UTC · `failed-launches-auto-retry-on-another-working-ac` added (0 steps) (all) · builds-live
 - 2026-11-10 00:19 UTC · `failed-launches-auto-retry-on-another-working-ac` → queued, note (all) · console
 - 2026-11-10 00:19 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:40 UTC · `axhub-web-hub-rules` → pending (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:40 UTC · `audit-pending-fable-builds-against-main-close-wh` s1 done (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:44 UTC · `molly-banner-match` note (all) · orchestrator
+- 2026-11-10 04:45 UTC · `molly-banner-match` → pending, note (all) · pipeline
+- 2026-11-10 04:45 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 
 ## Token passes (log)
 
