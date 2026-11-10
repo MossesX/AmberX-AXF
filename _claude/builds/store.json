@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2374,
- "updatedAt": "2026-11-10T15:11:05.419Z",
+ "rev": 2375,
+ "updatedAt": "2026-11-10T15:11:19.370Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128074,7 +128074,7 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128082,7 +128082,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-10T15:11:03.870Z",
+   "updatedAt": "2026-11-10T15:11:07.435Z",
    "builtAt": "",
    "notes": [
     {
@@ -128152,6 +128152,14 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:36.214Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, this build is set to API) (Opus, Phase 1): axf-prompt-caching-and-batch-api-support-in-the-buil--gina.",
+     "at": "2026-11-10T15:11:05.992Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-prompt-caching-and-batch-api-support-in-the-buil--gina, own login copy)",
+     "at": "2026-11-10T15:11:07.435Z"
     }
    ],
    "approvals": [],
@@ -128171,12 +128179,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T16:02:31.432Z",
     "queuedBy": "console",
-    "account": "account-1",
-    "session": "",
+    "account": "account-5",
+    "session": "axf-prompt-caching-and-batch-api-support-in-the-buil--gina",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T18:10:30.633Z",
-    "runs": 0,
+    "launchedAt": "2026-11-10T15:11:05.688Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-09T18:11:02.864Z",
      "exit": 1,
@@ -128193,9 +128201,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "API run asked for by amber: waiting for Brett's approval",
+    "note": "",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z"
+    "dispatchedAt": "2026-11-10T15:11:05.688Z"
    },
    "steps": [
     {
@@ -128276,7 +128284,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

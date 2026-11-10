@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:11:05.419Z",
+ "updatedAt": "2026-11-10T15:11:19.370Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78133,7 +78133,7 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78141,7 +78141,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-10T15:11:03.870Z",
+   "updatedAt": "2026-11-10T15:11:07.435Z",
    "builtAt": "",
    "notes": [
     {
@@ -78211,6 +78211,14 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:36.214Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, this build is set to API) (Opus, Phase 1): axf-prompt-caching-and-batch-api-support-in-the-buil--gina.",
+     "at": "2026-11-10T15:11:05.992Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-prompt-caching-and-batch-api-support-in-the-buil--gina, own login copy)",
+     "at": "2026-11-10T15:11:07.435Z"
     }
    ],
    "approvals": [],
