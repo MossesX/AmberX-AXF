@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2712,
- "updatedAt": "2026-11-10T18:57:49.892Z",
+ "rev": 2713,
+ "updatedAt": "2026-11-10T18:58:42.796Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153404,12 +153404,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T18:57:37.701Z",
+   "updatedAt": "2026-11-10T18:58:41.585Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T18:57:37.701Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T18:58:41.585Z"
     }
    ],
    "approvals": [],
@@ -153436,16 +153440,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T18:58:41.585Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb1zrxt01xbvc",
+     "title": "",
+     "text": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:58:41.585Z",
+     "updatedAt": "2026-11-10T18:58:41.585Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb1zrxt02m8wm",
+     "title": "",
+     "text": "Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:58:41.585Z",
+     "updatedAt": "2026-11-10T18:58:41.585Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb1zrxt03ohq3",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-checks-each-build-against-main-righ.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-checks-each-build-against-main-righ.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:58:41.585Z",
+     "updatedAt": "2026-11-10T18:58:41.585Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -153454,12 +153534,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T18:58:41.585Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
