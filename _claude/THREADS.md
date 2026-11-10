@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
 - 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s3 done, → built (all) · orchestrator
 - 2026-11-10 04:18 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
 - 2026-11-10 04:19 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` branch claude/fix-the-orchestrator-s-splitter-claude-print-get (all) · pipeline
 - 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
 - 2026-11-10 17:27 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s1 done, → running (all) · orchestrator
+- 2026-11-10 17:30 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
