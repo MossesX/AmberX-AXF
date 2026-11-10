@@ -133,6 +133,20 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    # hold / archive / delete / restore on one build or many (bulk select)
+    asyncio.run(srv.pipeline_action(_Req({"action": "hold", "ids": ["alpha", "beta"], "why": "later"}, True)))
+    cmd = _calls[-1]
+    check(cmd[2:5] == ["hold", "alpha", "beta"] and cmd[cmd.index("--by") + 1] == "Brett" and cmd[cmd.index("--why") + 1] == "later", "action: hold on two builds, by Brett, with the reason")
+    asyncio.run(srv.pipeline_action(_Req({"action": "delete", "id": "alpha"})))
+    check(_calls[-1][2:4] == ["delete", "alpha"] and "--why" not in _calls[-1], "action: one id works too; no reason, no --why")
+    for body, want in (({"action": "purge", "ids": ["alpha"]}, 400), ({"action": "hold", "ids": ["../x"]}, 400), ({"action": "hold", "ids": []}, 400)):
+        try:
+            asyncio.run(srv.pipeline_action(_Req(body)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"action {body}: {want}")
+    check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
 finally:
     srv.subprocess.run = _real_run
 

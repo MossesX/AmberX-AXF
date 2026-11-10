@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -272,7 +272,7 @@
         "id": "pipeline-tab",
         "route": "GET /pipeline/tab/{name}",
         "title": "Orchestrator tab",
-        "description": "One of the orchestrator's tabs: pending, queue, active, incomplete, complete or errors, with each build's steps, planned model and account, and the account that took it. Say 'what's in the queue' or 'show build errors'.",
+        "description": "One of the orchestrator's tabs: pending, queue, active, incomplete, complete, errors, archive (every completed and archived build) or deleted (soft-deleted builds, kept forever), with each build's steps, planned model and account, the account that took it, whether it is on hold and the actions it offers. Say 'what's in the queue', 'show the archive' or 'show deleted builds'.",
         "readOnly": true,
         "input": {
           "type": "object",
@@ -285,7 +285,9 @@
                 "active",
                 "incomplete",
                 "complete",
-                "errors"
+                "errors",
+                "archive",
+                "deleted"
               ],
               "description": "Tab"
             }
@@ -294,7 +296,7 @@
             "name"
           ]
         },
-        "output": "{ tab, rows: [{ id, title, status, steps, stepList, pipeline: { planned, account, pickedAt, tried } }] }"
+        "output": "{ tab, rows: [{ id, title, status, held, actions, deleted, deletedAt, steps, stepList, pipeline: { planned, account, pickedAt, tried, heldAt, heldBy, heldWhy } }] }"
       },
       {
         "id": "pipeline-health",
@@ -349,6 +351,49 @@
           ]
         },
         "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-build-action",
+        "route": "POST /pipeline/action",
+        "title": "Hold, archive, delete or restore builds",
+        "description": "Act on one build or many at once (bulk): unqueue (Queue back to Pending), hold (stays in the Queue, the dispatcher skips it until released), release, archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) or restore. Builds with a live session are refused; the rest still go. Say 'hold the icon browser build', 'archive these builds' or 'restore the deleted toast build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "unqueue",
+                "hold",
+                "release",
+                "archive",
+                "unarchive",
+                "delete",
+                "restore"
+              ],
+              "description": "What to do"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids (bulk select)"
+            },
+            "id": {
+              "type": "string",
+              "description": "One build id (instead of ids)"
+            },
+            "why": {
+              "type": "string",
+              "description": "Why (kept in the build notes; hold and delete)"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        "output": "{ action, done: [{ id, status, tab }], refused: [{ id, error }] }"
       },
       {
         "id": "pipeline-split",

@@ -43,10 +43,11 @@ const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.ge
 export const TABS = [
   { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
+  { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' },
   { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
 ] as const;
 export type Tab = (typeof TABS)[number]['id'];
-const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'accounts']);
+const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'accounts']);
 /** Another part of the console (an action, a deep link) asks for a tab: the page switches to it. */
 const TAB_EVENT = 'axf:orchestrator-tab';
 export function openTab(t: string) { if (TABS.some((x) => x.id === t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }

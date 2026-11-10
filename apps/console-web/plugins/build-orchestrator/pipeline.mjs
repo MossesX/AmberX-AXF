@@ -9,7 +9,10 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
- *   … unqueue <id>                 Queue → Pending
+ *   … unqueue <id…>                Queue → Pending
+ *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
+ *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
+ *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
@@ -27,7 +30,7 @@
  *                                  never claims a slot and never signs anything out (a renewed token is saved back to the
  *                                  login's stores; a login due to renew is not called, so no build's copy is left on a spent
  *                                  token). The dispatcher reads the answers and never tests an account at launch time.
- *   … tab <pending|queue|active|incomplete|complete|errors> [--json]   one of the orchestrator's tabs
+ *   … tab <pending|queue|active|incomplete|complete|errors|archive|deleted> [--json]   one of the orchestrator's tabs
  *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
@@ -174,7 +177,7 @@ const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
@@ -191,11 +194,12 @@ export function status() {
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const tabs = Object.fromEntries(BP.TABS.map((t) => [t, []]));
-  for (const b of builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); }
+  for (const b of store.builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record: the Deleted tab shows soft-deleted builds
   tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-  tabs.complete.sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
+  for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
+  tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
@@ -230,9 +234,66 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
-  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
+  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', heldAt: '', heldBy: '', heldWhy: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
   logLine({ event: 'unqueued', build: b.id, by });
   return r;
+}
+
+/**
+ * The Queue / Archive / Deleted actions (Brett, Nov 10 2026: "Anything in the queue you can send back to pending, leave in
+ * queue on hold, move to the archive, or delete … A deleted tab where all deleted builds stay saved forever"):
+ *   unqueue    Queue → Pending                         hold / release   stays in the Queue, the dispatcher skips it / not
+ *   archive    any build without a live session → Archive (status archived; the Queue fields are cleared)
+ *   unarchive  Archive → built / complete when every step is done, else Pending
+ *   delete     soft delete: the record stays in the store forever (Deleted tab); a queued build leaves the Queue first
+ *   restore    Deleted → back where it was (a build that was queued comes back in Pending)
+ * Many ids at once (bulk select). Each id is checked on its own: one refused build never stops the others.
+ * Returns { action, done: [{ id, status, tab }], refused: [{ id, error }] }.
+ */
+export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+  if (!BP.BUILD_ACTIONS.includes(action)) throw Object.assign(new Error(`action is one of ${BP.BUILD_ACTIONS.join(', ')}`), { code: 2 });
+  const list = [...new Set((Array.isArray(ids) ? ids : [ids]).map((x) => str(x, 120).trim()).filter(Boolean))];
+  if (!list.length) throw Object.assign(new Error('no build id given'), { code: 2 });
+  const done = []; const refused = [];
+  const reason = str(why, 300).trim(); const tail = reason ? `: ${reason}` : '';
+  for (const id of list) {
+    try {
+      if (action === 'unqueue') { const b = unqueue(id, { by }); done.push({ id: b.id, status: b.status, tab: BP.tabOf(b) }); continue; }
+      let out = null;
+      withStore((s) => {
+        const b = storeCore.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+        const now = nowIso();
+        const pipe = (patch) => { b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined; if (!b.pipeline) delete b.pipeline; };
+        const unq = { queuedAt: '', queuedBy: '', heldAt: '', heldBy: '', heldWhy: '' };
+        let note = '';
+        if (action === 'hold') {
+          if (!BP.canHold(b)) throw new Error(BP.isHeld(b) ? `${b.id} is on hold already` : `${b.id} is ${b.deleted ? 'deleted' : b.status}: only a queued build can be put on hold`);
+          pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason }); note = `On hold (${by})${tail}. It keeps its place in the Queue; the dispatcher skips it until released.`;
+        } else if (action === 'release') {
+          if (!BP.isHeld(b)) throw new Error(`${b.id} is not on hold`);
+          pipe({ heldAt: '', heldBy: '', heldWhy: '' }); note = `Released from hold (${by}): the dispatcher may start it.`;
+        } else if (action === 'archive') {
+          if (!BP.canArchive(b)) throw new Error(b.deleted ? `${b.id} is deleted: restore it first` : BP.isLive(b) ? `${b.id} is ${b.status}: a build with a live session is not archived under it` : `${b.id} is archived already`);
+          const was = b.status; if (was === 'queued') pipe(unq); b.status = 'archived'; b.builtAt = ''; note = `Moved to the Archive from ${was} (${by})${tail}.`;
+        } else if (action === 'unarchive') {
+          if (b.deleted || b.status !== 'archived') throw new Error(`${b.id} is not in the Archive`);
+          b.status = BP.unarchivedStatus(b); b.builtAt = storeCore.FINISHED.includes(b.status) ? (b.builtAt || now) : ''; note = `Back from the Archive as ${b.status} (${by}).`;
+        } else if (action === 'delete') {
+          if (!BP.canDelete(b)) throw new Error(b.deleted ? `${b.id} is deleted already` : `${b.id} is ${b.status}: a build with a live session is not deleted under it`);
+          if (b.status === 'queued') { pipe(unq); b.status = 'pending'; }
+          b.deleted = true; b.deletedAt = now; note = `Deleted (${by})${tail}. Kept in the builds store for good: Deleted tab, restorable.`;
+        } else if (action === 'restore') {
+          if (!b.deleted) throw new Error(`${b.id} is not deleted`);
+          b.deleted = false; b.deletedAt = ''; note = `Restored from Deleted (${by}): back in ${BP.TAB_LABEL[BP.tabOf(b)] || b.status}.`;
+        }
+        b.notes.push({ text: note, at: now }); b.updatedAt = now; out = b;
+        return s;
+      }, { by, action: `pipeline:${action}`, note: id });
+      logLine({ event: action, build: out.id, by });
+      done.push({ id: out.id, status: out.status, tab: BP.tabOf(out) });
+    } catch (e) { refused.push({ id, error: e.message }); }
+  }
+  return { action, done, refused };
 }
 
 // ------------------------------------------------------------------ the split
@@ -769,11 +830,18 @@ async function main(argv) {
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
       s.plan.launches.length ? `Next tick starts: ${s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ')}` : 'Next tick starts nothing.',
       ...s.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`),
+      `Archive ${s.tabs.archive.length} · Deleted ${s.tabs.deleted.length} (kept forever)`,
       s.plan.idle ? `IDLE: ${s.plan.idle.reason}` : '',
     ].filter(Boolean).join('\n'));
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
-  if (cmd === 'unqueue') { const b = unqueue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Pending`); }
+  if (BP.BUILD_ACTIONS.includes(cmd)) {
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why'].includes(rest[i - 1])));
+    const r = buildAction(cmd, ids, { by, why: flag('why') });
+    if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
+    const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
+    return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+  }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
     const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
@@ -823,7 +891,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -453,13 +453,14 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
-PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors")
+PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
 
 
 @router.get("/pipeline/tab/{name}")
 def pipeline_tab(name: str) -> dict[str, Any]:
-    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors): every build in it, with its
-    steps, the planned model + account and the account that took it."""
+    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors, archive, deleted): every build
+    in it, with its steps, the planned model + account, the account that took it, whether it is on hold and the actions
+    it offers."""
     if name not in PIPELINE_TABS:
         raise HTTPException(400, f"tab is one of {', '.join(PIPELINE_TABS)}")
     return _pipeline("tab", name)
@@ -491,6 +492,31 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     """{id}: Queue → Pending (a queued build that has not started)."""
     body = await _json_body(request)
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
+
+
+@router.post("/pipeline/action")
+async def pipeline_action(request: Request) -> dict[str, Any]:
+    """{action, ids: [id…] | id, why?}: the Queue / Archive / Deleted actions on one build or many (bulk select).
+    unqueue = back to Pending; hold / release = stays in the Queue, skipped by the dispatcher until released; archive /
+    unarchive; delete = soft delete (kept in the builds store forever, Deleted tab) / restore. Builds with a live session
+    are refused, the others still go: { done: [{ id, status, tab }], refused: [{ id, error }] }."""
+    body = await _json_body(request)
+    action = str(body.get("action") or "")
+    if action not in BUILD_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(BUILD_ACTIONS)}")
+    raw = body.get("ids")
+    ids = raw if isinstance(raw, list) else [body.get("id")]
+    ids = [_build_id(x) for x in ids[:200]]
+    if not ids:
+        raise HTTPException(400, "no build id given")
+    why = str(body.get("why") or "")[:300]
+    args = [action, *ids, "--by", (brett_click(request) or "console")[:80]]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
 
 
 @router.post("/pipeline/split")
