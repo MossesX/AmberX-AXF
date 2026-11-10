@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2364,
- "updatedAt": "2026-11-10T14:54:38.112Z",
+ "rev": 2365,
+ "updatedAt": "2026-11-10T14:54:51.333Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136605,7 +136605,7 @@
    "title": "Resolve the conflict and land the orchestrator list fix (no forced categories, date sort, true statuses)",
    "category": "",
    "detail": "Branch claude/build-statuses-tell-the-truth-orchestrator-list (true build statuses, expandable root rows, Group by optional, working date sort) is finished, but merging origin/main conflicts in apps/console-web/plugins/build-orchestrator/pipeline.mjs and pipeline.test.mjs. Work in /root/axf-builds/build-statuses-tell-the-truth-orchestrator-list: merge origin/main, resolve keeping main's newer code plus this branch's statuses and list features, run the orchestrator tests and typecheck, then push to main. Verify on the live console that the queue isn't forced into categories.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -136613,8 +136613,8 @@
    "pr": "#442",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T14:54:37.001Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T14:54:40.987Z",
+   "builtAt": "2026-11-10T14:54:40.987Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -136651,6 +136651,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-the-conflict-and-land-the-orchestrator-l--joey, own login copy)",
      "at": "2026-11-10T14:51:17.475Z"
+    },
+    {
+     "text": "Queue is in categories because #423 never landed (conflicted with main). Merged it onto main in PR #442 with conflicts resolved; tests and typecheck green. Live check waits for the merge queue; #423 can be closed after.",
+     "at": "2026-11-10T14:54:37.865Z"
     }
    ],
    "approvals": [],
@@ -136706,12 +136710,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T14:54:38.899Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T04:34:25.178Z",
-     "updatedAt": "2026-11-10T04:34:25.178Z"
+     "updatedAt": "2026-11-10T14:54:39.038Z"
     },
     {
      "id": "s2",
@@ -136728,12 +136732,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T14:54:39.960Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T04:34:25.178Z",
-     "updatedAt": "2026-11-10T04:34:25.178Z"
+     "updatedAt": "2026-11-10T14:54:40.090Z"
     },
     {
      "id": "s3",
@@ -136753,12 +136757,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T14:54:40.987Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T04:34:25.178Z",
-     "updatedAt": "2026-11-10T04:34:25.178Z"
+     "updatedAt": "2026-11-10T14:54:41.115Z"
     }
    ],
    "profiles": [
@@ -136769,7 +136773,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
