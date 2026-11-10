@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2993,
- "updatedAt": "2026-11-10T23:20:12.017Z",
+ "rev": 2994,
+ "updatedAt": "2026-11-10T23:20:33.702Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120570,7 +120570,7 @@
    "pr": "#477",
    "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T23:19:41.007Z",
+   "updatedAt": "2026-11-10T23:20:06.111Z",
    "builtAt": "2026-11-10T23:19:41.007Z",
    "notes": [
     {
@@ -120636,6 +120636,10 @@
     {
      "text": "Headless run axf-molly-sign-in-once--sully: brief only · start 10.4K tokens ($0.03) · cost $0.79 · 41 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:19:41.007Z"
+    },
+    {
+     "text": "Session axf-molly-sign-in-once--sully on account-5 ended (exit 0); the build was already built.",
+     "at": "2026-11-10T23:20:06.111Z"
     }
    ],
    "approvals": [],
@@ -120656,18 +120660,18 @@
     "queuedAt": "2026-11-10T23:08:05.898Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "axf-molly-sign-in-once--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T23:13:17.993Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-10T23:13:04.667Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 1,
-     "account": "account-3",
-     "session": "axf-molly-sign-in-once--lenny"
+     "at": "2026-11-10T23:20:03.196Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "account-5",
+     "session": "axf-molly-sign-in-once--sully"
     },
     "split": null,
     "splitRequested": "",
@@ -120760,7 +120764,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
