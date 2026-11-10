@@ -69,7 +69,7 @@
       {
         "target": "copy-entry-id",
         "title": "Copy entry id",
-        "text": "Copies this entry's id (for example plugin:build-manager) so you can use it with the API, MCP tools or the command line.",
+        "text": "Copies this entry's id (for example plugin:build-orchestrator) so you can use it with the API, MCP tools or the command line.",
         "kind": "button"
       },
       {
