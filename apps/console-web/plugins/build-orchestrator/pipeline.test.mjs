@@ -1,9 +1,9 @@
 // Self-test: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs
 // Pipeline core (pure) + the CLI end to end on a scratch store with a fake launcher, fake accounts and a fake splitter.
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { hostname, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
@@ -442,6 +442,39 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
+  });
+  t('e2e reaper: a session whose heartbeat went silent is listed, reaped, its slot freed and its build back in the Queue', () => {
+    // make alpha's run a beating slot entry that went silent 10 minutes ago (the launcher's session, this host)
+    const ses = find('alpha').pipeline.session; assert.ok(ses);
+    const old = new Date(Date.now() - 10 * 60e3).toISOString();
+    const sleeper = spawn('sleep', ['120'], { stdio: 'ignore', detached: true }); sleeper.unref();
+    writeFileSync(join(slotsDir, 'state.json'), JSON.stringify({ $axf: 'agent-slots@1', seq: 1, running: [{ id: 'hl-e2e', name: 'alpha', kind: 'headless', priority: 'normal', build: 'alpha', account: 'w-max', model: 'fable', state: 'running', host: hostname(), pid: sleeper.pid, session: ses, startedAt: old, hb: true, beatAt: old }], queue: [], heavy: [], done: [] }));
+    const reg = json(pipe('slots', '--json')).registry;
+    assert.deepEqual(reg.stale, [ses]); assert.equal(reg.vps.stale, 1); assert.equal(reg.vps.used, 0, 'a silent session holds no slot');
+    const r = json(pipe('reap', '--json'));
+    assert.deepEqual(r.reaped.map((x) => [x.build, x.to]), [['alpha', 'queued']]);
+    const a = find('alpha'); assert.equal(a.status, 'queued'); assert.equal(a.pipeline.session, ''); assert.equal(a.pipeline.lastRun.outcome, 'requeued'); assert.match(a.notes.at(-1).text, /Reaper: session .* silent 10 min/);
+    assert.equal(JSON.parse(readFileSync(join(slotsDir, 'state.json'), 'utf8')).running.length, 0, 'its slot is released');
+    assert.match(r.reaped[0].killed, new RegExp(`pid ${sleeper.pid} stopped`), 'the frozen process is stopped');
+    const procState = () => { try { return readFileSync(`/proc/${sleeper.pid}/stat`, 'utf8').split(') ')[1]?.[0] ?? ''; } catch { return 'gone'; } };
+    if (existsSync('/proc/self/stat')) { for (let i = 0; i < 40 && !['Z', 'gone'].includes(procState()); i++) spawnSync('sleep', ['0.05']); assert.ok(['Z', 'gone'].includes(procState()), `the process ended (${procState()})`); }
+    const log = json(pipe('reaper-log', '--json')).log; assert.equal(log.length, 1); assert.equal(log[0].event, 'reaped'); assert.equal(log[0].build, 'alpha');
+    assert.equal(json(pipe('reap', '--json')).reaped.length, 0, 'a second reap finds nothing');
+  });
+  t('e2e reconcile: a build marked running with no live session, untouched 20+ min, is fixed; unseen processes change nothing', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'ghosty', title: 'Ghosty', steps: [{ text: 'do ghosty', model: 'Opus', estimate: '20 min' }] }));
+    const st = store(); const b = st.builds.find((x) => x.id === 'ghosty');
+    const old = new Date(Date.now() - 30 * 60e3).toISOString(); b.status = 'running'; b.updatedAt = old; b.pipeline = { queuedAt: old, launchedAt: old, account: 'w-pro', session: 'axf-ghosty--gone' }; writeFileSync(storeFile, JSON.stringify(st));
+    assert.equal(json(pipe('reconcile', '--json')).seen, false, 'no tmux here: nothing is judged');
+    assert.equal(find('ghosty').status, 'running');
+    env.AXF_PIPELINE_TMUX = 'none';
+    try {
+      const r = json(pipe('reconcile', '--json'));
+      assert.ok(r.reconciled.some((x) => x.build === 'ghosty' && x.to === 'queued'), JSON.stringify(r.reconciled));
+      assert.equal(find('ghosty').status, 'queued'); assert.match(find('ghosty').notes.at(-1).text, /Reconcile: marked running but no live session runs it/);
+      assert.equal(json(pipe('reaper-log', '--json')).log.at(-1).event, 'reconciled');
+      assert.equal(json(pipe('status', '--json')).registry.ghosts.length, 0, 'no ghosts left');
+    } finally { delete env.AXF_PIPELINE_TMUX; }
   });
 }
 

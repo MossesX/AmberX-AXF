@@ -22,7 +22,7 @@ type RegAccount = { name: string; kind: string; fable: boolean; usable: boolean;
 type Registry = { vps: { cap: number; used: number; free: number; queued: number; stale: number }; accounts: RegAccount[]; models: Record<'fable' | 'opus', { configured: number; inUse: number; free: number }>; unassigned: string[]; stale: string[]; ghosts: { id: string; status: string; why: string }[] };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; accounts: Account[];
-  slots: { used: number; cap: number; free: number; queued: number; stale?: number; unavailable: boolean }; registry?: Registry;
+  slots: { used: number; cap: number; free: number; queued: number; stale?: number; unavailable: boolean }; registry?: Registry; reaper?: { at: string; event: string; build: string; session?: string; to: string; stuck: boolean; note: string }[];
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
@@ -116,6 +116,11 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
           </section>
         ))}
       </div>
+      {(s.reaper?.length ?? 0) > 0 && (
+        <details className="pd-add" id="pl-reaper"><summary>Reaper log ({s.reaper?.length})</summary>
+          <div className="fx-stack">{[...(s.reaper ?? [])].reverse().map((e, i) => <p key={i} className="fx-small fx-mono">{fmtTime(e.at)} · {e.event} {e.build || e.session}{e.to ? ` → ${e.to}` : ''}{e.stuck ? ' (stuck)' : ''} · {e.note}</p>)}</div>
+        </details>
+      )}
       {s.state.recent.length > 0 && (
         <details className="pd-add"><summary>Dispatcher log ({s.state.recent.length})</summary>
           <div className="fx-stack">{[...s.state.recent].reverse().map((e, i) => <p key={i} className="fx-small fx-mono">{fmtTime(e.at)} · {e.event} {e.id}{e.account ? ` → ${e.account} (${e.model})` : ''}{e.error ? ` · ${e.error}` : ''}</p>)}</div>

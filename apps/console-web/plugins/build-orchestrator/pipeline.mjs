@@ -170,12 +170,13 @@ export function status() {
   const registry = REG.registry({ accounts, slots: sl, builds, tmux: tmuxNames() });
   const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
-  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
+  // plan epics take 'running' from the plan while any child runs: they are not sessions, so they stay off the Building table
+  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden && !(t === 'building' && b.kind === 'epic')) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, stale: (sl.stale ?? []).length, unavailable: !!sl.unavailable }, registry, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, stale: (sl.stale ?? []).length, unavailable: !!sl.unavailable }, registry, reaper: reaperLog(20), plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
 }
 
 // ------------------------------------------------------------------ store writes

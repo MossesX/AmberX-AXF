@@ -198,7 +198,7 @@ export function noAccountWhy(accounts, model) {
 export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
-  const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
+  const running = live.filter((b) => (b.status === 'running' || b.status === 'waiting') && b.kind !== 'epic');
   const pending = live.filter((b) => b.status === 'pending' && !b.hidden);
   const acc = list(accounts).map((a) => ({ ...a }));
   let free = Math.max(0, Number(slots?.free) || 0);
