@@ -772,16 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:07 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:07 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · builds-live
-- 2026-11-10 18:08 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` s1 done, → running (all) · orchestrator
-- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · builds-live
-- 2026-11-10 18:08 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` s2 done (all) · orchestrator
-- 2026-11-10 18:09 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:09 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` s1 done (all) · orchestrator
-- 2026-11-10 18:09 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` s2 done (all) · orchestrator
-- 2026-11-10 18:10 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` s3 done, → built (all) · orchestrator
 - 2026-11-10 18:10 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
 - 2026-11-10 18:11 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · pipeline
 - 2026-11-10 18:11 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
@@ -1172,6 +1162,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:11 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:11 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · pipeline
 - 2026-11-10 23:12 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → running, note (all) · pipeline
+- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` branch claude/gizmo-opens-by-voice-link-amberx-web-app-android (all) · pipeline
+- 2026-11-10 23:12 UTC · `molly-sign-in-once` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → running, note (all) · pipeline
+- 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` branch claude/ai-assistant-gizmo-moved-to-the-console-remove-t (all) · pipeline
+- 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 
 ## Token passes (log)
 
