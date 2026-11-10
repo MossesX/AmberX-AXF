@@ -770,9 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
-- 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` → running, note (all) · pipeline
-- 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` branch claude/fix-owner-check-bug-dead-start-button (all) · pipeline
 - 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s1 done, → running (all) · orchestrator
 - 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s2 done (all) · orchestrator
 - 2026-11-09 20:41 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` → queued, note (all) · console
@@ -1170,6 +1167,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
 - 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s1 done, → running (all) · orchestrator
 - 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
+- 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` → running, note (all) · pipeline
+- 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` branch claude/resolve-merge-conflicts-and-land-running-builds (all) · pipeline
+- 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · orchestrator
 
 ## Token passes (log)
 
