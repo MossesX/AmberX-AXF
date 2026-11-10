@@ -771,10 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 23:52 UTC · `assign-an-employee-to-every-role-action-type-and` note (all) · orchestrator
-- 2026-11-09 23:52 UTC · `assign-an-employee-to-every-role-action-type-and` → running, note (all) · pipeline
-- 2026-11-09 23:52 UTC · `assign-an-employee-to-every-role-action-type-and` branch claude/assign-an-employee-to-every-role-action-type-and (all) · pipeline
-- 2026-11-09 23:54 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` s1 done, → running (all) · orchestrator
 - 2026-11-09 23:55 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` s2 done (all) · orchestrator
 - 2026-11-09 23:59 UTC · `walkthrough-player-ide-layout-setting-collapsibl` added (0 steps) (all) · console
 - 2026-11-09 23:59 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → queued, note (all) · console
@@ -1171,6 +1167,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:33 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · builds-live
 - 2026-11-10 04:33 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · builds-live
 - 2026-11-10 04:34 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · orchestrator
+- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s24-23 done, note (current) · foreign-write
+- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s19-18 done, s20-19 done, s21-20 done, s22-21 done, s23-22 done, s24-23 done, → complete (current) · foreign-write
+- 2026-11-04 17:18 UTC · `molly-banner-match` added (5 steps) (current) · orchestrator
+- 2026-11-04 17:19 UTC · `live-sessions-plugin` s6 done, → complete, note (current) · foreign-write
 
 ## Token passes (log)
 
