@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:26:33.369Z",
+ "updatedAt": "2026-11-10T02:32:21.002Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -30595,7 +30595,7 @@
    "title": "AmberX approvals fix",
    "category": "Fix",
    "detail": "",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -30603,8 +30603,8 @@
    "pr": "#353",
    "priority": "P0",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-05T03:00:45.690Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T02:32:16.216Z",
+   "builtAt": "2026-11-10T02:32:16.216Z",
    "notes": [
     {
      "text": "PR #353 in the merge queue, UI Review r-20261105-a07d27ac waiting. axHub PR #38 green, not merged (the session had no axHub call grant). Needs a new APK after merge. Report _claude/builds/reports/amberx-approvals-fix.md",
@@ -30617,6 +30617,10 @@
     {
      "text": "Merged from build profile \"urgent\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #353 names s1, s2, s4, s5, s6 done",
+     "at": "2026-11-10T02:32:16.216Z"
     }
    ],
    "approvals": [],
@@ -30737,9 +30741,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-10T02:32:16.216Z",
+     "note": "PR #353 (claude/amberx-approvals-fix)",
      "uid": "st-mw2wx5oi0c9bnr"
     }
    ]
@@ -77872,7 +77876,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77880,7 +77884,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T01:54:54.809Z",
+   "updatedAt": "2026-11-10T02:32:16.216Z",
    "builtAt": "",
    "notes": [
     {
@@ -77978,6 +77982,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T01:40:51.716Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T02:32:16.216Z"
     }
    ],
    "approvals": [],
@@ -79419,7 +79427,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79427,7 +79435,7 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T01:56:59.290Z",
+   "updatedAt": "2026-11-10T02:32:16.216Z",
    "builtAt": "",
    "notes": [
     {
@@ -79509,6 +79517,10 @@
     {
      "text": "Headless run axf-skins-own-everything-colour-theme-swaps-independ--sully: brief only · start 12.9K tokens ($0.06) · cost $15.01 · 172 turns · 6 tools, MCP none",
      "at": "2026-11-10T01:56:59.290Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T02:32:16.216Z"
     }
    ],
    "approvals": [],

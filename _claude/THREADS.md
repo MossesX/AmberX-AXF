@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` added (0 steps) (all) · builds-live
-- 2026-11-09 18:52 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
-- 2026-11-09 18:52 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · builds-live
 - 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 - 2026-11-09 18:52 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · pipeline
 - 2026-11-09 18:52 UTC · `orchestrator-and-build-manager-search-bar-collap` → running, note (all) · pipeline
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:24 UTC · `one-amberx-build-notification-veto-approval-befo` added (0 steps) (all) · console
 - 2026-11-10 02:24 UTC · `one-amberx-build-notification-veto-approval-befo` → queued, note (all) · console
 - 2026-11-10 02:26 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
+- 2026-11-10 02:32 UTC · `amberx-approvals-fix` s6 done, → built, note (all) · reconciler
+- 2026-11-10 02:32 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
+- 2026-11-10 02:32 UTC · `skins-own-everything-colour-theme-swaps-independ` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
