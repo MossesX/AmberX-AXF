@@ -215,11 +215,11 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
-### AmberX pop-up on every build start and finish (`amberx-phone-pop-up-for-every-build-start-and-fi`, All, Opus) — branch `claude/amberx-phone-pop-up-for-every-build-start-and-fi`
-- **Asked:** "a notification on AmberX every time the orchestrator starts a build and every time a build finishes ... what build ... what account ... On my phone."
-- **State:** built. Start/finish alerts per run, heads-up on AmberX, tap opens the build (`?orch-build=<id>`), Activity feed line, settings notifyStart/notifyFinish/notifySound/notifyGrouping. Fixed the old `#/build-orchestrator` link the alerts API refused.
-- **Left:** UI Review click, merge queue. After it lands: watch one real start and one real finish pop up on the phone. AmberX sound/grouping twin deferred (PORTING.md).
-- **Read:** `_claude/builds/reports/amberx-phone-pop-up-for-every-build-start-and-fi.md`.
+### One AmberX build notification: veto before every start, pop-up on every finish (`one-amberx-build-notification-veto-approval-befo`, All, Opus) — branch `claude/one-amberx-build-notification-veto-approval-befo`
+- **Asked:** "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification."
+- **State:** built. Every launch held behind one AmberX pop-up on the start key (build, what it will do, steps, model, account, employee, Approve / Deny, countdown `vetoSeconds` 90 s, 0-600); no answer = starts, Deny = Pending; launch / finish update the same notification. Console card Waiting to start; `autoApprove` skips the hold. REST `pipeline/start` + `pipeline/holds`, MCP `pipeline-start` / `pipeline-holds`, CLI `pipeline.mjs approve|deny|holds`, actions `build-orchestrator.start-approve|start-deny`. Supersedes `amberx-phone-pop-up-for-every-build-start-and-fi` (archived; PR #433 folded in and closed); upgrades part of `brief-approval-dialog-before-every-headless-sess`.
+- **Left:** UI Review shots, merge queue, real phone test. AmberX native Approve / Deny buttons + countdown deferred (PORTING.md).
+- **Read:** `_claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md`.
 
 ### Skins cover every asset type, at any scope (`skins-asset-types`)
 
