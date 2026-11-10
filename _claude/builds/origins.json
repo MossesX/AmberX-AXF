@@ -3623,6 +3623,18 @@
    "from": "",
    "addenda": []
   },
+  "skins-as-packages-of-slices-every-section-its-ow": {
+   "said": "For each section in skins, like colors, layouts, design, behavior, you need to be able to save each individual section as a new asset, then build your skins with these assets. Drag one from the list into a template that has all the categories a pack needs, build an entire skin, export it as a new skin, apply it. Make it sick. Every skin has to be a package of chunks. Every single thing has to be its own asset. It can't be one. Every section must be its own chunk. When you're building a new one, or enabling or changing one, you can select which sections you want taken in and which ones left out. When you apply a theme, you can leave certain things out, and when those mix with the existing theme, it asks you to create the new skin, in a dialog.",
+   "at": "2026-11-10T00:21:59.738Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skins-asset-types": {
    "said": "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types? ... Added into skins.",
    "at": "",
