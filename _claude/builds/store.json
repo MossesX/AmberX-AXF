@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2142,
- "updatedAt": "2026-11-10T01:02:35.247Z",
+ "rev": 2143,
+ "updatedAt": "2026-11-10T01:03:23.033Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128745,10 +128745,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/account-failover-chain-subscription-next-subscri",
-   "pr": "",
+   "pr": "#425",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T01:02:18.280Z",
+   "updatedAt": "2026-11-10T01:03:19.521Z",
    "builtAt": "",
    "notes": [
     {
@@ -128955,7 +128955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
