@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:31 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` PR #459 (all) · builds-live
-- 2026-11-10 17:31 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` added (0 steps) (all) · console
 - 2026-11-10 17:31 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` PR #459 (all) · foreign-write
 - 2026-11-10 17:31 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · orchestrator
 - 2026-11-10 17:32 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · builds-live
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:33 UTC · `finish-and-land-the-git-status-board-every-ready` s1 done (all) · orchestrator
 - 2026-11-10 21:34 UTC · `finish-and-land-the-git-status-board-every-ready` PR #475 (all) · builds-live
 - 2026-11-10 21:34 UTC · `convert-every-app-into-a-molly-module-expenses-c` added (0 steps) (all) · console
+- 2026-11-10 21:34 UTC · `convert-every-app-into-a-molly-module-expenses-c` → queued, note (all) · console
+- 2026-11-10 21:35 UTC · `convert-every-app-into-a-molly-module-expenses-c` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 

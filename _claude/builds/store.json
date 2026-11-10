@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2887,
- "updatedAt": "2026-11-10T21:34:59.278Z",
+ "rev": 2888,
+ "updatedAt": "2026-11-10T21:35:16.933Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155657,16 +155657,22 @@
    "title": "Convert every app into a Molly module (Expenses, console, hub, AmberX screens)",
    "category": "",
    "detail": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T21:34:57.978Z",
+   "updatedAt": "2026-11-10T21:34:59.613Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T21:34:59.613Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
