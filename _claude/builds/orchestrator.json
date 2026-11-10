@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:52:59.001Z",
+ "updatedAt": "2026-11-10T21:53:17.110Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96370,12 +96370,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:51:35.883Z",
-   "updatedAt": "2026-11-10T21:51:37.693Z",
+   "updatedAt": "2026-11-10T21:52:59.225Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:51:37.693Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:52:59.225Z"
     }
    ],
    "approvals": [],
@@ -96392,7 +96396,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends 'Overrides summary' build (job a58efebb). In the Appearance 'Assets with edits' list, expanding an asset row shows every setting of that asset row by row (not only the changed ones). Changed/overridden ones are highlighted in the chosen controlled-item colour. Every row is editable inline; any edit writes to that asset's own settings (never the app's global settings) and becomes a new override, which then highlights too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb87x3t01aw58"
+    },
+    {
+     "id": "s2",
+     "text": "It shows all its values, not just the changed ones, row by row, and just highlights the ones that have been changed. You can change any of them, and it applies to the asset settings instead of the settings itself. It makes another override.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb87x3t02jmfe"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/correction-to-overrides-list-expanded-asset-show.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/correction-to-overrides-list-expanded-asset-show.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb87x3t03wjka"
+    }
+   ]
   }
  ]
 }
