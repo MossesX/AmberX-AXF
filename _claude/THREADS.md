@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:06 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s1 done (all) · orchestrator
-- 2026-11-10 04:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s2 done (all) · orchestrator
-- 2026-11-10 04:13 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · orchestrator
 - 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
 - 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` s3 done (all) · orchestrator
 - 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` s4 done (all) · orchestrator
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:22 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · orchestrator
 - 2026-11-10 17:21 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
 - 2026-11-10 17:21 UTC · `merge-queue-batching-orchestrator-combines-ready` s3 done, → built (all) · orchestrator
+- 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` → running, note (all) · pipeline
+- 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` branch claude/claude-md-standing-rule-be-proactive-bring-up-th (all) · pipeline
+- 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
 
 ## Token passes (log)
 
