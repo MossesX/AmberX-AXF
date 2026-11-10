@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2568,
- "updatedAt": "2026-11-10T17:38:35.553Z",
+ "rev": 2569,
+ "updatedAt": "2026-11-10T17:39:21.800Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145354,9 +145354,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:38:24.452Z",
-   "updatedAt": "2026-11-10T17:38:25.080Z",
+   "updatedAt": "2026-11-10T17:39:20.659Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:39:20.659Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -145371,7 +145376,102 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T17:39:20.659Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaz5qdv012yyf",
+     "title": "",
+     "text": "In every plugin's Appearance settings: 1) When inherit-from-axHub is off and there are unsaved changes, a Save button lights up; no changes = no Save button. Saved = Save turns grey and disabled until the next edit. 2) Save opens a dialog prefilled with a default name (date + type of change), editable. Each save stores a new per-plugin appearance asset (layout, style, behavior, colour etc. for that plugin only); every later change makes a new save. 3) Switching back to inherit from axHub keeps the custom state saved so it can be restored. 4) A Revert/Restore button opens a dialog listing all saves for that plugin with a side-by-side preview: what it will look like restored vs now. Full API/CLI control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:39:20.659Z",
+     "updatedAt": "2026-11-10T17:39:20.659Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaz5qdv02t9sy",
+     "title": "",
+     "text": "In every plugin's appearance settings, as soon as you make a change off inherit from axHub there's a save button lit up. Save prompts a dialog with a default name with the date and type of change. Saved, the button goes grey. Every change makes a new save. A button to revert pops up a dialog listing all the saves for that plugin in a side-by-side viewer of what it will look like restored compared to now.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:39:20.659Z",
+     "updatedAt": "2026-11-10T17:39:20.659Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaz5qdv03ovh6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/plugin-appearance-save-button-for-custom-looks-n.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/plugin-appearance-save-button-for-custom-looks-n.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:39:20.659Z",
+     "updatedAt": "2026-11-10T17:39:20.659Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -145380,12 +145480,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T17:39:20.659Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
