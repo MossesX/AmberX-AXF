@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2291,
- "updatedAt": "2026-11-10T03:53:50.118Z",
+ "rev": 2292,
+ "updatedAt": "2026-11-10T03:54:12.688Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135153,7 +135153,7 @@
    "title": "Console speed: profile and cut axf-console CPU, plus plan a separate build VPS",
    "category": "",
    "detail": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -135161,8 +135161,8 @@
    "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:53:48.441Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:53:51.850Z",
+   "builtAt": "2026-11-10T03:53:49.891Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135179,6 +135179,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina, own login copy)",
      "at": "2026-11-10T03:33:22.499Z"
+    },
+    {
+     "text": "PR #437. Cause: maintenance snapshot cron stacked 12 copies (84 min each, du over 96 GB of worktrees); stopped and locked on the VPS now. Builds now run in capped systemd scopes. Waiting: UI Review shots (Playwright not installed, disk 100% full so not installed); Brett to approve disk clean-up and pick a build-VPS option (_claude/plans/build-vps.md).",
+     "at": "2026-11-10T03:53:51.850Z"
     }
    ],
    "approvals": [],
@@ -135280,12 +135284,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:53:49.891Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T02:52:12.001Z",
-     "updatedAt": "2026-11-10T02:52:12.001Z"
+     "updatedAt": "2026-11-10T03:53:50.113Z"
     }
    ],
    "profiles": [
@@ -135296,7 +135300,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
