@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2879,
- "updatedAt": "2026-11-10T21:28:44.770Z",
+ "rev": 2880,
+ "updatedAt": "2026-11-10T21:28:59.922Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146677,8 +146677,8 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T21:28:43.318Z",
-   "builtAt": "2026-11-10T21:28:43.318Z",
+   "updatedAt": "2026-11-10T21:28:48.873Z",
+   "builtAt": "2026-11-10T21:28:48.873Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -146743,6 +146743,10 @@
     {
      "text": "Self-check: inline-element-editing-plugin-right-click-any-el was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T21:20:10.514Z"
+    },
+    {
+     "text": "Reconciler: PR #470 names s1, s2, s5, s8, s12, s13 done",
+     "at": "2026-11-10T21:28:48.873Z"
     },
     {
      "text": "Headless run axf-inline-element-editing-plugin-right-click-any-el--sully: brief only · start 12.7K tokens ($0.03) · cost $19.08 · 256 turns · 6 tools, MCP none",
@@ -147147,11 +147151,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-10T21:28:28.048Z",
-     "note": "",
+     "doneAt": "2026-11-10T21:28:48.873Z",
+     "note": "PR #470 (claude/inline-element-editing-plugin-right-click-any-el)",
      "rev": 2,
      "createdAt": "2026-11-10T18:00:14.834Z",
-     "updatedAt": "2026-11-10T21:28:28.192Z"
+     "updatedAt": "2026-11-10T21:28:48.873Z"
     }
    ],
    "profiles": [
@@ -147714,7 +147718,7 @@
    "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
    "category": "",
    "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147722,7 +147726,7 @@
    "pr": "#472",
    "priority": "P1",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-10T21:03:29.189Z",
+   "updatedAt": "2026-11-10T21:28:48.873Z",
    "builtAt": "",
    "notes": [
     {
@@ -147752,6 +147756,10 @@
     {
      "text": "Headless run axf-remove-the-old-theme-manager-style-and-layout-se--earl: brief only · start 13.0K tokens ($0.07) · cost $20.05 · 213 turns · 6 tools, MCP none",
      "at": "2026-11-10T21:03:29.189Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T21:28:48.873Z"
     }
    ],
    "approvals": [],
@@ -148067,7 +148075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
