@@ -9,12 +9,21 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   (`<app address>/surface/<app>-surface.js`, built by the app's `vite.surface.config.ts` from its `src/surface.tsx` on
   `framework/react/nativeSurface.tsx`) and shows its screens in Molly's own page, under Molly's one banner, menu, nav and
   settings. **No frames, no embedding** (Brett, Nov 8 2026). An app's relative API paths go back to its own server.
-  Expenses has no native surface yet (gap build `molly-native-expenses`): it is listed and opens on its own.
+  Expenses is a Next.js app, so its module is a Molly plugin instead (`plugins/expenses`, below).
 - Deep links: `#/<app>/<screen>` (for example `#/console/plan`) open straight on that app's screen.
 - The look comes from axHub only (`developer.hub`), like every app; Molly ships the shared asset set at `src/axf/assets`.
   The apps mounted in Molly inherit Molly's look (their runtime is `hosted`). Molly's own assets are its nav menu, app
   menu and toolbar (`src/assets/*/molly.json`). The app list is `src/molly/apps.ts`.
-- For development, `localStorage['molly.surface.<app>']` points an app at another surface module (https or localhost).
+- **Modules** (`src/molly/native.tsx` + `src/molly/Modules.tsx`, build convert-every-app-into-a-molly-module): every app
+  is a module: its manifest is its `src/molly/apps.ts` entry (id, label, own address, sign-in) plus the surface it
+  brings (screens, actions, settings, dialogs). A module comes from the app's own server (`surface`) or in-process from
+  a Molly plugin (`provideModule`). Each one is fenced: `molly.modules.<app>.enabled` switches it off (it then opens on
+  its own), `molly.modules.<app>.surface` loads it from another address (https or localhost; the older
+  `localStorage['molly.surface.<app>']` still works), a load that hangs fails after 20 s, and every call into it runs
+  guarded with its screen in an error boundary, so a module that throws shows its own Try again card and the rest of
+  Molly keeps going. The Modules screen (`#/modules`, View → Modules) and Settings → Modules; actions
+  `molly.modules.open` / `list` / `status:<app>` / `enable:<app>` / `disable:<app>` / `reload[:<app>]` /
+  `surface:<app>:<url|default>`. Check: `npx -y tsx framework/spec/check-molly-modules.mts`.
 
 - **Credentials** (`src/molly/credentials.ts`, molly-credentials@1): per app, the API base in force and the provider
   that signs a call, so a native screen reaches an app's backend from Molly's address without knowing its sign-in:
@@ -45,6 +54,10 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
 - **Banners** (`plugins/banners`): Molly's one banner region. The Dev Console's live banners mount natively (its
   surface's reserved part `axf-banners`) in Molly's `app.frame.banners` slot; a screen a banner opens shows in Molly.
   Settings → Plugins → Banners (show the banners; each banner's own Banner settings). <!-- axf-plugin:banners -->
+- **Expenses** (`plugins/expenses`): the Expense Tracker's Molly module. Its ledger (spent / income / net, newest
+  entries, search) and Add entry drawn by Molly over the Expenses API with Molly's one sign-in; deep links
+  `#/expenses`, `#/expenses/add`; actions `expenses.list` / `totals` / `add:<amount>:<merchant>[:…]` / `open[:add]`.
+  Removing the folder puts Expenses back to opening on its own. <!-- axf-plugin:expenses -->
 
 ```bash
 npm install && npm run dev      # :5173

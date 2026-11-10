@@ -29,3 +29,13 @@
 .molly-conn-show-sm { display: none; }
 :where([data-fx-narrow]) .molly-conn-hide-sm { display: none; }
 :where([data-fx-narrow]) .molly-conn-show-sm { display: block; }
+
+/* Modules (molly/Modules.tsx): layout only, theme tokens only. */
+.molly-mod-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.molly-mod { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xl) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0; overflow-wrap: anywhere; }
+.molly-mod__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--fx-dens-gap-xl); }
+.molly-mod__title { min-width: 0; }
+.molly-mod__title p { margin: 0; }
+.molly-mod__facts { margin: 0; padding-left: var(--fx-dens-gap-3xl); }
+.molly-mod__inline { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.molly-mod__inline > .fx-field { flex: 1; min-width: 0; }

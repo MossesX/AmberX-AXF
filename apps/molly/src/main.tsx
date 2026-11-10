@@ -8,7 +8,7 @@ import { App } from './App';
 import { deepLink, pageLink } from './molly/apps';
 import { focusConnection } from './molly/Connections';
 import { attachMollyCredentials } from './molly/host';
-import { isNative } from './molly/native';
+import { attachModuleSettings, isNative } from './molly/native';
 import './axf/ui/axf.css';
 import './molly/molly.css';
 
@@ -31,6 +31,8 @@ const axf = createAxf({
 // One sign-in reaches every app backend (molly-sign-in-once): the credential seam reads its API-base overrides from
 // Molly's settings and keeps each app's token in this browser; native screens call through molly/host.ts.
 attachMollyCredentials({ settings: { get: (k) => axf.settings.get(k), onChange: (k, fn) => axf.settings.onChange(k, fn) } });
+// Molly modules: each app's on/off switch and module address are Molly settings (molly/native.tsx).
+attachModuleSettings(axf);
 registerActions(axf);
 window.addEventListener('hashchange', () => {
   const l = deepLink(window.location.hash);

@@ -240,7 +240,7 @@ eq(connectionOffers(conn('axhub', 'signed-in', { signInUrl: 'https://axhub.amber
 eq(connectionOffers(conn('expenses', 'signed-out', { signInUrl: 'https://expenses.amberxai.com/' })), { token: true, signInPage: true, signOut: false, check: true }, 'Expenses: its page or a pasted token');
 eq(connectionOffers(conn('expenses', 'signed-in')).signOut, false, 'Expenses session without a token and no sign-out API: nothing to sign out here');
 eq(connectionOffers(conn('nope', 'unknown')).check, false, 'an app without a backend offers nothing');
-eq(MOLLY_PAGES, ['connections'], 'Molly pages with a deep link');
+eq(MOLLY_PAGES, ['connections', 'modules'], 'Molly pages with a deep link');
 eq(pageLink('#/connections'), { view: 'connections', app: '' }, 'page link: the page');
 eq(pageLink('#/connections/console'), { view: 'connections', app: 'console' }, 'page link: the page on one app');
 eq(pageLink('#connections/nope'), { view: 'connections', app: '' }, 'page link: an unknown app is dropped');

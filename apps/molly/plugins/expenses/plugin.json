@@ -1,0 +1,37 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.expenses",
+  "name": "Expenses",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The Expense Tracker as a Molly module: its ledger (totals, recent entries, search) and Add entry run natively inside Molly over the Expenses API (/api/expenses/v1) with Molly's one sign-in. The standalone app at expenses.amberxai.com keeps running as it is. Removing this folder puts Expenses back to opening on its own.",
+  "targets": ["molly"],
+  "provides": ["module:expenses", "view:expenses/add"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": ["axf.shell@1"],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/molly-expenses",
+    "env": [],
+    "mentions": ["apps/molly/README.md"]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "list", "title": "List recent entries", "description": "The newest ledger entries (date, merchant, category, account, total), optionally filtered by words.", "action": "expenses.list", "readOnly": true, "input": { "type": "object", "properties": { "query": { "type": "string" } } } },
+      { "id": "totals", "title": "Totals", "description": "Spent, income and net over the whole ledger.", "action": "expenses.totals", "readOnly": true },
+      { "id": "add", "title": "Add an entry", "description": "Adds one ledger entry: amount:merchant[:category[:account]] (dollars).", "action": "expenses.add", "input": { "type": "object", "properties": { "spec": { "type": "string" } }, "required": ["spec"] } },
+      { "id": "open", "title": "Open Expenses in Molly", "description": "Opens the ledger, or add for Add entry.", "action": "expenses.open", "input": { "type": "object", "properties": { "screen": { "type": "string", "enum": ["home", "add"] } } } }
+    ],
+    "noReads": "no data folder: the ledger lives on the Expenses server"
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-10", "branch": "claude/convert-every-app-into-a-molly-module-expenses-c" },
+  "help": "help.json",
+  "opens": false
+}

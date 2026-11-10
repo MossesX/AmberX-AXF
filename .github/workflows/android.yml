@@ -252,6 +252,7 @@ jobs:
             npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
             npx -y tsx framework/spec/check-shell-surface.mts          # Molly the one shell: shell-surface@1 (native mount, no frames), menu-index@1 (slim all-apps menu, search, favorites, recents), xlayout@1 layout modes + tab-group containers + named layouts
             npx -y tsx framework/spec/check-molly-credentials.mts      # molly-credentials@1: per-app API base + auth provider (console token, hub session, Expenses session), plugin override, API client
+            npx -y tsx framework/spec/check-molly-modules.mts          # Molly modules: in-process modules (Expenses), on/off + address settings, a module that throws stops on its own, molly.modules.* actions
             npx -y tsx framework/spec/check-chrome.mts                 # chrome@1: guests send chrome as data, the host merges under namespaces and routes picks back (chrome.json)
             npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region (Molly)
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums

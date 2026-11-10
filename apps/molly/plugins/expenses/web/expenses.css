@@ -1,0 +1,7 @@
+/* Expenses module in Molly: layout only; colours, sizes and borders come from the theme tokens. */
+.molly-exp__totals { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+.molly-exp__search { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.molly-exp__search > .fx-field { flex: 1; min-width: 0; }
+.molly-exp__table { overflow-x: auto; min-width: 0; }
+.molly-exp__num { text-align: right; white-space: nowrap; }
+.molly-exp__form { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); max-width: calc(var(--fx-space) * 60); }

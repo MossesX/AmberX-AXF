@@ -6,6 +6,7 @@ import { toolbarsLibrary } from './axf/libs/toolbars';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { connectionsLibrary } from './molly/Connections';
+import { modulesLibrary } from './molly/Modules';
 import { MOLLY_APPS } from './molly/apps';
 import { mollyHooks, mollyHooksRev, onMollyHooks } from './molly/host';
 import { isNative, loadAllNative, NativeView, nativeViews, useNativeRev } from './molly/native';
@@ -31,8 +32,8 @@ const views: ViewMap = {
 const pluginModules = import.meta.glob<{ plugin?: AxfWebLibrary }>('../plugins/*/web/index.tsx', { eager: true });
 const plugins = Object.values(pluginModules).map((m) => m.plugin).filter((p): p is AxfWebLibrary => !!p);
 
-/** Every app ships the settings interface (lib-settings); App connections is Molly's own (the credential seam's screen); plugins add sub-tabs under Settings → Plugins. */
-const libraries = [settingsLibrary, toolbarsLibrary, connectionsLibrary, ...plugins];
+/** Every app ships the settings interface (lib-settings); App connections (the credential seam's screen) and Modules (each app as a module) are Molly's own; plugins add sub-tabs under Settings → Plugins. */
+const libraries = [settingsLibrary, toolbarsLibrary, connectionsLibrary, modulesLibrary, ...plugins];
 
 export function App() {
   const rt = useRuntime();

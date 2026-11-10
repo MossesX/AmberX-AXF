@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-expenses-help",
+  "name": "Expenses help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Expenses module (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:expenses",
+    "entries": [
+      { "target": "molly-expenses-ledger", "title": "Expenses ledger", "text": "Your Expense Tracker ledger inside Molly: spent, income and net, then the newest entries. Search narrows the list. It reads the same ledger as expenses.amberxai.com." },
+      { "target": "molly-expenses-add", "title": "Add an entry", "text": "Adds one entry to the ledger. Amount is in dollars; income counts toward income instead of spent." }
+    ],
+    "intros": []
+  }
+}
