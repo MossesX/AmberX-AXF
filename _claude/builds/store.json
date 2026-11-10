@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2905,
- "updatedAt": "2026-11-10T21:46:21.771Z",
+ "rev": 2906,
+ "updatedAt": "2026-11-10T21:47:16.017Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156153,12 +156153,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-10T21:45:54.774Z",
+   "updatedAt": "2026-11-10T21:47:14.535Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:45:54.774Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:47:14.535Z"
     }
    ],
    "approvals": [],
@@ -156185,16 +156189,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T21:47:14.535Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb80j5401vk4m",
+     "title": "",
+     "text": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:47:14.535Z",
+     "updatedAt": "2026-11-10T21:47:14.535Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb80j5402gb76",
+     "title": "",
+     "text": "When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:47:14.535Z",
+     "updatedAt": "2026-11-10T21:47:14.535Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb80j5403z499",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/bug-asset-settings-nav-menu-tab-bar-toolbar-chan.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/bug-asset-settings-nav-menu-tab-bar-toolbar-chan.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:47:14.535Z",
+     "updatedAt": "2026-11-10T21:47:14.535Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -156203,12 +156283,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T21:47:14.535Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
