@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2070,
- "updatedAt": "2026-11-10T00:06:06.039Z",
+ "rev": 2071,
+ "updatedAt": "2026-11-10T00:06:24.098Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131812,10 +131812,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-log-fyi-phone-notifications-from-claude-sess",
-   "pr": "",
+   "pr": "#418",
    "priority": "P1",
    "createdAt": "2026-11-09T23:44:46.980Z",
-   "updatedAt": "2026-11-09T23:55:12.350Z",
+   "updatedAt": "2026-11-10T00:06:18.185Z",
    "builtAt": "",
    "notes": [
     {
@@ -131950,7 +131950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
