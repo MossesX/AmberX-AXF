@@ -113,6 +113,10 @@ QUEUE_DEPTH_MAX = 6
 QUEUE_MODES = ("batch", "stack")
 BATCH_SIZE_MAX = 10
 BATCH_SIZE_DEFAULT = 5
+# A red batch is split in halves; the PR to blame goes back to its build for a fix (queue-fix job), at most FIX_TRIES
+# times per PR (Nov 10 2026, Brett: "Why do I have to figure this shit out on my own?"). Same values as QUEUE_DEFAULTS.
+FIX_TRIES_MAX = 5
+FIX_TRIES_DEFAULT = 2
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
@@ -235,10 +239,13 @@ class Pushes:
                 "queueMode": raw.get("queueMode") if raw.get("queueMode") in QUEUE_MODES else "batch",
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else BATCH_SIZE_DEFAULT,
                 # a code conflict inside a batch goes to one agent job (queue-conflict) when on; plain code only when off
-                "batchAiResolve": raw.get("batchAiResolve") is True}
+                "batchAiResolve": raw.get("batchAiResolve") is True,
+                # the PR that broke a batch goes back to its build for an automatic fix (queue-fix job); on unless off
+                "batchAutoFix": raw.get("batchAutoFix") is not False,
+                "batchFixTries": raw["batchFixTries"] if isinstance(raw.get("batchFixTries"), int) and not isinstance(raw.get("batchFixTries"), bool) and 0 <= raw["batchFixTries"] <= FIX_TRIES_MAX else FIX_TRIES_DEFAULT}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize", "batchAiResolve"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize", "batchAiResolve", "batchAutoFix", "batchFixTries"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -255,7 +262,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "batchAiResolve"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "batchAiResolve", "batchAutoFix"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -268,6 +275,9 @@ class Pushes:
         if "batchSize" in body and (not isinstance(body["batchSize"], int) or isinstance(body["batchSize"], bool) or not 1 <= body["batchSize"] <= BATCH_SIZE_MAX):
             raise HTTPException(400, f"batchSize is 1 to {BATCH_SIZE_MAX}")
         flags["batchSize"] = body.get("batchSize", cur["batchSize"])
+        if "batchFixTries" in body and (not isinstance(body["batchFixTries"], int) or isinstance(body["batchFixTries"], bool) or not 0 <= body["batchFixTries"] <= FIX_TRIES_MAX):
+            raise HTTPException(400, f"batchFixTries is 0 to {FIX_TRIES_MAX}")
+        flags["batchFixTries"] = body.get("batchFixTries", cur["batchFixTries"])
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
         with self._lock:
             self._cache = None
@@ -410,6 +420,10 @@ class Pushes:
                 "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "aiResolve": cfg["batchAiResolve"],
                 "batch": batch, "suspects": [n for n in st.get("suspects", []) if isinstance(n, int)] if isinstance(st.get("suspects"), list) else [],
                 "batches": lst("batches")[-10:],
+                "autoFix": cfg["batchAutoFix"], "fixTries": cfg["batchFixTries"],
+                # the red batch being split now, the last finished splits, and the fix jobs sent per PR
+                "bisect": st.get("bisect") if isinstance(st.get("bisect"), dict) else None, "bisects": lst("bisects")[-10:],
+                "fixJobs": {k: v for k, v in st.get("fixJobs", {}).items() if isinstance(v, dict)} if isinstance(st.get("fixJobs"), dict) else {},
                 "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
                 "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
                 "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),
@@ -419,14 +433,16 @@ class Pushes:
     def queue_settings(self) -> dict[str, Any]:
         cfg = self.config()
         return {"$axf": "merge-queue-settings@1", "on": cfg["mergeQueue"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"],
-                "aiResolve": cfg["batchAiResolve"], "depth": cfg["queueDepth"], "batchSizeMax": BATCH_SIZE_MAX, "depthMax": QUEUE_DEPTH_MAX,
+                "aiResolve": cfg["batchAiResolve"], "autoFix": cfg["batchAutoFix"], "fixTries": cfg["batchFixTries"], "fixTriesMax": FIX_TRIES_MAX,
+                "depth": cfg["queueDepth"], "batchSizeMax": BATCH_SIZE_MAX, "depthMax": QUEUE_DEPTH_MAX,
                 "modes": list(QUEUE_MODES)}
 
     def save_queue_settings(self, body: Any) -> dict[str, Any]:
-        """The merge queue's own settings in its words (on, mode, batchSize, aiResolve, depth) onto the config keys."""
-        keys = {"on": "mergeQueue", "mode": "queueMode", "batchSize": "batchSize", "aiResolve": "batchAiResolve", "depth": "queueDepth"}
+        """The merge queue's own settings in its words (on, mode, batchSize, aiResolve, autoFix, fixTries, depth) onto the config keys."""
+        keys = {"on": "mergeQueue", "mode": "queueMode", "batchSize": "batchSize", "aiResolve": "batchAiResolve", "autoFix": "batchAutoFix",
+                "fixTries": "batchFixTries", "depth": "queueDepth"}
         if not isinstance(body, dict) or not body or set(body) - set(keys):
-            raise HTTPException(400, "send any of {on: bool, mode: batch|stack, batchSize: 1-10, aiResolve: bool, depth: 1-6}")
+            raise HTTPException(400, "send any of {on: bool, mode: batch|stack, batchSize: 1-10, aiResolve: bool, autoFix: bool, fixTries: 0-5, depth: 1-6}")
         self.save_config({keys[k]: v for k, v in body.items()})
         return self.queue_settings()
 

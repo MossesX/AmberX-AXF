@@ -13,10 +13,12 @@ import { api, FOLDER } from './store';
 export interface QueueItem { pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; with?: number[]; batch?: number; prCi?: string }
 export interface QueueBatch { id: number; branch: string; sha: string; base: string; members: { pr: number; head: string; title?: string }[]; ci?: string; runUrl?: string; bisect?: boolean; state?: string; why?: string; prNumber?: number; prUrl?: string }
 export interface QueueBatchDone { id: number; prs: number[]; result: 'merged' | 'red' | 'kicked'; at: string; pr?: number; runUrl?: string }
-export interface QueueSettings { on: boolean; mode: 'batch' | 'stack'; batchSize: number; aiResolve: boolean; depth: number; batchSizeMax: number; depthMax: number }
-export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string }
+export interface QueueSettings { on: boolean; mode: 'batch' | 'stack'; batchSize: number; aiResolve: boolean; autoFix: boolean; fixTries: number; fixTriesMax: number; depth: number; batchSizeMax: number; depthMax: number }
+/** A red batch being split in halves (bisect): its PRs, the CI runs spent, the good ones merged, the ones sent back. */
+export interface QueueBisect { of: number; prs: number[]; at: string; runs: number; merged: number[]; sentBack: number[]; failing?: string[]; runUrl?: string; doneAt?: string }
+export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string; sentBack?: string; build?: string }
 export interface QueueMerged { pr: number; title: string; at: string; agent?: string }
-export interface QueueState { on: boolean; depth: number; mode?: 'batch' | 'stack'; batchSize?: number; aiResolve?: boolean; batch?: QueueBatch | null; suspects?: number[]; batches?: QueueBatchDone[]; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
+export interface QueueState { on: boolean; depth: number; mode?: 'batch' | 'stack'; batchSize?: number; aiResolve?: boolean; autoFix?: boolean; fixTries?: number; bisect?: QueueBisect | null; bisects?: QueueBisect[]; batch?: QueueBatch | null; suspects?: number[]; batches?: QueueBatchDone[]; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
 
 const POLL_MS = 60_000;
 let qstate: { data: QueueState | null; error: string; busy: number; note: string } = { data: null, error: '', busy: 0, note: '' };
@@ -100,7 +102,7 @@ export function MergeQueueSettings() {
   const [st, setSt] = useState<QueueSettings | null>(null);
   const [err, setErr] = useState('');
   useEffect(() => { api.call<QueueSettings>('queue/settings').then(setSt, (e: Error) => setErr(e.message)); }, []);
-  const save = (patch: Partial<Pick<QueueSettings, 'mode' | 'batchSize' | 'aiResolve' | 'depth'>>) => { setErr(''); api.post<QueueSettings>('queue/settings', patch).then((x) => { setSt(x); void loadQueue(); }, (e: Error) => setErr(e.message)); };
+  const save = (patch: Partial<Pick<QueueSettings, 'mode' | 'batchSize' | 'aiResolve' | 'autoFix' | 'fixTries' | 'depth'>>) => { setErr(''); api.post<QueueSettings>('queue/settings', patch).then((x) => { setSt(x); void loadQueue(); }, (e: Error) => setErr(e.message)); };
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
   const range = (n: number) => Array.from({ length: n }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }));
   return (
@@ -114,6 +116,11 @@ export function MergeQueueSettings() {
         : <SelectField label="PRs tested at once" value={String(st.depth)} options={range(st.depthMax)} onChange={(v) => save({ depth: Number(v) })} />}
       {st.mode === 'batch' && <Switch label="AI fallback for code conflicts inside a batch" checked={st.aiResolve} onChange={(v) => save({ aiResolve: v })}
         hint="Off: plain code only; a PR that conflicts with one earlier in its batch waits for the next batch. On: it still waits, and one agent job (queue-conflict, Opus) makes its branch work with the others; CI still decides." />}
+      {st.mode === 'batch' && <Switch label="Send the PR that broke a batch back to its build for a fix" checked={st.autoFix} onChange={(v) => save({ autoFix: v })}
+        hint="A red batch is split in halves until one PR alone is red; the good ones merge on the way. On: that PR goes back to its build, one agent job (queue-fix, Opus) fixes its branch and pushes, and the fixed PR rejoins the queue and is retested. You get an alert on AmberX either way." />}
+      {st.mode === 'batch' && st.autoFix && <SelectField label="Fix tries per PR" value={String(st.fixTries)}
+        options={Array.from({ length: st.fixTriesMax + 1 }, (_, i) => ({ value: String(i), label: String(i) }))}
+        hint="After this many automatic fixes the PR stays out of the queue and you get an alert to look at it." onChange={(v) => save({ fixTries: Number(v) })} />}
       {err && <p className="fx-small axp-push-banner__note is-danger">{err}</p>}
     </div>
   );
@@ -132,8 +139,9 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
   return (
     <div className="axp-mq fx-stack">
       <p className="fx-small fx-muted">{d.mode === 'batch'
-        ? `Ready PRs are combined ${d.batchSize ?? 5} at a time into one build on the latest main; CI runs once on it and the whole batch merges as one. A red batch is halved until the PR that broke it is found and kicked out.`
+        ? `Ready PRs are combined ${d.batchSize ?? 5} at a time into one build on the latest main; CI runs once on it and the whole batch merges as one. A red batch is split in halves until the PR that broke it is found; the good ones merge and ${d.autoFix === false ? 'the bad one waits for a fix' : 'the bad one goes back to its build for an automatic fix and a retest'}.`
         : `Each PR is tested once, on top of main and every PR ahead of it (${d.depth} at a time); when its run is green it merges with no retest. A red one is kicked out with the reason and the ones behind it are retested without it.`}{d.avgMin ? ` A run takes ~${d.avgMin} min.` : ''}{d.at ? ` Checked ${new Date(d.at).toLocaleTimeString()}.` : ''}</p>
+      {d.mode === 'batch' && d.bisect && <BisectLine b={d.bisect} suspects={d.suspects || []} />}
       {d.mode === 'batch' && d.batch && <BatchLine b={d.batch} />}
       {d.variableError && <p className="fx-small axp-push-banner__note is-danger">{d.variableError}</p>}
       {q.note && <p className="fx-small axp-push-banner__note" role="status">{q.note}</p>}
@@ -151,6 +159,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
               <span className="axp-push-banner__entry">
                 <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
                 <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
+                {sentBackOf(d, w.pr) && <span className="axp-push-banner__sub">{sentBackOf(d, w.pr)}</span>}
               </span>
               <div className="axp-push-banner__acts" role="toolbar" aria-label={`Kicked out #${w.pr}`}><Button size="sm" tone="neutral" icon="plus" disabled={q.busy === w.pr} title="Put it back in the queue as it is" onClick={() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)}>Add back</Button></div>
             </li>))}
@@ -172,12 +181,31 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
         </section>
       )}
       {!compact && d.mode === 'batch' && (d.batches || []).length > 0 && <p className="fx-small fx-muted">Last batches: {(d.batches || []).slice(-4).reverse().map((b) => `${b.id} (${b.prs.map((n) => `#${n}`).join(' ')}): ${BATCH_RESULT[b.result] || b.result}`).join(' · ')}</p>}
+      {!compact && d.mode === 'batch' && (d.bisects || []).length > 0 && <p className="fx-small fx-muted">Last red batches: {(d.bisects || []).slice(-3).reverse().map((b) => `${b.of}: merged ${b.merged.map((n) => `#${n}`).join(' ') || 'none'}, sent back ${b.sentBack.map((n) => `#${n}`).join(' ') || 'none'} (${b.runs} run${b.runs === 1 ? '' : 's'})`).join(' · ')}</p>}
       {!compact && d.merged.length > 0 && <p className="fx-small fx-muted">Merged lately: {d.merged.slice(-5).reverse().map((m) => `#${m.pr}`).join(', ')} (each tested once).</p>}
       <div className="axp-push-banner__foot" role="toolbar" aria-label="Merge queue">
         <Button size="sm" tone="quiet" icon="refresh" onClick={() => void loadQueue()}>Check now</Button>
         <Button size="sm" tone="quiet" icon="plus" title="Show the merge queue on Home" onClick={() => rt.openDialog('home-card', { draft: cardFromDrop({ plugin: FOLDER, command: 'mergequeue-list', title: 'Merge queue' }) })}>Add to Home</Button>
       </div>
     </div>
+  );
+}
+
+/** What happened to a kicked-out PR after the bisect found it: sent back to its build, or waiting for Brett. */
+function sentBackOf(d: QueueState, pr: number): string {
+  return [...(d.kicked || [])].reverse().find((k) => k.pr === pr)?.sentBack || '';
+}
+
+/** The red batch being split now: what merged, what went back, what is still to test. */
+function BisectLine({ b, suspects }: { b: QueueBisect; suspects: number[] }) {
+  const left = b.prs.filter((n) => suspects.includes(n));
+  const list = (ns: number[]) => ns.map((n) => `#${n}`).join(', ');
+  return (
+    <p className="fx-small axp-push-banner__note" role="status">
+      Batch {b.of} failed CI{b.failing?.length ? ` (${b.failing.join(', ')})` : ''}: splitting it to find the PR that broke it. {b.runs} run{b.runs === 1 ? '' : 's'} so far.
+      {b.merged.length ? ` Merged: ${list(b.merged)}.` : ''}{b.sentBack.length ? ` Sent back: ${list(b.sentBack)}.` : ''}{left.length ? ` Still to test: ${list(left)}.` : ''}
+      {b.runUrl ? <> <a href={b.runUrl} target="_blank" rel="noreferrer">Red run</a></> : null}
+    </p>
   );
 }
 

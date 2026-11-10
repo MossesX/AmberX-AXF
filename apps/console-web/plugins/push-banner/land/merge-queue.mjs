@@ -7,7 +7,7 @@
  *
  *   node apps/console-web/plugins/push-banner/land/merge-queue.mjs run [--dry-run] [--json]   one round
  *   … list [--json] | add <pr> | remove <pr> [--why "…"] | move <pr> <index>                 (0 = front)
- *   … settings [--mode batch|stack] [--size 1-10] [--ai on|off] [--queue on|off]         read / change the settings
+ *   … settings [--mode batch|stack] [--size 1-10] [--ai on|off] [--fix on|off] [--tries 0-5] [--queue on|off]         read / change the settings
  *
  * Batch mode (the default since Nov 10 2026, Brett: "Take all the pull requests as soon as they're ready, have the
  * orchestrator combine them, like five at a time, into one big build. Then pull main and merge it as one."): see
@@ -55,6 +55,8 @@ export function writeQueueConfig(s, patch = {}) {
   if ('queueMode' in patch) { if (!q.QUEUE_MODES.includes(patch.queueMode)) throw new Error(`queueMode is ${q.QUEUE_MODES.join(' or ')}`); next.queueMode = patch.queueMode; }
   if ('batchSize' in patch) { const n = Number(patch.batchSize); if (!Number.isInteger(n) || n < 1 || n > q.BATCH_SIZE_MAX) throw new Error(`batchSize is 1 to ${q.BATCH_SIZE_MAX}`); next.batchSize = n; }
   if ('batchAiResolve' in patch) next.batchAiResolve = patch.batchAiResolve === true;
+  if ('batchAutoFix' in patch) next.batchAutoFix = patch.batchAutoFix === true;
+  if ('batchFixTries' in patch) { const n = Number(patch.batchFixTries); if (!Number.isInteger(n) || n < 0 || n > q.FIX_TRIES_MAX) throw new Error(`batchFixTries is 0 to ${q.FIX_TRIES_MAX}`); next.batchFixTries = n; }
   if ('queueDepth' in patch) { const n = Number(patch.queueDepth); if (!Number.isInteger(n) || n < 1 || n > q.QUEUE_DEPTH_MAX) throw new Error(`queueDepth is 1 to ${q.QUEUE_DEPTH_MAX}`); next.queueDepth = n; }
   writeJson(f, { $axf: 'push-banner-config@1', ...next });
   return q.queueSettings(next);
@@ -584,7 +586,7 @@ async function mergeTested({ s, git, gh, e, p, log }) {
 // ------------------------------------------------------------------ CLI
 
 const lineOf = (x, i) => `${String(i + 1).padStart(2)}. #${x.pr} ${(q.STATES[x.state] || x.state).padEnd(9)} ${x.title}${x.batch ? ` · batch ${x.batch}` : ''}${x.agent ? ` · ${x.agent}` : ''}${x.etaMin ? ` · ~${x.etaMin} min` : ''}${x.why ? ` · ${x.why}` : ''}`;
-const modeLine = (c) => (c.mergeQueue ? (c.mode === 'batch' ? `merge queue on: batches of ${c.batchSize}, one CI run each, merged as one${c.aiResolve ? ' (AI conflict fallback on)' : ''}` : `merge queue on: stacked, ${c.depth} PRs tested at once`) : 'merge queue off');
+const modeLine = (c) => (c.mergeQueue ? (c.mode === 'batch' ? `merge queue on: batches of ${c.batchSize}, one CI run each, merged as one; a red batch is split in halves, ${c.autoFix ? `the PR that broke it goes back to its build for a fix (up to ${c.fixTries} tries)` : 'the PR that broke it waits for a fix by hand'}${c.aiResolve ? ' (AI conflict fallback on)' : ''}` : `merge queue on: stacked, ${c.depth} PRs tested at once`) : 'merge queue off');
 
 export async function main(argv) {
   const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
@@ -602,7 +604,7 @@ export async function main(argv) {
   }
   if (cmd === 'list') {
     const st = readQueue(s);
-    return print(st, [modeLine(readQueueConfig(s)), (st.items || []).map(lineOf).join('\n') || 'the merge queue is empty', ...(st.waiting || []).map((x) => `    #${x.pr} not in the queue: ${x.why}`)].join('\n'));
+    return print(st, [modeLine(readQueueConfig(s)), ...(st.bisect ? [q.bisectLine(st.bisect, st.suspects || [])] : []), (st.items || []).map(lineOf).join('\n') || 'the merge queue is empty', ...(st.waiting || []).map((x) => `    #${x.pr} not in the queue: ${x.why}`)].join('\n'));
   }
   if (cmd === 'settings') {
     const patch = {};
@@ -611,6 +613,8 @@ export async function main(argv) {
     if (opt('size')) patch.batchSize = Number(opt('size'));
     if (opt('depth')) patch.queueDepth = Number(opt('depth'));
     if (opt('ai')) patch.batchAiResolve = onOff(opt('ai'), 'ai');
+    if (opt('fix')) patch.batchAutoFix = onOff(opt('fix'), 'fix');
+    if (opt('tries')) patch.batchFixTries = Number(opt('tries'));
     if (opt('queue')) patch.mergeQueue = onOff(opt('queue'), 'queue');
     const c = Object.keys(patch).length ? writeQueueConfig(s, patch) : readQueueConfig(s);
     return print({ ok: true, settings: c }, modeLine(c));
@@ -620,7 +624,7 @@ export async function main(argv) {
     const d = queueControl(s, cmd, pr, { why: opt('why'), to: cmd === 'move' ? Number(rest[1] ?? 0) : 0 });
     return print({ ok: true, control: d }, `${cmd}: #${String(pr).replace(/^#/, '')}${cmd === 'move' ? ` to ${rest[1] ?? 0}` : ''} (takes effect at the next round, within 3 minutes)`);
   }
-  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode batch|stack] [--size 1-10] [--ai on|off] [--queue on|off] [--depth 1-6]');
+  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode batch|stack] [--size 1-10] [--ai on|off] [--fix on|off] [--tries 0-5] [--queue on|off] [--depth 1-6]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

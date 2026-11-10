@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -101,21 +101,21 @@
       {
         "id": "mergequeue-list",
         "title": "Merge queue: the line",
-        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; the batch being tested (PRs combined, CI run, result) and the last batches; plus the open PRs not in it and why, the last merged and kicked-out ones. Batch mode (default): up to batchSize ready PRs are combined on the latest main, CI runs once and the batch merges as one; stack mode: each PR tested on top of the ones ahead.",
+        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; the batch being tested (PRs combined, CI run, result) and the last batches; plus the open PRs not in it and why, the last merged and kicked-out ones. Batch mode (default): up to batchSize ready PRs are combined on the latest main, CI runs once and the batch merges as one; stack mode: each PR tested on top of the ones ahead. Also the red batch being split (bisect), the last splits, and the fix jobs sent back to builds.",
         "route": "GET /queue",
         "readOnly": true
       },
       {
         "id": "mergequeue-settings",
         "title": "Merge queue: settings",
-        "description": "The merge queue's settings: on, mode (batch = ready PRs combined batchSize at a time into one build on the latest main, one CI run, merged as one; stack = each PR tested on top of the ones ahead), batchSize (1-10, default 5), aiResolve (a code conflict inside a batch goes to a queue-conflict agent job), depth (stack mode).",
+        "description": "The merge queue settings: on, mode (batch = ready PRs combined batchSize at a time into one build on the latest main, one CI run, merged as one; a red batch is split in halves to find the PR that broke it while the good ones merge; stack = each PR tested on top of the ones ahead), batchSize (1-10, default 5), aiResolve (a code conflict inside a batch goes to a queue-conflict agent job), autoFix (on by default: the PR that broke a batch is sent back to its build, a queue-fix agent job fixes its branch and it is retested), fixTries (0-5, default 2), depth (stack mode).",
         "route": "GET /queue/settings",
         "readOnly": true
       },
       {
         "id": "mergequeue-set",
         "title": "Merge queue: change settings",
-        "description": "Change the merge queue's settings: on (true/false), mode (batch or stack), batchSize (1-10), aiResolve (true/false), depth (1-6, stack mode). Takes effect at the next round (within 3 minutes).",
+        "description": "Change the merge queue settings: on (true/false), mode (batch or stack), batchSize (1-10), aiResolve (true/false), autoFix (true/false), fixTries (0-5), depth (1-6, stack mode). Takes effect at the next round (within 3 minutes).",
         "route": "POST /queue/settings",
         "input": {
           "type": "object",
@@ -141,6 +141,16 @@
             "aiResolve": {
               "type": "boolean",
               "description": "send a code conflict inside a batch to an agent job"
+            },
+            "autoFix": {
+              "type": "boolean",
+              "description": "send the PR that broke a batch back to its build for an automatic fix (default on)"
+            },
+            "fixTries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5,
+              "description": "automatic fix tries per PR before it waits for Brett (default 2)"
             },
             "depth": {
               "type": "integer",

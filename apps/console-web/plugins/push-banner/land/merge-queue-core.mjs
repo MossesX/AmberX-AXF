@@ -261,6 +261,12 @@ export function trackBisect(cur, batch, action) {
 /** A bisect is over when none of its PRs is still a suspect (merged, sent back, or gone from the queue). */
 export const bisectDone = (b, suspects = []) => !!b && !b.prs.some((n) => suspects.includes(n));
 
+/** One plain line for a running bisect (CLI list, voice). */
+export function bisectLine(b, suspects = []) {
+  const left = b.prs.filter((n) => suspects.includes(n));
+  return `red batch ${b.of} (${b.prs.map((n) => `#${n}`).join(', ')}) being split: ${b.runs} run${b.runs === 1 ? '' : 's'} so far; merged ${b.merged.map((n) => `#${n}`).join(', ') || 'none yet'}; sent back ${b.sentBack.map((n) => `#${n}`).join(', ') || 'none yet'}; still to test ${left.map((n) => `#${n}`).join(', ') || 'none'}`;
+}
+
 /** The AmberX / console alerts for a bisect (warning and worse reach the phone). */
 export function bisectStartAlert(b) {
   return { source: 'push-banner', key: `queue:bisect-${b.of}`, severity: 'warning', link: '/settings/plugins/push-banner',

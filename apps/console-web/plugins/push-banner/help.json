@@ -186,6 +186,18 @@
         "title": "AI fallback for code conflicts",
         "text": "Off: a PR that conflicts in code with one earlier in its batch waits for the next batch. On: an agent also makes its branch work with the others; CI still decides.",
         "kind": "toggle"
+      },
+      {
+        "target": "send-the-pr-that-broke-a-batch-back-to-its-build-for-a-fix",
+        "title": "Send the PR that broke a batch back",
+        "text": "A red batch is split in halves until one PR alone is red; the good ones merge. On (default): that PR goes back to its build, an agent fixes its branch, and it rejoins the queue for a retest. AmberX gets an alert.",
+        "kind": "toggle"
+      },
+      {
+        "target": "fix-tries-per-pr",
+        "title": "Fix tries per PR",
+        "text": "How many automatic fixes a PR gets (0 to 5, default 2) before it stays out and you get an alert to look at it.",
+        "kind": "field"
       }
     ],
     "intros": []
