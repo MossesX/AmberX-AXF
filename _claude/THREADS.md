@@ -769,18 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` note (all) · orchestrator
-- 2026-11-09 17:01 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
-- 2026-11-09 17:01 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` branch claude/skins-restyle-everything-badges-banner-and-every-visual-element (all) · pipeline
-- 2026-11-09 17:01 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-09 17:03 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s1 done, → running (all) · orchestrator
-- 2026-11-09 17:03 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-09 17:06 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s2 done (all) · orchestrator
-- 2026-11-09 17:08 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s3 done (all) · orchestrator
-- 2026-11-09 17:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` s4 done (all) · orchestrator
-- 2026-11-09 17:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` PR #409 (all) · builds-live
-- 2026-11-09 17:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-09 17:11 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
 - 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` branch claude/appearance-skins-colour-themes-only-remove-design-packs (all) · pipeline
 - 2026-11-09 17:12 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
@@ -1169,6 +1157,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
 - 2026-11-10 00:48 UTC · `build-statuses-tell-the-truth-orchestrator-list` s1 done, → running (all) · orchestrator
 - 2026-11-10 00:49 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `split-builds-pages-build-manager-pending-complet` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `orchestrator-and-build-manager-search-bar-collap` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · cli
+- 2026-11-10 00:49 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · cli
 
 ## Token passes (log)
 

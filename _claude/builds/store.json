@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2121,
- "updatedAt": "2026-11-10T00:49:04.666Z",
+ "rev": 2122,
+ "updatedAt": "2026-11-10T00:49:19.301Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127997,7 +127997,7 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128005,7 +128005,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-09T18:11:03.773Z",
+   "updatedAt": "2026-11-10T00:49:03.427Z",
    "builtAt": "",
    "notes": [
     {
@@ -128063,6 +128063,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T18:11:03.773Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:03.427Z"
     }
    ],
    "approvals": [],
@@ -128087,7 +128091,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:10:30.633Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T18:11:02.864Z",
      "exit": 1,
@@ -128104,7 +128108,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
@@ -128187,7 +128191,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -128700,7 +128704,7 @@
    "title": "Account failover chain: subscription, next subscription, then API; record who actually built it",
    "category": "",
    "detail": "When the orchestrator launches a step on its chosen account and the login fails or is limited, it marks that account limited and retries on the next subscription account in priority order; if no subscription can run it, it goes to an API-key account under its caps. Whichever account or API key actually ran the step is recorded on the step and build (account, email, model, cost) and shown in the orchestrator. Never silently fall back outside this chain. Builds on fix-account-attribution (running now, which records the real login) and overlaps pending running-builds-follow-the-active-claude-account-fail-over-when-it-dies and auto-switch-claude-account-when-the-active-one-r: fold them in.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128708,7 +128712,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-09T17:59:03.952Z",
+   "updatedAt": "2026-11-10T00:49:05.023Z",
    "builtAt": "",
    "notes": [
     {
@@ -128766,6 +128770,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T17:59:03.952Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:05.023Z"
     }
    ],
    "approvals": [],
@@ -128790,7 +128798,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T17:58:10.111Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T17:59:03.135Z",
      "exit": 1,
@@ -128807,7 +128815,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
@@ -128890,7 +128898,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -128906,7 +128914,7 @@
    "title": "Split builds pages: Build Manager = Pending + Complete; Orchestrator = Queued + Active",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded). Build Manager owns builds before and after the orchestrator: Pending tab (create, edit, prioritize, Send to orchestrator) and Complete tab (finished builds sent back by the orchestrator, with account that actually built it, model, cost, PR, land status). Build orchestrator owns only what it was sent: Queued and Active tabs, with steps, assigned/actual account, model, progress and actions (route, assign account, hold, cancel/return to Pending). When a build finishes, the orchestrator sends it back to Build Manager's Complete. Remove every other builds table and the separate Build queue screen (redirect to these). Full API/voice control.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128914,7 +128922,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-09T18:09:30.484Z",
+   "updatedAt": "2026-11-10T00:49:06.631Z",
    "builtAt": "",
    "notes": [
     {
@@ -128996,6 +129004,10 @@
     {
      "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--joey: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-09T18:09:30.484Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:06.631Z"
     }
    ],
    "approvals": [],
@@ -129020,7 +129032,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:05:17.080Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T18:06:04.417Z",
      "exit": 1,
@@ -129037,7 +129049,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T18:05:17.080Z"
    },
@@ -129120,7 +129132,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129327,7 +129339,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129335,7 +129347,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-09T18:10:17.222Z",
+   "updatedAt": "2026-11-10T00:49:07.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -129369,6 +129381,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 11 steps left after 3 runs: failed.",
      "at": "2026-11-09T18:10:17.222Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:07.850Z"
     }
    ],
    "approvals": [],
@@ -129393,7 +129409,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:09:09.055Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T18:10:07.899Z",
      "exit": 1,
@@ -129410,7 +129426,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 11 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T18:09:09.055Z"
    },
@@ -129669,7 +129685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129685,7 +129701,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129693,7 +129709,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-09T18:04:05.804Z",
+   "updatedAt": "2026-11-10T00:49:08.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -129751,6 +129767,10 @@
     {
      "text": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T18:04:05.804Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:08.905Z"
     }
    ],
    "approvals": [],
@@ -129775,7 +129795,7 @@
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-09T18:02:10.280Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T18:04:04.646Z",
      "exit": 1,
@@ -129792,7 +129812,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T18:02:10.280Z"
    },
@@ -129875,7 +129895,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129891,7 +129911,7 @@
    "title": "File watchdog plugin: watch files, run scripts or console commands, optional AI prompt (off by default)",
    "category": "",
    "detail": "New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129899,7 +129919,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-09T18:50:08.751Z",
+   "updatedAt": "2026-11-10T00:49:09.818Z",
    "builtAt": "",
    "notes": [
     {
@@ -129957,6 +129977,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T18:50:08.751Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:09.818Z"
     }
    ],
    "approvals": [],
@@ -129981,7 +130005,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:49:06.246Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T18:50:07.875Z",
      "exit": 1,
@@ -129998,7 +130022,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
@@ -130081,7 +130105,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130097,7 +130121,7 @@
    "title": "URGENT: Terminal pops up every time the console opens",
    "category": "",
    "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130105,7 +130129,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-09T19:24:31.894Z",
+   "updatedAt": "2026-11-10T00:49:10.528Z",
    "builtAt": "",
    "notes": [
     {
@@ -130163,6 +130187,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T19:24:31.894Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:10.528Z"
     }
    ],
    "approvals": [],
@@ -130187,7 +130215,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:23:07.733Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:24:31.405Z",
      "exit": 1,
@@ -130204,7 +130232,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
@@ -130287,7 +130315,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130303,7 +130331,7 @@
    "title": "Orchestrator and Build Manager: search bar + Collapse all / Expand all",
    "category": "",
    "detail": "In the Build orchestrator and Build Manager tables (and the shared build-table asset): a search bar that filters builds by title, id, branch, account and words; Collapse all / Expand all buttons for rows and sections; collapsible section headers (Queued, Active, etc.) remembered across reloads. Voice/API control for search and collapse. Fold into the split-builds-pages table work if it hasn't started. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130311,7 +130339,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:58.882Z",
-   "updatedAt": "2026-11-09T18:56:03.517Z",
+   "updatedAt": "2026-11-10T00:49:11.233Z",
    "builtAt": "",
    "notes": [
     {
@@ -130369,6 +130397,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T18:56:03.517Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:11.233Z"
     }
    ],
    "approvals": [],
@@ -130393,7 +130425,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T18:55:16.286Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T18:56:02.979Z",
      "exit": 1,
@@ -130410,7 +130442,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T18:55:16.286Z"
    },
@@ -130493,7 +130525,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130509,7 +130541,7 @@
    "title": "VPS orchestrator-only rule + VPS Settings console plugin to manage it",
    "category": "",
    "detail": "1) Enforce on the VPS itself: every headless Claude build launch (claude-headless.sh, agent slots, vps build_start, any launcher) must carry an orchestrator-issued build ID/token; anything else is refused and logged, with a notice to the phone. Builds on one-way-to-start-builds-the-orchestrator-dispatc (2/3 done) - finish or fold that in. 2) New console plugin 'VPS Settings' to view and change VPS-side settings, starting with this rule (on/off, refused-jobs log). Full API control per standing rule.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130517,7 +130549,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-09T19:14:03.142Z",
+   "updatedAt": "2026-11-10T00:49:11.829Z",
    "builtAt": "",
    "notes": [
     {
@@ -130575,6 +130607,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T19:14:03.142Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:11.829Z"
     }
    ],
    "approvals": [],
@@ -130599,7 +130635,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:13:07.725Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:14:02.442Z",
      "exit": 1,
@@ -130616,7 +130652,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:13:07.725Z"
    },
@@ -130699,7 +130735,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130715,7 +130751,7 @@
    "title": "Home page Build queue card opens the orchestrator, not the old build queue",
    "category": "",
    "detail": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130723,7 +130759,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-09T19:26:03.236Z",
+   "updatedAt": "2026-11-10T00:49:12.481Z",
    "builtAt": "",
    "notes": [
     {
@@ -130781,6 +130817,10 @@
     {
      "text": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T19:26:03.236Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:12.481Z"
     }
    ],
    "approvals": [],
@@ -130805,7 +130845,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:25:10.063Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:26:02.794Z",
      "exit": 1,
@@ -130822,7 +130862,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
@@ -130905,7 +130945,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130921,7 +130961,7 @@
    "title": "Let voice/API route a build to an API account (with owner approval)",
    "category": "",
    "detail": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130929,7 +130969,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-09T19:28:03.157Z",
+   "updatedAt": "2026-11-10T00:49:13.063Z",
    "builtAt": "",
    "notes": [
     {
@@ -130987,6 +131027,10 @@
     {
      "text": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T19:28:03.157Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:13.063Z"
     }
    ],
    "approvals": [],
@@ -131011,7 +131055,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T19:27:06.719Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:28:02.794Z",
      "exit": 1,
@@ -131028,7 +131072,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
@@ -131111,7 +131155,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131305,7 +131349,7 @@
    "title": "Test button on every Claude account (subscription and API)",
    "category": "",
    "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131313,7 +131357,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-09T20:20:05.777Z",
+   "updatedAt": "2026-11-10T00:49:13.657Z",
    "builtAt": "",
    "notes": [
     {
@@ -131371,6 +131415,10 @@
     {
      "text": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
      "at": "2026-11-09T20:20:05.777Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:13.657Z"
     }
    ],
    "approvals": [],
@@ -131417,7 +131465,7 @@
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-09T20:19:06.480Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T20:20:05.208Z",
      "exit": 1,
@@ -131434,7 +131482,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
@@ -131517,7 +131565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
