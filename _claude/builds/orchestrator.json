@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:46:21.384Z",
+ "updatedAt": "2026-11-10T16:46:30.942Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86350,12 +86350,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-10T16:43:59.523Z",
+   "updatedAt": "2026-11-10T16:46:18.786Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:43:59.523Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:46:18.786Z"
     }
    ],
    "approvals": [],
@@ -86372,7 +86376,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax9j8i04lzx8"
+    },
+    {
+     "id": "s2",
+     "text": "What happened to the merge queue? We need to start enforcing that. Everything needs to go into the merge queue so we can make one build out of it before we send it to CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax9j8i05lsev"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/enforce-the-merge-queue-every-finished-build-goe.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/enforce-the-merge-queue-every-finished-build-goe.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax9j8i06xygq"
+    }
+   ]
   },
   {
    "id": "merge-queue-batching-orchestrator-combines-ready",
