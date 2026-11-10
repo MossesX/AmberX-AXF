@@ -769,13 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:11 UTC · `vps-orchestrator-only-rule-vps-settings-console` branch claude/vps-orchestrator-only-rule-vps-settings-console (all) · pipeline
-- 2026-11-09 19:12 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · pipeline
-- 2026-11-09 19:12 UTC · `vps-orchestrator-only-rule-vps-settings-console` → running, note (all) · pipeline
-- 2026-11-09 19:12 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
-- 2026-11-09 19:13 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · pipeline
-- 2026-11-09 19:13 UTC · `vps-orchestrator-only-rule-vps-settings-console` → running, note (all) · pipeline
-- 2026-11-09 19:13 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
 - 2026-11-09 19:14 UTC · `vps-orchestrator-only-rule-vps-settings-console` → failed, note (all) · pipeline
 - 2026-11-09 19:20 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → queued, note (all) · console
 - 2026-11-09 19:20 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
@@ -1169,6 +1162,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:46 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
 - 2026-11-10 02:46 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-10 02:47 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · orchestrator
+- 2026-11-10 02:46 UTC · `split-builds-pages-build-manager-pending-complet-3` → pending, note (all) · reconciler
+- 2026-11-10 02:46 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` note (all) · orchestrator
+- 2026-11-10 02:47 UTC · `vps-orchestrator-only-rule-vps-settings-console` → pending, note (all) · pipeline
+- 2026-11-10 02:47 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
+- 2026-11-10 02:47 UTC · `orchestrator-table-columns-model-queue-assigned` → running, note (all) · pipeline
+- 2026-11-10 02:47 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
+- 2026-11-10 02:48 UTC · `orchestrator-table-columns-model-queue-assigned` branch claude/orchestrator-table-columns-model-queue-assigned (all) · pipeline
 
 ## Token passes (log)
 
