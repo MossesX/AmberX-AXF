@@ -121,5 +121,38 @@ ok("parity state", strip(c.get(f"{B}/windows").json()) == strip({**cj}), cj.get(
 code, cj = cli("open", "windows")
 ok("parity open", c.get(f"{B}/link", params={"skin": "windows"}).json() == cj)
 
+# set (the panel's inline edit) on REST and CLI
+r = c.post(f"{B}/fresh/set", json={"token": "color-theme:fresh-light/tokens.muted", "value": "#5a6270"})
+ok("set: one token written and re-checked", r.status_code == 200 and r.json()["write"]["value"] == "#5a6270" and r.json()["result"]["$axf"] == "skin-check@1", r.text[:300])
+ok("set: a token the skin does not have is 404", c.post(f"{B}/fresh/set", json={"token": "color-theme:fresh-light/tokens.nope", "value": "#000"}).status_code == 404)
+ok("set: a malformed token is 400", c.post(f"{B}/fresh/set", json={"token": "nope", "value": "#000"}).status_code == 400)
+code, cj = cli("set", "fresh", "color-theme:fresh-light/tokens.muted", "#5a6270")
+ok("parity set: CLI and REST write the same", code in (0, 1) and cj.get("write", {}).get("value") == "#5a6270" and strip(cj)["result"]["score"] == r.json()["result"]["score"])
+code, cj = cli("fix", "fresh", "--all")
+ok("parity fix_all: CLI runs the same core (nothing left to fix after REST fix-all)", code == 0 and cj["result"]["fixable"] == 0, cj.get("applied"))
+
+# the contract's surface table: every action has a REST route here, an MCP tool, a CLI form and a voice command
+code, sj = cli("call", "surfaces")
+surfaces = sj.get("surfaces") or []
+ok("the surface table lists every action", sorted(x["action"] for x in surfaces) == sorted(["check", "state", "fix", "fix_all", "settings_get", "settings_set", "settings_reset", "open"]), surfaces)
+reg = subprocess.run(["node", "framework/cli/plugin-commands.mjs", "registry", "--json"], cwd=ROOT, capture_output=True, text=True)
+entry = next((x for x in json.loads(reg.stdout)["plugins"] if x["folder"] == "skin-editor"), None)
+tools = {f"skin_editor_{cmd['id'].replace('-', '_')}": cmd for cmd in (entry or {}).get("commands", [])}
+routes = {(m, "/api/plugins/skin-editor" + rt.path) for rt in mod.router.routes for m in (getattr(rt, "methods", None) or ())}
+voice = (ROOT / "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts").read_text()
+for x in surfaces:
+    path = "/api/plugins/skin-editor/" + x["rest"]["path"].replace(":skin", "{skin}")
+    ok(f"{x['action']}: REST {x['rest']['method']} {x['rest']['path']} is served", (x["rest"]["method"], path) in routes, sorted(routes))
+    if x["mcp"] != "console_show":
+        cmd = tools.get(x["mcp"])
+        ok(f"{x['action']}: MCP {x['mcp']} runs that route", bool(cmd) and cmd["run"]["route"]["method"] == x["rest"]["method"] and cmd["run"]["route"]["path"] == "/" + x["rest"]["path"].replace(":skin", "{skin}"), cmd and cmd["run"])
+    else:
+        ok("open: MCP link tool gives the deep link for console_show", "skin_editor_link" in tools)
+    vid = x["voice"].split(".", 1)[1]
+    ok(f"{x['action']}: voice {x['voice']} is an AmberX command", f"'{vid}'" in voice)
+    vline = next((ln for ln in voice.splitlines() if f"'{vid}'" in ln), "")
+    ok(f"{x['action']}: voice runs the MCP tool", x["mcp"] in vline or (x["action"] == "open" and "skin_editor_link" in vline), vline[:200])
+    ok(f"{x['action']}: CLI form `axf {x['cli']}` exists", x["cli"].split()[1] in ("check", "fix", "settings", "open"))
+
 print(f"{'✗' if fails else '✓'} skin-editor server: {fails} failed")
 sys.exit(1 if fails else 0)
