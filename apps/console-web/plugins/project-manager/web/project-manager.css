@@ -32,3 +32,7 @@
 .axp-project-manager__preview-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .axp-project-manager__preview-note { margin: var(--fx-dens-gap-md); }
 .axp-project-manager__live { flex: none; width: var(--fx-dens-gap-sm); height: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-danger); }
+
+/* banner: the active project */
+.axp-project-manager__banner { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); }
+.axp-project-manager__banner-main { flex: 1 1 auto; min-width: 0; display: inline-flex; gap: var(--fx-dens-gap-sm); align-items: baseline; }

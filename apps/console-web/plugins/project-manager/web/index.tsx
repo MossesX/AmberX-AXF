@@ -11,7 +11,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type PointerEvent as ReactPointerEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Chip, Container, IconButton, Note, SelectField, Switch, TabGroup, TextField, usePortalRoot, useIsPhone, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, IconButton, Note, SelectField, Switch, TabGroup, TextField, usePortalRoot, useIsPhone, useRuntime, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -65,8 +65,9 @@ const useStore = () => useSyncExternalStore(subscribe, () => state);
 async function call(path: string, body: unknown, method = 'POST'): Promise<{ ok: boolean; message?: string; [k: string]: unknown }> {
   try {
     const r = await pluginFetch(FOLDER, path, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const j = await r.json();
+    const j = await r.json().catch(() => ({ ok: false, message: `HTTP ${r.status}` })) as { ok: boolean; message?: string; detail?: string };
     await refresh();
+    if (!j.ok) { state = { ...state, error: j.message || j.detail || `HTTP ${r.status}` }; emit(); }
     return j;
   } catch {
     return { ok: false, message: 'The Project Manager server part is not answering.' };
@@ -318,6 +319,31 @@ function ProjectBar() {
   );
 }
 
+/* ---------- banner: the active project, while the multi-project view is off (also loads the plugin first, so its
+   tab group and preview window are there from the start) ---------- */
+function ProjectBanner() {
+  const st = useStore();
+  const rt = useRuntime();
+  const s = st.settings;
+  if (EMBEDDED || !s || s.multiView || s.active === SELF) return null;
+  const p = st.projects.find((x) => x.id === s.active);
+  if (!p) return null;
+  return (
+    <div className="axp-project-manager__banner" data-fx-ctx-target="banner" role="status" aria-live="polite">
+      <BannerIcon className="axp-project-manager__banner-icon" icon={p.type === 'app' ? 'rocket' : 'hammer'} />
+      <button type="button" data-fx-row className="axp-project-manager__banner-main" onClick={() => rt.navigate(VIEW)}>
+        <strong>Active project: {p.name}</strong>
+        <span className="axp-project-manager__meta">{p.typeLabel}</span>
+      </button>
+      <div className="axp-project-manager__actions" role="toolbar" aria-label="Active project">
+        <Button size="sm" tone="ghost" icon="external" onClick={() => window.open(absolute(p.consoleUrl), `axf-project-${p.id}`)}>Open its console</Button>
+        <Button size="sm" tone="ghost" icon="eye" onClick={() => void call('preview', { open: !s.preview.open })}>{s.preview.open ? 'Close preview' : 'Live preview'}</Button>
+        <IconButton icon="x" label="Back to the Dev Console project" onClick={() => void call('open', { id: SELF })} />
+      </div>
+    </div>
+  );
+}
+
 function Cover() { return <><MultiFrames /><PreviewWindow /></>; }
 function Head() { return <><MultiTabs /><ProjectBar /></>; }
 
@@ -332,6 +358,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('project-manager.preview-dock', () => void actions.dockPreview(), { label: 'Dock the live preview window' });
     rt.actions.register('project-manager.preview-float', () => void actions.floatPreview(), { label: 'Float the live preview window' });
   },
+  banners: [{ id: 'project-manager', label: 'Active project', icon: 'folder', settingsTab: VIEW, order: 6, render: () => <ProjectBanner /> }],
   views: { [VIEW]: { title: 'Project Manager', icon: 'folder', render: () => <ProjectManagerView /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Project Manager', icon: 'folder', view: VIEW }] },
   slots: {

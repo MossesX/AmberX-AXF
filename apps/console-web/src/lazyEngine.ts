@@ -54,7 +54,7 @@ export const CORE_PLUGINS: Record<string, Exclude<LazyMode, 'off'>> = {
 export const KNOWN_BANNERS: readonly string[] = [
   'activity', 'agent-voice', 'ai-assistant', 'approvals-banner', 'build-manager', 'build-profiles', 'builds-page',
   'claude-accounts', 'claude-badge', 'claude-handoff', 'claude-settings', 'codebase-changes', 'follow-amber', 'plan-studio', 'plugins-menu',
-  'push-banner', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped', 'console-terminal',
+  'project-manager', 'push-banner', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped', 'console-terminal',
   'notify-control', // no chip, but its register() plays sound and pop-ups and answers the browser senders
 ];
 

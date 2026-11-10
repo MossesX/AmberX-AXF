@@ -13,6 +13,12 @@ tools (plugin-commands@1), the CLI and voice share one store and one set of rule
   POST delete              { id, data? }: remove it (data = also its builds/notes/data folder)
   PUT  settings            { multiView?, layout?: tabs|split, active? }
   POST preview             { open?, mode?: float|dock, side?: right|bottom, project? }
+
+Capability axf.projects@1 (for other plugins, so their builds, notes and data can follow the project a console instance
+belongs to; a request from a project's console carries ?project=<id> or the X-AXF-Project header):
+  list() -> projects · get(id) -> project | None · active() -> id · data_dir(id, kind) -> absolute path of
+  <dataDir>/projects/<id>/<builds|notes|data> (None for the Dev Console: its data stays where it always was)
+  · of_request(request) -> the project id a request comes from ("console" when none)
 """
 from __future__ import annotations
 
@@ -25,10 +31,14 @@ from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
+import plugin_services
+
 router = APIRouter()
 CLI = Path(__file__).resolve().parents[1] / "projects.mjs"
 ROOT = Path(__file__).resolve().parents[5]  # the repo root
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503}
+SELF = "console"
+KINDS = ("builds", "notes", "data")
 
 
 def cli(op: str, inp: dict[str, Any] | None = None, timeout: int = 20) -> dict[str, Any]:
@@ -113,3 +123,32 @@ async def put_settings(request: Request) -> JSONResponse:
 @router.post("/preview")
 async def set_preview(request: Request) -> JSONResponse:
     return await op("preview", await body(request))
+
+
+class ProjectsService:
+    """axf.projects@1: which project a console instance belongs to, and where that project's own data lives."""
+
+    def list(self) -> list[dict[str, Any]]:
+        return cli("list", {}).get("projects") or []
+
+    def get(self, pid: str) -> dict[str, Any] | None:
+        r = cli("get", {"id": pid})
+        return r.get("project") if r.get("ok") else None
+
+    def active(self) -> str:
+        return str((cli("settings", {}).get("settings") or {}).get("active") or SELF)
+
+    def data_dir(self, pid: str, kind: str = "data") -> str | None:
+        if kind not in KINDS:
+            raise ValueError(f"kind is one of {', '.join(KINDS)}")
+        p = self.get(pid)
+        if not p or p.get("builtIn"):
+            return None
+        return str((ROOT / str(p.get("dataDir")) / kind).resolve())
+
+    @staticmethod
+    def of_request(request: Request) -> str:
+        return str(request.headers.get("x-axf-project") or request.query_params.get("project") or SELF)
+
+
+plugin_services.provide("axf.projects@1", ProjectsService(), Path(__file__).resolve().parents[1].name)

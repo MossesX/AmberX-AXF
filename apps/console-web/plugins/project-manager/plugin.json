@@ -12,7 +12,8 @@
   ],
   "provides": [
     "view:project-manager",
-    "settings-tab:project-manager"
+    "settings-tab:project-manager",
+    "service:axf.projects@1"
   ],
   "scopes": [
     "ROUTES",
