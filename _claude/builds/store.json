@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2884,
- "updatedAt": "2026-11-10T21:33:32.644Z",
+ "rev": 2885,
+ "updatedAt": "2026-11-10T21:34:22.344Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154203,10 +154203,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/finish-and-land-the-git-status-board-every-ready",
-   "pr": "",
+   "pr": "#475",
    "priority": "P0",
    "createdAt": "2026-11-10T20:44:19.333Z",
-   "updatedAt": "2026-11-10T21:33:31.296Z",
+   "updatedAt": "2026-11-10T21:34:21.202Z",
    "builtAt": "",
    "notes": [
     {
@@ -154350,7 +154350,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
