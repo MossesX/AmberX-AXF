@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2862,
- "updatedAt": "2026-11-10T21:19:36.836Z",
+ "rev": 2863,
+ "updatedAt": "2026-11-10T21:20:13.171Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146669,7 +146669,7 @@
    "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
    "category": "",
    "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146677,7 +146677,7 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T21:19:35.506Z",
+   "updatedAt": "2026-11-10T21:20:10.514Z",
    "builtAt": "",
    "notes": [
     {
@@ -146739,6 +146739,10 @@
     {
      "text": "Self-check: inline-element-editing-plugin-right-click-any-el was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T20:55:09.682Z"
+    },
+    {
+     "text": "Self-check: inline-element-editing-plugin-right-click-any-el was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T21:20:10.514Z"
     }
    ],
    "approvals": [
@@ -146767,7 +146771,7 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:39:14.760Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -146789,7 +146793,7 @@
      "note": "Split by Claude into 13 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 4 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-10T19:45:20.208Z",
     "planned": {
@@ -147154,7 +147158,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
