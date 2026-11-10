@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2175,
- "updatedAt": "2026-11-10T01:47:07.816Z",
+ "rev": 2176,
+ "updatedAt": "2026-11-10T01:47:23.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131085,7 +131085,7 @@
    "title": "Let voice/API route a build to an API account (with owner approval)",
    "category": "",
    "detail": "Today pipeline-route api and apiOverflow on are owner-click only in the console, so a voice session can't put a build on an API account. Change: allow pipeline-route api (pick API account, e.g. account-5) from voice/API, sent as a confirm approval to the owner (never silent), audited, with daily/weekly caps still enforced. Needed now because Fable subscription credits are out.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131093,8 +131093,8 @@
    "pr": "#428",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-10T01:47:03.111Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T01:47:10.731Z",
+   "builtAt": "2026-11-10T01:47:10.731Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131163,6 +131163,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--joey, own login copy)",
      "at": "2026-11-10T01:34:11.618Z"
+    },
+    {
+     "text": "PR #428. UI Review shots for the Pipeline approval card not taken: rebuild-shots' scratch console can't reach axHub from the build sandbox. Filed API route request rr-mwa0yhwk-ym8b (11 queued builds on account-5); Brett approves after merge.",
+     "at": "2026-11-10T01:47:07.974Z"
     }
    ],
    "approvals": [],
@@ -131271,12 +131275,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:47:10.731Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T19:24:30.821Z",
-     "updatedAt": "2026-11-09T19:24:30.821Z"
+     "updatedAt": "2026-11-10T01:47:11.051Z"
     }
    ],
    "profiles": [
@@ -131287,7 +131291,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
