@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2088,
- "updatedAt": "2026-11-10T00:14:52.878Z",
+ "rev": 2089,
+ "updatedAt": "2026-11-10T00:15:06.795Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116716,14 +116716,15 @@
    "title": "Real-time slot tracking + stale data reaper",
    "category": "new feature",
    "detail": "The orchestrator must know in real time how many slots are set, in use and available, per Claude account and per model, and clean up stale data on its own so nobody has to babysit it. Problem seen: 18 builds marked 'running' but most have 0 steps done (ghost statuses holding slots). Slot state comes from live sessions (heartbeats), not from build status fields.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-09T16:39:29.301Z",
+   "updatedAt": "2026-11-10T00:14:53.756Z",
    "builtAt": "",
    "notes": [
     {
@@ -116733,10 +116734,30 @@
     {
      "text": "PR #406 covers part of s4 (builds marked running on an account with no session and no live agent slot go back to the Queue on the self-check) and the per-account state. Heartbeats (s2) and killing sessions (s3) are not done.",
      "at": "2026-11-09T16:39:29.301Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T00:14:53.756Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-10T00:14:53.325Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -116857,7 +116878,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
