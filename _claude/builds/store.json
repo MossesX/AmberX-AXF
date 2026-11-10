@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2269,
- "updatedAt": "2026-11-10T03:32:20.090Z",
+ "rev": 2270,
+ "updatedAt": "2026-11-10T03:33:06.655Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134592,7 +134592,7 @@
    "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
    "category": "",
    "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134600,7 +134600,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:32:18.309Z",
+   "updatedAt": "2026-11-10T03:33:04.411Z",
    "builtAt": "",
    "notes": [
     {
@@ -134654,6 +134654,10 @@
     {
      "text": "Double launch: run 2 (session --earl, 03:30) started while session --paulie (mossesx-max-, slot hl-mwa4jzpu-bp, started 03:22 from the agent-slots queue) was still live and editing this worktree; the store only knows --earl. Earl stopped without touching files so the two don't overwrite each other; Paulie holds the work (self-heal.mjs, its test, builds-live and land wiring; pipeline tick/launch wiring still to do). Root cause for this build: a slot-queued launch starts later without the dispatcher recording it, so the dispatcher relaunches. Guard to add: refuse a launch when a live claude-headless session for the same build exists (self-heal findCrashed has the process scan).",
      "at": "2026-11-10T03:32:04.820Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-10T03:33:04.411Z"
     }
    ],
    "approvals": [],
@@ -134674,18 +134678,18 @@
     "queuedAt": "2026-11-10T02:22:12.571Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-self-healing-build-folders-auto-clear-stale-git--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T03:30:20.626Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-10T02:59:04.608Z",
-     "exit": 1,
-     "outcome": "requeued",
+     "at": "2026-11-10T03:33:03.807Z",
+     "exit": 0,
+     "outcome": "returned",
      "stepsLeft": 3,
-     "account": "account-5",
-     "session": "hl-mwa3cdm4-bo"
+     "account": "mossesx-max-",
+     "session": "axf-self-healing-build-folders-auto-clear-stale-git--earl"
     },
     "split": {
      "at": "2026-11-10T02:24:12.593Z",
@@ -134695,7 +134699,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-10T03:30:20.626Z"
    },
@@ -134778,7 +134782,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
