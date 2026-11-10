@@ -39,6 +39,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
+import { guardGit, clearStaleLocks, recordFixes } from '../../../../../framework/cli/self-heal.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -64,11 +65,16 @@ export function settings() {
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
 
+/**
+ * git for every landing step, with the self-heal guard (framework/cli/self-heal.mjs): a call refused on a stale lock or
+ * on stray log / sync files gets them cleared (archived first) and runs once more. Plain code, no AI.
+ */
 export function makeGit(cwd) {
-  return (args, o = {}) => {
+  const run = (args, o = {}) => {
     const r = spawnSync('git', args, { cwd: o.cwd || cwd, encoding: 'utf8', timeout: o.timeout || 120000, maxBuffer: 64 << 20, env: { ...process.env, GIT_TERMINAL_PROMPT: '0', ...(o.env || {}) } });
     return { code: r.status ?? 1, out: (r.stdout || '').replace(/\s+$/, ''), err: (r.stderr || r.error?.message || '').trim() };
   };
+  return guardGit(run, { cwd });
 }
 
 /** GitHub REST with the token broker's token (never printed, never logged).
@@ -274,6 +280,8 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   const cfg = readConfig(s); const ctl = readControl(s); const prev = readState(s);
   const at = now().toISOString();
   if (!cfg.autoLand) { const st = { ...prev, $axf: core.LAND_FRAME, at, on: false, items: prev.items || [] }; if (!dry) writeJson(stateFile(s), st); return st; }
+  // stale git locks in the repo and every build worktree go first (self-heal; logged, noted, one FYI)
+  if (!dry) { try { const h = clearStaleLocks({ roots: [s.repo, ...Object.values(worktrees(git))] }); if (h.removed.length) recordFixes(h.removed.map((l) => ({ kind: 'lock', path: l.path, checkout: l.worktree || '', why: `${Math.round(l.ageMs / 1000)}s old, nobody holds it (landing round)` })), { source: 'land' }); } catch (e) { log(`self-heal: ${e.message}`); } }
   const f = git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
   if (f.code) log(`fetch: ${f.err.slice(-200)}`);
   const storeText = git(['show', `${s.remote}/${s.base}:_claude/builds/store.json`]);

@@ -45,6 +45,7 @@ import { gitAuthEnv, githubToken, scrub } from './github.mjs';
 import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
+import { healGit, recordFixes } from './self-heal.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
@@ -144,9 +145,16 @@ export function flushLive({ pull = true } = {}) {
 
 // ------------------------------------------------------------------ git
 
+/**
+ * Every builds-live git call goes through the self-heal guard (self-heal.mjs): refused on a stale lock or stray log /
+ * sync files = they are cleared and the call runs once more. No build notes from here: this may run under the store lock.
+ */
 function git(args, { input, cwd = gitRoot(), envx = {}, timeout = 60000 } = {}) {
-  const r = spawnSync('git', args, { cwd, input, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, timeout, env: { ...process.env, GIT_TERMINAL_PROMPT: '0', ...authEnv(), ...envx } });
-  return { code: r.status ?? 1, out: (r.stdout ?? '').trim(), err: scrub((r.stderr ?? '').trim() || (r.error ? String(r.error.message) : '')) };
+  const run = (a) => {
+    const r = spawnSync('git', a, { cwd, input, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, timeout, env: { ...process.env, GIT_TERMINAL_PROMPT: '0', ...authEnv(), ...envx } });
+    return { code: r.status ?? 1, out: (r.stdout ?? '').trim(), err: scrub((r.stderr ?? '').trim() || (r.error ? String(r.error.message) : '')) };
+  };
+  return healGit(run, args, {}, { cwd, record: (f, o) => recordFixes(f, { ...o, notes: false }) });
 }
 let auth = null;
 /** No credential helper here (the console container): the GitHub App / GITHUB_TOKEN through GIT_CONFIG_* env (github.mjs). */

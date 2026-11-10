@@ -31,6 +31,11 @@
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
+ * Self-heal (framework/cli/self-heal.mjs; Brett, Nov 10 2026: "if something breaks, it needs to remove locks"), plain code,
+ * no AI: every tick first clears stale git locks in the main repo and every build folder and resets crashed sessions
+ * (tmux up, nothing running in it) so checkEnds requeues them; every launch clears its folder's locks first and, when the
+ * launcher fails on a git lock, clears it and launches once more; every git call here retries once after a lock or
+ * stray-file refusal. Fixes go to the fix log, a note on the build and one FYI alert.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -57,6 +62,7 @@ import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
+import * as heal from '../../../../framework/cli/self-heal.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -274,7 +280,13 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
 // ------------------------------------------------------------------ launches
 
 const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
-function git(cwd, ...a) { return spawnSync('git', a, { cwd, encoding: 'utf8', timeout: 180e3 }); }
+const runGit = heal.makeGit();
+function git(cwd, ...a) { const r = heal.healGit((x, o) => runGit(x, { ...o, timeout: 180e3 }), a, { cwd }, { cwd }); return { status: r.code, stdout: r.out, stderr: r.err }; }
+/** Self-heal round for the tick: stale locks everywhere, crashed sessions among running builds. Never throws. */
+export function healTick(builds) {
+  try { const r = heal.healRound({ builds: builds.filter((b) => b.status === 'running' || b.status === 'waiting') }); for (const f of r.fixes) logLine({ event: 'self-heal', kind: f.kind, build: f.build || '', path: f.path || '', session: f.session || '' }); return r.fixes; }
+  catch (e) { logLine({ event: 'self-heal-failed', error: str(e.message, 300) }); return []; }
+}
 
 /** The build's worktree (made when missing): its own branch claude/<id> from origin/main, node_modules linked from the main checkout. */
 export function ensureWorktree(id, env = process.env) {
@@ -309,7 +321,20 @@ export function briefFor(b, rules, { account, model, kind = '' }) {
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, opts, ctx = {}) {
+  const dir = join(worktreesRoot(ctx.env || process.env), b.id);
+  const fixes = (r) => r.removed.map((l) => ({ kind: 'lock', path: l.path, build: b.id, checkout: dir, why: `${Math.round(l.ageMs / 1000)}s old, nobody holds it (before launch)` }));
+  if (existsSync(dir)) { try { const r = heal.clearStaleLocks({ roots: [dir] }); if (r.removed.length) heal.recordFixes(fixes(r), { source: 'launch' }); } catch { /* the launch says what is wrong */ } }
+  try { return launchOnce(b, opts, ctx); } catch (e) {
+    // the launcher failed on a git lock: clear it (any age, nobody holding it) and launch once more
+    if (!heal.lockFromError(e.message) || !existsSync(dir)) throw e;
+    const r = heal.clearStaleLocks({ roots: [dir], minAgeMs: 0 });
+    if (!r.removed.length) throw e;
+    heal.recordFixes(fixes(r).map((f) => ({ ...f, why: 'the launch failed on it; launched again' })), { source: 'launch' });
+    return launchOnce(b, opts, ctx);
+  }
+}
+function launchOnce(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   const briefFile = join(dir, '.axf-brief.md');
   writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
@@ -337,6 +362,27 @@ function tmuxHas(name) {
   if (process.env.AXF_SLOTS_TMUX === 'off') return null;
   const r = spawnSync('tmux', ['has-session', '-t', `=${name}`], { encoding: 'utf8' });
   return r.error ? null : r.status === 0;
+}
+
+/**
+ * Live tmux sessions already running a build (axf-<id>--<agent>). The dispatcher never starts a second session for a
+ * build that has one (Nov 10 2026: a build was launched twice into the same folder; the two sessions overwrote each
+ * other and one of them was billed per token). Tests: AXF_PIPELINE_SESSIONS { session: 'alive' | … }.
+ */
+export function liveSessionsFor(id) {
+  const prefix = `axf-${id}--`;
+  if (process.env.AXF_PIPELINE_SESSIONS) return Object.entries(readJson(process.env.AXF_PIPELINE_SESSIONS, {}) ?? {}).filter(([n, v]) => n.startsWith(prefix) && v === 'alive').map(([n]) => n);
+  if (process.env.AXF_SLOTS_TMUX === 'off') return [];
+  const r = spawnSync('tmux', ['list-sessions', '-F', '#{session_name}'], { encoding: 'utf8' });
+  if (r.error || r.status !== 0) return [];
+  return r.stdout.split('\n').map((x) => x.trim()).filter((n) => n.startsWith(prefix) && claudeRunning(n));
+}
+/** Is a claude process (or the headless wrapper) still running in a tmux session? (A finished shell doesn't count.) */
+function claudeRunning(name) {
+  const panes = spawnSync('tmux', ['list-panes', '-s', '-t', `=${name}`, '-F', '#{pane_pid} #{pane_dead}'], { encoding: 'utf8' });
+  if (panes.error || panes.status !== 0) return true; // can't tell: assume it runs (never launch twice)
+  const list = panes.stdout.split('\n').filter(Boolean).map((l) => { const [pid, dead] = l.split(' '); return { pid: Number(pid), dead: dead === '1' }; });
+  try { return heal.paneAlive(list, heal.processes()); } catch { return true; }
 }
 
 /** Running builds whose session ended: { id, outcome, status, exit }. */
@@ -390,6 +436,7 @@ export function tick({ env = process.env } = {}) {
   const sent = [];
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
+  const healed = healTick(live(loadStore())); // stale git locks + crashed sessions first: plain code, no AI
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
@@ -401,6 +448,12 @@ export function tick({ env = process.env } = {}) {
     const fails = (state.launchFails[l.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: l.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === l.id);
+    const already = liveSessionsFor(l.id);
+    if (already.length) {
+      plan.waits.push({ id: l.id, why: `already running in ${already.join(', ')}: not started twice` });
+      logLine({ event: 'launch-refused-duplicate', build: l.id, sessions: already });
+      continue;
+    }
     try {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
@@ -437,7 +490,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, intake: inta, healed, ended, launched, failed, plan, idle, alertsSent: sent };
 }
 
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */

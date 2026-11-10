@@ -23,6 +23,8 @@ export const STATUS_ONLY_MARK = '[skip ci]';
 export const STATUS_PATHS = /^_claude\//;
 
 /** Files that are scratch in a build's worktree: never committed, never block a landing. */
+/** Logs anywhere in the tree: a tracked one a tool rewrote is put back, never a reason to hold a landing. */
+const STRAY_LOG = /(^|\/)[^/]+\.(log|jsonl)$/;
 const SCRATCH = [/^\.brief\.md$/, /^[^/]+\.log$/, /^[^/]+\.jsonl$/, /^\.axf-[^/]*$/, /^\.claude-sync-hold$/, /(^|\/)node_modules(\/|$)/, /^\.shots-harness\//];
 /** Synced data (claude-sync, persist.mjs): changes here are committed on the build's own branch. */
 const SYNCED = [/^_claude\//, /^changes\//, /^sessions\//, /^apps\/[^/]+\/_claude\//, /^framework\/plan\//, /^framework\/catalog\/status\.json$/, /^tracker\.json$/, /^project\.manifest\.json$/, /^apps\/[^/]+\/project\.manifest\.json$/];
@@ -73,6 +75,8 @@ export function planConflicts(paths) {
  *   archive  untracked file that is a copy of a hub file (claude-sync dropped it): moved to /root/archive/<build>/
  *   restore  tracked synced file whose content is the hub's copy (a sync drop, not the build's work): backed up the
  *            same way, then put back to the branch's version (the hub keeps it; nothing is lost)
+ *            Tracked logs anywhere (assets.log, build logs) that a tool rewrote are restored the same way (self-heal,
+ *            Brett Nov 10 2026: a stray log never stops a landing)
  *   code     tracked code changed but not committed: the landing waits and says so (never committed for the build)
  *   keep     untracked file that isn't a hub copy: left alone
  * `hubHas(path)` says whether the hub (/projects/<name>/_claude …) has a file at that repo path.
@@ -87,6 +91,7 @@ export function strayPlan(porcelain, hubHas = () => false) {
     if (any(SCRATCH, p)) { plan.skip.push(p); continue; }
     const untracked = xy === '??'; const deleted = xy.includes('D');
     if (!deleted && hubHas(p)) { (untracked ? plan.archive : plan.restore).push(p); continue; }
+    if (!untracked && !deleted && STRAY_LOG.test(p) && !any(SYNCED, p)) { plan.restore.push(p); continue; }
     if (untracked) { (any(SYNCED, p) ? plan.commit : plan.keep).push(p); continue; }
     (any(SYNCED, p) ? plan.commit : plan.code).push(p);
   }

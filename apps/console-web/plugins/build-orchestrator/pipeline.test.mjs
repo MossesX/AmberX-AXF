@@ -2,7 +2,7 @@
 // Pipeline core (pure) + the CLI end to end on a scratch store with a fake launcher, fake accounts and a fake splitter.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -274,7 +274,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
-    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all',
+    AXF_HEAL_REPO: join(tmp, 'repo'), AXF_HEAL_DIR: join(tmp, 'heal'), AXF_HEAL_ARCHIVE: join(tmp, 'heal-archive'), AXF_HEAL_CONSOLE: 'off' };
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
   const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0 && !args.includes('--expect-fail')) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
   const pipe = (...a) => run('pipeline.mjs', ...a);
@@ -379,6 +380,35 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(find('gamma').pipeline.splitRequested);
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['gamma']);
     assert.equal(find('gamma').steps.length, 2); assert.equal(find('gamma').pipeline.splitRequested, '');
+  });
+  t('e2e self-heal: the tick clears a stale git lock in a build folder (plain code) and logs the fix; a fresh lock stays', () => {
+    const g = (cwd, ...a) => spawnSync('git', a, { cwd, encoding: 'utf8' });
+    const repo = join(tmp, 'repo'); mkdirSync(repo, { recursive: true });
+    g(repo, 'init', '-q', '-b', 'main'); g(repo, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', 'init');
+    assert.equal(g(repo, 'worktree', 'add', '-q', '-b', 'claude/healme', join(wtRoot, 'healme')).status, 0);
+    const lock = join(repo, '.git', 'worktrees', 'healme', 'index.lock'); writeFileSync(lock, '');
+    const old = (Date.now() - 5 * 60e3) / 1000; utimesSync(lock, old, old);
+    const fresh = join(repo, '.git', 'HEAD.lock'); writeFileSync(fresh, '');
+    const r = json(pipe('tick', '--json'));
+    assert.ok(!existsSync(lock), 'the stale lock is gone'); assert.ok(existsSync(fresh), 'a lock under 2 minutes old stays');
+    assert.ok(r.healed.some((f) => f.kind === 'lock' && f.path === lock));
+    const logged = readFileSync(join(tmp, 'heal', 'fixes.jsonl'), 'utf8'); assert.match(logged, /healme/); assert.match(logged, /Removed stale git lock/);
+    rmSync(fresh);
+  });
+  t('e2e duplicate launch guard: a build with a live session is never started a second time', () => {
+    // free every account: whatever earlier tests left running ends cleanly
+    for (const b of store().builds.filter((x) => x.status === 'running' && x.pipeline?.session)) writeFileSync(join(hdir, 'events.jsonl'), `${JSON.stringify({ event: 'session-end', session: b.pipeline.session, exit: 0, at: new Date().toISOString() })}\n`, { flag: 'a' });
+    pipe('tick', '--json');
+    orch('act', JSON.stringify({ action: 'add', id: 'eps', title: 'Eps', steps: [{ text: 'do eps', model: 'Opus', estimate: '20 min' }] }));
+    pipe('queue', 'eps');
+    const sessions = join(tmp, 'sessions.json'); writeFileSync(sessions, JSON.stringify({ 'axf-eps--joey': 'alive' }));
+    const r1 = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_SESSIONS: sessions }, encoding: 'utf8', timeout: 120000 });
+    const j1 = JSON.parse(r1.stdout.trim().split('\n').pop());
+    assert.ok(!j1.launched.some((l) => l.id === 'eps'), 'not launched while a session runs it');
+    assert.ok(j1.plan.waits.some((w) => w.id === 'eps' && /not started twice/.test(w.why)), JSON.stringify(j1.plan.waits));
+    writeFileSync(sessions, JSON.stringify({ 'axf-eps--joey': 'gone' }));
+    const r2 = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_SESSIONS: sessions }, encoding: 'utf8', timeout: 120000 });
+    assert.ok(JSON.parse(r2.stdout.trim().split('\n').pop()).launched.some((l) => l.id === 'eps'), 'launched once that session is gone');
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');

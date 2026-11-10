@@ -23,7 +23,9 @@ const check = (c, m) => { if (c) { ok++; console.log(`  ✓ ${m}`); } else { bad
 console.log('zero tokens: the merge pipeline never calls a model');
 const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-sdk/, /\bclaude\s+-p\b/, /['"]claude['"]\s*,/, /claude-headless\.sh/, /axf\.llm@1/, /\bllm\b.*\bimport\b|\bimport\b.*\bllm\b/i, /chat[-_]engine/, /swarm-chat/, /\bgenerativeai\b|\bmistral\b|\bollama\b|\bcohere\b/i];
 const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$/.test(f));
-const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs']);
+const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs',
+  // self-heal (stale git locks, stray files): plain code; checked below for the same zero-token rule
+  '../../../../../framework/cli/self-heal.mjs']);
 for (const f of landFiles) {
   const text = readFileSync(join(HERE, f), 'utf8');
   const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)|require\(\s*['"]([^'"]+)['"]\s*\)/gm)].map((m) => m[1] || m[2] || m[3]);
@@ -32,6 +34,13 @@ for (const f of landFiles) {
   const code = text.replace(/^\s*(\*|\/\/|#).*$/gm, '');
   const hit = LLM.find((re) => re.test(code));
   check(!hit, `${f}: no model client, chat engine or headless launch${hit ? ` (matches ${hit})` : ''}`);
+}
+{ // the self-heal guard every landing git call goes through: no model client either, imports only node and the builds store
+  const text = readFileSync(join(HERE, '../../../../../framework/cli/self-heal.mjs'), 'utf8');
+  const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]/gm)].map((m) => m[1]);
+  check(imports.every((i) => i.startsWith('node:') || ['../plan/builds-store-core.mjs', './builds-store.mjs'].includes(i)), `self-heal.mjs: imports only node built-ins and the builds store (${imports.join(', ')})`);
+  const code = text.replace(/^\s*(\*|\/\/|#).*$/gm, ''); const hit = LLM.find((re) => re.test(code));
+  check(!hit, `self-heal.mjs: no model client, chat engine or headless launch${hit ? ` (matches ${hit})` : ''}`);
 }
 // the only way out to an agent is agent-job.mjs, for a code conflict or red CI
 const land = readFileSync(join(HERE, 'land.mjs'), 'utf8');
@@ -53,6 +62,8 @@ check(sp.skip.join() === '.brief.md,auto-land.jsonl', '.brief.md and top-level j
 check(sp.archive.join() === '_claude/dup.md' && sp.restore.join() === '_claude/shared/x.md', 'copies of hub files are backed up (untracked moved, tracked put back)');
 check(sp.code.join() === 'framework/core/a.ts' && sp.keep.join() === 'notes.txt', 'uncommitted code is reported, other untracked files left alone');
 check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').commit.length === 1, 'a journal deep in _claude/ is data, not a scratch log');
+{ const st = core.strayPlan(' M framework/assets/assets.log\n M apps/demo/build.log\n M framework/core/a.ts');
+  check(st.restore.join() === 'framework/assets/assets.log,apps/demo/build.log' && st.code.join() === 'framework/core/a.ts', 'self-heal: a tracked log a tool rewrote (assets.log, a build log) is put back, never holds the landing; code still does'); }
 
 const B = (id, o = {}) => ({ id, title: id, branch: `claude/${id}`, status: 'built', steps: [{ id: 's1', done: true }], notes: [], ...o });
 check(core.isCandidate(B('a')) && core.isCandidate(B('b', { status: 'running' })), 'built, or every step done = a candidate');
