@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3039,
- "updatedAt": "2026-11-10T23:43:03.970Z",
+ "rev": 3040,
+ "updatedAt": "2026-11-10T23:43:09.330Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154054,7 +154054,7 @@
    "pr": "#483",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:43:01.287Z",
+   "updatedAt": "2026-11-10T23:43:04.015Z",
    "builtAt": "2026-11-10T23:28:08.303Z",
    "notes": [
     {
@@ -154116,6 +154116,10 @@
     {
      "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully: brief only · start 11.1K tokens ($0.03) · cost $2.10 · 27 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:43:01.287Z"
+    },
+    {
+     "text": "Session axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T23:43:04.015Z"
     }
    ],
    "approvals": [],
@@ -154136,18 +154140,18 @@
     "queuedAt": "2026-11-10T23:08:07.824Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T23:26:11.877Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-10T23:26:05.306Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 2,
-     "account": "account-3",
-     "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--lenny"
+     "at": "2026-11-10T23:43:03.638Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully"
     },
     "split": null,
     "splitRequested": "",
@@ -154243,7 +154247,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
