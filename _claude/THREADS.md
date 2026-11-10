@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:28 UTC · `landing-tool-takes-long-build-names-and-auto-fix` note (all) · orchestrator
 - 2026-11-10 04:28 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · pipeline
 - 2026-11-10 04:28 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, note (all) · pipeline
 - 2026-11-10 04:28 UTC · `audit-pending-fable-builds-against-main-close-wh` branch claude/audit-pending-fable-builds-against-main-close-wh (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:40 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:40 UTC · `skins-consistent-across-plugins-full-state-saves` note (all) · orchestrator
 - 2026-11-10 17:40 UTC · `skin-rule-overrides-are-local-only-global-change` added (0 steps) (all) · console
+- 2026-11-10 17:41 UTC · `skin-rule-overrides-are-local-only-global-change` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 
