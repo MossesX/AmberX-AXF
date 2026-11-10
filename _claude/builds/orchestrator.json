@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:08:23.082Z",
+ "updatedAt": "2026-11-10T01:08:36.669Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81490,7 +81490,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81498,7 +81498,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T01:08:21.859Z",
+   "updatedAt": "2026-11-10T01:08:32.410Z",
    "builtAt": "",
    "notes": [
     {
@@ -81508,6 +81508,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T00:01:58.512Z"
+    },
+    {
+     "text": "s1 done (Fable), commit 007edbb17 on claude/walkthrough-player-ide-layout-setting-collapsibl. The glossary's player, Book Builder and clips are merged into demonstration-designer (one store, demos.mjs; docs.mjs moved; glossary reached only through glossary@1; the old store is imported on install). New: Layout setting Player / IDE (player.layout; action pitch.layout; lib-workspace panes Library tree with Create a demo on this, Books, book tabs, Properties, Script, Group chat PiP, toolbars, context menus), nested chapters (book@1 chapter.parent, four deep; fixture + schema regenerated), a custom prompt on pitches and books, MP3 export, ?axf-book= deep link, the floating player as the remote of the one stage (voice, speed, captions, music, highlight, logo, stage buttons, auto-advance, voice control). Checks green: check-demo 259, test.mjs 26, test.mts, catalog --check, tsc, theme/controls/toolbars/chrome/pages, plugin-commands, plugin-lifecycle. Help coverage: no gaps in these two plugins; the console-web ratchet already fails on main (claude-accounts help kind). For s2/s3 (Opus): UI Review submission needs a console running this branch (desktop + phone shots: Player layout, IDE layout, Book Builder with a nested chapter, the player window); the PR; STATUS.md + THREADS row + report. Not built: export to a person / email (share link + MP4 / MP3 only); the Group chat pane opens the chat-viewer view as a floating window and says so when no chat plugin is installed.",
+     "at": "2026-11-10T01:08:32.410Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-walkthrough-player-ide-layout-setting-collapsibl--gina.",
@@ -81561,8 +81565,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:08:24.092Z",
      "note": "",
      "uid": "st-mw9xdy4001xnwl"
     },
