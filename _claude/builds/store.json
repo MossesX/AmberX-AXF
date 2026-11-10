@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2478,
- "updatedAt": "2026-11-10T16:44:08.776Z",
+ "rev": 2479,
+ "updatedAt": "2026-11-10T16:44:45.906Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139640,9 +139640,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:03.427Z",
-   "updatedAt": "2026-11-10T16:43:04.900Z",
+   "updatedAt": "2026-11-10T16:44:43.378Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:44:43.378Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -139657,7 +139662,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T16:44:43.378Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwax7hma01vryr",
+     "title": "",
+     "text": "In the AmberX Android app the rendered page sits too high: the top banner/row is hidden behind the phone's status bar (call notifications) and the camera cutout. Fix edge-to-edge handling: apply system bar and display-cutout insets (WindowInsets / safe-area-inset-top for the web view), so the top row is fully visible. Test on the paired phone, portrait and landscape.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:44:43.378Z",
+     "updatedAt": "2026-11-10T16:44:43.378Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwax7hma026l9w",
+     "title": "",
+     "text": "Fix the top bar of the AmberX app because it's behind my top banner where my call notifications are. It renders the web page too high up for the screen. The top row is hidden. The banner's behind stuff like my camera.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:44:43.378Z",
+     "updatedAt": "2026-11-10T16:44:43.378Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwax7hma033sqy",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/amberx-android-web-view-top-banner-hidden-behind.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/amberx-android-web-view-top-banner-hidden-behind.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:44:43.378Z",
+     "updatedAt": "2026-11-10T16:44:43.378Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -139666,12 +139763,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T16:44:43.378Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
