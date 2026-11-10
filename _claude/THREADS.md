@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:23 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
-- 2026-11-10 00:23 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` added (0 steps) (all) · console
 - 2026-11-10 00:25 UTC · `real-time-slot-tracking-stale-data-reaper` s1 done (all) · orchestrator
 - 2026-11-10 00:25 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` note (all) · orchestrator
 - 2026-11-10 00:25 UTC · `real-time-slot-tracking-stale-data-reaper` s2 done (all) · orchestrator
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 06:10 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 06:15 UTC · `audit-pending-fable-builds-against-main-close-wh` → pending, note (all) · pipeline
 - 2026-11-10 06:15 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
+- 2026-11-10 06:15 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
+- 2026-11-10 06:15 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · pipeline
 
 ## Token passes (log)
 
