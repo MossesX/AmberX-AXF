@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:16 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` added (0 steps) (all) · console
 - 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` → queued, note (all) · console
 - 2026-11-10 00:17 UTC · `build-statuses-tell-the-truth-orchestrator-list` → queued, note (all) · builds-live
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:39 UTC · `approval-row-buttons` s1 done, s2 done, → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `claude-settings-tabs-veto` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `axhub-web-hub-rules` → running (all) · audit-pending-fable-builds-against-main-close-wh
 
 ## Token passes (log)
 
