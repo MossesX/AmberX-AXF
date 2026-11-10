@@ -771,11 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:19 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
-- 2026-11-10 00:20 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
-- 2026-11-10 00:21 UTC · `skins-as-packages-of-slices-every-section-its-ow` added (0 steps) (all) · console
-- 2026-11-10 00:22 UTC · `skins-as-packages-of-slices-every-section-its-ow` added (0 steps) (all) · builds-live
-- 2026-11-10 00:22 UTC · `skins-as-packages-of-slices-every-section-its-ow` → queued, note (all) · console
 - 2026-11-10 00:23 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 - 2026-11-10 00:23 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` added (0 steps) (all) · console
 - 2026-11-10 00:25 UTC · `real-time-slot-tracking-stale-data-reaper` s1 done (all) · orchestrator
@@ -1171,6 +1166,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:45 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 04:46 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 04:47 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
+- 2026-11-10 06:05 UTC · `audit-pending-fable-builds-against-main-close-wh` → pending, note (all) · pipeline
+- 2026-11-10 06:10 UTC · `audit-pending-fable-builds-against-main-close-wh` → pending, note (all) · pipeline
+- 2026-11-10 06:10 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
+- 2026-11-10 06:15 UTC · `audit-pending-fable-builds-against-main-close-wh` → pending, note (all) · pipeline
+- 2026-11-10 06:15 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 
 ## Token passes (log)
 

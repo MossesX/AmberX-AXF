@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2355,
- "updatedAt": "2026-11-10T04:47:08.735Z",
+ "rev": 2356,
+ "updatedAt": "2026-11-10T06:15:16.937Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136042,7 +136042,7 @@
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
    "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -136050,7 +136050,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T04:40:11.629Z",
+   "updatedAt": "2026-11-10T06:15:07.637Z",
    "builtAt": "",
    "notes": [
     {
@@ -136068,6 +136068,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-audit-pending-fable-builds-against-main-close-wh--gina, own login copy)",
      "at": "2026-11-10T04:28:57.137Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-10T06:15:07.637Z"
     }
    ],
    "approvals": [],
@@ -136088,12 +136092,19 @@
     "queuedAt": "2026-11-10T04:25:11.547Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-audit-pending-fable-builds-against-main-close-wh--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T04:28:53.382Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T06:15:04.995Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 2,
+     "account": "mossesx-max-",
+     "session": "axf-audit-pending-fable-builds-against-main-close-wh--gina"
+    },
     "split": {
      "at": "2026-11-10T04:27:21.668Z",
      "by": "orchestrator",
@@ -136102,7 +136113,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-10T04:28:53.382Z"
    },
@@ -136185,7 +136196,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -136510,7 +136521,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T04:47:06.554Z",
+   "updatedAt": "2026-11-10T06:15:15.367Z",
    "builtAt": "",
    "notes": [
     {
@@ -136532,6 +136543,10 @@
     {
      "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at f1f03fdc4)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to w",
      "at": "2026-11-10T04:47:06.554Z"
+    },
+    {
+     "text": "Launch on mossesx-max- failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to write file _claude/builds/journal/2026-11.jsonl\nUpdating files:   0% ",
+     "at": "2026-11-10T06:15:15.367Z"
     }
    ],
    "approvals": [],
@@ -136566,7 +136581,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at f1f03fdc4)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026",
+    "note": "launch failed: worktree for resolve-the-conflict-and-land-the-orchestrator-l: Preparing worktree (resetting branch 'claude/resolve-the-conflict-and-land-the-orchestrator-l'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nUpdating files:   0% (27/13024)\rerror: unable to write ",
     "route": "",
     "dispatchedAt": ""
    },
@@ -136649,7 +136664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
