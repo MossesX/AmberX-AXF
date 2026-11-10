@@ -2866,6 +2866,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-table-columns-model-queue-assigned": {
+   "said": "You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.",
+   "at": "2026-11-10T00:17:45.319Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "owner-only-settings-brett-s-admin-console-login-counts-as-owner": {
    "said": "",
    "at": "",
