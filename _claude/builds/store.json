@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2417,
- "updatedAt": "2026-11-10T15:41:00.433Z",
+ "rev": 2418,
+ "updatedAt": "2026-11-10T15:41:31.830Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137880,12 +137880,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
-   "updatedAt": "2026-11-10T15:40:29.748Z",
+   "updatedAt": "2026-11-10T15:41:30.058Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:40:29.748Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:41:30.058Z"
     }
    ],
    "approvals": [],
@@ -137912,13 +137916,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T15:41:30.058Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwauy6oa017907",
+     "title": "",
+     "text": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:41:30.058Z",
+     "updatedAt": "2026-11-10T15:41:30.058Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwauy6oa023wkm",
+     "title": "",
+     "text": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:41:30.058Z",
+     "updatedAt": "2026-11-10T15:41:30.058Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwauy6oa03p7u0",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/project-manager-every-project-its-own-console-in.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/project-manager-every-project-its-own-console-in.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:41:30.058Z",
+     "updatedAt": "2026-11-10T15:41:30.058Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -137927,12 +138007,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:41:30.058Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
