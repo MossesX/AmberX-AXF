@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:49 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → queued, note (all) · pipeline
 - 2026-11-09 18:49 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → running, note (all) · pipeline
 - 2026-11-09 18:49 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · orchestrator
 - 2026-11-09 18:49 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · console
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:19 UTC · `orchestrator-table-columns-model-queue-assigned` → queued, note (all) · console
 - 2026-11-10 02:19 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` → queued, note (all) · builds-live
 - 2026-11-10 02:20 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
+- 2026-11-10 02:21 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2192,
- "updatedAt": "2026-11-10T02:20:15.609Z",
+ "rev": 2193,
+ "updatedAt": "2026-11-10T02:21:14.196Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123913,7 +123913,7 @@
    "branch": "claude/one-builds-page-pending-queued-built-tabs-remove",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-09T02:52:48.156Z",
+   "updatedAt": "2026-11-10T02:21:00.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -123939,6 +123939,10 @@
     {
      "text": "Brett (Nov 9): \"I need to be able to move queued items back to pending and pending items back to the planner. I need to be able to cancel or put on hold pending items... and put on hold things in the queue.\" Row actions (and multi-select bulk actions) on the one builds page: Queued -> Back to pending; Pending -> Back to planner (parks it as a Plan Studio plan, keeps Brett's words and steps); Cancel (pending or queued: marked cancelled with reason, kept in history, restorable); Hold / Resume (pending and queued: held items are skipped by the dispatcher and show a Held badge). A running build: Hold = stop after the current step, then held. Every action logged, sends a manifest update, and has full API/MCP/CLI/voice control. Confirm dialog for Cancel.",
      "at": "2026-11-09T02:52:48.156Z"
+    },
+    {
+     "text": "Superseded by split-builds-pages-build-manager-pending-complet-3 (Build Manager = Pending + Complete; Orchestrator = Queued + Active). Its Nov 9 asks (collapsible data-grid rows, hold/cancel/back-to-pending) carry over there.",
+     "at": "2026-11-10T02:21:00.444Z"
     }
    ],
    "approvals": [],
@@ -124034,7 +124038,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
