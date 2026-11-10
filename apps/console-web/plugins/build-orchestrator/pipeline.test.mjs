@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import * as REG from './slot-registry.mjs';
 import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
@@ -231,6 +232,26 @@ t('every brief and the split prompt carry the API rule (deep link, state, every 
   assert.ok(OC.brief(b).includes(OC.API_RULE), 'the phase brief');
   assert.ok(P.splitPrompt(b).includes(OC.API_RULE), 'the split prompt: every UI step names its API part');
 });
+// ---------------- live slot registry (slot-registry@1): from heartbeats, never from build statuses
+t('registry: per account / model from live slot entries; silent sessions and ghost builds listed', () => {
+  const accts = [{ name: 'w-max', fable: true, parallel: 2, usable: true }, { name: 'w-pro', fable: false, parallel: 3, usable: true }, { name: 'off', fable: true, parallel: 1, usable: false, why: 'switched off' }];
+  const slotsSum = { cap: 4, used: 2, free: 2, queued: 1, stale: [{ id: 'x' }], running: [
+    { id: 'h1', session: 'axf-one--a', build: 'one', account: 'w-max', model: 'fable', state: 'running', hb: true, live: true, beatAgeSec: 5 },
+    { id: 'h2', session: 'axf-two--b', state: 'running', live: true },
+    { id: 'h3', session: 'axf-three--c', build: 'three', account: 'w-pro', model: 'opus', state: 'running', hb: true, live: false, beatAgeSec: 900 },
+    { id: 'h4', session: 'axf-four--d', build: 'four', account: 'w-pro', state: 'finished', live: false } ] };
+  const builds = [build('one', 'running', []), build('two', 'running', [], { pipeline: { account: 'w-pro', model: 'Opus', session: 'axf-two--b' } }),
+    build('three', 'running', [], { pipeline: { session: 'axf-three--c' } }), build('ghost', 'running', []), build('epic', 'running', [], { kind: 'epic' }), build('q', 'queued', [])];
+  const R = REG.registry({ accounts: accts, slots: slotsSum, builds });
+  const by = Object.fromEntries(R.accounts.map((a) => [a.name, a]));
+  assert.deepEqual([by['w-max'].inUse, by['w-max'].free, by['w-pro'].inUse, by['w-pro'].free], [1, 1, 1, 2], 'a session counts on its account: from the heartbeat, else the build record; silent and finished ones do not');
+  assert.deepEqual(R.models.fable, { configured: 3, inUse: 1, free: 1 }); assert.deepEqual(R.models.opus, { configured: 6, inUse: 1, free: 2 }, 'model free = free on usable accounts, capped by the VPS');
+  assert.deepEqual(R.stale, ['axf-three--c']); assert.equal(R.vps.stale, 1);
+  assert.deepEqual(R.ghosts.map((g) => g.id), ['three', 'ghost'], 'running with no live session = ghost; epics skipped');
+  assert.deepEqual(REG.registry({ accounts: accts, slots: slotsSum, builds, tmux: ['axf-ghost--z'] }).ghosts.map((g) => g.id), ['three'], 'a live tmux session for the build is enough');
+  assert.match(REG.describe(R), /w-max: 1\/2 in use/);
+});
+
 // ---------------- one way to start builds (framework/cli/dispatch-gate.mjs)
 t('dispatch gate: a build launch needs the orchestrator token for that build; other sessions pass', () => {
   const b = { id: 'alpha' };

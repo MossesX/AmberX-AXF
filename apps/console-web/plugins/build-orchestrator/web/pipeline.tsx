@@ -10,14 +10,19 @@ import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
  * the API overflow switch (off by default) and each build's route (Auto / API / Subscriptions) decide when a build may
  * run on an API-key account; API accounts show their key, caps and room. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
  * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock.
+ * Live slots (Nov 10 2026, slot-registry@1): configured / in use / free for the VPS, per account and per model, counted
+ * from live session heartbeats only, with the silent sessions and the ghost builds the reaper fixes. Deep link:
+ * console_show("orchestrator", highlight="#pl-slots"); the same data: GET /pipeline/slots, pipeline.mjs slots.
  */
 
 type Pipeline = { route?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type Row = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
+type RegAccount = { name: string; kind: string; fable: boolean; usable: boolean; why: string; configured: number; inUse: number; free: number; sessions: string[] };
+type Registry = { vps: { cap: number; used: number; free: number; queued: number; stale: number }; accounts: RegAccount[]; models: Record<'fable' | 'opus', { configured: number; inUse: number; free: number }>; unassigned: string[]; stale: string[]; ghosts: { id: string; status: string; why: string }[] };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; accounts: Account[];
-  slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
+  slots: { used: number; cap: number; free: number; queued: number; stale?: number; unavailable: boolean }; registry?: Registry;
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
@@ -70,6 +75,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
       </div>
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
+      {s.registry && <LiveSlots r={s.registry} />}
       <section className="fx-stack">
         <h2 className="pd-card__title">Claude accounts on the VPS <span className="fx-muted fx-small">· the dispatcher sends Fable phases to accounts with Fable, the rest to Opus</span></h2>
         {s.accounts.length === 0 ? <div className="fx-empty">No Claude account is signed in on the VPS.</div> : (
@@ -116,6 +122,39 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         </details>
       )}
     </div>
+  );
+}
+
+/** Live slots: what is really running, from heartbeats; a build's status never holds a slot. */
+function LiveSlots({ r }: { r: Registry }) {
+  return (
+    <section id="pl-slots" className="fx-stack" aria-label="Live slots">
+      <h2 className="pd-card__title">Live slots <span className="fx-muted fx-small">· counted from session heartbeats, not build statuses</span></h2>
+      <div className="pl-strip">
+        <span className="pl-stat" title="Agent slots on the VPS: in use / the cap"><Icon name="layers" size={14} /><b>{r.vps.used}/{r.vps.cap}</b> VPS · {r.vps.free} free</span>
+        {(['fable', 'opus'] as const).map((m) => (
+          <span key={m} className="pl-stat" title={`${m === 'fable' ? 'Fable' : 'Opus'} sessions running / slots on accounts that run it; free = what the next tick can start`}>
+            <span className={`oc-model is-${m}`}>{m === 'fable' ? 'Fable' : 'Opus'}</span><b>{r.models[m].inUse}</b> in use · {r.models[m].free} free of {r.models[m].configured}
+          </span>
+        ))}
+        {r.vps.queued > 0 && <Chip tone="accent">{r.vps.queued} waiting for a slot</Chip>}
+        {r.stale.length > 0 && <Chip tone="warning">{r.stale.length} silent: the reaper frees them</Chip>}
+      </div>
+      <div className="pl-cols pl-cols--accounts">
+        {r.accounts.map((a) => (
+          <article key={a.name} className={`pd-card pl-acct ${a.usable ? '' : 'is-off'}`}>
+            <div className="pd-card__top">
+              <h3 className="pd-card__title">{a.name}<span className="fx-muted fx-small"> · {a.kind === 'api' ? 'API key' : 'subscription'}</span></h3>
+              <span className="pl-stat"><b>{a.inUse}/{a.configured}</b> in use · {a.free} free</span>
+            </div>
+            {a.sessions.length > 0 ? <div className="fx-stack">{a.sessions.map((x) => <p key={x} className="fx-small fx-mono">{x}</p>)}</div> : <p className="fx-small fx-muted">No live session.</p>}
+            {!a.usable && a.why && <p className="fx-small fx-muted">{a.why}</p>}
+          </article>
+        ))}
+      </div>
+      {r.unassigned.length > 0 && <p className="fx-small fx-muted">Running with no account recorded: {r.unassigned.join(', ')}</p>}
+      {r.ghosts.length > 0 && <Note tone="warning">Marked running with no live session (the reconcile fixes these): {r.ghosts.map((g) => g.id).join(', ')}</Note>}
+    </section>
   );
 }
 

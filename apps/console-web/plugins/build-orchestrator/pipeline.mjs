@@ -22,6 +22,8 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … slots [--json]               the live slot registry (slot-registry@1): configured / in use / free for the VPS, per
+ *                                  account and per model, from live heartbeats only; silent sessions and ghost builds
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -45,6 +47,7 @@ import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import * as REG from './slot-registry.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
@@ -120,16 +123,31 @@ export function slotsNow() {
   catch { return { used: 0, cap: 1, free: 1, running: [], queue: [], unavailable: true }; }
 }
 
-/** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
-export function accountsNow(store, settings = loadSettings()) {
+/**
+ * Accounts as the pipeline sees them: claude-workers rows + the live sessions on each + the pipeline's own records. A
+ * session counts on an account only while its agent slot is live (heartbeat fresh): a build whose status says running
+ * holds nothing (Nov 10 2026: 18 ghost 'running' builds held every account's slots).
+ */
+export function accountsNow(store, settings = loadSettings(), sl = slotsNow()) {
   let rows = [];
   try { rows = workersStatus().accounts; } catch { rows = []; }
-  const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting') && b.pipeline?.account);
+  const sessions = REG.sessionsOf(sl, live(store)).filter((x) => x.live && x.account);
   for (const r of rows) {
-    const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
+    const mine = sessions.filter((x) => x.account === r.name).map((x) => x.session);
     r.running = [...new Set([...(r.running ?? []), ...mine])];
   }
   return P.accountViews(rows, loadOwnAccounts(), { settings });
+}
+
+/** live tmux session names on this host (null where tmux can't be seen, e.g. the console container). */
+function tmuxNames() {
+  if (process.env.AXF_SLOTS_TMUX === 'off') return null;
+  const t = slots.tmuxSessions(); return t ? [...t.keys()] : null;
+}
+
+/** slot-registry@1: the live slot picture (VPS, per account, per model, silent sessions, ghost builds). */
+export function slotRegistry({ store = loadStore(), settings = loadSettings(), sl = slotsNow() } = {}) {
+  return REG.registry({ accounts: accountsNow(store, settings, sl), slots: sl, builds: live(store), tmux: tmuxNames() });
 }
 
 const row = (b) => {
@@ -141,8 +159,9 @@ const row = (b) => {
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const store = loadStore(); const settings = loadSettings(); const sl = slotsNow(); const accounts = accountsNow(store, settings, sl);
   const builds = live(store);
+  const registry = REG.registry({ accounts, slots: sl, builds, tmux: tmuxNames() });
   const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
@@ -150,7 +169,7 @@ export function status() {
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, stale: (sl.stale ?? []).length, unavailable: !!sl.unavailable }, registry, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -393,7 +412,7 @@ export function tick({ env = process.env } = {}) {
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
-  const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const sl = slotsNow(); const accounts = accountsNow(store, settings, sl);
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
@@ -548,6 +567,7 @@ async function main(argv) {
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
   }
+  if (cmd === 'slots') { const r = slotRegistry(); return out({ ok: true, registry: r }, REG.describe(r)); }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
     const patch = {};
@@ -562,7 +582,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | slots [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

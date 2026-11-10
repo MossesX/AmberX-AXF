@@ -46,6 +46,8 @@
 # waiter starts it by itself when a slot frees (cancelled from the console = it never starts). Inside tmux the run binds
 # its slot, marks it finished when Claude exits (finished sessions don't count) and closes after closeFinishedAfterSec
 # (the log stays). Heavy steps go through `agent-slots.mjs heavy -- <cmd>` (the brief says so). AXF_SLOTS=off skips it.
+# Heartbeats (Nov 10 2026): while the run lives, `agent-slots.mjs pulse` beats its slot every heartbeatSec with the
+# account and model it runs on; a slot whose beats stop no longer counts and the orchestrator's reaper frees its build.
 # Every session has a named agent (Brett, Nov 3 2026: "no anonymous sessions"; the job crew are all-rounders): before
 # anything starts, the run is booked on AXF_AGENT (refused when that agent can't take it), else on the agent the job
 # router picks (framework/cli/agent-job.mjs book: home job first, then least busy; never nobody), as job type
@@ -305,6 +307,11 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     fi
   fi
   own_login "${account:-active}"
+  pulse_pid=""
+  if [[ -n "$slot" ]] && slots_on; then   # heartbeat: the slot is held only while this shell lives and beats
+    nohup node "$SLOTS" pulse "$slot" --pid "$$" --account "${login_account:-${account:-active}}" ${model:+--model "$model"} --log "$(pwd)/$log" >/dev/null 2>&1 &
+    pulse_pid=$!
+  fi
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
@@ -351,6 +358,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       fi
       tried_workers="$tried_workers,$worker"
       release_login; own_login "$worker"
+      [[ -n "$slot" ]] && slots_on && node "$SLOTS" beat "$slot" --account "$worker" >/dev/null 2>&1
       build_note "Worker $gone stopped ($hit): the run moved to $worker"
       prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
       switches=$((switches + 1))
@@ -363,6 +371,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
     printf '%s · starting again\n\n' "$sw"
     [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
+    [[ -n "$slot" && -n "$login_account" ]] && slots_on && node "$SLOTS" beat "$slot" --account "$login_account" >/dev/null 2>&1
     switches=$((switches + 1))
   done
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
@@ -386,6 +395,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   session_now="$(tmux display-message -p '#S' 2>/dev/null || true)"
   clients=0; [[ -n "$session_now" ]] && clients="$(tmux list-clients -t "=$session_now" 2>/dev/null | wc -l)"
   close=120; (( clients > 0 )) && close=86400
+  [[ -n "${pulse_pid:-}" ]] && kill "$pulse_pid" 2>/dev/null   # the heartbeat stops with claude
   if [[ -n "$slot" ]] && slots_on; then   # finished = the slot is free now
     node "$SLOTS" finish "$slot" --exit "$st" >/dev/null 2>&1 || true
     if (( clients == 0 )); then close="$(node "$SLOTS" get closeFinishedAfterSec 2>/dev/null || echo 120)"; [[ "$close" =~ ^[0-9]+$ ]] || close=120; fi

@@ -435,6 +435,13 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+@router.get("/pipeline/slots")
+def pipeline_slots() -> dict[str, Any]:
+    """The live slot registry (slot-registry@1): slots configured / in use / free for the VPS, per Claude account and per
+    model, judged from live session heartbeats only; silent sessions and builds marked running with no live session."""
+    return _pipeline("slots")
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""

@@ -109,6 +109,26 @@ writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({
 eq(S.claim(q2.id, {}, alive).started, true, 'raised cap applies on the next claim');
 eq(S.status(alive).cap, 3, 'status shows the new cap');
 
+// heartbeats: a beating entry holds its slot only while its beat is fresh; silent ones are listed stale and free the cap
+reset({ maxAgents: 1, heartbeatTimeoutSec: 60 });
+const hb1 = S.enqueue({ name: 'hb-one', build: 'hb-build', account: 'w-max', model: 'opus' }, alive);
+eq([hb1.started, S.loadState().running[0].account, S.loadState().running[0].model], [true, 'w-max', 'opus'], 'enqueue records account and model');
+ok(S.beat(hb1.id, { account: 'w-pro', model: 'fable' }, { now: 1_000_000 }), 'beat on a running entry');
+let hst = S.loadState();
+eq([hst.running[0].hb, hst.running[0].account, hst.running[0].beats], [true, 'w-pro', 1], 'first beat marks hb and moves the account');
+eq(S.holding(hst, S.loadSettings(), 1_030_000).length, 1, 'fresh beat holds the slot');
+eq(S.holding(hst, S.loadSettings(), 1_061_000).length, 0, 'silent past the timeout: no longer holds the slot');
+eq(S.staleEntries(hst, S.loadSettings(), 1_061_000).map((r) => r.id), [hb1.id], 'silent entry listed stale');
+eq(S.summary(hst, S.loadSettings(), {}, 1_061_000).stale[0]?.build, 'hb-build', 'status shows the stale entry with its build');
+eq(S.summary(hst, S.loadSettings(), {}, 1_061_000).free, 1, 'its slot counts free');
+ok(S.finish(hb1.id, 0) && !S.beat(hb1.id), 'a finished entry takes no more beats');
+reset();
+const hb2 = S.enqueue({ name: 'hb-two' }, alive);
+eq(await S.pulse(hb2.id, { pid: process.pid, sleep: async () => {}, maxBeats: 3 }), 3, 'pulse beats while its process lives');
+eq(await S.pulse(hb2.id, { pid: 999999999, sleep: async () => {} }), 0, 'pulse stops when its process is gone');
+S.release(hb2.id);
+eq(await S.pulse(hb2.id, { pid: process.pid, sleep: async () => {} }), 0, 'pulse stops when the slot was released');
+
 // heavy lock: at most maxHeavy at once
 reset({ maxHeavy: 2 });
 let inside = 0; let peak = 0;

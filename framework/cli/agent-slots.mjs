@@ -25,6 +25,15 @@
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *   … beat <id> [--account a] [--model m] [--log f]   one heartbeat (claude-headless.sh, on an account switch)
+ *   … pulse <id> --pid N [--account a] [--model m] [--log f]   beat every heartbeatSec while process N lives (background)
+ *   … stale [--json]               running entries whose heartbeat is older than heartbeatTimeoutSec (the reaper's list)
+ *
+ * Heartbeats (real-time-slot-tracking s2, Nov 10 2026): every headless session runs `pulse` while it is alive. An entry
+ * that has beaten once (`hb`) holds its slot only while its last beat (`beatAt`) is younger than heartbeatTimeoutSec: a
+ * frozen or killed session stops counting at once and shows up in `stale` for the orchestrator's reaper. Entries that
+ * never beat (the swarm runner, adopted tmux sessions) keep the pid / tmux liveness rule. The first beat also records
+ * the Claude account and model the session runs on, which the live slot registry groups by.
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
@@ -48,8 +57,11 @@ export const DEFAULTS = {
   guardWarnTrips: 5,
   swapWarnMb: 256,
   swapWarnMin: 30,
+  /** Heartbeats: a session beats every heartbeatSec; one silent for heartbeatTimeoutSec no longer holds a slot. */
+  heartbeatSec: 30,
+  heartbeatTimeoutSec: 180,
 };
-const LIMITS = { maxAgents: [1, 64], maxHeavy: [1, 32], minFreeGb: [0, 64], closeFinishedAfterSec: [0, 86400], pollSec: [2, 300], guardWarnTrips: [1, 1000], swapWarnMb: [0, 65536], swapWarnMin: [1, 1440] };
+const LIMITS = { maxAgents: [1, 64], maxHeavy: [1, 32], minFreeGb: [0, 64], closeFinishedAfterSec: [0, 86400], pollSec: [2, 300], guardWarnTrips: [1, 1000], swapWarnMb: [0, 65536], swapWarnMin: [1, 1440], heartbeatSec: [5, 600], heartbeatTimeoutSec: [30, 7200] };
 const GRACE_MS = 120_000;      // a slot just taken counts even before its session is bound
 const KEEP_DONE = 50;
 const GIB = 1024 ** 3;
@@ -94,8 +106,16 @@ export function ordered(queue) {
     .sort((a, b) => LEVELS.indexOf(a.priority) - LEVELS.indexOf(b.priority) || a.seq - b.seq);
 }
 
-/** Sessions holding a slot (finished ones only wait to close and don't count). */
-export const holding = (state) => state.running.filter((r) => r.state === 'running' || r.state === 'starting');
+/** Is an entry's heartbeat live? Entries that never beat are judged by pid / tmux (prune) and count as live here. */
+export const beatLive = (e, settings = DEFAULTS, now = Date.now()) => !e?.hb || now - (Date.parse(e.beatAt || 0) || 0) < settings.heartbeatTimeoutSec * 1000;
+/** Seconds since the entry's last heartbeat, null when it never beat. */
+export const beatAge = (e, now = Date.now()) => (e?.hb && e.beatAt ? Math.max(0, Math.round((now - Date.parse(e.beatAt)) / 1000)) : null);
+
+/** Sessions holding a slot: running or starting, and (once they beat) with a live heartbeat. Finished ones don't count. */
+export const holding = (state, settings = DEFAULTS, now = Date.now()) => state.running.filter((r) => (r.state === 'running' || r.state === 'starting') && beatLive(r, settings, now));
+
+/** Running entries whose heartbeat went silent past heartbeatTimeoutSec: the reaper kills them and frees their builds. */
+export const staleEntries = (state, settings = DEFAULTS, now = Date.now()) => state.running.filter((r) => (r.state === 'running' || r.state === 'starting') && r.hb && !beatLive(r, settings, now));
 
 /**
  * May queue entry <id> start now? { go, position (1-based), reason: '' | 'cap' | 'memory' | 'gone', free }.
@@ -105,7 +125,7 @@ export function decide(state, settings, id, memAvailBytes = null) {
   const line = ordered(state.queue);
   const i = line.findIndex((q) => q.id === id);
   if (i < 0) return { go: false, position: 0, reason: 'gone', free: 0 };
-  const free = Math.max(0, settings.maxAgents - holding(state).length);
+  const free = Math.max(0, settings.maxAgents - holding(state, settings).length);
   if (i >= free) return { go: false, position: i + 1, reason: 'cap', free };
   if (memAvailBytes != null && settings.minFreeGb > 0 && memAvailBytes < settings.minFreeGb * GIB) return { go: false, position: i + 1, reason: 'memory', free };
   return { go: true, position: i + 1, reason: '', free };
@@ -137,13 +157,15 @@ export function applyPriority(state, build, level) {
 
 export function summary(state, settings, mem = {}, now = Date.now()) {
   const line = ordered(state.queue);
-  const used = holding(state).length;
+  const used = holding(state, settings, now).length;
+  const stale = staleEntries(state, settings, now);
   return {
     $axf: 'agent-slots-status@1',
     used, cap: settings.maxAgents, free: Math.max(0, settings.maxAgents - used),
     queued: line.length,
     heavy: { used: state.heavy.length, cap: settings.maxHeavy, items: state.heavy },
-    running: state.running,
+    running: state.running.map((r) => ({ ...r, live: (r.state === 'running' || r.state === 'starting') && beatLive(r, settings, now), beatAgeSec: beatAge(r, now) })),
+    stale: stale.map((r) => ({ id: r.id, name: r.name, build: r.build ?? '', session: r.session, account: r.account ?? '', model: r.model ?? '', beatAt: r.beatAt, beatAgeSec: beatAge(r, now) })),
     queue: line.map((q, n) => ({ ...q, position: n + 1 })),
     done: state.done.slice(-20),
     memory: { availGb: mem.avail != null ? Math.round((mem.avail / GIB) * 10) / 10 : null, swapMb: mem.swapMb ?? null, floorGb: settings.minFreeGb },
@@ -288,6 +310,7 @@ export function enqueue(opts = {}, facts = {}) {
     const id = newId(st, opts.kind);
     const nowIso = new Date(facts.now ?? Date.now()).toISOString();
     st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}),
+      ...(opts.account ? { account: clip(opts.account, 40) } : {}), ...(opts.model ? { model: clip(opts.model, 20) } : {}),
       seq: st.seq, state: 'waiting', enqueuedAt: nowIso, pid: Number(opts.pid) || process.ppid, host: HOST(), cwd: clip(opts.cwd ?? process.cwd(), 300), agent: clip(opts.agent, 60), by: clip(opts.by || process.env.AXF_SURFACE || '', 40) });
     return { id, ...tryStart(st, settings, id, mem.avail, facts) };
   });
@@ -297,12 +320,12 @@ function tryStart(st, settings, id, avail, facts = {}) {
   const now = facts.now ?? Date.now();
   const d = decide(st, settings, id, avail);
   if (d.reason === 'memory' && now - (st.guard.trips.at(-1) ?? 0) > 60_000) st.guard.trips.push(now);
-  if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st).length, cap: settings.maxAgents };
+  if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st, settings, now).length, cap: settings.maxAgents };
   const q = st.queue.find((x) => x.id === id);
   st.queue = st.queue.filter((x) => x.id !== id);
-  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
+  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), ...(q.account ? { account: q.account } : {}), ...(q.model ? { model: q.model } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
     enqueuedAt: q.enqueuedAt, startedAt: new Date(now).toISOString(), waitedMs: now - Date.parse(q.enqueuedAt) });
-  return { started: true, position: 0, reason: '', used: holding(st).length, cap: settings.maxAgents };
+  return { started: true, position: 0, reason: '', used: holding(st, settings, now).length, cap: settings.maxAgents };
 }
 
 /** One try for a waiting entry: { started } | { started:false, position, reason } | { gone:true }. */
@@ -326,6 +349,35 @@ export const bind = (id, { pid, session } = {}) => withState((st) => {
   r.state = 'running';
   return true;
 });
+
+/** One heartbeat: the entry is alive now (and from now on holds its slot only while it keeps beating). */
+export const beat = (id, { account, model, log, pid } = {}, facts = {}) => withState((st) => {
+  const r = st.running.find((x) => x.id === id);
+  if (!r || r.state === 'finished') return false;
+  r.hb = true; r.beatAt = new Date(facts.now ?? Date.now()).toISOString(); r.beats = (Number(r.beats) || 0) + 1;
+  if (account) r.account = clip(account, 40);
+  if (model) r.model = clip(model, 20);
+  if (pid && !r.pid) r.pid = Number(pid);
+  if (log) { try { r.outputAt = new Date(statSync(log).mtimeMs).toISOString(); } catch { /* no log yet */ } }
+  return true;
+});
+
+/**
+ * Beat every heartbeatSec while process `pid` lives and the entry still runs (claude-headless.sh starts this in the
+ * background next to `claude -p`). Stops by itself when the session's shell exits or the slot was finished / released.
+ */
+export async function pulse(id, { pid, account, model, log, sleep = (ms) => new Promise((r) => setTimeout(r, ms)), maxBeats = Infinity } = {}) {
+  let n = 0;
+  for (let first = true; n < maxBeats; first = false) {
+    if (pid && !pidAlive(Number(pid))) return n;
+    let ok = false;
+    try { ok = beat(id, first ? { account, model, log } : { log }); } catch { ok = true; /* a busy lock: try again next beat */ }
+    if (!ok) return n;
+    n++;
+    await sleep(loadSettings().heartbeatSec * 1000);
+  }
+  return n;
+}
 
 export const finish = (id, exit = null) => withState((st) => {
   const r = st.running.find((x) => x.id === id);
@@ -464,7 +516,7 @@ async function cli(argv) {
       return;
     }
     case 'enqueue': {
-      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
+      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by, account: f.account, model: f.model });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);
     }
@@ -479,6 +531,9 @@ async function cli(argv) {
       process.exitCode = ok ? 0 : 4; return;
     }
     case 'bind': return void (bind(f._[0], { pid: f.pid, session: f.session }) || (process.exitCode = 4));
+    case 'beat': return void (beat(f._[0], { account: f.account, model: f.model, log: f.log, pid: f.pid }) || (process.exitCode = 4));
+    case 'pulse': return void await pulse(f._[0], { pid: f.pid, account: f.account, model: f.model, log: f.log });
+    case 'stale': { const s = loadSettings(); const st = loadState(); const list = staleEntries(st, s).map((r) => ({ id: r.id, name: r.name, build: r.build ?? '', session: r.session, account: r.account ?? '', beatAt: r.beatAt, beatAgeSec: beatAge(r) })); return f.json ? json(list) : console.log(list.map((r) => `${r.id} ${r.session || r.name} silent ${r.beatAgeSec}s`).join('\n') || 'no stale sessions'); }
     case 'finish': return void (finish(f._[0], f.exit) || (process.exitCode = 4));
     case 'release': return void (release(f._[0], f.exit) || (process.exitCode = 4));
     case 'cancel': cancel(f._[0], f.by); return console.log(`cancelled ${f._[0]}`);
@@ -501,7 +556,7 @@ async function cli(argv) {
       process.exitCode = code; return;
     }
     case 'sweep': return json(sweep());
-    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
+    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, beat, pulse, stale, finish, release, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
   }
 }
 

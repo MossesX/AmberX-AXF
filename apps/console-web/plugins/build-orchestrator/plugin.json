@@ -248,6 +248,14 @@
         "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
       },
       {
+        "id": "pipeline-slots",
+        "route": "GET /pipeline/slots",
+        "title": "Live slots",
+        "description": "How many Claude slots are set, in use and free right now: on the VPS, per Claude account and per model (Fable, Opus), counted from live session heartbeats only. Also lists silent sessions the reaper will free and builds marked running that no live session runs. Say 'how many slots are free' or 'which accounts are busy'.",
+        "readOnly": true,
+        "output": "{ registry: { vps: { cap, used, free, queued, stale }, accounts: [{ name, configured, inUse, free, sessions }], models: { fable, opus }, sessions, stale, ghosts } }"
+      },
+      {
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
