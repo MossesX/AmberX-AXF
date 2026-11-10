@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:47:23.343Z",
+ "updatedAt": "2026-11-10T01:47:33.853Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80341,8 +80341,8 @@
    "pr": "#428",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-10T01:47:10.731Z",
-   "builtAt": "2026-11-10T01:47:10.731Z",
+   "updatedAt": "2026-11-10T01:47:31.746Z",
+   "builtAt": "2026-11-10T01:47:31.746Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80411,6 +80411,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-let-voice-api-route-a-build-to-an-api-account-wi--joey, own login copy)",
      "at": "2026-11-10T01:34:11.618Z"
+    },
+    {
+     "text": "Headless run axf-let-voice-api-route-a-build-to-an-api-account-wi--joey: brief only · start 11.1K tokens ($0.03) · cost $3.38 · 79 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:47:31.746Z"
     },
     {
      "text": "PR #428. UI Review shots for the Pipeline approval card not taken: rebuild-shots' scratch console can't reach axHub from the build sandbox. Filed API route request rr-mwa0yhwk-ym8b (11 queued builds on account-5); Brett approves after merge.",
