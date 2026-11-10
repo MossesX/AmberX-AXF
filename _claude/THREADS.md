@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:43 UTC · `vps-orchestrator-only-rule-vps-settings-console` PR #431 (all) · builds-live
 - 2026-11-10 02:44 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` added (0 steps) (all) · console
 - 2026-11-10 02:44 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` → queued, note (all) · console
 - 2026-11-10 02:45 UTC · `split-builds-pages-build-manager-pending-complet` s1 done (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:32 UTC · `search-bar-plugin-add-on-search-builds-session-h` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:33 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s1 done (all) · orchestrator
 - 2026-11-10 16:34 UTC · `molly-fable-version-the-one-interface-for-amberx` → queued, note (all) · console
+- 2026-11-10 16:36 UTC · `project-manager-every-project-its-own-console-in` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
