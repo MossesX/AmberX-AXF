@@ -31,7 +31,7 @@ export const plugin: AxfWebLibrary = {
       }
     }, () => undefined);
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
-    rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
+    rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Skins (review)' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
@@ -44,7 +44,7 @@ export const plugin: AxfWebLibrary = {
     [VIEW]: { title: 'UI Review', icon: 'eye', keywords: KEYWORDS, render: () => <UiReviewPage /> },
     [SHOTS_VIEW]: { title: 'Screenshots', icon: 'monitor', keywords: ['screenshots', 'shots', 'captures', 'before after', 'check', 'upload', 'pictures'], render: () => <UiReviewPage tab="shots" /> },
     [MOCKUP_VIEW]: { title: 'Predicted look', icon: 'eye', keywords: ['predicted', 'mockup', 'look', 'preview'], render: () => <MockupPage /> },
-    [PACKS_VIEW]: { title: 'Design packs', icon: 'palette', keywords: ['design', 'packs', 'look', 'theme', 'refactor', 'pick'], render: () => <UiReviewPage section={core.DESIGN_KIND} /> },
+    [PACKS_VIEW]: { title: 'Skins (review)', icon: 'palette', keywords: ['skins', 'skin', 'design', 'packs', 'look', 'theme', 'refactor', 'pick'], render: () => <UiReviewPage section={core.DESIGN_KIND} /> },
   },
   slots: { 'app.frame.cover': [{ id: 'ui-review.ask', order: 97, render: () => <AskClient /> }] },
   dialogs: { [ASK_DIALOG]: { title: 'How many options?', icon: 'layers', render: (p) => <AskDialog ask={p.ask as Parameters<typeof AskDialog>[0]['ask']} /> } },

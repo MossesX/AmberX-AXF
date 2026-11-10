@@ -4,10 +4,10 @@
   "kinds": [
     {
       "id": "design-pack",
-      "label": "Design packs",
+      "label": "Skins",
       "icon": "palette",
       "order": 10,
-      "desc": "Candidate design packages for the look refactor. Pick up to 3."
+      "desc": "Candidate skins (formerly design packs; the id design-pack is kept so saved picks work). Pick up to 3."
     },
     {
       "id": "app",
