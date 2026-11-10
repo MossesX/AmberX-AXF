@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:02:18.822Z",
+ "updatedAt": "2026-11-10T01:02:35.247Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14175,7 +14175,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-10T01:00:37.864Z",
+   "updatedAt": "2026-11-10T01:02:22.397Z",
    "builtAt": "",
    "notes": [
     {
@@ -14201,6 +14201,10 @@
     {
      "text": "Folded into account-failover-chain-subscription-next-subscri: pipeline runs now fail over subscription → next subscription → API (pipeline.mjs failover), never the console's account switch; who ran each part is recorded in pipeline.builtBy. Review what is left here once that PR lands.",
      "at": "2026-11-10T01:00:37.864Z"
+    },
+    {
+     "text": "Folded into account-failover-chain-subscription-next-subscri: a pipeline run whose account fails or hits its limit moves to the next subscription account, then an API account under its caps (pipeline.mjs failover); the account that ran it is recorded in pipeline.builtBy.",
+     "at": "2026-11-10T01:02:22.397Z"
     }
    ],
    "approvals": [],
@@ -14775,7 +14779,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-10T01:00:35.621Z",
+   "updatedAt": "2026-11-10T01:02:20.521Z",
    "builtAt": "",
    "notes": [
     {
@@ -14805,6 +14809,10 @@
     {
      "text": "Folded into account-failover-chain-subscription-next-subscri: pipeline runs now fail over subscription → next subscription → API (pipeline.mjs failover), never the console's account switch; who ran each part is recorded in pipeline.builtBy. Review what is left here once that PR lands.",
      "at": "2026-11-10T01:00:35.621Z"
+    },
+    {
+     "text": "Folded into account-failover-chain-subscription-next-subscri: a pipeline run whose account fails or hits its limit moves to the next subscription account, then an API account under its caps (pipeline.mjs failover); the account that ran it is recorded in pipeline.builtBy.",
+     "at": "2026-11-10T01:02:20.521Z"
     }
    ],
    "approvals": [],
@@ -78595,7 +78603,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T01:02:16.682Z",
+   "updatedAt": "2026-11-10T01:02:18.280Z",
    "builtAt": "",
    "notes": [
     {
@@ -78725,8 +78733,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:02:18.280Z",
      "note": "",
      "uid": "st-mw9jydmv028u9h"
     },
