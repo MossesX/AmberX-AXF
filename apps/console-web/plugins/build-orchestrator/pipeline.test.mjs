@@ -274,6 +274,7 @@ t('failover plan: every account out → exhausted with the earliest reset; one a
   assert.match(p.exhausted.reason, /Next reset: a2 at Nov 10 04:30 UTC/); assert.match(p.exhausted.reason, /api-1 API \(overflow off\)/);
   const a = P.alertFor('exhausted', p.exhausted); assert.equal(a.key, 'pipeline:exhausted'); assert.equal(a.title, 'Every Claude account is out until Nov 10 04:30 UTC');
   assert.match(P.alertFor('retry', { id: 'e1', title: 'E1', note: 'moved' }).key, /^pipeline:retry:e1$/);
+  assert.equal(a.link, 'view:build-orchestrator', 'a link the alerts API accepts (view:<id>)');
   // the overflow rule on: the API account is alive, so it takes a build and nothing is exhausted
   const q = P.plan({ builds: [qb('e1', 'Opus')], accounts: accts, slots: { free: 3 }, settings: P.normSettings({ apiOverflow: true }), rules: { maxStepMinutes: 30 } });
   assert.equal(q.launches[0]?.account, 'api-1'); assert.equal(q.exhausted, null);

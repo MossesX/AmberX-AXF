@@ -407,7 +407,8 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+// the alerts API takes http(s)://, view:<id> or settings:<tab>; '#/…' was refused, so no dispatcher alert reached the bell before Nov 10 2026
+export const ALERT_LINK = 'view:build-orchestrator';
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split | retry (FYI: a run moved off a dead
  * account) | exhausted (every account out: the one Brett hears, with the next reset). `key` makes repeats bump a count
