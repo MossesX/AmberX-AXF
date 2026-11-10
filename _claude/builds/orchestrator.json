@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:27:17.736Z",
+ "updatedAt": "2026-11-10T21:27:31.816Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94663,7 +94663,7 @@
    "pr": "#474",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-10T21:27:16.346Z",
+   "updatedAt": "2026-11-10T21:27:17.609Z",
    "builtAt": "",
    "notes": [
     {
@@ -94681,6 +94681,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-all-97-built-but-unmerged-builds-skins-firs--lenny, own login copy)",
      "at": "2026-11-10T21:15:23.661Z"
+    },
+    {
+     "text": "Phase 1 stopped with s1/s2 open: landing ~90 PRs doesn't fit one session. Done: main-red root cause found and fixed in #455 (green, first in the merge queue); skins #409 #429 #355 #376 merged with main and pushed; #432 #440 #269 closed as superseded by #450; report + PR #474. Next run: once #455 is on main, one fresh check run per open PR, then hand-merge the kicked-out conflicts (#411 #379 #378 #374 #373 #372 #371 #362 #347). #446 #466 need Brett's UI Review approval; drafts #430 #472 #469 #377 wait for their builds.",
+     "at": "2026-11-10T21:27:17.609Z"
     }
    ],
    "approvals": [],
