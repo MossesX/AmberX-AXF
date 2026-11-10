@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:08:20.191Z",
+ "updatedAt": "2026-11-10T18:08:29.242Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92663,12 +92663,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:34:46.359Z",
-   "updatedAt": "2026-11-10T17:36:24.532Z",
+   "updatedAt": "2026-11-10T18:08:20.331Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:36:24.532Z"
+    },
+    {
+     "text": "Split by Claude into 7 steps (1 Fable).",
+     "at": "2026-11-10T18:08:20.331Z"
     }
    ],
    "approvals": [],
@@ -92688,13 +92692,16 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Each Shipped Features entry shows the screenshots and before/after shots of what that build did (pulled from the shared screenshot registry / UI Review screenshots grouped by build name), inline with a gallery view. Goes with the shared screenshot registry build.",
+     "text": "Define the contract between Shipped Features entries and the shared screenshot registry: how a build id/name maps to its screenshots, how before/after pairs are marked (role: before|after|shot, pair key, caption, captured_at, source = registry|ui-review), and the fallback lookup through UI Review screenshots grouped by build name. Write it as a schema doc and a JSON schema both sides read; if the shared screenshot registry build has not landed, define the read interface it must satisfy.",
      "model": "Fable",
-     "why": "foundation words in the step",
+     "why": "Cross-port contract between the screenshot registry, UI Review and Shipped Features",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "_claude/shared/contracts/shipped-screenshots.md",
+      "apps/console-web/plugins/shipped-features/schema/screenshots.schema.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -92702,17 +92709,63 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwaz1yhg07xohg"
+     "uid": "st-mwb070q382358v"
     },
     {
      "id": "s2",
-     "text": "Screenshots and everything of what it did? Yep.",
+     "text": "Server side: add a resolver that, for a shipped build, collects its screenshots from the shared screenshot registry (and UI Review screenshots grouped by build name as fallback), pairs before/after shots, dedupes, and returns them sorted and capped per the contract. Cache per build id.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/screenshots.mjs",
+      "apps/console-web/plugins/shipped-features/server.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb070q383uncr"
+    },
+    {
+     "id": "s3",
+     "text": "REST API: GET /api/shipped/:id/screenshots (list, pairs, counts) and GET /api/shipped/:id/screenshots/:shot (one shot with metadata and image URL); include screenshot count and cover thumbnail on the existing shipped list/entry responses. Settings for the gallery (default view grid|before-after, thumbnail size, show on list on/off) readable and writable at GET/PUT /api/shipped/settings/gallery.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/routes.mjs",
+      "apps/console-web/plugins/shipped-features/settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb070q384ib5g"
+    },
+    {
+     "id": "s4",
+     "text": "UI: on each Shipped Features entry show an inline screenshot strip (cover + count) and a gallery view: grid of shots, before/after side-by-side or slider for pairs, lightbox with prev/next and captions, empty state when the build has none. Built on the console plugin framework components.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/shipped-features/ui/entry.js",
+      "apps/console-web/plugins/shipped-features/ui/gallery.js",
+      "apps/console-web/plugins/shipped-features/ui/gallery.css"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -92720,17 +92773,61 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwaz1yhg08v9zu"
+     "uid": "st-mwb070q385qyn0"
     },
     {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/shipped-features-show-each-landed-build-s-screen.md, THREADS row, commit, push, PR",
+     "id": "s5",
+     "text": "API parity for the gallery UI: deep links console_show/console_open targets shipped-features/<build id>/screenshots and shipped-features/<build id>/screenshots/<shot> (opens gallery or lightbox at that shot, before/after mode); gallery state readable (open build, current shot, view mode); actions open_gallery, show_shot, next/prev, set_view, and gallery settings registered as console actions for MCP.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/actions.mjs",
+      "apps/console-web/plugins/shipped-features/deeplinks.mjs",
+      "apps/console-web/plugins/shipped-features/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb070q3865op2"
+    },
+    {
+     "id": "s6",
+     "text": "CLI and voice: add 'shipped screenshots <build> [--shot n] [--before-after] [--open]' and 'shipped gallery settings get|set' plugin commands calling the same REST/actions; add AmberX voice intents ('show me the screenshots for <build>', 'next shot', 'before and after') mapped to the same actions.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/shipped-features/commands.mjs",
+      "apps/amberx/intents/shipped-features.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb070q387psv4"
+    },
+    {
+     "id": "s7",
+     "text": "Tests: resolver (registry hit, UI Review fallback, before/after pairing, no screenshots), REST endpoints and settings, deep link parsing, action/MCP/CLI/voice parity (same results through all four), and a UI test that the gallery renders and the lightbox navigates. Then write the report _claude/builds/reports/shipped-features-show-each-landed-build-s-screen.md (what changed, screenshots of the gallery, how each UI part is reached via deep link, REST, MCP, CLI and voice), add the THREADS row, and open the PR stating the API reach for every UI piece and the dependency on the shared screenshot registry build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/test/",
       "_claude/builds/reports/shipped-features-show-each-landed-build-s-screen.md",
       "_claude/THREADS.md"
      ],
@@ -92741,7 +92838,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwaz1yhg09019n"
+     "uid": "st-mwb070q388mv4d"
     }
    ]
   },
