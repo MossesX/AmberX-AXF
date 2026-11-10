@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:42:47.404Z",
+ "updatedAt": "2026-11-10T16:43:07.603Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86057,12 +86057,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:41:39.193Z",
-   "updatedAt": "2026-11-10T16:41:40.874Z",
+   "updatedAt": "2026-11-10T16:42:49.674Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:41:40.874Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:42:49.674Z"
     }
    ],
    "approvals": [],
@@ -86079,7 +86083,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "amberx.open_url: when Android blocks the background start, the high-priority notification's tap must launch Chrome (or the default browser) straight on the URL, not open the AmberX app. Also prompt once for 'Display over other apps' so pages come to the front with no tap. Test on the paired phone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax51vu046te5"
+    },
+    {
+     "id": "s2",
+     "text": "It says a command is waiting for you. I clicked it. I'm in the AmberX app. Are you gonna fix that?",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax51vu058ziu"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/amberx-open-url-tapping-the-command-waiting-noti.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/amberx-open-url-tapping-the-command-waiting-noti.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax51vu06qncu"
+    }
+   ]
   },
   {
    "id": "remove-the-old-theme-manager-style-and-layout-se",
@@ -86107,6 +86169,38 @@
    "origin": {
     "said": "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.",
     "at": "2026-11-10T16:42:29.017Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "amberx-android-web-view-top-banner-hidden-behind",
+   "title": "AmberX Android: web view top banner hidden behind the status bar and camera cutout (respect safe-area insets)",
+   "category": "",
+   "detail": "In the AmberX Android app the rendered page sits too high: the top banner/row is hidden behind the phone's status bar (call notifications) and the camera cutout. Fix edge-to-edge handling: apply system bar and display-cutout insets (WindowInsets / safe-area-inset-top for the web view), so the top row is fully visible. Test on the paired phone, portrait and landscape.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:43:03.427Z",
+   "updatedAt": "2026-11-10T16:43:04.900Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Fix the top bar of the AmberX app because it's behind my top banner where my call notifications are. It renders the web page too high up for the screen. The top row is hidden. The banner's behind stuff like my camera.",
+    "at": "2026-11-10T16:43:03.427Z",
     "source": "",
     "session": "",
     "link": "",
