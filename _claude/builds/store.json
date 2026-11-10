@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2907,
- "updatedAt": "2026-11-10T21:47:31.927Z",
+ "rev": 2908,
+ "updatedAt": "2026-11-10T21:47:45.114Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155676,7 +155676,7 @@
    "title": "Convert every app into a Molly module (Expenses, console, hub, AmberX screens)",
    "category": "",
    "detail": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155684,7 +155684,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T21:47:28.436Z",
+   "updatedAt": "2026-11-10T21:47:31.913Z",
    "builtAt": "",
    "notes": [
     {
@@ -155694,6 +155694,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:36:47.442Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-convert-every-app-into-a-molly-module-expenses-c--sully, own login copy)",
+     "at": "2026-11-10T21:47:31.913Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-convert-every-app-into-a-molly-module-expenses-c--sully.",
@@ -155717,12 +155721,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-convert-every-app-into-a-molly-module-expenses-c--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T21:47:27.208Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T21:36:47.442Z",
@@ -155732,9 +155736,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T21:47:27.208Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -155743,7 +155747,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T21:47:27.208Z"
+    "pickedAt": ""
    },
    "steps": [
     {

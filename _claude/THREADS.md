@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:38 UTC · `retire-build-manager-the-orchestrator-is-the-onl` → complete, merged, note (all) · reconciler
 - 2026-11-10 17:39 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:40 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:40 UTC · `skins-consistent-across-plugins-full-state-saves` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:47 UTC · `asset-overrides-changed-asset-settings-override` → queued, note (all) · console
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` branch claude/convert-every-app-into-a-molly-module-expenses-c (all) · pipeline
+- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 
 ## Token passes (log)
 
