@@ -150,8 +150,11 @@ constraints (`menuItemV2SchemaProperties`). The fixture's `validation` cases `v2
 
 ## What the renderer owes (s2–s4)
 
-- Sub-menus flip left and up to stay on screen; long menus scroll inside the menu, the page is scroll-locked; focus survives a
-  flip (menu-fit@1 + s2).
+- Sub-menus flip left and up to stay on screen (`data-fx-flip` = `left` · `up` · `left up`; the box grows from the corner it
+  hangs off); long menus scroll inside the menu and the page is scroll-locked while any menu is open (`menuWheel`,
+  `installMenuScrollLock`); keyboard: arrows wrap over every row, ArrowRight / Enter open a submenu with focus on its first row,
+  ArrowLeft / Escape close it with focus back on the parent row, Escape at the root closes the menu, hover opens without moving
+  focus, and a flip never moves focus (`menuKey`, `nextMenuIndex`; `check-menu-fit.mts`, `check-menu-keys.mts`). Done in s2.
 - A choice row shows `valueLabel` beside the label (`.fx-menu__value`), opens its choices as a sub-menu (the picked one checked),
   applies a pick at once; a switch flips on click; a `cycle` row steps (s3).
 - A status slot draws `icon` in `tone` with `anim`, `title` = `tooltip`; it re-renders when the source changes (s3).

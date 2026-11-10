@@ -48,8 +48,12 @@ export interface FitResult {
   maxHeight: number;
   /** true when the menu is taller than its room and scrolls inside */
   scroll: boolean;
-  /** 'up' (opened above its anchor) / 'left' (submenu opened on the left) / '' */
-  flip: '' | 'up' | 'left';
+  /**
+   * How the box moved off its natural place, as space-separated words (`data-fx-flip`, matched with `~=`): `up` (a
+   * drop-down opened above its anchor; a submenu moved up past its row's top to fit), `left` (a submenu opened on the
+   * left of its row), `left up` (both), '' (where it belongs).
+   */
+  flip: '' | 'up' | 'left' | 'left up';
 }
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -74,8 +78,9 @@ export function fitMenu(input: FitInput): FitResult {
     else if (leftSide >= box.left) { left = leftSide; flip = 'left'; }
     else left = box.right - size.width;
     left = clamp(left, box.left, Math.max(box.left, box.right - size.width));
-    // vertical: lined up with the row, moved up to fit, capped to the box when taller than it
+    // vertical: lined up with the row, moved up to fit (flip `up` once it sits above the row's top), capped to the box
     top = clamp(anchor.top, box.top, Math.max(box.top, box.bottom - h));
+    if (top < anchor.top) flip = flip ? 'left up' : 'up';
     room = cap;
   } else {
     // vertical: below the anchor, above it when it doesn't fit below and above has more room
@@ -105,4 +110,69 @@ export function menuBox(view: FitRect, insets: Partial<FitRect> = {}, edge = 0):
     right: view.right - (insets.right ?? 0) - edge,
     bottom: view.bottom - (insets.bottom ?? 0) - edge,
   };
+}
+
+/* ---------------- the menu scrolls, not the page (Brett, Nov 10 2026) ---------------- */
+
+export interface WheelInput {
+  /** is any framework menu open? */
+  open: boolean;
+  /** did the wheel / touch land inside an open menu's scroller? */
+  inMenu: boolean;
+  /** the scroll the user asked for (px; + = down) */
+  deltaY: number;
+  /** the scroller's state (only read when `inMenu`) */
+  scrollTop?: number;
+  scrollHeight?: number;
+  clientHeight?: number;
+}
+
+/**
+ * Who gets a wheel / touch scroll while a menu is open: the menu's own scroller when it can still move that way
+ * (`menu`), nothing at all otherwise (`block`: the page under the menu never moves, not even when the menu hits its
+ * end or the pointer is outside it). With no menu open the page scrolls as usual (`page`).
+ */
+export function menuWheel(input: WheelInput): 'page' | 'menu' | 'block' {
+  if (!input.open) return 'page';
+  if (!input.inMenu) return 'block';
+  const top = input.scrollTop ?? 0, height = input.scrollHeight ?? 0, client = input.clientHeight ?? 0;
+  const canDown = top + client < height - 1, canUp = top > 1;
+  if (input.deltaY > 0 && canDown) return 'menu';
+  if (input.deltaY < 0 && canUp) return 'menu';
+  return 'block';
+}
+
+/* ---------------- keyboard navigation (shared by the app menu and context menus) ---------------- */
+
+export type MenuKeyAction = 'next' | 'prev' | 'first' | 'last' | 'open' | 'close' | 'activate' | 'escape' | null;
+
+/**
+ * What a key does on a focused menu row. Open / close keep their arrows whichever side a submenu flipped to (a menu
+ * that flipped left still opens with ArrowRight, as every desktop menu does); `hasSub` says the row has a submenu
+ * (ArrowRight opens it, Enter / Space open it too), `inSub` that the row is inside a submenu (ArrowLeft and Escape
+ * close that submenu and go back to its parent row; at the root Escape closes the whole menu).
+ */
+export function menuKey(key: string, opts: { hasSub?: boolean; inSub?: boolean } = {}): MenuKeyAction {
+  switch (key) {
+    case 'ArrowDown': return 'next';
+    case 'ArrowUp': return 'prev';
+    case 'Home': case 'PageUp': return 'first';
+    case 'End': case 'PageDown': return 'last';
+    case 'ArrowRight': return opts.hasSub ? 'open' : null;
+    case 'ArrowLeft': return opts.inSub ? 'close' : null;
+    case 'Enter': case ' ': return opts.hasSub ? 'open' : 'activate';
+    case 'Escape': return opts.inSub ? 'close' : 'escape';
+    default: return null;
+  }
+}
+
+/** The row index a move lands on: wraps at both ends; from nowhere (-1) `next` is the first row and `prev` the last. */
+export function nextMenuIndex(count: number, at: number, move: 'next' | 'prev' | 'first' | 'last'): number {
+  if (count <= 0) return -1;
+  switch (move) {
+    case 'first': return 0;
+    case 'last': return count - 1;
+    case 'next': return at < 0 ? 0 : (at + 1) % count;
+    case 'prev': return at < 0 ? count - 1 : (at - 1 + count) % count;
+  }
 }

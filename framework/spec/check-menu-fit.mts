@@ -2,9 +2,10 @@
  * menu-fit@1 checks (core/engines/menufit.ts): menus stay on screen, flip or shift before they scroll, and scroll
  * (a height cap) only when they don't fit. Run: npx -y tsx framework/spec/check-menu-fit.mts
  */
-import { fitMenu, menuBox, type FitInput, type FitResult } from '../core/engines/menufit';
+import { fitMenu, menuBox, menuKey, menuWheel, nextMenuIndex, type FitInput, type FitResult } from '../core/engines/menufit';
 
 let fails = 0, passes = 0;
+const is = (name: string, got: unknown, want: unknown) => { if (JSON.stringify(got) === JSON.stringify(want)) { passes++; console.log(`✓ ${name}`); } else { fails++; console.log(`✗ ${name}\n    want ${JSON.stringify(want)} got ${JSON.stringify(got)}`); } };
 function check(name: string, got: FitResult, want: Partial<FitResult> & { inside?: FitInput }) {
   const bad: string[] = [];
   for (const k of ['left', 'top', 'maxHeight', 'scroll', 'flip'] as const) if (k in want && want[k] !== got[k]) bad.push(`${k}: want ${want[k]} got ${got[k]}`);
@@ -59,13 +60,70 @@ run('submenu on a compact screen with no room either side shifts inside it', {
   mode: 'side', anchor: { left: 8, right: 300, top: 100, bottom: 132 }, size: { width: 220, height: 200 }, box: phone, gap: 2,
 }, { left: 404 - 220, flip: '', top: 100 });
 
-run('submenu near the bottom moves up to fit', {
+run('submenu near the bottom moves up to fit (flip up)', {
   mode: 'side', anchor: { left: 100, right: 330, top: 700, bottom: 732 }, size: { width: 220, height: 300 }, box: desk, gap: 2,
-}, { top: 792 - 300, scroll: false, left: 332 });
+}, { top: 792 - 300, scroll: false, left: 332, flip: 'up' });
 
-run('submenu taller than the screen is capped and scrolls from the top', {
+run('submenu taller than the screen is capped and scrolls from the top (flip up)', {
   mode: 'side', anchor: { left: 100, right: 330, top: 300, bottom: 332 }, size: { width: 220, height: 3000 }, box: desk, gap: 2,
-}, { top: 8, maxHeight: 784, scroll: true });
+}, { top: 8, maxHeight: 784, scroll: true, flip: 'up' });
+
+// the flagship skin (Brett, Nov 10 2026): sub menus expand left if they'd go off screen, and up when the bottom is near
+run('submenu at the right edge near the bottom flips left and up', {
+  mode: 'side', anchor: { left: 1050, right: 1270, top: 700, bottom: 732 }, size: { width: 220, height: 300 }, box: desk, gap: 2,
+}, { left: 1050 - 2 - 220, top: 792 - 300, flip: 'left up', scroll: false });
+
+run('submenu that fits beside its row reports no flip at all', {
+  mode: 'side', anchor: { left: 100, right: 330, top: 200, bottom: 232 }, size: { width: 220, height: 300 }, box: desk, gap: 2,
+}, { left: 332, top: 200, flip: '', scroll: false });
+
+run('submenu whose row sits at the very bottom edge still lines up with it when it fits', {
+  mode: 'side', anchor: { left: 100, right: 330, top: 760, bottom: 792 }, size: { width: 220, height: 32 }, box: desk, gap: 2,
+}, { top: 760, flip: '', scroll: false });
+
+run('third-level submenu under a flipped parent with no room either side shifts inside the box (no flip reported)', {
+  mode: 'side', anchor: { left: 8, right: 228, top: 100, bottom: 132 }, size: { width: 300, height: 200 }, box: phone, gap: 2,
+}, { left: 404 - 300, flip: '', top: 100 });
+
+check('a submenu wider than the whole screen pins to the left edge (the only honest place)', fitMenu({
+  mode: 'side', anchor: { left: 8, right: 228, top: 100, bottom: 132 }, size: { width: 400, height: 200 }, box: phone, gap: 2,
+}), { left: 8, flip: '', top: 100 });
+
+// the menu scrolls, not the page
+const wheelCases: [string, Parameters<typeof menuWheel>[0], ReturnType<typeof menuWheel>][] = [
+  ['no menu open: the page scrolls', { open: false, inMenu: false, deltaY: 40 }, 'page'],
+  ['wheel outside an open menu: swallowed', { open: true, inMenu: false, deltaY: 40 }, 'block'],
+  ['wheel down inside a menu with more below: the menu scrolls', { open: true, inMenu: true, deltaY: 40, scrollTop: 0, scrollHeight: 900, clientHeight: 400 }, 'menu'],
+  ['wheel down inside a menu at its end: swallowed, the page stays', { open: true, inMenu: true, deltaY: 40, scrollTop: 500, scrollHeight: 900, clientHeight: 400 }, 'block'],
+  ['wheel up inside a menu at its top: swallowed', { open: true, inMenu: true, deltaY: -40, scrollTop: 0, scrollHeight: 900, clientHeight: 400 }, 'block'],
+  ['wheel up inside a scrolled menu: the menu scrolls', { open: true, inMenu: true, deltaY: -40, scrollTop: 120, scrollHeight: 900, clientHeight: 400 }, 'menu'],
+  ['wheel inside a menu that fits (nothing to scroll): swallowed', { open: true, inMenu: true, deltaY: 40, scrollTop: 0, scrollHeight: 300, clientHeight: 300 }, 'block'],
+  ['a sideways wheel inside a menu: swallowed', { open: true, inMenu: true, deltaY: 0, scrollTop: 0, scrollHeight: 900, clientHeight: 400 }, 'block'],
+  ['sub-pixel slack at the end counts as the end', { open: true, inMenu: true, deltaY: 40, scrollTop: 499.5, scrollHeight: 900, clientHeight: 400 }, 'block'],
+];
+for (const [name, input, want] of wheelCases) is(name, menuWheel(input), want);
+
+// keyboard: the same keys whichever way a submenu flipped
+const keyCases: [string, string, { hasSub?: boolean; inSub?: boolean }, ReturnType<typeof menuKey>][] = [
+  ['ArrowDown moves on', 'ArrowDown', {}, 'next'], ['ArrowUp moves back', 'ArrowUp', {}, 'prev'],
+  ['Home jumps first', 'Home', {}, 'first'], ['End jumps last', 'End', {}, 'last'], ['PageUp jumps first', 'PageUp', {}, 'first'], ['PageDown jumps last', 'PageDown', {}, 'last'],
+  ['ArrowRight on a plain row does nothing', 'ArrowRight', {}, null], ['ArrowRight on a submenu row opens it', 'ArrowRight', { hasSub: true }, 'open'],
+  ['ArrowRight inside a flipped-left submenu still opens the next level', 'ArrowRight', { hasSub: true, inSub: true }, 'open'],
+  ['ArrowLeft at the root does nothing', 'ArrowLeft', {}, null], ['ArrowLeft inside a submenu closes it (focus back on the parent row)', 'ArrowLeft', { inSub: true }, 'close'],
+  ['Enter on a plain row activates', 'Enter', {}, 'activate'], ['Space on a plain row activates', ' ', {}, 'activate'], ['Enter on a submenu row opens it', 'Enter', { hasSub: true }, 'open'],
+  ['Escape at the root closes the menu', 'Escape', {}, 'escape'], ['Escape inside a submenu closes only that submenu', 'Escape', { inSub: true }, 'close'],
+  ['Tab is left to the browser', 'Tab', {}, null], ['a letter is left alone', 'a', { hasSub: true, inSub: true }, null],
+];
+for (const [name, key, opts, want] of keyCases) is(name, menuKey(key, opts), want);
+
+is('next wraps to the first row', nextMenuIndex(5, 4, 'next'), 0);
+is('prev wraps to the last row', nextMenuIndex(5, 0, 'prev'), 4);
+is('next from the middle', nextMenuIndex(5, 1, 'next'), 2);
+is('next from nowhere is the first row', nextMenuIndex(5, -1, 'next'), 0);
+is('prev from nowhere is the last row', nextMenuIndex(5, -1, 'prev'), 4);
+is('first / last', [nextMenuIndex(5, 2, 'first'), nextMenuIndex(5, 2, 'last')], [0, 4]);
+is('an empty list has no row', [nextMenuIndex(0, -1, 'next'), nextMenuIndex(0, 0, 'first')], [-1, -1]);
+is('one row stays put', [nextMenuIndex(1, 0, 'next'), nextMenuIndex(1, 0, 'prev')], [0, 0]);
 
 // on-screen keyboard: the visual viewport is 412 × 340 (the keyboard covers 300 px), scrolled 0
 const kb = menuBox({ left: 0, top: 0, right: 412, bottom: 340 }, {}, 8);

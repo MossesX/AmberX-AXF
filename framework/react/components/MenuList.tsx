@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } from 'react';
 import { filterMenu, resolveChecked, type AssetType, type MenuItem } from '../../core';
+import { menuKey, nextMenuIndex } from '../../core/engines/menufit';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Kbd } from './Controls';
-import { scrollMenuBy, useMenuFit } from './menuFit';
+import { focusMenuItem, menuRows, scrollMenuBy, useMenuFit } from './menuFit';
 
 interface MenuListProps {
   items: MenuItem[];
@@ -11,6 +12,10 @@ interface MenuListProps {
   payload?: string;
   showIcons?: boolean;
   showShortcuts?: boolean;
+  /** put focus on the first row when the list appears (a context menu that just opened; a submenu opened with the keyboard) */
+  autoFocus?: boolean;
+  /** a flyout submenu: ArrowLeft / Escape close it and put focus back on its parent row (the parent passes this) */
+  onClose?: () => void;
 }
 
 /**
@@ -53,16 +58,45 @@ function dropTaken(items: MenuItem[], rt: ReturnType<typeof useRuntime>): MenuIt
     .filter((i) => i.separator || !i.items || i.items.length > 0 || !!i.action);
 }
 
-/** Shared renderer for dropdown menus and context menus (UAC-aware, nested). */
-export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true }: MenuListProps) {
+/**
+ * Shared renderer for dropdown menus and context menus (UAC-aware, nested).
+ *
+ * Keyboard (core/engines/menufit.ts `menuKey`): arrows move with wrap, Home / End jump, ArrowRight (or Enter) on a row
+ * with a submenu opens it and puts focus on its first row, ArrowLeft / Escape inside a submenu close it and put focus
+ * back on the parent row, Escape at the root closes the menu (`onDone`). A submenu that flipped left or up keeps the
+ * same keys: the flip moves the box, never the focus.
+ */
+export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true, autoFocus, onClose }: MenuListProps) {
   const rt = useRuntime();
   useAxfState();
   const [openSub, setOpenSub] = useState<string | null>(null);
+  // opened with the keyboard: focus goes into the submenu; opened by hover it stays where the pointer is
+  const [subByKey, setSubByKey] = useState(false);
+  const ref = useRef<HTMLUListElement>(null);
   // Hooks the host app took over (embed@1 takes, e.g. Settings) are dropped like hidden items.
   const visible = filterMenu(dropTaken(items, rt), (r) => rt.gate(r));
 
+  useEffect(() => { if (autoFocus) focusMenuItem(menuRows(ref.current)[0]); }, [autoFocus]);
+  const closeSub = useCallback((id: string) => { setOpenSub(null); setSubByKey(false); focusMenuItem(menuRows(ref.current).find((b) => b.dataset.axfItem === id)); }, []);
+
+  const onKey = (e: KeyboardEvent<HTMLUListElement>) => {
+    const list = menuRows(ref.current);
+    const at = list.indexOf(document.activeElement as HTMLButtonElement);
+    const row = list[at];
+    const hasSub = row?.getAttribute('aria-haspopup') === 'menu';
+    const action = menuKey(e.key, { hasSub, inSub: !!onClose });
+    if (!action || action === 'activate') return; // Enter / Space run the button
+    e.preventDefault(); e.stopPropagation();
+    switch (action) {
+      case 'next': case 'prev': case 'first': case 'last': focusMenuItem(list[nextMenuIndex(list.length, at, action)]); break;
+      case 'open': setOpenSub(row!.dataset.axfItem ?? null); setSubByKey(true); break;
+      case 'close': onClose?.(); break;
+      case 'escape': onDone(); break;
+    }
+  };
+
   return (
-    <ul className="fx-menu" role="menu">
+    <ul className="fx-menu" role="menu" ref={ref} onKeyDown={onKey}>
       {visible.map((item) => {
         if (item.separator) return <li key={item.id} className={item.spacer ? 'fx-menu__spacer' : 'fx-menu__sep'} role="separator" />;
         // a hook of a function the host locks (e.g. plugins) stays, greyed out with its note
@@ -72,25 +106,31 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
         const hasSub = !!item.items?.length || (!!item.provider && !item.action);
         // a check mark bound to a setting / counter / slot (context-menu toggles such as AshesUI)
         const check = resolveChecked(item.checked, { counter: (n) => rt.badge(n), setting: (k) => rt.settings.get(k), hidden: (t) => rt.slotHidden(t as AssetType) });
+        const sub = hasSub && openSub === item.id;
         return (
           <li
             key={item.id}
             className="fx-menu__li"
             data-axf-item={item.id}
-            onMouseEnter={() => setOpenSub(hasSub ? item.id : null)}
+            onMouseEnter={() => { setOpenSub(hasSub ? item.id : null); setSubByKey(false); }}
           >
             <button
               type="button"
               role={check === null ? 'menuitem' : 'menuitemcheckbox'}
               aria-checked={check === null ? undefined : check}
+              aria-haspopup={hasSub ? 'menu' : undefined}
+              aria-expanded={hasSub ? sub : undefined}
               className="fx-menu__item"
+              data-axf-item={item.id}
               data-axf-action={item.action}
               disabled={locked}
               title={hostLock ?? (locked ? `Requires ${item.requires}` : undefined)}
               onClick={(e) => {
                 if (hasSub) {
                   e.stopPropagation();
+                  // a click (Enter / Space too: the button fires click) toggles the submenu; from the keyboard focus goes in
                   setOpenSub((s) => (s === item.id ? null : item.id));
+                  setSubByKey(e.detail === 0);
                   return;
                 }
                 onDone();
@@ -105,10 +145,10 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               {showShortcuts && item.shortcut && <Kbd>{item.shortcut}</Kbd>}
               {hasSub && <Icon name="chevron-right" size={14} />}
             </button>
-            {hasSub && openSub === item.id && (
+            {sub && (
               <MenuSub>
-                {item.items?.length ? <MenuList items={item.items} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />
-                  : <ProviderList id={item.provider!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />}
+                {item.items?.length ? <MenuList items={item.items} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} autoFocus={subByKey} onClose={() => closeSub(item.id)} />
+                  : <ProviderList id={item.provider!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} autoFocus={subByKey} onClose={() => closeSub(item.id)} />}
               </MenuSub>
             )}
           </li>

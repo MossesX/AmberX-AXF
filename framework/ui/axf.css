@@ -482,6 +482,15 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-menu__item:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) { .fx-menu__spinner { animation: none; border-top-color: var(--fx-border); } }
+/* a submenu grows out of the corner it hangs off: top left where it belongs, top right when it flipped left, bottom
+   left when it moved up past its row, bottom right for both (`data-fx-flip`, menu-fit@1 + s2 of the flagship skin) */
+.fx-menu__sub { transform-origin: top left; animation: fx-menu-in var(--fx-motion) var(--fx-ease) both; }
+.fx-menu__sub[data-fx-flip~='left'] { transform-origin: top right; }
+.fx-menu__sub[data-fx-flip~='up'] { transform-origin: bottom left; }
+.fx-menu__sub[data-fx-flip='left up'] { transform-origin: bottom right; }
+@keyframes fx-menu-in { from { opacity: 0; transform: scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .fx-menu__sub { animation: none; } }
+[data-fx-motion='reduced'] .fx-menu__sub, :where([data-fx-narrow]) .fx-menu__sub { animation: none; }
 
 /* context-menu asset variants */
 .fx-ctx { position: fixed; min-width: 220px; padding: var(--fx-dens-gap-md); z-index: 80; animation: fx-pop 120ms ease both; }

@@ -231,12 +231,14 @@ export function ContextMenuHost() {
       onContextMenu={(e) => e.preventDefault()}
     >
       <MenuScroll box={ref}>
+        {/* focus goes to the first row as the menu opens, so arrows, Enter and Escape work at once */}
         <MenuList
           items={items}
           payload={state.context.payload}
           onDone={() => rt.closeContext()}
           showIcons={cm.showIcons}
           showShortcuts={cm.showShortcuts}
+          autoFocus
         />
       </MenuScroll>
     </div>
