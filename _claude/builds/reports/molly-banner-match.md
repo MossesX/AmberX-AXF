@@ -57,3 +57,14 @@ was red on the help-coverage ratchet.
 ## Gaps
 - Live end-to-end with Brett's hub session not run (headless). Deciding inside the pop-up from the console or Molly still
   needs axHub to list those origins in `AXHUB_APPROVALS_FRAME_ANCESTORS` (then `setApprovalsHost({ frame: true })`).
+
+## API reach (Nov 10 follow-up, rule of Nov 8)
+- **The banner asset itself** (what Molly's top banner shows): the console's active banner asset, so `control@1`
+  `tokens.slots` (REST `/api/control`, MCP control tools, `axf control`, AmberX voice) swaps it and Molly follows.
+- **Console in Molly hides its banner**: no setting; it follows from the embed URL Molly builds (embed@1 `hidden: banner`).
+- **Top banner pick (`molly-banners.top`)**: a Molly setting plus the registered action `molly-banners.top`
+  (View → Banners menu, search). Molly has no console-commands client of its own yet, so REST / MCP / CLI / voice
+  can't reach a Molly-side action or setting today. Gap, left to the build that gives Molly an API client
+  (ai-assistant-in-molly-console-drives-by-api-open): once Molly reports a console catalog, the action is in it
+  with no change here. Deep link: Molly `#/settings` → Plugins → Banners.
+- Manifest now declares the `slot:app.frame.head` it fills.

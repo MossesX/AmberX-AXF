@@ -12,6 +12,7 @@
   ],
   "provides": [
     "slot:app.frame.banners",
+    "slot:app.frame.head",
     "settings-tab:molly-banners"
   ],
   "scopes": [],
