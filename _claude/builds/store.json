@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2886,
- "updatedAt": "2026-11-10T21:34:32.865Z",
+ "rev": 2887,
+ "updatedAt": "2026-11-10T21:34:59.278Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155647,6 +155647,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T21:23:08.233Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "convert-every-app-into-a-molly-module-expenses-c",
+   "title": "Convert every app into a Molly module (Expenses, console, hub, AmberX screens)",
+   "category": "",
+   "detail": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T21:34:57.978Z",
+   "updatedAt": "2026-11-10T21:34:57.978Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Can we convert the apps to modules then?",
+    "at": "2026-11-10T21:34:57.978Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 592
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

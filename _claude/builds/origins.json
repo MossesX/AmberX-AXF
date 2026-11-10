@@ -1655,6 +1655,18 @@
    "from": "",
    "addenda": []
   },
+  "convert-every-app-into-a-molly-module-expenses-c": {
+   "said": "Can we convert the apps to modules then?",
+   "at": "2026-11-10T21:34:57.978Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "crew-live": {
    "said": "Ping Paulie. Console plugin 'Crew' listing every agent currently working with exactly what each is doing, live: avatar, status, build + step, model, live timer, live cost, tokens, files touched, PR. Expanded: what I'm doing now (from stream events, no LLM), step list, files with live worktree diff, recent tool calls with cost, Terminal/Session browser links, stop. Off the clock section + totals. Shared AgentAvatar framework component + agent-avatar asset used across the console, agent context menu items. Zero tokens; commands as REST+MCP+CLI. Reuses headless meters (headless-tabs), headless events/stream logs, agent-swarm roster, builds store.",
    "at": "2026-11-03",
