@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2169,
- "updatedAt": "2026-11-10T01:34:17.408Z",
+ "rev": 2170,
+ "updatedAt": "2026-11-10T01:40:53.494Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127683,7 +127683,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127691,7 +127691,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T01:10:53.082Z",
+   "updatedAt": "2026-11-10T01:40:51.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -127781,6 +127781,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-appearance-skins-colour-themes-only-remove-desig--earl, own login copy)",
      "at": "2026-11-10T01:05:23.941Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T01:40:51.716Z"
     }
    ],
    "approvals": [],
@@ -127940,7 +127944,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
