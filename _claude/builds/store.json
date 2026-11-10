@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2643,
- "updatedAt": "2026-11-10T18:06:20.411Z",
+ "rev": 2644,
+ "updatedAt": "2026-11-10T18:06:38.136Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -150190,14 +150190,14 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-10T18:06:07.730Z",
-     "by": "fix-the-orchestrator-s-splitter-claude-print-get",
-     "provider": "claude",
-     "steps": 14,
-     "note": "Split by Claude into 14 steps (4 Fable)."
+     "at": "2026-11-10T17:35:25.480Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -150207,7 +150207,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwb046eq7hz66p",
+     "uid": "st-mwaz0ox401xe53",
      "title": "",
      "text": "Design the shared screenshot registry: record schema (id, screen id, element selector, app, captured_at, file path, links[] of {kind: build|feature|plan|error, ref}), storage layout, and a migration that imports existing UI Review screenshots into it without losing their current links.",
      "model": "Fable",
@@ -150227,13 +150227,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "rev": 2,
+     "createdAt": "2026-11-10T17:35:25.480Z",
+     "updatedAt": "2026-11-10T18:06:23.622Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwb046eq7iplmk",
+     "uid": "st-mwaz0ox402ycuf",
      "title": "",
      "text": "Define the screenshot hook contract (screenshots.attach / screenshots.forRef / screenshots.onCapture) that any plugin calls to link or list screenshots by ref, with a typed event payload. UI Review becomes one caller of the hook, not its owner.",
      "model": "Fable",
@@ -150253,13 +150253,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "rev": 2,
+     "createdAt": "2026-11-10T17:35:25.480Z",
+     "updatedAt": "2026-11-10T18:06:23.622Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwb046eq7jixa3",
+     "uid": "st-mwaz0ox403cdzd",
      "title": "",
      "text": "Design the screen skin asset type: schema (target screen id, colour tokens, style overrides, layout params, behavior flags, icon theme), versioning, and the migration that registers it beside the existing asset types.",
      "model": "Fable",
@@ -150279,13 +150279,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "rev": 2,
+     "createdAt": "2026-11-10T17:35:25.480Z",
+     "updatedAt": "2026-11-10T18:06:23.622Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwb046eq7ki15v",
+     "uid": "st-mwb04ibq0170pi",
      "title": "",
      "text": "Theming engine: resolve the token stack as global theme → app theme → screen skin for the active screen id only, plus a hot-apply path that pushes a draft skin into a render without saving it.",
      "model": "Fable",
@@ -150306,12 +150306,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwb046eq7l1pyg",
+     "uid": "st-mwb04ibq02oxjh",
      "title": "",
      "text": "Implement the screenshot registry store and REST routes (list, get, by ref, attach, detach, delete), using the step 1 schema, and run the UI Review migration.",
      "model": "Opus",
@@ -150332,12 +150332,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwb046eq7myg8w",
+     "uid": "st-mwb04ibq038d4m",
      "title": "",
      "text": "Hook callers: Shipped Features entries, Plan Studio plans, orchestrator builds, and the errors log call screenshots.attach and forRef. Remove any Build Manager-only paths.",
      "model": "Opus",
@@ -150359,12 +150359,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwb046eq7nrfyy",
+     "uid": "st-mwb04ibq04411z",
      "title": "",
      "text": "Mention linker: anywhere a build, feature or error id is rendered (shared ref chip component), show a screenshot count and thumbnail strip from the registry.",
      "model": "Opus",
@@ -150384,12 +150384,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwb046eq7o33l2",
+     "uid": "st-mwb04ibq05a7me",
      "title": "",
      "text": "Registry API parity: console_show/console_open target 'screenshots' and 'screenshot/<id>' deep links, state read, MCP tools (screenshots_list/get/attach/detach), CLI 'axf screenshots …', and AmberX voice intents.",
      "model": "Opus",
@@ -150411,12 +150411,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwb046eq7pmwh0",
+     "uid": "st-mwb04ibq067dtl",
      "title": "",
      "text": "Screen skin asset store and REST routes (create, get, list by screen, update, delete, apply, unapply) on top of the step 3 schema.",
      "model": "Opus",
@@ -150436,12 +150436,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwb046eq7q5u1e",
+     "uid": "st-mwb04ibq07paj5",
      "title": "",
      "text": "Screenshot viewer side pane: when you open a screenshot of an element, list every token, style and parameter for that screen, grouped as colour, style, layout, behavior and icons, with editable fields.",
      "model": "Opus",
@@ -150461,12 +150461,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwb046eq7r5cnk",
+     "uid": "st-mwb04ibq08orgu",
      "title": "",
      "text": "Live preview: render the same screen in an iframe or sandbox, hot-apply pane edits through theme hot-apply, then Save to create or update the screen skin asset, with Revert and Discard.",
      "model": "Opus",
@@ -150486,12 +150486,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwb046eq7s72gc",
+     "uid": "st-mwb04ibq09igwu",
      "title": "",
      "text": "Skin editor and screen skin API parity: deep links (console_open 'screenshot/<id>/edit', 'asset/screen-skin/<id>'), state read of the draft and saved skin, actions and settings (set token, preview, save, revert, apply, unapply) via REST, MCP console actions and plugin commands, CLI 'axf skins …', and voice.",
      "model": "Opus",
@@ -150513,12 +150513,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwb046eq7txdkb",
+     "uid": "st-mwb04ibq0a7ooj",
      "title": "",
      "text": "Docs: registry hook usage for plugin authors, screen skin asset type, and the API reach table (deep link, state, actions, settings across REST, MCP, CLI and voice).",
      "model": "Opus",
@@ -150539,12 +150539,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwb046eq7u5td6",
+     "uid": "st-mwb04ibq0b1fvw",
      "title": "",
      "text": "Tests (registry store, migration, hook callers, skin resolve order, hot-apply, REST/MCP/CLI parity), report at _claude/builds/reports/shared-screenshot-registry-hooked-everywhere-liv.md, THREADS row, and PR stating how each UI is reached through deep link, REST, MCP, CLI and voice.",
      "model": "Opus",
@@ -150566,8 +150566,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T18:06:07.730Z",
-     "updatedAt": "2026-11-10T18:06:07.730Z"
+     "createdAt": "2026-11-10T18:06:23.077Z",
+     "updatedAt": "2026-11-10T18:06:23.174Z"
     }
    ],
    "profiles": [
@@ -150578,12 +150578,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-10T18:06:07.730Z",
+   "defaultAt": "2026-11-10T17:35:25.480Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

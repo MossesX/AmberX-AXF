@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:06:20.411Z",
+ "updatedAt": "2026-11-10T18:06:38.136Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92162,7 +92162,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7hz66p"
+     "uid": "st-mwaz0ox401xe53"
     },
     {
      "id": "s2",
@@ -92184,7 +92184,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7iplmk"
+     "uid": "st-mwaz0ox402ycuf"
     },
     {
      "id": "s3",
@@ -92206,7 +92206,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7jixa3"
+     "uid": "st-mwaz0ox403cdzd"
     },
     {
      "id": "s4",
@@ -92228,7 +92228,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7ki15v"
+     "uid": "st-mwb04ibq0170pi"
     },
     {
      "id": "s5",
@@ -92250,7 +92250,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7l1pyg"
+     "uid": "st-mwb04ibq02oxjh"
     },
     {
      "id": "s6",
@@ -92273,7 +92273,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7myg8w"
+     "uid": "st-mwb04ibq038d4m"
     },
     {
      "id": "s7",
@@ -92294,7 +92294,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7nrfyy"
+     "uid": "st-mwb04ibq04411z"
     },
     {
      "id": "s8",
@@ -92317,7 +92317,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7o33l2"
+     "uid": "st-mwb04ibq05a7me"
     },
     {
      "id": "s9",
@@ -92338,7 +92338,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7pmwh0"
+     "uid": "st-mwb04ibq067dtl"
     },
     {
      "id": "s10",
@@ -92359,7 +92359,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7q5u1e"
+     "uid": "st-mwb04ibq07paj5"
     },
     {
      "id": "s11",
@@ -92380,7 +92380,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7r5cnk"
+     "uid": "st-mwb04ibq08orgu"
     },
     {
      "id": "s12",
@@ -92403,7 +92403,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7s72gc"
+     "uid": "st-mwb04ibq09igwu"
     },
     {
      "id": "s13",
@@ -92425,7 +92425,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7txdkb"
+     "uid": "st-mwb04ibq0a7ooj"
     },
     {
      "id": "s14",
@@ -92448,7 +92448,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwb046eq7u5td6"
+     "uid": "st-mwb04ibq0b1fvw"
     }
    ]
   },
