@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2997,
- "updatedAt": "2026-11-10T23:21:27.654Z",
+ "rev": 2998,
+ "updatedAt": "2026-11-10T23:21:39.557Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153600,16 +153600,16 @@
    "title": "Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds",
    "category": "",
    "detail": "Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orchestrator-merge-first-switch-separate-merger",
-   "pr": "",
+   "pr": "#480",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
    "updatedAt": "2026-11-10T23:21:24.841Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T23:21:24.841Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153658,6 +153658,10 @@
     {
      "text": "Headless run axf-orchestrator-merge-first-switch-separate-merger--gina: brief only · start 10.8K tokens ($0.03) · cost $2.32 · 49 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:21:24.841Z"
+    },
+    {
+     "text": "PR #480 open. UI Review desktop/phone shots still to take (headless session had no console on the branch).",
+     "at": "2026-11-10T23:21:10.117Z"
     }
    ],
    "approvals": [],
@@ -153769,12 +153773,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:21:12.694Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T21:23:08.233Z",
-     "updatedAt": "2026-11-10T21:23:08.233Z"
+     "updatedAt": "2026-11-10T23:21:13.191Z"
     }
    ],
    "profiles": [

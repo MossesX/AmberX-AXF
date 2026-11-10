@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:51 UTC · `appearance-skins-colour-themes-only-remove-design-packs` s3 done, → running (all) · orchestrator
 - 2026-11-10 18:51 UTC · `appearance-skins-colour-themes-only-remove-design-packs` s5 done, → built (all) · orchestrator
 - 2026-11-10 18:51 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-10 18:52 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · foreign-write
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
 - 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 - 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
+- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` s3 done, → built, PR #480, note (all) · builds-live
 
 ## Token passes (log)
 
