@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 04:30 UTC · `demonstration-designer-plugin-new-standalone` → complete, note (all) · reconciler
 - 2026-11-09 04:30 UTC · `urgent-approval-links-say-method-not-allowed` merged, note (all) · reconciler
 - 2026-11-09 04:31 UTC · `skins` note (all) · orchestrator
 - 2026-11-09 04:31 UTC · `skins-asset-types` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` branch claude/fix-it-yourself-rule-in-every-brief-and-session (all) · pipeline
 - 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
 - 2026-11-10 00:08 UTC · `assign-an-employee-to-every-role-action-type-and` s2 done (all) · orchestrator
+- 2026-11-10 00:08 UTC · `activity-monitor-plugin-live-plain-english-log-o` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
