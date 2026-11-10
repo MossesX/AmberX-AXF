@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:28:06.467Z",
+ "updatedAt": "2026-11-10T16:28:20.007Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85439,16 +85439,22 @@
    "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
    "category": "",
    "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T16:28:04.849Z",
+   "updatedAt": "2026-11-10T16:28:07.544Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:28:07.544Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
