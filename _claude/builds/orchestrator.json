@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:32:26.395Z",
+ "updatedAt": "2026-11-10T17:32:53.449Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87493,9 +87493,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:31:45.669Z",
-   "updatedAt": "2026-11-10T17:31:47.920Z",
+   "updatedAt": "2026-11-10T17:32:51.828Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:32:51.828Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -87510,7 +87515,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "New plugin. 1) A button in every plugin's settings: generates a full inventory of that plugin's UI: every dialog, table, button, pane, window, tab and other element, every behavior, and every layout, style and colour token. 2) Views: grid with expandable rows, classic tree, 3D, IDE-style tab groups; selectable roots; groups of elements. 3) Reskin / rebuild just that plugin: regenerate its look, layout and behavior as a skin scoped to the one plugin (same code underneath, not rewritten from scratch), to look better, perform better, or be new. Preview before apply, one-click revert. Full API/CLI control; AI only behind its switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwayxed0016ca3"
+    },
+    {
+     "id": "s2",
+     "text": "A button in every plugin's settings. Generates a list of all the UI's dialogs, tables, buttons, panes, windows, tabs, everything, every behavior, every layout, style and color token. Multiple views, 3D, grid, expandable rows, classical trees, different roots, IDE style tabs. Rebuild, it will reskin just that plugin instead of the whole room. New look, layout and behavior, to look better, perform better, or be new.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwayxed002stmo"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwayxed003mgk9"
+    }
+   ]
   }
  ]
 }

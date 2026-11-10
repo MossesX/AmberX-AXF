@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2558,
- "updatedAt": "2026-11-10T17:32:26.395Z",
+ "rev": 2559,
+ "updatedAt": "2026-11-10T17:32:53.449Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -141464,9 +141464,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:31:45.669Z",
-   "updatedAt": "2026-11-10T17:31:47.920Z",
+   "updatedAt": "2026-11-10T17:32:51.828Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:32:51.828Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -141481,7 +141486,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T17:32:51.828Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwayxed0016ca3",
+     "title": "",
+     "text": "New plugin. 1) A button in every plugin's settings: generates a full inventory of that plugin's UI: every dialog, table, button, pane, window, tab and other element, every behavior, and every layout, style and colour token. 2) Views: grid with expandable rows, classic tree, 3D, IDE-style tab groups; selectable roots; groups of elements. 3) Reskin / rebuild just that plugin: regenerate its look, layout and behavior as a skin scoped to the one plugin (same code underneath, not rewritten from scratch), to look better, perform better, or be new. Preview before apply, one-click revert. Full API/CLI control; AI only behind its switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:32:51.828Z",
+     "updatedAt": "2026-11-10T17:32:51.828Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwayxed002stmo",
+     "title": "",
+     "text": "A button in every plugin's settings. Generates a list of all the UI's dialogs, tables, buttons, panes, windows, tabs, everything, every behavior, every layout, style and color token. Multiple views, 3D, grid, expandable rows, classical trees, different roots, IDE style tabs. Rebuild, it will reskin just that plugin instead of the whole room. New look, layout and behavior, to look better, perform better, or be new.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:32:51.828Z",
+     "updatedAt": "2026-11-10T17:32:51.828Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwayxed003mgk9",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:32:51.828Z",
+     "updatedAt": "2026-11-10T17:32:51.828Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -141490,12 +141587,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T17:32:51.828Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
