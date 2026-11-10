@@ -219,6 +219,25 @@ export function finish(command, outcome) {
 
 /* ------------------------------------------------------------------ CLI */
 
+/**
+ * Words after the command id fill its input fields in order: the required ones first, then the other properties
+ * (`axf inline-edit mode on` = --state on; `axf inline-edit set <path> <token> <value>`). A field given as a flag is
+ * skipped; numbers and booleans are read as such. Words beyond the fields are an error the command's own check reports.
+ */
+export function positionalInput(command, words, input) {
+  const props = command?.input?.properties && typeof command.input.properties === 'object' ? Object.keys(command.input.properties) : [];
+  const req = Array.isArray(command?.input?.required) ? command.input.required : [];
+  const names = [...req, ...props].filter((k, i, all) => all.indexOf(k) === i && !(k in input));
+  words.forEach((w, i) => {
+    const k = names[i];
+    if (!k) return;
+    let v = w;
+    if (/^(true|false|-?\d+(\.\d+)?)$/.test(w)) { try { v = JSON.parse(w); } catch { v = w; } }
+    input[k] = v;
+  });
+  return input;
+}
+
 function cliFlags(argv) {
   const out = { _: [], input: {} };
   for (let i = 0; i < argv.length; i++) {
@@ -294,10 +313,13 @@ export async function main(argv) {
   const folder = cmd === 'plugin' ? rest.shift() : cmd;
   const p = reg.plugins.find((x) => x.folder === folder && x.app === 'console-web') ?? reg.plugins.find((x) => x.folder === folder);
   if (!p) { console.error(`no plugin ${folder} (axf plugins lists them)`); return 2; }
-  const id = rest[0];
+  // two words may name one command (`overrides list` = overrides-list); the words after it fill the input fields
+  const two = rest[1] !== undefined && p.commands.some((x) => x.id === `${rest[0]}-${rest[1]}`);
+  const id = two ? `${rest[0]}-${rest[1]}` : rest[0];
   if (!id || f.help && !id) { console.log(pluginHelp(p)); return 0; }
   const c = p.commands.find((x) => x.id === id);
   if (!c) { console.error(`${p.name} has no command ${id}\n\n${pluginHelp(p)}`); return 2; }
+  positionalInput(c, rest.slice(two ? 2 : 1), f.input);
   if (f.help) { console.log(`${c.title}\n${c.description}\n\n${pluginCommandCli({ plugins: [{ ...p, commands: [c] }] }).commands[0].usage}\ninput: ${JSON.stringify(c.input, null, 2)}`); return 0; }
   const command = { op: 'act', target: c.kind === 'read' ? 'plugins.reads' : 'plugins.commands', path: `${p.folder}/${c.id}`, action: c.kind === 'read' ? 'read' : 'run', input: f.input, by: typeof f.by === 'string' ? f.by : 'cli', ...(typeof f.reason === 'string' ? { reason: f.reason } : {}), ...(typeof f.confirm === 'string' ? { confirm: f.confirm } : {}) };
   let r;
