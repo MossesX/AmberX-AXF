@@ -79,6 +79,8 @@ final class HubRules {
 
     static final class Approval {
         final String id, tool, summary, url;
+        /** An `amberx.open_url` call's page ({@link OpenUrlRules#pageOf}): the tap opens it in the browser. Else null. */
+        String page;
         Approval(String id, String tool, String summary, String url) { this.id = id; this.tool = tool; this.summary = summary; this.url = url; }
     }
 
@@ -110,7 +112,9 @@ final class HubRules {
                 String url = approvalUrl(hub, id);
                 if (url == null || ids.contains(id) || !isHub(hub, p.optString("url", ""))) continue;
                 ids.add(id);
-                out.add(new Approval(id, cap(p.optString("tool", "call"), 120), cap(p.optString("summary", ""), 600), url));
+                Approval a = new Approval(id, cap(p.optString("tool", "call"), 120), cap(p.optString("summary", ""), 600), url);
+                a.page = OpenUrlRules.pageOf(a.tool, p);
+                out.add(a);
             }
             int count = Math.max(out.size(), Math.max(0, Math.min(1_000_000, j.optInt("count", out.size()))));
             return new Feed("ok", count, out);
@@ -139,6 +143,8 @@ final class HubRules {
         final boolean shelved, approvedNow;
         /** What the owner may do now (a hub before 104: Deny only). */
         final List<String> actions;
+        /** An `amberx.open_url` call's page ({@link OpenUrlRules#pageOf}): the tap opens it in the browser. Else null. */
+        String page;
         Veto(String id, String jobId, String tool, String title, String command, String url, int secondsLeft, long readAt) {
             this(id, jobId, tool, title, command, url, secondsLeft, readAt, false, false, java.util.Collections.singletonList("deny"));
         }
@@ -205,8 +211,10 @@ final class HubRules {
         boolean approvedNow = v.optBoolean("approvedNow", false);
         JSONArray acts = v.optJSONArray("actions");
         if (acts == null) acts = p.optJSONArray("actions");
-        return new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now,
+        Veto out = new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now,
             shelved, approvedNow, vetoActionsOf(acts));
+        out.page = OpenUrlRules.pageOf(tool, p);
+        return out;
     }
 
     /** Every held call in a feed reply: `pending` entries with `status: "held"` + a `veto` object, and `held[]`. */

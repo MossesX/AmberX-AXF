@@ -166,7 +166,7 @@ final class VetoAlerts {
 
     private static void remember(Context c, HubRules.Veto v) {
         JSONObject seen = known(c);
-        try { seen.put(v.id, new JSONObject().put("title", v.title).put("command", v.command).put("url", v.url).put("runsAt", v.runsAtLocal())); } catch (Exception ignored) {}
+        try { seen.put(v.id, new JSONObject().put("title", v.title).put("command", v.command).put("url", v.url).put("runsAt", v.runsAtLocal()).put("page", v.page == null ? "" : v.page)); } catch (Exception ignored) {}
         prefs(c).edit().putString("known", seen.toString()).apply();
     }
 
@@ -193,8 +193,10 @@ final class VetoAlerts {
     /** The one card for a call; each phase replaces it, with a live countdown until it runs and the actions the hub allows. */
     static Notification card(Context c, HubRules.Veto v, String phase) {
         Intent open = new Intent(c, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(MainActivity.EXTRA_VETO, v.id);
+        // An open_url call (console wake): the tap opens the page in the browser and is the yes, not the AmberX app.
+        if (v.page != null) open = OpenPageActivity.intent(c, v.page, v.id, OpenPageActivity.KIND_HELD);
         PendingIntent tap = PendingIntent.getActivity(c, (TAG + v.id).hashCode(), open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        String what = v.command.isEmpty() ? v.tool : v.command;
+        String what = v.page != null ? "A console command is waiting. Tap to open the Dev Console in Chrome." : v.command.isEmpty() ? v.tool : v.command;
         long runsAt = v.runsAtLocal();
         int left = (int) Math.max(0, Math.ceil((runsAt - System.currentTimeMillis()) / 1000.0));
         boolean shelved = "shelved".equals(phase);
@@ -203,7 +205,7 @@ final class VetoAlerts {
             : shelved ? "Shelved, waiting for you: " + v.title
             : "warning".equals(phase) ? left + " s left: " + v.title
             : "Runs in " + (left / 60) + ":" + String.format(java.util.Locale.ROOT, "%02d", left % 60) + ": " + v.title;
-        String hint = running ? "" : shelved ? "\nApprove to run it, Deny to stop it." : "\nDeny stops it, Approve runs it now, Shelve pauses the countdown.";
+        String hint = running ? "" : v.page != null ? "\nDeny stops it." : shelved ? "\nApprove to run it, Deny to stop it." : "\nDeny stops it, Approve runs it now, Shelve pauses the countdown.";
         JSONObject cfg = VetoAlarm.config(c);
         String channel = channelId(cfg);
         NotificationCompat.Builder b = new NotificationCompat.Builder(c, channel)
@@ -267,6 +269,8 @@ final class VetoAlerts {
             JSONObject k = known(c).optJSONObject(id);
             HubRules.Veto v = new HubRules.Veto(id, null, "vps.run", k != null ? k.optString("title") : "Held command", k != null ? k.optString("command") : "",
                 HubRules.approvalUrl(hub, id), 0, System.currentTimeMillis(), true, false, java.util.Arrays.asList("deny", "approve-now"));
+            String page = k != null ? k.optString("page", "") : "";
+            if (!page.isEmpty()) v.page = OpenUrlRules.linkOr(page, HubRules.CONSOLE);
             nm.notify(TAG + id, 0, card(c, v, "shelved"));
             return code;
         }

@@ -71,7 +71,9 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     if a.get("held"):
         return {"ok": False, "opened": False, "notified": False, "message": "axHub is holding the request instead of sending it to the phone"}
     opened, notified = a.get("opened") is True, a.get("notified") is not False
-    if a.get("overlay") is False and not opened:
+    if opened and a.get("how") == "tap":
+        message = "Brett opened the console from AmberX's notification"
+    elif a.get("overlay") is False and not opened:
         message = "AmberX can't open pages on its own (Display over other apps is off): tap its notification"
     elif opened:
         message = "AmberX started the browser on the phone"

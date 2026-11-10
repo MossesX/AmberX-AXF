@@ -58,4 +58,48 @@ final class OpenUrlRules {
     static boolean known(String tool) {
         return OPEN.equals(tool);
     }
+
+    /* ---------------------------------------------------------------- the hub's card for an open_url call */
+
+    /** The hub tool the console's wake calls (axHub's `amberx` device service). */
+    static final String HUB_TOOL = "amberx.open_url";
+    private static final java.util.regex.Pattern SUMMARY_URL = java.util.regex.Pattern.compile("\"url\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"");
+
+    /**
+     * The page an axHub approval or held call for {@link #HUB_TOOL} opens (its `args` / `arguments` url, else the url in
+     * its summary), or null for any other call or a URL AmberX may not open. With a page, the card's tap opens that page
+     * in the browser instead of the AmberX app (Brett, Nov 10 2026: "It says a command is waiting for you. I clicked
+     * it. I'm in the AmberX app.").
+     */
+    static String pageOf(String tool, JSONObject entry) {
+        if (!HUB_TOOL.equals(tool) || entry == null) return null;
+        String raw = "";
+        for (String k : new String[] { "args", "arguments" }) {
+            JSONObject a = entry.optJSONObject(k);
+            if (a != null && !a.optString("url", "").isEmpty()) { raw = a.optString("url", ""); break; }
+        }
+        if (raw.isEmpty()) {
+            java.util.regex.Matcher m = SUMMARY_URL.matcher(entry.optString("summary", ""));
+            if (m.find()) raw = m.group(1).replace("\\/", "/").replace("\\\"", "\"").replace("\\\\", "\\");
+        }
+        try { return raw.isEmpty() ? null : allowed(raw); } catch (IllegalArgumentException e) { return null; }
+    }
+
+    /* ---------------------------------------------------------------- opened from a tap: the call doesn't open it again */
+
+    /** How long a page opened from a tap counts as open (each wake URL carries its own command id). */
+    static final long TAPPED_MS = 10 * 60_000L;
+    private static final java.util.Map<String, Long> tapped = new java.util.HashMap<>();
+
+    /** The page was opened from a notification tap at {@code now}. */
+    static synchronized void markTapped(String url, long now) {
+        tapped.entrySet().removeIf(e -> now - e.getValue() > TAPPED_MS);
+        if (url != null) tapped.put(url, now);
+    }
+
+    /** True when the same page was opened from a tap less than {@link #TAPPED_MS} before {@code now}. */
+    static synchronized boolean wasTapped(String url, long now) {
+        Long at = url == null ? null : tapped.get(url);
+        return at != null && now - at >= 0 && now - at <= TAPPED_MS;
+    }
 }

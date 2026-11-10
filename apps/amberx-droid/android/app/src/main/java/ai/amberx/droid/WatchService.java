@@ -319,7 +319,9 @@ public class WatchService extends Service {
                 if (!muted.contains("amberx.auto-approved")) nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
             } else if (!muted.contains("amberx.approval")) {
                 soundThrough();
-                nm.notify(a.id, 0, alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
+                nm.notify(a.id, 0, a.page != null
+                    ? openPage(a.id, a.page, OpenPageActivity.KIND_APPROVAL)
+                    : alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
             }
         }
         for (String gone : seen) if (!now.contains(gone)) nm.cancel(gone, 0); // decided elsewhere: take its alert away
@@ -979,6 +981,24 @@ public class WatchService extends Service {
             .setPublicVersion(new NotificationCompat.Builder(this, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Approval waiting").build());
         if (full) b.setCategory(NotificationCompat.CATEGORY_REMINDER);
         if (Quiet.on(this)) b.setSilent(true); // Quiet: shown, never heard
+        return b.build();
+    }
+
+    /**
+     * An approval for an `amberx.open_url` call (console wake): the tap opens the page in the browser and approves the
+     * call ({@link OpenPageActivity}), never the AmberX app.
+     */
+    private Notification openPage(String id, String page, String kind) {
+        PendingIntent pi = PendingIntent.getActivity(this, ("page:" + id).hashCode(), OpenPageActivity.intent(this, page, id, kind),
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CH_APPROVALS)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Tap to open the Dev Console")
+            .setContentText("A console command is waiting. Tap opens it in Chrome.")
+            .setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setContentIntent(pi).setAutoCancel(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(new NotificationCompat.Builder(this, CH_APPROVALS).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Dev Console").build());
+        if (Quiet.on(this)) b.setSilent(true);
         return b.build();
     }
 

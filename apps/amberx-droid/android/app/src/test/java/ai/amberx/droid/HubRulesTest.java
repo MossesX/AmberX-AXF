@@ -149,4 +149,21 @@ public class HubRulesTest {
         assertNull("no panel: keep the last answer", HubRules.mutedTypes(200, "{\"alerts\":[]}"));
         assertNull("signed out", HubRules.mutedTypes(302, "<html>"));
     }
+
+    /** Console wake: an open_url card (held or waiting for approval) knows its page, so its tap opens the browser. */
+    @Test
+    public void openUrlCardsKnowTheirPage() {
+        String page = "https://console.amberxai.com/?axf-cmd=cq-1";
+        String args = "\"args\":{\"url\":\"" + page + "\",\"browser\":\"chrome\"}";
+        String held = "{\"id\":\"" + ID + "\",\"status\":\"held\",\"tool\":\"amberx.open_url\"," + args + ","
+            + "\"reason\":{\"title\":\"Open the Dev Console on Brett's phone\"},\"veto\":{\"secondsLeft\":60}}";
+        List<HubRules.Veto> v = HubRules.vetoes(HUB, "{\"held\":[" + held + "]}", 0L);
+        assertEquals(1, v.size());
+        assertEquals(page, v.get(0).page);
+        String pending = "{\"id\":\"" + ID + "\",\"tool\":\"amberx.open_url\",\"url\":\"" + HUB + "/x\"," + args + "}";
+        HubRules.Feed f = HubRules.interpret(HUB, 200, "{\"pending\":[" + pending + "]}");
+        assertEquals(page, f.pending.get(0).page);
+        HubRules.Feed other = HubRules.interpret(HUB, 200, "{\"pending\":[" + pending.replace("amberx.open_url", "vps.run") + "]}");
+        assertNull(other.pending.get(0).page);
+    }
 }

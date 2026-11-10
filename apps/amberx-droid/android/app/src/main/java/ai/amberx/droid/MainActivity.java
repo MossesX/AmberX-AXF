@@ -64,6 +64,21 @@ public class MainActivity extends BridgeActivity {
         if (MicGuard.mayOpen(this) && WatchService.handsFree(this) && WatchService.yielded == null && !WatchService.status.optBoolean("listening", false)) {
             try { WatchService.refresh(this); } catch (RuntimeException ignored) { /* started by the page's voiceSet instead */ }
         }
+        askOverlayOnce();
+    }
+
+    /**
+     * Console wake (Nov 10 2026): a page Amber opened had to wait for a tap because "Display over other apps" is off.
+     * Asked once, the next time AmberX is on screen; the system's own dialog style, Android's own settings page.
+     */
+    private void askOverlayOnce() {
+        if (!AxppLink.askOverlayNow(this)) return;
+        new android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("Let Amber open pages for you")
+            .setMessage("Turn on \"Display over other apps\" for AmberX, so the Dev Console comes to the front by itself when a command is waiting, with no notification to tap.")
+            .setPositiveButton("Turn it on", (d, w) -> { try { startActivity(AxppLink.overlaySettings(this)); } catch (RuntimeException ignored) { /* no settings page */ } })
+            .setNegativeButton("Not now", null)
+            .show();
     }
 
     @Override
