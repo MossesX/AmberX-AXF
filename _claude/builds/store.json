@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2405,
- "updatedAt": "2026-11-10T15:34:25.747Z",
+ "rev": 2406,
+ "updatedAt": "2026-11-10T15:36:38.975Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135971,15 +135971,15 @@
    "title": "Molly (Fable version): the one interface for AmberX, axHub and the console, built on Fable",
    "category": "",
    "detail": "The Fable version of Molly that the molly-opus build promised ('a Fable version comes later in its own build'), never filed until now. Run every step on Fable (model: fable); don't fall back to Opus without saying so in the report. Start from what's on main: apps/molly (the Opus shell), the dock@1 engine, dock-layout@1 presets and DockHost from claude/molly-fable (PR #245, landed bffc2601), xlayout@1/chrome@1, and the molly-* builds (one-shell, sign-in-once, multi-instance-tabs, banner-match, nav-submenus, console-commands, native-expenses). Goal: Molly as the one interface that shows AmberX, axHub and the console (and the other apps) while they stay separate apps. One sign-in, docked multi-instance tabs, shared banner and widgets, nested menus, Molly-to-app messages. First read the open molly-* builds and reports: upgrade what exists, fold in unfinished molly steps where they overlap instead of duplicating, and list which builds this supersedes. Deploy at molly.amberxai.com (or a Fable variant URL if the Opus one must stay; say which). Full REST, MCP, CLI and voice control. Tests, desktop and phone screenshots to UI Review grouped by screen, report, PR.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-fable-version-the-one-interface-for-amberx",
-   "pr": "",
+   "pr": "#447",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T14:55:16.518Z",
+   "updatedAt": "2026-11-10T15:36:37.218Z",
    "builtAt": "",
    "notes": [
     {
@@ -136016,12 +136016,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T04:23:09.752Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-molly-fable-version-the-one-interface-for-amberx--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T14:55:15.051Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T04:24:27.270Z",
@@ -136031,9 +136031,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T14:55:15.051Z"
+    "dispatchedAt": ""
    },
    "steps": [
     {
