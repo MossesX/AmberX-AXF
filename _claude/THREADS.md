@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:51 UTC · `conversation-rag-index-every-voice-chat-session` note (all) · orchestrator
 - 2026-11-10 16:52 UTC · `conversation-rag-amendment-store-only-short-key` note (all) · orchestrator
 - 2026-11-10 16:53 UTC · `search-bar-plugin-add-on-search-builds-session-h` s2 done (all) · orchestrator
 - 2026-11-10 16:53 UTC · `search-bar-plugin-add-on-search-builds-session-h` s2 done (all) · foreign-write
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:41 UTC · `inline-edit-plugin-install-in-console-molly-and` → pending, note (all) · reconciler
 - 2026-11-10 20:41 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
 - 2026-11-10 20:41 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
+- 2026-11-10 20:43 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s5 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
