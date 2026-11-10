@@ -126,10 +126,10 @@ const agentOf = (b, pr) => {
   return by && !/^(backfill|brett|console|orchestrator)$/i.test(by) ? by : (pr?.user?.login || '');
 };
 
-export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false, conflictJob = null } = {}) {
+export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false, conflictJob = null, fixJob = null } = {}) {
   const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s);
   const at = now().toISOString();
-  const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth, mode: cfg.mode, batchSize: cfg.batchSize, aiResolve: cfg.aiResolve };
+  const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth, mode: cfg.mode, batchSize: cfg.batchSize, aiResolve: cfg.aiResolve, autoFix: cfg.autoFix, fixTries: cfg.fixTries };
   if (!cfg.mergeQueue) {
     const v = dry ? {} : await syncVariable(s, gh, false, prev);
     const st = { ...base, items: [], stack: [], waiting: [], kicked: [], merged: prev.merged || [], ...v };
@@ -167,7 +167,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
   const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank, prev.stack || []);
-  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, ready, rank, mainSha, base, ...(conflictJob ? { conflictJob } : {}) });
+  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, ready, rank, mainSha, base, ...(conflictJob ? { conflictJob } : {}), ...(fixJob ? { fixJob } : {}) });
 
   // 2. what of last round's stack still holds: main must have the code the stack was built on
   const expect = prev.expect || '';
@@ -298,14 +298,21 @@ async function commitCi({ s, gh, sha }) {
  * through framework/cli/agent-job.mjs, once per PR head) makes its branch work with the PRs it clashed with and pushes
  * it. The new head rejoins the queue by itself and still has to pass the batch's CI run.
  */
-export function defaultConflictJob(s) {
+export function defaultConflictJob(s, type = 'queue-conflict') {
   return (input) => {
-    const args = [join(s.repo, 'framework/cli/agent-job.mjs'), 'queue-conflict', ...Object.entries(input).flatMap(([k, v]) => ['--input', `${k}=${v}`]), '--json'];
+    const args = [join(s.repo, 'framework/cli/agent-job.mjs'), type, ...Object.entries(input).flatMap(([k, v]) => ['--input', `${k}=${v}`]), '--json'];
     const r = spawnSync('node', args, { cwd: s.repo, encoding: 'utf8', timeout: 120000 });
     let out = {}; try { out = JSON.parse(r.stdout || '{}'); } catch { /* plain text */ }
     return { exit: r.status ?? 1, session: out.session || '', why: r.status === 0 ? '' : String(out.error || r.stdout || r.stderr || '').slice(-200) };
   };
 }
+
+/**
+ * Send the PR the bisect found back to its build (setting batchAutoFix, on by default): one agent job (job type
+ * queue-fix, through framework/cli/agent-job.mjs, once per PR head) continues the build on its branch, fixes what broke
+ * CI, notes it on the build and pushes. The queue never calls a model; the new head rejoins and is retested.
+ */
+export function defaultFixJob(s) { return defaultConflictJob(s, 'queue-fix'); }
 
 /**
  * One round in batch mode (Brett, Nov 10 2026: "Take all the pull requests as soon as they're ready, have the
@@ -319,7 +326,7 @@ export function defaultConflictJob(s) {
  *      the PR, one with a PR earlier in the batch leaves it for the next batch, or goes to the AI fallback when on),
  *      pushed as queue/batch-<id>, and CI runs on it once (android.yml runs on queue/**).
  */
-async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, ready, rank, mainSha, base, conflictJob = defaultConflictJob(s) }) {
+async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, ready, rank, mainSha, base, conflictJob = defaultConflictJob(s), fixJob = defaultFixJob(s) }) {
   const history = [...(prev.history || [])];
   const merged = [...(prev.merged || [])].slice(-30);
   const kicked = [...(prev.kicked || [])].slice(-20);
@@ -328,6 +335,12 @@ async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, 
   let seq = Number.isInteger(prev.batchSeq) ? prev.batchSeq : 0;
   // AI fallback jobs already sent, one per PR head (kept while the PR is open)
   const aiJobs = Object.fromEntries(Object.entries(prev.aiJobs || {}).filter(([n]) => prs.some((p) => p.number === Number(n))));
+  // queue-fix jobs sent for the PRs that broke a batch (tries per PR, kept while it is open) and the red batch being split
+  const fixJobs = Object.fromEntries(Object.entries(prev.fixJobs || {}).filter(([n]) => prs.some((p) => p.number === Number(n))));
+  let bisect = prev.bisect || null;
+  const bisects = [...(prev.bisects || [])].slice(-10);
+  const tell = async (path, body) => { if (dry) return; try { await api('POST', path, body); } catch (e) { log(`queue: ${path}: ${e.message}`); } };
+  const alert = (a) => tell('/api/alerts', a);
   const pb = prev.batch || null;
   const mainMoved = !!pb && (!pb.base || git(['cat-file', '-e', `${pb.base}^{commit}`]).code !== 0 || !q.sameCodeFiles(lines(git(['diff', '--name-only', pb.base, mainSha]).out)));
   let batch = pb && q.keepBatch(pb, ready, { mainMoved }) ? { ...pb } : null;
@@ -358,6 +371,8 @@ async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, 
       if (r.merged) {
         for (const m of batch.members) { merged.push({ pr: m.pr, title: prOf(m.pr).title || m.title || '', sha: r.sha, queueSha: batch.sha, at, retested: false, branch: batch.branch, batch: batch.id, batchPr: r.pr, agent: prOf(m.pr).agent || '' }); mergedNow.add(m.pr); }
         batches.push({ id: batch.id, prs: batch.members.map((m) => m.pr), result: 'merged', sha: r.sha, pr: r.pr, at, runUrl: batch.runUrl || '' });
+        bisect = q.trackBisect(bisect, batch, 'merge');
+        await tell('/api/alerts/resolve', { keys: batch.members.map((m) => `queue:${m.pr}`) });
         suspects = q.nextSuspects(suspects, batch, 'merge'); expect = r.sha; batch = null;
       } else if (r.rebuild) { log(`queue: batch ${batch.id} rebuilt: ${r.why}`); batch = null; }
       else { batch.state = 'passed'; batch.why = r.why; if (r.sha) Object.assign(batch, { sha: r.sha, ci: 'running', failing: [], builtAt: at, dispatched: '' }); log(`queue: batch ${batch.id} passed but didn't merge: ${r.why}`); }
@@ -365,19 +380,36 @@ async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, 
     }
   } else if (d.action === 'kick') {
     const m = batch.members[0];
+    const p0 = prOf(m.pr);
     const why = q.kickReason(m.pr, { failing: batch.failing, url: batch.runUrl });
+    // send it back to its build for an automatic fix (once per head, bounded tries), then tell the PR, the console and AmberX
+    const plan = q.planSendBack(m.pr, m.head, { fixJobs, autoFix: cfg.autoFix, fixTries: cfg.fixTries, build: p0.build || '' });
+    let sent = { exit: 0, session: '', why: '' };
+    if (plan.send && !dry) {
+      sent = fixJob({ branch: p0.branch || '', pr: String(m.pr), build: p0.build || '', failing: (batch.failing || []).slice(0, 6).join(', ') || 'see the run', run: batch.runUrl || '', batch: String(batch.id), attempt: `${plan.attempt} of ${plan.max}` });
+      fixJobs[m.pr] = { head: m.head, tries: plan.attempt, at, exit: sent.exit, session: sent.session || '', why: sent.why || '', build: p0.build || '' };
+      log(`queue: #${m.pr} broke batch ${batch.id}; queue-fix ${sent.exit === 0 ? `sent${sent.session ? ` (${sent.session})` : ''}` : `failed: ${sent.why}`}`);
+    }
+    const back = q.sendBackLine(m.pr, plan, { build: p0.build || '', session: sent.session, why: plan.send && sent.exit !== 0 ? sent.why || 'agent job failed' : '' });
     if (!dry) {
       ctl = q.applyQueueControl(ctl, 'kick', m.pr, { why, head: m.head, at });
-      await gh('POST', `/repos/${s.slug}/issues/${m.pr}/comments`, { body: `**Kicked out of the merge queue.** ${why}\n\nPush a fix to this branch and it rejoins the queue by itself; the next batch goes on without it.` }).catch(() => {});
-      await api('POST', '/api/alerts', { source: 'push-banner', key: `queue:${m.pr}`, severity: 'warning', title: `Merge queue: #${m.pr} kicked out`.slice(0, 200), body: why });
+      await gh('POST', `/repos/${s.slug}/issues/${m.pr}/comments`, { body: `**Kicked out of the merge queue.** ${why}\n\n${back}\n\nAny new commit on this branch rejoins the queue by itself; the next batch goes on without it.` }).catch(() => {});
+      const stuck = plan.reason === 'limit' || (plan.send && sent.exit !== 0) || plan.reason === 'off';
+      await alert({ source: 'push-banner', key: `queue:${m.pr}`, severity: stuck ? 'error' : 'warning', link: '/settings/plugins/push-banner',
+        title: `Merge queue: #${m.pr} broke CI, ${stuck ? 'needs a fix' : 'sent back for a fix'}`.slice(0, 200), body: `${why} ${back}`.slice(0, 2000) });
     }
-    kicked.push({ pr: m.pr, title: prOf(m.pr).title || '', head: m.head, why, at, runUrl: batch.runUrl || '' });
+    kicked.push({ pr: m.pr, title: p0.title || '', head: m.head, why, at, runUrl: batch.runUrl || '', sentBack: back, build: p0.build || '', fix: fixJobs[m.pr] || null });
+    bisect = q.trackBisect(bisect, batch, 'kick');
     const p = prs.find((x) => x.number === m.pr); if (p) p.why = `kicked out: ${why}`;
     batches.push({ id: batch.id, prs: [m.pr], result: 'kicked', at, runUrl: batch.runUrl || '' });
     suspects = q.nextSuspects(suspects, batch, 'kick'); batch = null;
   } else if (d.action === 'split') {
     log(`queue: batch ${batch.id} is red; ${d.suspects.map((n) => `#${n}`).join(', ')} are halved to find the one that broke it`);
     batches.push({ id: batch.id, prs: d.suspects, result: 'red', at, runUrl: batch.runUrl || '', failing: batch.failing || [] });
+    const fresh = !bisect;
+    bisect = q.startBisect(bisect, batch, at);
+    if (!fresh) bisect = { ...bisect, runs: (bisect.runs || 0) + 1 };
+    else await alert(q.bisectStartAlert(bisect));
     suspects = q.nextSuspects(suspects, batch, 'split'); batch = null;
   }
 
@@ -385,6 +417,13 @@ async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, 
   const left = new Map();
   const line = q.queueOrder(prs.filter((p) => !p.why && !mergedNow.has(p.number)), ctl, rank, []);
   suspects = suspects.filter((n) => line.some((p) => p.number === n));
+  if (bisect && q.bisectDone(bisect, suspects)) {
+    const done = { ...bisect, doneAt: at };
+    await alert(q.bisectDoneAlert(done));
+    await tell('/api/alerts/resolve', { keys: [`queue:bisect-${bisect.of}`] });
+    log(`queue: red batch ${bisect.of} split in ${bisect.runs} run(s): merged ${done.merged.map((n) => `#${n}`).join(', ') || 'none'}, sent back ${done.sentBack.map((n) => `#${n}`).join(', ') || 'none'}`);
+    bisects.push(done); bisect = null;
+  }
   if (!batch && line.length) {
     if (!dry) git(['fetch', '-q', s.remote, s.base]);
     const parent = git(['rev-parse', `${s.remote}/${s.base}`]).out || mainSha;
@@ -460,7 +499,7 @@ async function batchRound({ s, git, gh, api, dry, at, log, cfg, prev, ctl, prs, 
     items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, prCi: p.ci, state: 'waiting', ci: '', why, etaMin: q.batchEtaMinutes(j, { size: cfg.batchSize, avg, startedMin, running }) });
   }
   const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
-  const st = { ...base, mainSha, expect, avgMin: avg, history: history.slice(-20), batch, batchSeq: seq, suspects, aiJobs, batches: batches.slice(-10), stack: [], items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr && !mergedNow.has(p.number))).slice(-20), merged: merged.slice(-30), ...v };
+  const st = { ...base, mainSha, expect, avgMin: avg, history: history.slice(-20), batch, batchSeq: seq, suspects, aiJobs, fixJobs, bisect, bisects: bisects.slice(-10), batches: batches.slice(-10), stack: [], items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr && !mergedNow.has(p.number))).slice(-20), merged: merged.slice(-30), ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
 }

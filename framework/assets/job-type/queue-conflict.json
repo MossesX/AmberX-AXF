@@ -14,6 +14,14 @@
   "data": {
     "specialty": "landing",
     "model": "opus",
+    "tools": [
+      "Read",
+      "Edit",
+      "Write",
+      "Grep",
+      "Glob",
+      "Bash"
+    ],
     "budget": {
       "tokens": 300000,
       "maxTurns": 40,

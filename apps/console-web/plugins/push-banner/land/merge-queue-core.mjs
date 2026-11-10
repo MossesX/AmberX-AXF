@@ -24,8 +24,13 @@ export const QUEUE_CONTROL_FRAME = 'merge-queue-control@1';
  *   batchAiResolve  off by default: plain code only, a PR that conflicts in code with one earlier in its batch waits
  *              for the next batch. On: it still waits, and one agent job (queue-conflict, through agent-job.mjs, once per
  *              PR head) makes its branch work with the others; the new head rejoins and CI still decides.
+ *   batchAutoFix  on by default (Brett Nov 10 2026: "Why do I have to figure this shit out on my own?"): the PR the
+ *              bisect finds broke CI is sent back to its build: one queue-fix agent job (agent-job.mjs, once per PR head)
+ *              fixes its branch and pushes; the new head rejoins the queue by itself and is retested. At most
+ *              `batchFixTries` tries per PR (0-5, default 2); after that it waits for Brett, with an alert.
  */
-export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3, queueMode: 'batch', batchSize: 5, batchAiResolve: false });
+export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3, queueMode: 'batch', batchSize: 5, batchAiResolve: false, batchAutoFix: true, batchFixTries: 2 });
+export const FIX_TRIES_MAX = 5;
 export const QUEUE_DEPTH_MAX = 6;
 export const BATCH_SIZE_MAX = 10;
 export const QUEUE_MODES = Object.freeze(['batch', 'stack']);
@@ -157,6 +162,8 @@ export function queueSettings(c = {}) {
     mode: QUEUE_MODES.includes(c?.queueMode) ? c.queueMode : QUEUE_DEFAULTS.queueMode,
     batchSize: int(c?.batchSize, 1, BATCH_SIZE_MAX, QUEUE_DEFAULTS.batchSize),
     aiResolve: c?.batchAiResolve === true,
+    autoFix: c?.batchAutoFix !== false,
+    fixTries: int(c?.batchFixTries, 0, FIX_TRIES_MAX, QUEUE_DEFAULTS.batchFixTries),
     waitUi: c?.landWaitUi !== false,
   };
 }
@@ -205,6 +212,71 @@ export function nextSuspects(suspects = [], batch = null, action = '') {
   return suspects;
 }
 
+// ------------------------------------------------------------------ red batch: bisect, send back, notify
+
+/**
+ * Should the PR the bisect found be sent back to its build for an automatic fix? Plain rules, no model:
+ *   fixJobs  { [pr]: { head, tries, … } } the queue-fix jobs already sent for each PR (tries counts every head).
+ * Returns { send, attempt, max, reason }: `send` once per PR head while tries are left and auto-fix is on; a head
+ * already sent is never sent twice (the job is still on it); past the limit, Brett decides.
+ */
+export function planSendBack(pr, head, { fixJobs = {}, autoFix = true, fixTries = QUEUE_DEFAULTS.batchFixTries, build = '' } = {}) {
+  const j = fixJobs[pr] || null;
+  const tries = j?.tries || 0;
+  if (!autoFix) return { send: false, attempt: tries, max: fixTries, reason: 'off' };
+  if (j?.head === head) return { send: false, attempt: tries, max: fixTries, reason: 'sent' };
+  if (tries >= fixTries) return { send: false, attempt: tries, max: fixTries, reason: 'limit' };
+  return { send: true, attempt: tries + 1, max: fixTries, reason: build ? 'build' : 'branch' };
+}
+
+/** The plain words for what happened to the PR that broke a batch (PR comment, alert body, view). */
+export function sendBackLine(pr, plan, { build = '', session = '', why = '' } = {}) {
+  const to = build ? `its build ${build}` : 'its branch';
+  if (plan.reason === 'off') return `Auto-fix is off: #${pr} waits for a fix by hand.`;
+  if (plan.reason === 'sent') return `Already sent back to ${to} for a fix (try ${plan.attempt} of ${plan.max}).`;
+  if (plan.reason === 'limit') return `Sent back ${plan.attempt} time${plan.attempt === 1 ? '' : 's'} already (the limit is ${plan.max}): #${pr} waits for Brett.`;
+  if (why) return `Couldn't send #${pr} back to ${to} (${why}): it waits for a fix by hand.`;
+  return `Sent back to ${to} for an automatic fix (try ${plan.attempt} of ${plan.max}${session ? `, session ${session}` : ''}). The fixed branch rejoins the queue by itself and is retested.`;
+}
+
+/**
+ * One red batch being narrowed down, start to end:
+ *   { of: id of the red batch, prs: its PRs, at, failing, runUrl, runs: CI runs spent narrowing, merged: [], sentBack: [] }
+ * startBisect on the first split (a split inside a running bisect keeps it), trackBisect after every decided batch,
+ * and the bisect is over when no suspects are left.
+ */
+export function startBisect(cur, batch, at) {
+  if (cur) return cur;
+  return { of: batch.id, prs: (batch.members || []).map((m) => m.pr), at, failing: (batch.failing || []).slice(0, 6), runUrl: batch.runUrl || '', runs: 0, merged: [], sentBack: [] };
+}
+export function trackBisect(cur, batch, action) {
+  if (!cur || !batch || batch.id === cur.of) return cur;
+  const members = (batch.members || []).map((m) => m.pr).filter((n) => cur.prs.includes(n));
+  if (!members.length) return cur;
+  const next = { ...cur, runs: (cur.runs || 0) + 1 };
+  if (action === 'merge') next.merged = [...new Set([...cur.merged, ...members])];
+  if (action === 'kick') next.sentBack = [...new Set([...cur.sentBack, ...members])];
+  return next;
+}
+/** A bisect is over when none of its PRs is still a suspect (merged, sent back, or gone from the queue). */
+export const bisectDone = (b, suspects = []) => !!b && !b.prs.some((n) => suspects.includes(n));
+
+/** The AmberX / console alerts for a bisect (warning and worse reach the phone). */
+export function bisectStartAlert(b) {
+  return { source: 'push-banner', key: `queue:bisect-${b.of}`, severity: 'warning', link: '/settings/plugins/push-banner',
+    title: `Merge queue: batch ${b.of} failed CI, splitting it`.slice(0, 200),
+    body: `Batch ${b.of} (${b.prs.map((n) => `#${n}`).join(', ')}) failed CI${b.failing.length ? ` (${b.failing.join(', ')})` : ''}. The queue tests it in halves to find the PR that broke it; the good ones merge on the way.${b.runUrl ? ` Run: ${b.runUrl}` : ''}`.slice(0, 2000) };
+}
+export function bisectDoneAlert(b) {
+  const merged = b.merged.map((n) => `#${n}`).join(', ');
+  const bad = b.sentBack.map((n) => `#${n}`).join(', ');
+  return { source: 'push-banner', key: `queue:bisect-${b.of}-done`, severity: b.sentBack.length ? 'warning' : 'success', link: '/settings/plugins/push-banner',
+    title: (b.sentBack.length ? `Merge queue: ${bad} broke batch ${b.of}, sent back` : `Merge queue: batch ${b.of} merged after a retest`).slice(0, 200),
+    body: [`Batch ${b.of} (${b.prs.map((n) => `#${n}`).join(', ')}) failed CI; ${b.runs} more run${b.runs === 1 ? '' : 's'} split it.`,
+      merged ? `Merged: ${merged}.` : 'Nothing merged from it yet.',
+      bad ? `Broke it: ${bad}, sent back to the build for a fix; it rejoins the queue once fixed.` : 'No PR failed on its own (the red run did not repeat).'].join(' ').slice(0, 2000) };
+}
+
 /** The batch's commit message and PR title / body, plain words. */
 export function batchTitle(id, prs) {
   return `Merge queue batch ${id}: ${prs.map((p) => `#${p.number ?? p.pr}`).join(', ')}`.slice(0, 250);
@@ -248,8 +320,8 @@ export function etaMinutes(index, { depth = 3, avg = DEFAULT_RUN_MIN, startedMin
 /** The commands, declared once: the CLI, the push banner's REST routes and (through plugin-commands@1) MCP. */
 export const QUEUE_COMMANDS = Object.freeze([
   { id: 'mergequeue-list', method: 'GET', path: '/queue', cli: 'list', title: 'Merge queue: the line', description: 'Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA; and the open PRs not in it, with why.', effect: 'read' },
-  { id: 'mergequeue-settings', method: 'GET', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: 'On, mode (batch: ready PRs combined batchSize at a time into one build on the latest main, one CI run, merged as one; stack: each PR on top of the ones ahead), batchSize, aiResolve, depth.', effect: 'read' },
-  { id: 'mergequeue-set', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: change settings', description: 'Change on, mode (batch | stack), batchSize (1-10), aiResolve, depth (1-6). Takes effect at the next round.', effect: 'write', input: { on: 'true | false', mode: 'batch | stack', batchSize: '1-10', aiResolve: 'true | false', depth: '1-6' } },
+  { id: 'mergequeue-settings', method: 'GET', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: 'On, mode (batch: ready PRs combined batchSize at a time into one build on the latest main, one CI run, merged as one; a red batch is split in halves to find the PR that broke it, the good ones merge; stack: each PR on top of the ones ahead), batchSize, aiResolve, autoFix (the PR that broke a batch is sent back to its build for an automatic fix), fixTries, depth.', effect: 'read' },
+  { id: 'mergequeue-set', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: change settings', description: 'Change on, mode (batch | stack), batchSize (1-10), aiResolve, autoFix, fixTries (0-5), depth (1-6). Takes effect at the next round.', effect: 'write', input: { on: 'true | false', mode: 'batch | stack', batchSize: '1-10', aiResolve: 'true | false', autoFix: 'true | false', fixTries: '0-5', depth: '1-6' } },
   { id: 'mergequeue-add', method: 'POST', path: '/queue/add', cli: 'add', title: 'Merge queue: add a PR', description: 'Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green, not held by UI Review).', effect: 'write', input: { pr: 'PR number' } },
   { id: 'mergequeue-remove', method: 'POST', path: '/queue/remove', cli: 'remove', title: 'Merge queue: remove a PR', description: 'Take a PR out of the merge queue until it gets a new commit or is added again; the ones behind it are retested without it.', effect: 'write', input: { pr: 'PR number', why: 'optional reason' } },
   { id: 'mergequeue-move', method: 'POST', path: '/queue/move', cli: 'move', title: 'Merge queue: move a PR', description: "Move a PR to a place in the merge queue (0 = front). Jump to front from the console is Brett's own click.", effect: 'write', input: { pr: 'PR number', to: 'new index, 0 = front' } },

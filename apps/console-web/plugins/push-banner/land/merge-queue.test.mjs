@@ -183,7 +183,10 @@ await t('priority: the host copy of the rule matches framework/core/build-priori
 // ------------------------------------------------------------------ batch mode (Nov 10 2026): pure rules
 
 await t('batch settings: batch of 5 by default, bounded, AI fallback off', () => {
-  assert.deepEqual(q.queueSettings({}), { mergeQueue: true, depth: 3, mode: 'batch', batchSize: 5, aiResolve: false, waitUi: true });
+  assert.deepEqual(q.queueSettings({}), { mergeQueue: true, depth: 3, mode: 'batch', batchSize: 5, aiResolve: false, autoFix: true, fixTries: 2, waitUi: true });
+  assert.equal(q.queueSettings({ batchAutoFix: false, batchFixTries: 9 }).autoFix, false);
+  assert.equal(q.queueSettings({ batchFixTries: 9 }).fixTries, 2, 'tries bounded 0-5');
+  assert.equal(q.queueSettings({ batchFixTries: 0 }).fixTries, 0);
   assert.equal(q.queueSettings({ batchSize: 11 }).batchSize, 5);
   assert.equal(q.queueSettings({ batchSize: 2, queueMode: 'stack', batchAiResolve: true }).mode, 'stack');
   assert.equal(q.queueSettings({ queueMode: 'nope' }).mode, 'batch');
@@ -316,8 +319,11 @@ await t('batch: red batch of two is halved; the green half merges, the red one a
   assert.ok(landed.has(9));
   assert.deepEqual(st.batch.members.map((m) => m.pr), [10]);
   ci2[st.batch.sha] = 'failure';
-  st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+  const fixes = []; const fixJob = (input) => { fixes.push(input); return { exit: 0, session: 'lenny-queue-fix' }; };
+  st = await queueRound({ s: s2, git: git2, gh: gh2, api, fixJob });
   assert.match(st.kicked.at(-1).why, /#10 broke CI/);
+  assert.equal(fixes.length, 1, 'sent back for a fix');
+  assert.match(st.kicked.at(-1).sentBack, /Sent back to its branch for an automatic fix \(try 1 of 2, session lenny-queue-fix\)/);
   assert.equal(st.waiting.find((w) => w.pr === 10).state, 'kicked');
   assert.equal(st.batch, null);
   assert.deepEqual(st.suspects, []);
@@ -334,6 +340,88 @@ await t('batch: the AI fallback (when on) sends one agent job per PR head, never
   assert.match(st.items.find((x) => x.pr === 12).why, /sent an agent to resolve it/);
   st = await queueRound({ s: s2, git: git2, gh: gh2, api, conflictJob });
   assert.equal(jobs.length, 1, 'once per head');
+});
+
+await t('send back: once per head, bounded tries, plain words', () => {
+  assert.deepEqual(q.planSendBack(5, 'h1', { build: 'b' }), { send: true, attempt: 1, max: 2, reason: 'build' });
+  const jobs = { 5: { head: 'h1', tries: 1 } };
+  assert.equal(q.planSendBack(5, 'h1', { fixJobs: jobs }).reason, 'sent', 'never twice for one head');
+  assert.deepEqual(q.planSendBack(5, 'h2', { fixJobs: jobs }), { send: true, attempt: 2, max: 2, reason: 'branch' });
+  assert.equal(q.planSendBack(5, 'h3', { fixJobs: { 5: { head: 'h2', tries: 2 } } }).reason, 'limit');
+  assert.equal(q.planSendBack(5, 'h3', { autoFix: false }).reason, 'off');
+  assert.match(q.sendBackLine(5, { reason: 'build', attempt: 1, max: 2 }, { build: 'my-build' }), /^Sent back to its build my-build for an automatic fix \(try 1 of 2\)/);
+  assert.match(q.sendBackLine(5, { reason: 'limit', attempt: 2, max: 2 }), /waits for Brett/);
+  let b = q.startBisect(null, { id: 4, members: [1, 2, 3, 4].map((pr) => ({ pr })), failing: ['test'] }, 'now');
+  assert.equal(q.startBisect(b, { id: 9, members: [] }, 'later').of, 4, 'a split inside a bisect keeps it');
+  b = q.trackBisect(b, { id: 5, members: [{ pr: 1 }, { pr: 2 }] }, 'merge');
+  b = q.trackBisect(b, { id: 6, members: [{ pr: 3 }] }, 'merge');
+  b = q.trackBisect(b, { id: 7, members: [{ pr: 4 }] }, 'kick');
+  assert.deepEqual([b.merged, b.sentBack, b.runs], [[1, 2, 3], [4], 3]);
+  assert.equal(q.bisectDone(b, [4]), false); assert.equal(q.bisectDone(b, []), true);
+  const a = q.bisectDoneAlert(b);
+  assert.equal(a.severity, 'warning', 'warnings reach AmberX');
+  assert.match(a.title, /#4 broke batch 4, sent back/);
+  assert.match(a.body, /Merged: #1, #2, #3\..*Broke it: #4/);
+  assert.equal(q.bisectDoneAlert({ ...b, sentBack: [] }).severity, 'success');
+});
+
+await t('red batch of five, end to end: split in halves, the four good PRs merge, the bad one is sent back, fixed and retried, AmberX told', async () => {
+  writeFileSync(join(data2, 'config.json'), JSON.stringify({ batchSize: 5 }));
+  for (const x of [13, 14, 15, 16, 17]) heads2[x] = branch2(`c${x}`, `h${x}.txt`, `${x}\n`);
+  // let the conflict leftovers (#11 #12) go so the batch is only the five
+  openSet = [13, 14, 15, 16, 17]; sh(repo2, 'push', '-q', 'origin', '--delete', 'queue/batch-' + readQueue(s2).batch?.id);
+  const alerts = []; const resolved = [];
+  const api3 = async (m, path, body) => { if (path === '/api/alerts') alerts.push(body); if (path === '/api/alerts/resolve') resolved.push(...body.keys); return {}; };
+  const fixes = []; const fixJob = (input) => { fixes.push(input); return { exit: 0, session: `fix-${fixes.length}` }; };
+  const go = () => queueRound({ s: s2, git: git2, gh: gh2, api: api3, fixJob });
+  const merges0 = mainMerges;
+  let st = await go();
+  assert.deepEqual(st.batch.members.map((m) => m.pr), [13, 14, 15, 16, 17]);
+  // #16 is bad: any batch holding it is red
+  const verdict = (b) => (b.members.some((m) => m.pr === 16 && m.head === heads2[16]) ? 'failure' : 'success');
+  let rounds = 0;
+  while (st.batch && rounds++ < 10) { ci2[st.batch.sha] = verdict(st.batch); st = await go(); }
+  assert.ok([13, 14, 15, 17].every((n) => landed.has(n)), 'the good ones merged');
+  assert.ok(!landed.has(16));
+  assert.equal(mainMerges - merges0, 2, 'batches after the red one: [13 14 15] green, [16] red, [17] green: two merges');
+  assert.deepEqual(fixes.map((f) => [f.pr, f.branch, f.attempt]), [['16', 'c16', '1 of 2']]);
+  assert.equal(st.waiting.find((w) => w.pr === 16).state, 'kicked');
+  assert.ok(alerts.some((a) => a.key === 'queue:bisect-' + st.bisects.at(-1).of && a.severity === 'warning'), 'AmberX told when the batch went red');
+  const done = alerts.find((a) => a.key.endsWith('-done'));
+  assert.match(done.title, /#16 broke batch \d+, sent back/);
+  assert.equal(alerts.find((a) => a.key === 'queue:16').severity, 'warning');
+  assert.deepEqual(st.bisects.at(-1).merged.sort(), [13, 14, 15, 17]);
+  assert.equal(st.bisect, null);
+  assert.ok(comments2.some((c) => /Sent back to its branch for an automatic fix \(try 1 of 2/.test(c)));
+  // the build's agent pushes a fix: the new head rejoins the queue by itself, and merges when green
+  sh(repo2, 'checkout', '-q', '-B', 'c16', `origin/c16`); commit2('h16.txt', '16 fixed\n', 'fix'); sh(repo2, 'push', '-q', 'origin', 'HEAD:c16'); heads2[16] = sh(repo2, 'rev-parse', 'HEAD'); sh(repo2, 'checkout', '-q', '--detach');
+  st = await go();
+  assert.deepEqual(st.batch.members.map((m) => m.pr), [16], 'retried');
+  ci2[st.batch.sha] = 'success';
+  st = await go();
+  assert.ok(landed.has(16));
+  assert.ok(resolved.includes('queue:16'), 'its alert is resolved once it lands');
+  assert.equal(fixes.length, 1);
+});
+
+await t('red again after the tries run out: no third agent, an error alert for Brett', async () => {
+  writeFileSync(join(data2, 'config.json'), JSON.stringify({ batchSize: 5, batchFixTries: 1 }));
+  heads2[18] = branch2('c18', 'h18.txt', '18\n');
+  openSet = [18];
+  const alerts = []; const api3 = async (m, path, body) => { if (path === '/api/alerts') alerts.push(body); return {}; };
+  const fixes = []; const fixJob = (input) => { fixes.push(input); return { exit: 0, session: 'x' }; };
+  let st = await queueRound({ s: s2, git: git2, gh: gh2, api: api3, fixJob });
+  ci2[st.batch.sha] = 'failure';
+  st = await queueRound({ s: s2, git: git2, gh: gh2, api: api3, fixJob });
+  assert.equal(fixes.length, 1);
+  sh(repo2, 'checkout', '-q', '-B', 'c18', 'origin/c18'); commit2('h18.txt', '18 again\n', 'try'); sh(repo2, 'push', '-q', 'origin', 'HEAD:c18'); heads2[18] = sh(repo2, 'rev-parse', 'HEAD'); sh(repo2, 'checkout', '-q', '--detach');
+  st = await queueRound({ s: s2, git: git2, gh: gh2, api: api3, fixJob });
+  ci2[st.batch.sha] = 'failure';
+  st = await queueRound({ s: s2, git: git2, gh: gh2, api: api3, fixJob });
+  assert.equal(fixes.length, 1, 'tries used up');
+  assert.equal(alerts.at(-1).severity, 'error');
+  assert.match(alerts.at(-1).body, /waits for Brett/);
+  writeFileSync(join(data2, 'config.json'), JSON.stringify({ batchSize: 5, batchAiResolve: true }));
 });
 
 await t('settings from the CLI: mode, size, AI fallback; bounds refused', async () => {
