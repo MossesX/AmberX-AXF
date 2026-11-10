@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2223,
- "updatedAt": "2026-11-10T02:49:30.880Z",
+ "rev": 2224,
+ "updatedAt": "2026-11-10T02:49:47.812Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134963,6 +134963,7 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
    "updatedAt": "2026-11-10T02:49:23.901Z",
    "builtAt": "",
