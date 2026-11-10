@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:31 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · console
-- 2026-11-10 16:32 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · console
-- 2026-11-10 16:32 UTC · `search-bar-plugin-add-on-search-builds-session-h` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:33 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s1 done (all) · orchestrator
 - 2026-11-10 16:34 UTC · `molly-fable-version-the-one-interface-for-amberx` → queued, note (all) · console
 - 2026-11-10 16:36 UTC · `project-manager-every-project-its-own-console-in` s1 done, → running (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:42 UTC · `molly-fable-version-the-one-interface-for-amberx` s2 done, → running (all) · orchestrator
 - 2026-11-10 19:44 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
 - 2026-11-10 19:44 UTC · `molly-fable-version-the-one-interface-for-amberx` s3 done, → built (all) · orchestrator
+- 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` → running, note (all) · pipeline
+- 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` branch claude/inline-element-editing-plugin-right-click-any-el (all) · pipeline
+- 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · orchestrator
 
 ## Token passes (log)
 
