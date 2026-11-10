@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:46:33.599Z",
+ "updatedAt": "2026-11-10T23:46:39.668Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -93160,7 +93160,7 @@
    "title": "Resolve conflicts and land PR #449 (account order switch)",
    "category": "",
    "detail": "PR #449 (claude/account-order-switch-custom-drag-and-drop-order) failed to merge: merge conflicts with main. Merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, then merge the PR and redeploy the console. Notify on AmberX.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -93168,8 +93168,8 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T23:46:32.233Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T23:46:33.476Z",
+   "builtAt": "2026-11-10T23:46:33.477Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -93382,8 +93382,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:46:33.476Z",
      "note": "",
      "uid": "st-mwb066qf81b31o"
     }
