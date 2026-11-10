@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:08:34.580Z",
+ "updatedAt": "2026-11-10T17:08:47.060Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86106,16 +86106,16 @@
    "title": "AmberX open_url: tapping the 'command waiting' notification opens Chrome on the page, not the AmberX app",
    "category": "",
    "detail": "amberx.open_url: when Android blocks the background start, the high-priority notification's tap must launch Chrome (or the default browser) straight on the URL, not open the AmberX app. Also prompt once for 'Display over other apps' so pages come to the front with no tap. Test on the paired phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-open-url-tapping-the-command-waiting-noti",
-   "pr": "",
+   "pr": "#454",
    "priority": "P0",
    "createdAt": "2026-11-10T16:41:39.193Z",
    "updatedAt": "2026-11-10T17:08:16.399Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T17:08:16.399Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -86205,8 +86205,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:07:59.736Z",
      "note": "",
      "uid": "st-mwax51vu06qncu"
     }

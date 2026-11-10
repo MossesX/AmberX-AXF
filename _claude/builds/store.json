@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2523,
- "updatedAt": "2026-11-10T17:08:34.580Z",
+ "rev": 2524,
+ "updatedAt": "2026-11-10T17:08:47.060Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139394,16 +139394,16 @@
    "title": "AmberX open_url: tapping the 'command waiting' notification opens Chrome on the page, not the AmberX app",
    "category": "",
    "detail": "amberx.open_url: when Android blocks the background start, the high-priority notification's tap must launch Chrome (or the default browser) straight on the URL, not open the AmberX app. Also prompt once for 'Display over other apps' so pages come to the front with no tap. Test on the paired phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-open-url-tapping-the-command-waiting-noti",
-   "pr": "",
+   "pr": "#454",
    "priority": "P0",
    "createdAt": "2026-11-10T16:41:39.193Z",
    "updatedAt": "2026-11-10T17:08:16.399Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T17:08:16.399Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -139525,12 +139525,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:07:59.736Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:42:49.674Z",
-     "updatedAt": "2026-11-10T16:42:49.674Z"
+     "updatedAt": "2026-11-10T17:07:59.863Z"
     }
    ],
    "profiles": [
@@ -139541,7 +139541,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
