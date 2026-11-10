@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2777,
- "updatedAt": "2026-11-10T20:14:09.200Z",
+ "rev": 2778,
+ "updatedAt": "2026-11-10T20:14:20.040Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -147585,15 +147585,15 @@
    "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
    "category": "",
    "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/remove-the-old-theme-manager-style-and-layout-se",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-10T20:14:08.006Z",
+   "updatedAt": "2026-11-10T20:14:12.257Z",
    "builtAt": "",
    "notes": [
     {
@@ -147607,6 +147607,14 @@
     {
      "text": "Split by Claude into 10 steps (3 Fable).",
      "at": "2026-11-10T18:02:14.975Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-remove-the-old-theme-manager-style-and-layout-se--earl.",
+     "at": "2026-11-10T20:14:10.112Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-remove-the-old-theme-manager-style-and-layout-se--earl, own login copy)",
+     "at": "2026-11-10T20:14:12.257Z"
     }
    ],
    "approvals": [],
@@ -147626,12 +147634,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:42:30.484Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-remove-the-old-theme-manager-style-and-layout-se--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-10T20:14:09.790Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T18:02:14.975Z",
@@ -147643,7 +147651,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T20:14:09.790Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -147652,7 +147660,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T20:14:09.790Z"
    },
    "steps": [
     {
@@ -147922,7 +147930,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
