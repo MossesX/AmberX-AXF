@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:42:54.118Z",
+ "updatedAt": "2026-11-10T17:43:18.537Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88877,9 +88877,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:42:17.406Z",
-   "updatedAt": "2026-11-10T17:42:18.181Z",
+   "updatedAt": "2026-11-10T17:43:17.233Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:43:17.233Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -88894,7 +88899,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends skin rules + overrides list. Every override is recorded in an overrides registry. Applying a skin opens a dialog: collapsible/expandable tree (plus other views) of everything the skin touches, all checked by default; filter to show only overridden items, highlighted in a distinct colour; per item (and per branch) choose keep my override or take the new skin's value. Bulk keep-all / replace-all. Full API/CLI control.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazasxd01xjzp"
+    },
+    {
+     "id": "s2",
+     "text": "When you apply a new skin, it lists all the overrides. Overrides go in a registry. A dialog lists everything in a collapsible tree, multiple views, expandable rows, defaults everything checked, a filter to view overridden things highlighted a certain color, so you can keep them overridden or replace them with the new skin.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazasxd02aj93"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/apply-skin-dialog-tree-of-everything-overridden.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/apply-skin-dialog-tree-of-everything-overridden.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazasxd03kxpx"
+    }
+   ]
   }
  ]
 }
