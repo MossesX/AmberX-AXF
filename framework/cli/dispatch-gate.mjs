@@ -11,7 +11,7 @@
  * without a valid token for that build is refused (exit 3, one line saying how to queue it). Non-build sessions (a
  * walkthrough, a UI shot job, a chat) are not builds and pass.
  *
- *   node framework/cli/dispatch-gate.mjs check   [--build <id>] [--name <session>] [--brief <file>] [--json]   exit 0 ok · 3 refused
+ *   node framework/cli/dispatch-gate.mjs check   [--build <id>] [--name <session>] [--brief <file>] [--launcher l] [--json]   exit 0 ok · 3 refused
  *   node framework/cli/dispatch-gate.mjs consume [--build <id>] [--name <session>] [--brief <file>]           mark the token used
  *   node framework/cli/dispatch-gate.mjs issue <build> --account <a> --model <m>      (the dispatcher's call; prints the token)
  *   node framework/cli/dispatch-gate.mjs list [--json]                                 tokens on file (no token values)
@@ -19,7 +19,14 @@
  * A token is bound to one build, lives DISPATCH_TTL_MS (long enough for a look-approval wait), and is spent when the
  * session really starts (consume, after the look gate), so the look waiter's relaunch still passes and nothing can
  * reuse it. Tokens sit in the dispatcher's folder (dispatch.json, 0600; AXF_DISPATCH_DIR, else the pipeline folder).
- * The file holds only a hash of each token. There is no switch to turn this off.
+ * The file holds only a hash of each token.
+ *
+ * The rule is a VPS setting (vps-settings@1, framework/cli/vps-settings.mjs, Brett Nov 9 2026: "Now how would I manage
+ * that setting? I need a console plugin to manage the VPS settings."): `orchestratorOnly`, on by default, managed in the
+ * console's VPS Settings plugin, its REST/MCP/CLI/voice commands, or `vps-settings.mjs set orchestratorOnly=…` on the host.
+ * Off, a launch the gate would refuse starts and is logged as "allowed-off". Every refusal from the CLI's check goes into
+ * the refused-jobs log with a phone notice (once per build per notifyEveryMin). --launcher names who tried (claude-headless,
+ * agent-slots, …) for the log.
  */
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -28,6 +35,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findBuild } from './model-gate.mjs';
 import { loadStore } from './builds-store.mjs';
+import { load as loadVpsSettings, logRefusal } from './vps-settings.mjs';
 
 export const SCHEMA = 'dispatch-tokens@1';
 export const DISPATCH_TTL_MS = 24 * 3600e3;
@@ -87,19 +95,36 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
   return { ok: true, build: id, why: `${id}: dispatched by the orchestrator${rec.account ? ` on ${rec.account}` : ''}${rec.model ? ` (${rec.model})` : ''}` };
 }
 
-/** The launcher's check. */
-export function check({ build = '', name = '', brief = '', token = '', env = process.env, store = null, now = Date.now() } = {}) {
+/** Pure: the verdict under the VPS rule. With orchestratorOnly off, a refusal becomes a logged pass (ruleOff). */
+export function ruled(v, { orchestratorOnly = true } = {}) {
+  if (v.ok || orchestratorOnly) return v;
+  return { ok: true, build: v.build, ruleOff: true, why: `allowed: the orchestrator-only rule is off (VPS Settings). It would have been ${v.why}` };
+}
+
+/** The launcher's check. `rule` = the VPS settings (read fresh when not given). */
+export function check({ build = '', name = '', brief = '', token = '', env = process.env, store = null, now = Date.now(), rule = null } = {}) {
   let s = store; if (!s) { try { s = loadStore(); } catch { s = { builds: [] }; } }
   const b = findBuild(s, { build, name, brief });
   const rec = b ? load(env).tokens[b.id] ?? null : null;
-  return verdict({ b, name, rec, token, now });
+  const r = rule ?? (() => { try { return loadVpsSettings(env).values; } catch { return { orchestratorOnly: true }; } })();
+  return ruled(verdict({ b, name, rec, token, now }), r);
+}
+
+/** check() plus the refused-jobs log: a refusal (or a pass only because the rule is off) is logged, with a phone notice. */
+export function enforce(opts = {}) {
+  const v = check(opts);
+  if (!v.ok || v.ruleOff) {
+    logRefusal({ outcome: v.ok ? 'allowed-off' : 'refused', build: v.build, name: opts.name || '', why: v.why, launcher: opts.launcher || '', by: opts.by || '' },
+      { env: opts.env ?? process.env, ...(opts.now ? { now: opts.now } : {}), ...(opts.notify ? { notify: opts.notify } : {}) });
+  }
+  return v;
 }
 
 /** The session really starts: the token is spent. */
 export function consume(opts = {}) {
   const env = opts.env ?? process.env;
   const v = check(opts);
-  if (!v.ok || !v.build) return v;
+  if (!v.ok || !v.build || v.ruleOff) return v;
   const doc = load(env);
   if (doc.tokens[v.build]) { doc.tokens[v.build].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
   return { ...v, consumed: true };
@@ -111,9 +136,10 @@ async function main(argv) {
   const [cmd, first] = args;
   const briefFile = opt('brief');
   const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
-  const common = { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief, token: process.env.AXF_DISPATCH_TOKEN || '' };
+  const common = { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief, token: process.env.AXF_DISPATCH_TOKEN || '',
+    launcher: opt('launcher') || 'cli', by: process.env.AXF_SESSION || process.env.AXF_SURFACE || process.env.USER || '' };
   if (cmd === 'check' || cmd === 'consume') {
-    const r = cmd === 'check' ? check(common) : consume(common);
+    const r = cmd === 'check' ? enforce(common) : consume(common);
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why.replace(/^refused: /, '')}`);
     if (!r.ok) process.exitCode = 3;
     return;

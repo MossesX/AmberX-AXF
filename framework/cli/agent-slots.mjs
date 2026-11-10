@@ -464,6 +464,13 @@ async function cli(argv) {
       return;
     }
     case 'enqueue': {
+      // Orchestrator-only (vps-settings@1): a swarm job that names a build needs the dispatcher's token, like
+      // claude-headless.sh (which checks before it enqueues, so headless entries are not checked twice).
+      if (f.kind === 'swarm' && (f.build || /^(axf-)?build[-:]/.test(String(f.name || '')))) {
+        const { enforce } = await import('./dispatch-gate.mjs');
+        const v = enforce({ build: f.build || '', name: f.name || '', token: process.env.AXF_DISPATCH_TOKEN || '', launcher: 'agent-slots', by: f.by || '' });
+        if (!v.ok) { console.error(`agent-slots: ${v.why}`); process.exitCode = 3; return; }
+      }
       const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);

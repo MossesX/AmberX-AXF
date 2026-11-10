@@ -1,0 +1,12 @@
+/* VPS Settings (vps-settings plugin): layout only; controls come from the framework (Switch, TextField, Button, Chip). */
+.axp-vps__lead { margin: 0; }
+.axp-vps__warn { margin: 0; color: var(--fx-warning); }
+.axp-vps__num { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.axp-vps__num > :first-child { flex: 1 1 14em; }
+.axp-vps__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }
+.axp-vps__bar > :first-child { flex: 1 1 auto; }
+.axp-vps__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-vps__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-vps__row:last-child { border-bottom: 0; }
+.axp-vps__head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; min-width: 0; overflow-wrap: anywhere; }
+.axp-vps__why { overflow-wrap: anywhere; }

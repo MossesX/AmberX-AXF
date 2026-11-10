@@ -214,10 +214,11 @@ fi
 # One way to start builds (framework/cli/dispatch-gate.mjs, Brett, Nov 9 2026: "It has to be the orchestrator"): a launch
 # that belongs to a build starts only with the orchestrator dispatcher's token for that build (AXF_DISPATCH_TOKEN, set by
 # pipeline.mjs tick). Anything else (Build manager, a session, axHub vps.build_start, a fix button) is refused here with
-# the way to queue it. Non-build sessions pass. The token is spent below, once the session really starts.
+# the way to queue it. Non-build sessions pass. The token is spent below, once the session really starts. The rule is the
+# VPS setting orchestratorOnly (framework/cli/vps-settings.mjs, console VPS Settings plugin); refusals are logged there.
 DISPATCH="$HERE/../framework/cli/dispatch-gate.mjs"
 if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
-  dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" 2>&1)"; d_st=$?
+  dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" --launcher claude-headless 2>&1)"; d_st=$?
   if (( d_st == 3 )); then echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3; fi
 fi
 

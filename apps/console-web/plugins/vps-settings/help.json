@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "vps-settings-help",
+  "name": "vps-settings help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:vps-settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:vps-settings",
+    "entries": [
+      {
+        "target": "vps-settings",
+        "title": "VPS Settings",
+        "text": "Rules the VPS enforces on every launch. Only the orchestrator starts builds: a build launch without the orchestrator's dispatch token is refused, logged under Refused jobs and noticed on your phone. Switching that rule off is your own click.",
+        "kind": "tab"
+      },
+      {
+        "target": "clear-log",
+        "title": "Clear log",
+        "text": "Empties the refused-jobs log. One line is kept saying who cleared it and when. The rule itself is not changed.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}
