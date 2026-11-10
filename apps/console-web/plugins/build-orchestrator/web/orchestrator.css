@@ -39,3 +39,15 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
+
+/* search bar + Collapse all / Expand all + collapsible section headers (Nov 10 2026): layout only */
+.oc-find { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.oc-find__search { display: flex; flex: 1 1 calc(var(--fx-font-size) * 18); min-width: 0; align-items: center; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-muted) }
+.oc-find__search:focus-within { border-color: var(--fx-focus) }
+.oc-find__search input { flex: 1; min-width: 0; border: 0; background: transparent; box-shadow: none; outline: none; padding-left: 0; padding-right: 0 }
+.oc-find__search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none }
+.oc-find__n { flex: none }
+.oc-sechead { margin: 0 }
+.oc-sechead__btn { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); max-width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer }
+.oc-sechead__btn:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); border-radius: var(--fx-radius-sm) }
+.oc-sechead__label { min-width: 0; overflow-wrap: anywhere }

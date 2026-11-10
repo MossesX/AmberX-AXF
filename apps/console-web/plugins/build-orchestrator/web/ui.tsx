@@ -8,6 +8,8 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab } from './pipeline';
+import { SearchBar } from './sections';
+import { isGridOpen, isSectionCollapsed, setTab, toggleGridRow, toggleSection, useViewState, type Tab } from './view-state';
 import './orchestrator.css';
 
 /*
@@ -38,8 +40,7 @@ function headlessRuns(b: Build): { at: string; start: string; cost: string; mode
 }
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const TABS = [{ id: 'pipeline', label: 'Pipeline', icon: 'play' }, { id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
-type Tab = (typeof TABS)[number]['id'];
+const TABS: readonly { id: Tab; label: string; icon: string }[] = [{ id: 'pipeline', label: 'Pipeline', icon: 'play' }, { id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }];
 
 export function OrchestratorPage() {
   const rt = useRuntime();
@@ -47,8 +48,7 @@ export function OrchestratorPage() {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'pipeline'));
-  useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
+  const { tab } = useViewState();
 
   const load = async () => {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
@@ -81,6 +81,7 @@ export function OrchestratorPage() {
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
+      {(tab === 'pipeline' || tab === 'builds') && <SearchBar />}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
       {tab === 'pipeline' && <PipelineTab api={api} log={log} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
@@ -100,14 +101,16 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
   const [cat, setCat] = useState('');
   useEffect(() => { consoleApi.writeLocal('orch-view', view); }, [view]);
   useEffect(() => { consoleApi.writeLocal('orch-sort', sort); consoleApi.writeLocal('orch-dir', dir); }, [sort, dir]);
+  const { query } = useViewState();
   const builds = useMemo(() => {
-    let all = state.builds.filter((b) => (showHidden ? true : !b.hidden));
-    if (!filter) all = all.filter((b) => b.status !== 'archived');
+    let all = state.builds.filter((b) => (showHidden || query ? true : !b.hidden));
+    if (query) all = all.filter((b) => core.matchBuild(query, b));
+    if (!filter) all = all.filter((b) => b.status !== 'archived' || !!query);
     else all = all.filter((b) => b.status === filter);
     if (model) all = all.filter((b) => core.nextUp(b, state.rules).step?.model === model);
     if (cat) all = all.filter((b) => (b.category || core.UNCATEGORISED) === cat);
     return core.sortBuilds(all, sort, dir, state.rules) as Build[];
-  }, [state, sort, dir, filter, model, showHidden, cat]);
+  }, [state, sort, dir, filter, model, showHidden, cat, query]);
   const cats = core.categories(state.builds.filter((b) => b.status !== 'archived'));
   const counts = core.counts(state.builds) as Record<string, number>;
   const hiddenCount = state.builds.filter((b) => b.hidden).length;
@@ -138,7 +141,7 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
         {hiddenCount > 0 && <button data-fx-row className="pd-sort" aria-pressed={showHidden} onClick={() => setShowHidden((v) => !v)}><Icon name={showHidden ? 'eye' : 'minimize'} size={13} />Hidden ({hiddenCount})</button>}
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
       </div>
-      {builds.length === 0 ? <div className="fx-empty">{filter || cat ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
+      {builds.length === 0 ? <div className="fx-empty">{query ? `No build matches "${query}".` : filter || cat ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
         : view === 'grid' ? <BuildGrid builds={builds} rules={state.rules} busy={busy} act={act} />
         : <div className="pd-list" role="list">{builds.map((b) => <BuildCard key={b.id} b={b} rules={state.rules} busy={busy} act={act} />)}</div>}
       <AddForm busy={busy} act={act} />
@@ -425,8 +428,8 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
   const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden', ['left']));
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
-  const [open, setOpen] = useState<string[]>([]);
-  const [collapsed, setCollapsed] = useState<string[]>([]);
+  const v = useViewState();
+  const open = builds.filter((b) => isGridOpen(v, b.id)).map((b) => b.id);
   useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
@@ -434,10 +437,10 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
     for (const b of builds) { const c = b.category || core.UNCATEGORISED; by.set(c, [...(by.get(c) ?? []), b]); }
     return [...by.entries()].sort((a, c) => a[0].localeCompare(c[0])).map(([name, rows]) => {
       const t = rows.reduce((a, b) => { const f = fig.get(b.id)!; const p = core.progress(b); return { left: a.left + f.left, cost: a.cost + f.costLeft, done: a.done + p.done, total: a.total + p.total }; }, { left: 0, cost: 0, done: 0, total: 0 });
-      return { id: `cat:${name}`, title: `${name} (${rows.length})`, icon: 'layers', rows, groups: [], collapsed: collapsed.includes(`cat:${name}`),
+      return { id: `cat:${name}`, title: `${name} (${rows.length})`, icon: 'layers', rows, groups: [], collapsed: isSectionCollapsed(v, `cat:${name}`),
         summary: `${core.formatMinutes(t.left) || 'nothing'} left · ${money(t.cost)}`, progress: t.total ? (t.done / t.total) * 100 : undefined };
     });
-  }, [builds, fig, collapsed]);
+  }, [builds, fig, v]);
   const cols: GridColumn<Build>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
       render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
@@ -460,7 +463,6 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   return (
     <>
       <div className="pd-sortbar">
-        <Button size="sm" tone="neutral" icon={open.length ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(open.length ? [] : builds.map((b) => b.id))}>{open.length ? 'Collapse all' : 'Expand all'}</Button>
         <span className="fx-small fx-muted">Tap a column to sort · right-click a column to hide it</span>
       </div>
       <div className="oc-grid">
@@ -468,8 +470,8 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
           rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'}
           hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
           sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
-          expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}
-          onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
+          expanded={open} onToggleExpand={toggleGridRow} onRowClick={(b) => toggleGridRow(b.id)}
+          onToggleGroup={toggleSection}
           rowCtx={(b) => ({ target: 'axf-orchestrator-build', payload: b.id })} rowRef={(b) => ({ kind: 'orchestrator', id: b.id })}
           renderDetail={(b) => (
             <div className="oc-detail">

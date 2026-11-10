@@ -168,4 +168,11 @@ t('approvals off: an open request filed while they were on is closed when the ph
   try { x = c.apply(x, { action: 'step', id: 'old', step: 's2' }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'approved'); }
   finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
 });
+t('search: every word, any field, case and accents folded', () => {
+  const x = { id: 'skins-r2', title: 'Skins for the Console', branch: 'claude/skins-r2', detail: 'Café menu', pipeline: { account: 'mossesx-max' }, steps: [{ id: 's1', text: 'wire the route', model: 'Opus' }], notes: [{ text: 'blocked on review' }] };
+  assert.equal(c.matchBuild('', x), true); assert.equal(c.matchBuild('skins console', x), true); assert.equal(c.matchBuild('CAFE', x), true);
+  assert.equal(c.matchBuild('claude/skins', x), true); assert.equal(c.matchBuild('mossesx', x), true); assert.equal(c.matchBuild('route', x), true);
+  assert.equal(c.matchBuild('review', x), true); assert.equal(c.matchBuild('skins fable', x), false); assert.equal(c.matchBuild('x', null), false);
+});
+t('collapse all / expand all', () => { assert.deepEqual(c.collapseAll('collapse', ['a', 'b', 'a']), ['a', 'b']); assert.deepEqual(c.collapseAll('expand', ['a']), []); assert.throws(() => c.collapseAll('flip', []), /collapse or expand/); });
 console.log(`build-orchestrator: ${n} checks passed`);

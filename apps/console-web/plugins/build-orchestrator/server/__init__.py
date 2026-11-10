@@ -78,6 +78,13 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+@router.get("/search")
+def search(q: str = "", all: bool = False) -> dict[str, Any]:
+    """The page's search bar as an API: builds whose title, id, branch, account, category, detail, Brett's words, steps
+    or notes hold every word of q (archived and hidden builds only with all=true)."""
+    return _run("search", *(q.split()[:20]), *(["--all"] if all else []))
+
+
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
 PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
 PRIORITY_CACHE_S = 5

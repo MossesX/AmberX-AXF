@@ -31,3 +31,9 @@ export interface UpgradePolicy { approvalRequired: boolean; source: string }
 export function setUpgradePolicy(p: Partial<UpgradePolicy> | null | undefined): UpgradePolicy;
 export function upgradePolicy(): UpgradePolicy;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };
+/** Search words of a build (title, id, branch, account, detail, Brett's words, steps, notes), folded to lower case. */
+export function searchText(b: unknown): string;
+/** Every word of the query appears in the build; an empty query matches all. */
+export function matchBuild(query: string, b: unknown): boolean;
+export const COLLAPSE_OPS: ('collapse' | 'expand')[];
+export function collapseAll(op: 'collapse' | 'expand', ids: string[]): string[];

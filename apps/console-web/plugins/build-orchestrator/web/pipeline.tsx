@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
+import { matchBuild } from './orchestrator-core.mjs';
+import { SectionHead, sectionDomId } from './sections';
+import { isRowFolded, isSectionCollapsed, toggleRow, useViewState } from './view-state';
 
 /*
  * Pipeline tab (Brett, Nov 8 2026): the three tables of the build pipeline, Pending / Queue / Building, the Claude
@@ -32,6 +35,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   const [s, setS] = useState<Status | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
+  const v = useViewState();
   const timer = useRef<number | null>(null);
   const load = async () => {
     try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
@@ -56,6 +60,8 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
   const launchFor = (id: string) => s.plan.launches.find((l) => l.id === id);
   const idle = s.state.idle ?? s.plan.idle;
   const tickAge = s.state.at ? ago(s.state.at) : '';
+  const rowsOf = (t: 'pending' | 'queued' | 'building') => (v.query ? s.table[t].filter((r) => matchBuild(v.query, { ...r, account: r.pipeline?.account })) : s.table[t]);
+  const acctsClosed = isSectionCollapsed(v, 'pl:accounts');
   return (
     <div className="fx-stack fx-stack--lg">
       {error && <Note tone="warning">{error}</Note>}
@@ -70,10 +76,10 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
       </div>
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
-      <section className="fx-stack">
-        <h2 className="pd-card__title">Claude accounts on the VPS <span className="fx-muted fx-small">· the dispatcher sends Fable phases to accounts with Fable, the rest to Opus</span></h2>
-        {s.accounts.length === 0 ? <div className="fx-empty">No Claude account is signed in on the VPS.</div> : (
-          <div className="pl-cols pl-cols--accounts">
+      <section className="fx-stack" aria-label="Claude accounts">
+        <SectionHead id="pl:accounts">Claude accounts on the VPS <span className="oc-count">{s.accounts.length}</span> <span className="fx-muted fx-small">· the dispatcher sends Fable phases to accounts with Fable, the rest to Opus</span></SectionHead>
+        {acctsClosed ? null : s.accounts.length === 0 ? <div className="fx-empty">No Claude account is signed in on the VPS.</div> : (
+          <div className="pl-cols pl-cols--accounts" id={sectionDomId('pl:accounts')}>
             {s.accounts.map((a) => (
               <article key={a.name} className={`pd-card pl-acct ${a.usable || a.api?.usable ? '' : 'is-off'}`}>
                 <div className="pd-card__top">
@@ -99,16 +105,22 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         )}
       </section>
       <div className="pl-cols">
-        {(['pending', 'queued', 'building'] as const).map((t) => (
-          <section key={t} className="fx-stack pl-col" aria-label={TABLE_LABEL[t]}>
-            <h2 className="pd-card__title">{TABLE_LABEL[t]} <span className="oc-count">{s.table[t].length}</span>
-              {t === 'pending' && <span className="fx-muted fx-small"> · tap Queue to send one to the dispatcher</span>}
-              {t === 'queued' && <span className="fx-muted fx-small"> · in start order</span>}
-            </h2>
-            {s.table[t].length === 0 ? <div className="fx-empty">{t === 'pending' ? 'Nothing pending.' : t === 'queued' ? 'The Queue is empty.' : 'Nothing is building.'}</div>
-              : s.table[t].map((r) => <PipelineCard key={r.id} r={r} table={t} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} />)}
-          </section>
-        ))}
+        {(['pending', 'queued', 'building'] as const).map((t) => {
+          const rows = rowsOf(t);
+          const closed = isSectionCollapsed(v, `pl:${t}`);
+          return (
+            <section key={t} className="fx-stack pl-col" aria-label={TABLE_LABEL[t]}>
+              <SectionHead id={`pl:${t}`}>{TABLE_LABEL[t]} <span className="oc-count">{v.query ? `${rows.length}/${s.table[t].length}` : s.table[t].length}</span>
+                {t === 'pending' && <span className="fx-muted fx-small"> · tap Queue to send one to the dispatcher</span>}
+                {t === 'queued' && <span className="fx-muted fx-small"> · in start order</span>}
+              </SectionHead>
+              {closed ? null : <div className="fx-stack" id={sectionDomId(`pl:${t}`)}>
+                {rows.length === 0 ? <div className="fx-empty">{v.query ? `Nothing here matches "${v.query}".` : t === 'pending' ? 'Nothing pending.' : t === 'queued' ? 'The Queue is empty.' : 'Nothing is building.'}</div>
+                  : rows.map((r) => <PipelineCard key={r.id} r={r} table={t} folded={isRowFolded(v, r.id)} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} />)}
+              </div>}
+            </section>
+          );
+        })}
       </div>
       {s.state.recent.length > 0 && (
         <details className="pd-add"><summary>Dispatcher log ({s.state.recent.length})</summary>
@@ -124,14 +136,20 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
+function PipelineCard({ r, table, folded, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; folded: boolean; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
   const p = r.pipeline;
   return (
     <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
       <div className="pd-card__top">
-        <h3 className="pd-card__title">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h3>
+        <h3 className="pd-card__title">
+          <button type="button" data-fx-row className="oc-sechead__btn" aria-expanded={!folded} onClick={() => toggleRow(r.id)} title={folded ? 'Show the details and actions' : 'Fold to the title'}>
+            <Icon name={folded ? 'chevron-right' : 'chevron-down'} size={13} />
+            <span className="oc-sechead__label">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></span>
+          </button>
+        </h3>
         <PriorityTag build={r.id} />
       </div>
+      {folded ? null : <>
       {r.said && <p className="fx-small fx-muted">“{r.said}”</p>}
       <div className="pd-meta">
         <span title={r.nextStep}><Icon name="check-circle" size={13} />{r.steps.done}/{r.steps.total} steps</span>
@@ -153,6 +171,7 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
         {table !== 'building' && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions, API only by overflow), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
         {table !== 'building' && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
       </div>
+      </>}
     </article>
   );
 }

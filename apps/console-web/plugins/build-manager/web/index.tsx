@@ -20,6 +20,7 @@ import { builtRows, liveFromChanges, money } from './history.mjs';
 import { BuildBanner, BuildManagerView, SettingsSummary } from './ui';
 import './build-manager.css';
 import { appMenu, REMAINING } from './menu';
+import { collapseAll, describe, setQuery } from './view-state';
 
 const VIEW = 'build-manager';
 
@@ -64,6 +65,13 @@ export const plugin: AxfWebLibrary = {
       setTimeout(() => requestStart(key), 60);
     }, { label: 'Start build now' });
     const tabTo = (t: string) => () => { try { localStorage.setItem('axp-build-manager:tab', t); } catch { /* private window */ } rt.navigate(VIEW); };
+    // Search and Collapse all / Expand all without the UI (Brett, Nov 8 2026: everything comes with an API): REST
+    // (POST /api/console/command), MCP console_action, the CLI (axf control act console.actions …) and voice.
+    rt.actions.register('build-manager.search', (args) => { setQuery(decodeURIComponent(args.join(':')).trim()); rt.navigate(VIEW); }, { label: 'Search the Build manager (title, id, branch, account, words)', params: true });
+    rt.actions.register('build-manager.clear-search', () => { setQuery(''); rt.navigate(VIEW); }, { label: 'Clear the Build manager search' });
+    rt.actions.register('build-manager.collapse-all', () => { tabTo('remaining')(); collapseAll('collapse'); }, { label: 'Build manager: collapse every build row' });
+    rt.actions.register('build-manager.expand-all', () => { tabTo('remaining')(); collapseAll('expand'); }, { label: 'Build manager: expand every build row shown' });
+    rt.actions.register('build-manager.view-state', () => rt.toast(describe(), 'info', 'Build manager'), { label: 'Build manager: what the page shows (search, rows open)' });
     rt.actions.register('build-manager.live', tabTo('live'), { label: 'Build manager: what’s building now' });
     rt.actions.register('build-manager.built', tabTo('built'), { label: 'Build manager: everything built (cost + time)' });
     rt.search.add('build-manager.log', () => [

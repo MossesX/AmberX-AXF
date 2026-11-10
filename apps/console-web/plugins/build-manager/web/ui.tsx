@@ -6,6 +6,7 @@ import { BuildOrigin, Button, Icon, IconButton, PriorityTag, RefText, Slot, Swit
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
+import { collapseAll, reportRows, setQuery, takeCmd, useViewState } from './view-state';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort, RowHookButtons, registerRowRefTarget } from '@console/axf/libs/datagrid';
 
 /* ---------------- time ---------------- */
@@ -723,7 +724,7 @@ export function BuildManagerView() {
   const s = useStore();
   const [tab, setTab0] = useState<Tab>(readTab);
   const setTab = (t: Tab) => { setTab0(t); try { localStorage.setItem(TAB_KEY, t); } catch { /* private window */ } };
-  const [query, setQuery] = useState('');
+  const { query, cmd } = useViewState();
   const { sessions, activity } = useLive();
   const liveCount = sessions.length + activity.length;
   const builtCount = useMemo(() => builtRows(s.changes).length, [s.changes]);
@@ -758,6 +759,9 @@ export function BuildManagerView() {
   const [sorting, setSorting] = useState(false);
   // how many of the dialog's choices differ from their defaults (shown as the Filter & sort badge)
   const picked = [model, addedBy, status].filter(Boolean).length + (sort !== defaultSort() ? 1 : 0);
+  // Collapse all / Expand all from the page or a console action (build-manager.collapse-all / expand-all)
+  useEffect(() => { if (!s.loaded) return; const c = takeCmd(); if (c) setOpen(c.op === 'collapse' ? new Set() : new Set(shown.map((r) => r.key))); }, [cmd?.n, s.loaded]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { reportRows(shown.filter((r) => open.has(r.key)).length, shown.length); }, [open, shown]);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   const canTick = (r: Row) => (r.source === 'pending' ? s.canTickPending : r.source === 'queue' ? s.canTickQueue : false);
 
@@ -778,10 +782,16 @@ export function BuildManagerView() {
 
       {cleaning && <CleanUp rows={gone} onClose={() => setCleaning(false)} />}
 
-      <div className="axp-build-manager__search" role="search">
-        <Icon name="search" size={14} />
-        <input className="fx-input" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search builds: title, id, notes, model, branch…" aria-label="Search remaining, live and built builds" />
-        {query && <button type="button" className="fx-iconbtn" aria-label="Clear the search" onClick={() => setQuery('')}><Icon name="x" size={14} /></button>}
+      <div className="axp-build-manager__find" role="toolbar" aria-label="Search and collapse">
+        <div className="axp-build-manager__search" role="search">
+          <Icon name="search" size={14} />
+          <input className="fx-input" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search builds: title, id, branch, account, notes, model…" aria-label="Search remaining, live and built builds" />
+          {query && <button type="button" className="fx-iconbtn" aria-label="Clear the search" onClick={() => setQuery('')}><Icon name="x" size={14} /></button>}
+        </div>
+        {tab === 'remaining' && <>
+          <Button size="sm" tone="neutral" icon="chevron-up" disabled={!open.size} onClick={() => collapseAll('collapse')} title="Fold every build row">Collapse all</Button>
+          <Button size="sm" tone="neutral" icon="chevron-down" disabled={!shown.length} onClick={() => collapseAll('expand')} title="Open every build row shown">Expand all</Button>
+        </>}
       </div>
 
       <TabGroup id="build-manager.views" label="Build manager views" className={`axp-build-manager__tabs${liveCount ? ' has-live' : ''}`} value={tab} onChange={setTab}

@@ -54,6 +54,30 @@
     "auto": true,
     "items": [
       {
+        "id": "search",
+        "route": "GET /search",
+        "title": "Search builds",
+        "description": "The Build orchestrator's search bar without the UI: builds whose title, id, branch, account, category, detail, Brett's words, steps or notes hold every word. Say 'find the skins build' or 'which builds are on mossesx'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Words to find (all must match, any order)"
+            },
+            "all": {
+              "type": "boolean",
+              "description": "Include hidden and archived builds"
+            }
+          },
+          "required": [
+            "q"
+          ]
+        },
+        "output": "{ query, count, builds: [{ id, title, status, branch, pr, category, account }] }"
+      },
+      {
         "id": "priority-list",
         "route": "GET /priority",
         "title": "Build priorities",

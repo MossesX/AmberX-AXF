@@ -272,6 +272,34 @@ function autoUpgrade(b, p, log) {
 }
 export { setUpgradePolicy, upgradePolicy };
 
+/* ---------------- search + collapse (Brett, Nov 9 2026: "Is there no search bar in the orchestrator? I need to collapse all.") */
+
+const fold = (v) => String(v ?? '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
+/** The words a build is found by: title, id, branch, PR, account, category, status, detail, Brett's words, step texts and notes. */
+export function searchText(b) {
+  if (!b || typeof b !== 'object') return '';
+  const p = b.pipeline && typeof b.pipeline === 'object' ? b.pipeline : {};
+  const parts = [b.title, b.id, b.branch, b.pr, b.category, b.status, b.detail, b.said, b.pendingId, b.account, p.account, p.model, p.session,
+    b.origin ? originText(normOrigin(b.origin) ?? b.origin) : '',
+    ...(Array.isArray(b.steps) ? b.steps.map((s) => `${s?.id ?? ''} ${s?.text ?? ''} ${s?.model ?? ''} ${s?.group ?? ''}`) : []),
+    ...(Array.isArray(b.notes) ? b.notes.map((n) => n?.text ?? '') : [])];
+  return fold(parts.filter((x) => typeof x === 'string' && x).join(' \n '));
+}
+/** Every word of the query appears somewhere in the build (any order, case and accents ignored). An empty query matches all. */
+export function matchBuild(query, b) {
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  if (!words.length) return true;
+  const hay = searchText(b);
+  return words.every((w) => hay.includes(w));
+}
+/** The collapse commands the page, the console actions and voice share. */
+export const COLLAPSE_OPS = ['collapse', 'expand'];
+/** Apply Collapse all / Expand all to a set of collapsed section ids: collapse → every id, expand → none. */
+export function collapseAll(op, ids) {
+  if (!COLLAPSE_OPS.includes(op)) throw new Error(`Unknown op "${op}": collapse or expand`);
+  return op === 'collapse' ? [...new Set(ids)] : [];
+}
+
 /** Apply one change. Returns { state, build?, log: string[] } or throws Error with a plain message. */
 export function apply(state, change) {
   const s = normalizeState(state);

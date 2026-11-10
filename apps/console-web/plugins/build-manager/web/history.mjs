@@ -217,7 +217,7 @@ export function filterSessions(rows, { model = '', period = 'all', status = '', 
 
 /** Lower-cased words; every word of the query must appear somewhere in the item's text. */
 export function searchText(x) {
-  return [x.title, x.id, x.key, x.detail, x.model, x.modelRaw, x.branch, x.planId, x.status, x.statusLabel, x.summary, x.surface, x.host, x.changeId, x.source, x.doing, x.runningStep, x.currentStep, x.day,
+  return [x.title, x.id, x.key, x.detail, x.model, x.modelRaw, x.branch, x.planId, x.status, x.statusLabel, x.summary, x.surface, x.host, x.changeId, x.source, x.doing, x.runningStep, x.currentStep, x.day, x.account, x.addedBy, x.pr,
     ...(x.aliases ?? []), ...(x.steps ?? []).map?.((s) => s?.text ?? '') ?? [], ...(x.ref ? [x.ref.id] : []), ...(x.row ? [x.row.title, x.row.id] : []),
     // what Brett said (build-origin@1): his words and addenda are searchable too
     ...(x.brett ? [x.brett.said, ...(x.brett.addenda ?? []).map((a) => a?.said)] : []), ...(x.row?.brett ? [x.row.brett.said] : [])].map(str).join(' \n ').toLowerCase();

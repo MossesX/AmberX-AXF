@@ -100,6 +100,13 @@ async function main(argv) {
   const s = load();
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  if (cmd === 'search') {
+    // the page's search bar, without the UI: title, id, branch, account and words (archived and hidden only with --all)
+    const all = rest.includes('--all'); const q = rest.filter((a) => a !== '--all').join(' ');
+    const hits = s.builds.filter((b) => (all || (!b.hidden && b.status !== 'archived')) && core.matchBuild(q, b));
+    return out({ ok: true, query: q, count: hits.length, builds: hits.map((b) => ({ id: b.id, title: b.title, status: b.status, branch: b.branch, pr: b.pr, category: b.category, account: b.pipeline?.account ?? '' })) },
+      hits.map((b) => line(b, s.rules)).join('\n') || `No builds match "${q}".`);
+  }
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');

@@ -91,6 +91,8 @@ button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex
 .axp-build-manager-banner__step { font-size: var(--fx-type-root-sm); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 
 /* search + tabs (Remaining / Live / Built) */
+.axp-build-manager__find { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-build-manager__find > .axp-build-manager__search { flex: 1 1 calc(var(--fx-font-size) * 18); min-width: 0 }
 .axp-build-manager__search { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-muted) }
 .axp-build-manager__search:focus-within { border-color: var(--fx-focus) }
 .axp-build-manager__search input { flex: 1; min-width: 0; border: 0; background: transparent; box-shadow: none; outline: none; padding-left: 0; padding-right: 0 }
