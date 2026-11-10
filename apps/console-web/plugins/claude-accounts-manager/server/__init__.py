@@ -145,7 +145,7 @@ def set_order(names: list[str], brett: str) -> dict[str, Any]:
     new = d.set_order(names, brett)
     mode = d.order_mode() if hasattr(d, "order_mode") else "custom"
     tail = "" if mode == "custom" else " (saved; the switch is on Automatic, so it is followed once you switch to Custom)"
-    return {"ok": True, "order": new, "mode": mode, "message": f"Account order: {' → '.join(new) or 'not set (subscriptions only)'}{tail}"}
+    return {"ok": True, "order": new, "mode": mode, "message": f"Account order: {' → '.join(new) or 'not set (subscriptions first, then API overflow)'}{tail}"}
 
 
 MODE_TEXT = {"custom": "Custom: the orchestrator follows the drag-and-drop order exactly",

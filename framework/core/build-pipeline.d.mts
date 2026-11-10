@@ -12,7 +12,15 @@ export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'r
 export interface BuildPipeline {
   queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number;
   lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
+  route: '' | 'api' | 'subscription'; dispatchedAt: string;
+  /** The orchestrator's plan, made at split time; the final pick (account, pickedAt) can differ. */
+  planned: PipelinePlan | null; tried: string[]; pickedAt: string;
 }
+export interface PipelinePlan { model: string; account: string; kind: '' | 'api' | 'subscription'; at: string; why: string }
+export type PipelineTab = 'pending' | 'queue' | 'active' | 'incomplete' | 'complete' | 'errors';
+export const TABS: PipelineTab[];
+export const TAB_LABEL: Readonly<Record<PipelineTab, string>>;
+export function tabOf(b: { status?: string; deleted?: boolean; hidden?: boolean; steps?: { done?: boolean }[]; pipeline?: Partial<BuildPipeline> | null } | null | undefined): '' | PipelineTab;
 export function accountName(v: unknown): string;
 export function emptyPipeline(): BuildPipeline;
 export function normPipeline(p: unknown): BuildPipeline | null;

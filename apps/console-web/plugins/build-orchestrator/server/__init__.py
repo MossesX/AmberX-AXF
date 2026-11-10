@@ -453,6 +453,32 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
+PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors")
+
+
+@router.get("/pipeline/tab/{name}")
+def pipeline_tab(name: str) -> dict[str, Any]:
+    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors): every build in it, with its
+    steps, the planned model + account and the account that took it."""
+    if name not in PIPELINE_TABS:
+        raise HTTPException(400, f"tab is one of {', '.join(PIPELINE_TABS)}")
+    return _pipeline("tab", name)
+
+
+@router.get("/pipeline/health")
+def pipeline_health() -> dict[str, Any]:
+    """The last account health sweep (every 5 minutes on the VPS host): per account, can sign in, has credits, takes Fable."""
+    res = _pipeline("status")
+    return {"ok": True, "health": res.get("health"), "every": (res.get("settings") or {}).get("healthEveryMin")}
+
+
+@router.post("/pipeline/health")
+async def pipeline_health_now(request: Request) -> dict[str, Any]:
+    """Ask for an account health sweep now: the dispatcher starts it in the background on its next tick (within a
+    minute). Headless, on private login copies: never touches a running build, never signs anything out."""
+    return _pipeline("health", "--request", "--by", (brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
@@ -502,12 +528,16 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, order, apiAccounts). `order` is the one account order, API keys included: putting an API account in
+    splitProvider, order, orderMode, apiOverflow, apiAccounts, healthEveryMin). `order` is the one account order, API keys included: putting an API account in
     it, or moving one earlier, spends money per token, so only Brett's own click does that (a session, MCP or voice may
     move API accounts later or take them out). `orderMode` custom | auto: auto lets every ready API account take builds
-    after the subscriptions, so switching to auto while an API account is outside the custom order is Brett's click."""
+    after the subscriptions, so switching to auto while an API account is outside the custom order is Brett's click.
+    `apiOverflow` (no order in force: subscriptions first, then any API account): turning it on spends money per token,
+    so only Brett's own click does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "order", "orderMode", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "order", "orderMode", "apiOverflow", "apiAccounts", "healthEveryMin"}
+    if body.get("apiOverflow") is True and not brett_click(request):
+        raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
     if "order" in body:
         body["order"] = set_order_check(body.get("order"), brett_click(request))
     if "orderMode" in body:
@@ -615,10 +645,13 @@ def set_order_check(raw: Any, brett: str) -> list[str]:
 ORDER_MODES = ("custom", "auto")
 
 
-def mode_raises_api(mode: str, order: list[str], api: set[str]) -> list[str]:
+def mode_raises_api(mode: str, order: list[str], api: set[str], overflow: bool = True) -> list[str]:
     """API accounts that switching to `mode` lets take builds they can't take now (pure): auto opens every API account
-    that is outside the custom order; custom opens none (its order was set under the same check)."""
-    return sorted(n for n in api if n not in order) if mode == "auto" else []
+    that is outside a set custom order while apiOverflow is on; custom opens none (its order was set under the same
+    check). With no custom order the overflow rule already reaches every API account, so auto opens none."""
+    if mode != "auto" or not overflow or not order:
+        return []
+    return sorted(n for n in api if n not in order)
 
 
 def set_mode_check(raw: Any, brett: str, order: Any = None) -> str:
@@ -628,8 +661,9 @@ def set_mode_check(raw: Any, brett: str, order: Any = None) -> str:
     if mode not in ORDER_MODES:
         raise HTTPException(400, "orderMode is custom (follow the drag-and-drop order) or auto (subscriptions first, then API)")
     if not brett:
-        cur = order if isinstance(order, list) else list((_pipeline("settings").get("settings") or {}).get("order") or [])
-        raised = mode_raises_api(mode, [str(n) for n in cur], _api_names())
+        settings = _pipeline("settings").get("settings") or {}
+        cur = order if isinstance(order, list) else list(settings.get("order") or [])
+        raised = mode_raises_api(mode, [str(n) for n in cur], _api_names(), settings.get("apiOverflow") is not False)
         if raised:
             raise HTTPException(403, f"automatic order lets API account {', '.join(raised)} take builds (billed per token): that is Brett's own click in the console")
     return mode
@@ -654,7 +688,7 @@ class DispatchService:
         return list(_pipeline("accounts").get("accounts") or [])
 
     def order(self) -> list[str]:
-        """The one account order the dispatcher follows (pipeline-settings@1 `order`; [] = subscriptions only)."""
+        """The one account order the dispatcher follows (pipeline-settings@1 `order`; [] = subscriptions first, then API overflow)."""
         return list((_pipeline("settings").get("settings") or {}).get("order") or [])
 
     def set_order(self, names: list[str], brett: str = "") -> list[str]:

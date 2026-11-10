@@ -145,6 +145,7 @@ try:
         check(code == want, f"orderMode: {what}: {want}")
     check(_calls[-1][-2] == "orderMode=auto", "the mode reaches the CLI as orderMode=auto")
     check(srv.mode_raises_api("auto", ["w-max", "x-api"], {"x-api", "y-api"}) == ["y-api"] and srv.mode_raises_api("custom", [], {"x-api"}) == [], "auto opens only the API accounts outside the order; custom opens none")
+    check(srv.mode_raises_api("auto", ["w-max"], {"x-api"}, overflow=False) == [] and srv.mode_raises_api("auto", [], {"x-api"}) == [], "auto with overflow off, or with no custom order (overflow already reaches API), opens none")
     check(hasattr(svc, "order_mode") and hasattr(svc, "set_order_mode") and svc.order_mode() == "custom", "axf.build-dispatch@1 reads and flips the switch (custom by default)")
     for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:

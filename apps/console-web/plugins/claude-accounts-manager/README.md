@@ -16,10 +16,11 @@ Max 20x $200, Team, Enterprise) with an override per account. An API key shows i
 ## One order
 
 Drag a row (or right-click → Move) to set the order. The build orchestrator takes the first account in that order that
-can run the phase now, subscription or API (`pipeline-core.mjs` `routeFor`); the old API overflow rule is gone.
-API keys out of the order take no build. Putting an API account in the order, or moving one earlier, bills per token:
-only Brett's own click does that; a session, MCP or voice may move one later or take it out. An empty order keeps
-subscriptions-only routing.
+can run the phase now, subscription or API (`pipeline-core.mjs` `routeOptions` / `routeFor`). API keys out of a set
+order take no build. Putting an API account in the order, or moving one earlier, bills per token: only Brett's own
+click does that; a session, MCP or voice may move one later or take it out. An empty order falls back to the
+orchestrator's default: subscriptions first, then any ready API account while the API overflow rule (`apiOverflow`,
+on by default) is on. Account health from the orchestrator's 5-minute sweep still takes a listed account out.
 
 ## Custom or Automatic
 

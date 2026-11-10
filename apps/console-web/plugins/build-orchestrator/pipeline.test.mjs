@@ -203,10 +203,11 @@ t('settings normalise and clamp', () => {
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")
 const apiRow = (name, extra = {}) => ({ name, kind: 'api', role: 'api-worker', plan: '', email: '', limited: null, running: [], hasKey: true, building: 1, spend: { day: 0, week: 0, state: 'ok', why: '' }, ...extra });
 const subsFull = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: ['a', 'b'] }];
-t('settings: no account order by default; order and API account list parsed', () => {
-  assert.deepEqual(P.normSettings({}).order, []); assert.deepEqual(P.normSettings({}).apiAccounts, []);
-  assert.equal('apiOverflow' in P.normSettings({ apiOverflow: true }), false, 'the overflow rule is gone');
+t('settings: no account order by default, overflow on by default; order and API account list parsed', () => {
+  assert.deepEqual(P.normSettings({}).order, []); assert.deepEqual(P.normSettings({}).apiAccounts, []); assert.equal(P.normSettings({}).orderMode, 'custom');
   assert.deepEqual(P.normSettings({ order: 'w-max, hulu-api,Bad Name,w-max' }).order, ['w-max', 'hulu-api']);
+  assert.equal(P.normSettings({}).apiOverflow, true); assert.equal(P.normSettings({ apiOverflow: false }).apiOverflow, false); assert.equal(P.normSettings({}).healthEveryMin, 5);
+  assert.equal(P.normSettings({ apiOverflow: true }).apiOverflow, true); assert.equal(P.normSettings({ apiOverflow: 'yes' }).apiOverflow, false);
   assert.deepEqual(P.normSettings({ apiAccounts: 'hulu-api,Bad Name,mossesx-api' }).apiAccounts, ['hulu-api', 'mossesx-api']);
 });
 t('API accounts: usable only while in the order and ready (key, switched on, under caps, room)', () => {
@@ -214,8 +215,13 @@ t('API accounts: usable only while in the order and ready (key, switched on, und
   const rows = [...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached ($10.00)' } }), apiRow('off-api', { role: 'api-off', why: 'API worker switched off' })];
   const v = P.accountViews(rows, {}, { settings: s });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
-  for (const n of ['hulu-api', 'mossesx-api', 'capped-api', 'off-api']) { assert.equal(by[n].kind, 'api'); assert.equal(by[n].usable, false, `${n}: no order, no build`); }
-  assert.match(by['hulu-api'].why, /not in the account order/);
+  // no order in force: main's overflow rule (on by default) lets a ready API account take builds after the subscriptions
+  for (const n of ['mossesx-api', 'capped-api', 'off-api']) { assert.equal(by[n].kind, 'api'); assert.equal(by[n].usable, false, `${n}: not ready, no build`); }
+  assert.equal(by['hulu-api'].usable, true, 'no order + overflow on: ready API account usable');
+  const noOverflow = Object.fromEntries(P.accountViews(rows, {}, { settings: P.normSettings({ parallelPerAccount: 2, apiOverflow: false }) }).map((a) => [a.name, a]));
+  assert.equal(noOverflow['hulu-api'].usable, false); assert.match(noOverflow['hulu-api'].why, /API overflow is off/);
+  const leftOut = Object.fromEntries(P.accountViews(rows, {}, { settings: P.normSettings({ parallelPerAccount: 2, order: ['w-max'] }) }).map((a) => [a.name, a]));
+  assert.equal(leftOut['hulu-api'].usable, false, 'a custom order without it: no build'); assert.match(leftOut['hulu-api'].why, /not in the account order/);
   assert.equal(by['hulu-api'].api.usable, true); assert.equal(by['hulu-api'].parallel, 1, 'its own building limit');
   assert.equal(by['mossesx-api'].api.usable, false); assert.match(by['mossesx-api'].api.why, /no API key saved .*savekey mossesx-api/);
   assert.equal(by['capped-api'].api.usable, false); assert.match(by['capped-api'].api.why, /spend cap reached: daily cap \$10/);
@@ -243,7 +249,10 @@ t('routeFor: the one order decides, subscription or API alike; override api / su
   assert.equal(P.routeFor(build('x', 'queued', []), full, 'Opus', fullS).account, 'hulu-api', 'the next in the order when the first is full');
   const fullNone = P.normSettings({ parallelPerAccount: 2 });
   const off = P.routeFor(build('x', 'queued', []), P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: fullNone }), 'Opus', fullNone);
-  assert.equal(off.account, '', 'no order: the API account takes nothing'); assert.match(off.why, /parallel cap/);
+  assert.deepEqual([off.account, off.rule], ['hulu-api', 'overflow'], 'no order: subscriptions first, then the API overflow');
+  const noOv = P.normSettings({ parallelPerAccount: 2, apiOverflow: false });
+  const offNo = P.routeFor(build('x', 'queued', []), P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: noOv }), 'Opus', noOv);
+  assert.equal(offNo.account, '', 'no order, overflow off: the API account takes nothing'); assert.match(offNo.why, /parallel cap/); assert.match(offNo.why, /API overflow is off/);
   const noKeysS = P.normSettings({ parallelPerAccount: 2, order: ['w-max', 'mossesx-api', 'capped-api'] });
   const noKeys = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], {}, { settings: noKeysS });
   const skip = P.routeFor(build('x', 'queued', []), noKeys, 'Opus', noKeysS);
@@ -292,6 +301,71 @@ t('plan: the order fills an API account up to its cap, then the rest wait with t
   assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'order']]);
   assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api/);
   assert.equal(BP.normPipeline({ route: 'api' }).route, 'api'); assert.equal(BP.normPipeline({ route: 'nope', queuedAt: now }).route, '');
+});
+// ---------------- Nov 10 2026: tabs, subscriptions first then API, plan at split, final pick, account health
+t('tabs: pending / queue / active / incomplete / complete / errors', () => {
+  const tab = (status, extra = {}, steps = [step('s1', 'Opus')]) => BP.tabOf(build('x', status, steps, extra));
+  assert.equal(tab('pending'), 'pending'); assert.equal(tab('queued'), 'queue'); assert.equal(tab('running'), 'active'); assert.equal(tab('waiting'), 'active');
+  assert.equal(tab('pending', {}, [step('s1', 'Opus', true), step('s2', 'Opus')]), 'incomplete', 'started, stopped with steps left');
+  assert.equal(tab('pending', { pipeline: { runs: 1 } }), 'incomplete'); assert.equal(tab('blocked'), 'incomplete');
+  assert.equal(tab('built'), 'complete'); assert.equal(tab('complete'), 'complete'); assert.equal(tab('failed'), 'errors');
+  assert.equal(tab('queued', { pipeline: { note: 'launch failed: launcher exit 1' } }), 'errors');
+  assert.equal(tab('archived'), ''); assert.equal(tab('pending', { hidden: true }), '');
+  assert.deepEqual(BP.TABS, ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors']);
+  const p = BP.normPipeline({ planned: { model: 'Fable', account: 'w-max', kind: 'subscription', at: now, why: 'x' }, tried: ['a-1', 'Bad Name'], pickedAt: now });
+  assert.deepEqual([p.planned.account, p.planned.kind, p.tried, p.pickedAt], ['w-max', 'subscription', ['a-1'], now]);
+});
+t('routeOptions: every subscription in Brett\'s order, then every API account; route overrides respected', () => {
+  const s = P.normSettings({});
+  const rows = [{ name: 'b-sub', role: 'worker', plan: 'max', running: [] }, { name: 'a-sub', role: 'worker', plan: 'max', running: [] }, apiRow('hulu-api')];
+  const own = { 'b-sub': { order: 1 }, 'a-sub': { order: 2 } };
+  const v = P.accountViews(rows, own, { settings: s });
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), v, 'Opus', s).map((o) => [o.account, o.kind]), [['b-sub', 'subscription'], ['a-sub', 'subscription'], ['hulu-api', 'api']]);
+  assert.deepEqual(P.routeOptions(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), v, 'Opus', s).map((o) => o.account), ['b-sub', 'a-sub']);
+  assert.deepEqual(P.routeOptions(build('x', 'queued', [], { pipeline: { route: 'api' } }), v, 'Opus', s).map((o) => o.account), ['hulu-api']);
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), v, 'Opus', P.normSettings({ apiOverflow: false })).map((o) => o.kind), ['subscription', 'subscription']);
+});
+t('merge of PR 449 and PR 450: a saved custom order drives routeOptions / planFor; health still takes a listed account out; auto = subscriptions then API', () => {
+  const rows = [{ name: 'b-sub', role: 'worker', plan: 'max', running: [] }, { name: 'a-sub', role: 'worker', plan: 'max', running: [] }, apiRow('hulu-api')];
+  const own = { 'b-sub': { order: 1 }, 'a-sub': { order: 2 } };
+  const custom = P.normSettings({ order: ['hulu-api', 'a-sub', 'b-sub'] });
+  const v = P.accountViews(rows, own, { settings: custom });
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), v, 'Opus', custom).map((o) => [o.account, o.rule]), [['hulu-api', 'order'], ['a-sub', 'order'], ['b-sub', 'order']], 'the saved order wins over own.order');
+  assert.deepEqual(P.routeOptions(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), v, 'Opus', custom).map((o) => o.account), ['a-sub', 'b-sub']);
+  assert.equal(P.planFor(build('x', 'pending', [step('s1', 'Opus')]), v, custom, now).account, 'hulu-api');
+  const sick = { ...own, 'a-sub': { order: 2, health: { at: new Date().toISOString(), signedIn: false, credits: null, fable: null, error: '401' } } };
+  const vs = P.accountViews(rows, sick, { settings: custom });
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), vs, 'Opus', custom).map((o) => o.account), ['hulu-api', 'b-sub'], 'health: a listed account that cannot sign in is skipped');
+  const auto = P.normSettings({ order: ['hulu-api', 'a-sub', 'b-sub'], orderMode: 'auto' });
+  const va = P.accountViews(rows, own, { settings: auto });
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), va, 'Opus', auto).map((o) => [o.account, o.rule]), [['b-sub', 'auto'], ['a-sub', 'auto'], ['hulu-api', 'auto']], 'auto: subscriptions (own.order) first, then API');
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), va, 'Opus', { ...auto, apiOverflow: false }).map((o) => o.kind), ['subscription', 'subscription'], 'apiOverflow off keeps auto off API');
+});
+t('planFor: model + account planned at split time, even while every account is busy', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const v = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', running: ['busy'] }, { name: 'w-pro', role: 'worker', plan: 'pro', running: [] }], {}, { settings: s });
+  const f = P.planFor(build('x', 'pending', [step('s1', 'Fable')]), v, s, now);
+  assert.deepEqual([f.model, f.account, f.kind, f.at], ['Fable', 'w-max', 'subscription', now], 'Fable needs the Fable account, busy or not');
+  assert.equal(P.planFor(build('x', 'pending', [step('s1', 'Opus')]), v, s, now).account, 'w-pro', 'Opus away from the Fable account');
+  assert.equal(P.planFor(build('x', 'pending', []), v, s, now), null, 'nothing to plan before the split');
+});
+t('account health: classify the call, a fresh answer decides usable and Fable, stale ones are ignored; due every 5 min', () => {
+  assert.deepEqual(P.healthOf({ status: 0, out: '{"type":"result","is_error":false,"result":"ok"}' }), { signedIn: true, credits: true, fable: true, error: '' });
+  assert.equal(P.healthOf({ status: 1, out: 'API Error: 401 OAuth token has expired' }).signedIn, false);
+  assert.equal(P.healthOf({ status: 1, out: 'Credit balance is too low' }).credits, false);
+  assert.equal(P.healthOf({ status: 1, out: 'not_found_error: model' }).fable, false);
+  assert.equal(P.healthOf({ status: null, error: 'spawnSync claude ETIMEDOUT' }).signedIn, null, 'a timeout says nothing');
+  const s = P.normSettings({}); const t0 = Date.parse(now);
+  const row = { name: 'w-max', role: 'worker', plan: 'max', running: [] };
+  const fresh = (h) => P.accountView(row, { health: { at: now, ...h } }, { settings: s, now: t0 + 60e3 });
+  assert.equal(fresh({ signedIn: true, credits: true, fable: true }).usable, true);
+  const out = fresh({ signedIn: false }); assert.equal(out.usable, false); assert.match(out.why, /cannot sign in/);
+  assert.match(fresh({ signedIn: true, credits: false }).why, /no credits/);
+  const nf = fresh({ signedIn: true, credits: true, fable: false }); assert.deepEqual([nf.fable, nf.fableFrom, nf.usable], [false, 'health', true]);
+  const stale = P.accountView(row, { health: { at: now, signedIn: false } }, { settings: s, now: t0 + 3600e3 }); assert.equal(stale.usable, true, 'an hour-old answer is stale');
+  assert.equal(P.healthDue('', s, t0), true); assert.equal(P.healthDue(now, s, t0 + 4 * 60e3), false); assert.equal(P.healthDue(now, s, t0 + 5 * 60e3), true);
+  assert.equal(P.healthDue('', P.normSettings({ healthEveryMin: 0 }), t0), false, '0 = off');
+  assert.match(P.healthSummary([{ name: 'a', signedIn: true, credits: true, fable: true }, { name: 'b', signedIn: false, error: 'x' }]).line, /2 accounts: 1 ok, 1 not/);
 });
 t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {
   assert.match(OC.API_RULE, /deep link/); assert.match(OC.API_RULE, /every action and setting/); assert.match(OC.API_RULE, /MCP/); assert.match(OC.API_RULE, /CLI/); assert.match(OC.API_RULE, /voice/);
