@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:32:21.002Z",
+ "updatedAt": "2026-11-10T02:32:41.940Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75254,14 +75254,14 @@
    "title": "One builds page: Pending, Queued, Built tabs; remove every other builds table",
    "category": "",
    "detail": "Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
-   "status": "archived",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-builds-page-pending-queued-built-tabs-remove",
    "branch": "claude/one-builds-page-pending-queued-built-tabs-remove",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-10T02:21:12.564Z",
+   "updatedAt": "2026-11-10T02:32:32.667Z",
    "builtAt": "",
    "notes": [
     {
@@ -75287,6 +75287,10 @@
     {
      "text": "Brett (Nov 9): \"I need to be able to move queued items back to pending and pending items back to the planner. I need to be able to cancel or put on hold pending items... and put on hold things in the queue.\" Row actions (and multi-select bulk actions) on the one builds page: Queued -> Back to pending; Pending -> Back to planner (parks it as a Plan Studio plan, keeps Brett's words and steps); Cancel (pending or queued: marked cancelled with reason, kept in history, restorable); Hold / Resume (pending and queued: held items are skipped by the dispatcher and show a Held badge). A running build: Hold = stop after the current step, then held. Every action logged, sends a manifest update, and has full API/MCP/CLI/voice control. Confirm dialog for Cancel.",
      "at": "2026-11-09T02:52:48.156Z"
+    },
+    {
+     "text": "Superseded by split-builds-pages-build-manager-pending-complet (Brett, Nov 9 2026): Build Manager = Pending + Complete, orchestrator = Queued + Active. Archived.",
+     "at": "2026-11-10T02:32:32.667Z"
     },
     {
      "text": "Superseded by split-builds-pages-build-manager-pending-complet-3 (Build Manager = Pending + Complete; Orchestrator = Queued + Active). Its Nov 9 asks (collapsible data-grid rows, hold/cancel/back-to-pending) carry over there.",
