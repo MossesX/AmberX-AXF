@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 16:44 UTC · `orchestrator-self-check-when-stuck-verify-each-a` s1 done, → running (all) · orchestrator
-- 2026-11-09 16:44 UTC · `orchestrator-self-check-when-stuck-verify-each-a` s2 done (all) · orchestrator
-- 2026-11-09 16:45 UTC · `orchestrator-self-check-when-stuck-verify-each-a` PR #407 (all) · builds-live
 - 2026-11-09 16:45 UTC · `orchestrator-self-check-when-stuck-verify-each-a` note (all) · orchestrator
 - 2026-11-09 16:45 UTC · `orchestrator-self-check-when-stuck-verify-each-a` s3 done, → built (all) · orchestrator
 - 2026-11-09 16:46 UTC · `orchestrator-settings-api-account-limits-and-rou` → running, note (all) · pipeline
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:35 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-10 00:36 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-10 00:37 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · pipeline
+- 2026-11-10 00:37 UTC · `build-statuses-tell-the-truth-orchestrator-list` → running, note (all) · pipeline
+- 2026-11-10 00:37 UTC · `build-statuses-tell-the-truth-orchestrator-list` branch claude/build-statuses-tell-the-truth-orchestrator-list (all) · pipeline
+- 2026-11-10 00:37 UTC · `build-statuses-tell-the-truth-orchestrator-list` note (all) · orchestrator
 
 ## Token passes (log)
 
