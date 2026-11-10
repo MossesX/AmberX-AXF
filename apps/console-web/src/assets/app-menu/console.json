@@ -524,6 +524,20 @@
                 "order": 10
               },
               {
+                "id": "prev-skin",
+                "label": "Previous skin",
+                "icon": "palette",
+                "action": "skin.prev",
+                "order": 11
+              },
+              {
+                "id": "random-skin",
+                "label": "A random skin",
+                "icon": "shuffle",
+                "action": "skin.random",
+                "order": 12
+              },
+              {
                 "id": "s1",
                 "separator": true,
                 "order": 20
