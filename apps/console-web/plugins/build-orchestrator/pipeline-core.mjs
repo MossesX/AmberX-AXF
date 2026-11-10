@@ -49,7 +49,16 @@ export const DEFAULTS = Object.freeze({
   apiOverflow: false,
   /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
   apiAccounts: [],
+  /** AmberX phone pop-up when the dispatcher starts a build (every launch: first run, retry, rerun, next phase). */
+  notifyStart: true,
+  /** AmberX phone pop-up when a build's session ends: built, failed, back in the Queue, or needs Brett. */
+  notifyFinish: true,
+  /** The pop-up makes a sound (meta.sound on the alert; the console chime follows it, AmberX from the next APK). */
+  notifySound: true,
+  /** build = one pop-up per build (a finish replaces its start, a new start clears the last finish); each = every event stays. */
+  notifyGrouping: 'build',
 });
+export const NOTIFY_GROUPINGS = Object.freeze(['build', 'each']);
 const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -69,6 +78,10 @@ export function normSettings(raw = {}) {
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === true,
+    notifyStart: o.notifyStart !== false,
+    notifyFinish: o.notifyFinish !== false,
+    notifySound: o.notifySound !== false,
+    notifyGrouping: NOTIFY_GROUPINGS.includes(o.notifyGrouping) ? o.notifyGrouping : DEFAULTS.notifyGrouping,
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -314,20 +327,69 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+/** The console's alerts API takes http(s)://, view:<id> or settings:<tab>. A build's own alert links to that build. */
+export const ALERT_LINK = 'view:build-orchestrator';
+/** The deep link that opens one build in the orchestrator (web/index.tsx reads it): <console>/?orch-build=<id>. */
+export const BUILD_PARAM = 'orch-build';
+export const buildLink = (id, base = '') => (id && base ? `${base.replace(/\/+$/, '')}/?${BUILD_PARAM}=${encodeURIComponent(id)}` : ALERT_LINK);
+
+/** One word or phrase for how a run ended, as the phone shows it. */
+export function outcomeWord(outcome, { status = '', phaseSwitch = false } = {}) {
+  switch (outcome) {
+    case 'finished': return status === 'complete' ? 'complete' : 'built';
+    case 'requeued': return phaseSwitch ? 'phase done, next phase queued' : 'stopped, back in the Queue';
+    case 'returned': return 'needs you';
+    case 'failed': return 'failed';
+    default: return str(outcome, 40) || 'ended';
+  }
+}
+
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
- * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
+ * notify.json's types match on: pipeline:idle, pipeline:run:<id>:<run> (started), pipeline:end:<id>:<run> (ended /
+ * failed), pipeline:split:<id>. Start and finish are keyed per run so a retry or rerun pops up again on the phone.
+ *
+ * Start / finish (Brett, Nov 10 2026: "pop up on my screen and say what build is starting or finishing and what account
+ * it's being run on"): AmberX shows `<meta.label>: <title>`, so the phone reads
+ *   Started: <build> on <account> (<model>)
+ *   Finished: <build> on <account>, <outcome>, <done>/<total> steps   (+ "Needs: …" in the text when it needs Brett)
+ * d: { id, title, account, model, phase, session, run, outcome, status, note, needs, done, total, link, sound }
  */
 export function alertFor(kind, d = {}) {
+  const run = Number.isInteger(d.run) && d.run > 0 ? d.run : 1;
+  const link = str(d.link, 500) || ALERT_LINK;
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
+  const acct = str(d.account, 60) || 'an unknown account';
+  const steps = Number.isInteger(d.total) && d.total > 0 ? `, ${d.done ?? 0}/${d.total} steps` : '';
+  const sound = d.sound !== false;
   switch (kind) {
     case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
-    case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
-    case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
-    case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'launched': {
+      const line = `${str(d.title, 120)} on ${acct} (${str(d.model, 20) || '?'})`;
+      return { ...base, link, key: `pipeline:run:${d.id}:${run}`, severity: 'info', title: line,
+        body: [`Started: ${line}`, `${d.phase ? `${str(d.phase, 40)} · ` : ''}run ${run}`, d.session ? `session ${str(d.session, 80)}` : ''].filter(Boolean).join(' · '),
+        meta: { ...base.meta, label: 'Started', event: 'start', model: d.model ?? '', run, sound } };
+    }
+    case 'ended': case 'failed': {
+      const word = kind === 'failed' ? 'failed' : outcomeWord(d.outcome, d);
+      const line = `${str(d.title, 120)} on ${acct}, ${word}${steps}`;
+      const needs = str(d.needs, 600);
+      const severity = kind === 'failed' ? 'error' : d.outcome === 'finished' ? 'success' : d.outcome === 'returned' ? 'warning' : 'info';
+      return { ...base, link, key: `pipeline:end:${d.id}:${run}`, severity, title: line,
+        body: [needs ? `Needs: ${needs}` : '', str(d.note, 900)].filter(Boolean).join('\n') || `Finished: ${line}`,
+        meta: { ...base.meta, label: 'Finished', event: 'finish', outcome: kind === 'failed' ? 'failed' : d.outcome ?? '', run, done: d.done ?? 0, total: d.total ?? 0, sound } };
+    }
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
+}
+
+/** The earlier alerts a start or finish replaces when notifyGrouping is "build" (the console resolves them; AmberX takes them away). */
+export function supersededKeys(kind, d = {}, grouping = 'build') {
+  if (grouping !== 'build' || !d.id) return [];
+  const run = Number.isInteger(d.run) && d.run > 0 ? d.run : 1;
+  if (kind === 'launched') return run > 1 ? [`pipeline:end:${d.id}:${run - 1}`, `pipeline:run:${d.id}:${run - 1}`] : [];
+  if (kind === 'ended' || kind === 'failed') return [`pipeline:run:${d.id}:${run}`];
+  return [];
 }

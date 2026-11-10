@@ -361,7 +361,11 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
+    const steps = Array.isArray(b.steps) ? b.steps : [];
+    const lastNote = [...(Array.isArray(b.notes) ? b.notes : [])].reverse().find((n) => n && typeof n.text === 'string' && !/^(Started run|Session |Headless run )/.test(n.text));
+    const needs = r.outcome === 'returned' ? (lastNote?.text || 'a look: it stopped with steps left') : r.outcome === 'failed' ? 'a look: it failed after too many runs' : '';
+    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, status: r.status, note: r.note, account: b.pipeline.account, model: b.pipeline.model,
+      run: b.pipeline.runs || 1, phaseSwitch: r.outcome === 'requeued' && exit === 0, needs, done: settled ? steps.length : steps.filter((s) => s.done).length, total: steps.length });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
   }
@@ -388,7 +392,31 @@ export function tick({ env = process.env } = {}) {
   const consoleApi = makeConsole(env);
   const state = loadState();
   const sent = [];
-  const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
+  const ns = loadSettings();
+  // the account's label (claude-workers@1) when it has one, else its name: what Brett calls it on the phone
+  let labels = null;
+  const labelOf = (name) => {
+    if (!name) return '';
+    if (!labels) { labels = new Map(); try { for (const x of accountsNow(loadStore(), ns)) if (x.label) labels.set(x.name, x.label); } catch { /* names only */ } }
+    return labels.get(name) || name;
+  };
+  const consoleUrl = (env.AXF_CONSOLE_PUBLIC_URL || 'https://console.amberxai.com').replace(/\/+$/, '');
+  const alert = (kind, d) => {
+    const start = kind === 'launched'; const finish = kind === 'ended' || kind === 'failed';
+    // start / finish pop-ups (pipeline-settings@1 notifyStart / notifyFinish; the Notifications panel still decides the channels)
+    if ((start && !ns.notifyStart) || (finish && !ns.notifyFinish)) { logLine({ event: 'notify-off', kind, build: d.id }); return; }
+    const link = start || finish ? P.buildLink(d.id, consoleUrl) : '';
+    const account = start || finish ? `${labelOf(d.account)}${d.api ? ' (API key)' : ''}` : d.account;
+    const a = P.alertFor(kind, { ...d, account, link, sound: ns.notifySound });
+    const gone = P.supersededKeys(kind, d, ns.notifyGrouping);
+    if (gone.length) consoleApi('POST', '/api/alerts/resolve', { keys: gone });
+    consoleApi('POST', '/api/alerts', a);
+    if (start || finish) {
+      consoleApi('POST', '/api/plugins/build-orchestrator/pipeline/activity', { event: start ? 'start' : 'finish', id: d.id, run: a.meta.run, url: link,
+        title: `${a.meta.label}: ${a.title}`, detail: a.body, state: kind === 'failed' ? 'failed' : 'done' });
+    }
+    sent.push({ key: a.key, kind, at: nowIso(), title: a.meta.label ? `${a.meta.label}: ${a.title}` : a.title });
+  };
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
@@ -407,7 +435,7 @@ export function tick({ env = process.env } = {}) {
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
-      alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
+      alert('launched', { id: b.id, title: b.title, account: l.account, api: l.kind === 'api', model: l.model, phase: l.phase, session: r.session, run: runs });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       delete state.launchFails[l.id];

@@ -167,8 +167,9 @@ t('needsSplit: no steps, a step over the limit or without an estimate; never a f
 t('alertFor: idle keyed once, per-build run keys, every kind has a title', () => {
   const idle = P.alertFor('idle', { kind: 'stuck', reason: 'why' }); assert.equal(idle.key, 'pipeline:idle'); assert.equal(idle.severity, 'warning'); assert.equal(idle.source, 'pipeline');
   assert.equal(P.alertFor('idle', { kind: 'empty', reason: 'why' }).severity, 'info');
-  assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus' }).key, 'pipeline:run:b');
-  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b' }).key, 'pipeline:end:b');
+  assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus' }).key, 'pipeline:run:b:1');
+  assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus', run: 3 }).key, 'pipeline:run:b:3');
+  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b', run: 2 }).key, 'pipeline:end:b:2');
   assert.equal(P.alertFor('ended', { id: 'b', outcome: 'finished' }).severity, 'success');
   assert.throws(() => P.alertFor('bogus'), /unknown alert kind/);
 });
@@ -387,5 +388,30 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
   });
 }
+
+t('start / finish pop-ups: the phone line, per-run keys, the deep link, grouping, settings defaults', () => {
+  const link = P.buildLink('my-build', 'https://console.example.com/');
+  assert.equal(link, 'https://console.example.com/?orch-build=my-build');
+  assert.equal(P.buildLink('x', ''), P.ALERT_LINK);
+  const s = P.alertFor('launched', { id: 'my-build', title: 'My build', account: 'Work max', model: 'Fable', run: 2, link });
+  assert.equal(`${s.meta.label}: ${s.title}`, 'Started: My build on Work max (Fable)');
+  assert.equal(s.link, link); assert.equal(s.meta.event, 'start'); assert.equal(s.meta.sound, true);
+  const f = P.alertFor('ended', { id: 'my-build', title: 'My build', account: 'Work max', outcome: 'finished', status: 'built', done: 3, total: 3, run: 2, link, sound: false });
+  assert.equal(`${f.meta.label}: ${f.title}`, 'Finished: My build on Work max, built, 3/3 steps');
+  assert.equal(f.severity, 'success'); assert.equal(f.meta.sound, false); assert.equal(f.key, 'pipeline:end:my-build:2');
+  const n = P.alertFor('ended', { id: 'b', title: 'B', account: 'w', outcome: 'returned', needs: 'approve the model switch', done: 1, total: 4 });
+  assert.equal(n.title, 'B on w, needs you, 1/4 steps'); assert.match(n.body, /^Needs: approve the model switch/); assert.equal(n.severity, 'warning');
+  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', account: 'w', done: 0, total: 2 }).title, 'B on w, failed, 0/2 steps');
+  assert.equal(P.alertFor('ended', { id: 'b', title: 'B', account: 'w', outcome: 'requeued', phaseSwitch: true }).title, 'B on w, phase done, next phase queued');
+  assert.deepEqual(P.supersededKeys('ended', { id: 'b', run: 2 }), ['pipeline:run:b:2']);
+  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 2 }), ['pipeline:end:b:1', 'pipeline:run:b:1']);
+  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 1 }), []);
+  assert.deepEqual(P.supersededKeys('ended', { id: 'b', run: 2 }, 'each'), []);
+  const d = P.normSettings({});
+  assert.equal(d.notifyStart, true); assert.equal(d.notifyFinish, true); assert.equal(d.notifySound, true); assert.equal(d.notifyGrouping, 'build');
+  const o = P.normSettings({ notifyStart: false, notifyGrouping: 'each', notifySound: false });
+  assert.equal(o.notifyStart, false); assert.equal(o.notifyGrouping, 'each'); assert.equal(o.notifySound, false);
+  assert.equal(P.normSettings({ notifyGrouping: 'nope' }).notifyGrouping, 'build');
+});
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

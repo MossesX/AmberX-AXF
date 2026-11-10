@@ -3,7 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
-import { FOLDER, OrchestratorPage } from './ui';
+import { FOLDER, OrchestratorPage, focusBuild, focusedBuild } from './ui';
 
 // the tags on every build screen read through this plugin; with it removed they simply draw nothing
 const priorityApi = pluginApi(FOLDER, 'Build priority', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -18,6 +18,11 @@ export const plugin: AxfWebLibrary = {
   label: 'Build orchestrator',
   version: '0.2.0',
   appMenu,
+  register(rt) {
+    // one build: the AmberX start / finish pop-up's tap (?orch-build=<id>), console_open, voice
+    rt.actions.register('build-orchestrator.open-build', ([id = '']) => { focusBuild(decodeURIComponent(String(id))); rt.navigate('build-orchestrator'); }, { label: 'Open a build in the orchestrator', params: true, effect: 'navigate' });
+    if (focusedBuild()) setTimeout(() => rt.navigate('build-orchestrator'), 0);
+  },
   views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
