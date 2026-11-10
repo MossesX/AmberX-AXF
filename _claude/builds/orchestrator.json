@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:05:13.614Z",
+ "updatedAt": "2026-11-10T18:05:22.065Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -91739,12 +91739,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:31:45.669Z",
-   "updatedAt": "2026-11-10T17:32:51.828Z",
+   "updatedAt": "2026-11-10T18:05:12.224Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:32:51.828Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (3 Fable).",
+     "at": "2026-11-10T18:05:12.224Z"
     }
    ],
    "approvals": [],
@@ -91764,13 +91768,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "New plugin. 1) A button in every plugin's settings: generates a full inventory of that plugin's UI: every dialog, table, button, pane, window, tab and other element, every behavior, and every layout, style and colour token. 2) Views: grid with expandable rows, classic tree, 3D, IDE-style tab groups; selectable roots; groups of elements. 3) Reskin / rebuild just that plugin: regenerate its look, layout and behavior as a skin scoped to the one plugin (same code underneath, not rewritten from scratch), to look better, perform better, or be new. Preview before apply, one-click revert. Full API/CLI control; AI only behind its switch.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the inventory contract: a versioned JSON schema for one plugin's UI inventory (elements with kind dialog/table/button/pane/window/tab/other, parent/child ids, behaviors as event→action entries, layout/style/colour tokens with source and resolved value, groups and roots), plus the skin contract (a per-plugin skin manifest of token overrides, layout overrides and behavior toggles, keyed by plugin id and versioned so revert is exact). Write the schema files and a short contract doc.",
+     "model": "Fable",
+     "why": "Cross-port contract every plugin's UI must satisfy, used by inventory, views and skins",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/contracts/ui-inventory.schema.json",
+      "apps/console-web/framework/contracts/plugin-skin.schema.json",
+      "docs/contracts/ui-inventory-and-plugin-skin.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -91778,17 +91786,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwayxed0016ca3"
+     "uid": "st-mwb02zkw72zt8q"
     },
     {
      "id": "s2",
-     "text": "A button in every plugin's settings. Generates a list of all the UI's dialogs, tables, buttons, panes, windows, tabs, everything, every behavior, every layout, style and color token. Multiple views, 3D, grid, expandable rows, classical trees, different roots, IDE style tabs. Rebuild, it will reskin just that plugin instead of the whole room. New look, layout and behavior, to look better, perform better, or be new.",
-     "model": "Opus",
-     "why": "",
+     "text": "Framework skin scoping: add a plugin-scoped skin layer to the framework so a skin applies only inside one plugin's mount root (scoped CSS custom properties and layout overrides under the plugin's container, behavior toggles through the existing component props), with load order room theme → plugin skin and a no-op when no skin is set. Same component code underneath.",
+     "model": "Fable",
+     "why": "Changes how GUIs render across all apps: a new framework layer between room theme and plugin",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/skin/plugin-skin-layer.mjs",
+      "apps/console-web/framework/skin/index.mjs",
+      "apps/console-web/framework/plugin-host.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -91796,17 +91808,286 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwayxed002stmo"
+     "uid": "st-mwb02zkw730i35"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md, THREADS row, commit, push, PR",
+     "text": "Framework inventory hooks: expose a read-only introspection walk over a mounted plugin (component tree, registered dialogs/windows/tabs, bound event handlers, resolved tokens) that returns data matching the inventory schema, without changing plugin code.",
+     "model": "Fable",
+     "why": "Kernel/engine internals: framework-level introspection of every plugin's component tree",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/framework/introspect/ui-walk.mjs",
+      "apps/console-web/framework/plugin-host.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw74tg9h"
+    },
+    {
+     "id": "s4",
+     "text": "Scaffold the new ui-inventory plugin: manifest, server entry, store for inventories and skins (per plugin, with history for revert), settings (AI switch off by default), and register it with the plugin installer.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/ui-inventory/plugin.json",
+      "apps/console-web/plugins/ui-inventory/server.mjs",
+      "apps/console-web/plugins/ui-inventory/store.mjs",
+      "apps/console-web/plugins/ui-inventory/settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw75bpi7"
+    },
+    {
+     "id": "s5",
+     "text": "Inventory generator: build the full inventory for one plugin from the framework walk plus a static pass over the plugin's source and styles (catches dialogs and tabs not currently mounted), merge, validate against the schema and save with a timestamp.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/generate.mjs",
+      "apps/console-web/plugins/ui-inventory/static-scan.mjs",
+      "apps/console-web/plugins/ui-inventory/store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw76w7ye"
+    },
+    {
+     "id": "s6",
+     "text": "Add the 'UI inventory' button to every plugin's settings through the shared settings frame (one injection point, not per-plugin edits); clicking it generates the inventory and opens the viewer on that plugin. API part in the same step: REST POST /api/ui-inventory/:plugin/generate and GET /api/ui-inventory/:plugin, MCP console actions ui_inventory.generate / ui_inventory.get, CLI `axf ui-inventory generate|show <plugin>`, voice intent 'list the UI of <plugin>', deep link console_open target ui-inventory?plugin=<id>.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/framework/settings/settings-frame.mjs",
+      "apps/console-web/plugins/ui-inventory/routes.mjs",
+      "apps/console-web/plugins/ui-inventory/mcp.mjs",
+      "apps/console-web/plugins/ui-inventory/cli.mjs",
+      "apps/console-web/plugins/ui-inventory/voice.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw77msgr"
+    },
+    {
+     "id": "s7",
+     "text": "Viewer shell with IDE-style tab groups (split, drag tabs between groups, each tab is one view on one root) and the root/group picker: choose any element as root, define and save named groups of elements.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/ui/viewer.mjs",
+      "apps/console-web/plugins/ui-inventory/ui/tab-groups.mjs",
+      "apps/console-web/plugins/ui-inventory/ui/roots-groups.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw78jswl"
+    },
+    {
+     "id": "s8",
+     "text": "Grid view with expandable rows (element, kind, behaviors, tokens; filter, sort, search) and classic tree view, both rooted at the selected root or group.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/ui/grid-view.mjs",
+      "apps/console-web/plugins/ui-inventory/ui/tree-view.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw79whud"
+    },
+    {
+     "id": "s9",
+     "text": "3D view: elements as nested layered boxes by containment depth, orbit/zoom, click to select and sync selection with the other views; falls back to tree when WebGL is missing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/ui/view-3d.mjs",
+      "apps/console-web/plugins/ui-inventory/ui/selection-sync.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw7asgxs"
+    },
+    {
+     "id": "s10",
+     "text": "API for the viewer: deep links for plugin, view, root, group and tab layout; state read (open tabs, views, root, selection, groups); actions open_view, set_root, select, create/rename/delete group, move tab, export inventory (JSON/CSV). REST + MCP + CLI + voice, all four the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/routes.mjs",
+      "apps/console-web/plugins/ui-inventory/mcp.mjs",
+      "apps/console-web/plugins/ui-inventory/cli.mjs",
+      "apps/console-web/plugins/ui-inventory/voice.mjs",
+      "apps/console-web/plugins/ui-inventory/deeplink.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw7be7dx"
+    },
+    {
+     "id": "s11",
+     "text": "Reskin generator without AI: from the inventory, produce a skin for the one plugin by goal (look better: spacing/contrast/type scale fixes; perform better: drop heavy effects, virtualise long tables, lazy tabs; new: preset palettes and layouts), editable token/layout/behavior overrides, validated against the skin schema.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/reskin/generate.mjs",
+      "apps/console-web/plugins/ui-inventory/reskin/presets.mjs",
+      "apps/console-web/plugins/ui-inventory/reskin/validate.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw7c3sw0"
+    },
+    {
+     "id": "s12",
+     "text": "AI reskin behind the plugin's AI switch: when on, send the inventory and goal to the configured model to propose a skin; output goes through the same validator; when off, the option is hidden and the API returns a clear 'AI is off' error.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/reskin/ai.mjs",
+      "apps/console-web/plugins/ui-inventory/settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw7dlw37"
+    },
+    {
+     "id": "s13",
+     "text": "Reskin UI: 'Rebuild this plugin' panel with goal picker, override editor, side-by-side live preview (skin applied only inside a preview mount of the plugin), Apply, one-click Revert and skin history.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/ui/reskin-panel.mjs",
+      "apps/console-web/plugins/ui-inventory/ui/preview.mjs",
+      "apps/console-web/plugins/ui-inventory/reskin/apply.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw7e24c1"
+    },
+    {
+     "id": "s14",
+     "text": "API for reskin: deep link to the reskin panel for a plugin; state read (active skin, preview skin, history); actions generate, preview, apply, revert, revert_to <version>, set override, AI switch setting. REST + MCP + CLI + voice, all four the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/routes.mjs",
+      "apps/console-web/plugins/ui-inventory/mcp.mjs",
+      "apps/console-web/plugins/ui-inventory/cli.mjs",
+      "apps/console-web/plugins/ui-inventory/voice.mjs",
+      "apps/console-web/plugins/ui-inventory/deeplink.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb02zkw7fw48m"
+    },
+    {
+     "id": "s15",
+     "text": "Tests, report, THREADS row and PR: unit tests for schema validation, introspection walk, static scan, skin scoping (no leak outside the plugin root), apply/revert round trip and API parity across REST/MCP/CLI/voice; write _claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md; add the THREADS row; open the PR stating how each UI is reached (deep link, state, actions, settings via REST, MCP, CLI and voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ui-inventory/test/",
+      "apps/console-web/framework/skin/test/",
       "_claude/builds/reports/plugin-ui-inventory-per-plugin-reskin-one-button.md",
       "_claude/THREADS.md"
      ],
@@ -91817,7 +92098,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwayxed003mgk9"
+     "uid": "st-mwb02zkw7g3xs4"
     }
    ]
   },
