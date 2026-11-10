@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2657,
- "updatedAt": "2026-11-10T18:10:45.078Z",
+ "rev": 2658,
+ "updatedAt": "2026-11-10T18:11:06.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145516,7 +145516,7 @@
    "pr": "#460",
    "priority": "P0",
    "createdAt": "2026-11-10T16:47:11.863Z",
-   "updatedAt": "2026-11-10T18:10:42.752Z",
+   "updatedAt": "2026-11-10T18:11:04.862Z",
    "builtAt": "2026-11-10T18:10:42.752Z",
    "notes": [
     {
@@ -145538,6 +145538,10 @@
     {
      "text": "Headless run axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny: brief only · start 11.0K tokens ($0.03) · cost $3.81 · 116 turns · 6 tools, MCP none",
      "at": "2026-11-10T18:10:42.752Z"
+    },
+    {
+     "text": "Session axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T18:11:04.862Z"
     }
    ],
    "approvals": [],
@@ -145558,12 +145562,19 @@
     "queuedAt": "2026-11-10T16:47:13.180Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T17:26:11.553Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T18:11:03.670Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny"
+    },
     "split": {
      "at": "2026-11-10T16:50:33.567Z",
      "by": "orchestrator",
@@ -145658,7 +145669,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
