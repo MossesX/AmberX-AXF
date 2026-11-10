@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:57:16.955Z",
+ "updatedAt": "2026-11-10T18:57:29.953Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92774,7 +92774,7 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T18:57:15.326Z",
+   "updatedAt": "2026-11-10T18:57:16.814Z",
    "builtAt": "",
    "notes": [
     {
@@ -92796,6 +92796,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-conflicts-and-land-pr-449-account-order--lenny, own login copy)",
      "at": "2026-11-10T18:29:39.036Z"
+    },
+    {
+     "text": "s1-s6 done. PR #449 has main merged in, is mergeable/clean on GitHub, and has full API reach for the account order (read/set/move/reset over REST, MCP, CLI, voice). Tests green locally. s7 left open: (1) CI Light PR checks is red on every PR and on main because builds-store.mjs verify fails (1471 breakroom findings on clean origin/main; see dispatcher-a-worktree-store-write-can-erase-a-fr), so the merge queue can't land #449 yet; (2) sessions never merge a PR by hand, so the merge queue lands it; (3) console redeploy, live check and the 'landed' AmberX message wait for that. Report: _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md",
+     "at": "2026-11-10T18:57:16.814Z"
     }
    ],
    "approvals": [],
