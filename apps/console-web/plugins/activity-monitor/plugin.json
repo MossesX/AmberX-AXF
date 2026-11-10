@@ -35,7 +35,7 @@
       "AXF_ACTIVITY_MONITOR_DIR"
     ],
     "mentions": [
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md", "_claude/THREADS.md"
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
