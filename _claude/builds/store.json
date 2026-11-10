@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2196,
- "updatedAt": "2026-11-10T02:22:54.127Z",
+ "rev": 2197,
+ "updatedAt": "2026-11-10T02:24:05.912Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -40469,8 +40469,9 @@
    "pendingId": "",
    "branch": "claude/element-inspector",
    "pr": "#192",
+   "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -40598,7 +40599,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -51241,8 +51242,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-06T14:30:23.249Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -51352,7 +51354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -65476,8 +65478,9 @@
    "pendingId": "git-status-board",
    "branch": "claude/git-status-board",
    "pr": "#291",
+   "priority": "P0",
    "createdAt": "2026-11-03T21:10:39.295Z",
-   "updatedAt": "2026-11-08T02:45:53.726Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -65633,7 +65636,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -70768,8 +70771,9 @@
    "pendingId": "",
    "branch": "claude/terminal-tabs-left",
    "pr": "#293",
+   "priority": "P0",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -70915,7 +70919,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88969,8 +88973,9 @@
    "pendingId": "",
    "branch": "claude/molly-banner-match-r2",
    "pr": "#341",
+   "priority": "P0",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-08T17:21:06.886Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -89144,7 +89149,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92035,8 +92040,9 @@
    "branch": "claude/banner-widgets",
    "pr": "#352",
    "mergedAt": "2026-11-05T03:21:37Z",
+   "priority": "P0",
    "createdAt": "2026-11-05T02:08:38.606Z",
-   "updatedAt": "2026-11-05T03:30:52.219Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -92238,7 +92244,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93835,8 +93841,9 @@
    "branch": "claude/ai-keys-console-store-2",
    "pr": "#358",
    "mergedAt": "2026-11-06T00:33:19Z",
+   "priority": "P0",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-06T00:40:30.194Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -93942,7 +93949,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -94320,8 +94327,9 @@
    "pendingId": "amberx-slim-down-voice-queue",
    "branch": "claude/amberx-slim-queue-r2",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-06T22:37:11.917Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -94469,7 +94477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -100123,8 +100131,9 @@
    "pendingId": "",
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-07T00:47:45.038Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -100348,7 +100357,7 @@
    },
    "kind": "build",
    "planRef": "headless-progress-file-lean-claude-md-chain",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105954,8 +105963,9 @@
    "pendingId": "",
    "branch": "claude/notes-tasks-calendar",
    "pr": "#374",
+   "priority": "P0",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-09T00:10:06.909Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -106351,7 +106361,7 @@
    },
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -110971,9 +110981,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
-   "priority": "P2",
+   "priority": "P0",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-07T15:40:32.957Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -111176,7 +111186,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122447,8 +122457,9 @@
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
    "branch": "claude/orchestrator-only-launcher",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-09T01:01:49Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -122561,7 +122572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125863,8 +125874,9 @@
    "branch": "claude/approval-links-fix",
    "pr": "#403",
    "mergedAt": "2026-11-09T04:24:12Z",
+   "priority": "P0",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-09T04:30:30.691Z",
+   "updatedAt": "2026-11-10T02:23:45.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -125973,7 +125985,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
