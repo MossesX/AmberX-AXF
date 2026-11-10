@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:43:04.862Z",
+ "updatedAt": "2026-11-10T19:44:06.182Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85423,7 +85423,7 @@
    "pr": "#447",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T19:42:06.299Z",
+   "updatedAt": "2026-11-10T19:44:04.441Z",
    "builtAt": "",
    "notes": [
     {
@@ -85465,6 +85465,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-fable-version-the-one-interface-for-amberx--rhonda, own login copy)",
      "at": "2026-11-10T19:32:10.147Z"
+    },
+    {
+     "text": "Phase 2 (Opus) done. s2: + on dock tab rows (DockHost onNewTab) and a tab menu in Molly (new / float / pane / close, xlayout.tab); commit adf6a251b on PR #447, checks green. The UI Review items r-20261110-78bbq01 and r-20261110-g4lvv01 are only in this worktree: the headless session had no AXF_CONSOLE_URL / AXF_TOKEN, so --console could not upload them. Resubmit with --console (shots in /tmp/molly-s2/shots) and give dispatched sessions those variables.",
+     "at": "2026-11-10T19:44:04.441Z"
     }
    ],
    "approvals": [
