@@ -1352,6 +1352,18 @@
     }
    ]
   },
+  "claude-md-standing-rule-be-proactive-bring-up-th": {
+   "said": "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.",
+   "at": "2026-11-10T16:45:47.022Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "claude-settings": {
    "said": "I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.",
    "at": "2026-11-03",
@@ -2585,6 +2597,18 @@
    "brief": "# Build: menu-scroll (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they reach beyond the screen.\" Assigned agent: **Janitor Joey** (book on his agent-swarm card; set AXF_AGENT=janitor-joey if supported, else record in report + store note). Register in Urgent (id `menu-scroll`) + banner entry.\n\n## Fix (framework level, so every app and plugin gets it)\n- Application menu bar dropdowns, their submenus, and also context menus / overflow (⋯) menus: when a menu is taller than the space left in the viewport, cap its height to the available space (respect safe-area insets, the banner/toolbars, and the on-screen keyboard; use visualViewport on mobile) and make it scroll vertically inside.\n- Smooth touch scrolling on phones (overscroll contained so the page behind doesn't scroll), wheel + keyboard arrow navigation scrolls the highlighted item into view, subtle top/bottom fade or chevron hints when there's more.\n- Positioning: flip up / shift to stay on screen before falling back to scroll; submenus that would go off the right edge open to the left; on compact width they stay inside the screen.\n- Max height + hint style come from tokens/assets (menu asset or component-sizing), no hard-coded sizes (check-theme must pass).\n- Apply in the framework menu components (web reference + axf.css) so console, axHub web, AmberX (Capacitor) and every plugin inherit it; Compose twin recorded in PORTING.md unless trivial.\n- Tests (overflow cases: long menu at bottom of a short phone screen, nested submenu at the edge, keyboard open), before/after screenshots at 412 px and 1280 px, UI Review item, report `_claude/builds/reports/menu-scroll.md`, THREADS, PR, steps through the store. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "merge-batching-add-on-when-a-batch-fails-ci-spli": {
+   "said": "That's the way to do it, right? Why do I have to figure this shit out on my own?",
+   "at": "2026-11-10T16:45:23.543Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "merge-conflict-alerts": {

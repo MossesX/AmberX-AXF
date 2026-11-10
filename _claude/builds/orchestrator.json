@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:44:45.906Z",
+ "updatedAt": "2026-11-10T16:45:47.262Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86363,6 +86363,43 @@
    "origin": {
     "said": "What happened to the merge queue? We need to start enforcing that. Everything needs to go into the merge queue so we can make one build out of it before we send it to CI.",
     "at": "2026-11-10T16:43:57.553Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "merge-queue-batching-orchestrator-combines-ready",
+   "title": "Merge queue batching: orchestrator combines ready PRs 5 at a time into one build, pulls main, merges as one",
+   "category": "",
+   "detail": "Amends the enforce-merge-queue build. Main changes so fast that separate merges keep breaking. As soon as PRs are ready, the orchestrator takes them in batches of 5 (setting), combines them into one branch/build, resolves conflicts, pulls latest main into it, runs CI once, and merges the batch as one. Plain code, no AI except conflict resolution fallback when enabled.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:44:49.604Z",
+   "updatedAt": "2026-11-10T16:44:51.500Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:44:51.500Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Every time we go to compile something it's changed so much that everything breaks. Take all the pull requests as soon as they're ready, have the orchestrator combine them, like five at a time, into one big build. Then pull main and merge it as one.",
+    "at": "2026-11-10T16:44:49.604Z",
     "source": "",
     "session": "",
     "link": "",
