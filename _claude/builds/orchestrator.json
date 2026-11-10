@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:40:02.914Z",
+ "updatedAt": "2026-11-10T02:40:36.756Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77888,7 +77888,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T02:39:58.412Z",
+   "updatedAt": "2026-11-10T02:40:34.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -77994,6 +77994,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T02:32:16.216Z"
+    },
+    {
+     "text": "Correction to the browser-walk note: the leftover console API was only alive during the first (interrupted) walk; the clean second walk had port 7311 free and still recorded ~30 failed /api/plugins/* and /api/alerts requests, a failed console-commands catalogue and short menus (framework 10 vs 68 in the baseline). Cause not established; candidates: lazy plugin chunks loading after the walker reads the catalogue, or the throwaway data folder the walker gives the console API. s5 should compare against the baseline's walker settings before trusting any shot diff; the static half is the trustworthy signal for now (clean).",
+     "at": "2026-11-10T02:40:34.129Z"
     }
    ],
    "approvals": [],
