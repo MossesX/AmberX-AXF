@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:49:19.301Z",
+ "updatedAt": "2026-11-10T00:50:42.794Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82150,6 +82150,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw9y8fn303q4d9"
+    }
+   ]
+  },
+  {
+   "id": "skins-theme-rule",
+   "title": "Skins: a colour theme pick is its own setting, never a skin override (resume after credits ran out)",
+   "category": "",
+   "detail": "Rerun of a headless Fable session (axf-skins-theme-rule--earl, Moses X, Nov 9 18:38-18:47 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-theme-rule (11 files: framework/core/engines/appearance.ts, skin-coverage, skin-rules …). Its own words: \"the colour pick becomes its own colorTheme field in the skin state (never an override, never a new skin), with old documents migrated on read. Engine and runtime are changed; now updating the tests and fixture to pin the rule, then the CLI/API, pickers and docs.\" Read git diff and the run log first; keep that work.",
+   "status": "pending",
+   "hidden": false,
+   "source": "failed-launches-auto-retry-on-another-wo",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T00:50:40.704Z",
+   "updatedAt": "2026-11-10T00:50:40.704Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read git diff and skins-theme-rule.log; finish the engine change already in this worktree: colorTheme is its own field in the skin state, never an override or a new skin; old documents migrate on read; regenerate framework/spec/fixtures",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9z4l1c04p5f7"
+    },
+    {
+     "id": "s2",
+     "text": "Tests and fixture pinning the rule; CLI / API (REST, MCP, voice) and the pickers read and set colorTheme; docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9z4l1c056egx"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/skins-theme-rule.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9z4l1c062pqu"
     }
    ]
   }
