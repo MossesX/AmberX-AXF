@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:10 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
 - 2026-11-09 18:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → failed, note (all) · pipeline
 - 2026-11-09 18:15 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` s2 done (all) · orchestrator
 - 2026-11-09 18:16 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` PR #411 (all) · builds-live
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 01:53 UTC · `skins-theme-rule` note (all) · orchestrator
 - 2026-11-10 01:53 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
+- 2026-11-10 01:54 UTC · `appearance-skins-colour-themes-only-remove-design-packs` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
