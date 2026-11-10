@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:44:26.821Z",
+ "updatedAt": "2026-11-10T23:44:35.308Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97848,10 +97848,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-requeue-builds-whose-session-stops-early-go",
-   "pr": "",
+   "pr": "#484",
    "priority": "P0",
    "createdAt": "2026-11-10T23:36:56.261Z",
-   "updatedAt": "2026-11-10T23:43:26.846Z",
+   "updatedAt": "2026-11-10T23:44:33.492Z",
    "builtAt": "",
    "notes": [
     {
