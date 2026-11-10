@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:44 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · console
 - 2026-11-10 16:44 UTC · `merge-queue-batching-orchestrator-combines-ready` → queued, note (all) · console
 - 2026-11-10 16:45 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · builds-live
 - 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` added (0 steps) (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:14 UTC · `remove-the-old-theme-manager-style-and-layout-se` → running, note (all) · pipeline
 - 2026-11-10 20:14 UTC · `remove-the-old-theme-manager-style-and-layout-se` branch claude/remove-the-old-theme-manager-style-and-layout-se (all) · pipeline
 - 2026-11-10 20:14 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · orchestrator
+- 2026-11-10 20:20 UTC · `full-api-cli-control-of-everything-plus-an-offli` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
