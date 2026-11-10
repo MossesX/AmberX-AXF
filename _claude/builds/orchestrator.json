@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:48:29.052Z",
+ "updatedAt": "2026-11-10T00:49:04.666Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77176,14 +77176,14 @@
    "title": "AmberX floating toolbar (always on top): mic + approvals + build status",
    "category": "amberx",
    "detail": "AmberX Android app: a small floating toolbar (overlay bubble, draw over other apps) that stays on top everywhere. Main items: mic button (talk to Claude / hands-free toggle) and approvals (badge with count of waiting axHub approvals; tap to approve/deny in place). Also build status (running count, failures). Draggable, collapsible, snaps to edges; every piece an asset, styled from tokens, configurable in settings (items, size, opacity, position). Brett: \"add a floating toolbar to AmberX that's always on top... the main thing was the mic and the approvals.\"",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-09T20:26:04.712Z",
+   "updatedAt": "2026-11-10T00:49:01.878Z",
    "builtAt": "",
    "notes": [
     {
@@ -77245,6 +77245,10 @@
     {
      "text": "Session on account-3 ended (exit 1) with 4 steps left after 3 runs: failed.",
      "at": "2026-11-09T20:26:04.712Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+     "at": "2026-11-10T00:49:01.878Z"
     }
    ],
    "approvals": [],
