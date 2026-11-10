@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:54:42.513Z",
+ "updatedAt": "2026-11-10T17:54:53.103Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87415,7 +87415,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:48.813Z",
-   "updatedAt": "2026-11-10T17:09:46.374Z",
+   "updatedAt": "2026-11-10T17:54:31.081Z",
    "builtAt": "",
    "notes": [
     {
@@ -87425,6 +87425,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:42:08.969Z"
+    },
+    {
+     "text": "Split by Claude into 7 steps (1 Fable).",
+     "at": "2026-11-10T17:54:31.081Z"
     }
    ],
    "approvals": [],
@@ -87444,51 +87448,15 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Amends the Project Manager build. When starting a new project, ask: Internal build (framework/self development) or External app (start from a boilerplate template). External app shows boilerplate choices. Full API control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the project record change: add kind ('internal'|'external') and boilerplate {id, version} to the Project Manager project schema, plus a migration that sets existing projects to kind='internal'. Define the boilerplate template registry format (id, name, description, stack, source path/repo, scaffold steps).",
+     "model": "Fable",
+     "why": "Schema and migration design for stored project records",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwauz0p604vjv0"
-    },
-    {
-     "id": "s2",
-     "text": "When you start a project, it will ask you if it's going to be an internal build or if you want a boilerplate to build an external app.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwauz0p605fwcg"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/project-manager-add-on-new-project-prompt-asks-i.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
+     "estimate": "25 min",
      "files": [
-      "_claude/builds/reports/project-manager-add-on-new-project-prompt-asks-i.md",
-      "_claude/THREADS.md"
+      "apps/console-web/plugins/project-manager/schema/",
+      "apps/console-web/plugins/project-manager/migrations/"
      ],
      "checks": [],
      "session": "same",
@@ -87497,7 +87465,136 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwauz0p606osns"
+     "uid": "st-mwazp8vd3jldja"
+    },
+    {
+     "id": "s2",
+     "text": "Add the boilerplate registry: the JSON catalog of starter templates and a loader that lists, gets and validates entries against the schema.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/boilerplates/",
+      "apps/console-web/plugins/project-manager/lib/boilerplates.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazp8vd3kvell"
+    },
+    {
+     "id": "s3",
+     "text": "Server side of project creation: createProject takes kind and boilerplateId. Internal goes through the existing framework/self-development path. External validates the boilerplate and scaffolds the new project from the template. Add REST routes: GET /api/project-manager/boilerplates, GET /api/project-manager/new-project (prompt state and draft), POST /api/project-manager/projects with {kind, boilerplateId}.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/lib/projects.mjs",
+      "apps/console-web/plugins/project-manager/routes.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazp8vd3l6vnc"
+    },
+    {
+     "id": "s4",
+     "text": "New-project prompt UI: the first screen asks 'Internal build' or 'External app'. Choosing External app shows the boilerplate picker (cards with name, stack, description). Then confirm and create. Wire it to the REST routes and remember the draft choice in state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/new-project/",
+      "apps/console-web/plugins/project-manager/ui/index.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazp8vd3mlzv9"
+    },
+    {
+     "id": "s5",
+     "text": "API parity for the new-project prompt. Deep link: console_show/console_open target 'project-manager/new-project' with optional ?kind=&boilerplate=. State read: kind, selected boilerplate, available boilerplates. Actions and settings: list boilerplates, set kind, pick boilerplate, create project. Expose each one as MCP console actions and plugin commands, CLI subcommands (axf project new --kind internal|external --boilerplate <id>, axf project boilerplates), and AmberX voice intents ('start a new internal build', 'new external app from <boilerplate>'). All four behave the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/actions.mjs",
+      "apps/console-web/plugins/project-manager/mcp.mjs",
+      "apps/console-web/plugins/project-manager/cli.mjs",
+      "apps/console-web/plugins/project-manager/voice.mjs",
+      "apps/console-web/plugins/project-manager/manifest.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazp8vd3nqdl9"
+    },
+    {
+     "id": "s6",
+     "text": "Tests: schema migration (existing projects become internal), boilerplate registry validation, create internal vs external through REST, rejection of a bad boilerplate id, deep link opens the prompt with its preselection, and MCP/CLI/voice parity (same action gives the same result).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazp8vd3oypvs"
+    },
+    {
+     "id": "s7",
+     "text": "Run the full test suite. Write the report at _claude/builds/reports/project-manager-add-on-new-project-prompt-asks-i.md, covering how each feature is reached through the deep link, REST, MCP, CLI and voice. Add the THREADS row and open a PR against main that amends the Project Manager build and lists the API reach for each feature.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/project-manager-add-on-new-project-prompt-asks-i.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/project-manager/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazp8vd3pqs5w"
     }
    ]
   },
