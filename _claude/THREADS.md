@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:45 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · foreign-write
 - 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` added (0 steps) (all) · console
 - 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` → queued, note (all) · console
 - 2026-11-10 16:45 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` added (0 steps) (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:20 UTC · `remove-the-old-theme-manager-style-and-layout-se` branch claude/remove-the-old-theme-manager-style-and-layout-se (all) · builds-live
 - 2026-11-10 20:23 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s3 done (all) · orchestrator
 - 2026-11-10 20:24 UTC · `remove-the-old-theme-manager-style-and-layout-se` s1 done, → running (all) · orchestrator
+- 2026-11-10 20:27 UTC · `inline-element-editing-plugin-right-click-any-el` s4 done (all) · orchestrator
 
 ## Token passes (log)
 

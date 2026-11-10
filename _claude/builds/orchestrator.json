@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:24:09.738Z",
+ "updatedAt": "2026-11-10T20:27:55.249Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89423,7 +89423,7 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T20:12:11.327Z",
+   "updatedAt": "2026-11-10T20:27:53.819Z",
    "builtAt": "",
    "notes": [
     {
@@ -89463,7 +89463,16 @@
      "at": "2026-11-10T20:12:11.327Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-10T20:27:53.818Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Right-click elements right down to the child, it opens a dialog with all the different tokens, in a tree or a classical tree or a grid with expandable rows, edit every token, notes that it overrides inheritance. A master switch in the main application settings to enable inline edit mode. Same with navigation menus, toolbars, banners, widgets, every single thing. Part of the plugin gives a monster list of everything changed from axHub's inheritance, reset them individually to axHub's. Searchable, filterable, a tree with selectable roots and a multi-tab column with different roots.",
@@ -89561,8 +89570,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T20:27:53.818Z",
      "note": "",
      "uid": "st-mwazwm425fggdg"
     },
