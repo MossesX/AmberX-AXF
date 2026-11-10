@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:42 UTC · `fix-owner-check-bug-dead-start-button` s2 done (all) · orchestrator
 - 2026-11-09 20:42 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s2 done (all) · orchestrator
 - 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` PR #413 (all) · builds-live
 - 2026-11-09 20:43 UTC · `fix-owner-check-bug-dead-start-button` s1 done (all) · foreign-write
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:04 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s3 done, → built (all) · orchestrator
 - 2026-11-10 04:04 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → running, note (all) · orchestrator
 - 2026-11-10 04:05 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s2 done, s3 done, → built, PR #438, note (all) · reconciler
+- 2026-11-10 04:05 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 
 ## Token passes (log)
 
