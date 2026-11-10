@@ -1,15 +1,16 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useAxfState } from '../axf/react';
-import { deepLink, MOLLY_APPS } from './apps';
-import { appOfView, mollyHooks, mollyHooksRev, onMollyHooks } from './host';
+import { instanceTitle, parseInstance } from '../axf/core/engines/molly-shell';
+import { deepLink, mollyApp } from './apps';
+import { appOfInstance, ensureInstance, instanceOfMollyView, mollyHooks, mollyHooksRev, onMollyHooks, openInstances } from './host';
 
 /**
  * Molly keeps every app it has opened alive. Moving an iframe in the DOM reloads it, so the frames never move: they
- * live in one deck at the end of <body>, and each app's frame is laid exactly over that app's slot (an empty box a view
- * or a pane renders). A slot in a view covers the main region around it; a slot in a pane (`fill="self"`) covers just
- * itself, so several apps can be on screen at once. An app whose slot is gone or hidden only hides its frame, so
- * switching apps never loses their state.
+ * live in one deck at the end of <body>, and each instance's frame is laid exactly over that instance's slot (an empty
+ * box a view or a pane renders). A slot in a view covers the main region around it; a slot in a pane (`fill="self"`)
+ * covers just itself, so several apps (or two copies of one app, molly-shell@1 instances) can be on screen at once. An
+ * instance whose slot is gone or hidden only hides its frame, so switching apps never loses their state.
  */
 
 type Rect = { top: number; left: number; width: number; height: number };
@@ -26,7 +27,7 @@ export function reloadFrame(id: string) {
   notify();
 }
 
-/** The box a view (or a pane, `fill="self"`) gives its app's frame. */
+/** The box a view (or a pane, `fill="self"`) gives its instance's frame. */
 export function AppSlot({ id, fill = 'main' }: { id: string; fill?: 'main' | 'self' }) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -44,7 +45,7 @@ export function AppSlot({ id, fill = 'main' }: { id: string; fill?: 'main' | 'se
 
 const same = (a: Rect | undefined, b: Rect) => !!a && a.top === b.top && a.left === b.left && a.width === b.width && a.height === b.height;
 
-/** Where each app's frame goes right now: every slot that is on screen (a hidden or zero-size slot has none). */
+/** Where each instance's frame goes right now: every slot that is on screen (a hidden or zero-size slot has none). */
 function useSlotRects(): Map<string, Rect> {
   const [rects, setRects] = useState<Map<string, Rect>>(new Map());
   const [tick, bump] = useState(0);
@@ -82,38 +83,41 @@ function useSlotRects(): Map<string, Rect> {
   return rects;
 }
 
-/** Every opened app's frame; mounted once, next to the shell. */
+/** Every open instance's frame; mounted once, next to the shell. */
 export function FrameDeck() {
   const view = useAxfState().view;
-  const active = appOfView(view)?.id ?? null;
+  const active = instanceOfMollyView(view);
   const rects = useSlotRects();
   useSyncExternalStore(onMollyHooks, mollyHooksRev, mollyHooksRev);
   const { frameUrl, onFrame, warm } = mollyHooks();
-  // First address per app: a deep link on load (#/<app>/<route>), else the app's own start page.
+  // First address per instance: a deep link on load (#/<app>[#n]/<route>), else the app's own start page.
   const [srcs] = useState(() => {
     const m = new Map<string, string>();
     const link = deepLink(window.location.hash);
-    if (link) m.set(link.app.id, link.src);
+    if (link) m.set(link.instance, link.src);
     return m;
   });
-  const [opened, setOpened] = useState<string[]>(() => (active ? [active] : []));
+  // the instances that have a frame: everything open, the one on screen, every slot on screen, the warm apps
+  const open = openInstances();
   useEffect(() => {
-    const want = [...new Set([...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])])].filter((id) => !opened.includes(id) && MOLLY_APPS.some((a) => a.id === id));
-    if (want.length) setOpened((o) => [...o, ...want]);
-  }, [active, rects, opened, warm]);
+    for (const id of [...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])]) if (!open.includes(id) && appOfInstance(id)) ensureInstance(id);
+  }, [active, rects, open, warm]);
 
   return createPortal(
     <div className="molly-deck">
-      {MOLLY_APPS.filter((a) => opened.includes(a.id)).map((a) => {
-        const rect = rects.get(a.id);
-        const start = srcs.get(a.id) ?? a.url;
+      {open.map((id) => {
+        const inst = parseInstance(id); const a = mollyApp(inst?.app);
+        if (!inst || !a) return null;
+        const rect = rects.get(id);
+        const start = srcs.get(id) ?? a.url;
         return (
           <iframe
-            key={`${a.id}:${reloads.get(a.id) ?? 0}`}
-            ref={(el) => onFrame?.(a.id, el)}
-            title={a.label}
+            key={`${id}:${reloads.get(id) ?? 0}`}
+            ref={(el) => onFrame?.(id, el)}
+            title={instanceTitle(a.label, inst.n)}
             className="molly-frame"
             data-app={a.id}
+            data-instance={id}
             data-on={rect ? 'true' : 'false'}
             src={frameUrl ? frameUrl(a, start) : start}
             allow="clipboard-read; clipboard-write; microphone; fullscreen; autoplay"

@@ -21,7 +21,7 @@
     "env": [],
     "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
   },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/xlayout-opus" },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-10", "branch": "claude/molly-fable-version-the-one-interface-for-amberx" },
   "help": "help.json",
   "opens": "main"
 }

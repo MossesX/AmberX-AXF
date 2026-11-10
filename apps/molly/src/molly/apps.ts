@@ -1,3 +1,5 @@
+import { parseInstance } from '../axf/core/engines/molly-shell';
+
 /**
  * The apps Molly shows. Each one stays its own app at its own address and runs exactly as it does on its own: Molly
  * only frames that address (plain URL, no embed marker, nothing hidden, taken over or merged). Add an app here and in
@@ -22,11 +24,12 @@ export const MOLLY_APPS: MollyApp[] = [
 
 export const mollyApp = (id: string | undefined | null): MollyApp | undefined => MOLLY_APPS.find((a) => a.id === id);
 
-/** `#/<app>/<route…>` → the app and the address its frame starts on. */
-export function deepLink(hash: string): { app: MollyApp; src: string } | null {
+/** `#/<app>[#<n>]/<route…>` → the instance, its app and the address its frame starts on (molly-shell@1 instance ids). */
+export function deepLink(hash: string): { app: MollyApp; instance: string; src: string } | null {
   const parts = hash.replace(/^#\/?/, '').split('/');
-  const app = mollyApp(parts[0]);
-  if (!app) return null;
+  const inst = parseInstance(parts[0]);
+  const app = mollyApp(inst?.app);
+  if (!app || !inst) return null;
   const route = parts.slice(1).join('/');
-  return { app, src: route ? `${app.url}/#/${route}` : app.url };
+  return { app, instance: inst.id, src: route ? `${app.url}/#/${route}` : app.url };
 }

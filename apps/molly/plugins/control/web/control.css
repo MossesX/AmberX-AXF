@@ -1,0 +1,3 @@
+/* Molly control: layout only. Colours, sizes and borders come from the engine tokens. */
+.axp-control-list { margin: 0; padding-inline-start: var(--fx-dens-gap-3xl); display: grid; gap: calc(var(--fx-space) / 2); }
+.axp-control-code { margin: 0; white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-font-size); }

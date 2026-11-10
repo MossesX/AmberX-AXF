@@ -1,0 +1,39 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.control",
+  "name": "Molly control",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every Molly screen, tab, setting and action reachable without the UI (molly-shell@1): Molly hands the console inside it a catalog of its own screens, settings tabs, dialogs and actions (embed@1 host-catalog); the console announces them with its own, so the console API (REST), the MCP tools (console_open, console_action, console_list, console_where), the CLI (axf console …) and voice through AmberX reach Molly exactly like the console, and the console carries each command back up (host-run). No second server, no second sign-in. Settings → Plugins → Molly control: on / off, a note per command, what reached Molly last.",
+  "targets": ["molly"],
+  "provides": ["settings-tab:molly-control", "service:axf.molly-control@1"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": ["axf.xlayout@1"],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/molly-control",
+    "env": [],
+    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "switch", "title": "Switch to an app", "description": "Brings an app's first copy on screen. Same as: axf console open <app> (the console inside Molly resolves Molly's screens).", "action": "molly.switch", "input": { "type": "object", "properties": { "app": { "type": "string", "enum": ["amberx", "axhub", "console", "expenses"] } }, "required": ["app"] } },
+      { "id": "new-tab", "title": "New tab (another copy of an app)", "description": "Opens another copy of an app (console → Console 2) as its own tab; in IDE mode as a dock tab. Same as: axf console action molly.new-tab console.", "action": "molly.new-tab", "input": { "type": "object", "properties": { "app": { "type": "string" } } } },
+      { "id": "close-tab", "title": "Close a tab", "description": "Closes a copy of an app (its frame goes). Without an instance: the one on screen. Same as: axf console action molly.close-tab console#2.", "action": "molly.close-tab", "input": { "type": "object", "properties": { "instance": { "type": "string" } } } },
+      { "id": "next-tab", "title": "Next tab", "description": "Steps to the next open copy.", "action": "molly.next-tab" },
+      { "id": "reload", "title": "Reload this app", "description": "Reloads the frame on screen.", "action": "molly.reload" },
+      { "id": "state", "title": "What Molly shows now", "description": "molly-shell@1 state: view, app, open copies and which are on screen, IDE mode, the apps that joined. Read it with: axf console where (the console inside Molly answers with Molly's screen) or axf console list screens molly.", "action": "molly.state", "readOnly": true, "output": "molly-shell@1 state" }
+    ],
+    "noReads": "no data folder: Molly's state is per browser tab (session storage) and read through the console's where / list"
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-10", "branch": "claude/molly-fable-version-the-one-interface-for-amberx" },
+  "help": "help.json",
+  "opens": false
+}

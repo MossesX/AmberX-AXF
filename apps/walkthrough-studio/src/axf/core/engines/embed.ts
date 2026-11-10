@@ -20,6 +20,7 @@
  */
 import { hideable, hideableTypes } from './hide';
 import { parseChromeBundle, type ChromeBundle } from './chrome';
+import { parseHostCatalog, parseHostRun, type HostCatalogItem, type HostRun } from './molly-shell';
 
 export interface Embed {
   /** the host app's id, e.g. `host` */
@@ -380,11 +381,27 @@ export type EmbedMessage =
   /** host → guest: send your chrome now (the host just loaded, or its layout changed) */
   | { $axf: typeof EMBED_MESSAGE; type: 'chrome-request' }
   /**
+   * guest → host: bring this app's frame to the front (a remote command is about to change what it shows, so the
+   * person should see it happen; Nov 3 2026). `reason` is a short line the host may show. Web only so far.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'show'; reason?: string }
+  /** host → guest: whether this app's frame is on screen now (`on`), so the guest can say which client is in front. */
+  | { $axf: typeof EMBED_MESSAGE; type: 'shown'; on: boolean }
+  /**
    * guest → host (the host takes `context-menu`): the user right-clicked (or long-pressed) at x, y in the guest's own
    * viewport on `target` (its data-fx-ctx-target, `default` when none) with that element's payload; the host shows its
    * one context menu there. Picks come back as `run` with the ids the guest sent in its chrome.
    */
-  | { $axf: typeof EMBED_MESSAGE; type: 'context'; x: number; y: number; target: string; payload?: string };
+  | { $axf: typeof EMBED_MESSAGE; type: 'context'; x: number; y: number; target: string; payload?: string }
+  /**
+   * host → guest console (molly-shell@1, Nov 10 2026): the host's own screens, settings tabs, dialogs and actions as
+   * console-command@1 catalog items under `host:` ids, so the guest announces them with its own and a remote command
+   * (REST / MCP / CLI / voice) that names one resolves on the console server like any console item. `host` is the
+   * host's id (`molly`); `here` is where the host is now, for the guest's `where` answer.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'host-catalog'; host: string; items: HostCatalogItem[]; here?: { screen: string; screenLabel?: string } }
+  /** guest console → host: a remote command hit one of the host's items; the host carries it out (molly-shell@1 `HostRun`). */
+  | { $axf: typeof EMBED_MESSAGE; type: 'host-run'; run: HostRun };
 
 /**
  * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
@@ -523,7 +540,7 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     try { m = JSON.parse(raw); } catch { return null; }
     // a menu and a plugin list may be long (both capped by their own limits); every other message stays small
     const t = (m as { type?: unknown } | null)?.type;
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled' && t !== 'chrome') return null;
+    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled' && t !== 'chrome' && t !== 'host-catalog') return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -573,6 +590,11 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return chrome ? { $axf: EMBED_MESSAGE, type: 'chrome', chrome } : null;
     }
     case 'chrome-request': return { $axf: EMBED_MESSAGE, type: 'chrome-request' };
+    case 'show': {
+      const reason = clip(o.reason, EMBED_MESSAGE_LIMITS.title);
+      return reason ? { $axf: EMBED_MESSAGE, type: 'show', reason } : { $axf: EMBED_MESSAGE, type: 'show' };
+    }
+    case 'shown': return typeof o.on === 'boolean' ? { $axf: EMBED_MESSAGE, type: 'shown', on: o.on } : null;
     case 'context': {
       const coord = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(Math.round(v), 0), 100000) : null);
       const x = coord(o.x), y = coord(o.y);
@@ -581,6 +603,20 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       const out: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target };
       const payload = clip(o.payload, EMBED_MESSAGE_LIMITS.payload); if (payload) out.payload = payload;
       return out;
+    }
+    case 'host-catalog': {
+      const host = embedHost(o.host);
+      const items = host ? parseHostCatalog(o.items, host) : null;
+      if (!host || !items) return null;
+      const out: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'host-catalog', host, items };
+      const h = o.here as Record<string, unknown> | undefined;
+      const screen = h && typeof h === 'object' ? clip(h.screen, EMBED_MESSAGE_LIMITS.itemId) : undefined;
+      if (screen) { out.here = { screen }; const label = clip(h!.screenLabel, EMBED_MESSAGE_LIMITS.label); if (label) out.here.screenLabel = label; }
+      return out;
+    }
+    case 'host-run': {
+      const run = parseHostRun(o.run);
+      return run ? { $axf: EMBED_MESSAGE, type: 'host-run', run } : null;
     }
     default: return null;
   }

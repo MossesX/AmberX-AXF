@@ -22,7 +22,16 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { consoleCatalogFrom, consoleMessageErrors, normalizeConsoleCatalog, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { EMBED_MESSAGE, parseEmbedMessage } from '@console/axf/core/engines/embed';
+import { hostRunOf, isHostItem, type HostCatalogItem } from '@console/axf/core/engines/molly-shell';
+
+/**
+ * Inside a host (Molly), the host hands this console its own screens, settings tabs, dialogs and actions (embed@1
+ * `host-catalog`, molly-shell@1). They are announced with this console's catalog under `host:` ids, so a command that
+ * names one resolves on the server like any console item and is carried back up as `host-run`: the host runs it.
+ */
+const hostCatalog: { host: string; items: HostCatalogItem[]; here: { screen: string; screenLabel?: string } | null } = { host: '', items: [], here: null };
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -84,6 +93,8 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
   if (label) here.screenLabel = label;
   if (s.dialog) here.dialog = s.dialog.id;
   if (s.view === 'settings') { const t = rt.settings.get('axf.settings.lastTab'); if (typeof t === 'string' && t) here.settings = t; }
+  // inside a host: where the host is too ("Builds · molly: Console 2"), so `where` answers for the whole page
+  if (hostCatalog.here) here.screenLabel = `${here.screenLabel ?? here.screen} · ${hostCatalog.host}: ${hostCatalog.here.screenLabel ?? hostCatalog.here.screen}`;
   return here;
 }
 
@@ -91,7 +102,20 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
 function catalogOf(rt: AxfRuntime) {
   const tabs = rt.settings.listTabs().map((t) => ({ kind: 'settings-tab', label: t.label, icon: t.icon, keywords: [t.description ?? '', t.parent ? `${t.parent} sub-tab` : ''], parent: t.parent, focus: { kind: 'setting', tab: t.id } }));
   const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs];
-  return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+  const own = consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+  // the host's items ride along (their ids carry `host:`, their detail says where), so one announcement covers the page
+  return hostCatalog.items.length ? normalizeConsoleCatalog({ ...own, items: [...own.items, ...hostCatalog.items] }) : own;
+}
+
+/** A message that names one of the host's items (`host:…`): carried up to the host instead of run here. */
+function hostRun(rt: AxfRuntime, m: ConsoleMessage): [boolean, string] | null {
+  const id = m.op === 'run' ? (m.spec ?? '').split(':')[0] : m.target;
+  if (!id || !isHostItem(id)) return null;
+  const kind = m.op === 'run' ? 'action' : m.kind === 'screen' ? 'screen' : m.kind === 'dialog' ? 'dialog' : m.kind === 'settings' ? 'settings' : null;
+  const item = hostCatalog.items.find((i) => i.id === id && (!kind || i.kind === kind));
+  if (!item) return [false, `${m.label ?? id} is not in ${hostCatalog.host || 'the host'} any more`];
+  const run = hostRunOf(item, { spec: m.spec, arg: m.arg, by: m.by });
+  return rt.postToHost({ $axf: EMBED_MESSAGE, type: 'host-run', run }) ? [true, `sent to ${hostCatalog.host}: ${m.op === 'run' ? 'run' : 'open'} ${item.label}`] : [false, `no host to carry ${item.label} to`];
 }
 
 /**
@@ -114,6 +138,8 @@ async function reloadPage(hard: boolean): Promise<void> {
 function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
   const errors = consoleMessageErrors(m);
   if (errors.length) return [false, errors.join('; ')];
+  const up = hostRun(rt, m);
+  if (up) return up;
   switch (m.op) {
     case 'open':
       if (m.kind === 'screen') { rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } }); return [rt.getState().view === m.target || !!rt.getState().dialog, `opened ${m.label ?? m.target}`]; }
@@ -188,6 +214,16 @@ function ConsoleCommandsClient() {
     // server stop sending here at once.
     const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
     window.addEventListener('pagehide', bye);
+    // the host's catalog (only the frame this console runs in may send it): announced with ours, re-sent when it changes
+    const onHost = (e: MessageEvent) => {
+      if (!host || e.source !== window.parent || window.parent === window) return;
+      const m = parseEmbedMessage(e.data);
+      if (m?.type !== 'host-catalog') return;
+      hostCatalog.host = m.host; hostCatalog.items = m.items; hostCatalog.here = m.here ?? null;
+      catalogKey = '';
+      void announce(false);
+    };
+    window.addEventListener('message', onHost);
     const stop = followSse(
       (signal) => pluginFetch(FOLDER, `stream?client=${encodeURIComponent(id)}`, { signal }),
       (f) => {
@@ -197,8 +233,10 @@ function ConsoleCommandsClient() {
         if (!m || !('id' in m) || !m.id) return;
         const again = doneOf(m.id);
         if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
-        // inside a host, bring this console's frame to the front first, so Brett sees the command happen
-        if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
+        // inside a host, bring this console's frame to the front first, so Brett sees the command happen (a command for
+        // the host itself goes up as it is: the host decides what to show)
+        const forHost = isHostItem(m.op === 'run' ? (m.spec ?? '').split(':')[0] : m.target);
+        if (host && !forHost && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
@@ -207,7 +245,7 @@ function ConsoleCommandsClient() {
         if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
       },
     );
-    return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); window.removeEventListener('message', onHost); };
   }, [rt, on]);
   return null;
 }

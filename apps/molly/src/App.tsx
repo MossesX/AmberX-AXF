@@ -3,15 +3,17 @@ import { AccountView, AppShell, installLibraries, SlotsProvider, useRuntime, typ
 import type { AxfWebLibrary } from './axf/react/library';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
+import { instanceTitle, parseInstance } from './axf/core/engines/molly-shell';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { AppSlot, FrameDeck } from './molly/FrameDeck';
-import { MOLLY_APPS } from './molly/apps';
-import { mollyHooks, mollyHooksRev, onMollyHooks } from './molly/host';
+import { MOLLY_APPS, mollyApp } from './molly/apps';
+import { mollyHooks, mollyHooksRev, onMollyHooks, openInstances } from './molly/host';
 
 /**
  * Molly: one interface for AmberX, axHub and the Dev Console. Each app is a view whose body is its own live address in a
- * kept-alive frame (molly/FrameDeck.tsx); the apps themselves are untouched and keep running on their own. Plugins
+ * kept-alive frame (molly/FrameDeck.tsx); the apps themselves are untouched and keep running on their own. An app may be
+ * open more than once (molly-shell@1 instances: `console`, `console#2`), each copy its own view. Plugins
  * (plugins/<folder>/web/index.tsx, found by folder, never named here) may change how the apps are shown through
  * molly/host.ts; without them Molly frames each app plainly.
  */
@@ -24,6 +26,17 @@ const views: ViewMap = {
   ...Object.fromEntries(MOLLY_APPS.map((a) => [a.id, { title: a.label, icon: a.icon, render: () => appView(a.id) }])),
   account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
 };
+
+/** The views of the numbered copies open now (`console#2` → "Console 2"); the first copy is the app's own view above. */
+function instanceViews(): ViewMap {
+  const out: ViewMap = {};
+  for (const id of openInstances()) {
+    const i = parseInstance(id); const a = mollyApp(i?.app);
+    if (!i || !a || i.n <= 1) continue;
+    out[id] = { title: instanceTitle(a.label, i.n), icon: a.icon, render: () => appView(id) };
+  }
+  return out;
+}
 
 /** Molly's plugins: every plugins/<folder>/web/index.tsx exporting `plugin` (deleting a folder removes it). */
 const pluginModules = import.meta.glob<{ plugin?: AxfWebLibrary }>('../plugins/*/web/index.tsx', { eager: true });
@@ -41,7 +54,7 @@ export function App() {
     <>
       {/* plugins' slot content (e.g. the Banners plugin's strip in app.frame.banners) */}
       <SlotsProvider slots={contributed.slots}>
-        <AppShell views={{ ...contributed.views, ...extra, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
+        <AppShell views={{ ...contributed.views, ...extra, ...instanceViews(), ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
       </SlotsProvider>
       <FrameDeck />
     </>

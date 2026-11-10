@@ -3,8 +3,8 @@
   "type": "app-menu",
   "id": "molly",
   "name": "Molly menu",
-  "version": "0.1.0",
-  "description": "Molly's application menu: switch apps, reload or open the one on screen on its own, settings.",
+  "version": "0.2.0",
+  "description": "Molly's application menu: switch apps, open another copy of an app as a new tab (a nested menu per app), close or step through tabs, reload or open the one on screen on its own, settings.",
   "author": "AmberX AXF",
   "tags": [
     "molly"
@@ -52,6 +52,28 @@
           {
             "id": "s2",
             "separator": true
+          },
+          {
+            "id": "tabs",
+            "label": "Tabs",
+            "icon": "layers",
+            "items": [
+              {
+                "id": "new-tab",
+                "label": "New tab",
+                "icon": "plus",
+                "items": [
+                  { "id": "new-tab-here", "label": "Another copy of this app", "icon": "plus", "action": "molly.new-tab" },
+                  { "id": "new-tab-amberx", "label": "AmberX", "icon": "sparkles", "action": "molly.new-tab:amberx" },
+                  { "id": "new-tab-axhub", "label": "axHub", "icon": "shield", "action": "molly.new-tab:axhub" },
+                  { "id": "new-tab-console", "label": "Console", "icon": "terminal", "action": "molly.new-tab:console" },
+                  { "id": "new-tab-expenses", "label": "Expenses", "icon": "chart", "action": "molly.new-tab:expenses" }
+                ]
+              },
+              { "id": "next-tab", "label": "Next tab", "icon": "arrow-right", "action": "molly.next-tab" },
+              { "id": "close-tab", "label": "Close this tab", "icon": "x", "action": "molly.close-tab" },
+              { "id": "state", "label": "What is open", "icon": "info", "action": "molly.state" }
+            ]
           },
           {
             "id": "reload",

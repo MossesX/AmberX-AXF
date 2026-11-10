@@ -9,9 +9,10 @@
 import { useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../src/axf/core';
 import { openTargetFor, splitNs, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, visibleToolbars, type ToolbarLocation, type XToolbarItem } from '../../../src/axf/core/engines/xlayout';
+import type { UnifiedWidget } from '../../../src/axf/core/engines/chrome';
 import { Icon, useAxfState, useRuntime } from '../../../src/axf/react';
 import { MOLLY_APPS } from '../../../src/molly/apps';
-import { appOfView } from '../../../src/molly/host';
+import { appOfView, instanceOfMollyView } from '../../../src/molly/host';
 import type { ChromeHost } from './host';
 import { effectiveXLayout } from './model';
 import { openApp } from './workspace';
@@ -60,7 +61,9 @@ export function runToolbarItem(rt: AxfRuntime, host: ChromeHost, item: XToolbarI
   const target = openTargetFor(item, ide);
   if (item.app) {
     const own = splitNs(item.action, MOLLY_APPS.map((a) => a.id));
-    openApp(rt, item.app, target);
+    // the item names an app; the copy it opens is the one on screen when Molly is already on that app
+    const here = instanceOfMollyView(rt.getState().view);
+    openApp(rt, here && appOfView(here)?.id === item.app ? here : item.app, target);
     if (own) host.run(item.action);
     return;
   }
@@ -80,6 +83,21 @@ function Btn({ icon, label, badge, pressed, locked, onClick }: { icon: string; l
 
 function Bar({ location, label, ctx, children }: { location: ToolbarLocation; label: string; ctx: string; children: ReactNode }) {
   return <div className="axp-xlayout-bar fx-toolbar" data-edge={location} role="toolbar" aria-label={label} data-fx-ctx-target={TOOLBAR_CTX} data-fx-ctx-payload={ctx}>{children}</div>;
+}
+
+/**
+ * One banner widget an app sent (chrome@1 `widgets`, xlayout merge `widgets: merged`): drawn with the framework's widget
+ * classes (framework/ui/axf.css), one per kind across the apps (`mergeChrome`), as data only: a tap goes back to the app
+ * as a run of the widget's id.
+ */
+function WidgetView({ w, onTap }: { w: UnifiedWidget; onTap: () => void }) {
+  const text = w.text ?? w.label ?? '';
+  const title = w.app ? `${w.label ?? w.type} · ${MOLLY_APPS.find((a) => a.id === w.app)?.label ?? w.app}` : w.label;
+  if (w.type === 'counter' || w.type === 'badge' || w.type === 'progress') {
+    return <button type="button" className="fx-widget-counter fx-toolbtn" title={title} onClick={onTap}><span className="fx-widget-counter__num" data-tone={w.tone}>{w.count ?? text}</span>{w.label && <span className="fx-widget-label">{w.label}</span>}</button>;
+  }
+  if (w.type === 'status') return <button type="button" className="fx-widget-status is-on fx-toolbtn" title={title} onClick={onTap}><span className="fx-widget-status__dot" data-tone={w.tone} /><span className="fx-widget-label">{text}</span></button>;
+  return <button type="button" className="fx-widget-label fx-toolbtn" data-tone={w.tone} title={title} onClick={onTap}>{w.icon && <Icon name={w.icon} size={14} />}{text}</button>;
 }
 
 /** Every toolbar on one edge of the app area: xLayout's slots there, the app's own toolbars (slot 1), other plugins'. */
@@ -103,6 +121,15 @@ export function ToolbarEdge({ host, location }: { host: ChromeHost; location: To
             {g.items.map((it) => <Btn key={it.id} icon={it.icon} label={it.label} badge={it.badge} pressed={it.pressed} locked={it.locked} onClick={() => host.run(it.id)} />)}
           </span>
         ))}
+      </Bar>,
+    );
+  }
+  // the apps' banner widgets, shared on the top edge (one per kind across the apps); a tap goes back to the app that sent it
+  const widgets = location === 'top' && l.merge.widgets === 'merged' ? host.chrome().widgets : [];
+  if (widgets.length) {
+    out.push(
+      <Bar key="widgets" location={location} label="App widgets" ctx={`xlayout|*|${first ?? 1}`}>
+        {widgets.map((w) => <WidgetView key={w.id} w={w} onTap={() => host.run(w.id)} />)}
       </Bar>,
     );
   }

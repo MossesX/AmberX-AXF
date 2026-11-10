@@ -7,16 +7,19 @@
  * a Molly view `<app>/<item>`), one context menu (the app's items for the target right-clicked, wherever it was) and
  * the apps' toolbars (drawn by toolbars.tsx). A pick is sent back as `run` with the app's own id; the app runs it.
  *
- * Standalone, nothing here exists: apps only send chrome when a host's marker asks them to.
+ * Frames are per instance (molly-shell@1: `console`, `console#2`), bundles per app: two copies of an app share one
+ * menu, and a pick goes to the copy on screen (else the first). Standalone, nothing here exists: apps only send chrome
+ * when a host's marker asks them to.
  */
 import type { AxfRuntime } from '../../../src/axf/core';
 import type { MenuItem, NavItem } from '../../../src/axf/core/types';
 import type { MenuEntry } from '../../../src/axf/core/engines/windows';
 import { mergeChrome, routePick, parseChromeBundle, type ChromeBundle, type UnifiedChrome, type UnifiedMenuItem } from '../../../src/axf/core/engines/chrome';
 import { EMBED_MESSAGE, parseEmbedMessage, type EmbedMessage } from '../../../src/axf/core/engines/embed';
+import { instancesOf, pageOfView, parseInstance, viewOn } from '../../../src/axf/core/engines/molly-shell';
 import { guestUrl, type XLayoutData } from '../../../src/axf/core/engines/xlayout';
 import { MOLLY_APPS, type MollyApp } from '../../../src/molly/apps';
-import { appOfView } from '../../../src/molly/host';
+import { appOfView, instanceOfMollyView, onMollyHooks, openInstances } from '../../../src/molly/host';
 import { PLUGIN_ID } from './model';
 
 /** The module the merged items are contributed under (xLayout's own menu and context entries stay under its plugin id). */
@@ -32,9 +35,11 @@ const badgeName = (nsid: string) => `xlayout.${nsid.replace(/[^a-z0-9]+/gi, '-')
 type Listener = () => void;
 
 export class ChromeHost {
+  /** every instance's frame (`console`, `console#2`) */
   private frames = new Map<string, HTMLIFrameElement>();
+  /** every app's last chrome bundle (two copies of an app share one) */
   private bundles = new Map<string, ChromeBundle>();
-  /** the item each app last said is active, and the one we last asked it to open (so neither side echoes the other) */
+  /** the page each instance last said is active, and the one we last asked it to open (so neither side echoes the other) */
   private activeOf = new Map<string, string>();
   private listeners = new Set<Listener>();
   private pushedNav = new Set<string>();
@@ -54,14 +59,17 @@ export class ChromeHost {
     this.off.push(() => window.removeEventListener('message', onMessage));
     // the nav started or stopped drawing sub menus (the nav-style asset or Molly's nav-menu changed): fold again
     this.off.push(this.rt.subscribe(() => { if (!!this.rt.navStyleData() !== this.subMenus && this.bundles.size) this.apply(); }));
-    // Molly's view moved to one of an app's pages: open that page in the app
+    // another copy of an app opened or closed: its pages need views too
+    let lastOpen = openInstances().join(',');
+    this.off.push(onMollyHooks(() => { const k = openInstances().join(','); if (k !== lastOpen) { lastOpen = k; if (this.bundles.size) this.apply(); } }));
+    // Molly's view moved to one of an app's pages: open that page in that copy of the app
     let last = this.rt.getState().view;
     this.off.push(this.rt.subscribe(() => {
       const v = this.rt.getState().view;
       if (v === last) return;
       last = v;
-      const at = v.indexOf('/');
-      if (at > 0) { const app = v.slice(0, at), id = v.slice(at + 1); if (this.activeOf.get(app) !== id) { this.activeOf.set(app, id); this.post(app, { $axf: EMBED_MESSAGE, type: 'run', id }); } }
+      const inst = instanceOfMollyView(v); const page = pageOfView(v);
+      if (inst && page && this.activeOf.get(inst) !== page) { this.activeOf.set(inst, page); this.postTo(inst, { $axf: EMBED_MESSAGE, type: 'run', id: page }); }
     }));
   }
 
@@ -85,31 +93,31 @@ export class ChromeHost {
     return guestUrl(l, { ...x, url: app.url }, 'molly', route);
   }
 
-  /** A frame mounted (or went away): remember its window; ask for its chrome once it has loaded. */
-  frame(app: string, el: HTMLIFrameElement | null): void {
-    if (!el) { if (!this.frames.get(app)?.isConnected) this.frames.delete(app); return; }
-    if (this.frames.get(app) === el) return;
-    this.frames.set(app, el);
-    el.addEventListener('load', () => { this.shownOf.delete(app); this.post(app, { $axf: EMBED_MESSAGE, type: 'chrome-request' }); this.tellShown(app); });
+  /** An instance's frame mounted (or went away): remember its window; ask for its chrome once it has loaded. */
+  frame(instance: string, el: HTMLIFrameElement | null): void {
+    if (!el) { if (!this.frames.get(instance)?.isConnected) { this.frames.delete(instance); this.watchers.get(instance)?.disconnect(); this.watchers.delete(instance); this.shownOf.delete(instance); this.activeOf.delete(instance); } return; }
+    if (this.frames.get(instance) === el) return;
+    this.frames.set(instance, el);
+    el.addEventListener('load', () => { this.shownOf.delete(instance); this.postTo(instance, { $axf: EMBED_MESSAGE, type: 'chrome-request' }); this.tellShown(instance); });
     // FrameDeck marks a frame on screen with data-on; each change goes to the app (embed@1 `shown`), so a remote command
     // for "the app Brett is looking at" picks the frame that is actually in front
-    this.watchers.get(app)?.disconnect();
-    const w = new MutationObserver(() => this.tellShown(app));
+    this.watchers.get(instance)?.disconnect();
+    const w = new MutationObserver(() => this.tellShown(instance));
     w.observe(el, { attributes: true, attributeFilter: ['data-on'] });
-    this.watchers.set(app, w);
+    this.watchers.set(instance, w);
   }
 
-  private tellShown(app: string): void {
-    const on = this.onScreen(app);
-    if (this.shownOf.get(app) === on) return;
-    if (this.post(app, { $axf: EMBED_MESSAGE, type: 'shown', on })) this.shownOf.set(app, on);
+  private tellShown(instance: string): void {
+    const on = this.onScreen(instance);
+    if (this.shownOf.get(instance) === on) return;
+    if (this.postTo(instance, { $axf: EMBED_MESSAGE, type: 'shown', on })) this.shownOf.set(instance, on);
   }
 
-  /** An app asked to be brought to the front (embed@1 `show`: a remote command is about to change what it shows). */
-  show(app: string): void {
-    if (this.onScreen(app)) return;
-    const page = this.activeOf.get(app);
-    this.rt.navigate(page && this.navViews[`${app}/${page}`] ? `${app}/${page}` : app);
+  /** A copy of an app asked to be brought to the front (embed@1 `show`: a remote command is about to change what it shows). */
+  show(instance: string): void {
+    if (this.onScreen(instance)) return;
+    const page = this.activeOf.get(instance);
+    this.rt.navigate(page && this.navViews[viewOn(instance, page)] ? viewOn(instance, page) : instance);
   }
 
   subscribe(f: Listener): () => void { this.listeners.add(f); return () => { this.listeners.delete(f); }; }
@@ -121,44 +129,54 @@ export class ChromeHost {
   bundle(app: string): ChromeBundle | null { return this.bundles.get(app) ?? null; }
   /** Apps that have sent their chrome. */
   connected(): string[] { return [...this.bundles.keys()]; }
+  /** The page each instance is on, as it last said (for the shell state). */
+  pages(): Record<string, string> { return Object.fromEntries(this.activeOf); }
 
-  private appOfSource(e: MessageEvent): MollyApp | null {
-    for (const [id, f] of this.frames) {
+  private sourceOf(e: MessageEvent): { app: MollyApp; instance: string } | null {
+    for (const [instance, f] of this.frames) {
       if (f.contentWindow && e.source === f.contentWindow) {
-        const app = MOLLY_APPS.find((a) => a.id === id) ?? null;
+        const app = MOLLY_APPS.find((a) => a.id === parseInstance(instance)?.app) ?? null;
         // the frame's own origin only (a page it navigated to elsewhere can't speak for it)
-        if (app && new URL(app.url).origin === e.origin) return app;
+        if (app && new URL(app.url).origin === e.origin) return { app, instance };
         return null;
       }
     }
     return null;
   }
 
-  private post(app: string, msg: EmbedMessage): boolean {
-    const f = this.frames.get(app); const a = MOLLY_APPS.find((x) => x.id === app);
+  /** The copy of an app a message for "the app" goes to: the one on screen, else the one Molly's view is on, else the first open. */
+  private instanceFor(app: string): string | null {
+    const open = instancesOf([...this.frames.keys()], app).map((i) => i.id);
+    if (!open.length) return null;
+    return open.find((id) => this.onScreen(id)) ?? open.find((id) => instanceOfMollyView(this.rt.getState().view) === id) ?? open[0]!;
+  }
+
+  private postTo(instance: string, msg: EmbedMessage): boolean {
+    const f = this.frames.get(instance); const a = MOLLY_APPS.find((x) => x.id === parseInstance(instance)?.app);
     if (!f?.contentWindow || !a) return false;
     f.contentWindow.postMessage(msg, new URL(a.url).origin);
     return true;
   }
 
   private receive(e: MessageEvent): void {
-    const app = this.appOfSource(e); if (!app) return;
+    const src = this.sourceOf(e); if (!src) return;
+    const { app, instance } = src;
     const m = parseEmbedMessage(e.data); if (!m) return;
     if (m.type === 'chrome') {
       // the bundle names the app by its own id; here it is the id Molly knows it by
       const b = parseChromeBundle({ ...m.chrome, app: app.id, label: app.label });
       if (!b) return;
       this.bundles.set(app.id, b);
-      if (b.active) this.follow(app.id, b.active);
+      if (b.active) this.follow(instance, b.active);
       this.apply();
     } else if (m.type === 'context') {
-      const f = this.frames.get(app.id); if (!f) return;
+      const f = this.frames.get(instance); if (!f) return;
       const r = f.getBoundingClientRect();
       this.rt.openContext(r.left + m.x, r.top + m.y, this.hasCtx(app.id, m.target) ? ctxTarget(app.id, m.target) : ctxTarget(app.id, 'default'), m.payload);
     } else if (m.type === 'notify') {
       this.rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level ?? 'info', m.body ? m.title : app.label);
     } else if (m.type === 'show') {
-      this.show(app.id);
+      this.show(instance);
     } else if (m.type === 'open-settings') {
       this.rt.dispatch(m.tab ? `settings.open:${m.tab}` : 'settings.open');
     }
@@ -166,28 +184,40 @@ export class ChromeHost {
 
   private hasCtx(app: string, target: string): boolean { return !!this.bundles.get(app)?.context.some((t) => t.target === target); }
 
-  /** The app moved to another page by itself: Molly's view follows when that app is the one on screen. */
-  private follow(app: string, active: string): void {
-    if (this.activeOf.get(app) === active) return;
-    this.activeOf.set(app, active);
-    const cur = appOfView(this.rt.getState().view)?.id;
-    if (cur === app) this.rt.navigate(`${app}/${active}`);
+  /** A copy of an app moved to another page by itself: Molly's view follows when that copy is the one on screen. */
+  private follow(instance: string, active: string): void {
+    if (this.activeOf.get(instance) === active) return;
+    this.activeOf.set(instance, active);
+    if (instanceOfMollyView(this.rt.getState().view) === instance) this.rt.navigate(viewOn(instance, active));
   }
 
-  /** Run a merged item: the app's own id goes back to that app, which runs it; its page comes on screen. */
+  /** Run a merged item: the app's own id goes back to that app (the copy on screen), which runs it; its page comes on screen. */
   run(nsid: string): boolean {
     const { app, id } = routePick(nsid, MOLLY_APPS.map((a) => a.id));
     if (!app) return this.rt.dispatch(id);
-    if (id.startsWith('nav:')) { this.activeOf.set(app, id); this.rt.navigate(`${app}/${id}`); }
-    else if (appOfView(this.rt.getState().view)?.id !== app && !this.onScreen(app)) this.rt.navigate(app);
-    return this.post(app, { $axf: EMBED_MESSAGE, type: 'run', id });
+    const inst = this.instanceFor(app) ?? app;
+    if (id.startsWith('nav:')) { this.activeOf.set(inst, id); this.rt.navigate(this.navViews[viewOn(inst, id)] ? viewOn(inst, id) : inst); }
+    else if (!this.onScreen(inst)) this.rt.navigate(inst);
+    return this.postTo(inst, { $axf: EMBED_MESSAGE, type: 'run', id });
   }
 
-  /** Is the app's frame showing (a pane in IDE mode, or the view on screen)? */
-  onScreen(app: string): boolean { return this.frames.get(app)?.dataset.on === 'true'; }
+  /** Is this copy's frame showing (a pane in IDE mode, or the view on screen)? */
+  onScreen(instance: string): boolean { return this.frames.get(instance)?.dataset.on === 'true'; }
+  /** Is any copy of the app showing? */
+  appOnScreen(app: string): boolean { return instancesOf([...this.frames.keys()], app).some((i) => this.onScreen(i.id)); }
 
   /** Fold every bundle and put the result into Molly's menus, navigation, context menu and badges. */
   private apply(): void {
+    // the runtime tells its subscribers about each contribution as it lands; one of them is ours (the nav-style watch),
+    // so the fold notes the nav style first and never folds inside itself
+    if (this.applying) return;
+    this.applying = true;
+    try { this.fold(); } finally { this.applying = false; }
+  }
+  private applying = false;
+
+  private fold(): void {
+    this.subMenus = !!this.rt.navStyleData();
     const l = this.layout();
     const order = l.apps.length ? l.apps.map((a) => a.id) : MOLLY_APPS.map((a) => a.id);
     const u = mergeChrome(null, [...this.bundles.values()], { order, activeApp: appOfView(this.rt.getState().view)?.id ?? null });
@@ -209,20 +239,22 @@ export class ChromeHost {
     if (merged('app-menu')) u.menus.filter((m) => m.app).forEach((m, i) => {
       this.rt.addAppMenuItems({ id: `xlayout.menu.${m.app}`, module: MERGED, menu: `xl-${m.app}`, menuLabel: m.label, menuOrder: 60 + i, items: conv(m.items) });
     });
-    // navigation: a section per app; each entry is a Molly view of that app's page
+    // navigation: a section per app; each entry is a Molly view of that app's page. Every open copy of the app gets the
+    // same page views (`console#2/nav:build`), so a copy can follow its own app and a deep link can name it.
     const views: Record<string, { title: string; icon: string }> = {};
+    const open = openInstances();
+    const copiesOf = (app: string) => { const ids = instancesOf(open, app).map((i) => i.id); return ids.includes(app) ? ids : [app, ...ids]; };
+    const addPage = (app: string, page: string, title: string, icon: string) => { for (const inst of copiesOf(app)) views[viewOn(inst, page)] = { title, icon }; };
     const navIds = new Set<string>();
     // a nav with sub menus (nav-style@1, Molly's nav-menu opts in): each app's pages hang under that app's own entry
     // and slide open from it; its labelled sections become groups inside (nested), one section is shown flat
-    this.subMenus = !!this.rt.navStyleData();
     if (merged('nav-menu') && this.subMenus) {
       // each app's own sections as it sent them (the merged model folds them into one), so their labels survive
       const byApp = new Map<string, NavItem[]>();
       for (const [app, b] of this.bundles) {
         const toItem = (it: ChromeBundle['nav'][number]['items'][number]): NavItem => {
-          const view = `${app}/${it.id}`;
-          views[view] = { title: it.label, icon: it.icon ?? 'box' };
-          const nav: NavItem = { id: `xl.${app}:${it.id}`, label: it.label, icon: it.icon ?? 'box', view };
+          addPage(app, it.id, it.label, it.icon ?? 'box');
+          const nav: NavItem = { id: `xl.${app}:${it.id}`, label: it.label, icon: it.icon ?? 'box', view: viewOn(app, it.id) };
           if (it.badge) { const bn = badgeName(`${app}:${it.id}`); this.rt.setBadge(bn, it.badge); badges.add(bn); nav.badge = bn; }
           return nav;
         };
@@ -238,9 +270,8 @@ export class ChromeHost {
       if (!s.app) continue;
       const items: NavItem[] = s.items.map((it) => {
         const own = it.id.slice(s.app!.length + 1);
-        const view = `${s.app}/${own}`;
-        views[view] = { title: it.label, icon: it.icon ?? 'box' };
-        const nav: NavItem = { id: `xl.${it.id}`, label: it.label, icon: it.icon ?? 'box', view };
+        addPage(s.app!, own, it.label, it.icon ?? 'box');
+        const nav: NavItem = { id: `xl.${it.id}`, label: it.label, icon: it.icon ?? 'box', view: viewOn(s.app!, own) };
         if (it.badge) { const b = badgeName(it.id); this.rt.setBadge(b, it.badge); badges.add(b); nav.badge = b; }
         return nav;
       });
@@ -271,6 +302,6 @@ export class ChromeHost {
   /** Is the nav drawing sub menus (nav-style@1)? Re-folded when that changes. */
   private subMenus = false;
 
-  /** The Molly views of the apps' pages (`<app>/<item>`), for molly/host.ts. */
+  /** The Molly views of the apps' pages (`<instance>/<item>`), for molly/host.ts. */
   navViews: Record<string, { title: string; icon: string }> = {};
 }

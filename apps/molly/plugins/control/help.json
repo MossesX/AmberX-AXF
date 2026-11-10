@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-control-help",
+  "name": "Molly control help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Molly control plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:control",
+    "entries": [
+      { "target": "settings-tab:molly-control", "title": "Molly control", "text": "Everything Molly shows is reachable without the UI. Molly hands the console inside it a list of its screens, tabs, settings and actions; a Claude session, the CLI, MCP or your voice through AmberX names one and the console brings it to Molly." },
+      { "target": "action:molly.new-tab", "title": "New tab", "text": "Opens another copy of an app (Console 2) as its own tab, with its own frame. In IDE mode it becomes a dock tab you can drag into a pane." },
+      { "target": "action:molly.close-tab", "title": "Close this tab", "text": "Closes the copy on screen. Its frame goes; the app's other copies stay." },
+      { "target": "action:molly.state", "title": "What is open", "text": "Says which copies are open, which are on screen and whether IDE mode is on. The same answer goes to axf console where." }
+    ]
+  }
+}

@@ -219,6 +219,30 @@
     "pairId": {
       "type": "string"
     },
+    "choices": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "options"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "ui-choices@1"
+        },
+        "options": {
+          "type": "array"
+        },
+        "chosen": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "singleOption": {
+      "type": "string"
+    },
     "prediction": {
       "type": "object",
       "required": [
