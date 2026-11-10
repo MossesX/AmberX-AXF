@@ -68,6 +68,14 @@
             android:name=".OutputRecordService"
             android:exported="false"
             android:foregroundServiceType="mediaProjection|microphone" />
+        <!-- console wake: an open_url card's tap opens the page in the browser, never the app (OpenPageActivity) -->
+        <activity
+            android:name=".OpenPageActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".OutputRecordStartActivity"
             android:exported="false"

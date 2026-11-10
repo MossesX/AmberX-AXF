@@ -60,4 +60,31 @@ public class OpenUrlRulesTest {
         assertTrue(OpenUrlRules.known("browser.open"));
         assertFalse(OpenUrlRules.known("recorder.start"));
     }
+
+    /** Brett, Nov 10 2026: "It says a command is waiting for you. I clicked it. I'm in the AmberX app." */
+    @Test
+    public void hubCardsForOpenUrlCarryTheirPage() throws Exception {
+        String page = "https://console.amberxai.com/?axf-cmd=cq-1a2b-abc123";
+        assertEquals(page, OpenUrlRules.pageOf("amberx.open_url", new JSONObject().put("args", new JSONObject().put("url", page))));
+        assertEquals(page, OpenUrlRules.pageOf("amberx.open_url", new JSONObject().put("arguments", new JSONObject().put("url", page))));
+        assertEquals(page, OpenUrlRules.pageOf("amberx.open_url",
+            new JSONObject().put("summary", "amberx.open_url with arguments {\"url\":\"https:\\/\\/console.amberxai.com\\/?axf-cmd=cq-1a2b-abc123\",\"browser\":\"chrome\"}")));
+        // any other tool, no url, or a page AmberX may not open: the card keeps opening the app
+        assertEquals(null, OpenUrlRules.pageOf("vps.run", new JSONObject().put("args", new JSONObject().put("url", page))));
+        assertEquals(null, OpenUrlRules.pageOf("amberx.open_url", new JSONObject()));
+        assertEquals(null, OpenUrlRules.pageOf("amberx.open_url", new JSONObject().put("args", new JSONObject().put("url", "https://evil.example/"))));
+        assertEquals(null, OpenUrlRules.pageOf("amberx.open_url", null));
+    }
+
+    @Test
+    public void aTappedPageIsNotOpenedTwice() {
+        String page = "https://console.amberxai.com/?axf-cmd=cq-tap-1";
+        long t = 5_000_000L;
+        assertFalse(OpenUrlRules.wasTapped(page, t));
+        OpenUrlRules.markTapped(page, t);
+        assertTrue(OpenUrlRules.wasTapped(page, t + 60_000L));
+        assertFalse(OpenUrlRules.wasTapped("https://console.amberxai.com/?axf-cmd=cq-tap-2", t + 1));
+        assertFalse(OpenUrlRules.wasTapped(page, t + OpenUrlRules.TAPPED_MS + 1));
+        assertFalse(OpenUrlRules.wasTapped(null, t));
+    }
 }

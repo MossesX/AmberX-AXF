@@ -36,7 +36,9 @@ import org.json.JSONObject;
  *    ({@link OpenUrlRules#allowed}: https on amberxai.com only) in Chrome or the default browser, e.g. the Dev Console
  *    with a queued console command. Android 10+ silently drops most starts from the background (startActivity returns
  *    normally), so {@link #startInForeground} only counts one that had a window to start from, and a high-priority
- *    notification with a full-screen intent stays as the one-tap way in. The answer's `opened` says which.
+ *    notification with a full-screen intent stays as the one-tap way in (its tap starts the browser itself, never
+ *    AmberX). The answer's `opened` and `how` say which; `how: tap` = Brett already opened it from the hub's card for
+ *    this call ({@link OpenPageActivity}), so it isn't opened twice. "Display over other apps" off: AmberX asks once.
  */
 final class AxppLink {
     private AxppLink() {}
@@ -113,7 +115,8 @@ final class AxppLink {
     }
 
     private static JSONObject hello(String id) throws Exception {
-        JSONObject state = new JSONObject().put(CAPABILITY, status(app));
+        JSONObject state = new JSONObject().put(CAPABILITY, status(app))
+            .put(OpenUrlRules.CAPABILITY, new JSONObject().put("overlay", canOverlay(app)));
         JSONObject p = new JSONObject()
             .put("deviceId", id)
             .put("name", (Build.MANUFACTURER + " " + Build.MODEL).trim())
@@ -237,7 +240,7 @@ final class AxppLink {
     /* ---------------------------------------------------------------- console wake: open one of Brett's pages */
 
     /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
-    private static Intent browserIntent(Context c, String url, String browser) {
+    static Intent browserIntent(Context c, String url, String browser) {
         Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if ("chrome".equals(browser)) {
@@ -280,6 +283,13 @@ final class AxppLink {
      */
     private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
         Intent open = browserIntent(c, url, browser);
+        boolean overlay = canOverlay(c);
+        if (OpenUrlRules.wasTapped(url, System.currentTimeMillis())) {
+            // Brett tapped the hub's card for this call ({@link OpenPageActivity}): the page is already open
+            return new JSONObject().put("url", url).put("browser", open.getPackage() == null ? "default" : "chrome")
+                .put("opened", true).put("notified", false).put("how", "tap").put("overlay", overlay);
+        }
+        if (!overlay) wantOverlay(c);
         boolean[] started = { false };
         boolean[] notified = { false };
         java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
@@ -302,6 +312,8 @@ final class AxppLink {
                     .setCategory(Notification.CATEGORY_REMINDER)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setAutoCancel(true);
+                // "Display over other apps" off: one tap to the setting, so the next page comes to the front by itself
+                if (!overlay) b.addAction(0, "Open pages by themselves", PendingIntent.getActivity(c, 5, overlaySettings(c), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);
                 nm.notify(NOTE_OPEN, b.build());
                 notified[0] = Build.VERSION.SDK_INT < Build.VERSION_CODES.N || nm.areNotificationsEnabled();
@@ -310,8 +322,35 @@ final class AxppLink {
         });
         done.await(5, java.util.concurrent.TimeUnit.SECONDS);
         return new JSONObject().put("url", url).put("browser", open.getPackage() == null ? "default" : "chrome")
-            .put("opened", started[0]).put("notified", notified[0])
-            .put("overlay", Build.VERSION.SDK_INT < Build.VERSION_CODES.M || android.provider.Settings.canDrawOverlays(c));
+            .put("opened", started[0]).put("notified", notified[0]).put("how", started[0] ? "started" : notified[0] ? "notification" : "none")
+            .put("overlay", overlay);
+    }
+
+    /* ---------------------------------------------------------------- "Display over other apps", asked once */
+
+    static final String PREF_OVERLAY_WANTED = "openUrl.overlayWanted", PREF_OVERLAY_ASKED = "openUrl.overlayAsked";
+
+    static boolean canOverlay(Context c) {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || android.provider.Settings.canDrawOverlays(c);
+    }
+
+    /** Android's "Display over other apps" page for AmberX. */
+    static Intent overlaySettings(Context c) {
+        return new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, android.net.Uri.parse("package:" + c.getPackageName()))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    /** A page had to wait for a tap because the permission is off: AmberX asks once, the next time it is on screen. */
+    private static void wantOverlay(Context c) {
+        c.getSharedPreferences(OutputRecordQueue.PREFS, Context.MODE_PRIVATE).edit().putBoolean(PREF_OVERLAY_WANTED, true).apply();
+    }
+
+    /** True once: a page waited for a tap, the permission is still off and AmberX hasn't asked yet (then it is marked asked). */
+    static boolean askOverlayNow(Context c) {
+        SharedPreferences p = c.getSharedPreferences(OutputRecordQueue.PREFS, Context.MODE_PRIVATE);
+        if (canOverlay(c) || !p.getBoolean(PREF_OVERLAY_WANTED, false) || p.getBoolean(PREF_OVERLAY_ASKED, false)) return false;
+        p.edit().putBoolean(PREF_OVERLAY_ASKED, true).apply();
+        return true;
     }
 
     static void cancelPrompt(Context c) {
