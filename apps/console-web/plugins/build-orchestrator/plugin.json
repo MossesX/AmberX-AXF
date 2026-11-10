@@ -402,7 +402,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. order = the one account order (account names, first = tried first; API keys are entries like any subscription). Adding an API account to the order or moving one earlier is Brett's own click (it bills per token); anyone may move one later or take it out. Empty order = subscriptions only.",
+        "description": "Change dispatcher settings. order = the one account order (account names, first = tried first; API keys are entries like any subscription). Adding an API account to the order or moving one earlier is Brett's own click (it bills per token); anyone may move one later or take it out. Empty order = subscriptions only. orderMode = custom (follow the order exactly) or auto (subscriptions first, then any ready API account; switching to auto while an API account is outside the order is Brett's own click).",
         "input": {
           "type": "object",
           "properties": {
@@ -412,6 +412,14 @@
                 "type": "string"
               },
               "description": "account names in order (voice: 'put hulu-api after account 3')"
+            },
+            "orderMode": {
+              "type": "string",
+              "enum": [
+                "custom",
+                "auto"
+              ],
+              "description": "custom = the drag-and-drop order exactly; auto = subscriptions first, then API (voice: 'account order automatic')"
             },
             "apiAccounts": {
               "type": "array",

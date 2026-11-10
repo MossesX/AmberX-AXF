@@ -59,6 +59,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Banner widgets (`banner-widgets`, Opus, agent Gina; Brett Nov 4 voice: right-click the banner, pick widgets, set sizes; fast-track): picker, per-widget settings, ⋯ overflow, compact defaults, one registry + CI check | built, waiting on the merge queue, then deploy | `claude/banner-widgets` | (see Live build log) | Report `_claude/builds/reports/banner-widgets.md`. Usage meter chip joins by itself once `usage-meter` lands | 2026-11-05 |
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
 |---|---|---|---|---|---|
+| Account order switch (`account-order-switch-custom-drag-and-drop-order`, Opus; Brett Nov 10: "a switch if you want to customize it or do that automatically"): Custom = orchestrator follows the drag-and-drop order exactly; Automatic = subscriptions first, then API (`orderMode`; auto is Brett's click while an API key is outside the order) | review (all 3 steps done) | `claude/account-order-switch-custom-drag-and-drop-order` | (PR) | UI Review shots once a preview is up; merges after the Claude accounts manager PR. Report `_claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md` | 2026-11-10 |
 | Orchestrator self-check (`orchestrator-self-check-when-stuck-verify-each-a`, Opus): console saw no accounts (container has no ~/.claude-accounts) → host account snapshot; tmux "no server" counted every old run as running → fixed; self-check per account + stale reaper + AmberX alert + `POST /pipeline/selfcheck` + Pipeline tab card | review | `claude/orch-self-check-stuck` | pending | UI Review, then the merge queue. Report `_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md` | 2026-11-09 |
 | approvals-in-place-r2: console approvals in place, nightly deploy, refresh, UI Review choices | review | `claude/approvals-in-place-r2` | pending | Waits for UI Review, then the merge queue. Report `_claude/builds/reports/approvals-in-place-r2.md` | 2026-11-07 |
 | Finish the one-profile merge (`profiles-all-finish`, All, Opus; Brett approved: fold main-framework into all, delete the old profile folders everywhere): `all` is the one base profile, old folders gone from repo + hub, publisher/resolver/merge-all keep them gone, `postgres-console` added | built (committed, not pushed) | `claude/profiles-all-finish` | – | land through the merge queue (after `merge-profiles-one`); then `node framework/cli/profiles.mjs merge-all` once to prune the hub's `framework/plan/profiles/all/`; Fable review of s1 | 2026-11-07 |
@@ -216,12 +217,19 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Account order switch (`account-order-switch-custom-drag-and-drop-order`, Opus) — branch `claude/account-order-switch-custom-drag-and-drop-order`
+
+- **Asked:** "Drag and drop over. In a switch, a switch if you want to customize it or do that automatically." Custom = the orchestrator follows the drag-and-drop order exactly; Automatic = subscriptions first, then API.
+- **Done:** orchestrator setting `orderMode` (custom default, auto = Brett's click while an API key is outside the order); Custom order switch on the accounts page, Settings and Terminal column; REST / MCP / CLI / voice. Stacked on the Claude accounts manager branch.
+- **Left:** UI Review shots once a preview is up; the merge queue after the accounts manager PR.
+- **Read first:** `_claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md`.
+
 ### Claude accounts manager (`claude-accounts-manager-plugin-one-ordered-list`, Opus) — branch `claude/claude-accounts-manager-plugin-one-ordered-list`
 
 - **Asked:** one ordered list of every Claude account on the VPS (subscription + API, no API fallback), usage in dollars, drag-and-drop order, rename/add via the Terminal, Claude Code per account, Terminal column, banner widget, floating overlay. Full words in the report.
 - **Done:** plugin `claude-accounts-manager`; orchestrator `order` setting replaces `apiOverflow` (Brett's click to add an API account or move one earlier); Terminal slot `terminal.side`, `terminal.tab`, `Open.account` / `Open.setup`; `axf.claude-usage@1`. Tests green.
 - **Left:** UI Review shots once a preview of the branch is up; the merge queue.
-- **Read first:** `_claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md`, `apps/console-web/plugins/claude-accounts-manager/README.md`.
+- **Read first:** `_claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md`, the plugin's README.
 
 ### Skins cover every asset type, at any scope (`skins-asset-types`)
 

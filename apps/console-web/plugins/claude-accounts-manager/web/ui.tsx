@@ -4,8 +4,8 @@
  * as this account" (index.tsx contextExtras). Rows drag to reorder; the same moves are in the right-click menu for touch.
  */
 import { useState, type DragEvent } from 'react';
-import { Button, Chip, Icon, Meter, Note, SelectField, TextField, useRuntime } from '@console/axf/react';
-import { CTX, NAME, addAccount, dropOrder, pct, rename, setOrder, usd, useManager, type Row, type View } from './data';
+import { Button, Chip, Icon, Meter, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { CTX, NAME, addAccount, dropOrder, pct, rename, setMode, setOrder, usd, useManager, type Row, type View } from './data';
 
 const STATUS_TONE: Record<Row['status'], 'accent' | 'success' | 'warning' | undefined> = { builder: 'accent', worker: 'success', console: undefined, idle: undefined };
 
@@ -24,12 +24,13 @@ function UsageLine({ r }: { r: Row }) {
 }
 
 /** One account. `compact` = the Terminal column and the overlay: one line and a meter. */
-export function AccountRow({ r, compact, dragging, over, onDrag, onOver, onDrop, onSession }: {
-  r: Row; compact?: boolean; dragging?: boolean; over?: boolean;
+export function AccountRow({ r, compact, fixed, dragging, over, onDrag, onOver, onDrop, onSession }: {
+  r: Row; compact?: boolean; fixed?: boolean; dragging?: boolean; over?: boolean;
   onDrag?: (name: string | null) => void; onOver?: (name: string | null) => void; onDrop?: (name: string) => void; onSession?: (name: string) => void;
 }) {
   const left = r.leftPct ?? (r.kind === 'api' && r.totalUsd == null ? 100 : 0);
-  const drag = {
+  // fixed = the switch is on Automatic: the order is the dispatcher's, nothing to drag
+  const drag = fixed ? {} : {
     draggable: true,
     onDragStart: (e: DragEvent) => { e.dataTransfer.setData('text/plain', r.name); e.dataTransfer.effectAllowed = 'move'; onDrag?.(r.name); },
     onDragEnd: () => { onDrag?.(null); onOver?.(null); },
@@ -37,9 +38,9 @@ export function AccountRow({ r, compact, dragging, over, onDrag, onOver, onDrop,
     onDrop: (e: DragEvent) => { e.preventDefault(); onDrop?.(r.name); },
   };
   return (
-    <div role="listitem" className={`axp-cam-row ${compact ? 'axp-cam-row--compact' : ''} ${r.inOrder ? '' : 'axp-cam-row--out'} ${dragging ? 'is-dragging' : ''} ${over ? 'is-over' : ''}`}
+    <div role="listitem" className={`axp-cam-row ${compact ? 'axp-cam-row--compact' : ''} ${r.inOrder ? '' : 'axp-cam-row--out'} ${fixed ? 'axp-cam-row--fixed' : ''} ${dragging ? 'is-dragging' : ''} ${over ? 'is-over' : ''}`}
       data-fx-ctx-target={CTX} data-fx-ctx-payload={r.name} title={`${r.display}${r.email ? ` · ${r.email}` : ''} · right-click: rename, move, Claude Code`} {...drag}>
-      <span className="axp-cam-grip" aria-hidden="true"><Icon name="grip" size={14} /></span>
+      {!fixed && <span className="axp-cam-grip" aria-hidden="true"><Icon name="grip" size={14} /></span>}
       <span className="axp-cam-n" aria-label={r.n ? `number ${r.n} in the order` : 'not in the order'}>{r.n ?? '–'}</span>
       <div className="axp-cam-who">
         <div className="axp-cam-line">
@@ -61,23 +62,50 @@ export function AccountRow({ r, compact, dragging, over, onDrag, onOver, onDrop,
   );
 }
 
-/** The ordered list with drag and drop. Accounts out of the order (API keys not added yet) sit below a divider. */
+/**
+ * The Custom / Automatic switch (Brett, Nov 10 2026: "In a switch, a switch if you want to customize it or do that
+ * automatically"). On = Custom: the orchestrator follows the drag-and-drop order exactly, subscriptions and API alike.
+ * Off = Automatic: subscriptions first, then any API. The drag-and-drop order is kept either way.
+ */
+export function OrderSwitch({ view, compact }: { view: View; compact?: boolean }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  const custom = view.mode !== 'auto';
+  const flip = (on: boolean) => {
+    setBusy(true);
+    setMode(on ? 'custom' : 'auto').then((r) => rt.toast(r.message, 'success'), (e: Error) => rt.toast(e.message, 'danger')).finally(() => setBusy(false));
+  };
+  return (
+    <div className="axp-cam-mode" role="group" aria-label="Account order: Custom or Automatic">
+      <Switch label="Custom order" disabled={busy || !view.dispatch} checked={custom} onChange={flip}
+        text={compact ? (custom ? 'Drag to order' : 'Automatic: subscriptions, then API')
+          : custom ? 'On: the orchestrator follows your drag-and-drop order exactly, subscriptions and API keys alike.'
+            : 'Off (Automatic): every subscription first, then any API key. Your drag-and-drop order is kept for when you switch back.'} />
+    </div>
+  );
+}
+
+/** The ordered list with drag and drop. Accounts out of the order (API keys not added yet) sit below a divider. On
+ * Automatic the list shows the automatic order (subscriptions, then API) and nothing drags. */
 export function AccountList({ view, compact, onSession }: { view: View; compact?: boolean; onSession?: (name: string) => void }) {
   const rt = useRuntime();
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
+  const fixed = view.mode === 'auto';
   const drop = (target: string | null) => {
     const from = dragging; setDragging(null); setOver(null);
-    if (!from || from === target) return;
-    const toOut = target !== null && !view.order.includes(target);
-    const next = toOut ? view.order.filter((n) => n !== from) : dropOrder(view.order, from, target);
+    if (fixed || !from || from === target) return;
+    const order = view.customOrder ?? view.order;
+    const toOut = target !== null && !order.includes(target);
+    const next = toOut ? order.filter((n) => n !== from) : dropOrder(order, from, target);
     setOrder(next).then((r) => rt.toast(r.message, 'success'), (e: Error) => rt.toast(e.message, 'danger'));
   };
   const listed = view.accounts.filter((r) => r.inOrder);
   const rest = view.accounts.filter((r) => !r.inOrder);
-  const row = (r: Row) => <AccountRow key={r.name} r={r} compact={compact} dragging={dragging === r.name} over={over === r.name} onDrag={setDragging} onOver={setOver} onDrop={drop} onSession={onSession} />;
+  const row = (r: Row) => <AccountRow key={r.name} r={r} compact={compact} fixed={fixed} dragging={dragging === r.name} over={over === r.name} onDrag={setDragging} onOver={setOver} onDrop={drop} onSession={onSession} />;
   return (
     <div className="axp-cam-list" role="list" aria-label="Claude accounts in order">
+      {fixed && !compact && <Note tone="info">Automatic: subscriptions first, then API. Turn on Custom order to drag the accounts into your own order.</Note>}
       {listed.map(row)}
       {rest.length > 0 && <div className="axp-cam-divider" onDragOver={(e) => e.preventDefault()} onDrop={() => drop(rest[0]?.name ?? null)}>Not in the order{compact ? '' : ': takes no build. Drag one up to add it.'}</div>}
       {rest.map(row)}

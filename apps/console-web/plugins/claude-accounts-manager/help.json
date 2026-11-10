@@ -15,7 +15,7 @@
       {
         "target": "view:claude-accounts-manager",
         "title": "Claude accounts manager",
-        "text": "Every Claude account on the VPS in one ordered list: subscriptions and API keys alike. Drag a row to change the order the build orchestrator follows. Right-click a row to rename it, move it or open Claude Code as that account.",
+        "text": "Every Claude account on the VPS in one ordered list: subscriptions and API keys alike. The Custom order switch: on, drag a row to set the order the build orchestrator follows exactly; off (Automatic), subscriptions go first, then API. Right-click a row to rename it, move it or open Claude Code as that account.",
         "kind": "page"
       },
       {
@@ -53,6 +53,12 @@
         "title": "Pick an account",
         "text": "The banner widget's drop-down: every account with what is left; tap one to show it on the banner.",
         "kind": "dialog"
+      },
+      {
+        "target": "action:claude-accounts-manager.mode",
+        "title": "Custom or Automatic account order",
+        "text": "Custom: the orchestrator follows your drag-and-drop order exactly, subscriptions and API keys alike. Automatic: every subscription first, then any API key. Your custom order is kept either way. Switching to Automatic while an API key is outside your order is your own click (it bills per token).",
+        "kind": "menu-item"
       }
     ]
   }

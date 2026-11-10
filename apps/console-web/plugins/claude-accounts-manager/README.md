@@ -21,6 +21,19 @@ API keys out of the order take no build. Putting an API account in the order, or
 only Brett's own click does that; a session, MCP or voice may move one later or take it out. An empty order keeps
 subscriptions-only routing.
 
+## Custom or Automatic
+
+Brett, Nov 10 2026: "In a switch, a switch if you want to customize it or do that automatically." The **Custom order**
+switch sits above the list (page, Settings, Terminal column), and its setting is the orchestrator's `orderMode`:
+
+- **Custom** (on, the default): the orchestrator follows the drag-and-drop order exactly, subscriptions and API alike.
+- **Automatic** (off): every subscription first (least busy, workers before the console's account), then any ready
+  API key (least busy, least spent). The list shows that order and nothing drags. The custom order is kept and comes
+  back when the switch goes on again; drags, moves and `order` calls on Automatic edit the kept order.
+
+Automatic lets every ready API key take builds, so switching to it while an API key is outside the custom order is
+Brett's own click (a session, MCP or voice gets 403); switching back to Custom is free.
+
 ## Where
 
 | Surface | How to reach it |
@@ -35,10 +48,10 @@ subscriptions-only routing.
 ## API (REST, MCP, CLI, voice)
 
 REST `/api/plugins/claude-accounts-manager/…` and MCP plugin commands (plugin-commands@1): `list` (GET accounts),
-`order`, `move`, `rename`, `add`, `session`, `settings`, `settings-set`, `widget`. Console actions (MCP console
+`mode` (GET), `mode-set` (`{mode: custom|auto|toggle}`), `order`, `move`, `rename`, `add`, `session`, `settings`, `settings-set`, `widget`. Console actions (MCP console
 actions, voice): `claude-accounts-manager.open | session:<name> | add:<kind>:<name> | add-dialog[:<kind>] |
-rename:<name> | move:<name>:<to> | overlay[:on|off|toggle] | widget:<name> | column[:on|off|toggle] | settings`.
-CLI: `axf plugin claude-accounts-manager <command>` through plugin-commands. Voice: "move hulu-api to the top",
+rename:<name> | move:<name>:<to> | mode[:custom|auto|toggle] | overlay[:on|off|toggle] | widget:<name> | column[:on|off|toggle] | settings`.
+CLI: `axf plugin claude-accounts-manager <command>` through plugin-commands. Voice: "account order automatic", "use my custom account order", "move hulu-api to the top",
 "open Claude Code as account 3", "show the accounts overlay".
 
 ## Adding an account

@@ -92,6 +92,12 @@ check(R["totals"]["accounts"] == 5 and R["totals"]["out"] == 2 and R["totals"]["
 R2 = M.rows(view, usage, dispatch, ["hulu-api", "w-max", "gone"], S)
 check(R2["order"] == ["hulu-api", "w-max"] and R2["accounts"][0]["name"] == "hulu-api" and R2["accounts"][0]["n"] == 1 and R2["orderSaved"], "a saved order: API first is #1; unknown names dropped")
 check([r["n"] for r in R2["accounts"][2:]] == [None, None, None], "accounts left out of a saved order carry no number")
+R3 = M.rows(view, usage, dispatch, ["hulu-api", "w-max"], S, "auto")
+check(R3["mode"] == "auto" and R3["order"] == ["console-acct", "w-max", "w-out", "hulu-api", "cap-api"], "automatic: every subscription, then every API account")
+check(all(r["inOrder"] for r in R3["accounts"]) and R3["customOrder"] == ["hulu-api", "w-max"], "automatic numbers every account; the saved drag-and-drop order is kept")
+check("only when every subscription is full" in {r["name"]: r for r in R3["accounts"]}["hulu-api"]["why"], "automatic: an API row says when it takes a build")
+check(R2["mode"] == "custom" and M.rows(view, usage, dispatch, [], S, "bogus")["mode"] == "custom", "custom by default")
+check(M.clean_mode("Automatic") == "auto" and M.clean_mode("manual") == "custom" and M.clean_mode(True) == "auto" and M.clean_mode("sideways") == "", "mode words")
 
 check(M.moved(["a", "b", "c"], "c", "top") == ["c", "a", "b"] and M.moved(["a", "b", "c"], "a", "down") == ["b", "a", "c"] and M.moved(["a", "b", "c"], "b", "up") == ["b", "a", "c"], "moves: top, down, up")
 check(M.moved(["a", "b"], "x", "bottom") == ["a", "b", "x"] and M.moved(["a", "b", "c"], "c", 1) == ["c", "a", "b"] and M.moved(["a", "b"], "a", "out") == ["b"], "moves: add at the bottom, a position, out")
@@ -146,6 +152,17 @@ class Dispatch:
         self.cur = list(names)
         return list(names)
 
+    mode = "custom"
+
+    def order_mode(self):
+        return self.mode
+
+    def set_order_mode(self, mode, brett=""):
+        if mode == "auto" and not brett and any(n not in self.cur for n in ("hulu-api", "cap-api")):
+            raise HTTPException(403, "Brett's own click")
+        self.mode = mode
+        return mode
+
 
 r = c.get("/p/accounts")
 check(r.status_code == 503, "no axf.claude-accounts@1: 503 says what is missing")
@@ -161,6 +178,17 @@ r = c.post("/p/move", json={"name": "hulu-api", "to": "top"})
 check(r.status_code == 403, "a session adding an API account to the order: 403 (Brett's click)")
 r = c.post("/p/order", json={"order": ["w-max", "Console Acct"]})
 check(r.status_code == 200 and disp.cur == ["w-max", "console-acct"], "POST order: names cleaned")
+check(c.get("/p/mode").json()["mode"] == "custom", "GET mode: custom by default")
+check(c.post("/p/mode", json={"mode": "auto"}).status_code == 403, "a session switching to automatic with API keys outside the order: 403 (Brett's click)")
+check(c.post("/p/mode", json={"mode": "sideways"}).status_code == 400, "a bad mode is 400")
+disp.mode = "auto"
+j = c.get("/p/accounts").json()
+check(j["mode"] == "auto" and j["order"][-2:] == ["hulu-api", "cap-api"] and j["customOrder"] == ["w-max", "console-acct"], "GET accounts in automatic: subscriptions then API; the custom order kept")
+j = c.post("/p/move", json={"name": "console-acct", "to": "top"}).json()
+check(disp.cur == ["console-acct", "w-max"] and "Automatic" in j["message"], "a move in automatic edits the saved custom order and says it waits for Custom")
+j = c.post("/p/mode", json={"mode": "toggle"}).json()
+check(j["mode"] == "custom" and disp.mode == "custom" and "drag-and-drop order exactly" in j["message"], "toggle: back to custom")
+c.post("/p/order", json={"order": ["w-max", "console-acct"]})
 check(c.post("/p/move", json={"name": "nobody", "to": "up"}).status_code == 404 and c.post("/p/move", json={"name": "w-max", "to": "left"}).status_code == 400, "move: unknown account 404, bad place 400")
 j = c.post("/p/rename", json={"name": "w-max", "label": "Hulu"}).json()
 check(j["ok"] and acc.labels[-1][:2] == ("w-max", "Hulu"), "rename goes through axf.claude-accounts@1")

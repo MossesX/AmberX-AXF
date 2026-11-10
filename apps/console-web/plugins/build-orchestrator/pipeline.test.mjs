@@ -255,6 +255,35 @@ t('routeFor: the one order decides, subscription or API alike; override api / su
   const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', fullS);
   assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
 });
+t('order switch: custom follows the order exactly; auto = every subscription first, then any ready API account', () => {
+  assert.equal(P.normSettings({}).orderMode, 'custom', 'custom by default: nothing new bills per token');
+  assert.equal(P.normSettings({ orderMode: 'auto' }).orderMode, 'auto'); assert.equal(P.normSettings({ orderMode: 'nope' }).orderMode, 'custom');
+  const rows = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false })];
+  // custom with the API key first: the API key takes it
+  const custom = P.normSettings({ parallelPerAccount: 2, order: ['hulu-api', 'w-max'] });
+  assert.equal(P.routeFor(build('x', 'queued', []), P.accountViews(rows, {}, { settings: custom }), 'Opus', custom).account, 'hulu-api');
+  // the same saved order in auto: the subscription first, the order is kept but not followed
+  const auto = P.normSettings({ parallelPerAccount: 2, order: ['hulu-api', 'w-max'], orderMode: 'auto' });
+  const av = P.accountViews(rows, {}, { settings: auto });
+  assert.deepEqual(av.map((a) => a.rank), [null, null, null], 'no ranks in auto');
+  const r1 = P.routeFor(build('x', 'queued', []), av, 'Opus', auto);
+  assert.deepEqual([r1.account, r1.kind, r1.rule], ['w-max', 'subscription', 'auto']);
+  assert.deepEqual(P.candidates(av, 'Opus').map((a) => a.name), ['w-max', 'hulu-api'], 'subscriptions before API; a key without a key file is out');
+  // every subscription full: any ready API account, even one never put in the order
+  const autoEmpty = P.normSettings({ parallelPerAccount: 2, orderMode: 'auto' });
+  const full = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: autoEmpty });
+  const r2 = P.routeFor(build('x', 'queued', []), full, 'Opus', autoEmpty);
+  assert.deepEqual([r2.account, r2.kind, r2.rule], ['hulu-api', 'api', 'auto']); assert.match(r2.why, /automatic order sends it to API account hulu-api/);
+  // a busier subscription still goes before an idle API account
+  const busy = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: ['a'] }, apiRow('hulu-api')], {}, { settings: autoEmpty });
+  assert.equal(P.routeFor(build('x', 'queued', []), busy, 'Opus', autoEmpty).account, 'w-max');
+  // nothing ready: the wait names the API accounts and why
+  const none = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false })], {}, { settings: autoEmpty });
+  const r3 = P.routeFor(build('x', 'queued', []), none, 'Opus', autoEmpty);
+  assert.equal(r3.account, ''); assert.match(r3.why, /mossesx-api: no API key saved/);
+  // the per-build route still narrows one build
+  assert.equal(P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', autoEmpty).account, '');
+});
 t('plan: the order fills an API account up to its cap, then the rest wait with the reason', () => {
   const s = P.normSettings({ parallelPerAccount: 2, order: ['w-max', 'hulu-api'] });
   const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });

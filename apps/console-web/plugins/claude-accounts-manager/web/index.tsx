@@ -8,7 +8,7 @@
  *   - a floating overlay window with custom buttons and sub-menus (overlay.tsx)
  *   - a right-click menu on every account row anywhere (target claude-account): rename, move, Claude Code session
  * Actions (console API, MCP console actions, voice): claude-accounts-manager.open | session:<name> | add:<kind>:<name> |
- * add-dialog[:<kind>] | rename:<name> | move:<name>:<to> | overlay[:on|off|toggle] | widget:<name> | column[:on|off].
+ * add-dialog[:<kind>] | rename:<name> | move:<name>:<to> | mode[:custom|auto|toggle] | overlay[:on|off|toggle] | widget:<name> | column[:on|off].
  */
 import { useState } from 'react';
 import { Button, Checkbox, Container, IconButton, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
@@ -16,9 +16,9 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { AccountList, AddForm, PickList, RenameForm, Totals } from './ui';
+import { AccountList, AddForm, OrderSwitch, PickList, RenameForm, Totals } from './ui';
 import { OverlayWindow, openSession, osOverlaySupported } from './overlay';
-import { CTX, FOLDER, ID, POLL_MS, SHOW_PARTS, VIEW, addAccount, load, move, saveSettings, snapshot, subscribe, useManager, widgetText, type MenuItem, type OverlayButton } from './data';
+import { CTX, FOLDER, ID, POLL_MS, SHOW_PARTS, VIEW, addAccount, load, move, saveSettings, setMode, snapshot, subscribe, useManager, widgetText, type MenuItem, type OverlayButton } from './data';
 import './manager.css';
 
 const ASSET_ID = 'claude-accounts-manager';
@@ -36,7 +36,7 @@ function Page() {
         <div>
           <p className="fx-eyebrow">Plugins · Claude accounts manager</p>
           <h1>Claude accounts</h1>
-          <p className="fx-muted">Every Claude account on the VPS in the order the orchestrator follows. API keys are entries like any subscription: drag to set the order. Right-click a row to rename it, move it or open Claude Code as that account.</p>
+          <p className="fx-muted">Every Claude account on the VPS in the order the orchestrator follows. Custom order on: drag to set it, API keys are entries like any subscription. Off: automatic, subscriptions first, then API. Right-click a row to rename it, move it or open Claude Code as that account.</p>
         </div>
         <div className="axp-cam-actions" role="toolbar" aria-label="Claude accounts manager">
           <Button size="sm" tone="ghost" icon="layers" onClick={() => rt.dispatch('claude-accounts-manager.overlay:toggle')}>Overlay</Button>
@@ -47,7 +47,7 @@ function Page() {
       {view && !view.usage && <Note tone="info">Usage percentages need the Badges plugin (axf.claude-usage@1).</Note>}
       {view && !view.dispatch && <Note tone="warning">The build orchestrator isn't installed: the order can't be saved.</Note>}
       {view && <Totals view={view} />}
-      <Container title="Accounts in order" icon="list">{view ? <AccountList view={view} onSession={(n) => openSession(rt, n)} /> : <p className="fx-muted">Loading…</p>}</Container>
+      <Container title="Accounts in order" icon="list">{view ? <div className="fx-stack"><OrderSwitch view={view} /><AccountList view={view} onSession={(n) => openSession(rt, n)} /></div> : <p className="fx-muted">Loading…</p>}</Container>
       <Container title="Add an account or API key" icon="plus"><AddForm /></Container>
     </div>
   );
@@ -69,7 +69,7 @@ function TerminalColumn({ open }: { open?: (o: Record<string, unknown>) => void 
         <IconButton icon="menu" label={shown ? 'Fold the accounts column' : 'Claude accounts'} aria-expanded={shown} onClick={toggle} />
         {shown && <><span className="axp-cam-col__title">Claude accounts</span><IconButton icon="plus" label="Add an account" onClick={() => rt.openDialog(ADD, {})} /></>}
       </div>
-      {shown && <div className="axp-cam-col__body">{view ? <AccountList view={view} compact onSession={session} /> : <p className="fx-muted">Loading…</p>}</div>}
+      {shown && <div className="axp-cam-col__body">{view ? <><OrderSwitch view={view} compact /><AccountList view={view} compact onSession={session} /></> : <p className="fx-muted">Loading…</p>}</div>}
     </aside>
   );
 }
@@ -224,6 +224,10 @@ function register(rt: AxfRuntime) {
   rt.actions.register('claude-accounts-manager.add-dialog', ([kind = 'subscription']) => rt.openDialog(ADD, { kind }), { label: 'Add a Claude account…', params: true });
   rt.actions.register('claude-accounts-manager.rename', ([name = '']) => rt.openDialog(RENAME, { name }), { label: 'Rename a Claude account', params: true, searchable: false });
   rt.actions.register('claude-accounts-manager.move', ([name = '', to = '']) => { move(String(name), /^\d+$/.test(String(to)) ? Number(to) : String(to)).then((r) => rt.toast(r.message, 'success'), fail); }, { label: 'Move a Claude account in the order', params: true, searchable: false });
+  rt.actions.register('claude-accounts-manager.mode', ([how = 'toggle']) => {
+    const m = how === 'auto' || how === 'automatic' ? 'auto' : how === 'custom' ? 'custom' : 'toggle';
+    setMode(m).then((r) => rt.toast(r.message, 'success'), fail);
+  }, { label: 'Claude account order: Custom or Automatic', params: true });
   rt.actions.register('claude-accounts-manager.overlay', ([how = 'toggle']) => {
     const open = how === 'on' ? true : how === 'off' ? false : !snapshot().settings?.overlay.open;
     void saveSettings({ overlay: { open, minimized: false } });
@@ -247,6 +251,9 @@ function register(rt: AxfRuntime) {
       r?.inOrder ? { id: 'cam.out', label: 'Take out of the order', icon: 'minus', action: `claude-accounts-manager.move:${payload}:out` }
         : { id: 'cam.in', label: 'Add to the order', icon: 'plus', action: `claude-accounts-manager.move:${payload}:bottom` },
       { id: 'cam.widget', label: 'Show on the banner widget', icon: 'monitor', action: `claude-accounts-manager.widget:${payload}` },
+      snapshot().view?.mode === 'auto'
+        ? { id: 'cam.mode', label: 'Use my custom order', icon: 'list', action: 'claude-accounts-manager.mode:custom' }
+        : { id: 'cam.mode', label: 'Order automatically (subscriptions, then API)', icon: 'zap', action: 'claude-accounts-manager.mode:auto' },
     ];
   });
   subscribe(() => paint(rt));
@@ -287,5 +294,5 @@ function ListPanel() {
   const rt = useRuntime();
   const { view, error } = useManager();
   if (error) return <Note tone="warning">{error}</Note>;
-  return view ? <AccountList view={view} onSession={(n) => openSession(rt, n)} /> : <p className="fx-muted">Loading…</p>;
+  return view ? <div className="fx-stack"><OrderSwitch view={view} /><AccountList view={view} onSession={(n) => openSession(rt, n)} /></div> : <p className="fx-muted">Loading…</p>;
 }

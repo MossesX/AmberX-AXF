@@ -21,8 +21,11 @@ export interface Row {
   planUsd: number | null; totalUsd: number | null; usedUsd: number | null; leftUsd: number | null; usdBasis: string;
   costWeek: number; usable: boolean; why: string;
 }
+/** The switch: custom = the orchestrator follows the drag-and-drop order exactly; auto = subscriptions first, then API. */
+export type OrderMode = 'custom' | 'auto';
 export interface View {
   ok: boolean; ready: boolean; why: string; active: string; usage: boolean; dispatch: boolean; accounts: Row[]; order: string[]; orderSaved: boolean;
+  mode: OrderMode; customOrder: string[];
   totals: { accounts: number; builders: number; workers: number; out: number; api: number; usedUsd: number; leftUsd: number; totalUsd: number };
 }
 export interface MenuItem { label: string; action: string }
@@ -81,6 +84,7 @@ export const subscribe = (f: () => void) => { subs.add(f); return () => { subs.d
 async function change<T>(path: string, body: unknown): Promise<T> {
   try { return await post<T>(path, body); } finally { await load(); }
 }
+export const setMode = (mode: OrderMode | 'toggle') => change<{ mode: OrderMode; message: string }>('mode', { mode });
 export const setOrder = (order: string[]) => change<{ message: string }>('order', { order });
 export const move = (name: string, to: string | number) => change<{ message: string }>('move', { name, to });
 export const rename = (name: string, label: string) => change<{ message: string }>('rename', { name, label });

@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "One ordered list of every Claude account on the VPS, subscription logins and API keys alike: number in the order, name, email, plan, subscription or API, active builder / worker / not, out of credits, usage used and left in percent and in dollars. Drag and drop sets the order the build orchestrator follows (API is an entry like any other, no fallback rule). Rename, add a subscription or API key (opens the Terminal and starts the login or the key prompt), right-click any account for a Claude Code session as that account. Adds a collapsible accounts column to the Terminal, a configurable banner widget with a drop-down, and a floating overlay window with custom buttons and sub-menus (resizable, size lock, docking, minimize, console or whole-screen scope). Never shows a credential.",
+  "description": "One ordered list of every Claude account on the VPS, subscription logins and API keys alike: number in the order, name, email, plan, subscription or API, active builder / worker / not, out of credits, usage used and left in percent and in dollars. A Custom / Automatic switch: Custom = drag and drop sets the order the build orchestrator follows exactly (API is an entry like any other); Automatic = subscriptions first, then API. Rename, add a subscription or API key (opens the Terminal and starts the login or the key prompt), right-click any account for a Claude Code session as that account. Adds a collapsible accounts column to the Terminal, a configurable banner widget with a drop-down, and a floating overlay window with custom buttons and sub-menus (resizable, size lock, docking, minimize, console or whole-screen scope). Never shows a credential.",
   "targets": [
     "axf-console"
   ],
@@ -47,10 +47,39 @@
         "description": "Every Claude account on the VPS in the order the build orchestrator follows (subscriptions and API keys alike): number, name, email, plan, subscription or API, active builder / worker / not, out of credits and why, usage used and left in percent and dollars, plus totals. Never a credential."
       },
       {
+        "route": "GET /mode",
+        "id": "mode",
+        "title": "Claude account order: Custom or Automatic",
+        "readOnly": true,
+        "description": "The switch: custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API alike); auto = subscriptions first, then any API. Also the order followed now and the saved custom order."
+      },
+      {
+        "route": "POST /mode",
+        "id": "mode-set",
+        "title": "Switch the Claude account order between Custom and Automatic",
+        "description": "custom = follow the drag-and-drop order exactly; auto = subscriptions first, then any API; toggle flips it (voice: 'account order automatic', 'use my custom account order'). Switching to auto while an API account is outside the custom order lets it bill per token: Brett's own click. The custom order is kept either way.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "custom",
+                "auto",
+                "toggle"
+              ]
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        }
+      },
+      {
         "route": "POST /order",
         "id": "order",
         "title": "Set the Claude account order",
-        "description": "The whole order the orchestrator follows, first = tried first. API keys are entries like any subscription. Adding an API account or moving one earlier is Brett's own click (it bills per token); anyone may move one later or take it out.",
+        "description": "The whole custom order (followed while the switch is on Custom; saved but not followed on Automatic), first = tried first. API keys are entries like any subscription. Adding an API account or moving one earlier is Brett's own click (it bills per token); anyone may move one later or take it out.",
         "input": {
           "type": "object",
           "properties": {

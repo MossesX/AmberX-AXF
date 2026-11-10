@@ -5,6 +5,8 @@
 .axp-cam-row.is-dragging { opacity: var(--fx-opacity-muted); }
 .axp-cam-row.is-over { border-color: var(--fx-accent); }
 .axp-cam-row--out { border-style: dashed; }
+.axp-cam-row--fixed { cursor: default; }
+.axp-cam-mode { padding-bottom: var(--fx-dens-gap-xs); }
 .axp-cam-row--compact { gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs); }
 .axp-cam-grip { color: var(--fx-muted); padding-top: var(--fx-dens-gap-xs); }
 .axp-cam-n { min-width: calc(var(--fx-space) * 6); font-weight: var(--fx-type-weights-strong); font-variant-numeric: tabular-nums; }

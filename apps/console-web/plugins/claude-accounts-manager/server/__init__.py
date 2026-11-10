@@ -8,9 +8,14 @@ through them.
   axf.build-dispatch@1    the dispatcher's view of each account and the one order it follows; set the order
 Its own data is only its settings (banner widget, Terminal column, floating overlay, plan prices) in its data folder.
 
-  GET  accounts      { accounts: [row…], order, orderSaved, totals, ready, why }   (model.rows)
-  POST order         { order: [names] }: the whole order (drag and drop)
-  POST move          { name, to: up|down|top|bottom|out|<position> }: one account (voice: "move hulu-api to 2")
+  GET  accounts      { accounts: [row…], order, mode, customOrder, orderSaved, totals, ready, why }   (model.rows)
+  GET  mode          { mode: custom|auto, order, customOrder }: the switch
+  POST mode          { mode: custom|auto } (Brett, Nov 10 2026: "a switch if you want to customize it or do that
+                     automatically"): custom = the orchestrator follows the drag-and-drop order exactly, subscriptions
+                     and API alike; auto = subscriptions first, then any API. Auto while an API account is outside the
+                     custom order lets it bill per token, so that is Brett's own click.
+  POST order         { order: [names] }: the whole custom order (drag and drop); saved in either mode, followed in custom
+  POST move          { name, to: up|down|top|bottom|out|<position> }: one account in the custom order (voice: "move hulu-api to 2")
   POST rename        { name, label }
   POST add           { name, kind: subscription|api }: the Terminal tab that adds it ({open}); subscription also
                      sends the held sign-in when asked from outside the console (MCP, voice)
@@ -110,9 +115,10 @@ def read() -> dict[str, Any]:
     try:
         d_accounts = dispatch.accounts() if dispatch is not None and hasattr(dispatch, "accounts") else []
         order = dispatch.order() if dispatch is not None and hasattr(dispatch, "order") else []
+        mode = dispatch.order_mode() if dispatch is not None and hasattr(dispatch, "order_mode") else "custom"
     except Exception:  # noqa: BLE001
-        d_accounts, order = [], []
-    out = model.rows(view, usage if isinstance(usage, dict) else {}, d_accounts, order, settings())
+        d_accounts, order, mode = [], [], "custom"
+    out = model.rows(view, usage if isinstance(usage, dict) else {}, d_accounts, order, settings(), mode)
     return {"ok": True, "ready": bool(view.get("ready")), "why": str(view.get("why") or ""), "active": view.get("active") or "",
             "usage": usage_svc is not None, "dispatch": dispatch is not None, "pending": view.get("pending"), **out}
 
@@ -137,13 +143,47 @@ def set_order(names: list[str], brett: str) -> dict[str, Any]:
     if not hasattr(d, "set_order"):
         raise HTTPException(503, "The build orchestrator on this console can't take an account order yet.")
     new = d.set_order(names, brett)
-    return {"ok": True, "order": new, "message": f"Account order: {' → '.join(new) or 'not set (subscriptions only)'}"}
+    mode = d.order_mode() if hasattr(d, "order_mode") else "custom"
+    tail = "" if mode == "custom" else " (saved; the switch is on Automatic, so it is followed once you switch to Custom)"
+    return {"ok": True, "order": new, "mode": mode, "message": f"Account order: {' → '.join(new) or 'not set (subscriptions only)'}{tail}"}
+
+
+MODE_TEXT = {"custom": "Custom: the orchestrator follows the drag-and-drop order exactly",
+             "auto": "Automatic: subscriptions first, then API"}
+
+
+def set_mode(raw: Any, brett: str) -> dict[str, Any]:
+    mode = model.clean_mode(raw)
+    if not mode:
+        raise HTTPException(400, "mode is custom (follow the drag-and-drop order) or auto (subscriptions first, then API)")
+    d = _svc("axf.build-dispatch@1")
+    if not hasattr(d, "set_order_mode"):
+        raise HTTPException(503, "The build orchestrator on this console has no Custom / Automatic switch yet.")
+    new = d.set_order_mode(mode, brett)
+    return {"ok": True, "mode": new, "message": f"Account order: {MODE_TEXT[new]}."}
 
 
 @router.get("/accounts")
 def accounts(request: Request) -> dict[str, Any]:
     _owner(request)
     return read()
+
+
+@router.get("/mode")
+def get_mode(request: Request) -> dict[str, Any]:
+    _owner(request)
+    cur = read()
+    return {"ok": True, "mode": cur["mode"], "text": MODE_TEXT[cur["mode"]], "order": cur["order"], "customOrder": cur["customOrder"]}
+
+
+@router.post("/mode")
+async def post_mode(request: Request) -> dict[str, Any]:
+    _owner(request)
+    b = await _body(request)
+    raw = b.get("mode")
+    if raw == "toggle":
+        raw = "custom" if (await run_in_threadpool(read))["mode"] == "auto" else "auto"
+    return await run_in_threadpool(set_mode, raw, brett_click(request))
 
 
 @router.post("/order")
@@ -166,7 +206,7 @@ async def move(request: Request) -> dict[str, Any]:
         if name not in [r["name"] for r in cur["accounts"]]:
             raise HTTPException(404, f"No account called {name}.")
         try:
-            new = model.moved(cur["order"], name, b.get("to"))
+            new = model.moved(cur["customOrder"], name, b.get("to"))
         except ValueError as e:
             raise HTTPException(400, str(e)) from None
         return set_order(new, brett_click(request))

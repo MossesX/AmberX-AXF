@@ -504,11 +504,14 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
     splitProvider, order, apiAccounts). `order` is the one account order, API keys included: putting an API account in
     it, or moving one earlier, spends money per token, so only Brett's own click does that (a session, MCP or voice may
-    move API accounts later or take them out)."""
+    move API accounts later or take them out). `orderMode` custom | auto: auto lets every ready API account take builds
+    after the subscriptions, so switching to auto while an API account is outside the custom order is Brett's click."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "order", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "order", "orderMode", "apiAccounts"}
     if "order" in body:
         body["order"] = set_order_check(body.get("order"), brett_click(request))
+    if "orderMode" in body:
+        body["orderMode"] = set_mode_check(body.get("orderMode"), brett_click(request), body.get("order"))
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -609,6 +612,29 @@ def set_order_check(raw: Any, brett: str) -> list[str]:
     return new
 
 
+ORDER_MODES = ("custom", "auto")
+
+
+def mode_raises_api(mode: str, order: list[str], api: set[str]) -> list[str]:
+    """API accounts that switching to `mode` lets take builds they can't take now (pure): auto opens every API account
+    that is outside the custom order; custom opens none (its order was set under the same check)."""
+    return sorted(n for n in api if n not in order) if mode == "auto" else []
+
+
+def set_mode_check(raw: Any, brett: str, order: Any = None) -> str:
+    """custom | auto, checked: auto while an API account is outside the custom order bills it per token: Brett's click."""
+    mode = str(raw or "").strip().lower()
+    mode = {"automatic": "auto", "manual": "custom", "drag": "custom"}.get(mode, mode)
+    if mode not in ORDER_MODES:
+        raise HTTPException(400, "orderMode is custom (follow the drag-and-drop order) or auto (subscriptions first, then API)")
+    if not brett:
+        cur = order if isinstance(order, list) else list((_pipeline("settings").get("settings") or {}).get("order") or [])
+        raised = mode_raises_api(mode, [str(n) for n in cur], _api_names())
+        if raised:
+            raise HTTPException(403, f"automatic order lets API account {', '.join(raised)} take builds (billed per token): that is Brett's own click in the console")
+    return mode
+
+
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
     priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
@@ -635,6 +661,17 @@ class DispatchService:
         """Set the account order. `brett` = Brett's own click (his name): needed to add an API account or move one earlier."""
         new = set_order_check(names, brett)
         _pipeline("set", f"order={','.join(new)}")
+        return new
+
+    def order_mode(self) -> str:
+        """custom (the dispatcher follows order() exactly) or auto (subscriptions first, then any ready API account)."""
+        m = (_pipeline("settings").get("settings") or {}).get("orderMode")
+        return m if m in ORDER_MODES else "custom"
+
+    def set_order_mode(self, mode: str, brett: str = "") -> str:
+        """Flip the switch. Auto while an API account is outside the custom order needs Brett's own click (`brett`)."""
+        new = set_mode_check(mode, brett)
+        _pipeline("set", f"orderMode={new}")
         return new
 
 

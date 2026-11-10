@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:30:49.027Z",
+ "updatedAt": "2026-11-10T16:14:50.523Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79692,7 +79692,7 @@
    "title": "File watchdog plugin: watch files, run scripts or console commands, optional AI prompt (off by default)",
    "category": "",
    "detail": "New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79700,8 +79700,8 @@
    "pr": "#445",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-10T15:30:35.187Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T15:31:03.941Z",
+   "builtAt": "2026-11-10T15:31:03.941Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -79782,6 +79782,10 @@
     {
      "text": "Self-check: file-watchdog-plugin-watch-files-run-scripts-or was marked running on account-1 with no session: released and back in the Queue.",
      "at": "2026-11-10T15:30:23.790Z"
+    },
+    {
+     "text": "Headless run axf-file-watchdog-plugin-watch-files-run-scripts-or--rhonda: brief only · start 0 tokens · cost $2.79 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:31:03.941Z"
     }
    ],
    "approvals": [],
@@ -79851,8 +79855,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:30:36.288Z",
      "note": "",
      "uid": "st-mw9m1tda03v4op"
     }
@@ -82403,10 +82407,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-as-packages-of-slices-every-section-its-ow",
-   "pr": "",
+   "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T14:51:29.579Z",
+   "updatedAt": "2026-11-10T16:06:48.950Z",
    "builtAt": "",
    "notes": [
     {
@@ -82440,6 +82444,18 @@
     {
      "text": "Claude account: account-5 (axf-skins-as-packages-of-slices-every-section-its-ow--paulie, own login copy)",
      "at": "2026-11-10T14:51:29.579Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, this build is set to API) (Fable, Phase 1): axf-skins-as-packages-of-slices-every-section-its-ow--joey.",
+     "at": "2026-11-10T15:39:11.121Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-skins-as-packages-of-slices-every-section-its-ow--joey, own login copy)",
+     "at": "2026-11-10T15:39:13.748Z"
+    },
+    {
+     "text": "Headless run axf-skins-as-packages-of-slices-every-section-its-ow--paulie: brief only · start 13.1K tokens ($0.10) · cost $24.02 · 209 turns · 6 tools, MCP none",
+     "at": "2026-11-10T16:06:48.950Z"
     }
    ],
    "approvals": [],
@@ -82470,8 +82486,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:06:18.726Z",
      "note": "",
      "uid": "st-mw9y5oxp01ifuq"
     },
@@ -83799,15 +83815,15 @@
    "title": "Molly (Fable version): the one interface for AmberX, axHub and the console, built on Fable",
    "category": "",
    "detail": "The Fable version of Molly that the molly-opus build promised ('a Fable version comes later in its own build'), never filed until now. Run every step on Fable (model: fable); don't fall back to Opus without saying so in the report. Start from what's on main: apps/molly (the Opus shell), the dock@1 engine, dock-layout@1 presets and DockHost from claude/molly-fable (PR #245, landed bffc2601), xlayout@1/chrome@1, and the molly-* builds (one-shell, sign-in-once, multi-instance-tabs, banner-match, nav-submenus, console-commands, native-expenses). Goal: Molly as the one interface that shows AmberX, axHub and the console (and the other apps) while they stay separate apps. One sign-in, docked multi-instance tabs, shared banner and widgets, nested menus, Molly-to-app messages. First read the open molly-* builds and reports: upgrade what exists, fold in unfinished molly steps where they overlap instead of duplicating, and list which builds this supersedes. Deploy at molly.amberxai.com (or a Fable variant URL if the Opus one must stay; say which). Full REST, MCP, CLI and voice control. Tests, desktop and phone screenshots to UI Review grouped by screen, report, PR.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-fable-version-the-one-interface-for-amberx",
-   "pr": "",
+   "pr": "#447",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T14:55:16.518Z",
+   "updatedAt": "2026-11-10T16:01:25.478Z",
    "builtAt": "",
    "notes": [
     {
@@ -83825,6 +83841,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-fable-version-the-one-interface-for-amberx--earl, own login copy)",
      "at": "2026-11-10T14:55:16.518Z"
+    },
+    {
+     "text": "s1 done on Fable: molly-shell@1 (instances, host catalog, host runs, shell state), tabs of copies in the dock, shared widgets, Molly control plugin (REST / MCP / CLI / voice through the console inside Molly), console-commands client forwards host runs. PR #447 open, UI Review waiting (6 items, group 'molly-fable-version-the-one-interface-for-amberx - Nov 10 3:45 PM'). Deploy: Molly + console redeploy after the merge queue lands it. Supersedes molly-multi-instance-tabs #328 (bar the + button / tab menu) and molly-one-shell s12. Report _claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md",
+     "at": "2026-11-10T15:37:56.710Z"
+    },
+    {
+     "text": "Headless run axf-molly-fable-version-the-one-interface-for-amberx--earl: brief only · start 12.9K tokens ($0.10) · cost $19.80 · 234 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:38:32.200Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T16:01:25.478Z"
     }
    ],
    "approvals": [],
@@ -83855,8 +83883,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:36:39.167Z",
      "note": "",
      "uid": "st-mwa6rhxj01tkx3"
     },
@@ -84353,16 +84381,16 @@
    "title": "Claude Accounts Manager plugin: one ordered list of every account (subscription + API), usage in dollars, terminal column, banner widget, floating overlay",
    "category": "",
    "detail": "New console plugin. 1) ACCOUNTS LIST: reads every Claude account stored on the VPS and lists each: name/label, email, plan, subscription or API, active builder / active worker / not, out of credits, order number, usage used / total, percent left, plan size; usage converted to dollars everywhere usage is shown. 2) ONE ORDER: drag and drop to set the order; subscriptions and API keys are equal to the orchestrator, it follows the order. Remove the 'fall back to API' concept (apiOverflow); API is just another entry. 3) MANAGE: rename, rearrange, add accounts (API keys or subscriptions) in the console; adding opens the terminal and automatically attempts the Claude login. Right-click any account anywhere: rename, reorder, open a Claude Code session in the terminal. 4) TERMINAL COLUMN: plugin adds a collapsible column (hamburger button) to the Terminal listing all VPS Claude accounts with the same management. Uninstalling the plugin removes the column. 5) BANNER WIDGET: drop-down to pick an account; settings choose what it shows (name, number, usage left, API/subscription, email, any combination). 6) FLOATING OVERLAY WINDOW (not a toolbar): small narrow professional window with customizable buttons; editable behavior and sub-menus in plugin settings; resizable, size lock, dockable where the console allows, minimize to main screen, overlay scope (whole OS vs just the console/browser), styleable like any asset. 7) Full API control for everything.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/claude-accounts-manager-plugin-one-ordered-list",
+   "pr": "#448",
    "priority": "P1",
    "createdAt": "2026-11-10T15:25:48.900Z",
-   "updatedAt": "2026-11-10T15:26:50.061Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T15:53:34.764Z",
+   "builtAt": "2026-11-10T15:53:34.764Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -84371,6 +84399,18 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:26:50.061Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-claude-accounts-manager-plugin-one-ordered-list--lenny.",
+     "at": "2026-11-10T15:31:17.644Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-claude-accounts-manager-plugin-one-ordered-list--lenny, own login copy)",
+     "at": "2026-11-10T15:31:20.759Z"
+    },
+    {
+     "text": "Headless run axf-claude-accounts-manager-plugin-one-ordered-list--lenny: brief only · start 12.0K tokens ($0.03) · cost $6.88 · 110 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:53:34.764Z"
     }
    ],
    "approvals": [],
@@ -84381,8 +84421,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "claude-accounts-manager-plugin-one-ordered-list",
+    "brief": "# Build: claude-accounts-manager-plugin-one-ordered-list\n\n## Brett said (verbatim)\nAt: 2026-11-10T15:25:48.900Z\n> Make a plugin that reads all the accounts stored on the VPS, lists them, says if they're active builders, workers, out of credits, API or not, number in the order, usage left, percentage, plan, usage in dollars. Drag and drop to arrange the order. API is no longer a fallback, it's included like any other. Rename, add accounts and APIs in the console; it pops up the terminal and attempts the login. Terminal gets a collapsible column of all Claude accounts, managed the same; the plugin adds that column. Configurable banner widget drop-down. Floating overlay window with custom buttons, editable behavior and sub-menus, resizable, lockable, dockable, minimizable, overlay the whole OS or just the console. Right-click any account to open a Claude Code session.\n\n## What to build\nContinue build \"Claude Accounts Manager plugin: one ordered list of every account (subscription + API), usage in dollars, terminal column, banner widget, floating overlay\" (claude-accounts-manager-plugin-one-ordered-list) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 15:25):\n\"Make a plugin that reads all the accounts stored on the VPS, lists them, says if they're active builders, workers, out of credits, API or not, number in the order, usage left, percentage, plan, usage in dollars. Drag and drop to arrange the order. API is no longer a fallback, it's included like any other. Rename, add accounts and APIs in the console; it pops up the terminal and attempts the login. Terminal gets a collapsible column of all Claude accounts, managed the same; the plugin adds that column. Configurable banner widget drop-down. Floating overlay window with custom buttons, editable behavior and sub-menus, resizable, lockable, dockable, minimizable, overlay the whole OS or just the console. Right-click any account to open a Claude Code session.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) New console plugin. 1) ACCOUNTS LIST: reads every Claude account stored on the VPS and lists each: name/label, email, plan, subscription or API, active builder / active worker / not, out of credits, order number, usage used / total, percent left, plan size; usage converted to dollars everywhere usage is shown. 2) ONE ORDER: drag and drop to set the order; subscriptions and API keys are equal to the orchestrator, it follows the order. Remove the 'fall back to API' concept (apiOverflow); API is just another entry. 3) MANAGE: rename, rearrange, add accounts (API keys or subscriptions) in the console; adding opens the terminal and automatically attempts the Claude login. Right-click any account anywhere: rename, reorder, open a Claude Code session in the terminal. 4) TERMINAL COLUMN: plugin adds a collapsible column (hamburger button) to the Terminal listing all VPS Claude accounts with the same management. Uninstalling the plugin removes the column. 5) BANNER WIDGET: drop-down to pick an account; settings choose what it shows (name, number, usage left, API/subscription, email, any combination). 6) FLOATING OVERLAY WINDOW (not a toolbar): small narrow professional window with customizable buttons; editable behavior and sub-menus in plugin settings; resizable, size lock, dockable where the console allows, minimize to main screen, overlay scope (whole OS vs just the console/browser), styleable like any asset. 7) Full API control for everything.\n[ ] s2 (~30 min) Make a plugin that reads all the accounts stored on the VPS, lists them, says if they're active builders, workers, out of credits, API or not, number in the order, usage left, percentage, plan, usage in dollars. Drag and drop to arrange the order. API is no longer a fallback, it's included like any other. Rename, add accounts and APIs in the console; it pops up the terminal and attempts the login. Terminal gets a collapsible column of all Claude accounts, managed the same; the plugin adds that column. Configurable banner widget drop-down. Floating overlay window with custom buttons, editable behavior and sub-menus, resizable, lockable, dockable, minimizable, overlay the whole OS or just the console. Right-click any account to open a Claude Code session.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step claude-accounts-manager-plugin-one-ordered-list <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link claude-accounts-manager-plugin-one-ordered-list --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step claude-accounts-manager-plugin-one-ordered-list <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note claude-accounts-manager-plugin-one-ordered-list \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -84401,8 +84441,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:49:44.654Z",
      "note": "",
      "uid": "st-mwaufbnx01qp8y"
     },
@@ -84419,8 +84459,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:51:55.143Z",
      "note": "",
      "uid": "st-mwaufbnx02b1jv"
     },
@@ -84440,8 +84480,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:53:21.015Z",
      "note": "",
      "uid": "st-mwaufbnx03zbmt"
     }
@@ -84547,15 +84587,15 @@
    "title": "Retire Build Manager: the orchestrator is the only place that browses and manages builds (tabs, planned + final account pick, 5-min account health check)",
    "category": "",
    "detail": "1) Uninstall/remove the Build Manager plugin. Audit its responsibilities first and hand each to the orchestrator (or the right owner); nothing lost. Supersedes split-builds-pages-build-manager-pending-complet-2. 2) Orchestrator screen tabs: Pending (everything it's been asked to do), Queue, Active, Incomplete, Complete, Errors. 3) Splitting happens right away when a build is filed, so the Queue shows steps. At that point the orchestrator plans model + account. When the build's turn comes in the queue it makes the final account decision and records which account took it. 4) Account pick: subscriptions first (any subscription), then any API account, moving on until one accepts, if what it believed about an account turns out wrong. 5) Account health: every 5 minutes a background check (headless, never touches running builds, never signs anything out) confirms each account can sign in, has credits, and can run the needed model (Fable). The orchestrator always knows every account's status from this, so it doesn't test at dispatch time. Note: reconcile with the Claude Accounts Manager plugin's drag-and-drop account order. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/retire-build-manager-the-orchestrator-is-the-onl",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:29:42.107Z",
-   "updatedAt": "2026-11-10T15:30:22.097Z",
+   "updatedAt": "2026-11-10T16:09:07.402Z",
    "builtAt": "",
    "notes": [
     {
@@ -84565,6 +84605,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:30:22.097Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-retire-build-manager-the-orchestrator-is-the-onl--paulie.",
+     "at": "2026-11-10T15:54:13.084Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-retire-build-manager-the-orchestrator-is-the-onl--paulie, own login copy)",
+     "at": "2026-11-10T15:54:14.658Z"
     }
    ],
    "approvals": [],
@@ -84575,8 +84623,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "retire-build-manager-the-orchestrator-is-the-onl",
+    "brief": "# Build: retire-build-manager-the-orchestrator-is-the-onl\n\n## Brett said (verbatim)\nAt: 2026-11-10T15:29:42.107Z\n> Get rid of build manager. Remove it. Uninstall it. If it has responsibilities, decide who to hand them to. The only thing that browses or manages builds is the orchestrator. Tabs: pending, active, incomplete, complete, errors, queue. He has to split it right away so the queue can show the steps. He'll plan what model, what account. When the time comes up in the queue he makes his final decision and updates which subscription took it. Subscriptions first, then any API. Every five minutes a background headless session that doesn't affect any builds or sign anything out checks all the accounts: can get in, have credits, can accept the Fable model.\n\n## What to build\nContinue build \"Retire Build Manager: the orchestrator is the only place that browses and manages builds (tabs, planned + final account pick, 5-min account health check)\" (retire-build-manager-the-orchestrator-is-the-onl) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 15:29):\n\"Get rid of build manager. Remove it. Uninstall it. If it has responsibilities, decide who to hand them to. The only thing that browses or manages builds is the orchestrator. Tabs: pending, active, incomplete, complete, errors, queue. He has to split it right away so the queue can show the steps. He'll plan what model, what account. When the time comes up in the queue he makes his final decision and updates which subscription took it. Subscriptions first, then any API. Every five minutes a background headless session that doesn't affect any builds or sign anything out checks all the accounts: can get in, have credits, can accept the Fable model.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Uninstall/remove the Build Manager plugin. Audit its responsibilities first and hand each to the orchestrator (or the right owner); nothing lost. Supersedes split-builds-pages-build-manager-pending-complet-2. 2) Orchestrator screen tabs: Pending (everything it's been asked to do), Queue, Active, Incomplete, Complete, Errors. 3) Splitting happens right away when a build is filed, so the Queue shows steps. At that point the orchestrator plans model + account. When the build's turn comes in the queue it makes the final account decision and records which account took it. 4) Account pick: subscriptions first (any subscription), then any API account, moving on until one accepts, if what it believed about an account turns out wrong. 5) Account health: every 5 minutes a background check (headless, never touches running builds, never signs anything out) confirms each account can sign in, has credits, and can run the needed model (Fable). The orchestrator always knows every account's status from this, so it doesn't test at dispatch time. Note: reconcile with the Claude Accounts Manager plugin's drag-and-drop account order. Full API control.\n[ ] s2 (~30 min) Get rid of build manager. Remove it. Uninstall it. If it has responsibilities, decide who to hand them to. The only thing that browses or manages builds is the orchestrator. Tabs: pending, active, incomplete, complete, errors, queue. He has to split it right away so the queue can show the steps. He'll plan what model, what account. When the time comes up in the queue he makes his final decision and updates which subscription took it. Subscriptions first, then any API. Every five minutes a background headless session that doesn't affect any builds or sign anything out checks all the accounts: can get in, have credits, can accept the Fable model.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/retire-build-manager-the-orchestrator-is-the-onl.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/retire-build-manager-the-orchestrator-is-the-onl.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step retire-build-manager-the-orchestrator-is-the-onl <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link retire-build-manager-the-orchestrator-is-the-onl --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step retire-build-manager-the-orchestrator-is-the-onl <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note retire-build-manager-the-orchestrator-is-the-onl \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -84595,8 +84643,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:09:05.618Z",
      "note": "",
      "uid": "st-mwaujv9t01w0kb"
     },
@@ -84613,8 +84661,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:09:07.402Z",
      "note": "",
      "uid": "st-mwaujv9u020t73"
     },
@@ -84638,6 +84686,703 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwaujv9u03omjr"
+    }
+   ]
+  },
+  {
+   "id": "account-order-switch-custom-drag-and-drop-order",
+   "title": "Account order switch: custom drag-and-drop order or automatic (subscriptions first, then API)",
+   "category": "",
+   "detail": "Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/account-order-switch-custom-drag-and-drop-order",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:31:10.459Z",
+   "updatedAt": "2026-11-10T16:14:48.483Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:31:13.501Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:32:17.511Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-account-order-switch-custom-drag-and-drop-order--sully.",
+     "at": "2026-11-10T16:07:12.789Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-order-switch-custom-drag-and-drop-order--sully, own login copy)",
+     "at": "2026-11-10T16:07:14.776Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Drag and drop over. In a switch, a switch if you want to customize it or do that automatically.",
+    "at": "2026-11-10T15:31:10.459Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "account-order-switch-custom-drag-and-drop-order",
+    "brief": "# Build: account-order-switch-custom-drag-and-drop-order\n\n## Brett said (verbatim)\nAt: 2026-11-10T15:31:10.459Z\n> Drag and drop over. In a switch, a switch if you want to customize it or do that automatically.\n\n## What to build\nContinue build \"Account order switch: custom drag-and-drop order or automatic (subscriptions first, then API)\" (account-order-switch-custom-drag-and-drop-order) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 15:31):\n\"Drag and drop over. In a switch, a switch if you want to customize it or do that automatically.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.\n[ ] s2 (~30 min) Drag and drop over. In a switch, a switch if you want to customize it or do that automatically.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step account-order-switch-custom-drag-and-drop-order <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link account-order-switch-custom-drag-and-drop-order --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step account-order-switch-custom-drag-and-drop-order <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note account-order-switch-custom-drag-and-drop-order \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T16:12:13.536Z",
+     "note": "",
+     "uid": "st-mwaumcbr012qq5"
+    },
+    {
+     "id": "s2",
+     "text": "Drag and drop over. In a switch, a switch if you want to customize it or do that automatically.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T16:14:48.483Z",
+     "note": "",
+     "uid": "st-mwaumcbr02y2fb"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaumcbr039s0g"
+    }
+   ]
+  },
+  {
+   "id": "search-bar-plugin-snappable-search-asset-globe-e",
+   "title": "Search bar plugin: snappable search asset (globe = everything, gear = settings only), live tree drop-down with quick-set sub-menus; replaces the old Search everywhere",
+   "category": "",
+   "detail": "New plugin providing a search bar asset: snappable/embeddable widget for toolbars and banners like any other asset; multiple instances allowed; multiple view types. 1) Scope switch: globe = search everywhere (whole program, every plugin, every setting); gear = settings only. 2) Matching: its own built-in logic, live letter-by-letter results; regular expressions, exact match and other options in its own settings. Uses AI only if an Ollama (local Llama) connection exists AND AI assistance is enabled; otherwise no AI. 3) Results drop-down: left column = categories (plugins, settings interfaces, etc., named sensibly); right side = tree listing of the matches under each. Selecting a result navigates to it. 4) Right-click a result: spawns a sub-menu tree to the right or left (whichever fits on screen) with that setting's options (on/off, multi-choice); pick directly from the drop-down with no confirmation, just the small check-mark confirmation toast in place. 5) Remove the existing Search everywhere. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:33:40.111Z",
+   "updatedAt": "2026-11-10T15:34:24.186Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:33:41.444Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:34:24.186Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to make a plugin that is a search bar. Multiple types of views, you can have multiple of them, an asset. Globe searches everywhere, the whole program, every plugin, every setting; gear only searches settings. Regular expressions; unless there's a Llama connection and AI assistant use enabled, it uses its own logic. Letter by letter the possibilities come up. Drop menu with categories column on the left, tree of matches. Select one, it goes to it. Right click spawns a sub-menu with the options for that switch, quick select with no confirmation except the little check mark notification. Embeddable widget that snaps into toolbars and banners. Remove the other search everywhere.",
+    "at": "2026-11-10T15:33:40.111Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "New plugin providing a search bar asset: snappable/embeddable widget for toolbars and banners like any other asset; multiple instances allowed; multiple view types. 1) Scope switch: globe = search everywhere (whole program, every plugin, every setting); gear = settings only. 2) Matching: its own built-in logic, live letter-by-letter results; regular expressions, exact match and other options in its own settings. Uses AI only if an Ollama (local Llama) connection exists AND AI assistance is enabled; otherwise no AI. 3) Results drop-down: left column = categories (plugins, settings interfaces, etc., named sensibly); right side = tree listing of the matches under each. Selecting a result navigates to it. 4) Right-click a result: spawns a sub-menu tree to the right or left (whichever fits on screen) with that setting's options (on/off, multi-choice); pick directly from the drop-down with no confirmation, just the small check-mark confirmation toast in place. 5) Remove the existing Search everywhere. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaup22i01fc2y"
+    },
+    {
+     "id": "s2",
+     "text": "I want to make a plugin that is a search bar. Multiple types of views, you can have multiple of them, an asset. Globe searches everywhere, the whole program, every plugin, every setting; gear only searches settings. Regular expressions; unless there's a Llama connection and AI assistant use enabled, it uses its own logic. Letter by letter the possibilities come up. Drop menu with categories column on the left, tree of matches. Select one, it goes to it. Right click spawns a sub-menu with the options for that switch, quick select with no confirmation except the little check mark notification. Embeddable widget that snaps into toolbars and banners. Remove the other search everywhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaup22i026l7b"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/search-bar-plugin-snappable-search-asset-globe-e.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/search-bar-plugin-snappable-search-asset-globe-e.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaup22i03gu37"
+    }
+   ]
+  },
+  {
+   "id": "search-bar-plugin-add-on-search-builds-session-h",
+   "title": "Search bar plugin add-on: search builds, session histories and build notes; jump to the highlighted spot in the log",
+   "category": "",
+   "detail": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:36:52.351Z",
+   "updatedAt": "2026-11-10T15:38:29.044Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:36:54.265Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:38:29.044Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make sure you can search for builds, browse all the session histories and building notes, list all the hits, click it and it brings you to that session's log with that spot highlighted. More than one instance: instance one, two, three, four. Icon by type. Really powerful search plugin with extensive integration and easy actions. Completely API controlled without AI. Anything that requires AI has a switch to enable or disable AI use. Not automatically use AI. Disable it.",
+    "at": "2026-11-10T15:36:52.351Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauub0501qi2a"
+    },
+    {
+     "id": "s2",
+     "text": "Make sure you can search for builds, browse all the session histories and building notes, list all the hits, click it and it brings you to that session's log with that spot highlighted. More than one instance: instance one, two, three, four. Icon by type. Really powerful search plugin with extensive integration and easy actions. Completely API controlled without AI. Anything that requires AI has a switch to enable or disable AI use. Not automatically use AI. Disable it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauub05028abx"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/search-bar-plugin-add-on-search-builds-session-h.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/search-bar-plugin-add-on-search-builds-session-h.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauub0503p09q"
+    }
+   ]
+  },
+  {
+   "id": "projects-create-a-new-project-and-move-builds-be",
+   "title": "Projects: create a new project and move builds between projects; move every pending build older than 2 days into a new project",
+   "category": "",
+   "detail": "1) Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:38:42.207Z",
+   "updatedAt": "2026-11-10T15:40:25.337Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:40:25.337Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
+    "at": "2026-11-10T15:38:42.207Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauwsqh01mirs"
+    },
+    {
+     "id": "s2",
+     "text": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauwsqh02sqa2"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauwsqh03vre8"
+    }
+   ]
+  },
+  {
+   "id": "project-manager-every-project-its-own-console-in",
+   "title": "Project Manager: every project its own console instance, multi-project tab view, project types (self/framework dev vs new app), live app preview window",
+   "category": "",
+   "detail": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:40:27.752Z",
+   "updatedAt": "2026-11-10T15:41:30.058Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:40:29.748Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:41:30.058Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
+    "at": "2026-11-10T15:40:27.752Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauy6oa017907"
+    },
+    {
+     "id": "s2",
+     "text": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauy6oa023wkm"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/project-manager-every-project-its-own-console-in.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/project-manager-every-project-its-own-console-in.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauy6oa03p7u0"
+    }
+   ]
+  },
+  {
+   "id": "project-manager-add-on-new-project-prompt-asks-i",
+   "title": "Project Manager add-on: new-project prompt asks internal build or boilerplate for an external app",
+   "category": "",
+   "detail": "Amends the Project Manager build. When starting a new project, ask: Internal build (framework/self development) or External app (start from a boilerplate template). External app shows boilerplate choices. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:40:48.813Z",
+   "updatedAt": "2026-11-10T15:42:08.969Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:40:50.433Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:42:08.969Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When you start a project, it will ask you if it's going to be an internal build or if you want a boilerplate to build an external app.",
+    "at": "2026-11-10T15:40:48.813Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Project Manager build. When starting a new project, ask: Internal build (framework/self development) or External app (start from a boilerplate template). External app shows boilerplate choices. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauz0p604vjv0"
+    },
+    {
+     "id": "s2",
+     "text": "When you start a project, it will ask you if it's going to be an internal build or if you want a boilerplate to build an external app.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauz0p605fwcg"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/project-manager-add-on-new-project-prompt-asks-i.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/project-manager-add-on-new-project-prompt-asks-i.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauz0p606osns"
+    }
+   ]
+  },
+  {
+   "id": "project-manager-add-on-drag-a-build-to-another-p",
+   "title": "Project Manager add-on: drag a build to another project's tab/window, drop dialog picks Pending, Queued (with position) or Planned",
+   "category": "",
+   "detail": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:43:05.952Z",
+   "updatedAt": "2026-11-10T15:44:54.065Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:43:08.021Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:44:54.065Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+    "at": "2026-11-10T15:43:05.952Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwav2k3601cinw"
+    },
+    {
+     "id": "s2",
+     "text": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwav2k36027f46"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwav2k3603izhu"
     }
    ]
   }

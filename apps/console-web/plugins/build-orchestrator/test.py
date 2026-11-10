@@ -133,6 +133,19 @@ try:
     check(_calls[-1][-2] == "order=hulu-api,w-max,other-api", "the order reaches the CLI as one comma list")
     check(srv.order_raises_api(["a", "x-api"], ["x-api", "a"], {"x-api"}) == ["x-api"] and srv.order_raises_api(["x-api", "a"], ["a", "x-api"], {"x-api"}) == [], "moving an API account later is free; earlier is Brett's")
     check(hasattr(svc, "set_order") and hasattr(svc, "accounts") and hasattr(svc, "order"), "axf.build-dispatch@1 reads and sets the account order")
+    # the Custom / Automatic switch (Brett, Nov 10 2026): auto opens every API account outside the order, so it is his click
+    for mode, brett, want, what in (("auto", False, 403, "a session switches to automatic while other-api is outside the order"),
+                                    ("auto", True, 200, "Brett switches to automatic"), ("custom", False, 200, "anyone switches back to custom"),
+                                    ("Automatic", True, 200, "spoken words map to the mode"), ("sideways", True, 400, "an unknown mode is a 400")):
+        try:
+            asyncio.run(srv.pipeline_settings_set(_Req({"orderMode": mode}, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"orderMode: {what}: {want}")
+    check(_calls[-1][-2] == "orderMode=auto", "the mode reaches the CLI as orderMode=auto")
+    check(srv.mode_raises_api("auto", ["w-max", "x-api"], {"x-api", "y-api"}) == ["y-api"] and srv.mode_raises_api("custom", [], {"x-api"}) == [], "auto opens only the API accounts outside the order; custom opens none")
+    check(hasattr(svc, "order_mode") and hasattr(svc, "set_order_mode") and svc.order_mode() == "custom", "axf.build-dispatch@1 reads and flips the switch (custom by default)")
     for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:
             asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))

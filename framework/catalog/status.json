@@ -2274,5 +2274,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Claude accounts manager plugin: one ordered list of every account (subscription + API, no overflow rule), usage in % and $, drag-and-drop order the orchestrator follows, rename/add via Terminal, Claude Code per account, Terminal column, banner widget, floating overlay; REST/MCP/CLI/voice/deep link. Kotlin twin deferred."
+  },
+  "cx.claude.accountorderswitch": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Custom / Automatic account order switch (pipeline-settings@1 orderMode): Custom = the orchestrator follows the drag-and-drop order exactly; Automatic = subscriptions first, then any API. Switch on the Claude accounts manager page, Settings and Terminal column; REST/MCP/CLI/voice/deep link. Kotlin twin deferred."
   }
 }

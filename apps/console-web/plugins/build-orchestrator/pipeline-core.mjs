@@ -25,6 +25,10 @@
  *              and has room; otherwise it is skipped and the reason is said (apiState()). Accounts left out of a set
  *              order: subscriptions go after the listed ones, API accounts take nothing. The per-build override
  *              (pipeline.route = api | subscription) still narrows one build to one kind.
+ *   mode       (Brett, Nov 10 2026: "a switch if you want to customize it or do that automatically") setting
+ *              orderMode: custom = the order above, exactly, subscriptions and API alike; auto = every subscription
+ *              first (least busy, workers before the console's account), then any ready API account (least busy, least
+ *              spent). In auto the saved order is kept but not followed, so switching back restores it.
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -51,6 +55,8 @@ export const DEFAULTS = Object.freeze({
   autoQueue: false,
   /** One ordered list of every account, subscription and API alike: the dispatcher takes the first that can run the phase. [] = the old subscriptions-only routing. */
   order: [],
+  /** custom = follow `order` exactly; auto = subscriptions first, then any ready API account (the saved order is kept, not followed). */
+  orderMode: 'custom',
   /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
   apiAccounts: [],
 });
@@ -58,6 +64,7 @@ const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
+export const ORDER_MODES = ['custom', 'auto'];
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A list of account names (array or comma text), lower-case, valid, each once. */
 export const names = (v) => [...new Set((typeof v === 'string' || typeof v === 'number' ? String(v).split(',') : list(v)).map((n) => str(n, 32).trim().toLowerCase()).filter((n) => NAME_RE.test(n)))];
@@ -76,6 +83,7 @@ export function normSettings(raw = {}) {
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
     order: names(o.order),
+    orderMode: ORDER_MODES.includes(o.orderMode) ? o.orderMode : DEFAULTS.orderMode,
     apiAccounts: names(o.apiAccounts),
   };
 }
@@ -89,8 +97,8 @@ export function normSettings(raw = {}) {
  *   parallel   sessions at once: own.parallel > settings.parallelPerAccount
  *   usable     may the dispatcher put a build on it? never limited, never one Brett switched off; workers always; the
  *              console's account only when no worker exists and useConsoleAccount is on; an API key only while it is in
- *              the order (settings.order) and apiState() says it is ready
- *   rank       its place in settings.order (0 = first), or null when it isn't listed
+ *              the order (settings.order) and apiState() says it is ready; with orderMode auto, whenever it is ready
+ *   rank       its place in settings.order (0 = first), or null when it isn't listed or orderMode is auto
  */
 export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now() } = {}) {
   const o = own && typeof own === 'object' ? own : {};
@@ -105,18 +113,19 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const off = o.use === false;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : null;
   const name = str(row?.name, 40);
-  const at = settings.order.indexOf(name);
+  const auto = settings.orderMode === 'auto';
+  const at = auto ? -1 : settings.order.indexOf(name);
   const rank = at >= 0 ? at : null;
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
   const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
   const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
   // an API account is one more entry in the order: usable while listed and ready; never by itself when the order is empty
-  const usable = apiKey ? rank !== null && !!api?.usable
+  const usable = apiKey ? (auto || rank !== null) && !!api?.usable
     : !off && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
   if (off) why = 'switched off for the pipeline';
   else if (limited) why = `${limited.reason === 'auth' ? (apiKey ? 'key rejected' : 'login expired') : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
-  else if (apiKey && rank === null) why = 'API key (billed per token): not in the account order, so it takes no build (drag it into the order to use it)';
+  else if (apiKey && !auto && rank === null) why = 'API key (billed per token): not in the account order, so it takes no build (drag it into the order to use it)';
   else if (apiKey && !usable) why = api?.why || 'API key not ready';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   return { name, rank, email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40),
@@ -150,15 +159,16 @@ const rankOf = (a) => (Number.isInteger(a?.rank) ? a.rank : Number.MAX_SAFE_INTE
 
 /**
  * Accounts that can take one more session on `model` now; Fable needs an account with Fable. With an order set
- * (any account has a rank) the order decides, subscription or API alike. Without one: fewest running first, Opus
- * away from Fable accounts, workers before the console's account (API accounts are never usable then).
+ * (any account has a rank) the order decides, subscription or API alike. Without one (no order, or orderMode auto):
+ * every subscription before any API account, then fewest running first, Opus away from Fable accounts, workers before
+ * the console's account (API accounts are usable then only in orderMode auto).
  */
 export function candidates(accounts, model) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   const ordered = list(accounts).some((a) => Number.isInteger(a?.rank));
   // Opus work goes to accounts without Fable first, so the Fable accounts stay free for Fable phases
   return list(accounts).filter((a) => a.usable && a.free > 0 && (!needFable || a.fable))
-    .sort((a, b) => (ordered ? rankOf(a) - rankOf(b) : 0) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
+    .sort((a, b) => (ordered ? rankOf(a) - rankOf(b) : (a.kind === 'api' ? 1 : 0) - (b.kind === 'api' ? 1 : 0)) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
 }
 
 /** API accounts that can take one more build on `model` now (the per-build api override): order first, then least busy, then the least spent today. */
@@ -178,7 +188,8 @@ export function apiNoAccountWhy(accounts, model) {
 
 /**
  * Where one build goes this tick: { account, kind, rule, why }. `rule` = override (pipeline.route api) | order (the
- * first account in settings.order that can run it, subscription or API) | '' (no order set: a subscription account).
+ * first account in settings.order that can run it, subscription or API) | auto (orderMode auto: a subscription, then
+ * any ready API account) | '' (no order set: a subscription account).
  * pipeline.route subscription keeps one build off API accounts. No account = account '' and `why` says what keeps
  * each option out (a missing key, a cap, a full account).
  */
@@ -190,8 +201,8 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
   }
   const pool = route === 'subscription' ? list(accounts).filter((a) => a.kind !== 'api') : list(accounts);
   const a = candidates(pool, model)[0];
-  const rule = settings.order.length ? 'order' : '';
-  if (a) return { account: a.name, kind: a.kind, rule, why: a.kind === 'api' ? `API account ${a.name} is next in the account order` : '' };
+  const rule = settings.orderMode === 'auto' ? 'auto' : settings.order.length ? 'order' : '';
+  if (a) return { account: a.name, kind: a.kind, rule, why: a.kind !== 'api' ? '' : rule === 'auto' ? `every subscription account is full or out, so the automatic order sends it to API account ${a.name}` : `API account ${a.name} is next in the account order` };
   const why = noAccountWhy(pool, model);
   return { account: '', kind: '', rule, why: route === 'subscription' ? `${why} (this build is kept off API accounts)` : why };
 }
@@ -204,7 +215,8 @@ export function noAccountWhy(accounts, model) {
   const able = needFable ? usable.filter((a) => a.fable) : usable;
   if (!able.length) return `no account with ${MODEL_LABELS[FOUNDATION_MODEL]} (${usable.map((a) => a.name).join(', ')} ${usable.length === 1 ? 'has' : 'have'} none)`;
   // the rest of the order and why each is out (a missing key, a cap), so the wait says what to fix
-  const out = list(accounts).filter((a) => !a.usable && Number.isInteger(a.rank) && a.why).map((a) => `${a.name}: ${a.why}`);
+  // (orderMode auto: every API account that isn't ready; an API account merely left out of a custom order is not news)
+  const out = list(accounts).filter((a) => !a.usable && a.why && (Number.isInteger(a.rank) || (a.kind === 'api' && !/not in the account order/.test(a.why)))).map((a) => `${a.name}: ${a.why}`);
   return `${able.map((a) => `${a.name} ${a.running}/${a.parallel}`).join(', ')}: every ${needFable ? 'Fable ' : ''}account is at its parallel cap${out.length ? `; ${out.join('; ')}` : ''}`;
 }
 

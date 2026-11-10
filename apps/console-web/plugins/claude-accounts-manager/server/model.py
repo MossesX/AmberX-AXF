@@ -128,8 +128,20 @@ def plan_price(plan: str, name: str, s: dict[str, Any]) -> float | None:
     return None
 
 
-def effective_order(order: list[str], rows: list[dict[str, Any]]) -> list[str]:
-    """The order as the dispatcher follows it: the saved one (known names only), else every subscription in host order."""
+MODES = ("custom", "auto")
+
+
+def clean_mode(v: Any) -> str:
+    """custom | auto from a mode or the words people use ('' = not a mode)."""
+    m = v.strip().lower() if isinstance(v, str) else ("auto" if v is True else "custom" if v is False else "")
+    return {"automatic": "auto", "on": "auto", "manual": "custom", "drag": "custom", "off": "custom"}.get(m, m) if m in (*MODES, "automatic", "on", "manual", "drag", "off") else ""
+
+
+def effective_order(order: list[str], rows: list[dict[str, Any]], mode: str = "custom") -> list[str]:
+    """The order as the dispatcher follows it. custom: the saved one (known names only), else every subscription in host
+    order. auto: every subscription, then every API account (the dispatcher picks the least busy within each kind)."""
+    if mode == "auto":
+        return [r["name"] for r in rows if r.get("kind") != "api"] + [r["name"] for r in rows if r.get("kind") == "api"]
     known = [r["name"] for r in rows]
     listed = [n for n in order if n in known]
     if listed:
@@ -218,12 +230,16 @@ def row(a: dict[str, Any], u: dict[str, Any] | None, d: dict[str, Any] | None, s
     }
 
 
-def rows(view: dict[str, Any], usage: dict[str, Any], dispatch: list[dict[str, Any]], order: list[str], s: dict[str, Any]) -> dict[str, Any]:
-    """The list: accounts in the dispatcher's order (n = 1, 2…), then the ones out of it (n = None)."""
+def rows(view: dict[str, Any], usage: dict[str, Any], dispatch: list[dict[str, Any]], order: list[str], s: dict[str, Any],
+         mode: str = "custom") -> dict[str, Any]:
+    """The list: accounts in the dispatcher's order (n = 1, 2…), then the ones out of it (n = None). `mode` is the
+    switch: custom = the drag-and-drop order, auto = subscriptions first, then API. customOrder is the saved
+    drag-and-drop order either way (what Custom goes back to)."""
+    mode = mode if mode in MODES else "custom"
     us = {str(x.get("name")): x for x in (usage.get("accounts") or []) if isinstance(x, dict)}
     ds = {str(x.get("name")): x for x in dispatch if isinstance(x, dict)}
     base = [row(a, us.get(str(a.get("name"))), ds.get(str(a.get("name"))), s) for a in (view.get("accounts") or []) if isinstance(a, dict) and a.get("name")]
-    eff = effective_order(order, base)
+    eff = effective_order(order, base, mode)
     by = {r["name"]: r for r in base}
     listed = [by[n] for n in eff]
     rest = [r for r in base if r["name"] not in eff]
@@ -233,9 +249,14 @@ def rows(view: dict[str, Any], usage: dict[str, Any], dispatch: list[dict[str, A
         r["n"], r["inOrder"] = None, False
         if r["kind"] == "api" and not r["why"]:
             r["why"] = "not in the order: takes no build (drag it in)"
+    if mode == "auto":
+        for r in listed:
+            if r["kind"] == "api" and (not r["why"] or "not in the account order" in r["why"]):   # a custom-mode reason is stale here
+                r["why"] = "automatic: takes a build only when every subscription is full or out"
     all_rows = listed + rest
     known = [r["totalUsd"] for r in all_rows if r["totalUsd"] is not None]
-    return {"accounts": all_rows, "order": eff, "orderSaved": bool([n for n in order if n in by]),
+    return {"accounts": all_rows, "order": eff, "mode": mode, "customOrder": effective_order(order, base, "custom"),
+            "orderSaved": bool([n for n in order if n in by]),
             "totals": {"accounts": len(all_rows), "builders": sum(1 for r in all_rows if r["status"] == "builder"),
                        "workers": sum(1 for r in all_rows if r["worker"]), "out": sum(1 for r in all_rows if r["outOfCredits"]),
                        "api": sum(1 for r in all_rows if r["kind"] == "api"),
