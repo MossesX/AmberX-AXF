@@ -14,6 +14,7 @@ import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
 import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
+export * from './cells';
 import './datagrid.css';
 
 export const DATAGRID_LIBRARY_ID = 'ai.amberx.axf.datagrid';
@@ -76,6 +77,10 @@ export interface DataGridProps<R> {
    */
   rowRef?: (r: R) => RowRef | null;
   compact?: boolean;
+  /** two-line rows: cells align to the top and get more air (titles with a meta line, stacked dates, step meters) */
+  tall?: boolean;
+  /** rows that are running now: an animated sweep across the row (still under prefers-reduced-motion) */
+  rowLive?: (r: R) => boolean;
   /** drag: what moved where (row / group, before / after / inside a group) */
   onMove?: (item: { kind: 'row' | 'group'; id: string }, target: { kind: 'row' | 'group'; id: string }, pos: DropPos) => void;
   onTrash?: (item: { kind: 'row' | 'group'; id: string; label: string }) => void;
@@ -161,7 +166,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   } : {});
 
   const grid = (
-    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
+    <div className={`axf-grid ${p.compact ? 'is-compact' : ''} ${p.tall ? 'is-tall' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (
@@ -206,7 +211,7 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
   const expand = config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
   return (
     <>
-      <div className={`axf-grid-row ${p.selected === id ? 'is-active' : ''} ${p.multi?.includes(id) ? 'is-multi' : ''} axf-grid-edge--${p.rowTone?.(r) ?? 'muted'}`} role="row" aria-selected={p.selected === id}
+      <div className={`axf-grid-row ${p.selected === id ? 'is-active' : ''} ${p.multi?.includes(id) ? 'is-multi' : ''} axf-grid-edge--${p.rowTone?.(r) ?? 'muted'}${p.rowLive?.(r) ? ' is-live' : ''}`} role="row" aria-selected={p.selected === id}
         data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
         {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
         <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>

@@ -23,3 +23,59 @@
 /* row hooks (grid-hook@1): the hook buttons sit with the expand button; the tail track sizes to them, nothing overlaps */
 .axf-grid-tail { display: inline-flex; align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
 .axf-grid-hooks { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }
+/* two-line rows (tall): cells align to the top line, a little more air (Brett, Nov 9 2026: "it can be a double wide row") */
+.axf-grid.is-tall .axf-grid-row { align-items: start; padding-block: var(--fx-dens-gap-lg); }
+.axf-grid.is-tall .axf-grid-cell { align-items: flex-start; }
+.axf-grid.is-tall .axf-grid-tail, .axf-grid.is-tall .axf-dnd-grip { align-self: center; }
+/* a live row: the status edge sweeps (the "animated thing in the row") */
+.axf-grid-row.is-live { background-image: linear-gradient(90deg, transparent, var(--fx-accent-soft), transparent); background-size: 40% 100%; background-repeat: no-repeat; animation: axf-grid-sweep 2.4s var(--fx-ease) infinite; }
+.axf-grid-row.is-live:hover { background-color: var(--fx-surface2); }
+@keyframes axf-grid-sweep { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+
+/* cells (cells.tsx) */
+.axf-cell-muted { color: var(--fx-muted); }
+.axf-cell-title { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: 0; width: 100%; }
+.axf-cell-title__lead { display: inline-flex; align-items: center; min-height: calc(var(--fx-font-size) * 1.4); flex: none; }
+.axf-cell-title__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axf-cell-title__main { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; flex-wrap: wrap; }
+.axf-cell-title__text { font-weight: 600; color: var(--fx-text); line-height: var(--fx-type-line-tight); overflow: hidden; text-overflow: ellipsis; white-space: normal; overflow-wrap: anywhere; }
+.axf-cell-title__text.is-link { cursor: pointer; }
+.axf-cell-title__text.is-link:hover { color: var(--fx-accent); }
+.axf-cell-title__sub { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--fx-dens-gap-sm); row-gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-xs); color: var(--fx-muted); }
+.axf-cell-title__bit { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axf-cell-title__bit + .axf-cell-title__bit::before { content: '·'; margin-inline-end: var(--fx-dens-gap-sm); color: var(--fx-border); }
+.axf-cell-dates { display: grid; grid-template-columns: auto 1fr; column-gap: var(--fx-dens-gap-md); row-gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm); }
+.axf-cell-dates__row { display: contents; }
+.axf-cell-dates__label { color: var(--fx-muted); font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: 0.04em; align-self: center; }
+.axf-cell-dates__value { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.axf-cell-steps { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); width: 100%; min-width: 0; }
+.axf-cell-steps__count { display: flex; align-items: baseline; gap: var(--fx-dens-gap-xs); font-variant-numeric: tabular-nums; font-size: var(--fx-type-root-sm); }
+.axf-cell-steps__pct { margin-inline-start: auto; color: var(--fx-muted); font-size: var(--fx-type-root-xs); }
+.axf-cell-steps__now { font-size: var(--fx-type-root-xs); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axf-elapsed { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; font-weight: 600; color: var(--fx-accent); }
+
+/* LivePulse: a dot with a ripple ring */
+.axf-pulse { --axf-pulse: var(--fx-accent); position: relative; display: inline-flex; width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); flex: none; }
+.axf-pulse--success { --axf-pulse: var(--fx-success); } .axf-pulse--warning { --axf-pulse: var(--fx-warning); } .axf-pulse--danger { --axf-pulse: var(--fx-danger); } .axf-pulse--info { --axf-pulse: var(--fx-info); }
+.axf-pulse__dot { position: absolute; inset: 0; border-radius: 50%; background: var(--axf-pulse); }
+.axf-pulse::before, .axf-pulse::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--axf-pulse); opacity: var(--fx-opacity-muted); animation: axf-pulse-ring 1.8s var(--fx-ease) infinite; }
+.axf-pulse::after { animation-delay: 0.9s; }
+.axf-pulse.is-still::before, .axf-pulse.is-still::after { animation: none; opacity: 0; }
+@keyframes axf-pulse-ring { from { transform: scale(1); opacity: var(--fx-opacity-muted); } to { transform: scale(2.6); opacity: 0; } }
+
+/* DetailSections: an expanded row as a sub-grid of collapsible cards */
+.axf-detail-sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 34)), 1fr)); gap: var(--fx-dens-gap-lg); }
+.axf-detail-section { background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); min-width: 0; }
+.axf-detail-section.is-wide { grid-column: 1 / -1; }
+.axf-detail-section__head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); cursor: pointer; list-style: none; font-size: var(--fx-type-root-sm); font-weight: 600; user-select: none; -webkit-user-select: none; }
+.axf-detail-section__head::-webkit-details-marker { display: none; }
+.axf-detail-section__title { flex: 1 1 auto; min-width: 0; }
+.axf-detail-section__caret { color: var(--fx-muted); transition: transform var(--fx-motion) var(--fx-ease); }
+.axf-detail-section:not([open]) .axf-detail-section__caret { transform: rotate(-90deg); }
+.axf-detail-section[open] > .axf-detail-section__head { border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axf-detail-section__body { padding: var(--fx-dens-gap-lg); font-size: var(--fx-type-root-sm); min-width: 0; overflow-wrap: anywhere; }
+.axf-detail-facts { display: grid; grid-template-columns: auto 1fr; column-gap: var(--fx-dens-gap-lg); row-gap: var(--fx-dens-gap-sm); margin: 0; }
+.axf-detail-facts__row { display: contents; }
+.axf-detail-facts dt { color: var(--fx-muted); }
+.axf-detail-facts dd { margin: 0; min-width: 0; }
+@media (prefers-reduced-motion: reduce) { .axf-grid-row.is-live, .axf-pulse::before, .axf-pulse::after, .axf-detail-section__caret { animation: none; transition: none; } }
