@@ -1,0 +1,58 @@
+# Skin checker (skin-check@1): every skin and design package is scored for a professional look (spacing on the token
+# scale, typefaces and type scale, palette, WCAG contrast, radius / border / shadow). The job fails when a skin is
+# below the configured threshold (packages/skin-checker/ci/settings.json: minScore, failOnError) and also below its
+# recorded baseline (packages/skin-checker/ci/baseline.json), or is new and fails: a ratchet, so the shipped skins that
+# do not pass yet never block unrelated work, and none may get worse. The full issue list is uploaded as an artifact.
+#   Locally: AXF_SKIN_EDITOR_DIR=packages/skin-checker/ci node framework/cli/axf.mjs skin check --all --baseline packages/skin-checker/ci/baseline.json
+#   After fixing skins: … skin check --all --write-baseline packages/skin-checker/ci/baseline.json (commit it)
+name: Skins
+
+on:
+  pull_request:
+    paths:
+      - 'framework/assets/skin/**'
+      - 'framework/assets/design-package/**'
+      - 'framework/assets/color-theme/**'
+      - 'framework/assets/style-theme/**'
+      - 'framework/assets/typography/**'
+      - 'framework/assets/density/**'
+      - 'framework/assets/sizing/**'
+      - 'framework/core/engines/scale-rules.mjs'
+      - 'packages/skin-checker/**'
+      - '.github/workflows/skins.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  skin-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Unit tests
+        run: npx -y tsx packages/skin-checker/test/skin-checker.test.ts
+      - name: Check every skin
+        env:
+          AXF_SKIN_EDITOR_DIR: ${{ github.workspace }}/packages/skin-checker/ci
+        run: node framework/cli/axf.mjs skin check --all --json --baseline packages/skin-checker/ci/baseline.json --out skin-check.json > /dev/null
+      - name: Summary
+        if: always()
+        run: |
+          [ -f skin-check.json ] || exit 0
+          node -e '
+            const r = require("./skin-check.json");
+            const rows = (r.results || []).map((x) => `| ${x.skin.id} | ${x.score} | ${x.grade} | ${x.pass ? "pass" : "fail"} | ${x.counts.error} / ${x.counts.warning} / ${x.counts.info} | ${x.fixable} |`);
+            const reg = (r.regressions || []).map((x) => `- ${x.skin}: ${x.score}${x.baseline === null ? " (new skin)" : ` (baseline ${x.baseline})`}`);
+            console.log(["## Skin checker", "", reg.length ? "Below the threshold and the baseline:\n" + reg.join("\n") : "No skin got worse.", "", "| Skin | Score | Grade | Pass | Errors / warnings / info | Fixable |", "| --- | --- | --- | --- | --- | --- |", ...rows].join("\n"));
+          ' >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload the issue list
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skin-check
+          path: skin-check.json
+          if-no-files-found: ignore

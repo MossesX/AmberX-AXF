@@ -4,6 +4,9 @@
  *   axf skin list                                   every skin and design package with its last score
  *   axf skin check <skin> [--cached] [--json]       run the checker (or show the last result); exit 1 when it fails
  *   axf skin check --all [--json] [--out <file>]    every skin; exit 1 when any fails
+ *       --baseline <file>                           CI ratchet: exit 1 only for a skin that fails and scores below its
+ *                                                   baseline (a regression) or has none (a new skin that fails)
+ *       --write-baseline <file>                     record every skin's score as the new baseline
  *   axf skin fix <skin> <issueId…> [--json]         apply those fixes
  *   axf skin fix <skin> --all [--json]              apply every fix
  *       --in-place                                  rewrite the repo's asset files instead of the console's copies
@@ -16,7 +19,7 @@
  *
  * Exit codes: 0 pass / done, 1 the skin (or any skin, with --all) does not pass, 2 usage or load error.
  */
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { SKIN_CHECK_EXIT_FAIL, SKIN_CHECK_CATEGORY_LABEL, SKIN_CHECK_CATEGORIES, type SkinCheckResult } from './contract.ts';
 import { call, type CoreAnswer } from './core.ts';
 
@@ -42,7 +45,8 @@ export function main(argv: string[]): number {
   const json = argv.includes('--json');
   const flag = (f: string) => argv.includes(f);
   const optVal = (f: string) => { const i = argv.indexOf(f); return i >= 0 ? argv[i + 1] : undefined; };
-  const pos = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--out');
+  const VALUED = ['--out', '--baseline', '--write-baseline'];
+  const pos = argv.filter((a, i) => !a.startsWith('--') && !VALUED.includes(argv[i - 1] ?? ''));
   const [cmd, ...rest] = pos;
   const opts = { inPlace: flag('--in-place') };
   const fail = (a: CoreAnswer & { ok: false }) => { if (json) out(JSON.stringify(a)); else err(`${a.code}: ${a.message}`); return 2; };
@@ -68,11 +72,23 @@ export function main(argv: string[]): number {
       if (flag('--all')) {
         const a = call('check_all', {}, opts);
         if (!a.ok) return fail(a);
+        const results = a.results as SkinCheckResult[];
+        const basePath = optVal('--baseline');
+        const baseline = basePath && existsSync(basePath) ? (JSON.parse(readFileSync(basePath, 'utf8')) as { scores?: Record<string, number> }).scores ?? {} : null;
+        // a skin that fails counts against the run unless a baseline says it scored at least this before
+        const regressions = results.filter((r) => !r.pass && (!baseline || baseline[r.skin.id] === undefined || r.score < baseline[r.skin.id]!))
+          .map((r) => ({ skin: r.skin.id, score: r.score, baseline: baseline?.[r.skin.id] ?? null }));
+        const report = { ...a, baseline: basePath ?? null, regressions, gate: regressions.length === 0 };
         const file = optVal('--out');
-        if (file) writeFileSync(file, `${JSON.stringify(a, null, 2)}\n`);
-        if (json) out(JSON.stringify(a));
-        else for (const r of a.results as SkinCheckResult[]) out(`${r.skin.id.padEnd(28)} ${String(r.score).padStart(3)} ${r.grade} ${r.pass ? 'pass' : 'FAIL'}  ${r.counts.error}E ${r.counts.warning}W ${r.counts.info}I`);
-        return a.pass ? 0 : SKIN_CHECK_EXIT_FAIL;
+        if (file) writeFileSync(file, `${JSON.stringify(report, null, 2)}\n`);
+        const wb = optVal('--write-baseline');
+        if (wb) writeFileSync(wb, `${JSON.stringify({ $axf: 'skin-check-baseline@1', note: 'CI ratchet for axf skin check --all --baseline: a failing skin may not score below this.', scores: Object.fromEntries(results.map((r) => [r.skin.id, r.score])) }, null, 2)}\n`);
+        if (json) out(JSON.stringify(report));
+        else {
+          for (const r of results) out(`${r.skin.id.padEnd(28)} ${String(r.score).padStart(3)} ${r.grade} ${r.pass ? 'pass' : 'FAIL'}  ${r.counts.error}E ${r.counts.warning}W ${r.counts.info}I${baseline?.[r.skin.id] !== undefined ? `  (baseline ${baseline[r.skin.id]})` : ''}`);
+          out(regressions.length ? `${regressions.length} skin(s) below the threshold${baseline ? ' and their baseline' : ''}: ${regressions.map((x) => x.skin).join(', ')}` : `gate passes (${results.filter((r) => r.pass).length}/${results.length} skins pass outright)`);
+        }
+        return regressions.length ? SKIN_CHECK_EXIT_FAIL : 0;
       }
       const skin = rest[0];
       if (!skin) { err(USAGE); return 2; }

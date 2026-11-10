@@ -1,0 +1,5 @@
+{
+  "$axf": "skin-check-settings@1",
+  "minScore": 80,
+  "failOnError": true
+}
