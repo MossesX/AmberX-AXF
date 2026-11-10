@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:41 UTC · `skin-rule-overrides-are-local-only-global-change` note (all) · orchestrator
-- 2026-11-10 17:42 UTC · `apply-skin-dialog-tree-of-everything-overridden` added (0 steps) (all) · console
-- 2026-11-10 17:42 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` PR #460 (all) · builds-live
 - 2026-11-10 17:43 UTC · `apply-skin-dialog-tree-of-everything-overridden` note (all) · orchestrator
 - 2026-11-10 17:41 UTC · `conversation-rag-index-every-voice-chat-session` s1 done, → running (all) · orchestrator
 - 2026-11-10 17:44 UTC · `conversation-rag-index-every-voice-chat-session` s2 done (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
 - 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 - 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-10 21:49 UTC · `molly-sign-in-once` → running, note (all) · pipeline
+- 2026-11-10 21:49 UTC · `molly-sign-in-once` branch claude/molly-sign-in-once (all) · pipeline
+- 2026-11-10 21:49 UTC · `molly-sign-in-once` note (all) · orchestrator
 
 ## Token passes (log)
 
