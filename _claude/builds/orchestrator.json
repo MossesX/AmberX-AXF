@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:59:14.303Z",
+ "updatedAt": "2026-11-10T18:00:18.318Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89110,7 +89110,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T16:41:35.736Z",
+   "updatedAt": "2026-11-10T18:00:14.834Z",
    "builtAt": "",
    "notes": [
     {
@@ -89120,6 +89120,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:41:35.736Z"
+    },
+    {
+     "text": "Split by Claude into 13 steps (3 Fable).",
+     "at": "2026-11-10T18:00:14.834Z"
     }
    ],
    "approvals": [],
@@ -89139,13 +89143,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the element-token addressing contract for the GUI framework. Give every framework element a stable token path: app menu items and sub-menus down to the child, navigation menus, toolbars, banners and widgets. Add a resolver that, for any element and each of its parents, lists every settable token (text color, background, border, font, spacing and so on) with its current value and where it was inherited from in axHub. Write the contract doc.",
+     "model": "Fable",
+     "why": "Cross-app contract that changes how every GUI exposes its tokens",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/tokens/element-map.mjs",
+      "apps/console-web/framework/tokens/resolve.mjs",
+      "docs/contracts/inline-edit-tokens.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -89153,17 +89161,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax3gu004g1g0"
+     "uid": "st-mwazwm425c6zxa"
     },
     {
      "id": "s2",
-     "text": "Right-click elements right down to the child, it opens a dialog with all the different tokens, in a tree or a classical tree or a grid with expandable rows, edit every token, notes that it overrides inheritance. A master switch in the main application settings to enable inline edit mode. Same with navigation menus, toolbars, banners, widgets, every single thing. Part of the plugin gives a monster list of everything changed from axHub's inheritance, reset them individually to axHub's. Searchable, filterable, a tree with selectable roots and a multi-tab column with different roots.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the override schema and its migration. Each override record holds the token path, the scope (single item or parent), the token, the value, the axHub value it replaced, who changed it and when. It must fit the existing axHub override rules. Resetting one item restores only that record and does not re-inherit everything else. Build the store module with get, set, unset and list, and migrate existing overrides into the new schema.",
+     "model": "Fable",
+     "why": "Schema and migration design for the override store",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/tokens/overrides-store.mjs",
+      "apps/console-web/framework/tokens/overrides.schema.json",
+      "apps/console-web/framework/tokens/migrations/2026-11-inline-overrides.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -89171,17 +89183,242 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax3gu005od5h"
+     "uid": "st-mwazwm425dl9bo"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/inline-element-editing-plugin-right-click-any-el.md, THREADS row, commit, push, PR",
+     "text": "Add a framework-level right-click capture layer, active only when inline edit mode is on. It hit-tests to the deepest child element, builds the parent chain from the token paths and emits an inline-edit open event. When the mode is off it is not attached at all, and it leaves native and app context menus alone.",
+     "model": "Fable",
+     "why": "Changes GUI input handling across all apps",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/framework/inline-edit/capture.mjs",
+      "apps/console-web/framework/index.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425eu4s1"
+    },
+    {
+     "id": "s4",
+     "text": "Scaffold the inline-edit plugin. Add the master switch 'Inline edit mode' to the main app settings, persisted, and wire it to attach or detach the capture layer.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/inline-edit/plugin.json",
+      "apps/console-web/plugins/inline-edit/index.mjs",
+      "apps/console-web/plugins/inline-edit/settings.mjs",
+      "apps/console-web/app/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425fggdg"
+    },
+    {
+     "id": "s5",
+     "text": "Master switch API. Deep link: console_open target settings/inline-edit. State read and on/off/toggle through REST (GET/PUT /api/inline-edit/mode), an MCP console action and plugin command, the CLI (axf inline-edit mode on|off|status) and an AmberX voice intent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/routes.mjs",
+      "apps/console-web/plugins/inline-edit/mcp.mjs",
+      "apps/console-web/plugins/inline-edit/cli.mjs",
+      "apps/console-web/plugins/inline-edit/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425gm1hw"
+    },
+    {
+     "id": "s6",
+     "text": "Build the edit dialog shell. It shows the element breadcrumb (child up to the root) and a scope picker for this item or a chosen parent. A visible note says that changes override axHub inheritance under the existing override rules, and each token shows its inherited axHub value.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/ui/dialog.mjs",
+      "apps/console-web/plugins/inline-edit/ui/dialog.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425hbeov"
+    },
+    {
+     "id": "s7",
+     "text": "Add the dialog's three views: tree, classic tree and grid with expandable rows. Add per-token editors (color picker, size, font, text) that write through the overrides store, plus a per-token 'revert to axHub' button. Previews are live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/ui/views/tree.mjs",
+      "apps/console-web/plugins/inline-edit/ui/views/classic-tree.mjs",
+      "apps/console-web/plugins/inline-edit/ui/views/grid.mjs",
+      "apps/console-web/plugins/inline-edit/ui/editors/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425i25v4"
+    },
+    {
+     "id": "s8",
+     "text": "Edit dialog API. Deep link: console_show/console_open target inline-edit/element?path=<token path>&scope=&view=. State read returns the tokens with their values and sources for any path. Set and unset a token at item or parent scope, and change the view. All of it through REST, MCP (console action plus control@1 for tokens), the CLI (axf inline-edit tokens|set|unset) and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/routes.mjs",
+      "apps/console-web/plugins/inline-edit/mcp.mjs",
+      "apps/console-web/plugins/inline-edit/cli.mjs",
+      "apps/console-web/plugins/inline-edit/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425j03dc"
+    },
+    {
+     "id": "s9",
+     "text": "Build the overrides list page in the plugin. It shows every value changed from axHub inheritance as a tree with selectable roots, with full-text search and filters (app, element type, token kind, scope, changed by, date).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/ui/overrides/list.mjs",
+      "apps/console-web/plugins/inline-edit/ui/overrides/filters.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425k13jn"
+    },
+    {
+     "id": "s10",
+     "text": "Add a multi-tab column with a different root per tab, kept per user. Add a per-item 'Reset to axHub' that restores only that item and updates the list live. Confirm before resetting a parent-scope override.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/ui/overrides/tabs.mjs",
+      "apps/console-web/plugins/inline-edit/ui/overrides/reset.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425ln3i5"
+    },
+    {
+     "id": "s11",
+     "text": "Overrides list API. Deep link: console_open target inline-edit/overrides?root=&q=&filter=&tab=. State read returns the list, tabs and roots. Actions: search and filter, add or remove a tab with a root, select a root, and reset one item. All of it through REST, MCP, the CLI (axf inline-edit overrides list|reset <id>) and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/routes.mjs",
+      "apps/console-web/plugins/inline-edit/mcp.mjs",
+      "apps/console-web/plugins/inline-edit/cli.mjs",
+      "apps/console-web/plugins/inline-edit/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425mwj0t"
+    },
+    {
+     "id": "s12",
+     "text": "Coverage pass. Make sure app menus and every sub-menu child, navigation menus, toolbars, banners and widgets all carry token paths and open the dialog on right-click. Fix any element that is missing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/framework/components/menu/",
+      "apps/console-web/framework/components/nav/",
+      "apps/console-web/framework/components/toolbar/",
+      "apps/console-web/framework/components/banner/",
+      "apps/console-web/framework/components/widget/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazwm425nkk05"
+    },
+    {
+     "id": "s13",
+     "text": "Tests. Unit tests for the store, the resolver and single-item reset. API parity tests showing REST, MCP, CLI and voice behave the same. A UI test for right-click to edit to reset. Then write the report at _claude/builds/reports/inline-element-editing-plugin-right-click-any-el.md, add the THREADS row, and open a PR that lists how each UI is reached through deep link, REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/inline-edit/test/",
+      "apps/console-web/framework/tokens/test/",
       "_claude/builds/reports/inline-element-editing-plugin-right-click-any-el.md",
       "_claude/THREADS.md"
      ],
@@ -89192,7 +89429,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax3gu006w8st"
+     "uid": "st-mwazwm425oxj1t"
     }
    ]
   },
