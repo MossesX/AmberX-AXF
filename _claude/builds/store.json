@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2999,
- "updatedAt": "2026-11-10T23:22:11.747Z",
+ "rev": 3000,
+ "updatedAt": "2026-11-10T23:22:26.494Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120640,6 +120640,10 @@
     {
      "text": "Session axf-molly-sign-in-once--sully on account-5 ended (exit 0); the build was already built.",
      "at": "2026-11-10T23:20:06.111Z"
+    },
+    {
+     "text": "s2+s3 on PR #477. App connections screen not in UI Review: no console credentials in the session, so review.mjs --console could not post. Submit command is in the PR.",
+     "at": "2026-11-10T23:19:29.938Z"
     }
    ],
    "approvals": [],

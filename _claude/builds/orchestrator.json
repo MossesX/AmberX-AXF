@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:22:11.747Z",
+ "updatedAt": "2026-11-10T23:22:26.494Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71304,6 +71304,10 @@
     {
      "text": "Session axf-molly-sign-in-once--sully on account-5 ended (exit 0); the build was already built.",
      "at": "2026-11-10T23:20:06.111Z"
+    },
+    {
+     "text": "s2+s3 on PR #477. App connections screen not in UI Review: no console credentials in the session, so review.mjs --console could not post. Submit command is in the PR.",
+     "at": "2026-11-10T23:19:29.938Z"
     }
    ],
    "approvals": [],
