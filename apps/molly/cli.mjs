@@ -14,11 +14,15 @@
  *   axf molly pane <n> <ref>                         what dropping a menu item on pane n does
  *   axf molly tabs <n> [on|off]                      pane n as a tab group or not
  *   axf molly favorite <ref> | recents-clear | settings | reload | banners
+ *   axf molly modules                                every module: state, screens, where it loads from
+ *   axf molly module status|on|off|reload <app>      one module (on / off = Settings → Modules switch)
+ *   axf molly module address <app> <url|default>     load a module from another address
+ *   axf molly expenses list [words] | totals | add <amount>:<merchant>[:<category>[:<account>]] | open [add]
  *   axf molly action <Molly action spec>             any other Molly action
  *
  * Env: AXF_CONSOLE_URL (default https://console.amberxai.com), AXF_TOKEN. Exit 0 ok · 1 failed · 2 usage.
  */
-export const USAGE = 'usage: axf molly open <ref> [--in main|pane|floating] | go [words] | mode <single|tabs|split|ide> | layout save|switch|remove <x> | pane <n> <ref> | tabs <n> [on|off] | favorite <ref> | recents-clear | settings | reload | banners | action <spec>   [--to recent|all|<client>] [--json]';
+export const USAGE = 'usage: axf molly open <ref> [--in main|pane|floating] | go [words] | mode <single|tabs|split|ide> | layout save|switch|remove <x> | pane <n> <ref> | tabs <n> [on|off] | favorite <ref> | recents-clear | settings | reload | banners | modules | module status|on|off|reload <app> | module address <app> <url|default> | expenses list [words]|totals|add <spec>|open [add] | action <spec>   [--to recent|all|<client>] [--json]';
 
 /** `axf molly …` words → Molly's action spec, or null (usage). */
 export function specFromArgv(argv) {
@@ -42,6 +46,18 @@ export function specFromArgv(argv) {
     case 'settings': spec = 'shell.settings'; break;
     case 'reload': spec = 'molly.reload'; break;
     case 'banners': spec = 'molly-banners.toggle'; break;
+    case 'modules': spec = 'molly.modules.list'; break;
+    case 'module': {
+      const op = { status: 'status', on: 'enable', enable: 'enable', off: 'disable', disable: 'disable', reload: 'reload' }[rest[0]];
+      spec = op && rest[1] ? `molly.modules.${op}:${rest[1]}` : rest[0] === 'address' && rest[1] && rest[2] ? `molly.modules.surface:${rest[1]}:${rest[2]}` : null;
+      break;
+    }
+    case 'expenses': {
+      const t = rest.slice(1).join(' ').trim();
+      spec = rest[0] === 'list' ? (t ? `expenses.list:${t}` : 'expenses.list') : rest[0] === 'totals' ? 'expenses.totals'
+        : rest[0] === 'add' && t ? `expenses.add:${t}` : rest[0] === 'open' ? (rest[1] === 'add' ? 'expenses.open:add' : 'expenses.open') : null;
+      break;
+    }
     case 'action': case 'run': spec = r || null; break;
     default: spec = null;
   }
