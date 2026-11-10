@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2483,
- "updatedAt": "2026-11-10T16:46:30.942Z",
+ "rev": 2484,
+ "updatedAt": "2026-11-10T16:47:13.279Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140128,6 +140128,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-the-orchestrator-s-splitter-claude-print-get",
+   "title": "Fix the orchestrator's splitter: claude --print gets no prompt, so every build falls back to rule-based steps",
+   "category": "",
+   "detail": "Every split note says: 'claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print'. The splitter launches claude -p without passing the prompt, so all builds are split one-step-per-line by rules. Fix the invocation (pipe the prompt on stdin or pass it as the argument), add a test, then re-split builds whose steps were 'made by rules' and are not started. Also check the repeated worktree 'unable to write file _claude/builds/journal/*.jsonl' launch failures (permissions/disk) and fix them. Notify on AmberX.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T16:47:11.863Z",
+   "updatedAt": "2026-11-10T16:47:11.863Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You're the one who knows. Tell me what's wrong.",
+    "at": "2026-11-10T16:47:11.863Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 560
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

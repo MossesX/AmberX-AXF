@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:46:30.942Z",
+ "updatedAt": "2026-11-10T16:47:13.279Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86536,6 +86536,37 @@
    "origin": {
     "said": "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.",
     "at": "2026-11-10T16:45:47.022Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "fix-the-orchestrator-s-splitter-claude-print-get",
+   "title": "Fix the orchestrator's splitter: claude --print gets no prompt, so every build falls back to rule-based steps",
+   "category": "",
+   "detail": "Every split note says: 'claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print'. The splitter launches claude -p without passing the prompt, so all builds are split one-step-per-line by rules. Fix the invocation (pipe the prompt on stdin or pass it as the argument), add a test, then re-split builds whose steps were 'made by rules' and are not started. Also check the repeated worktree 'unable to write file _claude/builds/journal/*.jsonl' launch failures (permissions/disk) and fix them. Notify on AmberX.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T16:47:11.863Z",
+   "updatedAt": "2026-11-10T16:47:11.863Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You're the one who knows. Tell me what's wrong.",
+    "at": "2026-11-10T16:47:11.863Z",
     "source": "",
     "session": "",
     "link": "",

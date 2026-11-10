@@ -1917,6 +1917,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-the-orchestrator-s-splitter-claude-print-get": {
+   "said": "You're the one who knows. Tell me what's wrong.",
+   "at": "2026-11-10T16:47:11.863Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "follow-amber": {
    "said": "whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
    "at": "2026-11-03",
