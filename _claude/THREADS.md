@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 17:01 UTC · `project-manager-every-project-its-own-console-in` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:01 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · pipeline
 - 2026-11-10 17:01 UTC · `amberx-open-url-tapping-the-command-waiting-noti` → running, note (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:47 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s6 done (all) · orchestrator
 - 2026-11-10 20:49 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:50 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s7 done (all) · orchestrator
+- 2026-11-10 20:50 UTC · `inline-element-editing-plugin-right-click-any-el` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
