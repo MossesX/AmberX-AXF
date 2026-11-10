@@ -4769,6 +4769,18 @@
    "from": "detail",
    "addenda": []
   },
+  "stall-watchdog-detect-when-nothing-is-building-a": {
+   "said": "Why am I not being notified when it stalls? You need to be monitoring it so you know when it stalls, then try to fix it, then let me know.",
+   "at": "2026-11-10T23:08:12.434Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "standing-rule-every-ui-ships-with-full-api-contr": {
    "said": "Now make sure the orchestrator knows that. Everything gets the API.",
    "at": "",

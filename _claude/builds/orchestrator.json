@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:08:06.346Z",
+ "updatedAt": "2026-11-10T23:08:18.006Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71226,7 +71226,7 @@
    "title": "Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Native screens call each app backend from molly.amberxai.com: the console API takes a bearer token kept in the console origin, axHub uses its own session, Expenses its own. Molly needs one sign-in that hands each native plugin its credentials. No secrets in the repo.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -71234,7 +71234,7 @@
    "pr": "#477",
    "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T22:40:32.080Z",
+   "updatedAt": "2026-11-10T23:08:06.331Z",
    "builtAt": "",
    "notes": [
     {
@@ -71260,6 +71260,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T22:40:32.080Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:06.331Z"
     }
    ],
    "approvals": [],
@@ -94706,7 +94710,7 @@
    "title": "Land all 97 built-but-unmerged builds, skins first, in batches of 5",
    "category": "",
    "detail": "Land every build in status 'built' (97, see Nov 10 list). Order: 1) skins and appearance first: #430 Appearance = skins + colour themes, #409 Skins restyle everything, #355 Three layouts per screen, #376 UI asset designer, then the rest of today's (#460 splitter first if not yet landed), then Nov 9, Nov 7-8, Nov 3-5. Batch related PRs up to 5 at a time: merge latest main in, resolve conflicts keeping both intents, CI once, merge. Before each, check main: if already covered or superseded (e.g. #432/#440/#269 by #450), close and archive with the reason instead of merging. Redeploy the console after each batch. Fix any failure and retry; notify on AmberX only per batch landed, and a final summary.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94714,7 +94718,7 @@
    "pr": "#474",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-10T21:52:56.818Z",
+   "updatedAt": "2026-11-10T23:08:07.282Z",
    "builtAt": "",
    "notes": [
     {
@@ -94744,6 +94748,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T21:52:56.818Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:07.282Z"
     }
    ],
    "approvals": [],
@@ -95558,7 +95566,7 @@
    "title": "API accounts need no approval: builds route there like any other account (spend caps still apply)",
    "category": "",
    "detail": "Remove the owner-click requirement for routing builds to API-key accounts (pipeline_route api, overflow, voice/API). API accounts are treated like any other account in the order: builds go there automatically with no approval. Keep the daily/weekly spend caps and the 80% alert as the safety net; when a cap is hit, stop sending there and notify on AmberX. Supersedes the confirm-approval rule for API runs in token-usage-log s10.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95566,7 +95574,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-10T21:03:49.492Z",
+   "updatedAt": "2026-11-10T23:08:11.214Z",
    "builtAt": "",
    "notes": [
     {
@@ -95576,6 +95584,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:03:49.492Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:11.214Z"
     }
    ],
    "approvals": [],
@@ -95657,7 +95669,7 @@
    "title": "Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds",
    "category": "",
    "detail": "Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95665,7 +95677,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
-   "updatedAt": "2026-11-10T21:23:08.233Z",
+   "updatedAt": "2026-11-10T23:08:10.289Z",
    "builtAt": "",
    "notes": [
     {
@@ -95675,6 +95687,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:23:08.233Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:10.289Z"
     }
    ],
    "approvals": [],
@@ -95891,7 +95907,7 @@
    "title": "Gizmo opens by voice/link (AmberX web app + Android app) and the new look sticks after reload",
    "category": "",
    "detail": "1) Give Gizmo chat a real https deep link on amberxai.com that opens Gizmo in the AmberX Android app (app links) or in the AmberX web app if the app isn't there; make amberx.open_url able to open it; add a Gizmo entry to console.screens. 2) Bug: the new home cards/frame/menus look showed, then a reload brought back the old banner and old look. Persist the chosen skin as the default so reloads keep it.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95899,7 +95915,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T21:38:21.280Z",
+   "updatedAt": "2026-11-10T23:08:08.195Z",
    "builtAt": "",
    "notes": [
     {
@@ -95909,6 +95925,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:38:21.280Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:08.195Z"
     }
    ],
    "approvals": [],
@@ -96767,7 +96787,7 @@
    "title": "AI assistant = Gizmo moved to the console: remove the old console assistant, move the AmberX Gizmo chat plugin into a console plugin named 'AI assistant'",
    "category": "",
    "detail": "1) Remove the existing console AI assistant screen/plugin (ai-assistant). 2) Move the Gizmo chat plugin from AmberX into the console as a console plugin named 'AI assistant' (screen id ai-assistant, opens by link/voice). 3) Fold in the earlier asks: full Claude-style chat (Gizmo rebuild), per-chat model switch Claude or local Ollama, mic/voice chat mode, console control API tools (jump to screens, settings, file builds, answer console questions), agent picker in the chat window with agents trainable in the Agent section. AmberX keeps access to the same chat via the console plugin/web link.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96775,7 +96795,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:54:10.024Z",
-   "updatedAt": "2026-11-10T21:55:23.078Z",
+   "updatedAt": "2026-11-10T23:08:09.438Z",
    "builtAt": "",
    "notes": [
     {
@@ -96785,6 +96805,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:55:23.078Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:09.438Z"
     }
    ],
    "approvals": [],
@@ -97350,6 +97374,43 @@
      "uid": "st-mwb8g0nv03ma0a"
     }
    ]
+  },
+  {
+   "id": "stall-watchdog-detect-when-nothing-is-building-a",
+   "title": "Stall watchdog: detect when nothing is building, auto-fix, notify on AmberX",
+   "category": "",
+   "detail": "Watchdog on the VPS dispatcher: every minute check (a) nothing running while Queue or Pending-urgent has items, (b) a running build with no live session, (c) dispatcher tick not seen for 3+ min. On detect: auto-fix in order (pipeline selfcheck, release dead slots, auto-queue Urgent/High pending builds when queue is empty, restart dispatcher), log each attempt under 'Automatic fixes' in AmberX notes, and send an AmberX FYI notification per attempt and result. Escalate to Brett with what's missing only if every fix fails. Newly filed Urgent builds auto-queue instead of sitting in Pending.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T23:08:12.434Z",
+   "updatedAt": "2026-11-10T23:08:13.734Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:08:13.734Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why am I not being notified when it stalls? You need to be monitoring it so you know when it stalls, then try to fix it, then let me know.",
+    "at": "2026-11-10T23:08:12.434Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

@@ -772,14 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
-- 2026-11-10 17:57 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 17:58 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · builds-live
-- 2026-11-10 17:58 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 17:58 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · builds-live
-- 2026-11-10 17:59 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 17:59 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · builds-live
-- 2026-11-10 18:00 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:00 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · builds-live
 - 2026-11-10 18:01 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:01 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · builds-live
@@ -1172,6 +1164,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:40 UTC · `molly-one-shell` note (all) · orchestrator
 - 2026-11-10 22:40 UTC · `molly-sign-in-once` → pending, note (all) · reconciler
 - 2026-11-10 23:08 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `molly-sign-in-once` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · console
+- 2026-11-10 23:08 UTC · `stall-watchdog-detect-when-nothing-is-building-a` added (0 steps) (all) · console
+- 2026-11-10 23:08 UTC · `stall-watchdog-detect-when-nothing-is-building-a` → queued, note (all) · console
 
 ## Token passes (log)
 
