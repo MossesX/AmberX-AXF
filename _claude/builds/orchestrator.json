@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T14:54:51.333Z",
+ "updatedAt": "2026-11-10T14:55:04.483Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84170,8 +84170,8 @@
    "pr": "#442",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T14:54:40.987Z",
-   "builtAt": "2026-11-10T14:54:40.987Z",
+   "updatedAt": "2026-11-10T14:54:50.862Z",
+   "builtAt": "2026-11-10T14:54:50.862Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -84208,6 +84208,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-the-conflict-and-land-the-orchestrator-l--joey, own login copy)",
      "at": "2026-11-10T14:51:17.475Z"
+    },
+    {
+     "text": "Headless run axf-resolve-the-conflict-and-land-the-orchestrator-l--joey: brief only · start 11.1K tokens ($0.03) · cost $0.43 · 15 turns · 6 tools, MCP none",
+     "at": "2026-11-10T14:54:50.862Z"
     },
     {
      "text": "Queue is in categories because #423 never landed (conflicted with main). Merged it onto main in PR #442 with conflicts resolved; tests and typecheck green. Live check waits for the merge queue; #423 can be closed after.",
