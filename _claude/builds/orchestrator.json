@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:19:13.782Z",
+ "updatedAt": "2026-11-10T00:19:34.275Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81718,16 +81718,22 @@
    "title": "Failed launches auto-retry on another working account + re-run every build that died on login/credits",
    "category": "",
    "detail": "Upgrades account-failover-chain-subscription-next-subscri (which itself died on account-1's expired login); don't duplicate it. 1) When a build session dies on an expired login, out of credits or a usage limit, the orchestrator marks that account (login-dead, or out until the reset time) and immediately re-launches the same build on the next working account: subscriptions first, then API overflow (account-5) within its cap. It keeps going until one works. No build stays failed for an account reason. 2) If a step was half done, it resumes from the last ticked step, not from scratch. 3) Model fallback: if the pinned model (e.g. Fable) is out everywhere, it waits for the reset or runs on Opus if allowed, and says which it did. 4) Every retry is logged in the fix log and Activity Monitor, with an FYI notification. Brett is told only when every account is exhausted, with the exact time of the next reset. 5) Right now, re-queue every build that died on a login or credits failure: skins-theme-rule, skins-restyle-finish, skins-own-everything-colour-theme-swaps-independ, appearance-skins-colour-themes-only-remove-design-packs, account-failover-chain, file-watchdog, home-page-build-queue-card, let-voice-api-route, orchestrator-and-build-manager-search-bar, prompt-caching, split-builds-pages (both), test-button-on-every-claude-account, urgent-terminal-pops-up, vps-orchestrator-only-rule, amberx-floating-toolbar. Put them on Moses X and account-5 now.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T00:19:09.682Z",
-   "updatedAt": "2026-11-10T00:19:09.682Z",
+   "updatedAt": "2026-11-10T00:19:13.715Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T00:19:13.715Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
