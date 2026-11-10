@@ -55,7 +55,8 @@ Also fixed on the way: `shipped-features` was missing from `KNOWN_BANNERS` (lazy
 
 ## Screenshots
 Desktop + phone, captured headless with `AXF_APPEARANCE_HUB=off`: globe search "dark", gear search with the quick menu
-(nested sub-menu opening left), regex search across categories. In UI Review (group below).
+(nested sub-menu opening left), regex search across categories. In UI Review: r-20261110-p0bac01, group
+"search-bar-plugin-snappable-search-asset-globe-e - Nov 10 5:05 PM". PR #452.
 
 ## Gaps
 - AI ranking was tested against a fake `axf.llm@1`; no Ollama runs on the VPS to try it live.
