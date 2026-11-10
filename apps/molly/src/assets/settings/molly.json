@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "molly",
+  "name": "Molly",
+  "version": "1.0.0",
+  "description": "Molly's settings: tabs across the top, full header, descriptions on, and the level toolbar (Simple / Basic / Developer / Administrator) on every settings interface.",
+  "author": "AmberX AXF",
+  "tags": [
+    "molly"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "full",
+    "search": false,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic"
+  }
+}

@@ -116,12 +116,12 @@ export const plugin: AxfWebLibrary = {
   dialogs: { [GO_DIALOG]: { title: 'Go to anything', icon: 'search', render: (_p, close) => { const q = goQuery; goQuery = ''; return <GoPanel model={theModel()} close={close} query={q} />; } } },
   settingsTabs: [{ id: TAB, label: 'One shell', icon: 'layers', order: 30, parent: 'plugins', description: 'Every app in one menu, layout modes and named layouts.' }],
   settingsPanels: [
-    { id: 'shell.layout', tab: TAB, title: 'Layout', icon: 'layout', order: 10, render: () => <LayoutPanel /> },
-    { id: 'shell.layouts', tab: TAB, title: 'Named layouts', icon: 'layers', order: 20, render: () => <LayoutsPanel /> },
-    { id: 'shell.menus', tab: TAB, title: 'Menus', icon: 'menu', order: 30, render: () => <MenusPanel /> },
-    { id: 'shell.favorites', tab: TAB, title: 'Favorites and recent', icon: 'star', order: 40, render: () => <FavoritesPanel /> },
-    { id: 'shell.apps', tab: TAB, title: 'Apps in Molly', icon: 'grid', order: 50, render: () => <AppsPanel /> },
-    { id: 'shell.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
+    { id: 'shell.layout', tab: TAB, title: 'Layout', icon: 'layout', order: 10, collapsible: true, render: () => <LayoutPanel /> },
+    { id: 'shell.layouts', tab: TAB, title: 'Named layouts', icon: 'layers', order: 20, collapsible: true, render: () => <LayoutsPanel /> },
+    { id: 'shell.menus', tab: TAB, title: 'Menus', icon: 'menu', order: 30, collapsible: true, render: () => <MenusPanel /> },
+    { id: 'shell.favorites', tab: TAB, title: 'Favorites and recent', icon: 'star', order: 40, collapsible: true, render: () => <FavoritesPanel /> },
+    { id: 'shell.apps', tab: TAB, title: 'Apps in Molly', icon: 'grid', order: 50, collapsible: true, collapsed: true, render: () => <AppsPanel /> },
+    { id: 'shell.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, collapsible: true, collapsed: true, render: () => <LifecyclePanel /> },
   ],
   appMenu: [
     { id: 'shell.go-menu', menu: 'go', menuLabel: 'Go', menuOrder: 25, order: 10, items: [
