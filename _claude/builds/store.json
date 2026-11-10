@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3005,
- "updatedAt": "2026-11-10T23:23:30.982Z",
+ "rev": 3006,
+ "updatedAt": "2026-11-10T23:23:47.609Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153430,7 +153430,7 @@
    "title": "API accounts need no approval: builds route there like any other account (spend caps still apply)",
    "category": "",
    "detail": "Remove the owner-click requirement for routing builds to API-key accounts (pipeline_route api, overflow, voice/API). API accounts are treated like any other account in the order: builds go there automatically with no approval. Keep the daily/weekly spend caps and the 80% alert as the safety net; when a cap is hit, stop sending there and notify on AmberX. Supersedes the confirm-approval rule for API runs in token-usage-log s10.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153438,7 +153438,7 @@
    "pr": "#479",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-10T23:23:03.920Z",
+   "updatedAt": "2026-11-10T23:23:14.336Z",
    "builtAt": "",
    "notes": [
     {
@@ -153480,6 +153480,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 1) with 1 step left: back in the Queue (run 1).",
      "at": "2026-11-10T23:23:03.920Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-api-accounts-need-no-approval-builds-route-there--paulie.",
+     "at": "2026-11-10T23:23:12.845Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-api-accounts-need-no-approval-builds-route-there--paulie, own login copy)",
+     "at": "2026-11-10T23:23:14.336Z"
     }
    ],
    "approvals": [],
@@ -153500,11 +153508,11 @@
     "queuedAt": "2026-11-10T23:08:10.836Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-api-accounts-need-no-approval-builds-route-there--paulie",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T23:12:53.687Z",
-    "runs": 1,
+    "launchedAt": "2026-11-10T23:23:12.403Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-10T23:23:03.497Z",
      "exit": 1,
@@ -153515,18 +153523,18 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 1) with 1 step left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:12:53.687Z",
+    "dispatchedAt": "2026-11-10T23:23:12.403Z",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:23:05.648Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:12:53.687Z"
+    "pickedAt": "2026-11-10T23:23:12.403Z"
    },
    "steps": [
     {
@@ -153607,7 +153615,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
