@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:31 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
-- 2026-11-10 03:31 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` → archived (all) · orchestrator
-- 2026-11-10 03:31 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · orchestrator
 - 2026-11-10 03:32 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:33 UTC · `self-healing-build-folders-auto-clear-stale-git` → pending, note (all) · pipeline
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → running, note (all) · pipeline
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:01 UTC · `amberx-open-url-tapping-the-command-waiting-noti` branch claude/amberx-open-url-tapping-the-command-waiting-noti (all) · pipeline
 - 2026-11-10 17:01 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 - 2026-11-10 17:01 UTC · `amberx-open-url-tapping-the-command-waiting-noti` note (all) · orchestrator
+- 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` → running, note (all) · pipeline
+- 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` branch claude/enforce-the-merge-queue-every-finished-build-goe (all) · pipeline
+- 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · orchestrator
 
 ## Token passes (log)
 

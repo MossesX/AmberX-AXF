@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:02:09.714Z",
+ "updatedAt": "2026-11-10T17:02:23.338Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86407,15 +86407,15 @@
    "title": "Enforce the merge queue: every finished build goes into it and is batched into one combined build before CI",
    "category": "",
    "detail": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/enforce-the-merge-queue-every-finished-build-goe",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-10T17:02:08.324Z",
+   "updatedAt": "2026-11-10T17:02:12.507Z",
    "builtAt": "",
    "notes": [
     {
@@ -86425,6 +86425,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:46:18.786Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-enforce-the-merge-queue-every-finished-build-goe--sully.",
+     "at": "2026-11-10T17:02:10.802Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-enforce-the-merge-queue-every-finished-build-goe--sully, own login copy)",
+     "at": "2026-11-10T17:02:12.507Z"
     }
    ],
    "approvals": [],
