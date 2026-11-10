@@ -233,9 +233,13 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   return r;
 }
 
-/** Pending builds a session handed back (lastRun returned) with steps left: the ones `requeueReturned` would queue. */
+/**
+ * Pending builds a session handed back with steps left: the ones `requeueReturned` queues. lastRun says returned, or
+ * (a record that lost its lastRun) the dispatcher's last end note says the session stopped on its own and nothing queued
+ * or started it after. A stop while it waited on an approval is Brett's, never requeued here.
+ */
 export function returnedBuilds(store = loadStore()) {
-  return live(store).filter((b) => BP.canQueue(b) && b.pipeline?.lastRun?.outcome === 'returned' && BP.openSteps(b).length);
+  return live(store).filter((b) => BP.canQueue(b) && BP.openSteps(b).length && (b.pipeline?.lastRun?.outcome === 'returned' || P.returnedByNote(b)));
 }
 
 /**

@@ -155,6 +155,10 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
   assert.equal(gave.patch.earlyStops, 0, 'the count starts over for when Brett queues it again');
   const p3 = P.endOutcome({ ...stuck, notes: [] }, { exit: 0 }, P.normSettings({ maxEarlyStops: 5 }));
   assert.equal(p3.status, 'queued', 'maxEarlyStops 5: still requeued at 3');
+  const lost = { notes: [{ text: 'Started run 1 on w (Opus): axf-x.', at: t0 }, { text: 'Session on w stopped on its own with 2 steps left: back in Pending for Brett.', at: t0 }, { text: 'Split by Claude into 4 steps (0 Fable).', at: t0 }] };
+  assert.ok(P.returnedByNote(lost), 'the end note counts when the record lost lastRun');
+  assert.ok(!P.returnedByNote({ notes: [...lost.notes, { text: 'Queued by brett.', at: t0 }] }), 'queued after: not returned');
+  assert.ok(!P.returnedByNote({ notes: [{ text: 'Session on w stopped with 1 step left while the build waits on an approval: back in Pending for Brett.', at: t0 }] }), 'an approval wait stays with Brett');
   const wait = P.endOutcome(build('w', 'waiting', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus', openAtLaunch: 1 } }), { exit: 0 });
   assert.equal(wait.status, 'pending'); assert.match(wait.note, /waits on an approval/);
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });

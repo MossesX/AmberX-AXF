@@ -333,6 +333,15 @@ export function stopReason(b) {
   return str(own.at(-1)?.text, 500).trim();
 }
 
+const END_NOTE = /^Session\b.*(stopped on its own|stopped early).*back in Pending for Brett/;
+const MOVED_NOTE = /^(Queued by |Started run |Back to Pending)/;
+/** The build's last pipeline move is a session that stopped on its own (not while waiting on an approval): back in Pending. */
+export function returnedByNote(b) {
+  const moves = list(b?.notes).filter((n) => END_NOTE.test(str(n?.text, 300)) || MOVED_NOTE.test(str(n?.text, 40)));
+  const last = str(moves.at(-1)?.text, 300);
+  return END_NOTE.test(last) && !/waits on an approval/.test(last);
+}
+
 /**
  * A run ended: the build's new status, its lastRun record, a note line and the pipeline fields to write (earlyStops).
  * A clean early stop goes back to the Queue (priority and queuedAt kept, so its place too) and the next run continues
