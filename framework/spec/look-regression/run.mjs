@@ -131,7 +131,7 @@ export function diffWeb(base, cur, allow, findings, { baseDir, curDir, reportDir
     setDiff(findings, 'vars', `${pre}missing:`, a.vars?.missing ?? [], b.vars?.missing ?? [], allow);
     mapDiff(findings, 'vars', `${pre}html:`, a.vars?.htmlAttrs, b.vars?.htmlAttrs, allow);
     mapDiff(findings, 'storage', pre, a.storage, b.storage, allow);
-    if (a.roundTrip?.ok && !b.roundTrip?.ok) findings.push({ area: 'settings', key: `${pre}round-trip`, kind: 'failed', detail: JSON.stringify(b.roundTrip).slice(0, 300), allowed: allowedBy(allow, 'settings', `${pre}round-trip`) });
+    if (a.roundTrip?.ok && !b.roundTrip?.ok) findings.push({ area: 'settings', key: `${pre}round-trip`, kind: 'failed', detail: JSON.stringify(b.roundTrip ?? null).slice(0, 300), allowed: allowedBy(allow, 'settings', `${pre}round-trip`) });
     if (a.roundTrip?.slot && b.roundTrip?.slot && a.roundTrip.slot !== b.roundTrip.slot) findings.push({ area: 'settings', key: `${pre}round-trip-slot`, kind: 'changed', detail: `${a.roundTrip.slot} → ${b.roundTrip.slot}`, allowed: allowedBy(allow, 'settings', `${pre}round-trip-slot`) });
     // plugins: every plugin still listed and loaded
     const plug = (p) => (Array.isArray(p) ? p.map((x) => x.folder ?? x.id ?? x.name ?? JSON.stringify(x)).sort() : []);

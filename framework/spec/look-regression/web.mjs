@@ -285,7 +285,10 @@ export class Walker {
       this.rec.settings.push(entry);
     }
   }
-  /** Saved settings round trip through the Appearance picker (colour theme slot, else the skin slot). */
+  /**
+   * Saved settings round trip through the Appearance picker: the Skin picker (skins only, Nov 10 2026: Choose… → a
+   * tile → Apply), else a colour theme / skin / design package select of an older build.
+   */
   async roundTrip(home) {
     const result = { ok: false, slot: null, note: '' };
     const before = await this.page.evaluate(auditVars);
@@ -301,12 +304,30 @@ export class Walker {
       const s = this.page.locator(sel).first();
       if (await s.count()) { select = s; result.slot = slot; break; }
     }
-    if (!select) { result.note = 'no slot picker (color-theme / skin / design-package)'; this.rec.roundTrip = result; return; }
-    const options = await select.locator('option').evaluateAll((o) => o.map((x) => x.value));
-    const original = await select.inputValue();
-    const other = options.find((o) => o && o !== original);
-    if (!other) { result.note = 'only one option'; this.rec.roundTrip = result; return; }
-    await select.selectOption(other); await sleep(500);
+    let original = '', other = '';
+    if (select) {
+      const options = await select.locator('option').evaluateAll((o) => o.map((x) => x.value));
+      original = await select.inputValue();
+      other = options.find((o) => o && o !== original) ?? '';
+      if (!other) { result.note = 'only one option'; this.rec.roundTrip = result; return; }
+      await select.selectOption(other); await sleep(500);
+    } else {
+      // the Skin picker: a Choose… button opens a dialog of tiles; Apply keeps the pick in this app
+      const choose = this.page.locator('[data-axf-appearance] .axf-skin__action button').first();
+      if (!(await choose.count())) { result.note = 'no slot picker (skin / color-theme / design-package)'; this.rec.roundTrip = result; return; }
+      await choose.click({ timeout: 2000 }).catch(() => {}); await sleep(500);
+      const tiles = this.page.locator('[data-axf-skin-picker] .axf-skin__tile');
+      const n = await tiles.count();
+      if (n < 2) { result.note = n ? 'only one skin' : 'no skin picker dialog'; this.rec.roundTrip = result; return; }
+      const names = await tiles.evaluateAll((els) => els.map((e) => ({ name: e.querySelector('.axf-skin__name')?.textContent?.trim() ?? '', picked: e.classList.contains('is-picked') })));
+      original = names.find((x) => x.picked)?.name ?? '(none)';
+      const idx = names.findIndex((x) => !x.picked && x.name !== original);
+      if (idx < 0) { result.note = 'no other skin'; this.rec.roundTrip = result; return; }
+      other = names[idx].name;
+      await tiles.nth(idx).click({ timeout: 2000 }).catch(() => {}); await sleep(400);
+      await this.page.locator('[data-axf-skin-picker] button:has-text("Apply")').first().click({ timeout: 2000 }).catch(() => {}); await sleep(600);
+      result.slot = 'skin';
+    }
     const picked = await this.page.evaluate(auditVars);
     const changedNow = Object.keys(picked.root).filter((k) => picked.root[k] !== before.root[k]).length;
     await this.page.goto(home); await sleep(1200); await this.freeze();
