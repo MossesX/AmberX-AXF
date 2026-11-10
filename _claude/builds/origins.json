@@ -1403,6 +1403,18 @@
    "from": "brief",
    "addenda": []
   },
+  "console-speed-profile-and-cut-axf-console-cpu-pl": {
+   "said": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
+   "at": "2026-11-10T02:49:14.121Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-wake": {
    "said": "console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
    "at": "2026-11-03",
