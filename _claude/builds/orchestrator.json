@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:47:43.563Z",
+ "updatedAt": "2026-11-10T20:47:54.829Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89452,7 +89452,7 @@
    "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
    "category": "",
    "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89460,7 +89460,7 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T20:45:46.171Z",
+   "updatedAt": "2026-11-10T20:47:43.089Z",
    "builtAt": "",
    "notes": [
     {
@@ -89506,6 +89506,10 @@
     {
      "text": "Self-check: inline-element-editing-plugin-right-click-any-el was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T20:30:13.558Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T20:47:43.089Z"
     }
    ],
    "approvals": [
