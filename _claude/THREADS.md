@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:43 UTC · `amberx-android-web-view-top-banner-hidden-behind` added (0 steps) (all) · console
-- 2026-11-10 16:43 UTC · `amberx-open-url-tapping-the-command-waiting-noti` note (all) · builds-live
 - 2026-11-10 16:43 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · orchestrator
 - 2026-11-10 16:43 UTC · `enforce-the-merge-queue-every-finished-build-goe` added (0 steps) (all) · console
 - 2026-11-10 16:43 UTC · `enforce-the-merge-queue-every-finished-build-goe` → queued, note (all) · console
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:11 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s2 done (all) · orchestrator
 - 2026-11-10 20:11 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · orchestrator
 - 2026-11-10 20:12 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
+- 2026-11-10 20:12 UTC · `inline-element-editing-plugin-right-click-any-el` → running, note (all) · pipeline
+- 2026-11-10 20:12 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · orchestrator
 
 ## Token passes (log)
 
