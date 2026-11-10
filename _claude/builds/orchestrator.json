@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:44:14.191Z",
+ "updatedAt": "2026-11-10T23:44:20.480Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -93160,7 +93160,7 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T23:44:12.644Z",
+   "updatedAt": "2026-11-10T23:44:15.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -93198,6 +93198,10 @@
     {
      "text": "Queued by auto-requeue (Brett: re-queue them).",
      "at": "2026-11-10T23:43:19.782Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-conflicts-and-land-pr-449-account-order--lenny, own login copy)",
+     "at": "2026-11-10T23:44:15.885Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-resolve-conflicts-and-land-pr-449-account-order--lenny.",
@@ -96000,7 +96004,7 @@
    "title": "Convert every app into a Molly module (Expenses, console, hub, AmberX screens)",
    "category": "",
    "detail": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96008,7 +96012,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T23:43:20.432Z",
+   "updatedAt": "2026-11-10T23:44:18.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -96058,6 +96062,14 @@
     {
      "text": "Queued by auto-requeue (Brett: re-queue them).",
      "at": "2026-11-10T23:43:20.432Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-convert-every-app-into-a-molly-module-expenses-c--joey.",
+     "at": "2026-11-10T23:44:17.425Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-convert-every-app-into-a-molly-module-expenses-c--joey, own login copy)",
+     "at": "2026-11-10T23:44:18.682Z"
     }
    ],
    "approvals": [],

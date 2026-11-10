@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3045,
- "updatedAt": "2026-11-10T23:44:14.191Z",
+ "rev": 3046,
+ "updatedAt": "2026-11-10T23:44:20.480Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149766,7 +149766,7 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T23:44:12.644Z",
+   "updatedAt": "2026-11-10T23:44:15.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -149806,6 +149806,10 @@
      "at": "2026-11-10T23:43:19.782Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-conflicts-and-land-pr-449-account-order--lenny, own login copy)",
+     "at": "2026-11-10T23:44:15.885Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-resolve-conflicts-and-land-pr-449-account-order--lenny.",
      "at": "2026-11-10T23:44:12.644Z"
     }
@@ -149827,18 +149831,18 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:43:19.494Z",
     "queuedBy": "auto-requeue (Brett: re-queue them)",
-    "account": "mossesx-max-",
-    "session": "axf-resolve-conflicts-and-land-pr-449-account-order--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T23:44:12.310Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:44:12.310Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -149847,7 +149851,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:44:12.310Z"
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153880,7 +153884,7 @@
    "title": "Convert every app into a Molly module (Expenses, console, hub, AmberX screens)",
    "category": "",
    "detail": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153888,7 +153892,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T23:43:20.432Z",
+   "updatedAt": "2026-11-10T23:44:18.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -153938,6 +153942,14 @@
     {
      "text": "Queued by auto-requeue (Brett: re-queue them).",
      "at": "2026-11-10T23:43:20.432Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-convert-every-app-into-a-molly-module-expenses-c--joey.",
+     "at": "2026-11-10T23:44:17.425Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-convert-every-app-into-a-molly-module-expenses-c--joey, own login copy)",
+     "at": "2026-11-10T23:44:18.682Z"
     }
    ],
    "approvals": [],
@@ -153957,18 +153969,18 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:43:20.142Z",
     "queuedBy": "auto-requeue (Brett: re-queue them)",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-convert-every-app-into-a-molly-module-expenses-c--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T23:44:17.072Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T23:44:17.072Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -153977,7 +153989,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T23:44:17.072Z"
    },
    "steps": [
     {
@@ -154058,7 +154070,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
