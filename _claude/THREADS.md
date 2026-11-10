@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:33 UTC · `self-healing-build-folders-auto-clear-stale-git` → pending, note (all) · pipeline
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → running, note (all) · pipeline
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` branch claude/console-speed-profile-and-cut-axf-console-cpu-pl (all) · pipeline
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` branch claude/enforce-the-merge-queue-every-finished-build-goe (all) · pipeline
 - 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · orchestrator
 - 2026-11-10 17:06 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → pending (all) · voice
+- 2026-11-10 17:07 UTC · `amberx-open-url-tapping-the-command-waiting-noti` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
