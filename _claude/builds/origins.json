@@ -1686,6 +1686,18 @@
    "from": "detail",
    "addenda": []
   },
+  "fix-it-yourself-rule-in-every-brief-and-session": {
+   "said": "From now on, you do whatever in your ability to fix any problem... just notify me of doing it, not for permission or veto. Every single build, put that in the brief... anything that's doing anything will be able to follow those rules.",
+   "at": "2026-11-10T00:03:04.356Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-log-fyi-phone-notifications-from-claude-sess": {
    "said": "If something needs to be fixed, you can send me a notification on my phone through AmberX... log it, and then if you try something, notify me that you're trying this, say what it is. If that fails, say that failed... just notify me of doing it, not for permission or veto.",
    "at": "2026-11-09T23:44:46.980Z",
