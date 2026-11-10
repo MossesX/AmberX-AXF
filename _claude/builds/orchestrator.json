@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:04:06.242Z",
+ "updatedAt": "2026-11-10T18:04:15.919Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -91416,7 +91416,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-10T17:12:17.498Z",
+   "updatedAt": "2026-11-10T18:04:07.714Z",
    "builtAt": "",
    "notes": [
     {
@@ -91426,6 +91426,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:12:17.498Z"
+    },
+    {
+     "text": "Split by Claude into 13 steps (1 Fable).",
+     "at": "2026-11-10T18:04:07.714Z"
     }
    ],
    "approvals": [],
@@ -91445,13 +91449,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Plain-code checker (no AI) for any skin, run in the skin editor live and in CI: 1) spacing/sizing values off the token scale, 2) more than 2 font families or off-scale type sizes, 3) palette sprawl (too many distinct colours, near-duplicate colours), 4) WCAG contrast failures for text and icons, 5) inconsistent radius/border/shadow use. Shows a score and a list of issues with one-click jump/fix to the token. Settings for thresholds. Full API/CLI control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the skin checker contract: the issue schema (rule id, severity, token path, value, expected, fix suggestion), score formula, the threshold settings schema with defaults, and the pure-function engine interface shared by the skin editor, CI, REST, MCP, CLI and voice. Write it as a typed module plus a short spec doc.",
+     "model": "Fable",
+     "why": "Cross-port contract and settings schema used by editor, CI and all four API surfaces",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "packages/skin-checker/src/contract.ts",
+      "packages/skin-checker/src/settings-schema.ts",
+      "packages/skin-checker/SPEC.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -91459,35 +91467,251 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mway6xy201v0en"
+     "uid": "st-mwb01lsy6pdum9"
     },
     {
      "id": "s2",
-     "text": "Yeah, build that shit right now.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mway6xy302l6wt"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/skin-checker-flags-anything-that-breaks-a-profes.md, THREADS row, commit, push, PR",
+     "text": "Implement the engine core: load a skin's tokens and resolved styles, run the registered rules, aggregate issues, compute the score. No rules yet, just the runner and a rule registry.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "packages/skin-checker/src/engine.ts",
+      "packages/skin-checker/src/load-skin.ts",
+      "packages/skin-checker/src/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6qveki"
+    },
+    {
+     "id": "s3",
+     "text": "Rule 1: spacing and sizing values off the token scale (padding, margin, gap, width/height steps), with the nearest scale token as the fix.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "packages/skin-checker/src/rules/spacing-scale.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6r7h9k"
+    },
+    {
+     "id": "s4",
+     "text": "Rule 2: typography. Flag more than 2 font families (threshold setting) and type sizes off the type scale, with the nearest-step fix.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "packages/skin-checker/src/rules/typography.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6so6im"
+    },
+    {
+     "id": "s5",
+     "text": "Rule 3: palette sprawl. Count distinct colours against the threshold and find near-duplicates by deltaE (OKLab), suggesting a merge into the canonical token.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "packages/skin-checker/src/rules/palette.ts",
+      "packages/skin-checker/src/color.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6tkcj8"
+    },
+    {
+     "id": "s6",
+     "text": "Rule 4: WCAG contrast for text (AA 4.5:1, large text 3:1) and icons/UI (3:1) over every foreground/background token pair the skin actually uses, suggesting the nearest passing shade.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "packages/skin-checker/src/rules/contrast.ts",
+      "packages/skin-checker/src/color.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6u1ocy"
+    },
+    {
+     "id": "s7",
+     "text": "Rule 5: inconsistent radius, border width and shadow use, flagging values outside the token set and too many distinct values per category.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "packages/skin-checker/src/rules/shape-consistency.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6vwtya"
+    },
+    {
+     "id": "s8",
+     "text": "Unit tests for the engine, the score and each rule, using clean and broken fixture skins.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "packages/skin-checker/test/",
+      "packages/skin-checker/test/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6wkz79"
+    },
+    {
+     "id": "s9",
+     "text": "Add the console REST routes: run the check on a skin (GET result and state), read and write threshold settings, apply a fix for one issue or for all issues. Persist the settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/server/routes/skin-checker.mjs",
+      "apps/console-web/server/data/skin-checker-settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6xakkg"
+    },
+    {
+     "id": "s10",
+     "text": "Add a skin editor panel showing the live score and the issue list, re-run on token edits (debounced), with one-click jump to the token and fix buttons. Add a thresholds settings section. Deep link console_show/console_open target 'skin-editor/checker' (optionally ?skin=&issue=). The panel reads state and runs actions only through the REST routes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skin-editor/checker-panel.js",
+      "apps/console-web/plugins/skin-editor/checker-settings.js",
+      "apps/console-web/plugins/skin-editor/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6ymoq6"
+    },
+    {
+     "id": "s11",
+     "text": "API parity: MCP console actions and plugin commands (skin_check, skin_check_state, skin_check_fix, skin_check_fix_all, skin_check_settings_get/set, open via console_show), the CLI 'axf skin check|fix|settings' with --json and a nonzero exit code below the threshold score, and AmberX voice intents for the same actions. All four call the same REST handlers.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skin-editor/commands.mjs",
+      "apps/console-web/mcp/tools/skin-checker.mjs",
+      "bin/axf-skin.mjs",
+      "apps/amberx/voice/intents/skin-checker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy6zj4jp"
+    },
+    {
+     "id": "s12",
+     "text": "CI: add a workflow step that runs 'axf skin check --all --json' on every skin and fails below the configured threshold, uploading the issue list as an artifact.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      ".github/workflows/skins.yml",
+      "scripts/ci/skin-check.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb01lsy70e314"
+    },
+    {
+     "id": "s13",
+     "text": "Run the tests, including route, CLI and MCP parity tests that check every action gives the same result through each surface. Write the report at _claude/builds/reports/skin-checker-flags-anything-that-breaks-a-profes.md, add the THREADS row, and open the PR. The PR lists how each UI feature is reached: deep link, state read, actions and settings via REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/skin-checker/test/",
+      "apps/console-web/test/skin-checker-api.test.mjs",
       "_claude/builds/reports/skin-checker-flags-anything-that-breaks-a-profes.md",
       "_claude/THREADS.md"
      ],
@@ -91498,7 +91722,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mway6xy303wlbc"
+     "uid": "st-mwb01lsy716le1"
     }
    ]
   },
