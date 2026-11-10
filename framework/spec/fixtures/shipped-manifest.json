@@ -89,8 +89,8 @@
     "44862718a364abc2a8b0e43cf83464c4f517de10"
    ],
    "files": [
-    "apps/console-web/plugins/approvals-banner/web/index.tsx",
-    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/example-banner/web/index.tsx",
+    "apps/console-web/plugins/example-banner/test.mts",
     "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
     "framework/python/axf_server/relay.py",
     "_claude/builds/reports/urgent-amberx-veto.md"
@@ -108,7 +108,7 @@
    ],
    "tests": [
     {
-     "name": "approvals-banner/test.mts: 18 checks",
+     "name": "example-banner/test.mts: 18 checks",
      "result": "pass"
     },
     {
@@ -305,8 +305,8 @@
    "mergedAt": "2026-11-09T00:06:38Z",
    "landedAt": "2026-11-09T00:06:35Z",
    "files": [
-    "apps/console-web/plugins/approvals-banner/web/index.tsx",
-    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/example-banner/web/index.tsx",
+    "apps/console-web/plugins/example-banner/test.mts",
     "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
     "framework/python/axf_server/relay.py",
     "_claude/builds/reports/urgent-amberx-veto.md"
@@ -314,10 +314,10 @@
    "areas": [
     {
      "kind": "plugin",
-     "id": "approvals-banner",
+     "id": "example-banner",
      "files": [
-      "apps/console-web/plugins/approvals-banner/web/index.tsx",
-      "apps/console-web/plugins/approvals-banner/test.mts"
+      "apps/console-web/plugins/example-banner/web/index.tsx",
+      "apps/console-web/plugins/example-banner/test.mts"
      ]
     },
     {
@@ -344,7 +344,7 @@
    ],
    "tests": [
     {
-     "name": "approvals-banner/test.mts: 18 checks",
+     "name": "example-banner/test.mts: 18 checks",
      "command": "",
      "result": "pass",
      "detail": ""
@@ -450,8 +450,8 @@
     "mergedAt": "2026-11-09T00:06:38Z",
     "mergeCommit": "661901740ba21f9767d70f7cf3c101c2e2c35a27",
     "files": [
-     "apps/console-web/plugins/approvals-banner/web/index.tsx",
-     "apps/console-web/plugins/approvals-banner/test.mts",
+     "apps/console-web/plugins/example-banner/web/index.tsx",
+     "apps/console-web/plugins/example-banner/test.mts",
      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
      "framework/python/axf_server/relay.py",
      "_claude/builds/reports/urgent-amberx-veto.md"
@@ -490,8 +490,8 @@
      "44862718a364abc2a8b0e43cf83464c4f517de10"
     ],
     "files": [
-     "apps/console-web/plugins/approvals-banner/web/index.tsx",
-     "apps/console-web/plugins/approvals-banner/test.mts",
+     "apps/console-web/plugins/example-banner/web/index.tsx",
+     "apps/console-web/plugins/example-banner/test.mts",
      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
      "framework/python/axf_server/relay.py",
      "_claude/builds/reports/urgent-amberx-veto.md"
@@ -522,8 +522,8 @@
     "status": "merged",
     "mergedAt": "2026-11-09T00:06:38Z",
     "files": [
-     "apps/console-web/plugins/approvals-banner/web/index.tsx",
-     "apps/console-web/plugins/approvals-banner/test.mts",
+     "apps/console-web/plugins/example-banner/web/index.tsx",
+     "apps/console-web/plugins/example-banner/test.mts",
      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
      "framework/python/axf_server/relay.py",
      "_claude/builds/reports/urgent-amberx-veto.md"
@@ -534,7 +534,7 @@
     "description": "",
     "type": "fix",
     "repo": "amberx-axf",
-    "plugin": "approvals-banner",
+    "plugin": "example-banner",
     "app": "console-web",
     "status": "merged",
     "plannedAt": "2026-11-08T22:27:50Z",
@@ -558,8 +558,8 @@
      "44862718a364abc2a8b0e43cf83464c4f517de10"
     ],
     "files": [
-     "apps/console-web/plugins/approvals-banner/web/index.tsx",
-     "apps/console-web/plugins/approvals-banner/test.mts",
+     "apps/console-web/plugins/example-banner/web/index.tsx",
+     "apps/console-web/plugins/example-banner/test.mts",
      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java",
      "framework/python/axf_server/relay.py",
      "_claude/builds/reports/urgent-amberx-veto.md"
@@ -601,7 +601,7 @@
    ],
    "files": 5,
    "areas": [
-    "plugin:approvals-banner",
+    "plugin:example-banner",
     "app:amberx-droid",
     "framework:python",
     "builds:builds"
