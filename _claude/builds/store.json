@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2496,
- "updatedAt": "2026-11-10T16:55:35.043Z",
+ "rev": 2497,
+ "updatedAt": "2026-11-10T16:55:58.085Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137658,10 +137658,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/search-bar-plugin-add-on-search-builds-session-h",
-   "pr": "",
+   "pr": "#451",
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T16:53:05.127Z",
+   "updatedAt": "2026-11-10T16:55:56.160Z",
    "builtAt": "",
    "notes": [
     {
@@ -137796,7 +137796,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
