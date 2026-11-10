@@ -3262,6 +3262,18 @@
    "from": "detail",
    "addenda": []
   },
+  "pass-approval-hook-deep-link-amberx-notification": {
+   "said": "I'm gonna need a link to the pass, a hook to it.",
+   "at": "2026-11-10T17:10:29.492Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "patches-one-app": {
    "said": "make Patches and every app in its tabs (Console, Pilot, axHub, Todos) function like one professional app; new assets for all the apps; detailed + interactive docs. Supersedes the \"apps render whole\" rule.",
    "at": "2026-10-24",
