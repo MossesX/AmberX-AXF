@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2101,
- "updatedAt": "2026-11-10T00:22:27.443Z",
+ "rev": 2102,
+ "updatedAt": "2026-11-10T00:23:35.947Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -133375,12 +133375,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T00:22:09.097Z",
+   "updatedAt": "2026-11-10T00:23:32.988Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T00:22:09.097Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T00:23:32.988Z"
     }
    ],
    "approvals": [],
@@ -133407,13 +133411,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T00:23:32.988Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9y5oxp01ifuq",
+     "title": "",
+     "text": "Upgrade the existing skins/appearance system and asset registry; don't build a parallel one. 1) DATA MODEL: a skin is only a package (manifest) referencing section assets. Every section (colours, layouts, design/visual styles, behaviour, and every other category a skin covers) is its own standalone asset with a name, preview, tags and source. Convert every existing skin into this form, with no monolithic skins left. 2) APPLY WITH PICKS: when you apply, enable or change a skin, a dialog lists its sections with checkboxes and previews. Choose which sections to take and which to leave out; left-out sections keep the current skin's. 3) MIX = NEW SKIN: if the result mixes sections from more than one skin, a dialog asks you to save it as a new skin (name, description, thumbnail auto-captured), with Save as new, Apply without saving, or Cancel. 4) SKIN BUILDER: a slice library (searchable, by category, live hover preview) and a pack template with one slot per category. Drag slices into slots, preview the whole console live, see which slots are empty, swap or clear slots, before/after toggle. Save, apply, export or import as a file, duplicate, edit later. 5) Professional polish: snap animations, slot highlights, desktop and phone layouts. 6) Full control via REST, MCP, CLI and voice (list sections, save section, apply with includes/excludes, build skin from sections, export). Screenshots go to UI Review grouped by screen.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:23:32.988Z",
+     "updatedAt": "2026-11-10T00:23:32.988Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9y5oxp02n4m3",
+     "title": "",
+     "text": "For each section in skins, like colors, layouts, design, behavior, you need to be able to save each individual section as a new asset, then build your skins with these assets. Drag one from the list into a template that has all the categories a pack needs, build an entire skin, export it as a new skin, apply it. Make it sick. Every skin has to be a package of chunks. Every single thing has to be its own asset. It can't be one. Every section must be its own chunk. When you're building a new one, or enabling or changing one, you can select which sections you want taken in and which ones left out. When you apply a theme, you can leave certain things out, and when those mix with the existing theme, it asks you to create the new skin, in a dialog.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:23:32.988Z",
+     "updatedAt": "2026-11-10T00:23:32.988Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9y5oxp03keu5",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/skins-as-packages-of-slices-every-section-its-ow.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/skins-as-packages-of-slices-every-section-its-ow.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:23:32.988Z",
+     "updatedAt": "2026-11-10T00:23:32.988Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -133422,12 +133502,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T00:23:32.988Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
