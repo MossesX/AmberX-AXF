@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2898,
- "updatedAt": "2026-11-10T21:39:55.253Z",
+ "rev": 2899,
+ "updatedAt": "2026-11-10T21:44:44.793Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154377,7 +154377,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-10T21:29:11.812Z",
+   "updatedAt": "2026-11-10T21:44:43.523Z",
    "builtAt": "",
    "notes": [
     {
@@ -154414,12 +154414,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T20:45:53.653Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T21:29:09.633Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T20:47:16.823Z",
@@ -154429,9 +154429,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T21:29:09.633Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -154440,7 +154440,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T21:29:09.633Z"
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -154458,12 +154458,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T21:44:43.523Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T20:47:16.823Z",
-     "updatedAt": "2026-11-10T20:47:16.823Z"
+     "updatedAt": "2026-11-10T21:44:43.671Z"
     },
     {
      "id": "s2",
