@@ -80,7 +80,7 @@
         "id": "entry",
         "route": "GET /entry",
         "title": "One glossary entry",
-        "description": "One entry by id (e.g. plugin:build-manager, concept:asset, control:console-web:ui-review:approve) with what it is, what it does, where it appears, its API, its links and what links to it.",
+        "description": "One entry by id (e.g. plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve) with what it is, what it does, where it appears, its API, its links and what links to it.",
         "readOnly": true,
         "input": {
           "type": "object",
@@ -227,7 +227,7 @@
           "properties": {
             "entry": {
               "type": "string",
-              "description": "the glossary entry id (plugin:build-manager, concept:asset, control:console-web:ui-review:approve)"
+              "description": "the glossary entry id (plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve)"
             },
             "save": {
               "type": "boolean",
