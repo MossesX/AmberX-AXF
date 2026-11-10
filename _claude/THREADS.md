@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:50 UTC · `orchestrator-table-columns-model-queue-assigned` → pending, note (all) · reconciler
 - 2026-11-10 03:52 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` PR #437 (all) · builds-live
 - 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s2 done (all) · orchestrator
 - 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s3 done, → built (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:09 UTC · `auto-land-every-build-the-moment-it-finishes-red` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `skins-theme-rule` → pending (all) · voice
 - 2026-11-10 17:10 UTC · `pass-approval-hook-deep-link-amberx-notification` added (0 steps) (all) · console
+- 2026-11-10 17:10 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · console
 
 ## Token passes (log)
 
