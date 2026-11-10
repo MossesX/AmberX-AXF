@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2929,
- "updatedAt": "2026-11-10T21:56:32.903Z",
+ "rev": 2930,
+ "updatedAt": "2026-11-10T21:56:53.721Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157177,6 +157177,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T21:56:18.242Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "background-token-for-every-ui-background-designe",
+   "title": "Background token for every UI + Background Designer (animated, logos, brand library, design import, semi-transparent foreground)",
+   "category": "",
+   "detail": "1) New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T21:56:52.404Z",
+   "updatedAt": "2026-11-10T21:56:52.404Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a background token for every UI, included in axHub's style settings. It accepts animations and logos, integrated with the enterprise branding and all kinds of tools to build backgrounds, animated backgrounds and design import. A powerful background designer. You can make everything in front of it semi-transparent.",
+    "at": "2026-11-10T21:56:52.404Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 601
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
