@@ -771,11 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:04 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s2 done (all) · orchestrator
-- 2026-11-10 04:04 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s3 done, → built (all) · orchestrator
-- 2026-11-10 04:04 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → running, note (all) · orchestrator
-- 2026-11-10 04:05 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s2 done, s3 done, → built, PR #438, note (all) · reconciler
-- 2026-11-10 04:05 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 - 2026-11-10 04:05 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · pipeline
 - 2026-11-10 04:05 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-10 04:06 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s1 done (all) · orchestrator
@@ -1171,6 +1166,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:22 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · orchestrator
 - 2026-11-10 17:21 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · orchestrator
 - 2026-11-10 17:21 UTC · `enforce-the-merge-queue-every-finished-build-goe` s3 done, → built (all) · orchestrator
+- 2026-11-10 17:22 UTC · `enforce-the-merge-queue-every-finished-build-goe` → pending, note (all) · pipeline
+- 2026-11-10 17:22 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
+- 2026-11-10 17:22 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` → running, note (all) · pipeline
+- 2026-11-10 17:22 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` branch claude/merge-batching-add-on-when-a-batch-fails-ci-spli (all) · pipeline
+- 2026-11-10 17:22 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · orchestrator
 
 ## Token passes (log)
 
