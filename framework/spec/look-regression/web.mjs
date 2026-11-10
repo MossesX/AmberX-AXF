@@ -51,6 +51,9 @@ export async function serve(root, app, port) {
       AXF_APPEARANCE_HUB: 'off', AXF_DATA_DIR: data, AXHUB_PROJECTS_DIR: join(tmp, 'projects'), AXF_APP_CATALOG_EVERY: '0',
       AXF_CONSOLE_COMMANDS_DATA_DIR: join(tmp, 'console-commands'), AXF_UI_REVIEW_DIR: join(tmp, 'ui-review'),
     };
+    // a server left on the port by an earlier run would answer /api/health with another data folder: every plugin route
+    // fails and the walk records a broken console (Nov 10 2026), so a taken port is refused before anything starts
+    if (await waitUp(`http://127.0.0.1:${port}/api/health`, 1500)) { rmSync(tmp, { recursive: true, force: true }); throw new Error(`port ${port} is already answering: stop the leftover console API (pgrep -f "uvicorn main:app --host 127.0.0.1 --port ${port}") or set LOOK_REGRESSION_PORT`); }
     child = spawn('python3', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', String(port), '--log-level', 'warning'], { cwd: join(root, 'apps/console-web/server'), env, stdio: ['ignore', 'pipe', 'pipe'] });
     const stop = () => { child.kill('SIGTERM'); rmSync(tmp, { recursive: true, force: true }); };
     const logs = [];
