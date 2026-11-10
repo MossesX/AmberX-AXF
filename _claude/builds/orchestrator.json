@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:53:33.427Z",
+ "updatedAt": "2026-11-10T17:53:56.775Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87036,7 +87036,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:38:42.207Z",
-   "updatedAt": "2026-11-10T17:09:51.476Z",
+   "updatedAt": "2026-11-10T17:53:37.763Z",
    "builtAt": "",
    "notes": [
     {
@@ -87046,6 +87046,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:30:41.533Z"
+    },
+    {
+     "text": "Split by Claude into 10 steps (1 Fable).",
+     "at": "2026-11-10T17:53:37.763Z"
     }
    ],
    "approvals": [],
@@ -87065,13 +87069,22 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the project contract. Write the project manifest schema covering id, name, created, and the builds, notes and data roots. Define move-build semantics: a build's store entry, journal lines, notes, steps, branches, PR links, reports, shipped records and change entries all move together and keep their ids. Specify the order of operations so a move is atomic (write the target with tmp files, then remove from the source, roll back on failure) and how id collisions are handled. Confirm that a project switch already switches all build data, and write the contract to a doc.",
+     "model": "Fable",
+     "why": "Cross-project data contract and schema design that every later step and app depends on",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/origins.json",
+      "_claude/builds/journal/",
+      "_claude/builds/profiles/",
+      "_claude/shared/instructions/projects-and-sync.md",
+      "docs/projects/project-manifest.schema.json",
+      "docs/projects/move-builds.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -87079,17 +87092,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwauwsqh01mirs"
+     "uid": "st-mwazo3qb39mjfm"
     },
     {
      "id": "s2",
-     "text": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
+     "text": "Build the createProject core library. Validate the manifest against the schema, scaffold the project's own builds, notes and data folders, register it in the projects registry and the /projects hub sync, and refuse duplicate ids. It is a pure function with no AI. Add unit tests.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/lib/projects/create.mjs",
+      "apps/console-web/lib/projects/registry.mjs",
+      "apps/console-web/lib/projects/create.test.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -87097,16 +87114,168 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwauwsqh02sqa2"
+     "uid": "st-mwazo3qb3aepg9"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md, THREADS row, commit, push, PR",
+     "text": "Build the moveBuilds core library, following the contract from step 1. Move the selected builds between projects: store entries, journal entries, notes, steps, reports, shipped records and change-entry refs. Git branches and PRs are left untouched, but their references are kept. Writes are atomic with rollback, and a dry-run returns the planned list. Nothing is deleted or archived; the source only loses the moved entries. Add unit tests, including a failure halfway through a move.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/lib/projects/move-builds.mjs",
+      "apps/console-web/lib/projects/move-builds.test.mjs",
+      "apps/console-web/plugins/codebase-changes/changes.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3bp6az"
+    },
+    {
+     "id": "s4",
+     "text": "Add REST routes for the console API. POST /api/projects creates a project. GET /api/projects and GET /api/projects/:id read state. POST /api/projects/:id/move-builds takes {buildIds|filter:{state,createdBefore}, dryRun} and moves builds. GET /api/projects/:id/builds lists a project's builds. Add route tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/server/routes/projects.mjs",
+      "apps/console-web/server/routes/projects.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3cbeb1"
+    },
+    {
+     "id": "s5",
+     "text": "Expose the same actions through the other three channels, all calling the same library functions with the same arguments. MCP: console actions project.create, project.list, project.get and project.moveBuilds. CLI: axf project create|list|show|move-builds with --dry-run, --state and --created-before. Voice: AmberX intents for 'create project X' and 'move builds to project X'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/mcp/tools/projects.mjs",
+      "bin/axf-project.mjs",
+      "apps/amberx/voice/intents/projects.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3d90a2"
+    },
+    {
+     "id": "s6",
+     "text": "Add the UI. A New project dialog in the project picker. In the Build manager, multi-select with a 'Move to project…' action that shows a dry-run preview and asks for confirmation. Add the deep links console_show/console_open targets projects/new, projects/<id> and builds/move?ids=…, register them, and make dialog state readable through the API from step 4.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/projects/",
+      "apps/console-web/plugins/builds/",
+      "apps/console-web/lib/deeplinks.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3eppdn"
+    },
+    {
+     "id": "s7",
+     "text": "Run end-to-end tests of create and move on a scratch fixture through REST, MCP and CLI. Check that the results match across channels, that history and notes are intact after a move, that switching to the target project shows the moved builds, and that the source no longer lists them.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/test/projects.e2e.test.mjs",
+      "apps/console-web/test/fixtures/projects/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3fhaqr"
+    },
+    {
+     "id": "s8",
+     "text": "Do a dry run against the real data. Using the API, list every build in the current project (amberx-axf) whose state is Pending and that was created before 2026-11-08T00:00. Save the list with ids, titles, created dates and branches. Confirm that builds from 2026-11-08 onward are excluded.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/builds/reports/projects-create-a-new-project-and-move-builds-be/move-dry-run.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3gtudy"
+    },
+    {
+     "id": "s9",
+     "text": "Do the real move. Create the new project through the API (id amberx-axf-backlog unless one is already defined, and record the chosen name). Move the dry-run list into it. Verify the counts before and after, check that every moved build's notes, steps, journal and branch refs are present in the target, and confirm nothing was deleted or archived. Commit the data changes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "_claude/builds/",
+      "_claude/builds/profiles/",
+      "/projects/amberx-axf-backlog/",
+      "_claude/builds/reports/projects-create-a-new-project-and-move-builds-be/move-result.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazo3qb3hxxka"
+    },
+    {
+     "id": "s10",
+     "text": "Finish the build. Run the full test suite. Write the report to _claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md, including the moved-builds list and how each feature is reached by deep link, REST, MCP, CLI and voice. Add the THREADS row. Open the PR, with the API access paths listed in its description.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
      "files": [
       "_claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md",
       "_claude/THREADS.md"
@@ -87118,7 +87287,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwauwsqh03vre8"
+     "uid": "st-mwazo3qb3ipphu"
     }
    ]
   },
