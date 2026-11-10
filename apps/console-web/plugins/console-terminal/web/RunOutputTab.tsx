@@ -2,13 +2,15 @@
  * Approved VPS / shell commands, shown in the terminal (Brett, Oct 23 2026): once a command you approved on axHub has run
  * through Mosses's axhub_call, its command and output open here in a read-only tab (tab kind `terminal-output`, in the
  * terminal window), so you see what ran and what it said. Runs come from the agent manager's `axf.hub-runs@1` through
- * this plugin's `GET hub-runs` (console token); only runs newer than when this page loaded open by themselves, while the
- * page is visible. Settings → Plugins → Terminal → "Open approved VPS commands here" switches it off.
+ * this plugin's `GET hub-runs` (console token); only runs newer than when this page loaded get a tab by themselves, while the
+ * page is visible, and only in the background of an open Terminal window: with none open they wait on the Terminal
+ * toolbar count (Nov 9 2026, Brett: the Terminal must not pop up on its own). Settings → Plugins → Terminal → "Open approved VPS commands here" switches it off.
  */
 import { useEffect, useRef, useState } from 'react';
 import { Button, Icon } from '@console/axf/react';
 import type { AxfRuntime, TabSpec } from '@console/axf/core';
 import { call, getSettings, loadXterm, themeFromTokens } from './api';
+import { planRun } from './headless-core';
 
 export interface HubRun { id: string; at: number; tool: string; command: string; output: string; exit: number | null; reason: string; agent: string }
 interface Answer { available: boolean; on: boolean; items: HubRun[]; now: number }
@@ -16,34 +18,72 @@ interface Answer { available: boolean; on: boolean; items: HubRun[]; now: number
 const runs = new Map<string, HubRun>();
 const P = 'axp-terminal';
 
-/** Open (or bring forward) the output tab for one run, in the terminal window when there is one. */
-export function openRunTab(rt: AxfRuntime, run: HubRun) {
+/** Open (or bring forward) the output tab for one run, in the terminal window when there is one. `background` (the
+ *  watcher): only into an open Terminal window, behind the tab in front, never a new window, never a raise. */
+export function openRunTab(rt: AxfRuntime, run: HubRun, background = false): boolean {
   runs.set(run.id, run);
   const wm = rt.windows;
   const tabId = `hubrun-${run.id}`;
   const gid = wm.groupOf(tabId);
-  if (gid) { const g = wm.state.groups[gid]; if (g) wm.activate(gid, g.tabs.findIndex((t) => t.id === tabId)); return; }
+  if (gid) { if (!background) { const g = wm.state.groups[gid]; if (g) wm.activate(gid, g.tabs.findIndex((t) => t.id === tabId)); } return true; }
   const tab = { id: tabId, title: `VPS: ${(run.command.split('\n')[0] ?? '').slice(0, 32)}`, kind: 'terminal-output', payload: run.id, icon: 'terminal' };
-  const existing = Object.values(wm.state.groups).find((g) => g.tabs.some((t) => t.kind === 'terminal-host' || t.kind === 'terminal-output'))?.id;
-  if (existing) wm.addTab(existing, tab);
-  else wm.openFloating([tab], 'Terminal', 'floating', Math.min(820, innerWidth - 32), Math.min(480, innerHeight - 120));
+  const existing = terminalGroup(rt);
+  if (existing) {
+    const keep = wm.state.groups[existing]?.active ?? 0;
+    wm.addTab(existing, tab);
+    if (background) wm.activate(existing, keep); // addTab puts the new tab in front: the one Brett was on stays there
+    return true;
+  }
+  if (background) return false;
+  wm.openFloating([tab], 'Terminal', 'floating', Math.min(820, innerWidth - 32), Math.min(480, innerHeight - 120));
+  return true;
+}
+
+const terminalGroup = (rt: AxfRuntime) => Object.values(rt.windows.state.groups).find((g) => g.tabs.some((t) => t.kind === 'terminal-host' || t.kind === 'terminal-output'))?.id;
+
+/** Runs that finished while no Terminal window was open: they count on the Terminal toolbar icon and get a background
+ *  tab once Brett opens the Terminal himself (flushRuns). */
+const waiting = new Map<string, HubRun>();
+const waitingListeners = new Set<() => void>();
+export const waitingRuns = () => waiting.size;
+export const onWaitingRuns = (f: () => void) => { waitingListeners.add(f); return () => { waitingListeners.delete(f); }; };
+const waitingChanged = () => waitingListeners.forEach((f) => f());
+/** Put the waiting runs into the open Terminal window, in the background. */
+export function flushRuns(rt: AxfRuntime) {
+  if (!waiting.size || !terminalGroup(rt)) return;
+  for (const r of [...waiting.values()].sort((a, b) => a.at - b.at)) if (openRunTab(rt, r, true)) waiting.delete(r.id);
+  waitingChanged();
 }
 
 let started = false;
-/** Poll for new approved runs every 5 s while the page is visible (and at once when it comes back). */
+/**
+ * Poll for new approved runs every 5 s while the page is visible (and at once when it comes back). The first answer
+ * is a baseline on the server's clock (planRun): runs from before this page loaded never open, and a browser clock
+ * that runs behind the VPS can't make old runs look new. New runs never pop a window up (Nov 9 2026).
+ */
 export function watchHubRuns(rt: AxfRuntime) {
   if (started) return;
   started = true;
-  let since = Date.now();
+  let since: number | null = null;
   const tick = async () => {
     if (document.visibilityState !== 'visible') return;
     try {
-      const a = await call<Answer>(`hub-runs?since=${since}`);
-      for (const r of a.items) { since = Math.max(since, r.at); openRunTab(rt, r); }
+      const a = await call<Answer>(`hub-runs?since=${since ?? Date.now()}`);
+      const baseline = since === null;
+      since = Math.max(since ?? 0, a.now || 0, ...a.items.map((r) => r.at));
+      let changed = false;
+      for (const r of a.items) {
+        const plan = planRun(!!terminalGroup(rt), baseline);
+        if (plan === 'background') openRunTab(rt, r, true);
+        else if (plan === 'wait') { runs.set(r.id, r); waiting.set(r.id, r); changed = true; }
+      }
+      if (changed) waitingChanged();
+      flushRuns(rt);
     } catch { /* plugin off or console unreachable: try again next tick */ }
   };
   setInterval(() => void tick(), 5000);
   document.addEventListener('visibilitychange', () => void tick());
+  void tick();
 }
 
 /** The read-only tab: "$ command", the output, exit code. Not a shell: nothing typed here runs. */

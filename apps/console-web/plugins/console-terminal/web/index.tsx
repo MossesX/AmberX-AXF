@@ -8,7 +8,7 @@ import { applyProfile } from './profiles';
 import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
-import { RunOutputTab, watchHubRuns } from './RunOutputTab';
+import { RunOutputTab, flushRuns, watchHubRuns } from './RunOutputTab';
 import { openHeadless, openUnseen, watchHeadless } from './headless';
 import { openByName } from './nav';
 import './terminal.css';
@@ -53,14 +53,17 @@ export const plugin: AxfWebLibrary = {
     // a headless run's own tab (the Crew, avatars' right-click "Open Terminal tab"): terminal.attach:<axf-… session>[:<title>]
     rt.actions.register('terminal.attach', ([name = '', title = '']) => { if (/^axf-[A-Za-z0-9._-]{1,64}$/.test(name)) openHeadless(rt, { name, createdAt: 0, agent: decodeURIComponent(title) }); }, { label: 'Open a headless run in a Terminal tab', params: true, searchable: false });
     // the Terminal toolbar icon (terminal-no-focus): with a count on it, open the oldest new headless session; else a terminal
-    rt.actions.register('terminal.toolbar', () => { if (!openUnseen(rt)) openFromContext(rt); }, { label: 'Terminal (new sessions first)' });
+    rt.actions.register('terminal.toolbar', () => { if (!openUnseen(rt)) openFromContext(rt); flushRuns(rt); }, { label: 'Terminal (new sessions first)' });
     rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
     // sessions nav (Nov 3 2026): mirror a session read-only, or jump in (writable; a chat opens claude.ai); args [name, where]
     rt.actions.register('terminal.mirror', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), false), { label: 'Mirror a session (read-only)', params: true });
     rt.actions.register('terminal.jump', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), true), { label: 'Jump into a session', params: true });
     rt.actions.register('terminal.sessions', () => { if (!findHost(rt)) openFromContext(rt); else rt.toast('The sessions list is on the left of the terminal window', 'info'); }, { label: 'Terminal sessions' });
-    watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
-    watchHeadless(rt); // headless Claude Code sessions on the VPS get a tab here, quietly by default (settings showHeadless, newSession)
+    // approved VPS / shell commands get a background tab here once they've run (setting showHubRuns); never a new window
+    watchHubRuns(rt);
+    // headless Claude Code sessions on the VPS get a tab here, quietly by default (settings showHeadless, newSession); what
+    // already runs when the page loads or comes back never pops the Terminal up (urgent-terminal-pops-up, Nov 9 2026)
+    watchHeadless(rt);
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
   },
   dialogs: {

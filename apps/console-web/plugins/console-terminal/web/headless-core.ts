@@ -44,11 +44,27 @@ export const newSessionMode = (v: unknown): NewSessionMode => (NEW_SESSION_MODES
  *  open  — add a tab now (`raise` = bring the window to the front and switch to it)
  *  wait  — quiet with no terminal window open: no window pops; they count on the badge and get a background tab once
  *          Brett opens the Terminal himself
+ * `baseline` (urgent-terminal-pops-up-every-time-the-console-o, Nov 9 2026, Brett: "Every time I open the console, the
+ * terminal seems to pop up. You need to stop that."): the first look after the page loads, or after it comes back from
+ * the background. Sessions found then were already running before Brett looked, so they are never raised, whatever the
+ * mode: front behaves like quiet for them. Only a session that starts while he is watching can come to the front.
  */
-export function planNew(mode: NewSessionMode, fresh: Headless[], hasWindow: boolean): { open: Headless[]; wait: Headless[]; raise: boolean } {
+export function planNew(mode: NewSessionMode, fresh: Headless[], hasWindow: boolean, baseline = false): { open: Headless[]; wait: Headless[]; raise: boolean } {
   if (mode === 'nothing') return { open: [], wait: [], raise: false };
-  if (mode === 'front') return { open: fresh, wait: [], raise: true };
+  if (mode === 'front' && !baseline) return { open: fresh, wait: [], raise: true };
   return hasWindow ? { open: fresh, wait: [], raise: false } : { open: [], wait: fresh, raise: false };
+}
+
+/**
+ * An approved VPS / shell command that just ran (RunOutputTab.tsx, axf.hub-runs@1). Pure. Never a new window and never
+ * a raise on its own: the first look after a load is only a baseline (runs before it were seen elsewhere), a new run
+ * gets a background tab in an open Terminal window, and with none open it waits on the Terminal toolbar count until
+ * Brett opens the Terminal himself.
+ */
+export type RunPlan = 'skip' | 'background' | 'wait';
+export function planRun(hasWindow: boolean, baseline: boolean): RunPlan {
+  if (baseline) return 'skip';
+  return hasWindow ? 'background' : 'wait';
 }
 
 

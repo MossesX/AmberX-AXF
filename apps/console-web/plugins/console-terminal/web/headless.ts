@@ -18,6 +18,7 @@
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { call } from './api';
+import { onWaitingRuns, waitingRuns } from './RunOutputTab';
 import { findHost, newTab } from './open';
 import { addSession, focusSession, host, hostIds, sessionId, subscribe, titleFor, type HostSession } from './hosts';
 
@@ -83,7 +84,7 @@ function badge(rt: AxfRuntime, running?: Set<string>) {
     if (s?.open.attach) front.add(s.open.attach);
   }
   for (const n of [...unseen.keys()]) if (front.has(n) || (running && !running.has(n))) unseen.delete(n);
-  rt.setBadge(NEW_SESSIONS_BADGE, unseen.size);
+  rt.setBadge(NEW_SESSIONS_BADGE, unseen.size + waitingRuns()); // + approved VPS commands waiting for a Terminal window
 }
 
 /** The Terminal toolbar icon with a count on it: open the oldest new session Brett hasn't looked at (explicit). */
@@ -95,17 +96,24 @@ export function openUnseen(rt: AxfRuntime): boolean {
 }
 
 let started = false;
+/**
+ * Brett has been looking since the last successful check. False after a load and whenever the page goes to the
+ * background, so the next check is a baseline (planNew): what is already running then never pops the Terminal up.
+ */
+let watching = false;
 export function watchHeadless(rt: AxfRuntime) {
   if (started) return;
   started = true;
   const tick = async () => {
-    if (document.visibilityState !== 'visible') return;
+    if (document.visibilityState !== 'visible') { watching = false; return; }
     try {
       const a = await call<Answer>('headless');
       if (!a.on || !a.ready) return;
+      if (document.visibilityState !== 'visible') { watching = false; return; }
       const mode: NewSessionMode = newSessionMode(a.newSession);
       const shown = new Set(shownNow(rt).keys());
-      const plan = planNew(mode, toOpen(a.items, shown, closed), !!findHost(rt));
+      const plan = planNew(mode, toOpen(a.items, shown, closed), !!findHost(rt), !watching);
+      watching = true;
       for (const h of plan.open) {
         if (plan.raise) openHeadless(rt, h);
         else if (addQuiet(rt, h)) unseen.set(h.name, h);
@@ -119,7 +127,8 @@ export function watchHeadless(rt: AxfRuntime) {
     } catch { /* plugin off, VPS unreachable: try again next tick */ }
   };
   subscribe(() => badge(rt)); // a tab brought to the front counts as seen
+  onWaitingRuns(() => badge(rt));
   setInterval(() => void tick(), 5000);
-  document.addEventListener('visibilitychange', () => void tick());
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState !== 'visible') watching = false; void tick(); });
   void tick();
 }
