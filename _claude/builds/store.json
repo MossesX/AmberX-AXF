@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2201,
- "updatedAt": "2026-11-10T02:32:41.940Z",
+ "rev": 2202,
+ "updatedAt": "2026-11-10T02:33:35.959Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123930,14 +123930,14 @@
    "title": "One builds page: Pending, Queued, Built tabs; remove every other builds table",
    "category": "",
    "detail": "Brett: too many tables show build info. Remove all of them (Build Manager tables, orchestrator tables, tracker, steps, plan/queue views, duplicates in other plugins; keep code for harvesting). Replace with ONE page with three tabs: Pending, Queued, Built. All read the one builds store. Plan Studio stays for plans. Full API + voice + MCP/CLI control. 3 UI options to UI Review; shots; tests; report. Must create its Plan Studio plan.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-builds-page-pending-queued-built-tabs-remove",
    "branch": "claude/one-builds-page-pending-queued-built-tabs-remove",
    "pr": "",
    "createdAt": "2026-11-08T21:17:47.099Z",
-   "updatedAt": "2026-11-10T02:32:32.667Z",
+   "updatedAt": "2026-11-10T02:32:41.956Z",
    "builtAt": "",
    "notes": [
     {
