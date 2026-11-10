@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, Note, PriorityTag, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { BuildOrigin, Button, Chip, Icon, Note, PriorityTag, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
-import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { CellDates, CellSteps, CellTitle, DataGrid, DetailChecklist, DetailFacts, DetailSections, DetailTimeline, Elapsed, LivePulse, fmtDateTime, type ChecklistItem, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 
 /*
  * Pipeline tab (Brett, Nov 8 2026): the three tables of the build pipeline, Pending / Queue / Building, the Claude
@@ -19,7 +19,7 @@ import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@conso
  */
 
 type Pipeline = { route?: string; held?: string; heldBy?: string; pin?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
-export type Row = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; builtAt?: string; mergedAt?: string; cost?: number; costEstimated?: boolean; builtBy?: string; accounts?: string[]; models?: string[] };
+export type Row = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; builtAt?: string; mergedAt?: string; cost?: number; costEstimated?: boolean; builtBy?: string; accounts?: string[]; models?: string[]; startedAt?: string; stepList?: { id: string; text: string; done: boolean; skip: boolean; model: string; doneAt: string }[]; recent?: { at: string; text: string }[] };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[]; active: Row[]; complete: Row[] }; accounts: Account[];
@@ -132,23 +132,38 @@ function FlowGrid({ rows, view, accounts, busy, waitsFor, launchFor, act, steps 
   const [open, setOpen] = useState<string[]>([]);
   const [sort, setSort] = useState<GridSort>(null);
   const [hidden, setHidden] = useState<string[]>([]);
-  const cols: GridColumn<Row>[] = [
-    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 26))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
-      render: (r) => <span className="oc-cell-title" title={r.said || r.title}><strong>{r.title}</strong>{r.said && <span className="fx-small fx-muted">“{r.said}”</span>}</span> },
-    { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 8)', render: (r) => <PriorityTag build={r.id} /> },
-    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 8)', sortable: true, sortValue: (r) => r.status,
-      render: (r) => <span className="fx-row"><span className={`pd-badge oc-badge is-${r.status}`}>{STATUS_TEXT[r.status] ?? r.status}</span>{r.held && <Chip tone="warning">Held</Chip>}</span> },
-    { id: 'progress', label: 'Steps', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => (r.steps.total ? r.steps.done / r.steps.total : 0),
-      render: (r) => <span className="fx-small" title={r.nextStep}>{r.steps.done}/{r.steps.total}{r.minutesLeft ? ` · ${r.minutesLeft} min left` : ''}</span> },
-    { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => r.pipeline?.model || r.nextModel,
-      render: (r) => { const m = (view === 'active' && r.pipeline?.model) || r.nextModel; return m ? <span className={`oc-model is-${m.toLowerCase()}`}>{m}</span> : <span className="fx-muted">—</span>; } },
-    { id: 'account', label: view === 'active' ? 'Account' : 'Assigned', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => r.pipeline?.account || r.pipeline?.pin || '',
-      render: (r) => <span className="fx-small" title={r.pipeline?.pin ? `Assigned to ${r.pipeline.pin}` : 'The dispatcher picks the account'}>{view === 'active' && r.pipeline?.account ? r.pipeline.account : r.pipeline?.pin || <span className="fx-muted">auto</span>}{view === 'active' && r.pipeline?.pin && r.pipeline.pin !== r.pipeline.account ? ` (assigned ${r.pipeline.pin})` : ''}</span> },
-    { id: 'route', label: 'Runs on', width: 'calc(var(--fx-font-size) * 6.5)', render: (r) => <span className="fx-small">{routeOf(r.pipeline?.route).label}</span> },
-    { id: 'when', label: view === 'active' ? 'Started' : 'Queued', width: 'calc(var(--fx-font-size) * 6.5)', align: 'end', sortable: true, sortValue: (r) => (view === 'active' ? r.pipeline?.launchedAt : r.pipeline?.queuedAt) || '',
-      render: (r) => { const t = (view === 'active' ? r.pipeline?.launchedAt : r.pipeline?.queuedAt) || ''; return <span className="fx-small" title={fmtTime(t)}>{t ? ago(t) : '—'}</span>; } },
-    { id: 'wait', label: 'Next', width: 'minmax(calc(var(--fx-font-size) * 10), 1fr)',
-      render: (r) => { const l = launchFor(r.id); const w = waitsFor(r.id); return <span className="fx-small fx-muted">{l ? `starts next tick on ${l.account} (${l.model})` : w || (r.status === 'running' ? r.nextStep : r.pipeline?.note || '')}</span>; } },
+  // two-line rows (Brett, Nov 9 2026: "it can be a double wide row... make it look good, like a professional website";
+  // "The active ones need an animated thing in the row"): Queued says where it is in line, why it waits and what it will
+  // run on; Active shows the live pulse, a running timer, steps with a moving meter, the current step and the account.
+  const pos = new Map(rows.map((r, i) => [r.id, i + 1]));
+  const planned = (r: Row) => { const l = launchFor(r.id); return { account: l?.account || r.pipeline?.pin || '', model: l?.model || r.nextModel, kind: l?.kind === 'api' ? 'API key' : '' }; };
+  const titleCol: GridColumn<Row> = { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 18), calc(var(--fx-font-size) * 28))', fixed: true, sortable: true, sortValue: (r) => (view === 'queued' ? pos.get(r.id) ?? 0 : r.title.toLowerCase()),
+    render: (r) => (
+      <CellTitle title={r.title}
+        lead={view === 'active' ? <LivePulse tone={PULSE[r.status] ?? 'accent'} still={r.status !== 'running' || !!r.held} label={STATUS_TEXT[r.status] ?? r.status} /> : <span className="oc-pos" title="Place in the start order">#{pos.get(r.id)}</span>}
+        badges={<><PriorityTag build={r.id} />{view === 'active' && r.status !== 'running' && <span className={`pd-badge oc-badge is-${r.status}`}>{STATUS_TEXT[r.status] ?? r.status}</span>}{r.held && <Chip tone="warning">Held</Chip>}{r.needsSplit && <Chip tone="warning">Needs split</Chip>}</>}
+        sub={[<span key="id" className="fx-mono">{r.id}</span>, r.pipeline?.runs ? `run ${r.pipeline.runs}` : '', r.said ? <span key="said" className="oc-said" title={r.said}>“{r.said}”</span> : '']} />
+    ) };
+  const stepsCol: GridColumn<Row> = { id: 'progress', label: 'Steps', width: 'calc(var(--fx-font-size) * 12)', sortable: true, sortValue: (r) => (r.steps.total ? r.steps.done / r.steps.total : 0),
+    render: (r) => <CellSteps done={r.steps.done} total={r.steps.total} active={view === 'active' && r.status === 'running'} current={view === 'active' ? r.nextStep : undefined} /> };
+  const cols: GridColumn<Row>[] = view === 'queued' ? [
+    titleCol,
+    { id: 'dates', label: 'Dates', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.pipeline?.queuedAt || r.createdAt,
+      render: (r) => <CellDates dates={[{ label: 'Created', at: r.createdAt }, { label: 'Queued', at: r.pipeline?.queuedAt }, { label: 'Last run', at: r.pipeline?.lastRun?.at }]} /> },
+    stepsCol,
+    { id: 'plan', label: 'Planned', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => planned(r).account,
+      render: (r) => { const p = planned(r); return <span className="oc-stack">{p.model ? <span className={`oc-model is-${p.model.toLowerCase()}`}>{p.model}</span> : <span className="fx-muted">—</span>}<span className="fx-small" title={r.pipeline?.pin ? `Assigned to ${r.pipeline.pin}` : 'The dispatcher picks the account'}>{p.account || <span className="fx-muted">Any account</span>}{p.kind ? ` · ${p.kind}` : ''}</span><span className="fx-small fx-muted">{routeOf(r.pipeline?.route).label}</span></span>; } },
+    { id: 'wait', label: 'Why it waits', width: 'minmax(calc(var(--fx-font-size) * 14), calc(var(--fx-font-size) * 22))',
+      render: (r) => { const l = launchFor(r.id); const w = waitsFor(r.id); return l ? <span className="oc-why is-next"><Icon name="play" size={13} />Starts next tick on {l.account}</span> : <span className="oc-why">{w || r.pipeline?.note || 'Waiting for the next dispatcher tick'}</span>; } },
+  ] : [
+    titleCol,
+    { id: 'elapsed', label: 'Running for', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.pipeline?.launchedAt || '',
+      render: (r) => <span className="oc-stack">{r.status === 'running' ? <Elapsed since={r.pipeline?.launchedAt} /> : <span className="fx-small fx-muted">{r.pipeline?.lastRun ? `Last run ${r.pipeline.lastRun.outcome}` : 'Not running'}</span>}<span className="fx-small fx-muted" title={fmtDateTime(r.pipeline?.launchedAt)}>{r.pipeline?.launchedAt ? `This run ${fmtDateTime(r.pipeline.launchedAt)}` : ''}</span></span> },
+    stepsCol,
+    { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.pipeline?.account || '',
+      render: (r) => { const m = r.pipeline?.model || r.nextModel; return <span className="oc-stack"><span className="fx-small" title={r.pipeline?.session ? `Session ${r.pipeline.session}` : undefined}>{r.pipeline?.account || <span className="fx-muted">—</span>}</span>{m && <span className={`oc-model is-${m.toLowerCase()}`}>{m}</span>}{r.pipeline?.pin && r.pipeline.pin !== r.pipeline.account && <span className="fx-small fx-muted">assigned {r.pipeline.pin}</span>}</span>; } },
+    { id: 'dates', label: 'Dates', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.startedAt || r.createdAt,
+      render: (r) => <CellDates dates={[{ label: 'Created', at: r.createdAt }, { label: 'Started', at: r.startedAt }]} /> },
   ];
   const [collapsed, setCollapsed] = useState<string[]>([]);
   const order = view === 'queued' ? ['queued'] : ['running', 'waiting', 'blocked', 'failed'];
@@ -172,16 +187,25 @@ function FlowGrid({ rows, view, accounts, busy, waitsFor, launchFor, act, steps 
           sort={sort} onSort={(c) => setSort((cur) => (!c ? null : cur?.col === c ? (cur.dir === 1 ? { col: c, dir: -1 } : null) : { col: c, dir: 1 }))}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggle(o, id))} onRowClick={(r) => setOpen((o) => toggle(o, r.id))}
           rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
+          tall rowLive={(r) => view === 'active' && r.status === 'running' && !r.held}
           renderDetail={(r) => (
-            <div className="oc-detail">
-              <PipelineCard r={r} table={view} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} accounts={accounts} act={act} />
-              {steps?.(r.id)}
-            </div>
+            <DetailSections label={`${r.title}: details`} sections={[
+              { id: 'actions', title: 'Actions', icon: 'zap', wide: true, content: <PipelineCard r={r} table={view} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} accounts={accounts} act={act} /> },
+              { id: 'steps', title: 'Steps', icon: 'check-circle', count: `${r.steps.done}/${r.steps.total}`, wide: true, content: steps?.(r.id) ?? <DetailChecklist items={stepItems(r)} empty="No steps yet: the orchestrator splits it." /> },
+              { id: 'said', title: 'Brett said', icon: 'mic', content: r.said ? <BuildOrigin origin={{ said: r.said }} showEmpty={false} /> : null },
+              { id: 'run', title: 'Run', icon: 'play', content: <DetailFacts facts={[['Branch', r.branch ? <span className="fx-mono">{r.branch}</span> : ''], ['PR', r.pr ? `#${r.pr}` : ''], ['Runs', r.pipeline?.runs ? String(r.pipeline.runs) : ''], ['Accounts', (r.accounts ?? []).join(', ')], ['Cost so far', r.cost ? `${r.costEstimated ? '~' : ''}$${r.cost.toFixed(2)}` : ''], ['Time left', r.minutesLeft ? `${r.minutesLeft} min` : '']]} /> },
+              { id: 'log', title: 'Latest notes', icon: 'list', count: r.recent?.length || undefined, content: r.recent?.length ? <DetailTimeline items={r.recent} /> : null },
+            ]} />
           )} />
       </div>
     </div>
   );
 }
+
+const PULSE: Record<string, 'accent' | 'warning' | 'danger'> = { running: 'accent', waiting: 'warning', blocked: 'warning', failed: 'danger' };
+
+/** A build's steps for DetailChecklist (the model of each step as its tag). */
+const stepItems = (r: Row): ChecklistItem[] => (r.stepList ?? []).map((st) => ({ id: st.id, text: st.text, done: st.done, skip: st.skip, at: st.doneAt, tag: st.model ? <span className={`oc-model is-${st.model.toLowerCase()}`}>{st.model}</span> : undefined }));
 
 function PipelineCard({ r, table, busy, wait, launch, accounts, act }: { r: Row; table: 'queued' | 'active'; busy: boolean; wait: string; launch?: Launch; accounts: Account[]; act: ActFn }) {
   const p = r.pipeline;

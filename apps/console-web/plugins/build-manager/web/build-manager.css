@@ -205,3 +205,10 @@ button.axp-build-manager__head { gap: var(--fx-dens-gap-xs); padding: var(--fx-d
 .axp-build-manager__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none }
 .axp-build-manager__filters .axp-build-manager__field { flex: none }
 :where([data-fx-small]) .axp-build-manager__filters .axp-build-manager__field { flex: 1 1 0; min-width: calc(var(--fx-font-size) * 5.5) }
+
+/* Pending / Complete two-line rows (Nov 10 2026, lib-datagrid cells): layout only, colours and sizes from the theme */
+.axp-build-manager .oc-grid .axf-grid.is-tall .axf-grid-cell, .axp-build-manager .axf-grid.is-tall .axf-cell-title__text { white-space: normal }
+.bm-stack { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.bm-said { max-width: calc(var(--fx-font-size) * 22); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-style: italic }
+.bm-land { display: inline-flex; color: var(--fx-muted) }
+.bm-land.is-landed { color: var(--fx-success) }

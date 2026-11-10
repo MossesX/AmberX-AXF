@@ -139,8 +139,17 @@ const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    home: BP.homeOf(b), held: !!b.pipeline?.held, builtAt: b.builtAt || '', mergedAt: b.mergedAt || '', ...runCost(b) };
+    home: BP.homeOf(b), held: !!b.pipeline?.held, builtAt: b.builtAt || '', mergedAt: b.mergedAt || '', ...runCost(b), ...rowDetail(b) };
 };
+
+/** What a two-line row and its expanded sections show (Brett, Nov 9 2026: "They should have dates, when they were
+ * started, how many steps, how many completed."): when it first started, the step list and the latest notes. */
+export function rowDetail(b) {
+  const starts = (b.notes ?? []).filter((n) => RUN_START.test(n.text)).map((n) => n.at).filter(Boolean);
+  const stepList = (b.steps ?? []).map((st) => ({ id: st.id, text: String(st.text || st.title || '').slice(0, 160), done: !!st.done, skip: !!st.skip, model: st.model || '', doneAt: st.doneAt || '' }));
+  const recent = (b.notes ?? []).slice(-4).map((n) => ({ at: n.at || '', text: String(n.text || '').slice(0, 280) }));
+  return { startedAt: starts[0] || b.pipeline?.launchedAt || '', stepList, recent };
+}
 
 /** What a build's headless runs cost and which accounts / models ran it, from the launcher's end-of-run notes
  * (headless-context@1 "Headless run <session>: … · cost $X") and the "Started run N on <account> (<Model>, …)" notes. */

@@ -39,3 +39,12 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
+
+/* two-line rows (Nov 10 2026, lib-datagrid cells): layout only, colours and sizes from the theme */
+.oc-grid .axf-grid.is-tall .axf-grid-cell { white-space: normal }
+.oc-grid .axf-grid.is-tall .axf-cell-title__text { white-space: normal }
+.oc-pos { display: inline-flex; align-items: center; justify-content: center; min-width: calc(var(--fx-font-size) * 2); padding: 0 var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-surface3); color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); font-variant-numeric: tabular-nums }
+.oc-stack { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.oc-said { max-width: calc(var(--fx-font-size) * 22); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-style: italic }
+.oc-why { font-size: var(--fx-type-root-sm); color: var(--fx-muted); white-space: normal; overflow-wrap: anywhere }
+.oc-why.is-next { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-success) }

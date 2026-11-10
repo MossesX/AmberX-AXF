@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BuildOrigin, Button, Chip, Icon, Note, PriorityTag, SelectField, Slot, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
-import { DataGrid, RowHookButtons, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { CellDates, CellSteps, CellTitle, DataGrid, DetailChecklist, DetailFacts, DetailSections, DetailTimeline, RowHookButtons, spanBetween, type ChecklistItem, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 
 export const FLOW_TAB_KEY = 'axp-build-manager:flow-tab';
 export const FLOW_TAB_EVENT = 'axf:build-manager-tab';
@@ -21,7 +21,7 @@ const api = pluginApi('build-manager', 'Build manager', { unavailable: 'The Buil
 
 type Pipe = { route?: string; held?: string; account?: string; model?: string; lastRun?: { at: string; outcome: string; account: string } | null; split?: { provider: string; steps: number } | null } | null;
 export type FlowRow = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean;
-  pipeline: Pipe; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt?: string; mergedAt?: string; cost?: number; costEstimated?: boolean; builtBy?: string; accounts?: string[]; models?: string[] };
+  pipeline: Pipe; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt?: string; mergedAt?: string; cost?: number; costEstimated?: boolean; builtBy?: string; accounts?: string[]; models?: string[]; startedAt?: string; stepList?: { id: string; text: string; done: boolean; skip: boolean; model: string; doneAt: string }[]; recent?: { at: string; text: string }[] };
 type Flow = { ok: boolean; pending: FlowRow[]; complete: FlowRow[]; counts: { queued: number; active: number } };
 
 const readTab = (): FlowTab => { try { return localStorage.getItem(FLOW_TAB_KEY) === 'complete' ? 'complete' : 'pending'; } catch { return 'pending'; } };
@@ -31,6 +31,16 @@ const toggle = (list: readonly string[], v: string) => (list.includes(v) ? list.
 const nextSort = (cur: GridSort, col: string | null): GridSort => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 });
 const landed = (r: FlowRow) => r.status === 'complete' || !!r.mergedAt;
 const prNumber = (pr: string) => (/(\d+)\s*$/.exec(pr)?.[1] ?? '');
+
+const model = (m?: string) => (m ? <span key={m} className={`oc-model is-${m.toLowerCase()}`}>{m}</span> : null);
+const stepItems = (r: FlowRow): ChecklistItem[] => (r.stepList ?? []).map((st) => ({ id: st.id, text: st.text, done: st.done, skip: st.skip, at: st.doneAt, tag: model(st.model) ?? undefined }));
+const TITLE_W = 'minmax(calc(var(--fx-font-size) * 18), calc(var(--fx-font-size) * 28))';
+/** The sections every expanded row has (Brett's words, steps, latest notes); each tab adds its own first. */
+const commonSections = (r: FlowRow) => [
+  { id: 'steps', title: 'Steps', icon: 'check-circle', count: `${r.steps.done}/${r.steps.total}`, content: <DetailChecklist items={stepItems(r)} empty="No steps yet: the orchestrator splits it when it is sent." /> },
+  { id: 'said', title: 'Brett said', icon: 'mic', content: r.said ? <BuildOrigin origin={{ said: r.said }} showEmpty={false} /> : null },
+  { id: 'log', title: 'Latest notes', icon: 'list', count: r.recent?.length || undefined, open: false, content: r.recent?.length ? <DetailTimeline items={r.recent} /> : null },
+];
 
 export function FlowView() {
   const rt = useRuntime();
@@ -98,15 +108,18 @@ function PendingTab({ rows, busy, post }: { rows: FlowRow[]; busy: string; post:
   const [open, setOpen] = useState<string[]>([]);
   const [sort, setSort] = useState<GridSort>(null);
   const [hidden, setHidden] = useState<string[]>([]);
+  // two-line rows, no timer (Brett, Nov 9 2026: "Pending isn't gonna have a timer. They should have dates ... how many
+  // steps, how many completed."): created / updated dates, steps with a meter, the estimate, priority and Send.
   const cols: GridColumn<FlowRow>[] = [
-    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 28))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
-      render: (r) => <span className="oc-cell-title" title={r.said || r.title}><strong>{r.title}</strong>{r.said && <span className="fx-small fx-muted">“{r.said}”</span>}</span> },
+    { id: 'title', label: 'Build', width: TITLE_W, fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
+      render: (r) => <CellTitle title={r.title} badges={<>{r.needsSplit && <Chip tone="warning">Needs split</Chip>}{r.needsApproval && <Chip tone="warning">Needs approval</Chip>}{r.pipeline?.held && <Chip tone="warning">Held</Chip>}</>}
+        sub={[<span key="id" className="fx-mono">{r.id}</span>, r.pipeline?.lastRun ? `last run ${r.pipeline.lastRun.outcome}` : '', r.said ? <span key="said" className="bm-said" title={r.said}>“{r.said}”</span> : '']} /> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 8)', sortable: true, sortValue: (r) => r.priority, render: (r) => <PriorityTag build={r.id} /> },
-    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: (r) => r.steps.total,
-      render: (r) => <span className="fx-small">{r.steps.total ? `${r.steps.done}/${r.steps.total}` : '—'}{r.needsSplit && <Chip tone="warning">split</Chip>}</span> },
-    { id: 'model', label: 'Next', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => r.nextModel, render: (r) => (r.nextModel ? <span className={`oc-model is-${r.nextModel.toLowerCase()}`}>{r.nextModel}</span> : <span className="fx-muted">—</span>) },
-    { id: 'left', label: 'Time', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: (r) => r.minutesLeft, render: (r) => <span className="fx-small">{fmtMin(r.minutesLeft) || '—'}</span> },
-    { id: 'added', label: 'Added', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: (r) => r.createdAt, render: (r) => <span className="fx-small">{fmtDate(r.createdAt)}</span> },
+    { id: 'dates', label: 'Dates', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.createdAt,
+      render: (r) => <CellDates dates={[{ label: 'Created', at: r.createdAt }, { label: 'Updated', at: r.updatedAt !== r.createdAt ? r.updatedAt : '' }]} /> },
+    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 12)', sortable: true, sortValue: (r) => r.steps.total, render: (r) => <CellSteps done={r.steps.done} total={r.steps.total} /> },
+    { id: 'left', label: 'Estimate', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.minutesLeft,
+      render: (r) => <span className="bm-stack"><span className="fx-small">{fmtMin(r.minutesLeft) || '—'}</span>{r.nextModel && <span className="fx-small fx-muted">{model(r.nextModel)} next</span>}</span> },
     { id: 'send', label: '', width: 'calc(var(--fx-font-size) * 11)', align: 'end',
       render: (r) => <span onClick={(e) => e.stopPropagation()}><Button size="sm" tone="primary" icon="arrow-right" disabled={busy === r.id} onClick={() => void post('flow/send', { id: r.id }, `${r.title} → orchestrator (Queued)`)}>Send to orchestrator</Button></span> },
   ];
@@ -122,7 +135,7 @@ function PendingTab({ rows, busy, post }: { rows: FlowRow[]; busy: string; post:
             sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
             expanded={open} onToggleExpand={(id) => setOpen((o) => toggle(o, id))} onRowClick={(r) => setOpen((o) => toggle(o, r.id))}
             rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
-            renderDetail={(r) => <PendingDetail r={r} busy={busy === r.id} post={post} />} />
+            tall renderDetail={(r) => <DetailSections label={`${r.title}: details`} sections={[{ id: 'actions', title: 'Actions', icon: 'zap', wide: true, content: <PendingDetail r={r} busy={busy === r.id} post={post} /> }, ...commonSections(r)]} />} />
         </div>
       )}
     </div>
@@ -135,8 +148,7 @@ function PendingDetail({ r, busy, post }: { r: FlowRow; busy: boolean; post: Pos
   const [detail, setDetail] = useState('');
   return (
     <div className="oc-detail fx-stack">
-      {r.said && <BuildOrigin origin={{ said: r.said }} showEmpty={false} />}
-      <p className="fx-small fx-muted fx-mono">{r.id}{r.branch ? ` · ${r.branch}` : ''}{r.nextStep ? ` · next ${r.nextStep}` : ''}</p>
+      {r.nextStep && <p className="fx-small fx-muted">Next: {r.nextStep}</p>}
       {editing ? (
         <div className="fx-stack">
           <TextField label="Title" value={title} onChange={setTitle} />
@@ -184,21 +196,23 @@ function CompleteTab({ rows, totalCost }: { rows: FlowRow[]; totalCost: number }
   const [hidden, setHidden] = useState<string[]>([]);
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
+  // two-line rows: when it started and finished, how long it took, what it cost, the account that built it, PR / land
+  const ms = (r: FlowRow) => { const a = Date.parse(r.startedAt || ''); const b = Date.parse(r.builtAt || ''); return a && b ? b - a : 0; };
   const cols: GridColumn<FlowRow>[] = [
-    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 28))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
-      render: (r) => <span className="oc-cell-title" title={r.said || r.title}><strong>{r.title}</strong>{r.said && <span className="fx-small fx-muted">“{r.said}”</span>}</span> },
-    { id: 'land', label: 'Land', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => (landed(r) ? 1 : 0),
-      render: (r) => <span className={`pd-badge oc-badge is-${landed(r) ? 'complete' : 'built'}`}>{landed(r) ? 'Landed' : 'Awaiting merge'}</span> },
-    { id: 'builtBy', label: 'Built by', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => r.builtBy ?? '',
-      render: (r) => <span className="fx-small" title={(r.accounts ?? []).length > 1 ? `Runs on ${(r.accounts ?? []).join(', ')}` : undefined}>{r.builtBy || <span className="fx-muted">—</span>}</span> },
-    { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (r) => (r.models ?? []).join(','),
-      render: (r) => (r.models?.length ? <span className="fx-row">{r.models.map((m) => <span key={m} className={`oc-model is-${m.toLowerCase()}`}>{m}</span>)}</span> : <span className="fx-muted">—</span>) },
+    { id: 'title', label: 'Build', width: TITLE_W, fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
+      render: (r) => <CellTitle title={r.title} lead={<span className={`bm-land is-${landed(r) ? 'landed' : 'open'}`}><Icon name={landed(r) ? 'check-circle' : 'branch'} size={16} /></span>}
+        sub={[<span key="id" className="fx-mono">{r.id}</span>, r.said ? <span key="said" className="bm-said" title={r.said}>“{r.said}”</span> : '']} /> },
+    { id: 'land', label: 'PR / land', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => (landed(r) ? 1 : 0),
+      render: (r) => <span className="bm-stack"><span className={`pd-badge oc-badge is-${landed(r) ? 'complete' : 'built'}`}>{landed(r) ? 'Landed' : 'Awaiting merge'}</span><span className="fx-small fx-mono">{r.pr ? `PR #${prNumber(r.pr) || r.pr}` : 'no PR'}</span></span> },
+    { id: 'dates', label: 'Dates', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.builtAt ?? '',
+      render: (r) => <CellDates dates={[{ label: 'Started', at: r.startedAt }, { label: 'Finished', at: r.builtAt }, { label: 'Merged', at: r.mergedAt }]} /> },
+    { id: 'duration', label: 'Took', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: ms,
+      render: (r) => <span className="fx-small" title="From the first run's start to finished">{spanBetween(r.startedAt, r.builtAt) || '—'}</span> },
+    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 11)', sortable: true, sortValue: (r) => r.steps.total, render: (r) => <CellSteps done={r.steps.done} total={r.steps.total} /> },
+    { id: 'builtBy', label: 'Built by', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.builtBy ?? '',
+      render: (r) => <span className="bm-stack"><span className="fx-small" title={(r.accounts ?? []).length > 1 ? `Runs on ${(r.accounts ?? []).join(', ')}` : undefined}>{r.builtBy || <span className="fx-muted">—</span>}</span>{r.models?.length ? <span className="fx-row">{r.models.map(model)}</span> : null}</span> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-font-size) * 5)', align: 'end', sortable: true, sortValue: (r) => r.cost ?? 0,
       render: (r) => <span className="fx-small" title={r.costEstimated ? 'Includes estimates' : 'From the headless run records'}>{r.cost ? `${r.costEstimated ? '~' : ''}$${r.cost.toFixed(2)}` : '—'}</span> },
-    { id: 'pr', label: 'PR', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => Number(prNumber(r.pr)) || 0,
-      render: (r) => <span className="fx-small fx-mono">{r.pr ? `#${prNumber(r.pr) || r.pr}` : '—'}</span> },
-    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 4)', align: 'end', render: (r) => <span className="fx-small">{r.steps.done}/{r.steps.total}</span> },
-    { id: 'builtAt', label: 'Built', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: (r) => r.builtAt ?? '', render: (r) => <span className="fx-small">{fmtDate(r.builtAt)}</span> },
   ];
   const groups: GridGroup<FlowRow>[] = [
     { id: 'awaiting', title: 'Awaiting merge', icon: 'clock', rows: rows.filter((r) => !landed(r)), groups: [], collapsed: collapsed.includes('awaiting') },
@@ -215,13 +229,12 @@ function CompleteTab({ rows, totalCost }: { rows: FlowRow[]; totalCost: number }
           sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))} onToggleGroup={(id) => setCollapsed((c) => toggle(c, id))}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggle(o, id))} onRowClick={(r) => setOpen((o) => toggle(o, r.id))}
           rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
-          renderDetail={(r) => (
-            <div className="oc-detail fx-stack">
-              {r.said && <BuildOrigin origin={{ said: r.said }} showEmpty={false} />}
-              <p className="fx-small fx-mono">{r.id}{r.branch ? ` · ${r.branch}` : ''}{r.pr ? ` · PR ${r.pr}` : ''}</p>
-              <p className="fx-small">Runs on: {(r.accounts ?? []).join(', ') || '—'} · {(r.models ?? []).join(', ') || 'no model recorded'}{r.pipeline?.lastRun ? ` · last run ${r.pipeline.lastRun.outcome}` : ''}</p>
-              <div className="fx-row fx-row--wrap" role="toolbar" aria-label={`Actions for ${r.title}`}><RowHookButtons rowRef={{ kind: 'orchestrator', id: r.id }} /></div>
-            </div>
+          tall renderDetail={(r) => (
+            <DetailSections label={`${r.title}: details`} sections={[
+              { id: 'run', title: 'Run', icon: 'play', content: <DetailFacts facts={[['Branch', r.branch ? <span className="fx-mono">{r.branch}</span> : ''], ['PR', r.pr ? `#${prNumber(r.pr) || r.pr}` : ''], ['Land', landed(r) ? `Landed ${fmtDate(r.mergedAt)}` : 'Awaiting merge'], ['Took', spanBetween(r.startedAt, r.builtAt)], ['Cost', r.cost ? `${r.costEstimated ? '~' : ''}$${r.cost.toFixed(2)}` : ''], ['Accounts', (r.accounts ?? []).join(', ')], ['Models', (r.models ?? []).join(', ')], ['Last run', r.pipeline?.lastRun ? r.pipeline.lastRun.outcome : '']]} /> },
+              ...commonSections(r),
+              { id: 'actions', title: 'Actions', icon: 'zap', content: <div className="fx-row fx-row--wrap" role="toolbar" aria-label={`Actions for ${r.title}`}><RowHookButtons rowRef={{ kind: 'orchestrator', id: r.id }} /></div> },
+            ]} />
           )} />
       </div>
     </div>

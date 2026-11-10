@@ -14,8 +14,9 @@
     { "id": "sort", "label": "Sort by column", "description": "Tap a header to sort inside each group; again to reverse, a third time for the original order." },
     { "id": "expand", "label": "Expandable rows", "description": "A chevron (or double-tap) opens a detail panel under the row." },
     { "id": "drag", "label": "Drag rows", "description": "Rows and groups drag to rearrange, or onto the trash can (needs lib-dnd).", "params": [ { "key": "trash", "label": "Deleting by dropping on the trash can", "type": "bool", "default": true } ] },
-    { "id": "compact", "label": "Compact rows switch", "description": "A switch for tighter rows.", "default": false }
+    { "id": "compact", "label": "Compact rows switch", "description": "A switch for tighter rows.", "default": false },
+    { "id": "cells", "label": "Two-line rows and live cells", "description": "Two-line (tall) rows, a title cell with a meta line, stacked dates, a steps meter, a live elapsed timer, an animated live-row sweep and pulse, and an expanded row as collapsible sections (cells.tsx, Nov 10 2026)." }
   ],
   "ports": { "web": { "status": "compiled", "dir": "libs/datagrid" } },
-  "placeholders": [ { "capability": "axf.datagrid.android", "note": "Compose port — Android on hold." }, { "capability": "axf.datagrid.virtual", "note": "Windowed rendering for 10k+ rows — not built." }, { "capability": "axf.datagrid.resize", "note": "Column resizing by dragging the header edge — not built." }, { "capability": "axf.datagrid.datasets.android", "note": "Dataset registry + attachable transforms (datasets.ts) — Compose twin deferred, Android on hold." } ]
+  "placeholders": [ { "capability": "axf.datagrid.android", "note": "Compose port — Android on hold." }, { "capability": "axf.datagrid.virtual", "note": "Windowed rendering for 10k+ rows — not built." }, { "capability": "axf.datagrid.resize", "note": "Column resizing by dragging the header edge — not built." }, { "capability": "axf.datagrid.datasets.android", "note": "Dataset registry + attachable transforms (datasets.ts) — Compose twin deferred, Android on hold." }, { "capability": "axf.datagrid.cells.android", "note": "Compose twin of cells.tsx (CellTitle, CellDates, CellSteps, LivePulse, Elapsed, DetailSections): deferred, Android on hold." } ]
 }

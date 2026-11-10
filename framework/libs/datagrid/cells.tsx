@@ -10,6 +10,7 @@
  *   LivePulse     the animated "this is running now" mark (a ripple dot); still under prefers-reduced-motion
  *   Elapsed       a live h:mm:ss timer from a start time, one shared 1 s tick for every timer on screen
  *   DetailSections  an expanded row's collapsible sections laid out as a responsive sub-grid
+ *   DetailFacts / DetailChecklist / DetailTimeline  what goes in a section: label-value pairs, a checklist, timestamped lines
  *   fmtDate / fmtDateTime / fmtDuration  the formats every cell uses
  *
  * Generic: nothing here knows what a build is. Theme tokens only (datagrid.css); framework controls (Meter, Chip, Icon).
@@ -141,4 +142,28 @@ export function DetailFacts({ facts }: { facts: [label: string, value: ReactNode
   const shown = facts.filter(([, v]) => v !== null && v !== undefined && v !== false && v !== '');
   if (!shown.length) return <span className="axf-cell-muted">Nothing yet.</span>;
   return <dl className="axf-detail-facts">{shown.map(([k, v]) => <div key={k} className="axf-detail-facts__row"><dt>{k}</dt><dd>{v}</dd></div>)}</dl>;
+}
+
+export interface ChecklistItem { id: string; text: string; done?: boolean; skip?: boolean; tag?: ReactNode; at?: string }
+/** A checklist (a build's steps, a task's parts): done ticks in the success colour, skipped struck through. */
+export function DetailChecklist({ items, empty = 'Nothing here yet.' }: { items?: ChecklistItem[]; empty?: string }) {
+  if (!items?.length) return <span className="axf-cell-muted">{empty}</span>;
+  return (
+    <ol className="axf-checklist">
+      {items.map((it) => (
+        <li key={it.id} className={it.done ? 'is-done' : it.skip ? 'is-skip' : ''}>
+          <Icon name={it.done ? 'check-circle' : it.skip ? 'minus' : 'clock'} size={13} />
+          <span className="axf-checklist__id">{it.id}</span>
+          <span className="axf-checklist__text">{it.text}</span>
+          {it.tag}
+          {it.at && <span className="axf-cell-muted" title={fmtDateTime(it.at)}>{fmtDate(it.at)}</span>}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** Timestamped lines, oldest first (a log tail, a build's latest notes). */
+export function DetailTimeline({ items }: { items: { at: string; text: string }[] }) {
+  return <ul className="axf-timeline">{items.map((n, i) => <li key={i}><span className="axf-timeline__at">{fmtDateTime(n.at)}</span><span>{n.text}</span></li>)}</ul>;
 }
