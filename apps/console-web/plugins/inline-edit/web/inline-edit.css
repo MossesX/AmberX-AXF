@@ -4,7 +4,7 @@
 .axp-inline-edit__panel { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
 
 /* ---- dialog ---- */
-.axp-inline-edit__dialog { max-width: 100%; }
+.axp-inline-edit__dialog { width: min(52rem, 92vw); max-width: 100%; }
 .axp-inline-edit__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); }
 .axp-inline-edit__crumb { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); }
 .axp-inline-edit__path { color: var(--fx-muted); overflow-wrap: anywhere; }
@@ -22,6 +22,8 @@
 .axp-inline-edit__inherited, .axp-inline-edit__from { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-muted); }
 
 .axp-inline-edit__editor { min-width: 0; }
+.axp-inline-edit__editor--seg { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-sm); }
+.axp-inline-edit__orow-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); }
 .axp-inline-edit__editor--color { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axp-inline-edit__palette { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
 .axp-inline-edit__swatch { display: inline-block; inline-size: 1em; block-size: 1em; border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); vertical-align: middle; }
@@ -35,7 +37,8 @@
 
 .axp-inline-edit__grid { inline-size: 100%; border-collapse: collapse; }
 .axp-inline-edit__grid th, .axp-inline-edit__grid td { text-align: start; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-block-end: var(--fx-border-w) solid var(--fx-border); vertical-align: middle; }
-.axp-inline-edit__grow { cursor: pointer; }
+:where([data-fx-narrow]) .axp-inline-edit__grid th:nth-child(3), :where([data-fx-narrow]) .axp-inline-edit__grid td:nth-child(3),
+:where([data-fx-narrow]) .axp-inline-edit__grid th:nth-child(6), :where([data-fx-narrow]) .axp-inline-edit__grid td:nth-child(6) { display: none; }
 .axp-inline-edit__gdetail td { background: var(--fx-surface2); }
 
 /* ---- overrides page ---- */

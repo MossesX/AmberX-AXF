@@ -58,7 +58,7 @@ function Row({ r, onReset, onEdit }: { r: OverrideItem; onReset: (r: OverrideIte
   return (
     <li className="axp-inline-edit__orow" data-id={r.id}>
       <div className="axp-inline-edit__orow-main">
-        <strong>{r.tokenLabel}</strong> <span className="fx-muted">on</span> <span>{r.label}</span> <Chip tone={r.scope === 'parent' ? 'accent' : undefined}>{r.scope === 'parent' ? 'parent: and everything under it' : 'this item'}</Chip>
+        <div className="axp-inline-edit__orow-title"><strong>{r.tokenLabel}</strong> <span className="fx-muted">on</span> <span>{r.label}</span> <Chip tone={r.scope === 'parent' ? 'accent' : undefined}>{r.scope === 'parent' ? 'parent: and everything under it' : 'this item'}</Chip></div>
         <div className="axp-inline-edit__orow-change"><span className="fx-muted">axHub</span> <Value v={r.axHubValue} kind={r.tokenKind} /> <Icon name="arrow-right" size={12} /> <Value v={r.value} kind={r.tokenKind} /></div>
         <div className="axp-inline-edit__orow-meta fx-muted"><code title="Element path">{r.path}</code> · {r.kindLabel} · {r.group} · {r.app === 'any' ? 'every app' : r.app} · {r.by || 'unknown'} · {r.at ? new Date(r.at).toLocaleString() : ''}{r.reason ? ` · ${r.reason}` : ''}</div>
       </div>

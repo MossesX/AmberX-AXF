@@ -14,6 +14,8 @@ export function startModeSync(rt: AxfRuntime, onError: (msg: string) => void): (
   let server: boolean | null = null;
   let applying = false;
   let writing = false;
+  /** bumped by every local flip: a poll that started before it answers with stale news and is dropped */
+  let gen = 0;
 
   const mirror = (on: boolean) => {
     server = on;
@@ -23,11 +25,13 @@ export function startModeSync(rt: AxfRuntime, onError: (msg: string) => void): (
   };
   const pull = async () => {
     if (writing) return;
-    try { mirror((await getMode()).on); } catch { /* server part off or unreachable: the local setting still works */ }
+    const asked = gen;
+    try { const m = await getMode(); if (asked === gen && !writing) mirror(m.on); } catch { /* server part off or unreachable: the local setting still works */ }
   };
   const off = rt.settings.onChange(MODE_KEY, (v) => {
     if (applying) return;
     const on = inlineEditModeOn(v);
+    gen += 1;
     if (server === on) return;
     writing = true;
     setMode(on ? 'on' : 'off')

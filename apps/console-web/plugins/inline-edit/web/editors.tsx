@@ -39,7 +39,7 @@ export function TokenEditor({ row, value, onChange, disabled }: { row: TokenRow;
   if (row.options?.length) {
     const cur = String(value ?? row.default ?? '');
     if (row.options.length <= 5) {
-      return <div className="axp-inline-edit__editor"><Segmented label={name} value={cur} size="sm" disabled={disabled} options={row.options.map((o) => ({ value: o, label: label(o) }))} onChange={(v) => onChange(v)} /></div>;
+      return <div className="axp-inline-edit__editor axp-inline-edit__editor--seg"><span className="axp-inline-edit__label">{name}</span><Segmented label={name} value={cur} size="sm" disabled={disabled} options={row.options.map((o) => ({ value: o, label: label(o) }))} onChange={(v) => onChange(v)} /></div>;
     }
     return <div className="axp-inline-edit__editor"><SelectField label={name} value={cur} options={row.options.map((o) => ({ value: o, label: label(o) }))} onChange={onChange} disabled={disabled} /></div>;
   }

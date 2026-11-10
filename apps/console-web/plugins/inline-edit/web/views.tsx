@@ -50,7 +50,8 @@ function OverrideChip({ row, target, scope }: { row: TokenRow; target: string; s
 
 function Revert({ row, target, scope, onRevert }: { row: TokenRow; target: string; scope: Scope; onRevert: (r: TokenRow) => void }) {
   const own = ownOverride(row, target, scope);
-  return <Button size="sm" tone="ghost" icon="undo" disabled={!own} title={own ? `Remove this override: back to ${shown(row.axHubValue)} from axHub` : 'Nothing overridden here'} onClick={() => onRevert(row)}>Revert to axHub</Button>;
+  if (!own) return null;
+  return <Button size="sm" tone="ghost" icon="undo" title={`Remove this override: back to ${shown(row.axHubValue)} from axHub`} onClick={() => onRevert(row)}>Revert to axHub</Button>;
 }
 
 const groupsOf = (rows: TokenRow[]) => {
@@ -157,8 +158,8 @@ export function GridView(p: ViewProps) {
           const v = r.token in p.pending ? p.pending[r.token]! : r.value;
           return (
             <Fragment key={r.token}>
-              <tr className={`axp-inline-edit__grow ${r.overridden ? 'is-active' : ''}`} data-fx-row aria-expanded={isOpen} onClick={() => setOpen((o) => ({ ...o, [r.token]: !isOpen }))}>
-                <td><IconButton icon={isOpen ? 'chevron-down' : 'chevron-right'} label={`${isOpen ? 'Fold' : 'Open'} ${r.label}`} onClick={(e) => { e.stopPropagation(); setOpen((o) => ({ ...o, [r.token]: !isOpen })); }} /></td>
+              <tr className={`axp-inline-edit__grow ${r.overridden ? 'is-active' : ''}`} aria-expanded={isOpen} data-token={r.token}>
+                <td><IconButton icon={isOpen ? 'chevron-down' : 'chevron-right'} label={`${isOpen ? 'Fold' : 'Open'} ${r.label}`} onClick={() => setOpen((o) => ({ ...o, [r.token]: !isOpen }))} /></td>
                 <td>{r.label}</td>
                 <td className="fx-muted">{r.group}</td>
                 <td><Swatch row={r} v={v} /><code>{shown(v)}</code></td>
