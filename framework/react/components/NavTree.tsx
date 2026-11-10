@@ -37,7 +37,7 @@ const NAV_ICON_PX: Record<string, number> = { sm: 14, md: 17, lg: 20 };
 /** `inert` as a plain attribute: React 18 only passes it through as a string, React 19 types it as a boolean. */
 const inertWhen = (on: boolean): object => (on ? { inert: '' } : {});
 /** A nav section's stable id for inline-edit-tokens@1 paths (`nav-menu:app/section:<id>`): its label as a slug, else its index. */
-export const navSectionId = (label: string | undefined, i: number): string => (label ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || String(i);
+export const navSectionId = (label: string | null | undefined, i: number): string => (label ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || String(i);
 
 export function NavTree({ sections, views, style, orient, header }: { sections: Section[]; views: ViewMap; style: NavStyleData; orient: 'horizontal' | 'vertical'; header?: string }) {
   const rt = useRuntime();

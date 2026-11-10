@@ -738,7 +738,7 @@
     "src/axf/react/components/Meters.tsx": "d29240f84a96cdc8",
     "src/axf/react/components/ModelBadge.tsx": "c47fb07ddd5584b2",
     "src/axf/react/components/NavStyleSettings.tsx": "611d1ac127c314cd",
-    "src/axf/react/components/NavTree.tsx": "3f3a0f2e9bc97ea4",
+    "src/axf/react/components/NavTree.tsx": "bbb968c0bdff1194",
     "src/axf/react/components/Overlays.tsx": "88972b0d76084284",
     "src/axf/react/components/PriorityTag.tsx": "dd92370c4246cbcc",
     "src/axf/react/components/RefText.tsx": "fc367771ed39849a",

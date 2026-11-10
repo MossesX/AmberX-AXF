@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberxai.com/axf/schemas/inline-override.schema.json",
+  "title": "inline-override@1 — one element token override, and the inline-overrides@1 setting that stores a root's records",
+  "description": "Build inline-element-editing-plugin-right-click-any-el (Nov 10 2026). A record holds the element path (inline-edit-tokens@1), the scope (item = this element only, parent = this element and everything under it), the token, the value, the axHub value it replaced, who changed it and when. Records of one root are stored compact in the look setting axf.inline.<root> (appearance@1 → settings; 4 KB per key). Resetting one record touches only that record.",
+  "$defs": {
+    "path": {
+      "type": "string",
+      "description": "An element path: <kind>:<instance>[/<name>[:<id>]…] (docs/contracts/inline-edit-tokens.md §1).",
+      "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._@%-]+(/[a-z][a-z0-9-]*(:[A-Za-z0-9._@%-]+)?)*$",
+      "maxLength": 400
+    },
+    "root": {
+      "type": "string",
+      "description": "A root path: <kind>:<instance>.",
+      "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._@%-]+$"
+    },
+    "scope": { "type": "string", "enum": ["item", "parent"], "description": "item = this element only; parent = this element and everything under it." },
+    "token": {
+      "type": "string",
+      "description": "An asset-customize@1 token (textColor, background, fontSize…), or a namespaced host token at a root (field.<key> for chrome-settings@1 fields, nav.<path> for nav-style@1).",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*(\\.[A-Za-z0-9_-]+)*$",
+      "maxLength": 80
+    },
+    "scalar": { "type": ["string", "number", "boolean", "null"] },
+    "asset": { "type": ["string", "null"], "pattern": "^[a-z0-9][a-z0-9-]{0,79}$", "description": "Set = the record applies only while this asset is active in the root's slot (the control-tokens per-asset rule)." },
+    "by": { "type": "string", "maxLength": 80, "pattern": "^$|^[A-Za-z0-9][A-Za-z0-9 ._@:/-]{0,79}$" },
+    "at": { "type": "string", "description": "ISO 8601 instant of the change." },
+    "reason": { "type": "string", "maxLength": 200 },
+    "recordId": {
+      "type": "string",
+      "description": "<path>|<scope>|<token>[@<asset>]",
+      "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._@%-]+(/[a-z][a-z0-9-]*(:[A-Za-z0-9._@%-]+)?)*\\|(item|parent)\\|[A-Za-z][A-Za-z0-9_-]*(\\.[A-Za-z0-9_-]+)*(@[a-z0-9][a-z0-9-]{0,79})?$"
+    },
+    "record": {
+      "type": "object",
+      "title": "inline-override@1",
+      "required": ["$axf", "id", "root", "path", "scope", "token", "value", "axHubValue", "by", "at"],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": { "const": "inline-override@1" },
+        "id": { "$ref": "#/$defs/recordId" },
+        "root": { "$ref": "#/$defs/root" },
+        "key": { "type": "string", "pattern": "^axf\\.inline\\.", "description": "The look setting the record lives in: axf.inline.<root>." },
+        "path": { "$ref": "#/$defs/path" },
+        "scope": { "$ref": "#/$defs/scope" },
+        "token": { "$ref": "#/$defs/token" },
+        "asset": { "$ref": "#/$defs/asset" },
+        "value": { "$ref": "#/$defs/scalar", "description": "The token value set (an asset-customize@1 value: a colour-theme token id, a scale percentage, a choice word, a toggle)." },
+        "axHubValue": { "$ref": "#/$defs/scalar", "description": "The value in force from axHub's inheritance when this record was set (theme, skin, custom, extra): what a reset returns to." },
+        "by": { "$ref": "#/$defs/by" },
+        "at": { "$ref": "#/$defs/at" },
+        "reason": { "$ref": "#/$defs/reason" },
+        "migratedFrom": { "type": ["string", "null"], "maxLength": 120, "description": "The legacy settings key this record was migrated from (axf.custom.<type>, axf.chrome.<type>.<instance>), or null." }
+      }
+    },
+    "compactRecord": {
+      "type": "object",
+      "required": ["v"],
+      "additionalProperties": false,
+      "properties": {
+        "v": { "$ref": "#/$defs/scalar", "description": "value" },
+        "h": { "$ref": "#/$defs/scalar", "description": "axHubValue" },
+        "by": { "$ref": "#/$defs/by" },
+        "at": { "$ref": "#/$defs/at" },
+        "why": { "$ref": "#/$defs/reason" },
+        "from": { "type": "string", "maxLength": 120, "description": "migratedFrom" }
+      }
+    },
+    "setting": {
+      "type": "object",
+      "title": "inline-overrides@1 — the value of one axf.inline.<root> look setting",
+      "required": ["$axf", "r"],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": { "const": "inline-overrides@1" },
+        "r": {
+          "type": "object",
+          "description": "record id → compact record. Every path in a key belongs to the root the setting is named for.",
+          "propertyNames": { "$ref": "#/$defs/recordId" },
+          "additionalProperties": { "$ref": "#/$defs/compactRecord" }
+        }
+      }
+    },
+    "set": {
+      "type": "object",
+      "title": "what `set` takes",
+      "required": ["path", "token", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "scope": { "$ref": "#/$defs/scope", "default": "item" },
+        "token": { "$ref": "#/$defs/token" },
+        "value": { "$ref": "#/$defs/scalar" },
+        "axHubValue": { "$ref": "#/$defs/scalar" },
+        "asset": { "$ref": "#/$defs/asset" },
+        "by": { "$ref": "#/$defs/by" },
+        "reason": { "$ref": "#/$defs/reason" }
+      }
+    },
+    "listSelect": {
+      "type": "object",
+      "title": "filters `list` takes",
+      "additionalProperties": false,
+      "properties": {
+        "root": { "$ref": "#/$defs/root" },
+        "kind": { "type": "string", "description": "A root kind: app-menu, nav-menu, toolbar, banner, tab-group, context-menu, dialog, view, window." },
+        "under": { "$ref": "#/$defs/path", "description": "Only records on or under this path." },
+        "q": { "type": "string", "description": "Words to search for in path, token, value, by and reason." },
+        "token": { "$ref": "#/$defs/token" },
+        "by": { "$ref": "#/$defs/by" },
+        "scope": { "$ref": "#/$defs/scope" },
+        "since": { "$ref": "#/$defs/at" }
+      }
+    }
+  },
+  "oneOf": [{ "$ref": "#/$defs/record" }, { "$ref": "#/$defs/setting" }],
+  "x-axf": {
+    "settingKey": "axf.inline.<root>",
+    "settingPrefix": "axf.inline.",
+    "maxBytesPerKey": 4096,
+    "appearanceSetting": true,
+    "resetRule": "unset(path, token, scope, asset) removes exactly one record; nothing else re-inherits",
+    "precedence": "deeper path > shallower; at one path item > parent; at one place the active asset's record > the general one",
+    "contract": "docs/contracts/inline-edit-tokens.md"
+  }
+}
