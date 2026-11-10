@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:03 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · builds-live
 - 2026-11-10 18:04 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:04 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · builds-live
 - 2026-11-10 18:05 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:10 UTC · `molly-sign-in-once` PR #477 (all) · builds-live
 - 2026-11-10 23:09 UTC · `molly-sign-in-once` → running, note (all) · pipeline
 - 2026-11-10 23:09 UTC · `molly-sign-in-once` note (all) · orchestrator
+- 2026-11-10 23:11 UTC · `molly-sign-in-once` → queued (all) · builds-live
 
 ## Token passes (log)
 
