@@ -8,7 +8,7 @@
  *   - a floating overlay window with custom buttons and sub-menus (overlay.tsx)
  *   - a right-click menu on every account row anywhere (target claude-account): rename, move, Claude Code session
  * Actions (console API, MCP console actions, voice): claude-accounts-manager.open | session:<name> | add:<kind>:<name> |
- * add-dialog[:<kind>] | rename:<name> | move:<name>:<to> | mode[:custom|auto|toggle] | overlay[:on|off|toggle] | widget:<name> | column[:on|off].
+ * add-dialog[:<kind>] | rename:<name> | move:<name>:<to> | order[:<a,b,c>] | reset | mode[:custom|auto|toggle] | overlay[:on|off|toggle] | widget:<name> | column[:on|off].
  */
 import { useState } from 'react';
 import { Button, Checkbox, Container, IconButton, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
@@ -18,7 +18,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { AccountList, AddForm, OrderSwitch, PickList, RenameForm, Totals } from './ui';
 import { OverlayWindow, openSession, osOverlaySupported } from './overlay';
-import { CTX, FOLDER, ID, POLL_MS, SHOW_PARTS, VIEW, addAccount, load, move, saveSettings, setMode, snapshot, subscribe, useManager, widgetText, type MenuItem, type OverlayButton } from './data';
+import { CTX, FOLDER, ID, POLL_MS, SHOW_PARTS, VIEW, addAccount, getOrder, load, move, resetOrder, saveSettings, setMode, setOrder, snapshot, subscribe, useManager, widgetText, type MenuItem, type OverlayButton } from './data';
 import './manager.css';
 
 const ASSET_ID = 'claude-accounts-manager';
@@ -224,6 +224,12 @@ function register(rt: AxfRuntime) {
   rt.actions.register('claude-accounts-manager.add-dialog', ([kind = 'subscription']) => rt.openDialog(ADD, { kind }), { label: 'Add a Claude account…', params: true });
   rt.actions.register('claude-accounts-manager.rename', ([name = '']) => rt.openDialog(RENAME, { name }), { label: 'Rename a Claude account', params: true, searchable: false });
   rt.actions.register('claude-accounts-manager.move', ([name = '', to = '']) => { move(String(name), /^\d+$/.test(String(to)) ? Number(to) : String(to)).then((r) => rt.toast(r.message, 'success'), fail); }, { label: 'Move a Claude account in the order', params: true, searchable: false });
+  rt.actions.register('claude-accounts-manager.order', (args) => {
+    const names = args.join(',').split(',').map((n) => n.trim().toLowerCase()).filter(Boolean);
+    if (!names.length) { getOrder().then((r) => rt.toast(`${r.text}: ${r.order.join(' → ') || 'no custom order (subscriptions first, then API overflow)'}`, 'info'), fail); return; }
+    setOrder(names).then((r) => rt.toast(r.message, 'success'), fail);
+  }, { label: 'Claude account order: say it, or set it (a,b,c)', params: true });
+  rt.actions.register('claude-accounts-manager.reset', () => { resetOrder().then((r) => rt.toast(r.message, 'success'), fail); }, { label: 'Reset the Claude account order' });
   rt.actions.register('claude-accounts-manager.mode', ([how = 'toggle']) => {
     const m = how === 'auto' || how === 'automatic' ? 'auto' : how === 'custom' ? 'custom' : 'toggle';
     setMode(m).then((r) => rt.toast(r.message, 'success'), fail);

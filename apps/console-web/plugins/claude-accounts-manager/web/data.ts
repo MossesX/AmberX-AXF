@@ -86,6 +86,9 @@ async function change<T>(path: string, body: unknown): Promise<T> {
 }
 export const setMode = (mode: OrderMode | 'toggle') => change<{ mode: OrderMode; message: string }>('mode', { mode });
 export const setOrder = (order: string[]) => change<{ message: string }>('order', { order });
+export const resetOrder = () => change<{ message: string }>('order/reset', {});
+/** The order the orchestrator follows now (GET /order): the same answer REST, MCP, the CLI and voice give. */
+export const getOrder = () => json<{ mode: OrderMode; text: string; order: string[]; customOrder: string[] }>('order');
 export const move = (name: string, to: string | number) => change<{ message: string }>('move', { name, to });
 export const rename = (name: string, label: string) => change<{ message: string }>('rename', { name, label });
 export const addAccount = (name: string, kind: 'subscription' | 'api') => change<{ open: Record<string, unknown>; message: string }>('add', { name, kind });

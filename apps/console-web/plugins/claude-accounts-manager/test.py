@@ -190,6 +190,37 @@ j = c.post("/p/mode", json={"mode": "toggle"}).json()
 check(j["mode"] == "custom" and disp.mode == "custom" and "drag-and-drop order exactly" in j["message"], "toggle: back to custom")
 c.post("/p/order", json={"order": ["w-max", "console-acct"]})
 check(c.post("/p/move", json={"name": "nobody", "to": "up"}).status_code == 404 and c.post("/p/move", json={"name": "w-max", "to": "left"}).status_code == 400, "move: unknown account 404, bad place 400")
+
+# ---------------- account order: one answer over REST, MCP plugin commands, the CLI and voice (console actions)
+g = c.get("/p/order").json()
+check(g["ok"] and g["mode"] == "custom" and g["order"] == ["w-max", "console-acct"] and g["customOrder"] == ["w-max", "console-acct"], "GET order: mode, the order followed, the saved custom order")
+check({a["name"]: a["inOrder"] for a in g["accounts"]}.get("hulu-api") is False and {a["name"]: a["inOrder"] for a in g["accounts"]}["w-max"] is True, "GET order: which accounts are in it")
+acc_view = c.get("/p/accounts").json()
+check(g["order"] == acc_view["order"] and g["mode"] == acc_view["mode"] and g["customOrder"] == acc_view["customOrder"] and c.get("/p/mode").json()["order"] == g["order"], "GET order, GET mode and GET accounts agree")
+j = c.post("/p/move", json={"name": "console-acct", "position": "top"}).json()
+check(disp.cur == ["console-acct", "w-max"] and j["order"] == disp.cur, "move with position (the CLI's --position) = move with to")
+disp.mode = "auto"
+j = c.post("/p/order/reset").json()
+check(j["ok"] and disp.cur == [] and disp.mode == "custom" and j["mode"] == "custom", "reset: no custom order, switch on Custom (a session may: nothing bills more)")
+g = c.get("/p/order").json()
+check(g["saved"] == [] and g["mode"] == "custom" and "API overflow" in g["note"] and "hulu-api" not in g["customOrder"], "GET order after reset: nothing saved, the note says subscriptions then API overflow")
+c.post("/p/order", json={"order": ["w-max", "console-acct"]})
+check(c.get("/p/order").json()["order"] == ["w-max", "console-acct"], "set order after reset: followed again")
+
+import json as _json  # noqa: E402
+import subprocess  # noqa: E402
+
+reg = _json.loads(subprocess.run(["node", str(REPO / "framework/cli/plugin-commands.mjs"), "registry", "--json"], capture_output=True, text=True, check=True).stdout)
+cmds = {x["id"]: x for x in next(p for p in reg["plugins"] if p["folder"] == "claude-accounts-manager")["commands"]}
+want = {"order-get": ("GET", "/order"), "order": ("POST", "/order"), "move": ("POST", "/move"), "order-reset": ("POST", "/order/reset"), "mode": ("GET", "/mode"), "mode-set": ("POST", "/mode")}
+paths = {(m, getattr(r, "path", "")) for r in mod.router.routes for m in (getattr(r, "methods", None) or ())}
+check(all(k in cmds and (cmds[k]["run"]["route"]["method"], cmds[k]["run"]["route"]["path"]) == v and v in paths for k, v in want.items()), "MCP plugin commands and the CLI runner reach the same REST routes (read, set, move, reset, mode)")
+check(all(f"action-{a}" in cmds and cmds[f"action-{a}"]["run"]["action"] == f"claude-accounts-manager.{a}" for a in ("order", "move", "reset", "mode")), "voice / MCP console actions: order, move, reset, mode are registered")
+web = (HERE / "web" / "data.ts").read_text() + (HERE / "web" / "index.tsx").read_text()
+check(all(x in web for x in ("json<{ mode: OrderMode; text: string; order: string[]; customOrder: string[] }>('order')", "change<{ message: string }>('order/reset', {})", "change<{ message: string }>('order', { order })", "change<{ message: string }>('move', { name, to })")), "the console actions (voice) call the same REST routes")
+cli = subprocess.run(["node", str(REPO / "apps/console-web/plugins/plugin-commands/commands.mjs"), "cli"], capture_output=True, text=True).stdout
+check(all(x in cli for x in ("axf claude-accounts-manager order-get", "axf claude-accounts-manager order --order", "axf claude-accounts-manager move --name <name> [--position", "axf claude-accounts-manager order-reset", "axf claude-accounts-manager mode-set --mode")), "CLI: read, set, move (with a position), reset and mode")
+
 j = c.post("/p/rename", json={"name": "w-max", "label": "Hulu"}).json()
 check(j["ok"] and acc.labels[-1][:2] == ("w-max", "Hulu"), "rename goes through axf.claude-accounts@1")
 j = c.post("/p/add", json={"name": "account-6", "kind": "subscription"}).json()

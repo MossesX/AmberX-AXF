@@ -186,6 +186,38 @@ async def post_mode(request: Request) -> dict[str, Any]:
     return await run_in_threadpool(set_mode, raw, brett_click(request))
 
 
+def order_state() -> dict[str, Any]:
+    """The account order as the orchestrator follows it now: mode, the order followed (names), the saved custom order."""
+    cur = read()
+    d = _svc("axf.build-dispatch@1", need=False)
+    saved = list(d.order()) if d is not None and hasattr(d, "order") else []
+    return {"ok": True, "mode": cur["mode"], "text": MODE_TEXT[cur["mode"]], "order": cur["order"], "customOrder": cur["customOrder"], "saved": saved,
+            "note": "" if saved or cur["mode"] == "auto" else "No custom order saved: subscriptions go first, then any ready API account while API overflow is on.",
+            "accounts": [{"name": r["name"], "kind": r.get("kind", ""), "inOrder": bool(r.get("inOrder"))} for r in cur["accounts"]]}
+
+
+def reset_order(brett: str) -> dict[str, Any]:
+    """Back to the default: no custom order (subscriptions first, then API overflow) and the switch on Custom. Neither
+    puts an API account earlier, so a session, MCP or voice may do it."""
+    out = set_order([], brett)
+    d = _svc("axf.build-dispatch@1")
+    if hasattr(d, "set_order_mode") and out.get("mode") != "custom":
+        d.set_order_mode("custom", brett)
+    return {"ok": True, "order": [], "mode": "custom", "message": "Account order reset: no custom order, so subscriptions go first, then API overflow."}
+
+
+@router.get("/order")
+def get_order(request: Request) -> dict[str, Any]:
+    _owner(request)
+    return order_state()
+
+
+@router.post("/order/reset")
+async def order_reset(request: Request) -> dict[str, Any]:
+    _owner(request)
+    return await run_in_threadpool(reset_order, brett_click(request))
+
+
 @router.post("/order")
 async def order(request: Request) -> dict[str, Any]:
     _owner(request)
@@ -206,7 +238,7 @@ async def move(request: Request) -> dict[str, Any]:
         if name not in [r["name"] for r in cur["accounts"]]:
             raise HTTPException(404, f"No account called {name}.")
         try:
-            new = model.moved(cur["customOrder"], name, b.get("to"))
+            new = model.moved(cur["customOrder"], name, b.get("to") if b.get("to") not in (None, "") else b.get("position"))
         except ValueError as e:
             raise HTTPException(400, str(e)) from None
         return set_order(new, brett_click(request))

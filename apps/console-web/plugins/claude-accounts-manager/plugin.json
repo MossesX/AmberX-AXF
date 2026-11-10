@@ -19,6 +19,8 @@
     "action:claude-accounts-manager.open",
     "action:claude-accounts-manager.session",
     "action:claude-accounts-manager.add",
+    "action:claude-accounts-manager.order",
+    "action:claude-accounts-manager.reset",
     "action:claude-accounts-manager.overlay",
     "asset:status/claude-accounts-manager",
     "slot:terminal.side",
@@ -76,6 +78,13 @@
         }
       },
       {
+        "route": "GET /order",
+        "id": "order-get",
+        "title": "Read the Claude account order",
+        "readOnly": true,
+        "description": "The account order the build orchestrator follows now: mode (custom or auto), the order followed (names, first = tried first), the saved custom order and which accounts are in it. Same answer as the console action claude-accounts-manager.order, the CLI and voice ('what is my account order')."
+      },
+      {
         "route": "POST /order",
         "id": "order",
         "title": "Set the Claude account order",
@@ -100,7 +109,7 @@
         "route": "POST /move",
         "id": "move",
         "title": "Move one Claude account in the order",
-        "description": "Move one account up, down, to the top or bottom, out of the order, or to a position (voice: 'move account 3 to the top').",
+        "description": "Move one account up, down, to the top or bottom, out of the order, or to a position (voice: 'move account 3 to the top'). Give to (or position, the same thing; the CLI uses --position).",
         "input": {
           "type": "object",
           "properties": {
@@ -109,13 +118,27 @@
               "description": "account name, 1 to 32 lower-case letters, digits or dashes ('account 2' works)"
             },
             "to": {
+              "type": "string",
               "description": "up, down, top, bottom, out or a position (1 = first)"
+            },
+            "position": {
+              "type": "string",
+              "description": "same as to (the CLI's name for it: --position top)"
             }
           },
           "required": [
-            "name",
-            "to"
+            "name"
           ]
+        }
+      },
+      {
+        "route": "POST /order/reset",
+        "id": "order-reset",
+        "title": "Reset the Claude account order",
+        "description": "Clear the custom order and set the switch to Custom: with no order the orchestrator takes subscriptions first, then any ready API account while API overflow is on. Never puts an API key earlier, so a session, MCP or voice may do it (voice: 'reset my account order').",
+        "input": {
+          "type": "object",
+          "properties": {}
         }
       },
       {

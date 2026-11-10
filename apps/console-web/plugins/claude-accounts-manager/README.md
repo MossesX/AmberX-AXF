@@ -49,11 +49,26 @@ Brett's own click (a session, MCP or voice gets 403); switching back to Custom i
 ## API (REST, MCP, CLI, voice)
 
 REST `/api/plugins/claude-accounts-manager/…` and MCP plugin commands (plugin-commands@1): `list` (GET accounts),
-`mode` (GET), `mode-set` (`{mode: custom|auto|toggle}`), `order`, `move`, `rename`, `add`, `session`, `settings`, `settings-set`, `widget`. Console actions (MCP console
-actions, voice): `claude-accounts-manager.open | session:<name> | add:<kind>:<name> | add-dialog[:<kind>] |
-rename:<name> | move:<name>:<to> | mode[:custom|auto|toggle] | overlay[:on|off|toggle] | widget:<name> | column[:on|off|toggle] | settings`.
-CLI: `axf plugin claude-accounts-manager <command>` through plugin-commands. Voice: "account order automatic", "use my custom account order", "move hulu-api to the top",
-"open Claude Code as account 3", "show the accounts overlay".
+`mode` (GET), `mode-set` (`{mode: custom|auto|toggle}`), `order-get` (GET order), `order`, `order-reset`, `move`
+(`{name, to}`; `position` is the same as `to`), `rename`, `add`, `session`, `settings`, `settings-set`, `widget`.
+Console actions (MCP console actions, voice): `claude-accounts-manager.open | session:<name> | add:<kind>:<name> |
+add-dialog[:<kind>] | rename:<name> | move:<name>:<to> | order[:<a,b,c>] | reset | mode[:custom|auto|toggle] |
+overlay[:on|off|toggle] | widget:<name> | column[:on|off|toggle] | settings`.
+CLI: `axf claude-accounts-manager <command>` through plugin-commands, or the orchestrator's own
+`pipeline.mjs settings` / `pipeline.mjs set order=a,b,c orderMode=custom|auto`.
+
+The account order, each way:
+
+| | Deep link | Read | Set the order | Move one | Reset | Custom / Automatic |
+|---|---|---|---|---|---|---|
+| REST | — | `GET /order`, `GET /mode`, `GET /accounts` | `POST /order {order}` | `POST /move {name, to}` | `POST /order/reset` | `POST /mode {mode}` |
+| MCP | `console_show` / `console_open` `nav:claude-accounts-manager` (Settings: `settings.open:claude-accounts-manager`) | plugin command `order-get` / `mode`, console action `claude-accounts-manager.order` | `order`, action `order:<a,b,c>` | `move`, action `move:<name>:<to>` | `order-reset`, action `reset` | `mode-set`, action `mode:<m>` |
+| CLI | — | `axf claude-accounts-manager order-get` | `… order --order a,b,c` | `… move --name n --position top` | `… order-reset` | `… mode-set --mode auto` |
+| Voice | "open the Claude accounts manager" | "what is my account order" | "set account order w-max, w-pro" | "move hulu-api to the top" | "reset my account order" | "account order automatic" |
+
+Every way lands on the same server functions (`order_state`, `set_order`, `model.moved`, `reset_order`, `set_mode`),
+so the answers match. The spend guard is the same everywhere: putting an API key in the order or earlier, or
+switching to Automatic while an API key is outside the custom order, is Brett's own click (403 otherwise).
 
 ## Adding an account
 

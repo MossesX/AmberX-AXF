@@ -16,13 +16,13 @@
         "target": "view:claude-accounts-manager",
         "title": "Claude accounts manager",
         "text": "Every Claude account on the VPS in one ordered list: subscriptions and API keys alike. The Custom order switch: on, drag a row to set the order the build orchestrator follows exactly; off (Automatic), subscriptions go first, then API. Right-click a row to rename it, move it or open Claude Code as that account.",
-        "kind": "page"
+        "kind": "screen"
       },
       {
         "target": "settings-tab:claude-accounts-manager",
         "title": "Claude accounts manager settings",
         "text": "The banner widget, the Terminal column, the floating overlay window and its buttons, and the plan prices used for dollars.",
-        "kind": "settings"
+        "kind": "tab"
       },
       {
         "target": "action:claude-accounts-manager.open",
@@ -52,13 +52,211 @@
         "target": "dialog:claude-accounts-manager.pick",
         "title": "Pick an account",
         "text": "The banner widget's drop-down: every account with what is left; tap one to show it on the banner.",
-        "kind": "dialog"
+        "kind": "menu"
       },
       {
         "target": "action:claude-accounts-manager.mode",
         "title": "Custom or Automatic account order",
         "text": "Custom: the orchestrator follows your drag-and-drop order exactly, subscriptions and API keys alike. Automatic: every subscription first, then any API key. Your custom order is kept either way. Switching to Automatic while an API key is outside your order is your own click (it bills per token).",
         "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts-manager.order",
+        "title": "Claude account order",
+        "text": "With no names, says the order the orchestrator follows now (Custom or Automatic, then the accounts in turn). With names (a,b,c), sets the whole custom order. Say: 'what is my account order', 'set account order w-max, w-pro'.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts-manager.reset",
+        "title": "Reset the account order",
+        "text": "Clears the custom order and sets the switch to Custom: subscriptions go first, then API overflow. Say: 'reset my account order'.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "overlay",
+        "title": "Overlay",
+        "text": "Shows or hides the floating accounts window (custom buttons, sub-menus, resizable).",
+        "kind": "button"
+      },
+      {
+        "target": "add-an-account",
+        "title": "Add an account",
+        "text": "Opens the form to add a Claude subscription login or an API key.",
+        "kind": "button"
+      },
+      {
+        "target": "show-the-widget-on-the-banner",
+        "title": "Show the widget on the banner",
+        "text": "Shows the accounts widget on the top banner: one account and what it has left. Saved at once.",
+        "kind": "toggle"
+      },
+      {
+        "target": "account-it-shows",
+        "title": "Account it shows",
+        "text": "Which account the banner widget shows. Empty shows the active one.",
+        "kind": "field"
+      },
+      {
+        "target": "accounts-column-in-the-terminal",
+        "title": "Accounts column in the Terminal",
+        "text": "Adds a foldable accounts column to every Terminal window.",
+        "kind": "toggle"
+      },
+      {
+        "target": "start-unfolded",
+        "title": "Start unfolded",
+        "text": "Opens the Terminal's accounts column unfolded instead of folded to the hamburger.",
+        "kind": "toggle"
+      },
+      {
+        "target": "remove-item",
+        "title": "Remove item",
+        "text": "Removes this item from the button's sub-menu. Save buttons to keep the change.",
+        "kind": "button"
+      },
+      {
+        "target": "sub-menu-item",
+        "title": "Sub-menu item",
+        "text": "Adds an item to this button's sub-menu.",
+        "kind": "button"
+      },
+      {
+        "target": "show-the-overlay-window",
+        "title": "Show the overlay window",
+        "text": "Shows the floating accounts window now.",
+        "kind": "toggle"
+      },
+      {
+        "target": "overlay-scope",
+        "title": "Overlay scope",
+        "text": "Console: the window floats inside the console. Whole screen: it pops out over every window.",
+        "kind": "field"
+      },
+      {
+        "target": "dock",
+        "title": "Dock",
+        "text": "Where the overlay sits: free (drag it anywhere) or docked to a corner or edge.",
+        "kind": "field"
+      },
+      {
+        "target": "size-lock",
+        "title": "Size lock",
+        "text": "Stops the overlay from being resized.",
+        "kind": "toggle"
+      },
+      {
+        "target": "minimized",
+        "title": "Minimized",
+        "text": "Shrinks the overlay to its title bar.",
+        "kind": "toggle"
+      },
+      {
+        "target": "width",
+        "title": "Width",
+        "text": "Overlay width.",
+        "kind": "field"
+      },
+      {
+        "target": "height",
+        "title": "Height",
+        "text": "Overlay height.",
+        "kind": "field"
+      },
+      {
+        "target": "opacity",
+        "title": "Opacity %",
+        "text": "How see-through the overlay is (100% = solid).",
+        "kind": "field"
+      },
+      {
+        "target": "action-on-tap",
+        "title": "Action on tap",
+        "text": "The console action this button runs when tapped, e.g. nav:claude-accounts-manager. Empty with a sub-menu opens the sub-menu.",
+        "kind": "field"
+      },
+      {
+        "target": "live-list-in-the-sub-menu",
+        "title": "Live list in the sub-menu",
+        "text": "Fills the sub-menu with a live list (e.g. every account) instead of fixed items.",
+        "kind": "field"
+      },
+      {
+        "target": "remove-button",
+        "title": "Remove button",
+        "text": "Removes this overlay button. Save buttons to keep the change.",
+        "kind": "button"
+      },
+      {
+        "target": "add-a-button",
+        "title": "Add a button",
+        "text": "Adds a button to the overlay.",
+        "kind": "button"
+      },
+      {
+        "target": "save-buttons",
+        "title": "Save buttons",
+        "text": "Saves the overlay buttons. Nothing changes until you tap it.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-accounts-manager",
+        "title": "Claude accounts manager",
+        "text": "Settings for the Claude accounts manager: banner widget, Terminal column, overlay and plan prices.",
+        "kind": "tab"
+      },
+      {
+        "target": "view:claude-accounts-manager.add",
+        "title": "Add a Claude account",
+        "text": "Adds a Claude account: a subscription login in the Terminal, or an API key at the host's hidden prompt. The key never passes through the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:claude-accounts-manager.rename",
+        "title": "Rename a Claude account",
+        "text": "Gives an account the name shown everywhere. The saved login name stays the same.",
+        "kind": "screen"
+      },
+      {
+        "target": "action:claude-accounts-manager.add-dialog:subscription",
+        "title": "Add a Claude account",
+        "text": "Opens the form to add a Claude account.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "pop-out-over-every-window",
+        "title": "Pop out over every window",
+        "text": "Pops the overlay out of the console so it floats over every window.",
+        "kind": "button"
+      },
+      {
+        "target": "accounts",
+        "title": "Accounts",
+        "text": "Opens the list of Claude accounts.",
+        "kind": "button"
+      },
+      {
+        "target": "minimize-to-the-main-screen",
+        "title": "Minimize to the main screen",
+        "text": "Folds the overlay back into the console.",
+        "kind": "button"
+      },
+      {
+        "target": "close-the-overlay",
+        "title": "Close the overlay",
+        "text": "Closes the floating accounts window.",
+        "kind": "button"
+      },
+      {
+        "target": "custom-order",
+        "title": "Custom order",
+        "text": "On: the build orchestrator follows your drag-and-drop order exactly, subscriptions and API keys alike. Off (Automatic): subscriptions first, then any ready API key. The custom order is kept either way.",
+        "kind": "toggle"
+      },
+      {
+        "target": "add-in-the-terminal",
+        "title": "Add in the Terminal",
+        "text": "Opens the Terminal and starts the login or the hidden API key prompt for the new account.",
+        "kind": "button"
       }
     ]
   }
