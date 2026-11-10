@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2236,
- "updatedAt": "2026-11-10T03:04:25.475Z",
+ "rev": 2237,
+ "updatedAt": "2026-11-10T03:04:45.675Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131621,7 +131621,7 @@
    "pr": "#434",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T03:03:04.134Z",
+   "updatedAt": "2026-11-10T03:04:33.660Z",
    "builtAt": "2026-11-10T03:00:53.547Z",
    "notes": [
     {
@@ -131699,6 +131699,10 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-test-button-on-every-claude-account-subscription--gina, own login copy)",
      "at": "2026-11-10T03:03:04.134Z"
+    },
+    {
+     "text": "Headless run axf-test-button-on-every-claude-account-subscription--gina: brief only · start 11.3K tokens ($0.03) · cost $6.37 · 143 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:04:33.660Z"
     }
    ],
    "approvals": [],
@@ -131845,7 +131849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
