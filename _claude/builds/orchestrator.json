@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:25:13.652Z",
+ "updatedAt": "2026-11-10T19:25:25.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88774,15 +88774,15 @@
    "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
    "category": "",
    "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/agent-manager-training-wizard-for-employee-agent",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T19:25:12.401Z",
+   "updatedAt": "2026-11-10T19:25:18.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -88796,6 +88796,14 @@
     {
      "text": "Split by Claude into 10 steps (1 Fable).",
      "at": "2026-11-10T17:58:33.406Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-agent-manager-training-wizard-for-employee-agent--gina.",
+     "at": "2026-11-10T19:25:14.564Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-agent-manager-training-wizard-for-employee-agent--gina, own login copy)",
+     "at": "2026-11-10T19:25:18.029Z"
     }
    ],
    "approvals": [],

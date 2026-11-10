@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:22 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
-- 2026-11-10 16:25 UTC · `retire-build-manager-the-orchestrator-is-the-onl` PR #450 (all) · builds-live
-- 2026-11-10 16:26 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · orchestrator
 - 2026-11-10 16:25 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · orchestrator
 - 2026-11-10 16:25 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s3 done, → built (all) · orchestrator
 - 2026-11-10 16:27 UTC · `project-manager-every-project-its-own-console-in` → running, note (all) · pipeline
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:23 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
 - 2026-11-10 19:24 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
 - 2026-11-10 19:24 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s12 done (all) · orchestrator
+- 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` → running, note (all) · pipeline
+- 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` branch claude/agent-manager-training-wizard-for-employee-agent (all) · pipeline
+- 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · orchestrator
 
 ## Token passes (log)
 

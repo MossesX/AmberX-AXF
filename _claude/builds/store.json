@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2732,
- "updatedAt": "2026-11-10T19:25:13.652Z",
+ "rev": 2733,
+ "updatedAt": "2026-11-10T19:25:25.381Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145774,15 +145774,15 @@
    "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
    "category": "",
    "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/agent-manager-training-wizard-for-employee-agent",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T19:25:12.401Z",
+   "updatedAt": "2026-11-10T19:25:18.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -145796,6 +145796,14 @@
     {
      "text": "Split by Claude into 10 steps (1 Fable).",
      "at": "2026-11-10T17:58:33.406Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-agent-manager-training-wizard-for-employee-agent--gina.",
+     "at": "2026-11-10T19:25:14.564Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-agent-manager-training-wizard-for-employee-agent--gina, own login copy)",
+     "at": "2026-11-10T19:25:18.029Z"
     }
    ],
    "approvals": [],
@@ -145815,12 +145823,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:29:32.033Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-agent-manager-training-wizard-for-employee-agent--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-10T19:25:14.224Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T17:58:33.406Z",
@@ -145832,7 +145840,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T19:25:14.224Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -145841,7 +145849,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T19:25:14.224Z"
    },
    "steps": [
     {
@@ -146117,7 +146125,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
