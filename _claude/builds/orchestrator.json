@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:00:53.172Z",
+ "updatedAt": "2026-11-10T21:01:24.808Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95316,12 +95316,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:45.064Z",
-   "updatedAt": "2026-11-10T20:59:46.553Z",
+   "updatedAt": "2026-11-10T21:01:23.036Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:59:46.553Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:01:23.036Z"
     }
    ],
    "approvals": [],
@@ -95338,7 +95342,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Hulu (account-3, max plan) is signed in and switched on (pipeline use=on, interactiveTakesJobs=true, removed from excluded) but the dispatcher still marks it standby 'not a worker (workers take every headless job)' because it is the console's interactive account, so it never takes builds. Make the dispatcher treat the console account as a builder when interactiveTakesJobs is on, at the same priority as workers, 5 parallel. Brett wants 5 per subscription = 10 total. Verify with a real launch; notify on AmberX when Hulu takes its first build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb6dk2k04ebba"
+    },
+    {
+     "id": "s2",
+     "text": "I want five builds on each subscription in parallel, so a total of ten at a time.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb6dk2k05jtch"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/make-hulu-actually-take-builds-dispatcher-counts.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/make-hulu-actually-take-builds-dispatcher-counts.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb6dk2k06jham"
+    }
+   ]
   }
  ]
 }

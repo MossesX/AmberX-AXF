@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:09 UTC · `project-manager-add-on-drag-a-build-to-another-p` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `project-manager-every-project-its-own-console-in` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `project-manager-add-on-new-project-prompt-asks-i` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → pending (all) · voice
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:59 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · console
 - 2026-11-10 21:00 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
 - 2026-11-10 21:01 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · builds-live
+- 2026-11-10 21:01 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
 
 ## Token passes (log)
 
