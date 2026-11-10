@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:43:54.393Z",
+ "updatedAt": "2026-11-10T16:44:08.776Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86263,6 +86263,43 @@
    "origin": {
     "said": "Fix the top bar of the AmberX app because it's behind my top banner where my call notifications are. It renders the web page too high up for the screen. The top row is hidden. The banner's behind stuff like my camera.",
     "at": "2026-11-10T16:43:03.427Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "enforce-the-merge-queue-every-finished-build-goe",
+   "title": "Enforce the merge queue: every finished build goes into it and is batched into one combined build before CI",
+   "category": "",
+   "detail": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:43:57.553Z",
+   "updatedAt": "2026-11-10T16:43:59.523Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:43:59.523Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "What happened to the merge queue? We need to start enforcing that. Everything needs to go into the merge queue so we can make one build out of it before we send it to CI.",
+    "at": "2026-11-10T16:43:57.553Z",
     "source": "",
     "session": "",
     "link": "",
