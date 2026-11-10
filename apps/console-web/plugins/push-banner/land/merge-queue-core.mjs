@@ -15,16 +15,30 @@
 
 export const QUEUE_FRAME = 'merge-queue@1';
 export const QUEUE_CONTROL_FRAME = 'merge-queue-control@1';
-/** Settings (push banner config.json): the queue is on unless switched off; `queueDepth` PRs are tested at once. */
-export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3 });
+/**
+ * Settings (push banner config.json): the queue is on unless switched off.
+ *   queueMode  'batch' (default, Brett Nov 10 2026: "have the orchestrator combine them, like five at a time, into one big
+ *              build. Then pull main and merge it as one"): up to `batchSize` ready PRs are combined into one branch on
+ *              the latest main, CI runs once on it and the whole batch merges as one;
+ *              'stack': the Nov 4 queue, each PR on its own queue/pr-<n> on top of the ones ahead, `queueDepth` at once.
+ *   batchAiResolve  off by default: plain code only, a PR that conflicts in code with one earlier in its batch waits
+ *              for the next batch. On: it still waits, and one agent job (queue-conflict, through agent-job.mjs, once per
+ *              PR head) makes its branch work with the others; the new head rejoins and CI still decides.
+ */
+export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3, queueMode: 'batch', batchSize: 5, batchAiResolve: false });
 export const QUEUE_DEPTH_MAX = 6;
+export const BATCH_SIZE_MAX = 10;
+export const QUEUE_MODES = Object.freeze(['batch', 'stack']);
+export const BATCH_PREFIX = 'queue/batch-';
+export const batchBranch = (id) => `${BATCH_PREFIX}${id}`;
+export const isBatchBranch = (b) => typeof b === 'string' && /^queue\/batch-\d+$/.test(b);
 /** Minutes a queue commit may sit with no CI run before the runner starts one itself (workflow_dispatch). */
 export const NO_RUN_MIN = 10;
 /** Minutes one CI run takes when the queue has no history yet (learned from finished runs after that). */
 export const DEFAULT_RUN_MIN = 14;
 export const QUEUE_PREFIX = 'queue/pr-';
 export const queueBranch = (n) => `${QUEUE_PREFIX}${n}`;
-export const isQueueBranch = (b) => typeof b === 'string' && /^queue\/pr-\d+$/.test(b);
+export const isQueueBranch = (b) => typeof b === 'string' && /^queue\/(pr|batch)-\d+$/.test(b);
 
 const str = (v, n = 300) => (typeof v === 'string' ? v.slice(0, n) : '');
 const num = (v) => (Number.isInteger(v) && v > 0 ? v : 0);
@@ -132,6 +146,83 @@ export function decide(stack, ci = {}) {
   return { merge, kick, keep: kick ? i : stack.length };
 }
 
+// ------------------------------------------------------------------ batch mode
+
+/** The queue settings from the push banner's config.json, bounded. */
+export function queueSettings(c = {}) {
+  const int = (v, lo, hi, d) => (Number.isInteger(v) && v >= lo && v <= hi ? v : d);
+  return {
+    mergeQueue: c?.mergeQueue !== false,
+    depth: int(c?.queueDepth, 1, QUEUE_DEPTH_MAX, QUEUE_DEFAULTS.queueDepth),
+    mode: QUEUE_MODES.includes(c?.queueMode) ? c.queueMode : QUEUE_DEFAULTS.queueMode,
+    batchSize: int(c?.batchSize, 1, BATCH_SIZE_MAX, QUEUE_DEFAULTS.batchSize),
+    aiResolve: c?.batchAiResolve === true,
+    waitUi: c?.landWaitUi !== false,
+  };
+}
+
+/**
+ * Which ready PRs go into the next batch (queue order kept). Normally the first `size`. While a red batch is being
+ * narrowed down (`suspects`: the PRs of the last red batch that are still ready), only the first half of the suspects:
+ * a green half merges, a red half is halved again, and a red batch of one is the PR to blame.
+ */
+export function pickBatch(ready, { size = QUEUE_DEFAULTS.batchSize, suspects = [] } = {}) {
+  const live = ready.filter((p) => suspects.includes(p.number));
+  if (live.length) return live.slice(0, Math.ceil(live.length / 2));
+  return ready.slice(0, Math.max(1, size));
+}
+
+/**
+ * Does last round's batch still hold? Every member still ready at the same head, and main unchanged in code outside
+ * the queue. A PR that became ready since never joins a running batch (that run is paid for); it waits for the next.
+ *   batch: { id, members: [{ pr, head }], sha, … }; ready: [{ number, head }]
+ */
+export function keepBatch(batch, ready, { mainMoved = false } = {}) {
+  if (!batch?.sha || mainMoved || !(batch.members || []).length) return false;
+  return batch.members.every((m) => ready.some((p) => p.number === m.pr && p.head === m.head));
+}
+
+/**
+ * What to do with a batch given its one CI result:
+ *   merge  green: the batch merges as one;
+ *   kick   red with one member: that PR broke it;
+ *   split  red with more: the members become the suspects, the next batch tests the first half of them;
+ *   wait   still running (or no run yet).
+ */
+export function decideBatch(batch, ci) {
+  const n = (batch?.members || []).length;
+  if (!n) return { action: 'wait' };
+  if (ci === 'success') return { action: 'merge' };
+  if (ci === 'failure') return n === 1 ? { action: 'kick', pr: batch.members[0].pr } : { action: 'split', suspects: batch.members.map((m) => m.pr) };
+  return { action: 'wait' };
+}
+
+/** After a batch: the suspects left to narrow down. A green batch clears its members; a red one narrows to them. */
+export function nextSuspects(suspects = [], batch = null, action = '') {
+  const members = (batch?.members || []).map((m) => m.pr);
+  if (action === 'split') return members;
+  if (action === 'merge' || action === 'kick') return suspects.filter((n) => !members.includes(n));
+  return suspects;
+}
+
+/** The batch's commit message and PR title / body, plain words. */
+export function batchTitle(id, prs) {
+  return `Merge queue batch ${id}: ${prs.map((p) => `#${p.number ?? p.pr}`).join(', ')}`.slice(0, 250);
+}
+export function batchBody(id, prs, { base = '', left = [] } = {}) {
+  const rows = prs.map((p) => `- #${p.number ?? p.pr} ${String(p.title || '').slice(0, 160)}${p.agent ? ` (${p.agent})` : ''}`);
+  const out = left.map((l) => `- #${l.pr}: ${l.why}`);
+  return [`The merge queue combined ${prs.length} ready PR${prs.length === 1 ? '' : 's'} into one build on main${base ? ` (${String(base).slice(0, 8)})` : ''}, ran CI once on it, and merges it as one.`, '', ...rows,
+    ...(out.length ? ['', 'Left for the next batch:', ...out] : []), '', 'Opened and merged by the merge queue (push banner, land/merge-queue.mjs). Every PR above is closed as landed in this batch.'].join('\n').slice(0, 6000);
+}
+
+/** Minutes until a PR in batch mode merges: in the running batch, what its run has left; behind it, one run per batch. */
+export function batchEtaMinutes(index, { inBatch = false, size = 5, avg = DEFAULT_RUN_MIN, startedMin = 0, running = false } = {}) {
+  const left = running ? Math.max(1, Math.round(avg - (startedMin || 0))) : 0;
+  if (inBatch) return Math.max(1, left || avg);
+  return Math.round(left + avg * (1 + Math.floor(index / Math.max(1, size))));
+}
+
 /** The plain-words reason a PR was kicked out (shown in the view, the alert and on the bugs board). */
 export function kickReason(pr, { failing = [], ahead = [], url = '' } = {}) {
   const jobs = failing.filter(Boolean).slice(0, 4);
@@ -157,6 +248,8 @@ export function etaMinutes(index, { depth = 3, avg = DEFAULT_RUN_MIN, startedMin
 /** The commands, declared once: the CLI, the push banner's REST routes and (through plugin-commands@1) MCP. */
 export const QUEUE_COMMANDS = Object.freeze([
   { id: 'mergequeue-list', method: 'GET', path: '/queue', cli: 'list', title: 'Merge queue: the line', description: 'Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA; and the open PRs not in it, with why.', effect: 'read' },
+  { id: 'mergequeue-settings', method: 'GET', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: 'On, mode (batch: ready PRs combined batchSize at a time into one build on the latest main, one CI run, merged as one; stack: each PR on top of the ones ahead), batchSize, aiResolve, depth.', effect: 'read' },
+  { id: 'mergequeue-set', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: change settings', description: 'Change on, mode (batch | stack), batchSize (1-10), aiResolve, depth (1-6). Takes effect at the next round.', effect: 'write', input: { on: 'true | false', mode: 'batch | stack', batchSize: '1-10', aiResolve: 'true | false', depth: '1-6' } },
   { id: 'mergequeue-add', method: 'POST', path: '/queue/add', cli: 'add', title: 'Merge queue: add a PR', description: 'Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green, not held by UI Review).', effect: 'write', input: { pr: 'PR number' } },
   { id: 'mergequeue-remove', method: 'POST', path: '/queue/remove', cli: 'remove', title: 'Merge queue: remove a PR', description: 'Take a PR out of the merge queue until it gets a new commit or is added again; the ones behind it are retested without it.', effect: 'write', input: { pr: 'PR number', why: 'optional reason' } },
   { id: 'mergequeue-move', method: 'POST', path: '/queue/move', cli: 'move', title: 'Merge queue: move a PR', description: "Move a PR to a place in the merge queue (0 = front). Jump to front from the console is Brett's own click.", effect: 'write', input: { pr: 'PR number', to: 'new index, 0 = front' } },
