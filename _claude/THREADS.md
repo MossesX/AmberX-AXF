@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:49 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · cli
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 14:55 UTC · `molly-fable-version-the-one-interface-for-amberx` → running, note (all) · pipeline
 - 2026-11-10 14:55 UTC · `molly-fable-version-the-one-interface-for-amberx` branch claude/molly-fable-version-the-one-interface-for-amberx (all) · pipeline
 - 2026-11-10 14:55 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
+- 2026-11-10 15:06 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
