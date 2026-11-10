@@ -1881,6 +1881,18 @@
    "from": "",
    "addenda": []
   },
+  "employee-hooks-plain-tap-on-an-employee-name-ope": {
+   "said": "You decide, I just need to be able to do it. You're the expert.",
+   "at": "2026-11-10T21:56:55.046Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "enforce-the-merge-queue-every-finished-build-goe": {
    "said": "What happened to the merge queue? We need to start enforcing that. Everything needs to go into the merge queue so we can make one build out of it before we send it to CI.",
    "at": "2026-11-10T16:43:57.553Z",

@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:51 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · builds-live
-- 2026-11-10 17:51 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` note (all) · builds-live
-- 2026-11-10 17:51 UTC · `ollama-own-docker-container-amberx-llama-interna` added (0 steps) (all) · builds-live
 - 2026-11-10 17:51 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` added (0 steps) (all) · builds-live
 - 2026-11-10 17:51 UTC · `ollama-own-docker-container-amberx-llama-interna` → queued, note (all) · console
 - 2026-11-10 17:51 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` added (0 steps) (all) · console
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:55 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
 - 2026-11-10 21:56 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` note (all) · orchestrator
 - 2026-11-10 21:56 UTC · `background-token-for-every-ui-background-designe` added (0 steps) (all) · console
+- 2026-11-10 21:56 UTC · `background-token-for-every-ui-background-designe` → queued, note (all) · console
+- 2026-11-10 21:56 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` added (0 steps) (all) · console
+- 2026-11-10 21:56 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → queued, note (all) · console
 
 ## Token passes (log)
 
