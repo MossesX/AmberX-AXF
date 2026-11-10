@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2980,
- "updatedAt": "2026-11-10T23:14:24.402Z",
+ "rev": 2981,
+ "updatedAt": "2026-11-10T23:15:22.205Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153212,7 +153212,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:45.064Z",
-   "updatedAt": "2026-11-10T23:13:14.735Z",
+   "updatedAt": "2026-11-10T23:15:20.329Z",
    "builtAt": "",
    "notes": [
     {
@@ -153258,6 +153258,10 @@
     {
      "text": "Claude account: account-5 (axf-make-hulu-actually-take-builds-dispatcher-counts--paulie, own login copy)",
      "at": "2026-11-10T23:13:14.735Z"
+    },
+    {
+     "text": "Duplicate launch: the dispatcher started this build twice in the same worktree, Lenny on mossesx-max- (23:09) and Paulie on account-5 API (23:12). Paulie stopped without editing anything so the two don't overwrite each other's work; Lenny has the uncommitted fix (console account usable when interactiveTakesJobs is on, workers' priority) and keeps going. molly-sign-in-once was also launched twice (joey + sully). The dispatcher is putting builds that are already running onto a second account, and that needs fixing.",
+     "at": "2026-11-10T23:15:20.329Z"
     }
    ],
    "approvals": [],
@@ -153385,7 +153389,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

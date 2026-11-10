@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:38 UTC · `skin-checker-flags-anything-that-breaks-a-profes` → queued, note (all) · pipeline
 - 2026-11-10 18:38 UTC · `resolve-conflicts-and-land-pr-449-account-order` s1 done (all) · orchestrator
 - 2026-11-10 18:38 UTC · `skin-checker-flags-anything-that-breaks-a-profes` → running, note (all) · pipeline
 - 2026-11-10 18:38 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` → running, note (all) · pipeline
 - 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` branch claude/stall-watchdog-detect-when-nothing-is-building-a (all) · pipeline
 - 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
+- 2026-11-10 23:15 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
 
 ## Token passes (log)
 
