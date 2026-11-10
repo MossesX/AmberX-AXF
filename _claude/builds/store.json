@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2407,
- "updatedAt": "2026-11-10T15:36:53.916Z",
+ "rev": 2408,
+ "updatedAt": "2026-11-10T15:37:09.941Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137558,16 +137558,22 @@
    "title": "Search bar plugin add-on: search builds, session histories and build notes; jump to the highlighted spot in the log",
    "category": "",
    "detail": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T15:36:52.351Z",
+   "updatedAt": "2026-11-10T15:36:54.265Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:36:54.265Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -137582,6 +137588,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-10T15:36:53.980Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -137591,7 +137613,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:17 UTC · `orchestrator-and-build-manager-search-bar-collap` PR #426 (all) · builds-live
 - 2026-11-10 01:17 UTC · `orchestrator-and-build-manager-search-bar-collap` s3 done, → built (all) · orchestrator
 - 2026-11-10 01:18 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 - 2026-11-10 01:19 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:34 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 - 2026-11-10 15:36 UTC · `molly-fable-version-the-one-interface-for-amberx` branch claude/molly-fable-version-the-one-interface-for-amberx, PR #447 (all) · builds-live
 - 2026-11-10 15:36 UTC · `search-bar-plugin-add-on-search-builds-session-h` added (0 steps) (all) · console
+- 2026-11-10 15:36 UTC · `search-bar-plugin-add-on-search-builds-session-h` → queued, note (all) · console
 
 ## Token passes (log)
 
