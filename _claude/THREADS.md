@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 - 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s3 done, → built (all) · orchestrator
 - 2026-11-09 20:43 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 - 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → running, note (all) · pipeline
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:06 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s1 done (all) · orchestrator
 - 2026-11-10 04:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s2 done (all) · orchestrator
 - 2026-11-10 04:13 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · orchestrator
+- 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
