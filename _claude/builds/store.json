@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2275,
- "updatedAt": "2026-11-10T03:35:22.559Z",
+ "rev": 2276,
+ "updatedAt": "2026-11-10T03:36:11.855Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134618,10 +134618,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/self-healing-build-folders-auto-clear-stale-git",
-   "pr": "",
+   "pr": "#435",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:35:07.056Z",
+   "updatedAt": "2026-11-10T03:36:07.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -134702,7 +134702,7 @@
    "pipeline": {
     "queuedAt": "2026-11-10T02:22:12.571Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "account-5",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -134724,7 +134724,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-10T02:48:43.040Z"
    },
@@ -134807,7 +134807,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
