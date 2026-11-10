@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2245,
- "updatedAt": "2026-11-10T03:12:01.366Z",
+ "rev": 2246,
+ "updatedAt": "2026-11-10T03:12:16.299Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135191,12 +135191,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T03:10:38.461Z",
+   "updatedAt": "2026-11-10T03:12:10.221Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T03:10:38.461Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T03:12:10.221Z"
     }
    ],
    "approvals": [],
@@ -135223,13 +135227,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T03:12:10.221Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwa46jfx01zr02",
+     "title": "",
+     "text": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T03:12:10.221Z",
+     "updatedAt": "2026-11-10T03:12:10.221Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwa46jfx021cai",
+     "title": "",
+     "text": "Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T03:12:10.221Z",
+     "updatedAt": "2026-11-10T03:12:10.221Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwa46jfx03b5jn",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T03:12:10.221Z",
+     "updatedAt": "2026-11-10T03:12:10.221Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -135238,12 +135318,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T03:12:10.221Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

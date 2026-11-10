@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:26 UTC · `home-page-build-queue-card-opens-the-orchestrato` → failed, note (all) · pipeline
 - 2026-11-09 19:26 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · pipeline
 - 2026-11-09 19:26 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
 - 2026-11-09 19:26 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:11 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → queued, note (all) · builds-live
 - 2026-11-10 03:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` added (0 steps) (all) · console
 - 2026-11-10 03:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` → queued, note (all) · console
+- 2026-11-10 03:12 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 
 ## Token passes (log)
 
