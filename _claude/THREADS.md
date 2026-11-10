@@ -770,9 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:20 UTC · `test-button-on-every-claude-account-subscription` → failed, note (all) · pipeline
-- 2026-11-09 20:21 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · console
-- 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → running, note (all) · pipeline
 - 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` branch claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status (all) · pipeline
 - 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · orchestrator
 - 2026-11-09 20:23 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · pipeline
@@ -1170,6 +1167,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:31 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · orchestrator
 - 2026-11-10 03:32 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:33 UTC · `self-healing-build-folders-auto-clear-stale-git` → pending, note (all) · pipeline
+- 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → running, note (all) · pipeline
+- 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` branch claude/console-speed-profile-and-cut-axf-console-cpu-pl (all) · pipeline
+- 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
 
 ## Token passes (log)
 
