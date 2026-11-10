@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:50:32.721Z",
+ "updatedAt": "2026-11-10T18:50:40.149Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78739,7 +78739,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78747,7 +78747,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T17:09:49.573Z",
+   "updatedAt": "2026-11-10T18:50:38.760Z",
    "builtAt": "",
    "notes": [
     {
@@ -78881,6 +78881,10 @@
     {
      "text": "Self-check: appearance-skins-colour-themes-only-remove-design-packs was marked running on account-3 with no session: released and back in the Queue.",
      "at": "2026-11-10T17:09:05.834Z"
+    },
+    {
+     "text": "Reconciler: PR #430 names s5 done",
+     "at": "2026-11-10T18:50:38.760Z"
     }
    ],
    "approvals": [],
@@ -78983,9 +78987,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:50:38.760Z",
+     "note": "PR #430 (claude/appearance-skins-colour-themes-only-remove-design-packs)",
      "uid": "st-mw9isnnq019fb5"
     }
    ]
@@ -91369,7 +91373,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -91377,7 +91381,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:29:06.248Z",
+   "updatedAt": "2026-11-10T18:50:38.760Z",
    "builtAt": "",
    "notes": [
     {
@@ -91423,6 +91427,10 @@
     {
      "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--gina: brief only · start 12.8K tokens ($0.06) · cost $7.24 · 76 turns · 6 tools, MCP none",
      "at": "2026-11-10T18:29:06.248Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T18:50:38.760Z"
     }
    ],
    "approvals": [],
