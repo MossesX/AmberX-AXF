@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:54:01.412Z",
+ "updatedAt": "2026-11-10T01:54:18.052Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77856,7 +77856,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77864,7 +77864,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T01:40:51.716Z",
+   "updatedAt": "2026-11-10T01:53:46.982Z",
    "builtAt": "",
    "notes": [
     {
@@ -77954,6 +77954,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-appearance-skins-colour-themes-only-remove-desig--earl, own login copy)",
      "at": "2026-11-10T01:05:23.941Z"
+    },
+    {
+     "text": "s1+s2 (Fable): skin@2 with four sections (colours, style, layout, behaviour) as presets or inline; 27 design packs + 13 orphan style packages converted to skins with the same ids (41 skins); design-package / style-package types, engines, schemas, specs and pickers removed; the four theme types stay as section presets (never picked alone; 8 colour, 2 layout, 8 behaviour orphan presets kept for the Skin Designer, nothing lost); aliases: applyDesignPackage/appliedDesignPackage, design.package/style.package/appearance.package actions, interface.design, retired slots dropped on read, axf.appearance.design read once as the skin pick; every Next colour/style/layout/design-package menu item is now skin.next/prev/random. Framework validation 522 assets, check-skin/interface/hub-look/behavior-theme/roller/scale/control/mcp/plugin-commands/shared-assets/theme/controls pass, console tsc passes. Left for s3 (Opus): UI Review's 'Design packs' review section (View → Design packs, kind design-pack) should become 'Skins' (keep ids so saved picks work); the console's theme-manager / theme-editor plugin screens and the 'Theme manager' help entry; Appearance screenshots to UI Review; API parity doc for skin.use/next/prev/random. Left for s5: full regression rerun incl. the browser half (apps must be rebuilt first); expected diffs in framework/spec/look-regression/expected/skins-only.json. Pre-existing on main, not this build: help coverage 98.3% (claude-accounts help.json kind) and console menu reach fail in the baseline too.",
+     "at": "2026-11-10T01:53:46.982Z"
     },
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
