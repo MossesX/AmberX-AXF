@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:27 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
 - 2026-11-09 19:27 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
 - 2026-11-09 19:28 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → failed, note (all) · pipeline
 - 2026-11-09 19:36 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:14 UTC · `resolve-merge-conflicts-and-land-running-builds` added (0 steps) (all) · console
 - 2026-11-10 03:14 UTC · `resolve-merge-conflicts-and-land-running-builds` → queued, note (all) · console
 - 2026-11-10 03:17 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · orchestrator
+- 2026-11-10 03:20 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
 
 ## Token passes (log)
 

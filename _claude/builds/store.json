@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2250,
- "updatedAt": "2026-11-10T03:17:13.654Z",
+ "rev": 2251,
+ "updatedAt": "2026-11-10T03:21:04.285Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -133496,7 +133496,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-10T03:09:18.934Z",
+   "updatedAt": "2026-11-10T03:20:58.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -133518,6 +133518,10 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:18.934Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-table-columns-model-queue-assigned--lenny: brief only · start 11.4K tokens ($0.03) · cost $6.99 · 122 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:20:58.905Z"
     }
    ],
    "approvals": [],
@@ -133635,7 +133639,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
