@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:41:34.114Z",
+ "updatedAt": "2026-11-10T17:41:54.062Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88782,9 +88782,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:40:55.347Z",
-   "updatedAt": "2026-11-10T17:40:56.501Z",
+   "updatedAt": "2026-11-10T17:41:35.529Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:41:35.529Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -88799,7 +88804,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the skins naming-contract build. Precedence: axHub base < skin (by canonical role) < per-screen skin < per-element override. An override changes only that element. Global changes are made ONLY by applying a whole skin; editing a button inside one plugin or app never propagates to other plugins/apps. Enforce in the inline editor (no 'apply everywhere' outside the skin editor) and document in CLAUDE.md rules.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz8mg901x6tp"
+    },
+    {
+     "id": "s2",
+     "text": "If you override a value, it wins for that element. You can't change a button in one of the plugins or apps and have it apply globally. You can only apply things globally by applying an entire skin.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz8mg902uusa"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/skin-rule-overrides-are-local-only-global-change.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/skin-rule-overrides-are-local-only-global-change.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz8mg903xf9x"
+    }
+   ]
   }
  ]
 }

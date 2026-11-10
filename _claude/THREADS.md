@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:28 UTC · `audit-pending-fable-builds-against-main-close-wh` branch claude/audit-pending-fable-builds-against-main-close-wh (all) · pipeline
 - 2026-11-10 04:28 UTC · `audit-pending-fable-builds-against-main-close-wh` note (all) · orchestrator
 - 2026-11-10 04:29 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · builds-live
 - 2026-11-10 04:29 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, branch claude/audit-pending-fable-builds-against-main-close-wh, note (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:41 UTC · `skin-rule-overrides-are-local-only-global-change` added (0 steps) (all) · builds-live
 - 2026-11-10 17:41 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · builds-live
 - 2026-11-10 17:41 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
+- 2026-11-10 17:41 UTC · `skin-rule-overrides-are-local-only-global-change` note (all) · orchestrator
 
 ## Token passes (log)
 
