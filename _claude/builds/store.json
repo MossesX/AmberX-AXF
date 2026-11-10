@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2564,
- "updatedAt": "2026-11-10T17:35:52.942Z",
+ "rev": 2565,
+ "updatedAt": "2026-11-10T17:36:26.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -142196,9 +142196,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:34:46.359Z",
-   "updatedAt": "2026-11-10T17:34:47.247Z",
+   "updatedAt": "2026-11-10T17:36:24.532Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:36:24.532Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -142213,7 +142218,102 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T17:36:24.532Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaz1yhg07xohg",
+     "title": "",
+     "text": "Each Shipped Features entry shows the screenshots and before/after shots of what that build did (pulled from the shared screenshot registry / UI Review screenshots grouped by build name), inline with a gallery view. Goes with the shared screenshot registry build.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:36:24.532Z",
+     "updatedAt": "2026-11-10T17:36:24.532Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaz1yhg08v9zu",
+     "title": "",
+     "text": "Screenshots and everything of what it did? Yep.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:36:24.532Z",
+     "updatedAt": "2026-11-10T17:36:24.532Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaz1yhg09019n",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/shipped-features-show-each-landed-build-s-screen.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/shipped-features-show-each-landed-build-s-screen.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:36:24.532Z",
+     "updatedAt": "2026-11-10T17:36:24.532Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -142222,12 +142322,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T17:36:24.532Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
