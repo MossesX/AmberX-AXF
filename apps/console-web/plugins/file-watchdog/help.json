@@ -1,0 +1,177 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "file-watchdog-help",
+  "name": "File watchdog help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the file watchdog (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:file-watchdog",
+    "entries": [
+      {
+        "target": "view:file-watchdog",
+        "title": "File watchdog",
+        "text": "Watches files, folders or globs and runs actions when they are created, changed or deleted. No AI needed; each watch can switch AI on with a prompt.",
+        "kind": "screen"
+      },
+      {
+        "target": "file-watchdog",
+        "title": "File watchdog settings",
+        "text": "The watches and the plugin's install and uninstall panel, under Settings → Plugins."
+      },
+      {
+        "target": "new-watch",
+        "title": "New watch",
+        "text": "Opens the form for a new watch: what to watch, which events, debounce, ignore patterns and the actions to run."
+      },
+      {
+        "target": "check-now",
+        "title": "Check now",
+        "text": "Runs one pass over every watch right away instead of waiting for the next one."
+      },
+      {
+        "target": "enabled",
+        "title": "Enabled",
+        "text": "Turns this watch on or off. A switched-off watch sees nothing and runs nothing."
+      },
+      {
+        "target": "recursive",
+        "title": "Recursive",
+        "text": "Also watch files in sub-folders of a watched folder."
+      },
+      {
+        "target": "debounce-ms",
+        "title": "Debounce",
+        "text": "How long a file must stay quiet before its actions run, so a burst of saves runs them once."
+      },
+      {
+        "target": "enable-ai",
+        "title": "Enable AI",
+        "text": "Off by default. When on, every change sends your prompt plus the path, event and diff to Claude through the assistant's routing; the reply and tokens are logged."
+      },
+      {
+        "target": "approve",
+        "title": "Approve",
+        "text": "Lets this script or shell command run. Only your own signed-in console approves; anyone else's tap asks you. Changing the command asks again."
+      },
+      {
+        "target": "approve-asked",
+        "title": "Approve (asked)",
+        "text": "Someone asked to run this script or shell command; tap to approve it."
+      },
+      {
+        "target": "revoke",
+        "title": "Revoke",
+        "text": "Takes back the approval: the command is held again until you approve it."
+      },
+      {
+        "target": "test",
+        "title": "Test",
+        "text": "Runs the watch's actions now as if its first path had changed. Logged as a test."
+      },
+      {
+        "target": "edit",
+        "title": "Edit",
+        "text": "Opens this watch in the form."
+      },
+      {
+        "target": "remove",
+        "title": "Remove",
+        "text": "Deletes the watch after you confirm. Its past events stay in the log."
+      },
+      {
+        "target": "add-action",
+        "title": "Add action",
+        "text": "Adds another action: notify, script, shell command, console action or control@1 command."
+      },
+      {
+        "target": "add-watch",
+        "title": "Add watch",
+        "text": "Saves the new watch; it starts watching on the next pass."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves the watch. A changed script or command needs a new approval."
+      },
+      {
+        "target": "save-prompt",
+        "title": "Save prompt",
+        "text": "Saves the AI prompt for this watch."
+      },
+      {
+        "target": "clear-log",
+        "title": "Clear log",
+        "text": "Empties the recent events list after you confirm."
+      },
+      {
+        "target": "paths-folders-or-globs-one-per-line",
+        "title": "Paths, folders or globs",
+        "text": "One per line. Relative paths start at the repo root; absolute paths work anywhere on the VPS. Globs like docs/**/*.md match nested files.",
+        "kind": "field"
+      },
+      {
+        "target": "ignore-patterns-one-per-line-blank-defaults",
+        "title": "Ignore patterns",
+        "text": "Files matching these are never watched. Blank uses the defaults: .git, node_modules, swap and temp files.",
+        "kind": "field"
+      },
+      {
+        "target": "arguments-one-per-line",
+        "title": "Script arguments",
+        "text": "One argument per line. {path}, {rel}, {event} and {name} are filled in with the change.",
+        "kind": "field"
+      },
+      {
+        "target": "args-json-or-text-optional",
+        "title": "Console action args",
+        "text": "Optional input for the console action, as JSON or plain text. Placeholders like {path} are filled in.",
+        "kind": "field"
+      },
+      {
+        "target": "prompt",
+        "title": "AI prompt",
+        "text": "What Claude should do when this watch fires. The changed path, event and diff are added for it.",
+        "kind": "field"
+      },
+      {
+        "target": "model-optional",
+        "title": "Model",
+        "text": "Pick a model for this watch's AI action. Blank uses the assistant's default.",
+        "kind": "field"
+      },
+      {
+        "target": "profile-optional",
+        "title": "Profile",
+        "text": "Pick an assistant profile (account and routing) for this watch's AI action. Blank uses the default.",
+        "kind": "field"
+      },
+      {
+        "target": "ai-prompt",
+        "title": "AI prompt",
+        "text": "What Claude should do when this watch fires. Save it with Save prompt.",
+        "kind": "field"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "file-watchdog",
+        "title": "File watchdog",
+        "steps": [
+          {
+            "say": "Each watch names files, folders or globs and the actions to run when they change.",
+            "target": ""
+          },
+          {
+            "say": "Tap New watch to add one. Scripts and shell commands wait for your approval before they run.",
+            "target": "new-watch"
+          }
+        ]
+      }
+    ]
+  }
+}

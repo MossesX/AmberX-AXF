@@ -1,0 +1,14 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "watchdog.fired",
+      "label": "File watch fired",
+      "group": "builds",
+      "app": "console",
+      "source": "File watchdog",
+      "description": "A file watch with a notify action saw a change, or a script or shell action on a watch waits for your approval.",
+      "match": { "source": "file-watchdog" }
+    }
+  ]
+}

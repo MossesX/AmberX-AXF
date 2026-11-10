@@ -1,0 +1,64 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.file-watchdog",
+  "name": "File watchdog",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Watch files, folders or globs on the VPS / repo and act when they are created, changed or deleted, with no AI needed: notify AmberX and the console, run a script, run a shell command (after Brett approves that exact command), run a console action (open a screen) or a control@1 command (queue a build). Each change passes its path and event to every action ({path}, {rel}, {event}; WATCHDOG_* env). Per watch: debounce, recursive, ignore patterns, which events, on/off, and an Enable AI switch (off by default) that sends Brett's prompt plus the path, event and diff to Claude through the assistant's routing, with tokens logged. Every event and action result is logged. inotify wakes it; a timed pass catches the rest. REST /api/plugins/file-watchdog, MCP file-watchdog_*, CLI axf file-watchdog <command>, voice through AmberX.",
+  "targets": ["axf-console"],
+  "provides": [
+    "view:file-watchdog",
+    "settings-tab:file-watchdog",
+    "action:file-watchdog.open"
+  ],
+  "optional": ["service:axf.llm@1", "service:control@1", "service:console-commands@1", "service:axf.notify@1"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-11-10" },
+  "help": "help.json",
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/file-watchdog",
+    "env": ["AXF_WATCHDOG_DATA_DIR", "AXF_WATCHDOG_ROOT", "AXF_WATCHDOG_POLL", "AXF_WATCHDOG_NO_LOOP"],
+    "mentions": ["_claude/THREADS.md", "apps/console-web/plugins/README.md"]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /state", "id": "state", "title": "File watchdog: engine status, every watch, recent events", "readOnly": true },
+      { "route": "GET /watches", "id": "watches", "title": "List the file watches", "readOnly": true },
+      { "route": "GET /watch", "id": "watch", "title": "One file watch and its recent events", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "GET /events", "id": "events", "title": "Recent watch events and action results", "readOnly": true, "input": { "type": "object", "properties": { "limit": { "type": "integer" }, "watch": { "type": "string", "description": "only this watch id" } }, "additionalProperties": false } },
+      { "route": "POST /add", "id": "add", "title": "Add a file watch: paths or globs, events, actions, debounce, recursive, ignore", "input": { "type": "object", "properties": {
+        "name": { "type": "string" },
+        "paths": { "type": "array", "items": { "type": "string" }, "description": "files, folders or globs; relative to the repo root or absolute" },
+        "events": { "type": "array", "items": { "type": "string", "enum": ["created", "modified", "deleted"] } },
+        "recursive": { "type": "boolean" }, "debounceMs": { "type": "integer" }, "enabled": { "type": "boolean" },
+        "ignore": { "type": "array", "items": { "type": "string" } },
+        "actions": { "type": "array", "items": { "type": "object", "properties": {
+          "type": { "type": "string", "enum": ["notify", "script", "shell", "console", "control"] },
+          "title": { "type": "string", "description": "notify: the title ({name} {event} {rel} {path})" },
+          "severity": { "type": "string", "enum": ["info", "warning", "error"] },
+          "script": { "type": "string", "description": "script: path to the script" },
+          "args": { "description": "script: argument list; console: the action's args" },
+          "command": { "description": "shell: the command line; control: a control@1 command object" },
+          "action": { "type": "string", "description": "console: the action id, e.g. nav:builds" },
+          "timeout": { "type": "integer" }, "enabled": { "type": "boolean" } }, "required": ["type"] } },
+        "ai": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "prompt": { "type": "string" }, "model": { "type": "string" }, "profile": { "type": "string" } } } }, "required": ["paths"] } },
+      { "route": "POST /update", "id": "update", "title": "Change a file watch (only the fields given)", "input": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "paths": { "type": "array", "items": { "type": "string" } }, "events": { "type": "array", "items": { "type": "string" } }, "recursive": { "type": "boolean" }, "debounceMs": { "type": "integer" }, "ignore": { "type": "array", "items": { "type": "string" } }, "actions": { "type": "array", "items": { "type": "object" } }, "enabled": { "type": "boolean" } }, "required": ["id"] } },
+      { "route": "POST /enable", "id": "enable", "title": "Turn a file watch on or off", "input": { "type": "object", "properties": { "id": { "type": "string" }, "enabled": { "type": "boolean" } }, "required": ["id", "enabled"], "additionalProperties": false } },
+      { "route": "POST /ai", "id": "ai", "title": "A watch's Enable AI switch and prompt (off by default)", "input": { "type": "object", "properties": { "id": { "type": "string" }, "enabled": { "type": "boolean" }, "prompt": { "type": "string" }, "model": { "type": "string" }, "profile": { "type": "string" }, "maxTokens": { "type": "integer" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "POST /approve", "id": "approve", "title": "Approve or revoke a watch's script or shell action (only Brett's own session approves; others ask him)", "input": { "type": "object", "properties": { "id": { "type": "string" }, "action": { "type": "integer", "description": "the action's index in the watch" }, "revoke": { "type": "boolean" } }, "required": ["id", "action"], "additionalProperties": false } },
+      { "route": "POST /test", "id": "test", "title": "Fire a watch now as if a file changed (logged as a test)", "input": { "type": "object", "properties": { "id": { "type": "string" }, "path": { "type": "string" }, "event": { "type": "string", "enum": ["created", "modified", "deleted"] } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "POST /scan", "id": "scan", "title": "Run one watch pass now" },
+      { "route": "DELETE /watch", "id": "remove", "title": "Remove a file watch", "destructive": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
+      { "route": "POST /events/clear", "id": "clear-events", "title": "Clear the watch event log", "destructive": true }
+    ]
+  },
+  "opens": "main"
+}
