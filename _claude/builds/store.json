@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2659,
- "updatedAt": "2026-11-10T18:11:19.387Z",
+ "rev": 2660,
+ "updatedAt": "2026-11-10T18:11:32.316Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149143,15 +149143,15 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/pass-approval-hook-deep-link-amberx-notification",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:11:16.655Z",
+   "updatedAt": "2026-11-10T18:11:19.136Z",
    "builtAt": "",
    "notes": [
     {
@@ -149165,6 +149165,10 @@
     {
      "text": "Split by Claude into 9 steps (1 Fable).",
      "at": "2026-11-10T18:03:26.974Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pass-approval-hook-deep-link-amberx-notification--earl, own login copy)",
+     "at": "2026-11-10T18:11:19.136Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-pass-approval-hook-deep-link-amberx-notification--earl.",
@@ -149188,12 +149192,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T17:10:30.796Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-pass-approval-hook-deep-link-amberx-notification--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T18:11:16.022Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T18:03:26.974Z",
@@ -149205,7 +149209,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T18:11:16.022Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -149214,7 +149218,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T18:11:16.022Z"
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -149454,7 +149458,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
