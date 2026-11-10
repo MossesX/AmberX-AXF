@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2524,
- "updatedAt": "2026-11-10T17:08:47.060Z",
+ "rev": 2525,
+ "updatedAt": "2026-11-10T17:09:04.111Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139402,8 +139402,8 @@
    "pr": "#454",
    "priority": "P0",
    "createdAt": "2026-11-10T16:41:39.193Z",
-   "updatedAt": "2026-11-10T17:08:16.399Z",
-   "builtAt": "2026-11-10T17:08:16.399Z",
+   "updatedAt": "2026-11-10T17:08:49.567Z",
+   "builtAt": "2026-11-10T17:08:49.567Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -139424,6 +139424,10 @@
     {
      "text": "Headless run axf-amberx-open-url-tapping-the-command-waiting-noti--paulie: brief only · start 10.9K tokens ($0.03) · cost $2.20 · 57 turns · 6 tools, MCP none",
      "at": "2026-11-10T17:08:16.399Z"
+    },
+    {
+     "text": "Reconciler: PR #454",
+     "at": "2026-11-10T17:08:49.567Z"
     }
    ],
    "approvals": [],
