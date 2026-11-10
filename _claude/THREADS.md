@@ -772,13 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:04 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:04 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · builds-live
-- 2026-11-10 18:05 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:05 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` note (all) · builds-live
-- 2026-11-10 18:06 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:06 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · builds-live
-- 2026-11-10 18:06 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · foreign-write
 - 2026-11-10 18:07 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:07 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · builds-live
 - 2026-11-10 18:08 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` s1 done, → running (all) · orchestrator
@@ -1172,6 +1165,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:09 UTC · `molly-sign-in-once` → running, note (all) · pipeline
 - 2026-11-10 23:09 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:11 UTC · `molly-sign-in-once` → queued (all) · builds-live
+- 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
+- 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` branch claude/make-hulu-actually-take-builds-dispatcher-counts (all) · pipeline
+- 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
+- 2026-11-10 23:11 UTC · `molly-sign-in-once` → running, note (all) · pipeline
+- 2026-11-10 23:11 UTC · `molly-sign-in-once` note (all) · orchestrator
+- 2026-11-10 23:11 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · pipeline
+- 2026-11-10 23:12 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · orchestrator
 
 ## Token passes (log)
 
