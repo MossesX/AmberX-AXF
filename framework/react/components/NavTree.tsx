@@ -36,6 +36,8 @@ const NAV_ICON_PX: Record<string, number> = { sm: 14, md: 17, lg: 20 };
 
 /** `inert` as a plain attribute: React 18 only passes it through as a string, React 19 types it as a boolean. */
 const inertWhen = (on: boolean): object => (on ? { inert: '' } : {});
+/** A nav section's stable id for inline-edit-tokens@1 paths (`nav-menu:app/section:<id>`): its label as a slug, else its index. */
+export const navSectionId = (label: string | undefined, i: number): string => (label ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || String(i);
 
 export function NavTree({ sections, views, style, orient, header }: { sections: Section[]; views: ViewMap; style: NavStyleData; orient: 'horizontal' | 'vertical'; header?: string }) {
   const rt = useRuntime();
@@ -113,6 +115,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
         disabled={locked}
         title={hostLock ? `${it.label} — ${hostLock}` : it.label}
         data-axf-view-link={it.view || undefined}
+        data-axf-nav-item={it.id}
         data-fx-ctx-target="nav-item"
         data-fx-ctx-payload={it.view || it.id}
         data-depth={depth}
@@ -131,6 +134,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
       <div
         key={it.id}
         className="fx-nav__group"
+        data-axf-nav-item={it.id}
         data-open={isOpen ? 'true' : 'false'}
         data-depth={depth}
         style={rowStyle}
@@ -197,7 +201,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
           </div>
         )}
         {shown.map((sec, i) => (
-          <div key={`${sec.label ?? ''}:${i}`} className="fx-nav__section">
+          <div key={`${sec.label ?? ''}:${i}`} className="fx-nav__section" data-axf-nav-section={navSectionId(sec.label, i)}>
             {sec.label && <div className="fx-nav__label">{sec.label}</div>}
             {renderItems(sec.items, 0)}
           </div>

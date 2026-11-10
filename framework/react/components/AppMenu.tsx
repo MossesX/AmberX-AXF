@@ -133,7 +133,7 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
   const toggle = () => setOpen((o) => { const n = !o; if (n) openRows.add(item.id); else openRows.delete(item.id); return n; });
   const bodyId = `fx-menu-details-${item.id.replace(/[^A-Za-z0-9_-]/g, '_')}`;
   return (
-    <li className={`fx-menu__li fx-menu__live${done ? ' is-done' : ''}${details ? ' is-expandable' : ''}${open && details ? ' is-open' : ''}`} data-axf-live-row={item.id} data-axf-row-state={done ? run.state : undefined}>
+    <li className={`fx-menu__li fx-menu__live${done ? ' is-done' : ''}${details ? ' is-expandable' : ''}${open && details ? ' is-open' : ''}`} data-axf-item={item.id} data-axf-live-row={item.id} data-axf-row-state={done ? run.state : undefined}>
       <button
         type="button" role="menuitem" className="fx-menu__item fx-menu__live-main" disabled={item.locked || (done && !details)}
         data-axf-menu-item={item.id} data-axf-origin={item.origin} title={item.detail ? `${item.label}\n${item.detail}` : item.label}
@@ -219,11 +219,11 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
     <ul className="fx-menu" role="menu" ref={ref} onKeyDown={onKey} data-axf-menu-depth={depth}>
       {shown.map((item) => {
         if (item.buttons?.length) return <LiveRow key={item.id} item={item} onGone={onGone} />;
-        if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
+        if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" data-axf-item={item.id} />;
         const hasSub = !!item.items || !!item.provider;
         const sub = hasSub && openSub === item.id && !onEnter;
         return (
-          <li key={item.id} className={`fx-menu__li ${sub ? 'is-open' : ''}`} onMouseEnter={() => !onEnter && setOpenSub(hasSub ? item.id : null)}>
+          <li key={item.id} className={`fx-menu__li ${sub ? 'is-open' : ''}`} data-axf-item={item.id} onMouseEnter={() => !onEnter && setOpenSub(hasSub ? item.id : null)}>
             <button
               type="button"
               role={item.check !== undefined ? 'menuitemcheckbox' : 'menuitem'}

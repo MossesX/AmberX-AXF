@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type R
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
-import { NavTree } from './NavTree';
+import { NavTree, navSectionId } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
@@ -173,7 +173,7 @@ function ToolbarGroupView({ group: g, variant }: { group: ToolbarGroup; variant:
   const fromProvider = live.filter((it) => !it.separator && it.action);
   if (!g.items.length && !fromProvider.length) return null;
   return (
-    <div className="fx-toolbar__group" role="group" aria-label={g.label} data-axf-provider={g.provider}>
+    <div className="fx-toolbar__group" role="group" aria-label={g.label} data-axf-toolbar-group={g.id} data-axf-provider={g.provider}>
       {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={variant} />)}
       {fromProvider.map((it) => (
         <ToolbarButton key={`p:${it.id}`} variant={variant} lockedNote={it.locked ? 'not available' : undefined}
@@ -200,6 +200,7 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
       className={`fx-toolbtn${pressed ? ' is-on' : ''}`}
       disabled={off}
       aria-pressed={pressed === null ? undefined : pressed}
+      data-axf-toolbtn={it.id}
       data-axf-action={it.action}
       title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
       aria-label={count ? `${it.label} (${count} new)` : it.label}
@@ -295,7 +296,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
         if (!items.length) return null;
         return (
-          <div key={i} className="fx-nav__section">
+          <div key={i} className="fx-nav__section" data-axf-nav-section={navSectionId(sec.label, i)}>
             {sec.label && <div className="fx-nav__label">{sec.label}</div>}
             {items.map((it) => {
               const hostLock = rt.lockedByHost({ view: it.view });
@@ -309,6 +310,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   disabled={locked}
                   title={hostLock ? `${it.label} — ${hostLock}` : it.label}
                   data-axf-view-link={it.view}
+                  data-axf-nav-item={it.id}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
                   onClick={() => rt.navigate(it.view)}
