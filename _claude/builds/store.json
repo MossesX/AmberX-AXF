@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2114,
- "updatedAt": "2026-11-10T00:39:12.306Z",
+ "rev": 2115,
+ "updatedAt": "2026-11-10T00:40:19.026Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132186,10 +132186,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/activity-monitor-plugin-live-plain-english-log-o",
-   "pr": "",
+   "pr": "#422",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-10T00:39:10.737Z",
+   "updatedAt": "2026-11-10T00:40:17.367Z",
    "builtAt": "",
    "notes": [
     {
@@ -132339,7 +132339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
