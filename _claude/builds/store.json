@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2666,
- "updatedAt": "2026-11-10T18:24:49.703Z",
+ "rev": 2667,
+ "updatedAt": "2026-11-10T18:25:18.520Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149155,7 +149155,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:24:48.320Z",
+   "updatedAt": "2026-11-10T18:25:17.090Z",
    "builtAt": "",
    "notes": [
     {
@@ -149189,6 +149189,10 @@
     {
      "text": "s1 done (Fable): contract docs/contracts/pass-approval.md + packages/shared/pass-approval (pure core, node signing, cases.json, 11 tests green). Two decisions for s2-s9: (1) approve_url / deny_url carry NO token: they open the pass primed and Brett's console session decides, so an agent handed the link can't approve its own pass; signed pa1 tokens travel only inside the AmberX / web-push delivery (POST pass/action). (2) MCP pass_approve / pass_deny (s8) must answer approval_required + links, never decide (CONTROL.md: MCP never carries an approval). s2 appends 'push' to PASS_APPROVED_VIA and records decidedBy {nonce, decision} on the pass. Canonical REST stays under the token-control mount; /api/passes/* are aliases via capability pass-approval@1.",
      "at": "2026-11-10T18:24:48.320Z"
+    },
+    {
+     "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--earl: brief only · start 12.7K tokens ($0.10) · cost $5.80 · 54 turns · 6 tools, MCP none",
+     "at": "2026-11-10T18:25:17.090Z"
     }
    ],
    "approvals": [],
@@ -149474,7 +149478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
