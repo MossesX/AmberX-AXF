@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2946,
- "updatedAt": "2026-11-10T22:11:13.706Z",
+ "rev": 2947,
+ "updatedAt": "2026-11-10T22:11:25.603Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151139,9 +151139,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-10T22:09:28.380Z",
+   "updatedAt": "2026-11-10T22:11:15.788Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T22:11:15.788Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -151156,7 +151161,102 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T22:11:15.788Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb8vf7w04nb64",
+     "title": "",
+     "text": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T22:11:15.788Z",
+     "updatedAt": "2026-11-10T22:11:15.788Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb8vf7w05uean",
+     "title": "",
+     "text": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T22:11:15.788Z",
+     "updatedAt": "2026-11-10T22:11:15.788Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb8vf7w06zan6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/molly-gap-expenses-cors.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/molly-gap-expenses-cors.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T22:11:15.788Z",
+     "updatedAt": "2026-11-10T22:11:15.788Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -151165,12 +151265,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T22:11:15.788Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
