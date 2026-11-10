@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 13:19 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · claude-ai-voice
 - 2026-11-09 13:21 UTC · `appearance-skins-colour-themes-only-remove-design-packs` added (3 steps) (all) · claude-ai-voice
 - 2026-11-09 13:22 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · claude-ai-voice
 - 2026-11-09 13:25 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · claude-ai-voice
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:13 UTC · `fix-it-yourself-rule-in-every-brief-and-session` branch claude/fix-it-yourself-rule-in-every-brief-and-session, PR #420 (all) · builds-live
 - 2026-11-10 00:14 UTC · `fix-it-yourself-rule-in-every-brief-and-session` s3 done, → complete (all) · orchestrator
 - 2026-11-10 00:14 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → built, PR #420 (all) · builds-live
+- 2026-11-10 00:14 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
 
 ## Token passes (log)
 
