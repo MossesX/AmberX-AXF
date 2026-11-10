@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:53:13.199Z",
+ "updatedAt": "2026-11-10T17:53:33.427Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -90391,12 +90391,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:51:17.543Z",
-   "updatedAt": "2026-11-10T17:51:21.499Z",
+   "updatedAt": "2026-11-10T17:53:28.164Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T17:51:21.499Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:53:28.164Z"
     }
    ],
    "approvals": [],
@@ -90413,7 +90417,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends Ollama build. Run Ollama in its own Docker container named amberx-llama (Coolify-managed, persistent volume for models, restart always). API internal only: bound to the Docker/internal network, no public port or Traefik route; reachable by the console, orchestrator, agents and search plugin via http://amberx-llama:11434. Register it in axHub as a service and in console AI settings as the local provider (Mistral Small 24B default, Mistral 7B quick). Health check + status widget.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaznwbo01gdm6"
+    },
+    {
+     "id": "s2",
+     "text": "It's gonna build in its own Docker container named AmberX Llama, and configure the API all for internal building.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaznwbo024q6a"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/ollama-own-docker-container-amberx-llama-interna.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/ollama-own-docker-container-amberx-llama-interna.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaznwbo03zjvs"
+    }
+   ]
   },
   {
    "id": "amberx-llama-axhub-service-hooks-so-amberx-and-e",
