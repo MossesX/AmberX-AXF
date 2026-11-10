@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2823,
- "updatedAt": "2026-11-10T20:54:06.884Z",
+ "rev": 2824,
+ "updatedAt": "2026-11-10T20:54:17.720Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146641,7 +146641,7 @@
    "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
    "category": "",
    "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147024,12 +147024,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T20:53:42.366Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:00:14.834Z",
-     "updatedAt": "2026-11-10T18:00:14.834Z"
+     "updatedAt": "2026-11-10T20:53:42.538Z"
     },
     {
      "id": "s11",
@@ -147051,12 +147051,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T20:53:43.858Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:00:14.834Z",
-     "updatedAt": "2026-11-10T18:00:14.834Z"
+     "updatedAt": "2026-11-10T20:53:44.015Z"
     },
     {
      "id": "s12",

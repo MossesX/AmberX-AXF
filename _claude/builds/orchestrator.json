@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:54:06.884Z",
+ "updatedAt": "2026-11-10T20:54:17.720Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89460,7 +89460,7 @@
    "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
    "category": "",
    "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89767,8 +89767,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T20:53:42.366Z",
      "note": "",
      "uid": "st-mwazwm425ln3i5"
     },
@@ -89790,8 +89790,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T20:53:43.858Z",
      "note": "",
      "uid": "st-mwazwm425mwj0t"
     },
