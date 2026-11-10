@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2586,
- "updatedAt": "2026-11-10T17:45:21.387Z",
+ "rev": 2587,
+ "updatedAt": "2026-11-10T17:46:05.701Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -141541,10 +141541,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/conversation-rag-index-every-voice-chat-session",
-   "pr": "",
+   "pr": "#461",
    "priority": "P0",
    "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-10T17:44:44.372Z",
+   "updatedAt": "2026-11-10T17:46:00.187Z",
    "builtAt": "",
    "notes": [
     {
@@ -141679,7 +141679,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
