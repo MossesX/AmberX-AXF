@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:37:00.686Z",
+ "updatedAt": "2026-11-10T02:40:02.914Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77880,7 +77880,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -77888,7 +77888,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T02:32:16.216Z",
+   "updatedAt": "2026-11-10T02:39:58.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -77986,6 +77986,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T01:40:51.716Z"
+    },
+    {
+     "text": "Phase 1 done (s4, s1, s2 ticked). PR #430 (draft) on claude/appearance-skins-colour-themes-only-remove-design-packs. Static regression on the branch: 56/58 checks, diff vs pre-skins-only baseline clean under framework/spec/look-regression/expected/skins-only.json (the 2 failing checks, help coverage + console menu reach, fail on the baseline too). Browser half for s5: the console was rebuilt (dist is current on this worktree) and walked twice, but both walks are invalid: a console API left on port 7311 by an interrupted run answered /api/health with a dead data folder, so every plugin route failed and the home shot differs 2.75% (missing card data, not the look); the walk also stopped at 'menu apps Open axHub in a new tab' (new tab → screenshot timeout) after 117 of 327 desktop shots. Fixed in the walker: a taken port is refused (web.mjs), the round trip uses the Skin picker dialog, a crashed app no longer breaks the diff. s5 must: make sure no uvicorn is left on 7310/7311, skip or mask 'Open … in a new tab' items, rebuild molly / axhub-web / amberx-droid / walkthrough-studio dists, run the full record and diff with the expected list. The two local before/after home shots in this worktree's UI Review folder are from the invalid walk.",
+     "at": "2026-11-10T02:39:58.411Z"
     },
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",

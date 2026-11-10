@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:53 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 - 2026-11-09 18:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
 - 2026-11-09 18:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 18:54 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:32 UTC · `one-builds-page-pending-queued-built-tabs-remove` → archived (all) · orchestrator
 - 2026-11-10 02:36 UTC · `vps-orchestrator-only-rule-vps-settings-console` s1 done (all) · orchestrator
 - 2026-11-10 02:36 UTC · `vps-orchestrator-only-rule-vps-settings-console` s2 done (all) · orchestrator
+- 2026-11-10 02:39 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 
 ## Token passes (log)
 
