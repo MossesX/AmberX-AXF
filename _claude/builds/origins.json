@@ -3599,6 +3599,18 @@
     }
    ]
   },
+  "skin-chunk-previews-interactive-demos-and-an-ide": {
+   "said": "When you're looking at these lists and any of the grids of these chunks, you can preview one, or open a demo of it if it can be demoed, an interactive demonstration where you can actually use it, or at the very least a preview of what the chunk looks like. And the ability to view them side by side, multiple containers with tab groups, mix and match elements in multiple floating containers to compare side by side. An IDE-style thing with a bunch of floating tab groups with different types of assets in them, with the info on the chunk, and you can drag them to each other and build new things side by side. Each tab can be split with a preview and an editor so you can see changes in real time.",
+   "at": "2026-11-10T00:23:46.567Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skins": {
    "said": "Can the design pack alone make the app look exactly like a Windows program? ... We'll call it a skin. It will include its own assets, its own layout, its own colors, and its own style. You use the style theme, a layout theme and a color theme, and call it a skin. ... I don't want all the apps to inherit just file and colors from that, so I want there to be a switch to do it, but by default they're all their own. And every one has a reset, restore to default. So as of now, store the apps as default, for all. And then create a new one. ... Okay, Opus, but add it for a possible later review.",
    "at": "2026-11-04T00:00:00Z",

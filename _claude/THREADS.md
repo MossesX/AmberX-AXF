@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 16:26 UTC · `orchestrator-settings-api-account-limits-and-rou` added (0 steps) (all) · builds-live
 - 2026-11-09 16:26 UTC · `orchestrator-self-check-when-stuck-verify-each-a` note (all) · orchestrator
 - 2026-11-09 16:26 UTC · `orchestrator-self-check-when-stuck-verify-each-a` note (all) · builds-live
 - 2026-11-09 16:26 UTC · `orchestrator-settings-api-account-limits-and-rou` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:22 UTC · `skins-as-packages-of-slices-every-section-its-ow` added (0 steps) (all) · builds-live
 - 2026-11-10 00:22 UTC · `skins-as-packages-of-slices-every-section-its-ow` → queued, note (all) · console
 - 2026-11-10 00:23 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
+- 2026-11-10 00:23 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` added (0 steps) (all) · console
 
 ## Token passes (log)
 
