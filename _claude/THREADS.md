@@ -771,12 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:37 UTC · `build-statuses-tell-the-truth-orchestrator-list` branch claude/build-statuses-tell-the-truth-orchestrator-list (all) · pipeline
-- 2026-11-10 00:37 UTC · `build-statuses-tell-the-truth-orchestrator-list` note (all) · orchestrator
-- 2026-11-10 00:39 UTC · `activity-monitor-plugin-live-plain-english-log-o` s2 done (all) · orchestrator
-- 2026-11-10 00:40 UTC · `activity-monitor-plugin-live-plain-english-log-o` PR #422 (all) · builds-live
-- 2026-11-10 00:41 UTC · `activity-monitor-plugin-live-plain-english-log-o` s3 done, → built (all) · orchestrator
-- 2026-11-10 00:41 UTC · `activity-monitor-plugin-live-plain-english-log-o` note (all) · orchestrator
 - 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` → running, note (all) · pipeline
 - 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` branch claude/failed-launches-auto-retry-on-another-working-ac (all) · pipeline
 - 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
@@ -1171,6 +1165,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 08:15 UTC · `home-page-build-queue-card-opens-the-orchestrato` → pending, note (all) · pipeline
 - 2026-11-10 08:25 UTC · `home-page-build-queue-card-opens-the-orchestrato` → pending, note (all) · pipeline
 - 2026-11-10 08:35 UTC · `home-page-build-queue-card-opens-the-orchestrato` → pending, note (all) · pipeline
+- 2026-11-10 14:51 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` → running, note (all) · pipeline
+- 2026-11-10 14:51 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` branch claude/resolve-the-conflict-and-land-the-orchestrator-l (all) · pipeline
+- 2026-11-10 14:51 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · orchestrator
+- 2026-11-10 14:51 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
+- 2026-11-10 14:51 UTC · `skins-as-packages-of-slices-every-section-its-ow` branch claude/skins-as-packages-of-slices-every-section-its-ow (all) · pipeline
+- 2026-11-10 14:51 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 
 ## Token passes (log)
 
