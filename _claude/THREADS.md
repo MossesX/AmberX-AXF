@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` note (all) · orchestrator
 - 2026-11-09 23:47 UTC · `standing-rule-in-every-brief-fix-problems-yourse` note (all) · orchestrator
 - 2026-11-09 23:49 UTC · `activity-monitor-plugin-live-plain-english-log-o` added (0 steps) (all) · console
 - 2026-11-09 23:49 UTC · `activity-monitor-plugin-live-plain-english-log-o` → queued, note (all) · console
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:29 UTC · `console-android-app-tabs` → complete, note (all) · orchestrator
 - 2026-11-10 04:29 UTC · `console-android-app-tabs` note (all) · orchestrator
 - 2026-11-10 04:30 UTC · `resolve-merge-conflicts-and-land-running-builds` s1 done (all) · orchestrator
+- 2026-11-10 04:29 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · orchestrator
 
 ## Token passes (log)
 
