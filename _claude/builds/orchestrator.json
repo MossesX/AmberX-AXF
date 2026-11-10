@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:12:16.299Z",
+ "updatedAt": "2026-11-10T03:13:34.922Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83326,12 +83326,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T03:11:27.944Z",
-   "updatedAt": "2026-11-10T03:11:34.900Z",
+   "updatedAt": "2026-11-10T03:13:32.265Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T03:11:34.900Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T03:13:32.265Z"
     }
    ],
    "approvals": [],
@@ -83348,7 +83352,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Upgrade the existing UI Review alarm (ui-review-alarm, PR #343: alarm after 30 min) instead of adding a new one. 1) Every UI Review item gets a 1-hour timer, adjustable in UI Review settings. 2) At 1 hour unanswered, send an AmberX phone notification ('UI Review: <build> waited 1 h, going ahead with <option>'). Then proceed automatically: take the recommended or first option (or approve if there's a single option), mark it 'auto-approved after timeout', and let the build continue and land. 3) Brett can still change the pick afterwards, and a change files a follow-up build. 4) Builds never sit blocked on UI Review. Log each auto-approval in the fix log and Activity Monitor. Plain code, no AI. Full REST, MCP, CLI and voice control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa48aqx018kob"
+    },
+    {
+     "id": "s2",
+     "text": "Does UI review hold shit up? If shit sits in UI review for more than an hour, send me a notification and just go.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa48aqx02bxcx"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa48aqx03gwzl"
+    }
+   ]
   }
  ]
 }
