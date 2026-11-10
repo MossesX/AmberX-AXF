@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 16:46 UTC · `orchestrator-settings-api-account-limits-and-rou` note (all) · orchestrator
-- 2026-11-09 16:50 UTC · `orchestrator-settings-api-account-limits-and-rou` s1 done, → running (all) · orchestrator
-- 2026-11-09 16:59 UTC · `orchestrator-settings-api-account-limits-and-rou` s2 done (all) · orchestrator
 - 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` PR #408 (all) · builds-live
 - 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` s3 done, → built (all) · orchestrator
 - 2026-11-09 17:00 UTC · `orchestrator-settings-api-account-limits-and-rou` note (all) · orchestrator
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:40 UTC · `activity-monitor-plugin-live-plain-english-log-o` PR #422 (all) · builds-live
 - 2026-11-10 00:41 UTC · `activity-monitor-plugin-live-plain-english-log-o` s3 done, → built (all) · orchestrator
 - 2026-11-10 00:41 UTC · `activity-monitor-plugin-live-plain-english-log-o` note (all) · orchestrator
+- 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` → running, note (all) · pipeline
+- 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` branch claude/failed-launches-auto-retry-on-another-working-ac (all) · pipeline
+- 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
 
 ## Token passes (log)
 
