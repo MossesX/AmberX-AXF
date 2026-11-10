@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:11 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
 - 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
 - 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-10 18:24 UTC · `pass-approval-hook-deep-link-amberx-notification` s1 done, → running (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` → running, note (all) · pipeline
 - 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` branch claude/api-accounts-need-no-approval-builds-route-there (all) · pipeline
 - 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
+- 2026-11-10 23:13 UTC · `molly-sign-in-once` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
