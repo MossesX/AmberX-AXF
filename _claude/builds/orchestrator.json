@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:43:07.603Z",
+ "updatedAt": "2026-11-10T16:43:54.393Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86156,12 +86156,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-10T16:42:30.759Z",
+   "updatedAt": "2026-11-10T16:43:52.982Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:42:30.759Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:43:52.982Z"
     }
    ],
    "approvals": [],
@@ -86178,7 +86182,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax6eqe01jwmq"
+    },
+    {
+     "id": "s2",
+     "text": "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax6eqe02bju9"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/remove-the-old-theme-manager-style-and-layout-se.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/remove-the-old-theme-manager-style-and-layout-se.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax6eqe03ejdc"
+    }
+   ]
   },
   {
    "id": "amberx-android-web-view-top-banner-hidden-behind",

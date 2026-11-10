@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2476,
- "updatedAt": "2026-11-10T16:43:07.603Z",
+ "rev": 2477,
+ "updatedAt": "2026-11-10T16:43:54.393Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139489,12 +139489,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-10T16:42:30.759Z",
+   "updatedAt": "2026-11-10T16:43:52.982Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:42:30.759Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:43:52.982Z"
     }
    ],
    "approvals": [],
@@ -139521,13 +139525,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T16:43:52.982Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwax6eqe01jwmq",
+     "title": "",
+     "text": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:43:52.982Z",
+     "updatedAt": "2026-11-10T16:43:52.982Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwax6eqe02bju9",
+     "title": "",
+     "text": "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:43:52.982Z",
+     "updatedAt": "2026-11-10T16:43:52.982Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwax6eqe03ejdc",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/remove-the-old-theme-manager-style-and-layout-se.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/remove-the-old-theme-manager-style-and-layout-se.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:43:52.982Z",
+     "updatedAt": "2026-11-10T16:43:52.982Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -139536,12 +139616,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T16:43:52.982Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
