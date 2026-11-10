@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2119,
- "updatedAt": "2026-11-10T00:42:27.502Z",
+ "rev": 2120,
+ "updatedAt": "2026-11-10T00:48:29.052Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96284,7 +96284,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -116795,7 +116796,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z"
+    "dispatchedAt": "2026-11-10T00:16:15.395Z",
+    "need": null
    },
    "steps": [
     {
@@ -117023,7 +117025,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -124701,7 +124704,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -125059,7 +125063,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z"
+    "dispatchedAt": "2026-11-09T02:31:11.152Z",
+    "need": null
    },
    "steps": [
     {
@@ -126170,7 +126175,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -126330,7 +126336,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -126494,7 +126501,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -126674,7 +126682,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -126899,7 +126908,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 4 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z"
+    "dispatchedAt": "2026-11-09T20:25:15.903Z",
+    "need": null
    },
    "steps": [
     {
@@ -127503,7 +127513,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z"
+    "dispatchedAt": "2026-11-09T18:53:07.552Z",
+    "need": null
    },
    "steps": [
     {
@@ -127786,7 +127797,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 5 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z",
+    "need": null
    },
    "steps": [
     {
@@ -128102,7 +128114,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z"
+    "dispatchedAt": "2026-11-09T18:10:30.633Z",
+    "need": null
    },
    "steps": [
     {
@@ -128265,7 +128278,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -128432,7 +128446,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -128599,7 +128614,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -128805,7 +128821,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z"
+    "dispatchedAt": "2026-11-09T17:58:10.111Z",
+    "need": null
    },
    "steps": [
     {
@@ -129035,7 +129052,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:05:17.080Z"
+    "dispatchedAt": "2026-11-09T18:05:17.080Z",
+    "need": null
    },
    "steps": [
     {
@@ -129182,7 +129200,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -129408,7 +129427,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 11 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:09:09.055Z"
+    "dispatchedAt": "2026-11-09T18:09:09.055Z",
+    "need": null
    },
    "steps": [
     {
@@ -129790,7 +129810,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z"
+    "dispatchedAt": "2026-11-09T18:02:10.280Z",
+    "need": null
    },
    "steps": [
     {
@@ -129996,7 +130017,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z"
+    "dispatchedAt": "2026-11-09T18:49:06.246Z",
+    "need": null
    },
    "steps": [
     {
@@ -130202,7 +130224,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z"
+    "dispatchedAt": "2026-11-09T19:23:07.733Z",
+    "need": null
    },
    "steps": [
     {
@@ -130408,7 +130431,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z"
+    "dispatchedAt": "2026-11-09T18:55:16.286Z",
+    "need": null
    },
    "steps": [
     {
@@ -130614,7 +130638,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:13:07.725Z"
+    "dispatchedAt": "2026-11-09T19:13:07.725Z",
+    "need": null
    },
    "steps": [
     {
@@ -130820,7 +130845,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z"
+    "dispatchedAt": "2026-11-09T19:25:10.063Z",
+    "need": null
    },
    "steps": [
     {
@@ -131026,7 +131052,8 @@
     "splitRequested": "",
     "note": "Session on account-1 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z"
+    "dispatchedAt": "2026-11-09T19:27:06.719Z",
+    "need": null
    },
    "steps": [
     {
@@ -131204,7 +131231,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -131432,7 +131460,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 1) with 3 steps left after 3 runs: failed.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z"
+    "dispatchedAt": "2026-11-09T20:19:06.480Z",
+    "need": null
    },
    "steps": [
     {
@@ -131599,7 +131628,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -131770,7 +131800,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -131937,7 +131968,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -132084,7 +132116,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -132262,7 +132295,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -132507,7 +132541,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -132681,7 +132716,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:10:34.054Z"
+    "dispatchedAt": "2026-11-10T00:10:34.054Z",
+    "need": null
    },
    "steps": [
     {
@@ -132844,7 +132880,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -132949,7 +132986,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:16:50.544Z",
-   "updatedAt": "2026-11-10T00:37:26.111Z",
+   "updatedAt": "2026-11-10T00:48:27.413Z",
    "builtAt": "",
    "notes": [
     {
@@ -132986,12 +133023,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T00:16:52.347Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-build-statuses-tell-the-truth-orchestrator-list--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T00:37:21.064Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T00:17:54.119Z",
@@ -133001,9 +133038,10 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:37:21.064Z"
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -133021,12 +133059,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T00:48:27.413Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T00:17:54.119Z",
-     "updatedAt": "2026-11-10T00:17:54.119Z"
+     "updatedAt": "2026-11-10T00:48:27.633Z"
     },
     {
      "id": "s2",
@@ -133150,7 +133188,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -133309,7 +133348,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z"
+    "dispatchedAt": "2026-11-10T00:42:13.778Z",
+    "need": null
    },
    "steps": [
     {
@@ -133460,7 +133500,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
@@ -133607,7 +133648,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "need": null
    },
    "steps": [
     {
