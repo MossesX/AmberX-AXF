@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2386,
- "updatedAt": "2026-11-10T15:26:05.317Z",
+ "rev": 2387,
+ "updatedAt": "2026-11-10T15:26:33.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136847,6 +136847,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "approval-page-allow-all-deny-all-for-a-set-time",
+   "title": "Approval page: allow-all / deny-all for a set time, plus a veto countdown length setting",
+   "category": "",
+   "detail": "axHub approval page settings: 1) Allow all approvals for the next 1 hour, 2 hours, or a custom duration / until a set time. 2) Deny all for a custom duration / until a set time. 3) A setting to change the veto countdown length (today fixed at 90 seconds). Show the active window and let it be cancelled early. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T15:26:32.806Z",
+   "updatedAt": "2026-11-10T15:26:32.806Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a settings on the approval page to allow all for the next hour or two hours or a custom field that I can enter, or deny all for a custom field. Until a certain time or amount of time. And where's the switch? A setting to control the time of the 90 seconds.",
+    "at": "2026-11-10T15:26:32.806Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 538
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

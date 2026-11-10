@@ -528,6 +528,18 @@
    "from": "detail",
    "addenda": []
   },
+  "approval-page-allow-all-deny-all-for-a-set-time": {
+   "said": "I need a settings on the approval page to allow all for the next hour or two hours or a custom field that I can enter, or deny all for a custom field. Until a certain time or amount of time. And where's the switch? A setting to control the time of the 90 seconds.",
+   "at": "2026-11-10T15:26:32.806Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "approval-row-buttons": {
    "said": "Visible on collapsed rows, big targets, green/red, title truncates first. Console, AmberX, axHub. On claude/veto-complete (#179).",
    "at": "2026-10-30",
