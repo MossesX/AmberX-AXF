@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` → running, note (all) · pipeline
-- 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` branch claude/claude-md-standing-rule-be-proactive-bring-up-th (all) · pipeline
-- 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
 - 2026-11-10 17:24 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` s1 done, → running (all) · orchestrator
 - 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` s2 done (all) · orchestrator
 - 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` PR #458 (all) · builds-live
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:26 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` branch claude/land-all-97-built-but-unmerged-builds-skins-firs, PR #474 (all) · builds-live
 - 2026-11-10 21:27 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` s3 done, → running (all) · orchestrator
 - 2026-11-10 21:27 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
+- 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` → running, note (all) · pipeline
+- 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` branch claude/finish-and-land-the-git-status-board-every-ready (all) · pipeline
+- 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 
 ## Token passes (log)
 

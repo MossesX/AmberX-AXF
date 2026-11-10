@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:28:10.194Z",
+ "updatedAt": "2026-11-10T21:28:22.087Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94770,15 +94770,15 @@
    "title": "Finish and land the Git status board: every ready-to-merge PR viewable in the console",
    "category": "",
    "detail": "git-status-board (PR #291, 5 of 6 steps): finish s6, land it, redeploy. Make sure it lists every open PR ready to merge (title, build, CI, conflicts, age) with Merge / Fix / Open on GitHub actions, so Brett can view them in the console instead of GitHub. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/finish-and-land-the-git-status-board-every-ready",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:44:19.333Z",
-   "updatedAt": "2026-11-10T21:28:08.910Z",
+   "updatedAt": "2026-11-10T21:28:12.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -94788,6 +94788,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:45:57.697Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-finish-and-land-the-git-status-board-every-ready--joey.",
+     "at": "2026-11-10T21:28:11.184Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-finish-and-land-the-git-status-board-every-ready--joey, own login copy)",
+     "at": "2026-11-10T21:28:12.809Z"
     }
    ],
    "approvals": [],

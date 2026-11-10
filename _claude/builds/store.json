@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2876,
- "updatedAt": "2026-11-10T21:28:10.194Z",
+ "rev": 2877,
+ "updatedAt": "2026-11-10T21:28:22.087Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154186,15 +154186,15 @@
    "title": "Finish and land the Git status board: every ready-to-merge PR viewable in the console",
    "category": "",
    "detail": "git-status-board (PR #291, 5 of 6 steps): finish s6, land it, redeploy. Make sure it lists every open PR ready to merge (title, build, CI, conflicts, age) with Merge / Fix / Open on GitHub actions, so Brett can view them in the console instead of GitHub. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/finish-and-land-the-git-status-board-every-ready",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:44:19.333Z",
-   "updatedAt": "2026-11-10T21:28:08.910Z",
+   "updatedAt": "2026-11-10T21:28:12.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -154204,6 +154204,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:45:57.697Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-finish-and-land-the-git-status-board-every-ready--joey.",
+     "at": "2026-11-10T21:28:11.184Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-finish-and-land-the-git-status-board-every-ready--joey, own login copy)",
+     "at": "2026-11-10T21:28:12.809Z"
     }
    ],
    "approvals": [],
@@ -154223,12 +154231,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T20:44:20.458Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-finish-and-land-the-git-status-board-every-ready--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T21:28:10.831Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T20:45:57.697Z",
@@ -154238,9 +154246,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T21:28:10.831Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -154249,7 +154257,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T21:28:10.831Z"
    },
    "steps": [
     {
@@ -154330,7 +154338,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
