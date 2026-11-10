@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2995,
- "updatedAt": "2026-11-10T23:20:50.400Z",
+ "rev": 2996,
+ "updatedAt": "2026-11-10T23:21:06.483Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153426,7 +153426,7 @@
    "pr": "#479",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-10T23:19:54.505Z",
+   "updatedAt": "2026-11-10T23:20:12.300Z",
    "builtAt": "",
    "notes": [
     {
@@ -153456,6 +153456,10 @@
     {
      "text": "Claude account: account-5 (axf-api-accounts-need-no-approval-builds-route-there--rhonda, own login copy)",
      "at": "2026-11-10T23:13:41.389Z"
+    },
+    {
+     "text": "Headless run axf-api-accounts-need-no-approval-builds-route-there--rhonda: brief only · start 10.7K tokens ($0.03) · cost $1.67 · 57 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:20:12.300Z"
     }
    ],
    "approvals": [],
