@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:50 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · failed-launches-auto-retry-on-another-working-ac
 - 2026-11-10 00:52 UTC · `build-statuses-tell-the-truth-orchestrator-list` s2 done (all) · orchestrator
 - 2026-11-10 00:53 UTC · `build-statuses-tell-the-truth-orchestrator-list` PR #423 (all) · builds-live
 - 2026-11-10 00:54 UTC · `build-statuses-tell-the-truth-orchestrator-list` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:10 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` note (all) · reconciler
 - 2026-11-10 15:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
 - 2026-11-10 15:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
+- 2026-11-10 15:15 UTC · `prompt-caching-and-batch-api-support-in-the-buil` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
