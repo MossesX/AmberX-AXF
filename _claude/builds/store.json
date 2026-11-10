@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2702,
- "updatedAt": "2026-11-10T18:53:16.379Z",
+ "rev": 2703,
+ "updatedAt": "2026-11-10T18:55:13.974Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -25520,14 +25520,14 @@
    "title": "Module system: modules, extension points, services, placeholders",
    "category": "Kernel & engines",
    "detail": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-09T00:09:58.947Z",
+   "updatedAt": "2026-11-10T18:55:12.256Z",
    "builtAt": "",
    "notes": [
     {
@@ -25727,7 +25727,7 @@
    },
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
