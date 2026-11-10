@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:17:41.646Z",
+ "updatedAt": "2026-11-10T01:17:54.810Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79824,7 +79824,7 @@
    "title": "Orchestrator and Build Manager: search bar + Collapse all / Expand all",
    "category": "",
    "detail": "In the Build orchestrator and Build Manager tables (and the shared build-table asset): a search bar that filters builds by title, id, branch, account and words; Collapse all / Expand all buttons for rows and sections; collapsible section headers (Queued, Active, etc.) remembered across reloads. Voice/API control for search and collapse. Fold into the split-builds-pages table work if it hasn't started. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79832,8 +79832,8 @@
    "pr": "#426",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:58.882Z",
-   "updatedAt": "2026-11-10T01:17:39.787Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T01:17:41.373Z",
+   "builtAt": "2026-11-10T01:17:41.373Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -79971,8 +79971,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:17:41.373Z",
      "note": "",
      "uid": "st-mw9mcdfh06vni8"
     }
