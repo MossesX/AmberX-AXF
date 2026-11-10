@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2557,
- "updatedAt": "2026-11-10T17:32:03.771Z",
+ "rev": 2558,
+ "updatedAt": "2026-11-10T17:32:26.395Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140216,7 +140216,7 @@
    "title": "Merge batching add-on: when a batch fails CI, split it to find the bad PR, merge the good ones, send the bad one back",
    "category": "",
    "detail": "Amends merge-queue batching. On a failed batch: bisect (split in halves) to isolate the failing PR(s), merge the passing ones, send the failing PR back to its build for an automatic fix and retry, notify on AmberX. No AI for the bisect logic.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140225,7 +140225,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:23.543Z",
    "updatedAt": "2026-11-10T17:31:53.379Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T17:31:53.379Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -140347,12 +140347,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:31:35.169Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:48:29.235Z",
-     "updatedAt": "2026-11-10T16:48:29.235Z"
+     "updatedAt": "2026-11-10T17:31:35.336Z"
     }
    ],
    "profiles": [

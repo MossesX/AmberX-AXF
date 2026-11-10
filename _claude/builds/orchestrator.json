@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:32:03.771Z",
+ "updatedAt": "2026-11-10T17:32:26.395Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86661,7 +86661,7 @@
    "title": "Merge batching add-on: when a batch fails CI, split it to find the bad PR, merge the good ones, send the bad one back",
    "category": "",
    "detail": "Amends merge-queue batching. On a failed batch: bisect (split in halves) to isolate the failing PR(s), merge the passing ones, send the failing PR back to its build for an automatic fix and retry, notify on AmberX. No AI for the bisect logic.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -86670,7 +86670,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:23.543Z",
    "updatedAt": "2026-11-10T17:31:53.379Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T17:31:53.379Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -86760,8 +86760,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:31:35.169Z",
      "note": "",
      "uid": "st-mwaxcbw306fd56"
     }
