@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:04:38.236Z",
+ "updatedAt": "2026-11-10T00:05:10.855Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81014,7 +81014,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-10T00:04:32.415Z",
+   "updatedAt": "2026-11-10T00:05:05.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -81049,6 +81049,13 @@
     "addenda": [
      {
       "said": "And when you're looking at an event, you need a way to jump to it, jump to its spot, whatever it is, highlighted. And then focus.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "You can also jump to the fix if it's something you need to fix. You need to be able to jump to anything that it can possibly do, or what you can do with it.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",

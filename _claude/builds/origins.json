@@ -54,6 +54,13 @@
      "source": "voice",
      "by": "Claude voice (Gizmo)",
      "verbatim": true
+    },
+    {
+     "said": "You can also jump to the fix if it's something you need to fix. You need to be able to jump to anything that it can possibly do, or what you can do with it.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
     }
    ]
   },

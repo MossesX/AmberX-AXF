@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2068,
- "updatedAt": "2026-11-10T00:04:38.236Z",
+ "rev": 2069,
+ "updatedAt": "2026-11-10T00:05:10.855Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132121,7 +132121,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-10T00:04:32.415Z",
+   "updatedAt": "2026-11-10T00:05:05.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -132156,6 +132156,13 @@
     "addenda": [
      {
       "said": "And when you're looking at an event, you need a way to jump to it, jump to its spot, whatever it is, highlighted. And then focus.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "You can also jump to the fix if it's something you need to fix. You need to be able to jump to anything that it can possibly do, or what you can do with it.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132264,7 +132271,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
