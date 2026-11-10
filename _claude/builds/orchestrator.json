@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:57:48.371Z",
+ "updatedAt": "2026-11-10T00:57:57.877Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81889,8 +81889,8 @@
    "pr": "#424",
    "priority": "P0",
    "createdAt": "2026-11-10T00:19:09.682Z",
-   "updatedAt": "2026-11-10T00:57:37.562Z",
-   "builtAt": "2026-11-10T00:57:37.562Z",
+   "updatedAt": "2026-11-10T00:57:53.130Z",
+   "builtAt": "2026-11-10T00:57:53.130Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -81907,6 +81907,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-failed-launches-auto-retry-on-another-working-ac--gina, own login copy)",
      "at": "2026-11-10T00:42:18.066Z"
+    },
+    {
+     "text": "Headless run axf-failed-launches-auto-retry-on-another-working-ac--gina: brief only · start 11.4K tokens ($0.03) · cost $5.13 · 98 turns · 6 tools, MCP none",
+     "at": "2026-11-10T00:57:53.130Z"
     },
     {
      "text": "PR #424. UI Review shots for the Pipeline tab change (Fable out → Opus switch, Rerun account failures, every-account-out note) are not taken yet: still owed. Brett: Orchestrator → Pipeline → API overflow on adds account-5 (list already limited to account-5).",
