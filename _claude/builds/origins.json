@@ -372,6 +372,18 @@
    "from": "",
    "addenda": []
   },
+  "amberx-open-url-tapping-the-command-waiting-noti": {
+   "said": "It says a command is waiting for you. I clicked it. I'm in the AmberX app. Are you gonna fix that?",
+   "at": "2026-11-10T16:41:39.193Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-phone-pop-up-for-every-build-start-and-fi": {
    "said": "I want a notification on AmberX every time the orchestrator starts a build and every time a build finishes. I want it to pop up on my screen and say what build is starting or finishing and what account it's being run on. On my phone.",
    "at": "2026-11-10T02:18:30.783Z",
