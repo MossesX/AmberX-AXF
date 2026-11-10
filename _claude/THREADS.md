@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:09 UTC · `projects-create-a-new-project-and-move-builds-be` → pending (all) · voice
-- 2026-11-10 17:09 UTC · `auto-land-every-build-the-moment-it-finishes-red` → pending (all) · voice
-- 2026-11-10 17:09 UTC · `skins-theme-rule` → pending (all) · voice
 - 2026-11-10 17:10 UTC · `pass-approval-hook-deep-link-amberx-notification` added (0 steps) (all) · console
 - 2026-11-10 17:10 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · console
 - 2026-11-10 17:11 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` PR #472 (all) · builds-live
 - 2026-11-10 21:03 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · orchestrator
 - 2026-11-10 21:03 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
+- 2026-11-10 21:03 UTC · `resolve-conflicts-and-land-460-456-457-459-342` → running, note (all) · pipeline
+- 2026-11-10 21:03 UTC · `resolve-conflicts-and-land-460-456-457-459-342` branch claude/resolve-conflicts-and-land-460-456-457-459-342 (all) · pipeline
+- 2026-11-10 21:04 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
 
 ## Token passes (log)
 
