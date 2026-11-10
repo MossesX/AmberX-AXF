@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:53 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
 - 2026-11-10 19:54 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
 - 2026-11-10 19:55 UTC · `inline-edit-plugin-install-in-console-molly-and` → running, note (all) · pipeline
 - 2026-11-10 19:55 UTC · `inline-edit-plugin-install-in-console-molly-and` branch claude/inline-edit-plugin-install-in-console-molly-and (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:47 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
 - 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
 - 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` branch claude/ai-assistant-in-molly-console-drives-by-api-open (all) · pipeline
+- 2026-11-10 23:47 UTC · `molly-banner-match` note (all) · orchestrator
 
 ## Token passes (log)
 
