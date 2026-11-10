@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
-- 2026-11-09 17:57 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · pipeline
 - 2026-11-09 17:57 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
 - 2026-11-09 17:57 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-09 17:58 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · pipeline
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` branch claude/walkthrough-player-ide-layout-setting-collapsibl (all) · builds-live
 - 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
+- 2026-11-10 01:09 UTC · `orchestrator-and-build-manager-search-bar-collap` → running, note (all) · pipeline
+- 2026-11-10 01:09 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 
 ## Token passes (log)
 
