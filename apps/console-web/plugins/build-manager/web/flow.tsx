@@ -34,7 +34,7 @@ const prNumber = (pr: string) => (/(\d+)\s*$/.exec(pr)?.[1] ?? '');
 
 const model = (m?: string) => (m ? <span key={m} className={`oc-model is-${m.toLowerCase()}`}>{m}</span> : null);
 const stepItems = (r: FlowRow): ChecklistItem[] => (r.stepList ?? []).map((st) => ({ id: st.id, text: st.text, done: st.done, skip: st.skip, at: st.doneAt, tag: model(st.model) ?? undefined }));
-const TITLE_W = 'minmax(calc(var(--fx-font-size) * 18), calc(var(--fx-font-size) * 28))';
+const TITLE_W = 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 22))';
 /** The sections every expanded row has (Brett's words, steps, latest notes); each tab adds its own first. */
 const commonSections = (r: FlowRow) => [
   { id: 'steps', title: 'Steps', icon: 'check-circle', count: `${r.steps.done}/${r.steps.total}`, content: <DetailChecklist items={stepItems(r)} empty="No steps yet: the orchestrator splits it when it is sent." /> },
@@ -120,8 +120,8 @@ function PendingTab({ rows, busy, post }: { rows: FlowRow[]; busy: string; post:
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 12)', sortable: true, sortValue: (r) => r.steps.total, render: (r) => <CellSteps done={r.steps.done} total={r.steps.total} /> },
     { id: 'left', label: 'Estimate', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.minutesLeft,
       render: (r) => <span className="bm-stack"><span className="fx-small">{fmtMin(r.minutesLeft) || '—'}</span>{r.nextModel && <span className="fx-small fx-muted">{model(r.nextModel)} next</span>}</span> },
-    { id: 'send', label: '', width: 'calc(var(--fx-font-size) * 11)', align: 'end',
-      render: (r) => <span onClick={(e) => e.stopPropagation()}><Button size="sm" tone="primary" icon="arrow-right" disabled={busy === r.id} onClick={() => void post('flow/send', { id: r.id }, `${r.title} → orchestrator (Queued)`)}>Send to orchestrator</Button></span> },
+    { id: 'send', label: '', width: 'calc(var(--fx-font-size) * 7)', align: 'end',
+      render: (r) => <span onClick={(e) => e.stopPropagation()}><Button size="sm" tone="primary" icon="arrow-right" disabled={busy === r.id} title="Send to orchestrator (its Queued tab)" aria-label={`Send ${r.title} to the orchestrator`} onClick={() => void post('flow/send', { id: r.id }, `${r.title} → orchestrator (Queued)`)}>Send</Button></span> },
   ];
   const groups: GridGroup<FlowRow>[] = [{ id: 'pending', title: `Pending (${rows.length})`, icon: 'clock', rows, groups: [], fixed: true }];
   return (
@@ -197,7 +197,6 @@ function CompleteTab({ rows, totalCost }: { rows: FlowRow[]; totalCost: number }
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
   // two-line rows: when it started and finished, how long it took, what it cost, the account that built it, PR / land
-  const ms = (r: FlowRow) => { const a = Date.parse(r.startedAt || ''); const b = Date.parse(r.builtAt || ''); return a && b ? b - a : 0; };
   const cols: GridColumn<FlowRow>[] = [
     { id: 'title', label: 'Build', width: TITLE_W, fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
       render: (r) => <CellTitle title={r.title} lead={<span className={`bm-land is-${landed(r) ? 'landed' : 'open'}`}><Icon name={landed(r) ? 'check-circle' : 'branch'} size={16} /></span>}
@@ -205,9 +204,7 @@ function CompleteTab({ rows, totalCost }: { rows: FlowRow[]; totalCost: number }
     { id: 'land', label: 'PR / land', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => (landed(r) ? 1 : 0),
       render: (r) => <span className="bm-stack"><span className={`pd-badge oc-badge is-${landed(r) ? 'complete' : 'built'}`}>{landed(r) ? 'Landed' : 'Awaiting merge'}</span><span className="fx-small fx-mono">{r.pr ? `PR #${prNumber(r.pr) || r.pr}` : 'no PR'}</span></span> },
     { id: 'dates', label: 'Dates', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.builtAt ?? '',
-      render: (r) => <CellDates dates={[{ label: 'Started', at: r.startedAt }, { label: 'Finished', at: r.builtAt }, { label: 'Merged', at: r.mergedAt }]} /> },
-    { id: 'duration', label: 'Took', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: ms,
-      render: (r) => <span className="fx-small" title="From the first run's start to finished">{spanBetween(r.startedAt, r.builtAt) || '—'}</span> },
+      render: (r) => <CellDates dates={[{ label: 'Started', at: r.startedAt }, { label: 'Finished', at: r.builtAt }, { label: 'Took', at: '', value: spanBetween(r.startedAt, r.builtAt) || undefined, title: "From the first run's start to finished" }, { label: 'Merged', at: r.mergedAt }]} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 11)', sortable: true, sortValue: (r) => r.steps.total, render: (r) => <CellSteps done={r.steps.done} total={r.steps.total} /> },
     { id: 'builtBy', label: 'Built by', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => r.builtBy ?? '',
       render: (r) => <span className="bm-stack"><span className="fx-small" title={(r.accounts ?? []).length > 1 ? `Runs on ${(r.accounts ?? []).join(', ')}` : undefined}>{r.builtBy || <span className="fx-muted">—</span>}</span>{r.models?.length ? <span className="fx-row">{r.models.map(model)}</span> : null}</span> },

@@ -137,7 +137,7 @@ function FlowGrid({ rows, view, accounts, busy, waitsFor, launchFor, act, steps 
   // run on; Active shows the live pulse, a running timer, steps with a moving meter, the current step and the account.
   const pos = new Map(rows.map((r, i) => [r.id, i + 1]));
   const planned = (r: Row) => { const l = launchFor(r.id); return { account: l?.account || r.pipeline?.pin || '', model: l?.model || r.nextModel, kind: l?.kind === 'api' ? 'API key' : '' }; };
-  const titleCol: GridColumn<Row> = { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 18), calc(var(--fx-font-size) * 28))', fixed: true, sortable: true, sortValue: (r) => (view === 'queued' ? pos.get(r.id) ?? 0 : r.title.toLowerCase()),
+  const titleCol: GridColumn<Row> = { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 22))', fixed: true, sortable: true, sortValue: (r) => (view === 'queued' ? pos.get(r.id) ?? 0 : r.title.toLowerCase()),
     render: (r) => (
       <CellTitle title={r.title}
         lead={view === 'active' ? <LivePulse tone={PULSE[r.status] ?? 'accent'} still={r.status !== 'running' || !!r.held} label={STATUS_TEXT[r.status] ?? r.status} /> : <span className="oc-pos" title="Place in the start order">#{pos.get(r.id)}</span>}
@@ -153,7 +153,7 @@ function FlowGrid({ rows, view, accounts, busy, waitsFor, launchFor, act, steps 
     stepsCol,
     { id: 'plan', label: 'Planned', width: 'calc(var(--fx-font-size) * 10)', sortable: true, sortValue: (r) => planned(r).account,
       render: (r) => { const p = planned(r); return <span className="oc-stack">{p.model ? <span className={`oc-model is-${p.model.toLowerCase()}`}>{p.model}</span> : <span className="fx-muted">—</span>}<span className="fx-small" title={r.pipeline?.pin ? `Assigned to ${r.pipeline.pin}` : 'The dispatcher picks the account'}>{p.account || <span className="fx-muted">Any account</span>}{p.kind ? ` · ${p.kind}` : ''}</span><span className="fx-small fx-muted">{routeOf(r.pipeline?.route).label}</span></span>; } },
-    { id: 'wait', label: 'Why it waits', width: 'minmax(calc(var(--fx-font-size) * 14), calc(var(--fx-font-size) * 22))',
+    { id: 'wait', label: 'Why it waits', width: 'minmax(calc(var(--fx-font-size) * 12), calc(var(--fx-font-size) * 16))',
       render: (r) => { const l = launchFor(r.id); const w = waitsFor(r.id); return l ? <span className="oc-why is-next"><Icon name="play" size={13} />Starts next tick on {l.account}</span> : <span className="oc-why">{w || r.pipeline?.note || 'Waiting for the next dispatcher tick'}</span>; } },
   ] : [
     titleCol,
