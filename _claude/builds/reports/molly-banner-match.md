@@ -66,5 +66,5 @@ was red on the help-coverage ratchet.
   (View → Banners menu, search). Molly has no console-commands client of its own yet, so REST / MCP / CLI / voice
   can't reach a Molly-side action or setting today. Gap, left to the build that gives Molly an API client
   (ai-assistant-in-molly-console-drives-by-api-open): once Molly reports a console catalog, the action is in it
-  with no change here. Deep link: Molly `#/settings` → Plugins → Banners.
+  with no change here. No deep link either: Molly's `#/<app>/<route>` opens apps only, not its Settings.
 - Manifest now declares the `slot:app.frame.head` it fills.
