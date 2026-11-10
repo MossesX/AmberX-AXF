@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2673,
- "updatedAt": "2026-11-10T18:28:48.854Z",
+ "rev": 2674,
+ "updatedAt": "2026-11-10T18:29:08.335Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149147,7 +149147,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149155,7 +149155,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:28:14.057Z",
+   "updatedAt": "2026-11-10T18:29:06.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -149197,6 +149197,10 @@
     {
      "text": "Duplicate dispatch, handled. The dispatcher launched this build twice (earl 18:11:16, gina 18:12:10), both as run 1. Cause (journal 2026-11-p4): the worktree's 'Claude account' note at 18:11:19 was written from a store copy taken before the launch and the per-build newer-wins merge replaced the launch record (status back to queued, pipeline record gone), so the next tick launched again; Earl's s1 tick at 18:24:48 did the same to the second record, so the live build is 'running' with no session on it and no session end was ever handled. Gina (this session) wrote no files and ticked nothing: Earl did s1 (commits 8a954df78, 56ba1d236). Set status to queued by hand = what the phase end would have set (exit 0, Fable -> Opus), so the dispatcher starts Phase 2. Dispatcher fix filed as a Pending build. For s2+: append 'push' to PASS_APPROVED_VIA in framework/core/engines/control-pass.mjs (reference engine, not touched in s1); the console has no hash router yet, so #/pass/<id> needs a consumer in s5 next to the ?axf-cmd= query form the wake path and AmberX OpenUrlRules already accept; PASS_REQUEST_TTL_MS and the pass id regex are duplicated in packages/shared/pass-approval instead of imported from control-pass.mjs.",
      "at": "2026-11-10T18:28:12.724Z"
+    },
+    {
+     "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--gina: brief only · start 12.8K tokens ($0.06) · cost $7.24 · 76 turns · 6 tools, MCP none",
+     "at": "2026-11-10T18:29:06.248Z"
     }
    ],
    "approvals": [],
@@ -149482,7 +149486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
