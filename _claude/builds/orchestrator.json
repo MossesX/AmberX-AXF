@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:39:32.363Z",
+ "updatedAt": "2026-11-10T17:39:41.463Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76789,12 +76789,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:57:30.536Z",
-   "updatedAt": "2026-11-09T02:58:13.276Z",
+   "updatedAt": "2026-11-10T17:39:24.584Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T02:58:13.276Z"
+    },
+    {
+     "text": "Split by Claude into 17 steps (5 Fable).",
+     "at": "2026-11-10T17:39:24.584Z"
     }
    ],
    "approvals": [],
@@ -76814,13 +76818,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
+     "text": "Extend the skin@1 contract so one skin carries everything a design pack does. Add three sections: look (colors, grid/hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (menu open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules). Cover every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Extend skin-coverage@1 to track look, layout and behavior separately per asset type.",
      "model": "Fable",
-     "why": "foundation words in the step",
+     "why": "Cross-port contract change to skin@1 and skin-coverage@1 that every app consumes",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "contracts/skin@1",
+      "contracts/skin-coverage@1",
+      "packages/framework/skins/schema"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -76828,17 +76836,131 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8o8qzg0137x2"
+     "uid": "st-mwaz5tew01mtmf"
     },
     {
      "id": "s2",
-     "text": "I want the skins to be everything. I want a skin to be a complete rework. Everything. The skins are gonna rewrite the navigation menu, the app menu, the context menu, all the colors in the grids, the hover colors, the text sizes. All the behavior, everything. I need the entire UI reworked to look professional.",
+     "text": "Design the schema and migration that fold design packs into skins. Map each design-pack field to a skin@1 field, write a versioned migration for stored packs and user selections, and add a design-pack compatibility alias that resolves to the skin, with a deprecation note.",
+     "model": "Fable",
+     "why": "Schema plus migration design across stored data and contracts",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/migrations",
+      "packages/framework/design-packs",
+      "contracts/design-pack@1"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew02p15d"
+    },
+    {
+     "id": "s3",
+     "text": "Rework the skin apply engine so applying a skin swaps look, layout and behavior in one atomic step. Follow the UI Roller rule and reset rolled assets on apply. Roll back cleanly on failure and emit one skin-changed event that the console, AmberX and Molly all listen to.",
+     "model": "Fable",
+     "why": "Engine internals that change how GUIs apply skins in every app",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/engine",
+      "packages/framework/ui-roller",
+      "packages/framework/events"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew03u24e"
+    },
+    {
+     "id": "s4",
+     "text": "Make the framework layout runtime skin-driven. Read nav placement, app menu, toolbars, banners, panel arrangement and grid density from the active skin instead of from design packs, with no per-app hardcoding.",
+     "model": "Fable",
+     "why": "Changes how layout works across all apps",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/layout",
+      "packages/framework/shell",
+      "packages/framework/registry"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew04au45"
+    },
+    {
+     "id": "s5",
+     "text": "Make the framework behavior runtime skin-driven. Menu open/slide/collapse, context menu style, hover/press feedback, transitions and overflow rules should all come from the active skin, for every asset type in the registry.",
+     "model": "Fable",
+     "why": "Changes how GUI behavior works across all apps",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/behavior",
+      "packages/framework/menus",
+      "packages/framework/context-menu",
+      "packages/framework/registry"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew05634m"
+    },
+    {
+     "id": "s6",
+     "text": "Add a CI check that fails unless every registry asset type has skin coverage for look, layout and behavior in every shipped skin. Wire it into the existing skin-coverage job.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "scripts/ci/skin-coverage.mjs",
+      ".github/workflows",
+      "packages/framework/skins/coverage"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew064uky"
+    },
+    {
+     "id": "s7",
+     "text": "Update the Skins plugin UI. Show look, layout and behavior per skin, add a live preview, add apply and reset-rolled actions, and show a migrated-from-design-pack badge. Remove or redirect the Design Packs UI to Skins through the compatibility alias. API part: add a deep link (console_open target skins and skins/<id>), make state readable (active skin, preview, coverage), and define the actions and settings, which the next step exposes.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/skins",
+      "apps/console-web/plugins/design-packs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -76846,17 +76968,209 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8o8qzg02erav"
+     "uid": "st-mwaz5tew07vw7q"
     },
     {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md, THREADS row, commit, push, PR",
+     "id": "s8",
+     "text": "Give skins full API control, the same across all four surfaces. Operations: list, get, preview, apply, reset rolled assets, set default, read coverage, and run the design-pack migration. Surfaces: REST routes on the console API, MCP tools as console actions and plugin commands, CLI subcommands, and AmberX voice intents. Add console_show / console_open targets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skins/api",
+      "apps/console-web/server/routes/skins",
+      "packages/mcp/console-actions",
+      "packages/cli/commands/skin",
+      "apps/amberx/voice/intents/skins"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew08kdyg"
+    },
+    {
+     "id": "s9",
+     "text": "Design the professional skin 'Clean Enterprise' with complete look, layout and behavior for every asset type.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/library/clean-enterprise"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew091efs"
+    },
+    {
+     "id": "s10",
+     "text": "Design the professional skin 'Dark Pro' with complete look, layout and behavior for every asset type.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/library/dark-pro"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew0a5bj5"
+    },
+    {
+     "id": "s11",
+     "text": "Design the professional skin 'Compact Data': dense grids, tight spacing, data-first layout, with complete coverage for every asset type.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/library/compact-data"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tew0bobfn"
+    },
+    {
+     "id": "s12",
+     "text": "Design the professional skin 'Modern SaaS' with complete look, layout and behavior for every asset type.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/library/modern-saas"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tey0c488o"
+    },
+    {
+     "id": "s13",
+     "text": "Design the professional skin 'High Contrast Accessible' (WCAG AAA contrast, larger targets, reduced motion), with complete coverage for every asset type.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/library/high-contrast"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tey0dpix5"
+    },
+    {
+     "id": "s14",
+     "text": "Apply all five skins to the real console, AmberX and Molly. Fix any spots that hardcode look, layout or behavior so they follow the skin instead.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web",
+      "apps/amberx",
+      "apps/molly"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tey0ekazz"
+    },
+    {
+     "id": "s15",
+     "text": "Capture desktop and phone screenshots of each skin on the console, AmberX and Molly, then post each skin to UI Review. Wire it so the picked skin becomes the default. API part: make the default readable and settable through REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "scripts/ui-review/skin-shots.mjs",
+      "apps/console-web/plugins/ui-review",
+      "packages/framework/skins/default.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tey0fxnkd"
+    },
+    {
+     "id": "s16",
+     "text": "Update the docs: skin@1 authoring guide (look, layout, behavior), design-pack migration and alias, and how to reach each skin feature through REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "docs/skins",
+      "docs/design-packs",
+      "apps/console-web/plugins/skins/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz5tez0gma45"
+    },
+    {
+     "id": "s17",
+     "text": "Tests, report, THREADS row and PR. Tests cover: contract validation, migration plus alias, atomic apply plus rolled-asset reset, layout and behavior runtime, CI coverage, and API parity across REST, MCP, CLI and voice. Write _claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md, add the THREADS row, and open the PR stating how each UI feature is reached by deep link, state read, actions and settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "packages/framework/skins/**/*.test.mjs",
+      "apps/console-web/plugins/skins/*.test.mjs",
       "_claude/builds/reports/skins-are-a-complete-rework-look-layout-behavior.md",
       "_claude/THREADS.md"
      ],
@@ -76867,7 +77181,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8o8qzg03ksrd"
+     "uid": "st-mwaz5tez0h46mg"
     }
    ]
   },
@@ -84660,15 +84974,16 @@
    "title": "Retire Build Manager: the orchestrator is the only place that browses and manages builds (tabs, planned + final account pick, 5-min account health check)",
    "category": "",
    "detail": "1) Uninstall/remove the Build Manager plugin. Audit its responsibilities first and hand each to the orchestrator (or the right owner); nothing lost. Supersedes split-builds-pages-build-manager-pending-complet-2. 2) Orchestrator screen tabs: Pending (everything it's been asked to do), Queue, Active, Incomplete, Complete, Errors. 3) Splitting happens right away when a build is filed, so the Queue shows steps. At that point the orchestrator plans model + account. When the build's turn comes in the queue it makes the final account decision and records which account took it. 4) Account pick: subscriptions first (any subscription), then any API account, moving on until one accepts, if what it believed about an account turns out wrong. 5) Account health: every 5 minutes a background check (headless, never touches running builds, never signs anything out) confirms each account can sign in, has credits, and can run the needed model (Fable). The orchestrator always knows every account's status from this, so it doesn't test at dispatch time. Note: reconcile with the Claude Accounts Manager plugin's drag-and-drop account order. Full API control.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/retire-build-manager-the-orchestrator-is-the-onl",
    "pr": "#450",
+   "mergedAt": "2026-11-10T17:34:44Z",
    "priority": "P1",
    "createdAt": "2026-11-10T15:29:42.107Z",
-   "updatedAt": "2026-11-10T16:26:07.261Z",
+   "updatedAt": "2026-11-10T17:38:52.723Z",
    "builtAt": "2026-11-10T16:26:07.261Z",
    "notes": [
     {
@@ -84694,6 +85009,10 @@
     {
      "text": "PR #450 open. Build manager removed; orchestrator tabs, plan at split, final pick (subscriptions then API), 5-min account health done, tests green. Not done: no screenshots (the scratch console's lazy loader never shows the orchestrator view), so UI Review is not submitted yet. Needs desktop + phone shots of the Queue and Accounts tabs, then UI Review.",
      "at": "2026-11-10T16:25:51.666Z"
+    },
+    {
+     "text": "Reconciler: PR #450 merged",
+     "at": "2026-11-10T17:38:52.723Z"
     }
    ],
    "approvals": [],
