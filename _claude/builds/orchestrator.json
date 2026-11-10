@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:08:48.365Z",
+ "updatedAt": "2026-11-10T03:09:20.903Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82078,7 +82078,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-10T03:04:44.620Z",
+   "updatedAt": "2026-11-10T03:09:18.934Z",
    "builtAt": "",
    "notes": [
     {
@@ -82096,6 +82096,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-table-columns-model-queue-assigned--lenny, own login copy)",
      "at": "2026-11-10T02:47:58.211Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:18.934Z"
     }
    ],
    "approvals": [],
