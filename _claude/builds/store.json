@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2440,
- "updatedAt": "2026-11-10T16:16:59.633Z",
+ "rev": 2441,
+ "updatedAt": "2026-11-10T16:17:18.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137292,7 +137292,7 @@
    "title": "Account order switch: custom drag-and-drop order or automatic (subscriptions first, then API)",
    "category": "",
    "detail": "Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -137300,8 +137300,8 @@
    "pr": "#449",
    "priority": "P1",
    "createdAt": "2026-11-10T15:31:10.459Z",
-   "updatedAt": "2026-11-10T16:16:58.201Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T16:16:59.382Z",
+   "builtAt": "2026-11-10T16:16:59.382Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -137419,12 +137419,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:16:59.382Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T15:32:17.511Z",
-     "updatedAt": "2026-11-10T15:32:17.511Z"
+     "updatedAt": "2026-11-10T16:16:59.590Z"
     }
    ],
    "profiles": [
@@ -137435,7 +137435,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
