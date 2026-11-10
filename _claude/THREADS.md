@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 13:13 UTC · `banner-skins-context-menu-item-with-sub-menu-of-all-skins-widget-hidden-by-def` added (1 steps) (all) · claude-ai-voice
 - 2026-11-09 13:15 UTC · `toast-manager-plugin` added (3 steps) (all) · claude-ai-voice
 - 2026-11-09 13:17 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` added (5 steps) (all) · claude-ai-voice
 - 2026-11-09 13:19 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · claude-ai-voice
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
 - 2026-11-10 00:11 UTC · `fix-it-yourself-rule-in-every-brief-and-session` s1 done, → running (all) · orchestrator
 - 2026-11-10 00:12 UTC · `fix-it-yourself-rule-in-every-brief-and-session` s2 done (all) · orchestrator
+- 2026-11-10 00:13 UTC · `fix-it-yourself-rule-in-every-brief-and-session` branch claude/fix-it-yourself-rule-in-every-brief-and-session, PR #420 (all) · builds-live
 
 ## Token passes (log)
 
