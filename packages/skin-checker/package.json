@@ -1,0 +1,15 @@
+{
+  "name": "@axf/skin-checker",
+  "private": true,
+  "version": "0.1.0",
+  "description": "skin-check@1: a plain-code checker that flags anything in a skin that breaks a professional look (spacing scale, fonts, palette, contrast, shape). Pure engine shared by the skin editor, CI, REST, MCP, CLI and voice.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./contract": "./src/contract.ts",
+    "./settings-schema": "./src/settings-schema.ts"
+  },
+  "scripts": {
+    "check": "tsc -p tsconfig.json"
+  }
+}
