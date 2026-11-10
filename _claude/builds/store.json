@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2261,
- "updatedAt": "2026-11-10T03:28:34.926Z",
+ "rev": 2262,
+ "updatedAt": "2026-11-10T03:29:33.637Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134584,7 +134584,7 @@
    "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
    "category": "",
    "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134592,7 +134592,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:22:46.563Z",
+   "updatedAt": "2026-11-10T03:29:31.599Z",
    "builtAt": "",
    "notes": [
     {
@@ -134614,6 +134614,10 @@
     {
      "text": "Claude account: account-5 (axf-self-healing-build-folders-auto-clear-stale-git--joey, own login copy)",
      "at": "2026-11-10T03:21:09.506Z"
+    },
+    {
+     "text": "Double dispatch: this build was launched twice into the same folder: Janitor Joey (account-5, API key, 03:20) and Ping Paulie (mossesx-max, 03:22). Both were writing the same files. Joey stopped and backed out every edit to shared files; Paulie's git-heal.mjs carries on and owns the steps. Joey's parallel version (self-heal.mjs with stray-file merge retry, crashed-session reset, 12 passing checks incl. real-git stray-merge tests) is parked at /root/archive/self-heal-joey-2026-11-10/ if anything is worth folding in. Dry run on the VPS found 10 real stale worktree index.locks (up to 5 days old), not removed by Joey. The dispatcher should refuse a second launch for a build that already has a live session: worth a guard.",
+     "at": "2026-11-10T03:29:31.599Z"
     },
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-self-healing-build-folders-auto-clear-stale-git--paulie.",
@@ -134641,12 +134645,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T02:22:12.571Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-self-healing-build-folders-auto-clear-stale-git--paulie",
+    "account": "account-5",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T03:22:38.579Z",
-    "runs": 2,
+    "launchedAt": "2026-11-10T02:48:43.040Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-10T02:59:04.608Z",
      "exit": 1,
@@ -134663,9 +134667,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:22:38.579Z"
+    "dispatchedAt": "2026-11-10T02:48:43.040Z"
    },
    "steps": [
     {
