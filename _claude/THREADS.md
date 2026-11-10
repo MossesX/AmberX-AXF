@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:27 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → pending, note (all) · reconciler
 - 2026-11-10 04:27 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → complete, merged, note (all) · reconciler
 - 2026-11-10 04:27 UTC · `audit-pending-fable-builds-against-main-close-wh` note (all) · orchestrator
 - 2026-11-10 04:27 UTC · `molly-sign-in-once` → queued, note (all) · brett
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:34 UTC · `resolve-conflicts-and-land-pr-449-account-order` → queued, note (all) · console
 - 2026-11-10 17:34 UTC · `shipped-features-show-each-landed-build-s-screen` added (0 steps) (all) · console
 - 2026-11-10 17:35 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · orchestrator
+- 2026-11-10 17:35 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · builds-live
 
 ## Token passes (log)
 
