@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:12:19.093Z",
+ "updatedAt": "2026-11-10T17:14:09.163Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84205,14 +84205,14 @@
    "title": "Auto-land every build the moment it finishes, redeploy the console on every land, and backfill the 134 unlanded",
    "category": "",
    "detail": "Plain code in the orchestrator dispatcher, no AI. 1) The moment a build's session finishes with its steps ticked and tests green, the orchestrator lands it straight away: clean sync files and stray logs, clear stale locks, merge origin/main, rerun the build's own tests, push to main. No waiting on a person or a later session. 2) UPDATE THE CONSOLE ON EVERY LAND: right after each push to main, trigger the console redeploy immediately (the same path as install-console.sh's auto-update, run now, not on the 5-minute timer), and rebuild any other app the change touched (AmberX web, axHub web, Molly and so on). Wait for it to come up healthy, then refresh open consoles. If the deploy fails, roll back to the last good image and queue a fix. 3) UI Review never blocks landing: screenshots and picks can follow after landing, and changes come as follow-up builds. 4) If main moved and tests fail after the merge, or there's a code clash, the orchestrator immediately queues a conflict-fix run on the same branch (top priority, any working account) and lands when green. It retries until it's on main. 5) Land in finish order, one at a time (a merge lock), so each lands on the newest main. Batch redeploys if several land within a minute. 6) Backfill now: land every finished-but-unlanded build (about 134), oldest first, skipping ones superseded or already on main, with conflict-fix runs where needed. 7) Each land and deploy shows in the Activity Monitor and fix log, with a phone FYI only for failures that need Brett. Tests with fake clashes and a fake failed deploy. Supersedes any auto-land pieces in other builds; don't duplicate.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T04:28:17.210Z",
-   "updatedAt": "2026-11-10T17:09:52.513Z",
+   "updatedAt": "2026-11-10T17:14:07.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -84226,6 +84226,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T04:32:49.690Z"
+    },
+    {
+     "text": "Reconciled with enforce-the-merge-queue (Nov 10 2026, Brett: 'Everything needs to go into the merge queue so we can make one build out of it before we send it to CI'). Step 1 must not push to main: a finished build gets its PR and joins the merge queue (push-banner land/merge-queue.mjs enlist does this every 3 min already); the queue batches the ready PRs into one build on queue/batch, runs CI once and lands it on main as one commit. Redeploy-on-land happens once per landed batch. Keep the backfill: it should open PRs into the queue, not push.",
+     "at": "2026-11-10T17:14:07.682Z"
     }
    ],
    "approvals": [],
