@@ -36,6 +36,11 @@ full run decides. #459 and #342 join as their light checks finish. The console r
   (`apps/console-web/plugins/build-orchestrator/pipeline.mjs`). The refusal now names the orchestrator's
   `pipeline-queue` / `pipeline-request` commands (console API, MCP, plugin CLI `pipeline.mjs queue <id>`); pipeline.test
   42 green.
+- Every queue run failed on main's own code (seen when #455 + #456 + #457 were tested, run 42905250816):
+  `ui-review/test.py` "picked or not, all three stay" (GET /choices/assets also returns real ui-choice assets other
+  builds committed; the check now reads only its own choice set) and a `check-build-hook` flake (the lock folder's
+  `mtimeMs` has sub-ms precision and can sit past `Date.now()`, so a 0 ms stale limit sometimes missed; floored).
+  Both fixes are on this PR and cherry-picked onto #456, the first of the five in the queue, so its run can go green.
 - Main's light checks are red for every PR (`builds-store verify`: retired `breakroom` folder): fixed by #456, which
   is first in the queue.
 
