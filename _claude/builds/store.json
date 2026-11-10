@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2146,
- "updatedAt": "2026-11-10T01:04:04.953Z",
+ "rev": 2147,
+ "updatedAt": "2026-11-10T01:04:18.093Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96300,8 +96300,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -116812,8 +116811,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-10T00:16:15.395Z"
    },
    "steps": [
     {
@@ -117041,8 +117039,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -124720,8 +124717,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -125079,8 +125075,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -126191,8 +126186,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126352,8 +126346,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126517,8 +126510,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126698,8 +126690,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126928,8 +126919,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
    "steps": [
     {
@@ -127533,8 +127523,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:53:07.552Z"
    },
    "steps": [
     {
@@ -127821,8 +127810,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
    "steps": [
     {
@@ -128142,8 +128130,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
    "steps": [
     {
@@ -128306,8 +128293,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128474,8 +128460,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128642,8 +128627,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128881,8 +128865,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
    "steps": [
     {
@@ -129116,8 +129099,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:05:17.080Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:05:17.080Z"
    },
    "steps": [
     {
@@ -129264,8 +129246,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -129495,8 +129476,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:09:09.055Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:09:09.055Z"
    },
    "steps": [
     {
@@ -129777,7 +129757,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T00:49:08.905Z",
+   "updatedAt": "2026-11-10T01:04:06.011Z",
    "builtAt": "",
    "notes": [
     {
@@ -129850,7 +129830,7 @@
     "session": "",
     "link": "",
     "by": "skins-own-everything-colour-theme-swaps-independ",
-    "brief": "# Build: skins-own-everything-colour-theme-swaps-independ\n\n## Brett said (verbatim)\nAt: 2026-11-09T17:52:45.295Z\n> All the skins control everything. The skins have different sections, but the skins have the color theme in them. You can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like that. You can change the color theme without changing the skin.\n\n## What to build\nContinue build \"Skins own everything; colour theme swaps independently inside the active skin\" (skins-own-everything-colour-theme-swaps-independ) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 17:52):\n\"All the skins control everything. The skins have different sections, but the skins have the color theme in them. You can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like that. You can change the color theme without changing the skin.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/skins-own-everything-colour-theme-swaps-independ\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skins-own-everything-colour-theme-swaps-independ <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skins-own-everything-colour-theme-swaps-independ --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step skins-own-everything-colour-theme-swaps-independ <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skins-own-everything-colour-theme-swaps-independ \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: skins-own-everything-colour-theme-swaps-independ\n\n## Brett said (verbatim)\nAt: 2026-11-09T17:52:45.295Z\n> All the skins control everything. The skins have different sections, but the skins have the color theme in them. You can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like that. You can change the color theme without changing the skin.\n\n## What to build\nContinue build \"Skins own everything; colour theme swaps independently inside the active skin\" (skins-own-everything-colour-theme-swaps-independ) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 17:52):\n\"All the skins control everything. The skins have different sections, but the skins have the color theme in them. You can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like that. You can change the color theme without changing the skin.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/skins-own-everything-colour-theme-swaps-independ\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skins-own-everything-colour-theme-swaps-independ <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skins-own-everything-colour-theme-swaps-independ --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step skins-own-everything-colour-theme-swaps-independ <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skins-own-everything-colour-theme-swaps-independ \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -129882,8 +129862,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:02:10.280Z"
    },
    "steps": [
     {
@@ -129964,7 +129943,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130093,8 +130072,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
    "steps": [
     {
@@ -130304,8 +130282,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
    "steps": [
     {
@@ -130515,8 +130492,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T18:55:16.286Z"
    },
    "steps": [
     {
@@ -130726,8 +130702,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:13:07.725Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T19:13:07.725Z"
    },
    "steps": [
     {
@@ -130937,8 +130912,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
    "steps": [
     {
@@ -131148,8 +131122,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
    "steps": [
     {
@@ -131327,8 +131300,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -131560,8 +131532,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
    "steps": [
     {
@@ -131728,8 +131699,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -131900,8 +131870,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132068,8 +132037,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132216,8 +132184,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132395,8 +132362,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132641,8 +132607,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132816,8 +132781,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:10:34.054Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-10T00:10:34.054Z"
    },
    "steps": [
     {
@@ -132980,8 +132944,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133148,8 +133111,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133296,8 +133258,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133475,8 +133436,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z",
-    "builtBy": []
+    "dispatchedAt": "2026-11-10T00:42:13.778Z"
    },
    "steps": [
     {
@@ -133627,8 +133587,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133775,8 +133734,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133904,8 +133862,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -134030,8 +133987,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "builtBy": []
+    "dispatchedAt": ""
    },
    "steps": [
     {
