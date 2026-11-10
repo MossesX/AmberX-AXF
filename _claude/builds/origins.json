@@ -3445,6 +3445,18 @@
    "from": "brief",
    "addenda": []
   },
+  "projects-create-a-new-project-and-move-builds-be": {
+   "said": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
+   "at": "2026-11-10T15:38:42.207Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "prompt-caching-and-batch-api-support-in-the-buil": {
    "said": "Build up prompt caching and batch API plugin... Actually, it's for the orchestrator, not an agent.",
    "at": "2026-11-09T16:02:30.370Z",

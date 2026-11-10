@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2411,
- "updatedAt": "2026-11-10T15:38:30.510Z",
+ "rev": 2412,
+ "updatedAt": "2026-11-10T15:38:49.930Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135979,7 +135979,7 @@
    "pr": "#447",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T15:37:56.710Z",
+   "updatedAt": "2026-11-10T15:38:32.200Z",
    "builtAt": "",
    "notes": [
     {
@@ -136001,6 +136001,10 @@
     {
      "text": "s1 done on Fable: molly-shell@1 (instances, host catalog, host runs, shell state), tabs of copies in the dock, shared widgets, Molly control plugin (REST / MCP / CLI / voice through the console inside Molly), console-commands client forwards host runs. PR #447 open, UI Review waiting (6 items, group 'molly-fable-version-the-one-interface-for-amberx - Nov 10 3:45 PM'). Deploy: Molly + console redeploy after the merge queue lands it. Supersedes molly-multi-instance-tabs #328 (bar the + button / tab menu) and molly-one-shell s12. Report _claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md",
      "at": "2026-11-10T15:37:56.710Z"
+    },
+    {
+     "text": "Headless run axf-molly-fable-version-the-one-interface-for-amberx--earl: brief only · start 12.9K tokens ($0.10) · cost $19.80 · 234 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:38:32.200Z"
     }
    ],
    "approvals": [],
@@ -136118,7 +136122,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -137703,6 +137707,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T15:38:29.044Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "projects-create-a-new-project-and-move-builds-be",
+   "title": "Projects: create a new project and move builds between projects; move every pending build older than 2 days into a new project",
+   "category": "",
+   "detail": "1) Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:38:42.207Z",
+   "updatedAt": "2026-11-10T15:38:43.035Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
+    "at": "2026-11-10T15:38:42.207Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 543
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
