@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3062,
- "updatedAt": "2026-11-10T23:47:53.896Z",
+ "rev": 3063,
+ "updatedAt": "2026-11-10T23:48:06.174Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157045,15 +157045,15 @@
    "title": "Per-agent API control: switch in each employee's control panel; Amber and Molly on by default",
    "category": "",
    "detail": "Amends 3f5775eb. Console API/control access is a per-agent permission, off by default. In each employee's control panel (Agent Manager / Crew profile) add an 'API control' switch (with scope: open screens, change settings, run commands, file/queue builds). The AI assistant uses the permissions of the agent selected in its chat. Defaults: Amber = on, Molly = on, everyone else off. Changes are audited and show on the employee hook card.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/per-agent-api-control-switch-in-each-employee-s",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:39.715Z",
-   "updatedAt": "2026-11-10T23:47:51.294Z",
+   "updatedAt": "2026-11-10T23:47:56.228Z",
    "builtAt": "",
    "notes": [
     {
@@ -157063,6 +157063,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T23:47:34.514Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-per-agent-api-control-switch-in-each-employee-s--earl.",
+     "at": "2026-11-10T23:47:53.697Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-agent-api-control-switch-in-each-employee-s--earl, own login copy)",
+     "at": "2026-11-10T23:47:56.228Z"
     }
    ],
    "approvals": [],
@@ -157082,12 +157090,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:46:40.904Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-per-agent-api-control-switch-in-each-employee-s--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T23:47:53.181Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T23:47:34.514Z",
@@ -157097,9 +157105,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T23:47:53.181Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -157108,7 +157116,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T23:47:53.181Z"
    },
    "steps": [
     {
@@ -157189,7 +157197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
