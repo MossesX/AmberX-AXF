@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3002,
- "updatedAt": "2026-11-10T23:22:53.016Z",
+ "rev": 3003,
+ "updatedAt": "2026-11-10T23:23:05.956Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120648,6 +120648,10 @@
     {
      "text": "s2+s3 on PR #477. App connections screen not in UI Review: no console credentials in the session, so review.mjs --console could not post. Submit command is in the PR.",
      "at": "2026-11-10T23:19:29.938Z"
+    },
+    {
+     "text": "Phase 2: s2 had been ticked by the reconciler from PR text only; built it this phase (App connections screen + Settings section, commit 2c0777709). s3: 148 spec checks, UI Review r-20261110-ed9e12ba waiting. Remote reach (REST/MCP/CLI/voice) for molly.auth.* still depends on molly-gap-remote-actions.",
+     "at": "2026-11-10T23:22:16.804Z"
     }
    ],
    "approvals": [],
@@ -120757,11 +120761,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-10T23:19:28.609Z",
+     "doneAt": "2026-11-10T23:22:14.200Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-08T16:59:02.216Z",
-     "updatedAt": "2026-11-10T23:19:28.761Z"
+     "updatedAt": "2026-11-10T23:22:14.379Z"
     }
    ],
    "profiles": [
