@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:52:22.322Z",
+ "updatedAt": "2026-11-10T18:52:32.936Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78747,7 +78747,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T18:51:54.719Z",
+   "updatedAt": "2026-11-10T18:52:22.922Z",
    "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
@@ -78889,6 +78889,10 @@
     {
      "text": "Reconciler: PR #430 names s5 done",
      "at": "2026-11-10T18:50:38.760Z"
+    },
+    {
+     "text": "Headless run axf-appearance-skins-colour-themes-only-remove-desig--joey: brief only · start 11.7K tokens ($0.03) · cost $17.31 · 140 turns · 6 tools, MCP none",
+     "at": "2026-11-10T18:52:22.922Z"
     }
    ],
    "approvals": [
