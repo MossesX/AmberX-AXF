@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:57 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s3 done, → built (all) · orchestrator
-- 2026-11-10 16:57 UTC · `skins-own-everything-colour-theme-swaps-independ` → running, note (all) · pipeline
 - 2026-11-10 16:57 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 16:57 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 - 2026-11-10 16:58 UTC · `skins-as-packages-of-slices-every-section-its-ow` → pending, note (all) · reconciler
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:44 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:45 UTC · `inline-element-editing-plugin-right-click-any-el` s6 done (all) · orchestrator
 - 2026-11-10 20:45 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` added (0 steps) (all) · console
+- 2026-11-10 20:45 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` → queued, note (all) · console
+- 2026-11-10 20:45 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 
 ## Token passes (log)
 
