@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2231,
- "updatedAt": "2026-11-10T02:58:37.004Z",
+ "rev": 2232,
+ "updatedAt": "2026-11-10T02:59:07.035Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134500,7 +134500,7 @@
    "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
    "category": "",
    "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134508,7 +134508,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T02:48:44.827Z",
+   "updatedAt": "2026-11-10T02:59:04.980Z",
    "builtAt": "",
    "notes": [
     {
@@ -134522,6 +134522,10 @@
     {
      "text": "Started run 1 on account-5 (API key, overflow rule) (Opus, Phase 1): hl-mwa3cdm4-bo.",
      "at": "2026-11-10T02:48:44.827Z"
+    },
+    {
+     "text": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T02:59:04.980Z"
     }
    ],
    "approvals": [],
@@ -134542,12 +134546,19 @@
     "queuedAt": "2026-11-10T02:22:12.571Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "hl-mwa3cdm4-bo",
-    "slot": "hl-mwa3cdm4-bo",
+    "session": "",
+    "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T02:48:43.040Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T02:59:04.608Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 3,
+     "account": "account-5",
+     "session": "hl-mwa3cdm4-bo"
+    },
     "split": {
      "at": "2026-11-10T02:24:12.593Z",
      "by": "orchestrator",
@@ -134556,7 +134567,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "in the agent-slots queue (starts when the VPS cap frees)",
+    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-10T02:48:43.040Z"
    },
@@ -134639,7 +134650,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
