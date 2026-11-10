@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:26:26.804Z",
+ "updatedAt": "2026-11-10T18:28:14.312Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -91373,7 +91373,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:25:17.090Z",
+   "updatedAt": "2026-11-10T18:28:12.724Z",
    "builtAt": "",
    "notes": [
     {
@@ -91411,6 +91411,10 @@
     {
      "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--earl: brief only · start 12.7K tokens ($0.10) · cost $5.80 · 54 turns · 6 tools, MCP none",
      "at": "2026-11-10T18:25:17.090Z"
+    },
+    {
+     "text": "Duplicate dispatch, handled. The dispatcher launched this build twice (earl 18:11:16, gina 18:12:10), both as run 1. Cause (journal 2026-11-p4): the worktree's 'Claude account' note at 18:11:19 was written from a store copy taken before the launch and the per-build newer-wins merge replaced the launch record (status back to queued, pipeline record gone), so the next tick launched again; Earl's s1 tick at 18:24:48 did the same to the second record, so the live build is 'running' with no session on it and no session end was ever handled. Gina (this session) wrote no files and ticked nothing: Earl did s1 (commits 8a954df78, 56ba1d236). Set status to queued by hand = what the phase end would have set (exit 0, Fable -> Opus), so the dispatcher starts Phase 2. Dispatcher fix filed as a Pending build. For s2+: append 'push' to PASS_APPROVED_VIA in framework/core/engines/control-pass.mjs (reference engine, not touched in s1); the console has no hash router yet, so #/pass/<id> needs a consumer in s5 next to the ?axf-cmd= query form the wake path and AmberX OpenUrlRules already accept; PASS_REQUEST_TTL_MS and the pass id regex are duplicated in packages/shared/pass-approval instead of imported from control-pass.mjs.",
+     "at": "2026-11-10T18:28:12.724Z"
     }
    ],
    "approvals": [],
