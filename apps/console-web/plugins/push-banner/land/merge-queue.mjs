@@ -7,8 +7,11 @@
  *
  *   node apps/console-web/plugins/push-banner/land/merge-queue.mjs run [--dry-run] [--json]   one round
  *   … list [--json] | add <pr> | remove <pr> [--why "…"] | move <pr> <index>                 (0 = front)
+ *   … settings [--mode batch|stack] [--size n] [--on]                                      (off is Brett's click)
  *
- * One round:
+ * One round (batch mode, the default since Nov 10 2026: batchRound below): finished builds without a PR get one; the
+ * open PRs line up; the batch on queue/batch is checked (green: main becomes that one commit; red: split in half, or the
+ * one PR to blame kicked out); a new batch is combined and pushed. The stack round (queueMode 'stack'):
  *   1. the open PRs into main: ready ones (PR checks green, not a draft, not held by UI Review or by hand, not kicked
  *      out at this head) line up in queue order;
  *   2. last round's stack is kept as far as it still holds (same PRs in the same order, same heads, main unchanged
@@ -42,7 +45,9 @@ export const readQueueControl = (s) => readJson(queueControlFile(s), { $axf: q.Q
 export function readQueueConfig(s) {
   const c = readJson(join(s.dataDir, 'config.json'), {}) || {};
   const depth = Number.isInteger(c.queueDepth) ? Math.min(q.QUEUE_DEPTH_MAX, Math.max(1, c.queueDepth)) : q.QUEUE_DEFAULTS.queueDepth;
-  return { mergeQueue: c.mergeQueue !== false, depth, waitUi: c.landWaitUi !== false };
+  const mode = q.QUEUE_MODES.includes(c.queueMode) ? c.queueMode : q.QUEUE_DEFAULTS.queueMode;
+  const batchSize = Number.isInteger(c.batchSize) ? Math.min(q.BATCH_SIZE_MAX, Math.max(1, c.batchSize)) : q.QUEUE_DEFAULTS.batchSize;
+  return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
 }
 export function queueControl(s, cmd, pr, opts = {}) {
   const cur = (readQueue(s).items || []).map((x) => x.pr);
@@ -96,14 +101,17 @@ function runSpan(runs) {
 }
 
 /** Keep the repo variable AXF_MERGE_QUEUE on what the setting says (on = PRs run only the light checks). */
-async function syncVariable(s, gh, want, prev) {
+async function syncVariable(s, gh, want, prev, now = Date.now()) {
   const value = want ? 'on' : 'off';
   if (prev?.variable === value) return { variable: value };
+  // a token that may not write Actions variables (403) is asked again once an hour, not every round; CI reads the
+  // committed .github/merge-queue.json meanwhile, so PRs still run the light checks
+  if (prev?.variableError && prev?.variableTried && now - Date.parse(prev.variableTried) < 60 * 60000) return { variable: prev.variable || '', variableError: prev.variableError, variableTried: prev.variableTried };
   try {
     try { await gh('PATCH', `/repos/${s.slug}/actions/variables/AXF_MERGE_QUEUE`, { name: 'AXF_MERGE_QUEUE', value }); }
     catch (e) { if (e.status !== 404) throw e; await gh('POST', `/repos/${s.slug}/actions/variables`, { name: 'AXF_MERGE_QUEUE', value }); }
     return { variable: value };
-  } catch (e) { return { variable: prev?.variable || '', variableError: `couldn't set the repo variable AXF_MERGE_QUEUE (${String(e.message).slice(0, 160)}); PRs keep running the full (path-filtered) checks` }; }
+  } catch (e) { return { variable: prev?.variable || '', variableTried: new Date(now).toISOString(), variableError: `couldn't set the repo variable AXF_MERGE_QUEUE (${String(e.message).slice(0, 160)}); CI follows .github/merge-queue.json instead` }; }
 }
 
 const agentOf = (b, pr) => {
@@ -114,7 +122,7 @@ const agentOf = (b, pr) => {
 export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false } = {}) {
   const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s);
   const at = now().toISOString();
-  const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth };
+  const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth, mode: cfg.mode, batchSize: cfg.batchSize };
   if (!cfg.mergeQueue) {
     const v = dry ? {} : await syncVariable(s, gh, false, prev);
     const st = { ...base, items: [], stack: [], waiting: [], kicked: [], merged: prev.merged || [], ...v };
@@ -136,6 +144,10 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   pulls = (Array.isArray(pulls) ? pulls : []).filter((p) => p?.base?.ref === s.base && (p?.head?.repo?.full_name || '').toLowerCase() === s.slug.toLowerCase() && !q.isQueueBranch(p?.head?.ref));
   const prevAll = new Map([...(prev.items || []), ...(prev.waiting || [])].map((x) => [x.pr, x]));
 
+  // 0. every finished build goes into the queue (Nov 10 2026, no exceptions): a finished build whose branch is on GitHub
+  // but has no PR gets one here, whether auto-land is on or not; the PR's light checks run and it joins the next batch
+  const enlisted = dry ? [] : await enlist({ s, git, gh, builds, pulls, log });
+
   // 1. the open PRs, what holds each, and the ready ones in queue order
   const prs = [];
   for (const p of pulls) {
@@ -147,10 +159,11 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
     if (fact.ci === 'none') fact.conflicted = git(['merge-tree', '--write-tree', '--quiet', `${s.remote}/${s.base}`, fact.head]).code === 1;
     if (cfg.waitUi) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(fact.branch)}&pr=${fact.number}`); fact.ui = u ? String(u.hold || '') : 'unknown'; }
     if (b && landCtl.holds?.[b.id]) fact.landHeld = landCtl.holds[b.id].why || 'held';
-    fact.why = q.notReady(fact, ctl, { waitUi: cfg.waitUi });
+    fact.why = q.notReady(fact, ctl, { waitUi: cfg.waitUi, redJoins: cfg.mode === 'batch' });
     prs.push(fact);
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
+  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log });
   const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank, prev.stack || []);
 
   // 2. what of last round's stack still holds: main must have the code the stack was built on
@@ -268,6 +281,172 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   return st;
 }
 
+/** At most this many PRs are opened for finished builds in one round (the GitHub token is shared). */
+const ENLIST_MAX = 5;
+
+/** Open a PR for every finished build (land-core isCandidate) whose branch is on GitHub and has none. Returns [{ build, pr }]. */
+export async function enlist({ s, git, gh, builds, pulls, log = () => {} }) {
+  const open = new Set((pulls || []).map((p) => p?.head?.ref));
+  const out = [];
+  for (const b of core.uniqueByBranch(builds.filter(core.isCandidate))) {
+    if (out.length >= ENLIST_MAX) break;
+    if (open.has(b.branch) || q.isQueueBranch(b.branch)) continue;
+    if (git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${b.branch}`]).code) continue; // not pushed yet
+    if (git(['rev-list', '--count', `${s.remote}/${s.base}..${s.remote}/${b.branch}`]).out === '0') continue; // nothing to land
+    try {
+      const pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: String(b.title || b.id).slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished. Opened by the merge queue: every finished build goes into the queue, is combined with the other ready ones into one batch build, and lands when that batch's one CI run is green.\n\n${String(b.detail || '').slice(0, 1500)}` });
+      out.push({ build: b.id, pr: pr?.number || 0 });
+      log(`queue: opened #${pr?.number} for finished build ${b.id}`);
+    } catch (e) { if (e.status !== 422) log(`queue: couldn't open a PR for ${b.id}: ${e.message}`); }
+  }
+  return out;
+}
+
+/**
+ * Land a green batch: main becomes the batch commit (one push, never forced). When main moved meanwhile in status only
+ * (`[skip ci]` commits under _claude/), those commits are merged into the batch first and it lands only if its code is
+ * still exactly what CI tested. Returns { landed, sha, why }.
+ */
+export function landBatch({ s, git, batch }) {
+  git(['fetch', '-q', s.remote, s.base]);
+  const main = git(['rev-parse', `${s.remote}/${s.base}`]).out;
+  let sha = batch.sha;
+  if (git(['merge-base', '--is-ancestor', main, sha]).code !== 0) {
+    const c = combine({ s, git, parent: batch.sha, head: main, message: "Merge queue: main's status commits into the batch before it lands" });
+    if (!c.sha) return { landed: false, why: c.conflicts ? `main conflicts with the batch in ${c.conflicts.slice(0, 3).join(', ')}` : c.error || 'main could not be combined' };
+    if (!q.sameCodeFiles(lines(git(['diff', '--name-only', batch.sha, c.sha]).out))) return { landed: false, why: 'main moved in code while the batch ran; the batch is rebuilt' };
+    sha = c.sha;
+  }
+  const p = git(['push', '-q', s.remote, `${sha}:refs/heads/${s.base}`], { timeout: 90000 });
+  if (p.code) return { landed: false, why: `main refused the push (${p.err.slice(-160)}); tried again next round` };
+  git(['fetch', '-q', s.remote, s.base]);
+  return { landed: true, sha };
+}
+
+/**
+ * One batch round (queueMode 'batch', the default since Nov 10 2026): the ready PRs are combined into one commit on
+ * queue/batch, CI runs once on it, and a green batch lands on main as that one commit (GitHub marks every member PR
+ * merged). A red batch is split in half until the one PR to blame is found and kicked out; the halves that pass land.
+ */
+async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log }) {
+  const history = [...(prev.history || [])];
+  const merged = [...(prev.merged || [])].slice(-40);
+  const kicked = [...(prev.kicked || [])].slice(-20);
+  let split = [...(prev.split || [])];
+  let batch = prev.batch && prev.batch.sha ? { ...prev.batch } : null;
+  const landedNow = new Set();
+  // branches of PRs the last batch landed: deleted once GitHub has closed their PRs (Oct 31 2026: a leftover branch was re-opened as a duplicate PR)
+  const openRefs = new Set((pulls || []).map((p) => p?.head?.ref));
+  const tidy = (prev.lastLanded || []).filter((br) => br && !openRefs.has(br));
+  if (!dry) for (const br of tidy) await gh('DELETE', `/repos/${s.slug}/git/refs/heads/${br}`).catch(() => {});
+  let lastLanded = (prev.lastLanded || []).filter((br) => !tidy.includes(br));
+
+  const ready = q.greenFirst(q.queueOrder(prs.filter((p) => !p.why), ctl, rank, []), ctl);
+  if (batch) {
+    const mainMoved = git(['cat-file', '-e', `${batch.base}^{commit}`]).code !== 0 || !q.sameCodeFiles(lines(git(['diff', '--name-only', batch.base, mainSha]).out));
+    if (!q.batchHolds(batch, ready, { mainMoved })) {
+      log(mainMoved ? `queue: main moved in code outside the queue; the batch is rebuilt on ${mainSha.slice(0, 8)}` : 'queue: a PR in the batch changed or is no longer ready; the batch is rebuilt');
+      batch = null;
+    }
+  }
+
+  // 1. CI on the batch commit: one run for the whole batch
+  if (batch && !['success', 'failure'].includes(batch.ci)) {
+    try {
+      const runs = (await gh('GET', `/repos/${s.slug}/commits/${batch.sha}/check-runs?per_page=100`))?.check_runs || [];
+      const c = ciOf(runs); batch.ci = c.ci; batch.failing = c.failing;
+      const span = runSpan(runs); if (span != null && c.ci !== 'running') history.push(span);
+      batch.runUrl = runs.find((r) => r.html_url)?.html_url?.replace(/\/job\/\d+$/, '') || batch.runUrl || '';
+      const started = runs.map((r) => Date.parse(r.started_at || '')).filter((x) => x > 0);
+      if (started.length) batch.startedAt = new Date(Math.min(...started)).toISOString();
+    } catch { batch.ci = batch.ci || 'running'; }
+    if (batch.ci === 'none' && !dry && !batch.dispatched && Date.parse(at) - Date.parse(batch.builtAt || at) > q.NO_RUN_MIN * 60000) {
+      try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow || 'android.yml'}/dispatches`, { ref: q.BATCH_BRANCH }); batch.dispatched = at; } catch (err) { log(`queue: dispatch ${q.BATCH_BRANCH}: ${err.message}`); }
+    }
+  }
+
+  // 2. what the run means: land it all, kick the one to blame, or split
+  if (batch && ['success', 'failure'].includes(batch.ci)) {
+    const d = q.decideBatch(batch, batch.ci, { split });
+    const prOf = (n) => prs.find((x) => x.number === n) || {};
+    if (d.land.length) {
+      const r = dry ? { landed: false, why: 'dry run' } : landBatch({ s, git, batch });
+      if (r.landed) {
+        for (const n of d.land) { const p = prOf(n); merged.push({ pr: n, title: p.title || '', sha: r.sha, queueSha: batch.sha, at, retested: false, branch: q.BATCH_BRANCH, agent: p.agent || '', batch: d.land }); landedNow.add(n); }
+        lastLanded = [...lastLanded, ...d.land.map((n) => prOf(n).branch).filter(Boolean)];
+        log(`queue: landed batch ${d.land.map((n) => `#${n}`).join(', ')} at ${r.sha.slice(0, 8)} (one CI run, ${batch.sha.slice(0, 8)})`);
+        await api('POST', '/api/alerts/resolve', { keys: d.land.map((n) => `queue:${n}`) });
+        split = d.split; batch = null;
+      } else { batch.state = dry ? 'merging' : 'passed'; batch.why = r.why; if (!dry) log(`queue: the batch passed but didn't land: ${r.why}`); }
+    } else if (d.kick) {
+      const e = batch.members[0]; const why = q.kickReason(d.kick, { failing: batch.failing, ahead: [], url: batch.runUrl });
+      if (!dry) {
+        ctl = q.applyQueueControl(ctl, 'kick', d.kick, { why, head: e.head, at });
+        await gh('POST', `/repos/${s.slug}/issues/${d.kick}/comments`, { body: `**Kicked out of the merge queue.** ${why}\n\nPush a fix to this branch and it rejoins the queue by itself. The rest of the batch is tested without it.` }).catch(() => {});
+        await api('POST', '/api/alerts', { source: 'push-banner', key: `queue:${d.kick}`, severity: 'warning', title: `Merge queue: #${d.kick} kicked out`.slice(0, 200), body: why });
+      }
+      kicked.push({ pr: d.kick, title: prOf(d.kick).title || '', head: e.head, why, at, runUrl: batch.runUrl || '' });
+      const p = prs.find((x) => x.number === d.kick); if (p) p.why = `kicked out: ${why}`;
+      split = d.split; batch = null;
+    } else {
+      log(`queue: batch ${batch.members.map((m) => `#${m.pr}`).join(', ')} is red; split in half to find the PR that broke it`);
+      split = d.split; batch = null;
+    }
+  }
+
+  // 3. a new batch: the ready PRs (or the half under suspicion) combined, in queue order, on top of main
+  const skipped = new Map();
+  if (!batch) {
+    const avail = q.greenFirst(q.queueOrder(prs.filter((p) => !p.why && !landedNow.has(p.number)), ctl, rank, []), ctl);
+    split = split.filter((n) => avail.some((p) => p.number === n));
+    const want = q.batchMembers(avail, { size: cfg.batchSize, split });
+    const onto = git(['rev-parse', `${s.remote}/${s.base}`]).out || mainSha;
+    let cur = onto; const members = [];
+    for (const p of want) {
+      git(['fetch', '-q', s.remote, `+refs/heads/${p.branch}:refs/remotes/${s.remote}/${p.branch}`]);
+      const c = combine({ s, git, parent: cur, head: p.head, message: `Merge queue batch: #${p.number}${members.length ? ` on top of ${members.map((m) => `#${m.pr}`).join(', ')}` : ' on top of main'}\n\n${p.title}` });
+      if (c.conflicts) {
+        if (!members.length && git(['merge-tree', '--write-tree', '--quiet', onto, p.head]).code === 1) {
+          const why = `#${p.number} conflicts with main in code (${c.conflicts.slice(0, 3).join(', ')}). Merge main in and fix them.`;
+          if (!dry) ctl = q.applyQueueControl(ctl, 'kick', p.number, { why, head: p.head, at });
+          kicked.push({ pr: p.number, title: p.title, head: p.head, why, at }); p.why = `kicked out: ${why}`;
+        } else skipped.set(p.number, `conflicts in code with ${members.map((m) => `#${m.pr}`).join(', ') || 'the batch'}; goes in the next batch`);
+        continue;
+      }
+      if (c.error) { skipped.set(p.number, `couldn't be combined into the batch (${c.error})`); continue; }
+      cur = c.sha; members.push({ pr: p.number, head: p.head });
+    }
+    if (members.length) {
+      let pushed = true;
+      if (!dry) { const r = git(['push', '-q', '--force', s.remote, `${cur}:refs/heads/${q.BATCH_BRANCH}`], { timeout: 90000 }); if (r.code) { pushed = false; log(`queue: couldn't push ${q.BATCH_BRANCH} (${r.err.slice(-160)})`); } }
+      if (pushed) { batch = { members, sha: cur, base: onto, builtAt: at, ci: 'running', failing: [], bisect: split.length > 0 }; log(`queue: batch ${members.map((m) => `#${m.pr}`).join(', ')} built as ${cur.slice(0, 8)}; one CI run on ${q.BATCH_BRANCH}`); }
+    }
+  }
+
+  // 4. tidy: the per-PR stack branches of the old mode go; the variable; what the console shows
+  if (!dry) {
+    for (const ref of lines(git(['for-each-ref', '--format=%(refname:strip=3)', `refs/remotes/${s.remote}/queue/`]).out)) {
+      if (q.isQueueBranch(ref) && ref !== q.BATCH_BRANCH) git(['push', '-q', s.remote, '--delete', ref], { timeout: 60000 });
+    }
+    rmSync(join(s.dataDir, 'queue-merging'), { force: true }); // one landing = one push = one console deploy
+  }
+  const v = dry ? {} : await syncVariable(s, gh, true, prev);
+  const avg = q.runMinutes(history);
+  const startedMin = batch?.startedAt ? (Date.parse(at) - Date.parse(batch.startedAt)) / 60000 : 0;
+  const items = [];
+  for (const m of batch?.members || []) {
+    const p = prs.find((x) => x.number === m.pr) || {};
+    const state = batch.state || (batch.ci === 'success' ? 'passed' : 'testing');
+    items.push({ pr: m.pr, title: p.title || '', url: p.url || '', branch: p.branch || '', head: m.head, build: p.build || '', agent: p.agent || '', priority: p.priority || '', state, ci: batch.ci, queueBranch: q.BATCH_BRANCH, queueSha: batch.sha, ahead: [], inBatch: true, runUrl: batch.runUrl || '', why: batch.why || '', etaMin: Math.max(1, Math.round(avg - startedMin)), prCi: p.ci });
+  }
+  const rest = q.greenFirst(q.queueOrder(prs.filter((p) => !p.why && !landedNow.has(p.number) && !(batch?.members || []).some((m) => m.pr === p.number)), ctl, rank, []), ctl);
+  for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || (split.includes(p.number) ? 'its batch went red: tested again in a smaller batch' : ''), etaMin: Math.round(avg * (2 + Math.floor(j / cfg.batchSize))), prCi: p.ci });
+  const waiting = prs.filter((p) => p.why && !landedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
+  const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
+  if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
+  return st;
+}
+
 /**
  * Merge one PR whose queue run passed, with no retest: GitHub merges its head (pinned). When GitHub can't (main moved
  * on, a builds-file clash), main is merged into the branch first like auto-land does, and that head is merged only if
@@ -321,7 +500,18 @@ export async function main(argv) {
     const d = queueControl(s, cmd, pr, { why: opt('why'), to: cmd === 'move' ? Number(rest[1] ?? 0) : 0 });
     return print({ ok: true, control: d }, `${cmd}: #${String(pr).replace(/^#/, '')}${cmd === 'move' ? ` to ${rest[1] ?? 0}` : ''} (takes effect at the next round, within 3 minutes)`);
   }
-  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index>');
+  if (cmd === 'settings') {
+    // the host CLI writes the same config.json the console's PUT /config and POST /queue/settings write
+    const f = join(s.dataDir, 'config.json'); const c = readJson(f, {}) || {};
+    const mode = opt('mode'); const size = opt('size');
+    if (mode) { if (!q.QUEUE_MODES.includes(mode)) throw new Error(`--mode is one of ${q.QUEUE_MODES.join(', ')}`); c.queueMode = mode; }
+    if (size) { const n = Number(size); if (!Number.isInteger(n) || n < 1 || n > q.BATCH_SIZE_MAX) throw new Error(`--size is 1 to ${q.BATCH_SIZE_MAX}`); c.batchSize = n; }
+    if (args.includes('--on')) c.mergeQueue = true;
+    if (mode || size || args.includes('--on')) writeJson(f, { $axf: 'push-banner-config@1', ...c });
+    const cfg = readQueueConfig(s);
+    return print(cfg, `merge queue ${cfg.mergeQueue ? 'on' : 'off'} · ${cfg.mode}${cfg.mode === 'batch' ? ` · up to ${cfg.batchSize} PRs a batch` : ` · ${cfg.depth} at a time`}`);
+  }
+  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode batch|stack] [--size n] [--on]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

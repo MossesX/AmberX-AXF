@@ -65,6 +65,34 @@
         "title": "Allow notifications",
         "text": "Lets this browser show a notice when a call starts its countdown.",
         "kind": "button"
+      },
+      {
+        "target": "notices-one-per-held-call",
+        "title": "Notices (one per held call)",
+        "text": "Where you set “Notices (one per held call)”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "notice-sound",
+        "title": "Notice sound",
+        "text": "Where you set “Notice sound”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "notice-vibration",
+        "title": "Notice vibration",
+        "text": "Where you set “Notice vibration”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "alert-again-at-s-left-and-when-it-runs",
+        "title": "Alert again at 30 s left and when it runs",
+        "text": "Where you set “Alert again at 30 s left and when it runs”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": []

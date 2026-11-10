@@ -124,7 +124,7 @@
       {
         "target": "action:push-banner.queue",
         "title": "Merge queue",
-        "text": "Opens the merge queue: every ready PR in the order it merges, each tested once.",
+        "text": "Opens the merge queue: every finished build lands through it. The ready PRs are combined into one batch build, CI runs once on it, and a green batch lands on main as one commit.",
         "kind": "menu-item"
       },
       {
@@ -162,6 +162,39 @@
         "title": "Merge queue",
         "text": "On: each PR is tested once on top of main and the PRs ahead of it, then merges with no second run.",
         "kind": "toggle"
+      },
+      {
+        "target": "batch-mode",
+        "title": "Batch: one build, one CI run",
+        "text": "On: the ready PRs are combined into one build, CI runs once on it, and a green batch lands on main as that one commit. A red batch is split in half until the PR that broke it is found and kicked out. Off: each PR is tested on its own.",
+        "kind": "toggle"
+      },
+      {
+        "target": "batch-size",
+        "title": "PRs in one batch",
+        "text": "How many ready PRs go into one batch build (1 to 20). More means fewer CI runs; a red batch costs a few extra runs to find the PR that broke it.",
+        "kind": "field"
+      },
+      {
+        "target": "merge-queue-everything-lands-through-it",
+        "title": "Merge queue: everything lands through it",
+        "text": "Turns “Merge queue: everything lands through it” on or off. It takes effect straight away and is remembered. Part of Push banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "batch-one-build-one-ci-run",
+        "title": "Batch: one build, one CI run",
+        "text": "Turns “Batch: one build, one CI run” on or off. It takes effect straight away and is remembered. Part of Push banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "prs-in-one-batch",
+        "title": "PRs in one batch",
+        "text": "Where you set “PRs in one batch”. Change it and the app uses the new value. Part of Push banner.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": []

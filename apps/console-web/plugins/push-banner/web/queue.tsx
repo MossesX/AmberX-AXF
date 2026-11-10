@@ -10,10 +10,11 @@ import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
-export interface QueueItem { pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; prCi?: string }
+export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; prCi?: string }
 export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string }
 export interface QueueMerged { pr: number; title: string; at: string; agent?: string }
-export interface QueueState { on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
+export interface QueueBatch { prs: number[]; sha: string; ci: string; runUrl?: string; builtAt?: string; bisect?: boolean; why?: string }
+export interface QueueState { mode?: 'batch' | 'stack'; batchSize?: number; batch?: QueueBatch | null; split?: number[]; on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
 
 const POLL_MS = 60_000;
 let qstate: { data: QueueState | null; error: string; busy: number; note: string } = { data: null, error: '', busy: 0, note: '' };
@@ -56,7 +57,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
         </span>
         <span className="axp-push-banner__meta">
           <span className={`axp-mq__state is-${it.state}`}><Icon name={STATE_ICON[it.state]} size={14} /> {STATE_WORD[it.state]}</span>
-          {it.state === 'testing' && it.ahead?.length ? ` · with ${it.ahead.map((n) => `#${n}`).join(', ')} ahead` : ''}
+          {it.inBatch ? ' · in this batch' : it.state === 'testing' && it.ahead?.length ? ` · with ${it.ahead.map((n) => `#${n}`).join(', ')} ahead` : ''}
           {it.etaMin ? ` · merges ${eta(it.etaMin)}` : ''}
           {it.agent ? ` · ${it.agent}` : ''}
           {it.runUrl ? <> · <a className="axp-push-banner__ci" href={it.runUrl} target="_blank" rel="noreferrer">run</a></> : null}
@@ -87,7 +88,15 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
   const kickedOpen = d.waiting.filter((w) => w.state === 'kicked');
   return (
     <div className="axp-mq fx-stack">
-      <p className="fx-small fx-muted">Each PR is tested once, on top of main and every PR ahead of it ({d.depth} at a time); when its run is green it merges with no retest. A red one is kicked out with the reason and the ones behind it are retested without it.{d.avgMin ? ` A run takes ~${d.avgMin} min.` : ''}{d.at ? ` Checked ${new Date(d.at).toLocaleTimeString()}.` : ''}</p>
+      <p className="fx-small fx-muted">{d.mode === 'stack'
+        ? `Each PR is tested once, on top of main and every PR ahead of it (${d.depth} at a time); when its run is green it merges with no retest. A red one is kicked out with the reason and the ones behind it are retested without it.`
+        : `Every finished build lands through here. Up to ${d.batchSize ?? 8} ready PRs are combined into one build, CI runs once on it, and a green batch lands on main as that one commit. A red batch is split in half until the PR that broke it is found and kicked out.`}{d.avgMin ? ` A run takes ~${d.avgMin} min.` : ''}{d.at ? ` Checked ${new Date(d.at).toLocaleTimeString()}.` : ''}</p>
+      {d.mode !== 'stack' && d.batch && (
+        <p className="fx-small axp-push-banner__note" role="status">
+          Batch {d.batch.prs.map((n) => `#${n}`).join(', ')}{d.batch.bisect ? ' (half of a red batch)' : ''}: {d.batch.ci === 'success' ? 'CI passed, landing' : d.batch.ci === 'failure' ? 'CI failed' : 'CI running'}
+          {d.batch.runUrl ? <> · <a className="axp-push-banner__ci" href={d.batch.runUrl} target="_blank" rel="noreferrer">run</a></> : null}{d.batch.why ? ` · ${d.batch.why}` : ''}
+        </p>
+      )}
       {d.variableError && <p className="fx-small axp-push-banner__note is-danger">{d.variableError}</p>}
       {q.note && <p className="fx-small axp-push-banner__note" role="status">{q.note}</p>}
       <section className="axp-push-banner__group" aria-label="In the queue">
@@ -124,7 +133,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
           </ul>
         </section>
       )}
-      {!compact && d.merged.length > 0 && <p className="fx-small fx-muted">Merged lately: {d.merged.slice(-5).reverse().map((m) => `#${m.pr}`).join(', ')} (each tested once).</p>}
+      {!compact && d.merged.length > 0 && <p className="fx-small fx-muted">Merged lately: {d.merged.slice(-5).reverse().map((m) => `#${m.pr}`).join(', ')} ({d.mode === 'stack' ? 'each tested once' : 'landed in batches, one CI run each'}).</p>}
       <div className="axp-push-banner__foot" role="toolbar" aria-label="Merge queue">
         <Button size="sm" tone="quiet" icon="refresh" onClick={() => void loadQueue()}>Check now</Button>
         <Button size="sm" tone="quiet" icon="plus" title="Show the merge queue on Home" onClick={() => rt.openDialog('home-card', { draft: cardFromDrop({ plugin: FOLDER, command: 'mergequeue-list', title: 'Merge queue' }) })}>Add to Home</Button>
