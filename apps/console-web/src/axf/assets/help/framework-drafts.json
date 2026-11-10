@@ -264,6 +264,66 @@
         "text": "Opens the banner settings.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "back-to-skin",
+        "title": "Back to skin",
+        "text": "Drops your change to this one part, so it follows the skin again.",
+        "kind": "button"
+      },
+      {
+        "target": "choose",
+        "title": "Choose",
+        "text": "Opens the skin picker. Tap a skin to see it on this app, then Apply to keep it.",
+        "kind": "button"
+      },
+      {
+        "target": "use-skin",
+        "title": "Use skin",
+        "text": "On, this app wears the skin you picked. Off, it goes back to its own look and keeps your picks. Other apps never change.",
+        "kind": "toggle"
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Brings back the look you had before Restore to default. It works once.",
+        "kind": "button"
+      },
+      {
+        "target": "turn-skin-off",
+        "title": "Turn skin off",
+        "text": "Takes the skin off this app and goes back to its own look.",
+        "kind": "button"
+      },
+      {
+        "target": "view:axf.settings.skin",
+        "title": "Choose a skin",
+        "text": "Pick a skin for this app. A tap shows it on the real app without saving; Apply keeps it, Cancel puts the look back, Reset goes to the app's default look.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:axf.settings.restore-default",
+        "title": "Restore to default",
+        "text": "Asks before putting this app back to its default look. Skin and picks are cleared, and you can undo it once in Settings → Appearance.",
+        "kind": "screen"
+      },
+      {
+        "target": "inherit",
+        "title": "Inherit",
+        "text": "Puts this screen or plugin back to following its parent level: the app's skin, or the hub-wide one when the app follows it. Its own skin choice is dropped.",
+        "kind": "button"
+      },
+      {
+        "target": "follow-the-hub-wide-skin",
+        "title": "Follow the hub-wide skin",
+        "text": "On: this app takes the skin set for the whole hub on axHub while Use skin is off. Off (the default): this app keeps its own look whatever the hub says. Use skin on always wins.",
+        "kind": "toggle"
+      },
+      {
+        "target": "change",
+        "title": "Change",
+        "text": "Opens Where the skin applies: give one screen or plugin its own skin, switch skins off inside it, or let it inherit again; and see what a skin covers.",
+        "kind": "button"
       }
     ],
     "intros": []

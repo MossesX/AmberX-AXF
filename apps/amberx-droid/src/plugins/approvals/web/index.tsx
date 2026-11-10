@@ -8,9 +8,10 @@
  * Removable: everything is in this folder. Uninstall: `node framework/cli/plugin-catalog.mjs app-uninstall amberx approvals`.
  */
 import { type AxfWebLibrary } from '../../../axf/react';
-import { native } from '../../../native';
+import { isNative, native } from '../../../native';
+import { setVetoHost, vetoHost } from '../../../axf/libs/hub/veto';
 import { checkVeto, startVeto, setVetoHooks } from './store';
-import { decideFromPhone, setRuntime } from './deny';
+import { decideFromPhone, serverDecide, setRuntime } from './deny';
 import { setApprovalsHost } from '../../../axf/libs/approvals/react';
 import { HUB } from '../../../hub/useHub';
 import { showTab, TerminalView } from './terminal';
@@ -42,6 +43,18 @@ export const library: AxfWebLibrary = {
     // lib-approvals (assistant title bars): this app's hub, no framing (the phone opens hub pages in its signed-in hub view), and the
     // phone's deciding path. Removing this plugin leaves the badge on its defaults (hub pages open in the hub view).
     setApprovalsHost({ hub: HUB, frame: false, decide: decideFromPhone, open: (url) => void native.hubOpen({ url }).catch(() => undefined) });
+    // AmberX in a browser (no phone shell): held calls are decided through AmberX's server with the page's hub session,
+    // so Approve / Deny go straight through there too (Brett, Nov 8 2026). The phone shell lends its own host first.
+    if (!isNative() && !vetoHost().act) {
+      setVetoHost({
+        ...vetoHost(),
+        act: async (id, action) => {
+          const r = await serverDecide(id, action);
+          const state = r.state === 'approved-now' || r.state === 'denied' || r.state === 'shelved' ? r.state : undefined;
+          return { ok: r.ok, ...(state ? { state } : {}), ...(r.ok ? {} : { error: r.message ?? 'hub refused' }) };
+        },
+      });
+    }
     setVetoHooks({
       started: (t) => { if (rt.settings.get(OPEN_TERMINAL) === true) rt.dispatch(`approvals.terminal:${t.call.id}`); },
     });

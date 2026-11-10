@@ -46,6 +46,12 @@ const IN = {
   deleteNoAfter: { op: 'delete', before: base, after: null },
   archivedAfterMerge: { op: 'change', before: { ...base, status: 'complete', pr: '350', mergedAt: '2026-11-05T00:00:00Z' }, after: { ...base, rev: 13, status: 'archived', pr: '350', mergedAt: '2026-11-05T00:00:00Z' } },
   modelSpellings: { op: 'add', before: null, after: { ...base, id: 'models', steps: [{ ...s1, model: 'fable' }, { ...s2, model: 'claude-opus-5-5' }, { id: 's3', uid: 'u3', title: 'No model' }, { id: 's4', uid: 'u4', title: 'Blocked model', model: 'Sonnet 5.5' }] } },
+  // shipped-manifest@1 (Nov 9 2026): the orchestrator's manifest ref on a landed build fires `shipped`, once per rev
+  shipped: { op: 'change', before: { ...base, status: 'complete', pr: '350', mergedAt: '2026-11-05T00:00:00Z' }, after: { ...base, rev: 14, status: 'complete', pr: '350', mergedAt: '2026-11-05T00:00:00Z', shipped: { id: 'sm-shipped', rev: 1, at: '2026-11-05T00:10:00Z', landedCommit: 'e15e5287681b' } } },
+  shippedSame: { op: 'change', before: { ...base, shipped: { id: 'sm-shipped', rev: 1 } }, after: { ...base, rev: 15, title: 'Renamed', shipped: { id: 'sm-shipped', rev: 1 } } },
+  shippedRev2: { op: 'change', before: { ...base, shipped: { id: 'sm-shipped', rev: 1 } }, after: { ...base, rev: 16, shipped: { id: 'sm-shipped', rev: 2, at: '2026-11-06T00:00:00Z' } } },
+  createdShipped: { op: 'add', before: null, after: { ...base, id: 'direct', status: 'complete', pr: '#397', mergedAt: '2026-11-09T00:06:38Z', shipped: { id: 'sm-direct', rev: 1, landedCommit: '661901740ba2' } } },
+  shippedJunkRef: { op: 'change', before: base, after: { ...base, rev: 17, shipped: { rev: 3 } } },
 };
 const run = () => ({
   events: Object.fromEntries(Object.entries(IN).map(([k, c]) => [k, H.eventsFromChange(c, { at: AT, by: 'test' })])),
@@ -89,6 +95,13 @@ t('step models follow model-policy@1: any spelling of Fable / Opus, a blocked or
   assert.deepEqual(actual.events.modelSpellings[0].steps.map((s) => s.model), ['Fable', 'Opus', 'Opus', 'Opus']);
   assert.deepEqual(actual.stepModel, ['Fable', 'Fable', 'Fable', 'Fable', 'Fable', 'Opus', 'Opus', 'Opus', 'Opus', 'Opus', 'Opus']);
   assert.deepEqual(H.STEP_MODELS, ['Opus', 'Fable']);
+});
+t('a shipped manifest ref fires `shipped` once per rev, with the ref; a junk ref fires nothing', () => {
+  assert.deepEqual(kinds('shipped'), ['shipped']); assert.deepEqual(actual.events.shipped[0].shipped, { id: 'sm-shipped', rev: 1, at: '2026-11-05T00:10:00Z', landedCommit: 'e15e5287681b' });
+  assert.equal(actual.events.shipped[0].id, 'shipped:14:shipped:1');
+  assert.deepEqual(kinds('shippedSame'), []); assert.deepEqual(kinds('shippedRev2'), ['shipped']); assert.equal(actual.events.shippedRev2[0].shipped.rev, 2);
+  assert.deepEqual(kinds('createdShipped'), ['created', 'pr-merged', 'shipped']); assert.deepEqual(kinds('shippedJunkRef'), []);
+  assert.equal(H.normEvent({ event: 'shipped', build: { id: 'x' }, at: AT }), null, 'a shipped event without a ref is no event');
 });
 t('PR numbers from every shape the store has carried', () => assert.deepEqual(actual.prNumber, [330, 331, 332, 0, 0, 333, 334, 45, 336]));
 await ta('outbox round-trip (IO side)', async () => {

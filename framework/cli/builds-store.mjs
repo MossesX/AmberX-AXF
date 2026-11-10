@@ -233,6 +233,11 @@ function journal(entry) {
 export function adoptStore(next, { journals = {} } = {}) {
   const f = storeFile(); const unlock = lock(f);
   try {
+    // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
+    // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
+    // writer's revs, so an event a listener already took is skipped)
+    let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
     healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
     foldOrigins(next);
@@ -240,6 +245,17 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+}
+/** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
+export function adoptedChanges(before, next) {
+  const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+  const out = [];
+  for (const b of next?.builds ?? []) {
+    const o = old.get(b.id);
+    if (o && JSON.stringify(core.compactBuild(o)) === JSON.stringify(core.compactBuild(b))) continue;
+    out.push({ id: b.id, op: !o ? 'add' : b.deleted && !o.deleted ? 'delete' : !b.deleted && o.deleted ? 'restore' : 'change', before: o ?? null, after: b });
+  }
+  return out;
 }
 /** The store as it is on disk now (no foreign-write absorb). */
 export const readStoreNow = () => readStore();

@@ -2,7 +2,7 @@
 /** Approvals (veto) banner self-test: the alarm model. node --experimental-strip-types apps/console-web/plugins/approvals-banner/test.mts */
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
-import { ALARM_DEFAULTS, ALARM_KEYS as K, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
+import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -25,13 +25,26 @@ t('own sound needs an audio data URL', () => {
 });
 t('start points', () => {
   assert.deepEqual(START_AT.map((s) => startSeconds({ startAt: s.value })), [Infinity, 60, 30, 10, 0]);
-  const c = cfgOf({ [K.startAt]: 'run' });
+  const c = cfgOf({ [K.enabled]: true, [K.startAt]: 'run' });
   assert.equal(alarmDue(c, { secondsLeft: 1 }), false);
   assert.equal(alarmDue(c, { secondsLeft: 0 }), true);
-  assert.equal(alarmDue(cfgOf({ [K.startAt]: '60' }), { secondsLeft: 60 }), true);
+  assert.equal(alarmDue(cfgOf({ [K.enabled]: true, [K.startAt]: '60' }), { secondsLeft: 60 }), true);
+});
+t('no alarm by default (Brett, Nov 8 2026: one normal notice per hold, no alarm, no repeat at 30 s)', () => {
+  assert.equal(ALARM_DEFAULTS.enabled, false);
+  assert.equal(K.enabled, 'approvals-banner.alarm.on', 'a new key, so an old saved "on" never rings again');
+  assert.equal(alarmDue(cfgOf({}), { secondsLeft: 30 }), false);
+  assert.equal(alarmDue(cfgOf({ 'approvals-banner.alarm.enabled': true }), { secondsLeft: 0 }), false);
+  assert.deepEqual([ALARM_DEFAULTS.throughSilent, ALARM_DEFAULTS.repeat, ALARM_DEFAULTS.vibration, ALARM_DEFAULTS.tone], [false, 1, 'none', 'notification']);
+  assert.deepEqual(noticeConfig(() => undefined), NOTICE_DEFAULTS);
+  assert.deepEqual(NOTICE_DEFAULTS, { sound: true, vibrate: false, repeat: false });
+  const nat = nativeAlarmConfig(cfgOf({}), noticeConfig(() => undefined));
+  assert.deepEqual([nat.enabled, nat.noticeSound, nat.noticeVibrate, nat.noticeRepeat], [false, true, false, false]);
+  const loud = noticeConfig((k) => ({ [K.noticeSound]: false, [K.noticeVibrate]: true, [K.noticeRepeat]: true } as Record<string, unknown>)[k]);
+  assert.deepEqual(loud, { sound: false, vibrate: true, repeat: true });
 });
 t('quiet when shelved, approved or off', () => {
-  const c = cfgOf({ [K.startAt]: 'start' });
+  const c = cfgOf({ [K.enabled]: true, [K.startAt]: 'start' });
   assert.equal(alarmDue(c, { secondsLeft: 80, shelved: true }), false);
   assert.equal(alarmDue(c, { secondsLeft: 80, approvedNow: true }), false);
   assert.equal(alarmDue(cfgOf({ [K.enabled]: false, [K.startAt]: 'start' }), { secondsLeft: 0 }), false);
@@ -106,6 +119,28 @@ await at('the seams report in place: no frame, no opened page', async () => {
   assert.deepEqual(v, { ok: false, error: 'Too late.' });
   const a = await h.approvals.decide!({ id: ID, kind: 'approval', title: 'T', revision: 2 } as never, 'approve');
   assert.equal(a.opened, undefined);
+});
+
+/* ---- Nov 7 2026: every outcome of a tap comes back with its exact words (never a silent fall-back) */
+await at('owner sign-in, expired, already decided, no credential, relay down: the reason in place', async () => {
+  const ok = await relayDecide(post(200, { ok: true, via: 'owner', state: 'approved-now', message: 'Approved.' }), ID, 'approve', null, true);
+  assert.equal(ok.ok, true);
+  const expired = await relayDecide(post(200, { ok: false, code: 'expired', message: 'That request expired.' }), ID, 'approve', null, true);
+  assert.deepEqual([expired.ok, expired.code, expired.message], [false, 'expired', 'That request expired.']);
+  const decided = await relayDecide(post(200, { ok: false, code: 'decided', message: 'That request was already decided.' }), ID, 'decline', null, true);
+  assert.deepEqual([decided.ok, decided.code], [false, 'decided']);
+  const none = await relayDecide(post(200, { ok: false, code: 'no_credential', message: 'Nothing was decided: … AXF_HUB_RELAY_USER …' }), ID, 'approve', null, true);
+  assert.match(none.message!, /AXF_HUB_RELAY_USER/);
+  const hubDown = await relayDecide(post(200, { ok: false, code: 'unreachable', message: "Couldn't reach axHub (ConnectError). Nothing was decided." }), ID, 'approve', null, true);
+  assert.match(hubDown.message!, /Nothing was decided/);
+  const consoleDown = await relayDecide(post(502, null), ID, 'approve', null, true);
+  assert.equal(consoleDown.ok, false);
+  assert.ok(consoleDown.message, 'a 502 with no body still says something');
+  const h = relayHosts(post(200, { ok: false, code: 'expired', message: 'That request expired.' }));
+  const v = await h.veto.act(ID, 'approve-now');
+  assert.deepEqual([v.ok, v.error], [false, 'That request expired.']);
+  const d = await h.approvals.decide!({ id: ID, kind: 'held', title: 'T', revision: 2 } as never, 'approve');
+  assert.deepEqual([d.ok, d.message], [false, 'That request expired.']);
 });
 
 console.log(`✓ approvals-banner: ${n} checks passed`);

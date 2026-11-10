@@ -452,9 +452,9 @@
         "kind": "toggle"
       },
       {
-        "target": "demonstration-designer",
-        "title": "Demonstration Designer",
-        "text": "Opens the Demonstration Designer to pick or generate a demonstration.",
+        "target": "open-the-designer",
+        "title": "Open the designer",
+        "text": "Opens the glossary's demonstration editor to pick or generate a demonstration.",
         "kind": "button"
       },
       {

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Button, Checkbox, Chip, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import * as L from '@console/axf/core/feature-ledger.mjs';
+import type { Manifest } from '@console/axf/core/shipped-manifest.mjs';
 import './shipped-features.css';
 
 /*
@@ -11,7 +12,10 @@ import './shipped-features.css';
  *   1. groups (View by: PR, build, day, app, plugin, type, repo, or flat) with counts that follow the filters
  *   2. features: status chip, edited chip, app / plugin, type, planned / merged / live dates, last edited
  *   3. details: what Brett said (verbatim), builds, PRs, live per target, the Edits timeline (newest first, each
- *      opens to its prompt, summary, files and links) and earlier versions (the original is kept)
+ *      opens to its prompt, summary, files and links) and earlier versions (the original is kept), and the shipped
+ *      manifest the orchestrator sent when the build landed (shipped-manifest@1: his prompt first, then collapsible
+ *      sections: brief, steps, models and accounts, branch / PR / commit, files, tests, UI Review, cost, report, open)
+ * Deep link: ?shipped=<build or feature id> (or #…?shipped=…) opens the grid on that build with its rows expanded.
  * Every rule (filter, sort, group, chips, export) is the framework's: framework/core/feature-ledger.mjs.
  * The view (grouping, sort, quick filters, open rows) is remembered per device.
  */
@@ -21,7 +25,13 @@ export const VIEW = 'shipped-features';
 const api = pluginApi(FOLDER, 'Shipped features', { unavailable: 'Shipped features is switched off or its server part is not running.' });
 const VIEW_KEY = 'axp-shipped-features.view';
 type Ledger = L.Ledger & { meta?: { syncing?: boolean; importing?: boolean; empty?: boolean; error?: string; counts?: Record<string, number>; importedAt?: string } };
-type Detail = { feature: L.Feature; edits: L.Edit[]; prompts: L.Prompt[]; history: { rev: number; at: string; why: string; doc: L.Feature }[] };
+type Detail = { feature: L.Feature; edits: L.Edit[]; prompts: L.Prompt[]; history: { rev: number; at: string; why: string; doc: L.Feature }[]; manifests?: Manifest[] };
+
+/** Deep link + the shipped-features.show action: the build or feature to open the grid on. */
+const FOCUS_EVENT = 'axp-shipped-focus';
+let pendingFocus = '';
+export function focusShipped(id: string) { pendingFocus = id.trim(); window.dispatchEvent(new CustomEvent(FOCUS_EVENT)); }
+const focusFromUrl = () => { const read = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k); return (read('shipped') ?? '').trim(); };
 
 const loadView = (): L.View => { try { return L.normView(JSON.parse(localStorage.getItem(VIEW_KEY) || '{}')); } catch { return L.normView({}); } };
 const saveView = (v: L.View) => { try { localStorage.setItem(VIEW_KEY, JSON.stringify(v)); } catch { /* private window: the view just isn't remembered */ } };
@@ -56,6 +66,76 @@ function Filters({ view, set }: { view: L.View; set: (p: Partial<L.View>) => voi
       <SelectField label="Edit status" value={view.editStatus} onChange={(v) => set({ editStatus: v as L.Status | '' })} options={[{ value: '', label: 'Any edit status' }, ...L.STATUSES.map((s) => ({ value: s, label: L.STATUS_LABEL[s] }))]} />
       {(view.statuses.length || view.hideCompleted || view.hidePending || !view.hideCancelled || view.hasEdits !== null || view.beingEdited || view.editStatus || view.search) ? <Button icon="x" onClick={() => set({ ...L.DEFAULT_VIEW, by: view.by, sort: view.sort, expanded: view.expanded })}>Clear filters</Button> : null}
     </div>
+  );
+}
+
+const mins = (n: number) => (n >= 60 ? `${Math.floor(n / 60)} h${n % 60 ? ` ${n % 60} min` : ''}` : `${n} min`);
+const usd = (n: number) => `$${n.toFixed(2)}`;
+const RESULT_TONE: Record<string, 'success' | 'danger' | 'warning' | undefined> = { pass: 'success', fail: 'danger', skip: 'warning', unknown: undefined };
+
+/** A collapsible manifest section (native details: keyboard and screen readers get it for free). */
+function Section({ title, count, open = false, children }: { title: string; count?: number | string; open?: boolean; children: ReactNode }) {
+  return (
+    <details className="axp-shipped__msec" open={open}>
+      <summary>{title}{count !== undefined && count !== '' ? <span className="fx-muted"> · {count}</span> : null}</summary>
+      <div className="axp-shipped__msecbody">{children}</div>
+    </details>
+  );
+}
+
+/** The shipped manifest of a build: Brett's prompt first and highlighted, then every fact in its own collapsible section. */
+export function ManifestPanel({ m }: { m: Manifest }) {
+  const done = m.steps.filter((s) => s.done);
+  const est = m.steps.reduce((a, s) => a + s.estimateMin, 0); const act = done.reduce((a, s) => a + s.actualMin, 0);
+  const t = m.cost.tokens;
+  return (
+    <section className="axp-shipped__manifest" aria-label={`Shipped manifest of ${m.build.title || m.build.id}`}>
+      <h4><Icon name="package" /> Shipped manifest <span className="fx-muted">{m.build.id} · rev {m.rev} · {m.source}</span></h4>
+      <blockquote className="axp-shipped__said axp-shipped__prompt" title={m.said.verbatim ? 'His exact words' : 'From the build (may be paraphrased)'}>
+        <mark>{m.said.text}</mark>
+        <footer className="fx-muted">{m.said.verbatim ? 'The prompt that created it (his exact words)' : 'From the build detail (no verbatim prompt recorded)'}{m.said.at ? ` · ${fmtTime(m.said.at)}` : ''}{m.said.source ? ` · ${m.said.source}` : ''}</footer>
+      </blockquote>
+      {m.said.addenda.map((a, i) => <blockquote key={i} className="axp-shipped__said">{a.text}<footer className="fx-muted">Addendum {i + 1}{a.at ? ` · ${fmtTime(a.at)}` : ''}</footer></blockquote>)}
+      <div className="axp-shipped__chips">
+        {m.pr.number ? <a className="fx-chip" href={m.pr.url} target="_blank" rel="noreferrer">PR #{m.pr.number}</a> : null}
+        {m.landedCommit ? <Chip tone="success">Landed {m.landedCommit.slice(0, 9)}{m.landedAt ? ` · ${fmtTime(m.landedAt)}` : ''}</Chip> : null}
+        {m.models.map((x) => <ModelBadge key={x} model={x} />)}
+        {m.tests.length ? <Chip tone={m.tests.some((x) => x.result === 'fail') ? 'danger' : 'success'}>{m.tests.filter((x) => x.result === 'pass').length}/{m.tests.length} test lines pass</Chip> : null}
+        {m.cost.usd ? <Chip>{usd(m.cost.usd)}{m.cost.estimated ? ' (est.)' : ''}</Chip> : null}
+        {m.open.length ? <Chip tone="warning">{m.open.length} still open</Chip> : null}
+      </div>
+      {m.brief ? <Section title="Full brief" count={`${m.brief.length.toLocaleString()} chars`}><pre className="axp-shipped__pre">{m.brief}</pre></Section> : null}
+      <Section title="Steps" count={`${done.length}/${m.steps.length} · est. ${mins(est)} · actual ${mins(act)}`}>
+        <ol className="axp-shipped__steps">{m.steps.map((s) => <li key={s.id}><b>{s.id}</b> <ModelBadge model={s.model} /> <span className="fx-muted">est. {s.estimate || '—'} · {s.done ? `took ${mins(s.actualMin)}${s.doneAt ? ` · done ${fmtTime(s.doneAt)}` : ''}` : 'not done'}</span><p>{s.text}</p></li>)}</ol>
+      </Section>
+      <Section title="Models and accounts" count={m.accounts.join(', ') || '—'}>
+        <ul className="axp-shipped__list">{m.runs.length ? m.runs.map((r) => <li key={r.session}><code>{r.session}</code> · {r.account || '?'} · {r.model || '?'} · {fmtTime(r.startedAt)}{r.endedAt ? ` → ${fmtTime(r.endedAt)}` : ''}{r.exit !== null ? ` · exit ${r.exit}` : ''}{r.costUsd ? ` · ${usd(r.costUsd)}` : ''}</li>) : <li className="fx-muted">No session record found.</li>}</ul>
+      </Section>
+      <Section title="Branch, PR and commits" count={m.commits.length}>
+        <dl className="axp-shipped__facts">
+          <dt>Branch</dt><dd>{m.branch ? <code>{m.branch}</code> : '—'}</dd>
+          <dt>Pull request</dt><dd>{m.pr.number ? <a href={m.pr.url} target="_blank" rel="noreferrer">{L.REPOS[m.pr.repo]?.label ?? m.pr.repo} #{m.pr.number}</a> : '—'}</dd>
+          <dt>Landed</dt><dd>{m.landedCommit ? <code>{m.landedCommit.slice(0, 12)}</code> : '—'}{m.landedAt ? ` · ${fmtTime(m.landedAt)}` : ''}</dd>
+          <dt>Commits</dt><dd>{m.commits.length ? m.commits.map((c) => <code key={c}>{c.slice(0, 9)}</code>) : '—'}</dd>
+        </dl>
+      </Section>
+      <Section title="Files and areas" count={`${m.files.length} files · ${m.areas.length} areas`}>
+        <ul className="axp-shipped__list">{m.areas.map((a) => <li key={`${a.kind}:${a.id}`}><b>{a.kind}</b> {a.id} <span className="fx-muted">({a.files.length})</span><p className="axp-shipped__files fx-muted">{a.files.join(', ')}</p></li>)}</ul>
+      </Section>
+      <Section title="Tests" count={m.tests.length || 'none recorded'}>
+        <ul className="axp-shipped__list">{m.tests.map((x, i) => <li key={i}><Chip tone={RESULT_TONE[x.result]}>{x.result}</Chip> {x.name}{x.command ? <> · <code>{x.command}</code></> : null}</li>)}</ul>
+      </Section>
+      <Section title="UI Review" count={m.uiReview.length || 'none'}>
+        <ul className="axp-shipped__list">{m.uiReview.map((r) => <li key={r.id || r.name}>{r.name || r.id} · <span className="fx-muted">{r.status}{r.group ? ` · ${r.group}` : ''}</span></li>)}</ul>
+      </Section>
+      <Section title="Cost and tokens" count={m.cost.usd ? usd(m.cost.usd) : '—'}>
+        <p>{usd(m.cost.usd)}{m.cost.estimated ? ' (estimated)' : ''} · input {t.input.toLocaleString()} · output {t.output.toLocaleString()} · cache read {t.cacheRead.toLocaleString()} · cache write {t.cacheWrite.toLocaleString()}</p>
+      </Section>
+      <Section title="Report" count={m.report ? '1' : 'none'}>{m.report ? <code>{m.report}</code> : <p className="fx-muted">No report found.</p>}</Section>
+      <Section title="Still open" count={m.open.length} open={m.open.length > 0}>
+        {m.open.length ? <ul className="axp-shipped__list">{m.open.map((o, i) => <li key={i}>{o}</li>)}</ul> : <p className="fx-muted">Nothing open.</p>}
+      </Section>
+    </section>
   );
 }
 
@@ -114,6 +194,7 @@ function FeatureDetail({ f, ledger }: { f: L.Feature; ledger: Ledger }) {
           </ol>
         ) : <p className="fx-muted">Never edited.</p>}
       </section>
+      {d?.manifests?.length ? d.manifests.map((m) => <ManifestPanel key={m.id} m={m} />) : null}
       {original && d && d.history.length ? (
         <details className="axp-shipped__history">
           <summary>Earlier versions ({d.history.length}) · original: {original.name} ({L.STATUS_LABEL[original.status]}, {fmtDay(original.plannedAt || original.createdAt)})</summary>
@@ -133,6 +214,17 @@ export function ShippedFeaturesPage() {
   const set = (p: Partial<L.View>) => setViewState((v) => { const n = L.normView({ ...v, ...p }); saveView(n); return n; });
 
   const load = async () => { try { setLedger(await api.call<Ledger>('ledger')); setError(''); } catch (e) { setError((e as Error).message); } };
+  // deep link (?shipped=<build or feature id>) and the shipped-features.show action: group by build, search it, open its rows
+  const [focus, setFocus] = useState(() => { const u = focusFromUrl(); if (u) pendingFocus = u; return pendingFocus; });
+  useEffect(() => { const on = () => setFocus(pendingFocus); window.addEventListener(FOCUS_EVENT, on); return () => window.removeEventListener(FOCUS_EVENT, on); }, []);
+  useEffect(() => {
+    if (!ledger || !focus) return;
+    const id = focus.toLowerCase();
+    const hits = ledger.features.filter((f) => f.id === id || f.builds.some((b) => b.id === id));
+    const groups = hits.flatMap((f) => (f.builds.length ? f.builds.map((b) => `g:${b.profile || 'main-framework'}:${b.id}`) : []));
+    set({ by: 'build', search: hits.length && !hits.some((f) => f.id === id) ? id : hits[0]?.name ?? id, hideCancelled: false, hideCompleted: false, hidePending: false, statuses: [], expanded: [...new Set([...hits.map((f) => f.id), ...groups])] });
+    pendingFocus = ''; setFocus('');
+  }, [ledger, focus]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { void load(); const t = window.setInterval(() => { void load(); }, 60_000); return () => window.clearInterval(t); }, []);
   useEffect(() => { if (ledger?.meta?.importing || ledger?.meta?.syncing) { const t = window.setTimeout(() => { void load(); }, 5_000); return () => window.clearTimeout(t); } return undefined; }, [ledger]);
 

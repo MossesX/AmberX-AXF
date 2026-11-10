@@ -1014,6 +1014,311 @@
      "verbatim": true
     }
    }
+  },
+  "shipped": {
+   "op": "change",
+   "before": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "complete",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "pr": "350",
+    "mergedAt": "2026-11-05T00:00:00Z"
+   },
+   "after": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "complete",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 14,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "pr": "350",
+    "mergedAt": "2026-11-05T00:00:00Z",
+    "shipped": {
+     "id": "sm-shipped",
+     "rev": 1,
+     "at": "2026-11-05T00:10:00Z",
+     "landedCommit": "e15e5287681b"
+    }
+   }
+  },
+  "shippedSame": {
+   "op": "change",
+   "before": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "pending",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "shipped": {
+     "id": "sm-shipped",
+     "rev": 1
+    }
+   },
+   "after": {
+    "id": "shipped",
+    "title": "Renamed",
+    "profiles": [
+     "angel"
+    ],
+    "status": "pending",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 15,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "shipped": {
+     "id": "sm-shipped",
+     "rev": 1
+    }
+   }
+  },
+  "shippedRev2": {
+   "op": "change",
+   "before": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "pending",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "shipped": {
+     "id": "sm-shipped",
+     "rev": 1
+    }
+   },
+   "after": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "pending",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 16,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "shipped": {
+     "id": "sm-shipped",
+     "rev": 2,
+     "at": "2026-11-06T00:00:00Z"
+    }
+   }
+  },
+  "createdShipped": {
+   "op": "add",
+   "before": null,
+   "after": {
+    "id": "direct",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "complete",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "pr": "#397",
+    "mergedAt": "2026-11-09T00:06:38Z",
+    "shipped": {
+     "id": "sm-direct",
+     "rev": 1,
+     "landedCommit": "661901740ba2"
+    }
+   }
+  },
+  "shippedJunkRef": {
+   "op": "change",
+   "before": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "pending",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    }
+   },
+   "after": {
+    "id": "shipped",
+    "title": "Shipped features",
+    "profiles": [
+     "angel"
+    ],
+    "status": "pending",
+    "createdAt": "2026-11-04T12:00:00Z",
+    "rev": 17,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "u1",
+      "title": "Grid",
+      "text": "Three-level grid",
+      "files": [
+       "apps/console-web/plugins/example-grid/web/index.tsx"
+      ],
+      "model": "Opus"
+     }
+    ],
+    "origin": {
+     "said": "Where is the list of features?",
+     "at": "2026-11-04T12:00:00Z",
+     "source": "voice",
+     "verbatim": true
+    },
+    "shipped": {
+     "rev": 3
+    }
+   }
   }
  },
  "out": {
@@ -1950,7 +2255,189 @@
       "index": 0
      }
     }
-   ]
+   ],
+   "shipped": [
+    {
+     "$axf": "build-event@1",
+     "id": "shipped:14:shipped:1",
+     "event": "shipped",
+     "at": "2026-11-04T22:00:00Z",
+     "by": "test",
+     "build": {
+      "id": "shipped",
+      "profile": "angel",
+      "profiles": [
+       "angel"
+      ],
+      "title": "Shipped features",
+      "category": "",
+      "status": "complete",
+      "branch": "",
+      "pr": 350,
+      "mergedAt": "2026-11-05T00:00:00Z",
+      "createdAt": "2026-11-04T12:00:00Z",
+      "rev": 14,
+      "repo": "amberx-axf"
+     },
+     "from": "",
+     "to": "",
+     "steps": [],
+     "prompt": null,
+     "shipped": {
+      "id": "sm-shipped",
+      "rev": 1,
+      "at": "2026-11-05T00:10:00Z",
+      "landedCommit": "e15e5287681b"
+     }
+    }
+   ],
+   "shippedSame": [],
+   "shippedRev2": [
+    {
+     "$axf": "build-event@1",
+     "id": "shipped:16:shipped:2",
+     "event": "shipped",
+     "at": "2026-11-04T22:00:00Z",
+     "by": "test",
+     "build": {
+      "id": "shipped",
+      "profile": "angel",
+      "profiles": [
+       "angel"
+      ],
+      "title": "Shipped features",
+      "category": "",
+      "status": "pending",
+      "branch": "",
+      "pr": 0,
+      "mergedAt": "",
+      "createdAt": "2026-11-04T12:00:00Z",
+      "rev": 16,
+      "repo": "amberx-axf"
+     },
+     "from": "",
+     "to": "",
+     "steps": [],
+     "prompt": null,
+     "shipped": {
+      "id": "sm-shipped",
+      "rev": 2,
+      "at": "2026-11-06T00:00:00Z",
+      "landedCommit": ""
+     }
+    }
+   ],
+   "createdShipped": [
+    {
+     "$axf": "build-event@1",
+     "id": "direct:1:created",
+     "event": "created",
+     "at": "2026-11-04T22:00:00Z",
+     "by": "test",
+     "build": {
+      "id": "direct",
+      "profile": "angel",
+      "profiles": [
+       "angel"
+      ],
+      "title": "Shipped features",
+      "category": "",
+      "status": "complete",
+      "branch": "",
+      "pr": 397,
+      "mergedAt": "2026-11-09T00:06:38Z",
+      "createdAt": "2026-11-04T12:00:00Z",
+      "rev": 1,
+      "repo": "amberx-axf"
+     },
+     "from": "",
+     "to": "complete",
+     "steps": [
+      {
+       "id": "s1",
+       "uid": "u1",
+       "title": "Grid",
+       "text": "Three-level grid",
+       "files": [
+        "apps/console-web/plugins/example-grid/web/index.tsx"
+       ],
+       "model": "Opus",
+       "done": false,
+       "doneAt": ""
+      }
+     ],
+     "prompt": {
+      "said": "Where is the list of features?",
+      "at": "2026-11-04T12:00:00Z",
+      "source": "voice",
+      "session": "",
+      "link": "",
+      "verbatim": true,
+      "index": 0
+     }
+    },
+    {
+     "$axf": "build-event@1",
+     "id": "direct:1:pr-merged",
+     "event": "pr-merged",
+     "at": "2026-11-04T22:00:00Z",
+     "by": "test",
+     "build": {
+      "id": "direct",
+      "profile": "angel",
+      "profiles": [
+       "angel"
+      ],
+      "title": "Shipped features",
+      "category": "",
+      "status": "complete",
+      "branch": "",
+      "pr": 397,
+      "mergedAt": "2026-11-09T00:06:38Z",
+      "createdAt": "2026-11-04T12:00:00Z",
+      "rev": 1,
+      "repo": "amberx-axf"
+     },
+     "from": "",
+     "to": "",
+     "steps": [],
+     "prompt": null
+    },
+    {
+     "$axf": "build-event@1",
+     "id": "direct:1:shipped:1",
+     "event": "shipped",
+     "at": "2026-11-04T22:00:00Z",
+     "by": "test",
+     "build": {
+      "id": "direct",
+      "profile": "angel",
+      "profiles": [
+       "angel"
+      ],
+      "title": "Shipped features",
+      "category": "",
+      "status": "complete",
+      "branch": "",
+      "pr": 397,
+      "mergedAt": "2026-11-09T00:06:38Z",
+      "createdAt": "2026-11-04T12:00:00Z",
+      "rev": 1,
+      "repo": "amberx-axf"
+     },
+     "from": "",
+     "to": "",
+     "steps": [],
+     "prompt": null,
+     "shipped": {
+      "id": "sm-direct",
+      "rev": 1,
+      "at": "",
+      "landedCommit": "661901740ba2"
+     }
+    }
+   ],
+   "shippedJunkRef": []
   },
   "journal": [
    "shipped:1:created",

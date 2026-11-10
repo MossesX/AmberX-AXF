@@ -15,9 +15,28 @@
  *   … tick [--json]                one dispatcher round: intake, session ends, the running-builds watchdog (watchdog.mjs), launches, idle alert, state file
  *   … watchdog [check [--dry]]     the watchdog's last check, or run one now (marked running vs really running, and what it fixed)
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
+ *   … selfcheck [--request] [--reason r] [--json]   check every account one by one, release stale claims / slots / builds,
+ *                                  rebuild the account snapshot, alert AmberX on a fix or an unusable account. Off the host
+ *                                  (the console container) or with --request it asks the next tick to run it.
+ * The console's container has no ~/.claude-accounts: there the accounts come from accounts-host.json, the snapshot every
+ * host tick writes (status.accountsFrom says which, and how old).
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
- *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1)
+ *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
+ *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
+ *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
+ *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
+ *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
+ *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *
+ * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
+ * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
+ * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
+ * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
+ * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
+ * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
+ * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -44,8 +63,12 @@ import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
-import { markLimit, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
-import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
+import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import { shipLanded } from '../../../../framework/cli/shipped.mjs';
+import { normPriority } from '../../../../framework/core/build-priority.mjs';
+import { act as orchAct } from './orchestrator.mjs';
+import { markLimit, reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
@@ -66,7 +89,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -105,17 +128,43 @@ export function slotsNow() {
   catch { return { used: 0, cap: 1, free: 1, running: [], queue: [], unavailable: true }; }
 }
 
-/** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
-export function accountsNow(store, settings = loadSettings()) {
-  let rows = [];
-  try { rows = workersStatus().accounts; } catch { rows = []; }
+/** Does this process see the saved Claude logins? The VPS host does; the console container does not (no ~/.claude-accounts). */
+export const seesAccounts = (env = process.env) => { try { return statSync(loginPaths(env).accounts).isDirectory(); } catch { return false; } };
+
+/** The host's claude-workers rows as the last tick on the host wrote them (no credential: names, roles, limits, counts). */
+export const SCHEMA_HOST = 'pipeline-host-accounts@1';
+export function writeHostAccounts(rows, at = nowIso()) { writeJson(files().host, { $axf: SCHEMA_HOST, at, rows }); }
+export function readHostAccounts() { const j = readJson(files().host); return j && Array.isArray(j.rows) ? { at: str(j.at, 40), rows: j.rows } : null; }
+
+/**
+ * claude-workers rows and where they came from: { rows, source: host | snapshot | none, at, why }. The console runs in a
+ * container that has no ~/.claude-accounts, so there claude-workers sees no account at all ("no Claude account is signed in
+ * on the VPS" while the host had several). There the host's last snapshot (written every tick) stands in.
+ */
+export function workerRows(env = process.env) {
+  if (seesAccounts(env)) {
+    try { const s = workersStatus(env); return { rows: s.accounts, source: 'host', at: s.at, why: '' }; }
+    catch (e) { return { rows: [], source: 'none', at: '', why: `claude-workers failed: ${str(e.message, 200)}` }; }
+  }
+  const snap = readHostAccounts();
+  if (snap) return { rows: snap.rows, source: 'snapshot', at: snap.at, why: '' };
+  return { rows: [], source: 'none', at: '', why: 'this process can\'t see the Claude logins and the dispatcher on the host has not written its account snapshot yet' };
+}
+
+/** Accounts as the pipeline sees them, with where they came from: { accounts, source, at, why }. */
+export function accountsRead(store, settings = loadSettings(), env = process.env) {
+  const w = workerRows(env);
+  const rows = w.rows.map((r) => ({ ...r }));
   const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting') && b.pipeline?.account);
   for (const r of rows) {
     const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
     r.running = [...new Set([...(r.running ?? []), ...mine])];
   }
-  return P.accountViews(rows, loadOwnAccounts(), { settings });
+  return { accounts: P.accountViews(rows, loadOwnAccounts(), { settings }), rows: w.rows, source: w.source, at: w.at, why: w.why };
 }
+
+/** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
+export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
@@ -126,8 +175,10 @@ const row = (b) => {
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
   const builds = live(store);
+  const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
+  const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
   const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
@@ -135,7 +186,8 @@ export function status() {
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails }, watchdog: watchdogView() };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, accountsFrom, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' }, watchdog: watchdogView() };
 }
 
 /** The watchdog's last check, trimmed for the console and MCP (null before the first run). */
@@ -287,7 +339,7 @@ export function ensureWorktree(id, env = process.env) {
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief. */
-export function briefFor(b, rules, { account, model }) {
+export function briefFor(b, rules, { account, model, kind = '' }) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
   return [
@@ -295,18 +347,20 @@ export function briefFor(b, rules, { account, model }) {
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
     '## What to build', orch.brief(b, rules), '',
     `## Pipeline`,
-    `This session was started by the orchestrator's dispatcher on Claude account ${account} for the ${model} phase. Tick every step as you finish it (orchestrator.mjs act step ${b.id} <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
+    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Tick every step as you finish it (orchestrator.mjs act step ${b.id} <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
   ].join('\n');
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model })}\n`);
+  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
+  // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
+  const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
   const args = ['--name', b.id, '--account', account, '--brief', '.axf-brief.md', '--log', `${b.id}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
-  const e = { ...env, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
+  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
   const r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e });
   const text = `${r.stdout || ''}\n${r.stderr || ''}`;
   const session = /started (axf-\S+) in/.exec(text)?.[1] ?? /queued at position \d+ \((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
@@ -379,6 +433,74 @@ export function makeConsole(env = process.env) {
   };
 }
 
+// ------------------------------------------------------------------ self-check and stale reaper
+
+/**
+ * Builds the store calls running on an account that hold nothing on the VPS: no session, and their agent slot is neither
+ * running nor queued (a launch that never started, a slot that was cleared). After the grace period they go back to the
+ * Queue (the dispatcher starts them again) and their account count drops. Builds with a session are checkEnds()'s.
+ */
+export function reapBuilds({ sl = slotsNow(), now = Date.now() } = {}) {
+  if (sl.unavailable) return [];
+  const held = new Set([...(sl.running ?? []), ...(sl.queue ?? [])].flatMap((x) => [x.id, x.session].filter(Boolean)));
+  const out = [];
+  for (const b of live(loadStore())) {
+    const p = b.pipeline;
+    if (!(b.status === 'running' || b.status === 'waiting') || !p?.account || p.session) continue;
+    if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
+    const note = `Self-check: ${b.id} was marked running on ${p.account} with no session${p.slot ? ` and agent slot ${p.slot} gone` : ''}: released and back in the Queue.`;
+    setPipeline(b.id, { account: '', slot: '', session: '', note: 'released by the self-check (nothing ran): back in the Queue' }, { status: 'queued', note, action: 'pipeline:reap' });
+    logLine({ event: 'reaped', build: b.id, account: p.account, slot: p.slot || '' });
+    out.push({ id: b.id, account: p.account, slot: p.slot || '' });
+  }
+  return out;
+}
+
+/** Ask the host for a self-check (the console and voice: the next tick runs it, within a minute). */
+export function requestSelfCheck({ by = process.env.AXF_ACTOR || 'console', reason = 'on demand' } = {}) {
+  const r = { at: nowIso(), by: str(by, 80), reason: str(reason, 80) };
+  writeJson(files().checkRequest, r);
+  logLine({ event: 'self-check-requested', ...r });
+  return r;
+}
+
+/**
+ * The orchestrator's self-check (Brett, Nov 9 2026: the dispatcher said no account was signed in while several were).
+ * On the host only: reap dead worker claims and expired limits, reap builds that hold nothing, then check every saved
+ * account one by one (subscription: signed in, limited, free slots; API key: saved, not rejected, caps, free slots),
+ * write the account snapshot the console reads, log it, keep it as state.selfCheck, and alert when it fixed something or
+ * an account it can't use turned up. Returns the result.
+ */
+export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process.env, alert = null } = {}) {
+  if (!seesAccounts(env)) {
+    const r = requestSelfCheck({ by, reason });
+    return { ran: false, requested: r.at, why: 'the Claude logins live on the VPS host: the dispatcher runs the self-check on its next tick (within a minute)' };
+  }
+  const fixes = [];
+  try {
+    const r = workersReap(env);
+    for (const c of r.claims) fixes.push(`released ${c.account || '?'} slot held by ended session ${c.session}`);
+    for (const n of r.limits) fixes.push(`cleared ${n}'s expired limit`);
+  } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
+  for (const b of reapBuilds()) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
+  const store = loadStore(); const settings = loadSettings();
+  const read = accountsRead(store, settings, env);
+  if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
+  const findings = read.accounts.map((v) => P.checkAccount(v, read.rows.find((r) => r.name === v.name)));
+  const sum = P.checkSummary(findings, fixes);
+  const prev = loadState().selfCheck;
+  const result = { at: nowIso(), reason: str(reason, 80), by: str(by, 80), ran: true, line: sum.line, fixes, problems: sum.problems, signature: sum.signature, findings, notified: false };
+  if (P.checkNotify(result, prev)) {
+    try { result.notified = !!(alert ?? ((kind, d) => makeConsole(env)('POST', '/api/alerts', P.alertFor(kind, d))))('selfcheck', { fixes, problems: sum.problems, line: sum.line }); }
+    catch (e) { logLine({ event: 'self-check-alert-failed', error: str(e.message, 300) }); }
+  }
+  // the state file is the tick's too: re-read it so this never undoes what the tick wrote
+  saveState({ ...loadState(), selfCheck: result });
+  try { rmSync(files().checkRequest, { force: true }); } catch { /* gone */ }
+  logLine({ event: 'self-check', reason: result.reason, by: result.by, line: sum.line, fixes, problems: sum.problems, accounts: findings.map((f) => `${f.name}:${f.state}`) });
+  return result;
+}
+
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
@@ -392,7 +514,9 @@ export function tick({ env = process.env } = {}) {
   const ended = checkEnds({ alert, env });
   let watchdog; try { watchdog = watchdogCheck({ env, alert }); } catch (e) { watchdog = { error: e.message }; }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
-  const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
+  // the console (in its container) can't see the logins: it reads what the host saw here
+  if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
@@ -403,12 +527,12 @@ export function tick({ env = process.env } = {}) {
     try {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
-      logLine({ event: 'launched', build: b.id, account: l.account, model: l.model, session: r.session });
+      logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       delete state.launchFails[l.id];
     } catch (e) {
       state.launchFails[l.id] = [...fails, nowIso()];
@@ -433,7 +557,62 @@ export function tick({ env = process.env } = {}) {
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
-  return { ok: true, at: next.at, intake: inta, ended, watchdog: watchdog ? { at: watchdog.at, summary: watchdog.summary, skipped: watchdog.skipped, error: watchdog.error, actions: watchdog.actions } : null, launched, failed, plan, idle, alertsSent: sent };
+  // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
+  const asked = readJson(files().checkRequest);
+  let check = null;
+  if (asked || (plan.queue.length && !launched.length && plan.waits.length)) {
+    try { check = selfCheck({ reason: asked ? asked.reason || 'on demand' : 'queued builds wait, nothing launched', by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
+    catch (e) { logLine({ event: 'self-check-failed', error: str(e.message, 300) }); }
+  }
+  for (const fn of TICK_HOOKS) {
+    try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
+  }
+  return { ok: true, at: next.at, intake: inta, ended, watchdog: watchdog ? { at: watchdog.at, summary: watchdog.summary, skipped: watchdog.skipped, error: watchdog.error, actions: watchdog.actions } : null, launched, failed, plan, idle, alertsSent: sent, selfCheck: check };
+}
+
+/** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
+const TICK_HOOKS = [];
+export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn); return () => { const i = TICK_HOOKS.indexOf(fn); if (i >= 0) TICK_HOOKS.splice(i, 1); }; }
+
+/**
+ * shipped-manifest@1 (Brett, Nov 9 2026: "The orchestrator should send a manifest with the information on the shipped
+ * feature"): after every tick, builds that landed in the last few days and have no manifest get one, gathered and sent
+ * to Shipped features through the builds store (framework/cli/shipped.mjs). A few per tick; AXF_SHIPPED=off = none.
+ */
+afterTick(({ env }) => {
+  const r = shipLanded({ env });
+  for (const s of r.shipped ?? []) logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+});
+
+// ------------------------------------------------------------------ the one way in: request a build, route it
+
+const slugId = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48).replace(/-+$/, '') || 'build';
+
+/**
+ * File a build with the orchestrator: it assigns the id (from the title, made unique), the next tick splits it, and with
+ * `queue` it goes straight to the Queue. Returns the build. This replaces every direct launch (Build manager Start,
+ * Fix with Claude, feature assist): they all end here and the dispatcher starts the build.
+ */
+export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
+  const t = str(title, 300).trim(); if (!t) throw Object.assign(new Error('a build needs a title'), { code: 2 });
+  if (route && !BP.ROUTES.includes(route)) throw Object.assign(new Error(`route is api, subscription or auto, not ${route}`), { code: 2 });
+  const taken = new Set(loadStore().builds.map((b) => b.id));
+  const base = slugId(t); let id = base; let k = 2;
+  while (taken.has(id)) id = `${base}-${k++}`;
+  orchAct({ action: 'add', id, title: t, detail: str(detail, 8000), ...(said ? { said: str(said, 6000) } : {}), source: str(source || by, 60) }, by);
+  const p = normPriority(priority);
+  if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
+  logLine({ event: 'requested', build: id, by, queue: !!toQueue, route });
+  return toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+}
+
+/** The per-build override: api (API-key accounts only), subscription (never API), auto ('' = the default rules). */
+export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const r = route === 'auto' ? '' : route;
+  if (!BP.ROUTES.includes(r)) throw Object.assign(new Error('route is api, subscription or auto'), { code: 2 });
+  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (subscriptions; API only by the overflow rule)'} (${by}).`, by, action: 'pipeline:route' });
+  logLine({ event: 'route', build: id, route: r || 'auto', by });
+  return out;
 }
 
 // ------------------------------------------------------------------ probe
@@ -470,7 +649,8 @@ async function main(argv) {
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.unavailable ? ' (no slots store here)' : ''}`,
-      `Accounts: ${s.accounts.map((a) => `${a.name} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
+      `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
+      `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
       `Queue (${s.table.queued.length})`, ...s.table.queued.map(line),
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
@@ -485,11 +665,25 @@ async function main(argv) {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
     const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
   }
+  if (cmd === 'request') {
+    const df = flag('detail-file'); const detail = df ? readFileSync(df, 'utf8') : flag('detail');
+    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
+    return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
+  }
+  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
     return out(r, [`tick ${r.at}`, r.watchdog ? `watchdog: ${r.watchdog.error || r.watchdog.skipped || r.watchdog.summary}` : '', `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
-      ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
+      ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : '', r.selfCheck ? `self-check: ${r.selfCheck.line}` : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'selfcheck') {
+    const reason = flag('reason', 'on demand');
+    if (has('request')) { const r = requestSelfCheck({ by, reason }); return out({ ok: true, ran: false, requested: r.at, last: loadState().selfCheck ?? null }, `self-check asked for: the next tick runs it (last: ${loadState().selfCheck?.line || 'none yet'})`); }
+    const r = selfCheck({ reason, by });
+    if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
+    return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
   }
   if (cmd === 'watchdog') {
     if (rest[0] === 'check') { const r = watchdogCheck({ dry: has('dry'), force: true, print: json ? () => {} : (l) => console.log(l) }); return out({ ok: true, watchdog: r }, `watchdog: ${r.skipped || r.summary}\n${(r.findings ?? []).map((f) => `  ${f.id}: ${f.kind} · ${f.why}`).join('\n')}`); }
@@ -509,7 +703,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | watchdog [check [--dry]] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | watchdog [check [--dry]] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

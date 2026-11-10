@@ -22,3 +22,16 @@
 .axp-shipped__editbody { padding: 0 var(--fx-dens-gap-xl) var(--fx-dens-gap-xl); }
 .axp-shipped__editbody p { margin: calc(var(--fx-space) / 2) 0 0; overflow-wrap: anywhere; }
 .axp-shipped__history summary { cursor: pointer; color: var(--fx-muted); }
+/* Shipped manifest (shipped-manifest@1): the prompt first, then collapsible sections. */
+.axp-shipped__manifest { display: grid; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); min-width: 0; }
+.axp-shipped__manifest h4 { flex-wrap: wrap; }
+.axp-shipped__prompt { font-size: var(--fx-type-root-lg); }
+.axp-shipped__prompt mark { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: inherit; }
+.axp-shipped__msec { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) / 2); min-width: 0; }
+.axp-shipped__msec summary { cursor: pointer; }
+.axp-shipped__msec summary:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: calc(var(--fx-space) / 4); border-radius: var(--fx-radius-sm); }
+.axp-shipped__msecbody { padding-block: calc(var(--fx-space) / 2); min-width: 0; }
+.axp-shipped__msecbody p { margin: calc(var(--fx-space) / 4) 0 0; overflow-wrap: anywhere; }
+.axp-shipped__pre { margin: 0; max-height: calc(var(--fx-space) * 60); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--fx-font-mono); font-size: var(--fx-size-chip-font); background: var(--fx-surface2); padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); }
+.axp-shipped__steps, .axp-shipped__list { margin: 0; padding-inline-start: var(--fx-dens-gap-2xl); display: grid; gap: calc(var(--fx-space) / 2); }
+.axp-shipped__steps li, .axp-shipped__list li { overflow-wrap: anywhere; }

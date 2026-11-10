@@ -2,7 +2,8 @@
  * Shipped features: build-hook@1 events → the ledger. The moment a build is created its steps become Planned
  * features (or Planned edits of features that already exist), with Brett's verbatim prompt attached; every later
  * event moves their status along the one lifecycle (Planned → Queued → Building → In PR → Merged → Live, or
- * Cancelled). Idempotent on event id (events_seen), so replays and backfills are safe.
+ * Cancelled); a `shipped` event applies the build's shipped-manifest@1 (ledger/manifest.mjs). Idempotent on event id
+ * (events_seen), so replays and backfills are safe.
  */
 import { readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -10,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import * as L from '../../../../../framework/core/feature-ledger.mjs';
 import * as D from './db.mjs';
 import { editFrom, matchFeature, splitStep } from './plan.mjs';
+import { applyShippedEvent } from './manifest.mjs';
 
 const PLUGIN_DIR = join(dirname(fileURLToPath(import.meta.url)), '../..');
 let pluginNames = null;
@@ -91,6 +93,8 @@ export function applyEvent(db, ev, opts = {}) {
       for (const e of edits) moveEdit(db, e, to, { mergedAt: b.mergedAt, pr });
       return { moved: features.length + edits.length };
     }
+    // shipped-manifest@1: the orchestrator's manifest for a landed build (read from its sidecar)
+    case 'shipped': return applyShippedEvent(db, ev);
     default: return {};
   }
 }

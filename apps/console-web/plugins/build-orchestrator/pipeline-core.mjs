@@ -15,12 +15,18 @@
  *   runs       endOutcome(): what a session's end means (finished / requeued / returned / failed)
  *   split      splitPrompt() → Claude; parseSplit() checks the answer; rulesSplit() when no model can be asked
  *   alerts     alertFor(): the one payload shape for the console's alerts API (notify.json names the types)
+ *   API jobs   (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?") the
+ *              dispatcher can put a build on an API-key account (claude-workers@1 api slots, e.g. hulu-api, mossesx-api):
+ *              routeFor() = the per-build override (pipeline.route = api | subscription) or the overflow rule (setting
+ *              apiOverflow, off by default: every subscription account full or out → an API account). An API account
+ *              takes a build only when it has a key, is switched on, is under its daily and weekly caps and has room;
+ *              otherwise it is skipped and the reason is said (apiNoAccountWhy()).
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { WATCHDOG_DEFAULTS, WATCHDOG_LIMITS } from './watchdog-core.mjs';
-import { estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './web/orchestrator-core.mjs';
+import { API_RULE, estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
@@ -42,6 +48,10 @@ export const DEFAULTS = Object.freeze({
   autoQueue: false,
   /** The running-builds watchdog (watchdog.mjs): on/off, how often (s), no log output for this long = stalled, auto relaunches before failed. */
   ...WATCHDOG_DEFAULTS,
+  /** The overflow rule: when no subscription account can take a build, send it to an API-key account (billed per token, under its caps). Off by default. */
+  apiOverflow: false,
+  /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
+  apiAccounts: [],
 });
 const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], ...WATCHDOG_LIMITS };
 
@@ -65,6 +75,8 @@ export function normSettings(raw = {}) {
     watchdogEverySec: o.watchdogEverySec === undefined ? DEFAULTS.watchdogEverySec : clamp('watchdogEverySec', o.watchdogEverySec),
     watchdogStallMin: o.watchdogStallMin === undefined ? DEFAULTS.watchdogStallMin : clamp('watchdogStallMin', o.watchdogStallMin),
     watchdogMaxRetries: o.watchdogMaxRetries === undefined ? DEFAULTS.watchdogMaxRetries : clamp('watchdogMaxRetries', o.watchdogMaxRetries),
+    apiOverflow: o.apiOverflow === true,
+    apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
 
@@ -87,16 +99,37 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const role = str(row?.role, 20) || 'saved';
   const running = list(row?.running).length;
   const parallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : settings.parallelPerAccount;
-  const apiKey = role === 'api-key' || plan === 'api';
+  const apiKey = row?.kind === 'api' || role === 'api-key' || role === 'api-worker' || role === 'api-off' || plan === 'api';
   const off = o.use === false;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : null;
+  // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or overflow)
   const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
   if (off) why = 'switched off for the pipeline';
-  else if (apiKey) why = 'an API key bills per token: never runs builds';
-  else if (limited) why = `${limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
-  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, fable, fableFrom, parallel, running, free: Math.max(0, parallel - running), usable, why, limited, probe: probe ?? (o.probe ?? null) };
+  // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
+  const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
+  const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
+  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40),
+    fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
+    parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
+}
+
+/** May the dispatcher route a build to this API account now? { usable, why, spend } (why says what to do when it can't). */
+export function apiState(row, own = {}, settings = normSettings(), { limited = null, apiParallel = 1, running = 0 } = {}) {
+  const name = str(row?.name, 40);
+  const spend = row?.spend && typeof row.spend === 'object' ? row.spend : null;
+  let why = '';
+  if (own?.use === false) why = 'switched off for the pipeline';
+  else if (settings.apiAccounts.length && !settings.apiAccounts.includes(name)) why = 'not in the pipeline\'s API account list';
+  else if (row?.hasKey === false) why = `no API key saved (Terminal → VPS host → claude-account savekey ${name})`;
+  else if (row?.role === 'api-off') why = row?.why || 'not set up as an API worker (Claude accounts → Job routing → API accounts)';
+  else if (limited) why = `${limited.reason === 'auth' ? 'key rejected' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (spend?.state === 'capped') why = `spend cap reached: ${spend.why}`;
+  else if (running >= apiParallel) why = `full (${running}/${apiParallel})`;
+  return { usable: !why, why, spend };
 }
 
 /** Every account as the pipeline sees it; `rows` = claude-workers status rows, `own` = accounts.json. */
@@ -111,6 +144,43 @@ export function candidates(accounts, model) {
   // Opus work goes to accounts without Fable first, so the Fable accounts stay free for Fable phases
   return list(accounts).filter((a) => a.usable && a.free > 0 && (!needFable || a.fable))
     .sort((a, b) => a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
+}
+
+/** API accounts that can take one more build on `model` now: least busy first, then the least spent today. */
+export function apiCandidates(accounts, model) {
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  return list(accounts).filter((a) => a.kind === 'api' && a.api?.usable && a.free > 0 && (!needFable || a.fable))
+    .sort((a, b) => a.running - b.running || (Number(a.api?.spend?.day) || 0) - (Number(b.api?.spend?.day) || 0) || a.name.localeCompare(b.name));
+}
+
+/** Why no API account takes `model` right now: every API account and what keeps it out. */
+export function apiNoAccountWhy(accounts, model) {
+  const apis = list(accounts).filter((a) => a.kind === 'api');
+  if (!apis.length) return 'no API account is set up (Claude accounts → Job routing → API accounts)';
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  return `no API account can take it: ${apis.map((a) => `${a.name}: ${a.api?.why || (needFable && !a.fable ? `no ${MODEL_LABELS[FOUNDATION_MODEL]}` : 'full')}`).join('; ')}`;
+}
+
+/**
+ * Where one build goes this tick: { account, kind, rule, why }. `rule` = override (pipeline.route api) | overflow
+ * (settings.apiOverflow, every subscription account full or out) | '' (a subscription account, the normal case).
+ * No account = account '' and `why` says what keeps each option out (a missing key, a cap, a full account).
+ */
+export function routeFor(b, accounts, model, settings = normSettings()) {
+  const route = b?.pipeline?.route || '';
+  if (route === 'api') {
+    const a = apiCandidates(accounts, model)[0];
+    return a ? { account: a.name, kind: 'api', rule: 'override', why: `routed to API account ${a.name} (this build is set to run on API)` } : { account: '', kind: '', rule: 'override', why: `set to run on API, ${apiNoAccountWhy(accounts, model)}` };
+  }
+  const sub = candidates(accounts, model)[0];
+  if (sub) return { account: sub.name, kind: 'subscription', rule: '', why: '' };
+  const subWhy = noAccountWhy(accounts, model);
+  if (route === 'subscription') return { account: '', kind: '', rule: '', why: `${subWhy} (this build is kept off API accounts)` };
+  const hasApi = list(accounts).some((a) => a.kind === 'api');
+  if (!settings.apiOverflow) return { account: '', kind: '', rule: '', why: hasApi ? `${subWhy} (API overflow is off)` : subWhy };
+  const a = apiCandidates(accounts, model)[0];
+  return a ? { account: a.name, kind: 'api', rule: 'overflow', why: `every subscription account is full or out, so the overflow rule sends it to API account ${a.name}` }
+    : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
 }
 
 /** Why no account takes `model` right now, in plain words. */
@@ -146,10 +216,12 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
     if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
-    const a = candidates(acc, model)[0];
-    if (!a) { waits.push({ id: b.id, why: noAccountWhy(acc, model) }); continue; }
+    const r = routeFor(b, acc, model, settings);
+    const a = r.account ? acc.find((x) => x.name === r.account) : null;
+    if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
     a.running += 1; a.free -= 1; free -= 1;
-    launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)) });
+    if (a.kind === 'api' && a.api && a.free <= 0) a.api = { ...a.api, usable: false, why: `full (${a.running}/${a.parallel})` };
+    launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
   }
   let idle = null;
   const nothingRunning = !running.length && !(Number(slots?.used) > 0);
@@ -184,6 +256,7 @@ export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
   return [
     `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
     `Rules: every step ${max} minutes or less, with an estimate; 3 to 20 steps; each step is one concrete piece of work naming the files or folders it touches; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
+    `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
     `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
@@ -254,6 +327,52 @@ export const ALERT_LINK = 'view:build-orchestrator'; // the alerts API takes htt
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
  * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
  */
+// ------------------------------------------------------------------ self-check
+
+/**
+ * One account as the self-check finds it, from its view (accountView) and its claude-workers row:
+ *   { name, kind, role, state: ready | busy | standby | blocked, signedIn, keySaved, keyOk, limited, running, parallel, free, note }
+ * ready = takes the next build; busy = takes builds, every slot full; standby = by design not taking one now (not a worker,
+ * an API key only takes routed builds, switched off by Brett); blocked = can't work until something changes (a limit, an
+ * expired login, no key, a rejected key, a spend cap). A key is checked locally: saved and not rejected by its last run.
+ */
+export function checkAccount(v, row = {}) {
+  const api = v.kind === 'api';
+  const limited = v.limited ?? null;
+  const signedIn = api ? null : !(limited && limited.kind === 'auth');
+  const keySaved = api ? row?.hasKey !== false : null;
+  const keyOk = api ? keySaved && !(limited && limited.kind === 'auth') : null;
+  let state; let note;
+  if (api) {
+    const why = v.api?.why || '';
+    if (!keySaved) { state = 'blocked'; note = why || 'no API key saved'; }
+    else if (limited || /spend cap|rejected/i.test(why)) { state = 'blocked'; note = why; }
+    else if (why && !/^full/.test(why)) { state = 'standby'; note = why; }
+    else { state = v.free > 0 ? 'ready' : 'busy'; note = v.free > 0 ? 'takes routed builds' : why || 'full'; }
+  } else if (limited) { state = 'blocked'; note = v.why; }
+  else if (!v.usable) { state = 'standby'; note = v.why; }
+  else { state = v.free > 0 ? 'ready' : 'busy'; note = v.free > 0 ? `${v.free} free` : 'every slot is in use'; }
+  return { name: v.name, kind: v.kind, role: v.role, state, signedIn, keySaved, keyOk, limited: limited ? { kind: str(limited.kind, 20), until: str(limited.until, 40), reason: str(limited.reason, 80) } : null,
+    running: v.running, parallel: v.parallel, free: v.free, note: str(note, 300) };
+}
+
+/** The self-check's verdict in one line, and the problems worth a phone alert (an account it can't use). */
+export function checkSummary(findings, fixes = []) {
+  const f = list(findings);
+  const count = (s) => f.filter((x) => x.state === s).length;
+  const blocked = f.filter((x) => x.state === 'blocked');
+  const line = !f.length ? 'no Claude account found'
+    : `${f.length} accounts: ${count('ready')} ready, ${count('busy')} busy, ${count('standby')} standby, ${blocked.length} blocked${fixes.length ? ` · fixed ${fixes.length}` : ''}`;
+  return { line, problems: blocked.map((x) => `${x.name}: ${x.note}`), signature: blocked.map((x) => `${x.name}:${x.limited?.kind || x.note}`).sort().join('|') };
+}
+
+/** Should the self-check tell Brett? When it fixed something, or an account it can't use shows up that wasn't there last time. */
+export function checkNotify(cur, prev) {
+  if (list(cur?.fixes).length) return true;
+  const was = new Set(String(prev?.signature || '').split('|').filter(Boolean));
+  return String(cur?.signature || '').split('|').filter(Boolean).some((s) => !was.has(s)) || (!list(cur?.findings).length && list(prev?.findings).length > 0);
+}
+
 export function alertFor(kind, d = {}) {
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
   switch (kind) {
@@ -262,6 +381,9 @@ export function alertFor(kind, d = {}) {
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'watchdog': return { ...base, key: `pipeline:watchdog:${d.id}`, severity: d.severity || 'warning', title: `Watchdog · ${str(d.title, 140)}`, body: str(d.body, 1500) };
+    case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
+      title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
+      body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

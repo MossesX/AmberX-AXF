@@ -37,7 +37,7 @@ export const LOCK_STALE_MS = 10 * 60 * 1000;
 export function takeLock(stale = LOCK_STALE_MS) {
   mkdirSync(hooksDir(), { recursive: true });
   try { mkdirSync(lockDir()); writeFileSync(join(lockDir(), 'pid'), `${process.pid}\n`); return true; } catch { /* held */ }
-  try { if (Date.now() - statSync(lockDir()).mtimeMs > stale) { rmSync(lockDir(), { recursive: true, force: true }); return takeLock(stale); } } catch { /* gone meanwhile */ }
+  try { if (Date.now() - statSync(lockDir()).mtimeMs >= stale) { rmSync(lockDir(), { recursive: true, force: true }); return takeLock(stale); } } catch { /* gone meanwhile */ }
   return false;
 }
 export const dropLock = () => { try { rmSync(lockDir(), { recursive: true, force: true }); } catch { /* already gone */ } };
@@ -62,12 +62,18 @@ export function readOutbox() {
 const readCursors = () => { try { return JSON.parse(readFileSync(cursors(), 'utf8')); } catch { return {}; } };
 const writeCursors = (c) => { mkdirSync(hooksDir(), { recursive: true }); writeFileSync(cursors(), `${JSON.stringify(c, null, 1)}\n`); };
 
-/** Append events to the outbox. Returns the events written. */
-export function appendEvents(events) {
+/** Append events to the outbox (`dir`: another checkout's outbox, e.g. the console's). Returns the events written. */
+export function appendEvents(events, { dir = '' } = {}) {
   const ev = events.map(normEvent).filter(Boolean); if (!ev.length || off()) return ev;
-  mkdirSync(hooksDir(), { recursive: true });
-  appendFileSync(outbox(), ev.map((e) => `${JSON.stringify(e)}\n`).join(''));
+  const d = dir || hooksDir();
+  mkdirSync(d, { recursive: true });
+  appendFileSync(join(d, 'events.jsonl'), ev.map((e) => `${JSON.stringify(e)}\n`).join(''));
   return ev;
+}
+/** A builds store change list → events in another checkout's outbox (its own listeners deliver them). */
+export function emitChangesTo(dir, changes, { at = '', by = 'builds-live' } = {}) {
+  if (off() || !dir) return [];
+  try { return appendEvents(changes.flatMap((c) => eventsFromChange(c, { at, by })), { dir }); } catch { return []; }
 }
 
 /** Called by saveStore with diffStores' changes: append the events, then deliver without blocking the writer. */

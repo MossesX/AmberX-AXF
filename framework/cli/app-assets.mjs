@@ -36,6 +36,7 @@ export function directDeps(a) {
   const out = [];
   const add = (t, id) => { if (typeof t === 'string' && typeof id === 'string' && id) out.push(`${t}/${id}`); };
   if (a.type === 'interface') { add('design-package', d.design); add('branding', d.branding); for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id); }
+  if (a.type === 'skin') { add('layout', d.layoutTheme); add('color-theme', d.colorTheme); add('style-theme', d.styleTheme); for (const [t, id] of Object.entries(d.assets ?? {})) add(t, id); }
   if (a.type === 'design-package') { for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) add(t, d[t]); for (const [t, id] of Object.entries(d.extras?.slots ?? {})) add(t, id); }
   if (a.type === 'style-package') for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id);
   if (a.type === 'branding') { for (const [k, id] of Object.entries(d.marks ?? {})) add(k === 'animated' ? 'animated-logo' : 'logo-mark', id); add('icon-pack', d.iconPack); }

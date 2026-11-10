@@ -20,7 +20,7 @@ import {
   formatCountdown, notifyPlan, runVetoAction, secondsLeftNow, vetoHost, VETO_ACTION_LABELS, VETO_WARNING_SECONDS,
   type VetoAction, type VetoActionResult, type VetoCall, type VetoPhase,
 } from '@console/axf/libs/hub/veto';
-import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, soundAllowed, type AlarmConfig } from './alarm';
+import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, noticeConfig, soundAllowed, type AlarmConfig } from './alarm';
 
 const ACTION_ICON: Record<VetoAction, string> = { deny: 'x-circle', 'approve-now': 'play', shelve: 'pause' };
 /** Green Approve, red Deny (Brett, Oct 30 2026: "Approve/Deny on every row … green/red"). */
@@ -185,10 +185,13 @@ class VetoWatcher {
     const plan = notifyPlan(loadSent(), held, now);
     saveSent(plan.sent);
     if (!plan.send.length || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    // One notice per hold (Brett, Nov 8 2026): the 30 s left / running updates replace it silently unless Repeat is on.
+    const notice = noticeConfig(this.get);
     for (const { call, phase } of plan.send) {
       const { title, text } = noticeText(call, phase, secondsLeftNow(call, now));
+      const again = phase !== 'held';
       try {
-        const n = new Notification(title, { body: text, tag: `veto-${call.id}`, requireInteraction: phase !== 'running' });
+        const n = new Notification(title, { body: text, tag: `veto-${call.id}`, requireInteraction: phase !== 'running', silent: !notice.sound || (again && !notice.repeat), renotify: again && notice.repeat } as NotificationOptions);
         n.onclick = () => { globalThis.focus?.(); this.open(call.id); };
       } catch { /* none */ }
     }
@@ -202,7 +205,7 @@ export function syncNativeAlarm(get: (k: string) => unknown): () => void {
   return () => {
     const host = vetoHost();
     if (!host.alarm) return;
-    const next = JSON.stringify(nativeAlarmConfig(alarmConfig(get)));
+    const next = JSON.stringify(nativeAlarmConfig(alarmConfig(get), noticeConfig(get)));
     if (next === last) return;
     last = next;
     host.alarm(JSON.parse(next) as Record<string, unknown>);
@@ -236,7 +239,7 @@ export function AlarmPanel({ get, set }: { get: (k: string) => unknown; set: (k:
     r.readAsDataURL(f);
   };
   const test = () => {
-    if (host.testAlarm) host.testAlarm(nativeAlarmConfig(cfg));
+    if (host.testAlarm) host.testAlarm(nativeAlarmConfig(cfg, noticeConfig(get)));
     else watch.alarm.start(cfg);
   };
   const stop = () => { host.stopAlarm?.(); watch.alarm.stop(); };

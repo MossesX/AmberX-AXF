@@ -95,6 +95,12 @@
         "title": "Toggle use",
         "text": "Takes this account out of the pipeline, or puts it back.",
         "kind": "button"
+      },
+      {
+        "target": "api-overflow",
+        "title": "API overflow",
+        "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
+        "kind": "toggle"
       }
     ],
     "intros": []

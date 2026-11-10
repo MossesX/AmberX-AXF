@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "demonstration-designer-page-wide",
+ "name": "demonstration-designer-page: Picker beside the dials",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Two columns: the search and its results on the left take the room (the list is the point), length, voice and Generate stacked on the right like a control panel. One column on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:demonstration-designer-page",
+  "choice-option:wide"
+ ],
+ "data": {
+  "layout": "tabs-side",
+  "header": "compact",
+  "search": true,
+  "descriptions": false,
+  "view": "wide"
+ }
+}

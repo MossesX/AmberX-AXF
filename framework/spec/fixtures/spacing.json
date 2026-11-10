@@ -447,6 +447,35 @@
         "--fx-radius-lg": "6px",
         "--fx-font-size": "13px"
       }
+    },
+    "windows": {
+      "tight": {
+        "--fx-space": "3.9px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.48360000000000003",
+        "--fx-radius-sm": "2px",
+        "--fx-radius-md": "2px",
+        "--fx-radius-lg": "5px",
+        "--fx-font-size": "14px"
+      },
+      "compact": {
+        "--fx-space": "5px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.6240000000000001",
+        "--fx-radius-sm": "2px",
+        "--fx-radius-md": "3px",
+        "--fx-radius-lg": "6px",
+        "--fx-font-size": "14px"
+      },
+      "regular": {
+        "--fx-space": "6.2px",
+        "--fx-row-h": "27px",
+        "--fx-density-k": "0.78",
+        "--fx-radius-sm": "3px",
+        "--fx-radius-md": "4px",
+        "--fx-radius-lg": "8px",
+        "--fx-font-size": "14px"
+      }
     }
   }
 }

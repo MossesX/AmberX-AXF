@@ -435,6 +435,24 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
+
+
+@router.post("/pipeline/selfcheck")
+async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
+    """{reason?: console-load | on demand | voice}: ask the dispatcher for a self-check (every Claude account one by one,
+    stale claims / slots / builds released). The console can't see the logins, so the host runs it on its next tick
+    (within a minute); the answer carries the last result (state.selfCheck in GET /pipeline after that)."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    reason = str((body or {}).get("reason") or "on demand") if isinstance(body, dict) else "on demand"
+    if reason not in SELFCHECK_REASONS:
+        reason = "on demand"
+    return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
@@ -491,10 +509,14 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, and the running-builds watchdog: watchdogOn, watchdogEverySec, watchdogStallMin, watchdogMaxRetries)."""
+    splitProvider, apiOverflow, apiAccounts, and the running-builds watchdog: watchdogOn, watchdogEverySec, watchdogStallMin,
+    watchdogMaxRetries). Turning the API overflow rule on spends money per token: only Brett's own click
+    does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider",
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
                "watchdogOn", "watchdogEverySec", "watchdogStallMin", "watchdogMaxRetries"}
+    if body.get("apiOverflow") is True and not brett_click(request):
+        raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -505,3 +527,73 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+@router.post("/pipeline/route")
+async def pipeline_route(request: Request) -> dict[str, Any]:
+    """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under
+    their caps; Brett's own click), subscription = never an API account, auto = subscriptions, API only by overflow."""
+    body = await _json_body(request)
+    route = str(body.get("route") or "")
+    if route not in ("api", "subscription", "auto"):
+        raise HTTPException(400, "route is api, subscription or auto")
+    who = brett_click(request)
+    if route == "api" and not who:
+        raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
+    return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
+
+
+def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",
+                  queue: bool = True) -> dict[str, Any]:
+    """File a build with the orchestrator (it assigns the id) and, by default, put it in the Queue: the dispatcher starts
+    it. The one way in for every other plugin (Build manager, Fix with Claude, feature assist): nothing else launches."""
+    import tempfile
+    with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as f:
+        f.write(str(detail or "")[:8000])
+        detail_file = f.name
+    try:
+        args = ["request", "--title", str(title or "").strip()[:300] or "Build", "--detail-file", detail_file, "--by", (by or "console")[:80]]
+        if source:
+            args += ["--source", source[:60]]
+        if said:
+            args += ["--said", said[:6000]]
+        if priority in ("P0", "P1", "P2", "P3"):
+            args += ["--priority", priority]
+        if queue:
+            args.append("--queue")
+        return _pipeline(*args, who=by)
+    finally:
+        try:
+            os.unlink(detail_file)
+        except OSError:
+            pass
+
+
+@router.post("/pipeline/request")
+async def pipeline_request(request: Request) -> dict[str, Any]:
+    """{title, detail?, said?, priority?, queue? (default true)}: file a build with the orchestrator and queue it. This is
+    the only way to ask for a build to start; the dispatcher picks the account and model and launches it."""
+    body = await _json_body(request)
+    title = str(body.get("title") or "").strip()
+    if not title:
+        raise HTTPException(400, "a build needs a title")
+    return request_build(title, str(body.get("detail") or ""), by=(brett_click(request) or "console"), source="console",
+                         said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False)
+
+
+class DispatchService:
+    """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+
+    def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
+        return request_build(title, detail, **kw)
+
+    def queue(self, build_id: str, by: str = "console") -> dict[str, Any]:
+        return _pipeline("queue", _build_id(build_id), "--by", by[:80])
+
+    def build(self, build_id: str) -> dict[str, Any]:
+        """{id, status, steps, pipeline…} of one build (so a caller can follow what it asked for)."""
+        return _pipeline("show", _build_id(build_id)).get("build") or {}
+
+
+plugin_services.provide("axf.build-dispatch@1", DispatchService(), Path(__file__).resolve().parents[1].name)

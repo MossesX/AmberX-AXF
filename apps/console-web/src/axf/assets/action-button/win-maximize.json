@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "win-maximize",
+  "name": "Maximize",
+  "version": "1.0.0",
+  "description": "Full screen on and off.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "icon": "maximize",
+    "label": "Maximize",
+    "action": "skin.window.maximize",
+    "show": "icon"
+  }
+}

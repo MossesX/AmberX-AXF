@@ -530,5 +530,53 @@ check("AmberX tour chapter video at its id", c.get("/api/walkthrough/amberx-app/
 check("chapter videos: only <id>.mp4, behind the wall", c.get("/api/walkthrough/stack/chapters/veto.txt", headers=A).status_code == 404
       and c.get("/api/walkthrough/stack/chapters/nope.mp4", headers=A).status_code == 404 and c.get("/api/walkthrough/stack/chapters/veto.mp4").status_code == 401)
 
+# ---------------------------------------------------------------- Approve / Deny in place (approvals-relay@1, Nov 8 2026)
+import httpx  # noqa: E402
+
+AID = "0f0e0d0c-0b0a-4909-8807-060504030201"
+hub_calls: list[tuple[str, str, dict]] = []
+
+
+def hub_handler(req: httpx.Request) -> httpx.Response:
+    hub_calls.append((req.method, req.url.path, dict(req.headers)))
+    if "axhub_session=good" not in req.headers.get("cookie", ""):
+        return httpx.Response(401, json={"ok": False})
+    if req.url.path == "/auth/api/session":
+        return httpx.Response(200, json={"csrf": "c" * 20})
+    if req.headers.get("x-axhub-csrf") != "c" * 20 or req.headers.get("origin") != "https://axhub.amberxai.com":
+        return httpx.Response(403, json={"ok": False, "error": {"code": "csrf", "message": "bad csrf"}})
+    if req.url.path == f"/auth/api/approvals/{AID}/approve-now":
+        return httpx.Response(200, json={"ok": True, "state": "approved-now"})
+    if req.url.path == f"/auth/api/approvals/{AID}" and json.loads(req.content)["action"] in ("approve", "decline"):
+        return httpx.Response(200, json={"ok": True, "state": "approved"})
+    return httpx.Response(409, json={"ok": False, "error": {"code": "decided", "message": "Already decided."}})
+
+
+ac = TestClient(main.make_app(fresh(9)[1], approvals_transport=httpx.MockTransport(hub_handler)))
+GOOD = {"axhub_session": "good"}
+ac.cookies.update(GOOD)
+check("relay probe: admin with a hub session can decide", ac.get("/api/approvals/relay", headers=A).json()["relay"] is True)
+r1 = ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "approve-now"}).json()
+check("held call approved in place with his session", r1["ok"] is True and r1["state"] == "approved-now", r1)
+check("the hub got his cookie, its own Origin and the CSRF value", any(p.endswith("/approve-now") and h.get("origin") == "https://axhub.amberxai.com" for _, p, h in hub_calls))
+r2 = ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "approve", "rev": 3}).json()
+check("waiting approval approved in place", r2["ok"] is True and r2["state"] == "approved", r2)
+r3 = ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "deny"}).json()
+check("hub refusal comes back with its message", r3["ok"] is False and r3["code"] == "decided" and r3["message"] == "Already decided.", r3)
+check("decide without Origin refused", ac.post("/api/approvals/decide", headers=A, json={"id": AID, "action": "approve"}).status_code == 403)
+check("decide by a hub user refused", ac.post("/api/approvals/decide", headers={**U, "origin": ORIGIN}, json={"id": AID, "action": "approve"}).status_code == 403)
+check("bad id refused", ac.post("/api/approvals/decide", headers=W, json={"id": "nope", "action": "approve"}).status_code == 400)
+check("bad action refused", ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "nuke"}).status_code == 400)
+os.environ["AMBERX_TOKEN"] = "m" * 24
+check("machine token can't decide", ac.post("/api/approvals/decide", headers={"host": HOST, "authorization": "Bearer " + "m" * 24}, json={"id": AID, "action": "approve"}).status_code == 403)
+os.environ.pop("AMBERX_TOKEN")
+ac.cookies.clear()
+r4 = ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "approve"}).json()
+check("no hub session: says so, nothing sent", r4["ok"] is False and r4["code"] == "no_session", r4)
+check("relay probe without a hub session says no", ac.get("/api/approvals/relay", headers=A).json()["relay"] is False)
+ac.cookies.update({"axhub_session": "stale"})
+r5 = ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "approve"}).json()
+check("a session the hub dropped: no_session", r5["ok"] is False and r5["code"] == "no_session", r5)
+
 print(f"amberx server: {ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)
