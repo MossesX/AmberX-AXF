@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2807,
- "updatedAt": "2026-11-10T20:46:24.345Z",
+ "rev": 2808,
+ "updatedAt": "2026-11-10T20:46:39.814Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154306,6 +154306,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "open-any-website-by-voice-on-the-phone-optionall",
+   "title": "Open any website by voice on the phone, optionally with the AmberX recorder running",
+   "category": "",
+   "detail": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T20:46:28.820Z",
+   "updatedAt": "2026-11-10T20:46:28.820Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to be able to tell you to go to any website and open the web browser with the recorder in AmberX, or in a plugin somewhere.",
+    "at": "2026-11-10T20:46:28.820Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 585
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
