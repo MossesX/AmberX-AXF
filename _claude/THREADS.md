@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:03 UTC · `split-builds-pages-build-manager-pending-complet` → running, note (all) · pipeline
 - 2026-11-09 18:03 UTC · `split-builds-pages-build-manager-pending-complet` branch claude/split-builds-pages-build-manager-pending-complet (all) · pipeline
 - 2026-11-09 18:03 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-09 18:04 UTC · `split-builds-pages-build-manager-pending-complet` → queued, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:34 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
 - 2026-11-10 01:34 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
 - 2026-11-10 01:40 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
+- 2026-11-10 01:41 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
