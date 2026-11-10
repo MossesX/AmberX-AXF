@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T06:16:07.215Z",
+ "updatedAt": "2026-11-10T06:16:17.492Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82370,7 +82370,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T06:15:23.012Z",
+   "updatedAt": "2026-11-10T06:16:08.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -82392,6 +82392,10 @@
     {
      "text": "Launch on account-5 failed: worktree for skins-as-packages-of-slices-every-section-its-ow: Preparing worktree (new branch 'claude/skins-as-packages-of-slices-every-section-its-ow')\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nerror: unable to write file _claude/builds/journal/2026-11.jsonl\nUpdating files:   0% (28/13024)\rerror: unable to write file _claude/builds/ma",
      "at": "2026-11-10T06:15:23.012Z"
+    },
+    {
+     "text": "Launch on account-5 failed: worktree for skins-as-packages-of-slices-every-section-its-ow: Preparing worktree (resetting branch 'claude/skins-as-packages-of-slices-every-section-its-ow'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026-11-p3.jsonl\nerror: unable to write file _claude/builds/journal",
+     "at": "2026-11-10T06:16:08.404Z"
     }
    ],
    "approvals": [],
