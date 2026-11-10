@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "queue-conflict",
+  "name": "Resolve a merge queue batch conflict",
+  "version": "1.0.0",
+  "description": "Two ready PRs conflict in code inside a merge queue batch, and the queue's AI conflict fallback is on: make the later PR's branch work together with the earlier ones, push it, and let it rejoin the next batch. Never merges to main.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "git",
+    "merge-queue"
+  ],
+  "data": {
+    "specialty": "landing",
+    "model": "opus",
+    "budget": {
+      "tokens": 300000,
+      "maxTurns": 40,
+      "usd": 5
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "merge-queue.batch-conflict"
+    },
+    "inputs": [
+      {
+        "id": "branch",
+        "label": "Branch of the PR left out of the batch",
+        "required": true
+      },
+      {
+        "id": "pr",
+        "label": "Its PR number",
+        "default": ""
+      },
+      {
+        "id": "with",
+        "label": "Branches it conflicts with (space separated)",
+        "required": true
+      },
+      {
+        "id": "files",
+        "label": "Files in conflict",
+        "default": ""
+      }
+    ],
+    "brief": "The merge queue combined ready PRs into one batch and PR #{{pr}} (branch {{branch}}) conflicts in code with {{with}} in {{files}}.\n1. git fetch origin; check out {{branch}}; merge origin/main, then each of {{with}} into it (never rebase, never force).\n2. Resolve every conflict so both sides' intent works together; read both PRs' descriptions first. Bookkeeping files (_claude/, trackers, catalogs): keep both sides' lines, regenerate generated files.\n3. If the two changes truly contradict each other, abort, do not guess: report both sides' intent and stop.\n4. Run the touched plugins' and apps' own tests. Green: git push origin HEAD:{{branch}}. The PR rejoins the merge queue by itself. Never push to main, never merge a PR.\nReport the files, how each conflict was resolved, and the tests run.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/queue-conflict/{{stamp}}.md"
+    }
+  }
+}
