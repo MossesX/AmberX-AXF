@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:59:06.027Z",
+ "updatedAt": "2026-11-10T17:59:14.303Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88804,7 +88804,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T16:40:42.303Z",
+   "updatedAt": "2026-11-10T17:59:12.954Z",
    "builtAt": "",
    "notes": [
     {
@@ -88814,6 +88814,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:40:42.303Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (4 Fable).",
+     "at": "2026-11-10T17:59:12.954Z"
     }
    ],
    "approvals": [],
@@ -88833,13 +88837,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the menu-item schema and contract for the shared GUI framework: item kinds (action, submenu, choice-setting, separator), live status slot (icon, color, animation, tooltip, data source), per-item behavior/appearance overrides stored as design tokens (aligned with the inline-edit build's per-element token model), and a migration for existing menu definitions. Document the contract.",
+     "model": "Fable",
+     "why": "Schema + migration design shared by every app's menus",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/framework/menu/schema/",
+      "apps/framework/menu/migrations/",
+      "docs/framework/menus.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -88847,17 +88855,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax2blr01ka7a"
+     "uid": "st-mwazvad650h71e"
     },
     {
      "id": "s2",
-     "text": "I want a powerful, beautiful, very expensive, professional, sellable skin on Molly, my flagship. Cannot be cluttered. Access everything, even redundantly. Context menu spot on, completely mapped. Sub menus keep the main menu short; expand left if they'd go off screen; the menu scrolls, not the screen. Choices in the app menu change instantly with status listed beside them. Live info next to entries like the little green axHub logo, red if not. Hover explains icons. Make that shit sick.",
-     "model": "Opus",
-     "why": "",
+     "text": "Framework menu engine: sub-menus flip left (and up) when they would go off screen, long menus scroll inside the menu with the page scroll-locked, keyboard navigation and focus kept correct across flips. Unit tests for placement math.",
+     "model": "Fable",
+     "why": "Changes how menus behave in every app's GUI",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/framework/menu/engine/",
+      "apps/framework/menu/__tests__/placement.test.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -88865,17 +88876,213 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax2blr02furs"
+     "uid": "st-mwazvad6516rm2"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/molly-flagship-skin-premium-sellable-uncluttered.md, THREADS row, commit, push, PR",
+     "text": "Framework menu engine: inline choice settings (current value shown beside the entry, click or sub-menu pick applies instantly with no dialog) and live status slots (subscribe to a status source, render icon/color/animation, tooltip on every icon). Unit tests.",
+     "model": "Fable",
+     "why": "New cross-app menu primitives every GUI will use",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/framework/menu/engine/",
+      "apps/framework/menu/items/",
+      "apps/framework/menu/__tests__/items.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad6527d82"
+    },
+    {
+     "id": "s4",
+     "text": "Framework: right-click on any menu item opens an item-settings dialog (behavior: action/target/shortcut/visibility; appearance: icon, label, color, tokens) writing per-item token overrides through the inline-edit build's token API. Persist and reload.",
+     "model": "Fable",
+     "why": "Cross-app GUI behavior built on the inline-edit token contract",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/framework/menu/item-settings/",
+      "apps/framework/tokens/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad653psmh"
+    },
+    {
+     "id": "s5",
+     "text": "Flagship skin tokens for Molly: premium palette, typography, spacing, elevation, motion, menu/tooltip/status-icon styling, light and dark variants; register the skin.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
+     "estimate": "30 min",
      "files": [
+      "apps/molly/skins/flagship/tokens.json",
+      "apps/molly/skins/flagship/skin.css",
+      "apps/molly/skins/index.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad654diz5"
+    },
+    {
+     "id": "s6",
+     "text": "Flagship skin component styling: application menu, sub-menus, context menus, tooltips, dialogs, status indicators with tasteful animations; verify uncluttered layout at common window sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/molly/skins/flagship/components/",
+      "apps/molly/skins/flagship/skin.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad6557794"
+    },
+    {
+     "id": "s7",
+     "text": "Molly application menu restructure: short top level (about 5–7 entries), everything else grouped into sub-menus; full inventory of every Molly command so everything stays reachable (redundant paths allowed); remove dead/junk entries.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/molly/menus/app-menu.mjs",
+      "apps/molly/menus/inventory.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad656d5br"
+    },
+    {
+     "id": "s8",
+     "text": "Molly app menu: wire choice settings inline (theme/skin, density, notifications, profile, etc.) with current value shown and instant apply; wire live status entries (axHub connection green/red icon, sync, account health) with explanatory tooltips.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/molly/menus/app-menu.mjs",
+      "apps/molly/menus/status-sources.mjs",
+      "apps/molly/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad75745j7"
+    },
+    {
+     "id": "s9",
+     "text": "Molly context menus fully mapped: audit every right-click surface, define a context menu for each with only relevant items, no junk; add missing ones.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/molly/menus/context/",
+      "apps/molly/menus/inventory.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad758eqvt"
+    },
+    {
+     "id": "s10",
+     "text": "API for the skin and menus via console API (REST): deep links (console_show/console_open targets for skin picker, app menu, each sub-menu, item-settings dialog), state reads (active skin, menu tree with current setting values and live status), actions (invoke any menu item, set any choice setting, switch skin, set/reset per-item behavior and appearance overrides).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/routes/molly-menus.mjs",
+      "apps/console-web/routes/molly-skin.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad7599m4d"
+    },
+    {
+     "id": "s11",
+     "text": "Same API on MCP (console actions, plugin commands, control@1 for tokens), CLI subcommands and AmberX voice intents, all four matching the REST surface; parity test that enumerates REST endpoints and checks each has MCP, CLI and voice equivalents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/mcp/molly-menus.mjs",
+      "apps/molly/cli/menus.mjs",
+      "apps/amberx/voice/intents/molly-menus.json",
+      "apps/console-web/__tests__/molly-menus-parity.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazvad75alkkd"
+    },
+    {
+     "id": "s12",
+     "text": "Tests (engine placement/scroll, inline settings, status slots, item-settings dialog, context menu coverage, API parity, UI smoke with flagship skin), write report _claude/builds/reports/molly-flagship-skin-premium-sellable-uncluttered.md, add THREADS row, open PR stating how each UI feature is reached via deep link, REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/framework/menu/__tests__/",
+      "apps/molly/__tests__/",
       "_claude/builds/reports/molly-flagship-skin-premium-sellable-uncluttered.md",
       "_claude/THREADS.md"
      ],
@@ -88886,7 +89093,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwax2blr03vor7"
+     "uid": "st-mwazvad75b694y"
     }
    ]
   },
