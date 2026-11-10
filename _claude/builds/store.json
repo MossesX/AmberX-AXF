@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2902,
- "updatedAt": "2026-11-10T21:45:38.011Z",
+ "rev": 2903,
+ "updatedAt": "2026-11-10T21:45:51.973Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154201,7 +154201,7 @@
    "title": "Finish and land the Git status board: every ready-to-merge PR viewable in the console",
    "category": "",
    "detail": "git-status-board (PR #291, 5 of 6 steps): finish s6, land it, redeploy. Make sure it lists every open PR ready to merge (title, build, CI, conflicts, age) with Merge / Fix / Open on GitHub actions, so Brett can view them in the console instead of GitHub. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154210,7 +154210,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T20:44:19.333Z",
    "updatedAt": "2026-11-10T21:45:30.832Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T21:45:30.832Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -154345,12 +154345,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T21:45:01.331Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T20:45:57.697Z",
-     "updatedAt": "2026-11-10T20:45:57.697Z"
+     "updatedAt": "2026-11-10T21:45:02.735Z"
     }
    ],
    "profiles": [
@@ -154361,7 +154361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
