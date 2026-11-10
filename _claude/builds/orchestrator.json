@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:09:54.407Z",
+ "updatedAt": "2026-11-10T03:10:35.883Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83213,6 +83213,37 @@
      "uid": "st-mwa3guw103t99t"
     }
    ]
+  },
+  {
+   "id": "demo-designer-finish-phase-2-s2-s3-resuming-from",
+   "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
+   "category": "",
+   "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T03:10:30.744Z",
+   "updatedAt": "2026-11-10T03:10:30.744Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.",
+    "at": "2026-11-10T03:10:30.744Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
