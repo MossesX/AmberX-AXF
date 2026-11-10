@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:30 UTC · `skins-as-packages-of-slices-every-section-its-ow` branch claude/skins-as-packages-of-slices-every-section-its-ow, PR #446 (all) · builds-live
 - 2026-11-10 15:31 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · orchestrator
 - 2026-11-10 15:31 UTC · `account-order-switch-custom-drag-and-drop-order` added (0 steps) (all) · console
 - 2026-11-10 15:31 UTC · `account-order-switch-custom-drag-and-drop-order` → queued, note (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:38 UTC · `resolve-conflicts-and-land-pr-449-account-order` s3 done (all) · orchestrator
 - 2026-11-10 18:38 UTC · `resolve-conflicts-and-land-pr-449-account-order` branch claude/account-order-switch-custom-drag-and-drop-order, PR #449 (all) · builds-live
 - 2026-11-10 18:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → pending, note (all) · reconciler
+- 2026-11-10 18:42 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
