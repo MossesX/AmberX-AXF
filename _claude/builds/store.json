@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2511,
- "updatedAt": "2026-11-10T17:00:48.182Z",
+ "rev": 2512,
+ "updatedAt": "2026-11-10T17:01:06.435Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138015,7 +138015,7 @@
    "title": "Project Manager: every project its own console instance, multi-project tab view, project types (self/framework dev vs new app), live app preview window",
    "category": "",
    "detail": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -138023,8 +138023,8 @@
    "pr": "#453",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
-   "updatedAt": "2026-11-10T17:00:12.209Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T17:01:04.169Z",
+   "builtAt": "2026-11-10T17:01:04.169Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -138142,12 +138142,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:01:04.169Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T15:41:30.058Z",
-     "updatedAt": "2026-11-10T15:41:30.058Z"
+     "updatedAt": "2026-11-10T17:01:04.473Z"
     }
    ],
    "profiles": [
@@ -138158,7 +138158,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

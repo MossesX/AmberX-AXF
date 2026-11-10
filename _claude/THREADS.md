@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` → running, note (all) · pipeline
 - 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
 - 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` branch claude/one-amberx-build-notification-veto-approval-befo (all) · pipeline
 - 2026-11-10 03:29 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:00 UTC · `project-manager-every-project-its-own-console-in` PR #453 (all) · builds-live
 - 2026-11-10 17:00 UTC · `skins-own-everything-colour-theme-swaps-independ` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
+- 2026-11-10 17:01 UTC · `project-manager-every-project-its-own-console-in` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
