@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:22:08.019Z",
+ "updatedAt": "2026-11-10T17:22:17.745Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86427,7 +86427,7 @@
    "title": "Enforce the merge queue: every finished build goes into it and is batched into one combined build before CI",
    "category": "",
    "detail": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -86436,7 +86436,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
    "updatedAt": "2026-11-10T17:22:06.035Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T17:22:06.035Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -86457,6 +86457,10 @@
     {
      "text": "Headless run axf-enforce-the-merge-queue-every-finished-build-goe--sully: brief only · start 11.0K tokens ($0.03) · cost $6.47 · 119 turns · 6 tools, MCP none",
      "at": "2026-11-10T17:22:06.035Z"
+    },
+    {
+     "text": "Two PRs. #455 (claude/enforce-the-merge-queue-main-green, no UI) makes main green again: the retired breakroom profile came back on Nov 7 and failed builds-store verify, so every PR's light checks were red and the queue sat empty. It goes through the current queue now. #456 (batch mode + UI) is a draft until UI Review shots exist: Settings → Push banner Batch switch + batch size, and the queue view's batch line (desktop and phone). This session couldn't render the console.",
+     "at": "2026-11-10T17:21:47.019Z"
     }
    ],
    "approvals": [],
@@ -86526,8 +86530,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:21:48.402Z",
      "note": "",
      "uid": "st-mwax9j8i06xygq"
     }
