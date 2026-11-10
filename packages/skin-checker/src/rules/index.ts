@@ -5,5 +5,6 @@
 import type { SkinCheckRule } from '../contract.ts';
 import { SPACING_RULES } from './spacing-scale.ts';
 import { TYPOGRAPHY_RULES } from './typography.ts';
+import { PALETTE_RULES } from './palette.ts';
 
-export const ALL_RULES: readonly SkinCheckRule[] = [...SPACING_RULES, ...TYPOGRAPHY_RULES];
+export const ALL_RULES: readonly SkinCheckRule[] = [...SPACING_RULES, ...TYPOGRAPHY_RULES, ...PALETTE_RULES];
