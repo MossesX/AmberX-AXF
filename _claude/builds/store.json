@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2522,
- "updatedAt": "2026-11-10T17:08:17.751Z",
+ "rev": 2523,
+ "updatedAt": "2026-11-10T17:08:34.580Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127712,7 +127712,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T16:58:15.107Z",
+   "updatedAt": "2026-11-10T17:08:33.063Z",
    "builtAt": "",
    "notes": [
     {
@@ -127861,12 +127861,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:32:01.454Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-appearance-skins-colour-themes-only-remove-desig--joey",
+    "account": "account-3",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T16:58:11.252Z",
-    "runs": 1,
+    "model": "Fable",
+    "launchedAt": "2026-11-09T19:24:37.196Z",
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:25:04.527Z",
      "exit": 1,
@@ -127879,7 +127879,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T16:58:11.252Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
    "steps": [
     {
