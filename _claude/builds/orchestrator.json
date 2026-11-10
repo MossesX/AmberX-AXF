@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:22:58.717Z",
+ "updatedAt": "2026-11-10T03:26:59.963Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82728,7 +82728,7 @@
    "pr": "#433",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T02:58:00.859Z",
+   "updatedAt": "2026-11-10T03:26:57.530Z",
    "builtAt": "",
    "notes": [
     {
@@ -82746,6 +82746,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-phone-pop-up-for-every-build-start-and-fi--rhonda, own login copy)",
      "at": "2026-11-10T02:42:25.787Z"
+    },
+    {
+     "text": "Built, PR #433. UI Review screenshots not captured: the VPS headless browser sandbox failed (ERR_NETWORK_CHANGED, blank page), so nothing is in UI Review yet. Next: capture desktop + phone of Build orchestrator → Pipeline → Phone pop-ups and the opened build (/?axf-action=build-orchestrator.open-build%3A<id>, rebuild-shots --env AXF_APPEARANCE_HUB=off) and submit. Real phone test after merge.",
+     "at": "2026-11-10T03:26:57.530Z"
     }
    ],
    "approvals": [],
