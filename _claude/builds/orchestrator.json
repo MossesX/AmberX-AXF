@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:03:41.824Z",
+ "updatedAt": "2026-11-10T01:03:52.460Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78603,8 +78603,8 @@
    "pr": "#425",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T01:03:25.374Z",
-   "builtAt": "2026-11-10T01:03:25.374Z",
+   "updatedAt": "2026-11-10T01:03:50.813Z",
+   "builtAt": "2026-11-10T01:03:50.813Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -78685,6 +78685,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-failover-chain-subscription-next-subscri--paulie, own login copy)",
      "at": "2026-11-10T00:58:11.734Z"
+    },
+    {
+     "text": "Headless run axf-account-failover-chain-subscription-next-subscri--paulie: brief only · start 11.3K tokens ($0.03) · cost $1.47 · 43 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:03:50.813Z"
     },
     {
      "text": "PR #425. No UI Review shots: Playwright is missing in the worktree, so the capture failed. The UI change is one switch and one 'built by' line on the Pipeline card.",
