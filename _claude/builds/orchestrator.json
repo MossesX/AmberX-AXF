@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:56:31.565Z",
+ "updatedAt": "2026-11-10T17:56:43.818Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87611,7 +87611,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:43:05.952Z",
-   "updatedAt": "2026-11-10T17:09:43.992Z",
+   "updatedAt": "2026-11-10T17:56:14.679Z",
    "builtAt": "",
    "notes": [
     {
@@ -87621,6 +87621,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:44:54.065Z"
+    },
+    {
+     "text": "Split by Claude into 9 steps (1 Fable).",
+     "at": "2026-11-10T17:56:14.679Z"
     }
    ],
    "approvals": [],
@@ -87640,13 +87644,16 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the cross-tab and cross-window drag-and-drop contract for console items. Add a shared MIME type (application/x-axf-item+json) and payload shape {kind, id, title, sourceProject, sourceList}. Add a drop-target registration API that project tabs and project windows use. Add BroadcastChannel hover and drop-accept feedback between windows of the same console origin. Document the contract.",
+     "model": "Fable",
+     "why": "Cross-window drag contract changes how GUIs in every console app exchange items",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/dnd/",
+      "apps/console-web/framework/dnd/README.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -87654,17 +87661,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwav2k3601cinw"
+     "uid": "st-mwazrgt33q33ow"
     },
     {
      "id": "s2",
-     "text": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+     "text": "Add the server-side move operation to the Project Manager store. Move a build (or other movable item) from one project to another project's Pending, Queued (with a position: 1-based index or 'last') or Planned list. Validate the item kind and target, clamp the position, write atomically, and record the move in the journal.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/store.mjs",
+      "apps/console-web/plugins/project-manager/server/move.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -87672,11 +87682,145 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwav2k36027f46"
+     "uid": "st-mwazrgt33rnbfb"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md, THREADS row, commit, push, PR",
+     "text": "Add the REST routes. GET /api/projects/:id/lists returns the current queue (in order), pending and plans for the drop dialog. POST /api/projects/:id/items/move takes {item, from, to: pending|queued|planned, position}. Wire both into the console API router.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/routes.mjs",
+      "apps/console-web/server/api/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazrgt33s39lm"
+    },
+    {
+     "id": "s4",
+     "text": "Expose the same move and lists operations through every other API surface. Add MCP console actions and plugin commands (project_lists, project_move_item) and control@1 planner-item support for moves into Planned. Add the CLI subcommands 'projects lists <project>' and 'projects move <item> --to <project> --into pending|queued|planned [--position n|first|last]'. Add AmberX voice intents ('move build X to project Y, queue second').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/mcp.mjs",
+      "apps/console-web/plugins/project-manager/cli.mjs",
+      "apps/console-web/plugins/project-manager/voice.mjs",
+      "apps/console-web/server/control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazrgt33tqkot"
+    },
+    {
+     "id": "s5",
+     "text": "Make build rows (and similar items) in the Project Manager draggable using the new contract. Register each project tab and each project window as a drop target, with hover highlighting and refusal of drops onto the item's own project.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/BuildRow.jsx",
+      "apps/console-web/plugins/project-manager/ui/ProjectTabs.jsx",
+      "apps/console-web/plugins/project-manager/ui/ProjectWindow.jsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazrgt33urhxp"
+    },
+    {
+     "id": "s6",
+     "text": "Build the drop dialog. Show the target project's current queue (numbered), pending list and plans. Let the user choose Pending, Queued or Planned. If Queued, show a position picker (first, second, third… last) with a preview of where the item will land. Confirm calls POST /items/move; cancel leaves everything unchanged.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/DropDialog.jsx",
+      "apps/console-web/plugins/project-manager/ui/drop-dialog.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazrgt33vfma8"
+    },
+    {
+     "id": "s7",
+     "text": "Add full API control for the drop dialog. Add a deep link through console_show / console_open target 'project-manager/move?item=<id>&to=<project>[&into=queued&position=n]' that opens the dialog prefilled. Make the dialog state (open, item, target project, choice, position) readable through REST and MCP. Make its actions (choose list, set position, confirm, cancel) callable through REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/DropDialog.jsx",
+      "apps/console-web/plugins/project-manager/server/routes.mjs",
+      "apps/console-web/plugins/project-manager/mcp.mjs",
+      "apps/console-web/plugins/project-manager/cli.mjs",
+      "apps/console-web/plugins/project-manager/voice.mjs",
+      "apps/console-web/plugins/project-manager/deeplinks.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazrgt33wu1e8"
+    },
+    {
+     "id": "s8",
+     "text": "Write the tests. Unit tests for the store move (each target, positions first, middle and last, out-of-range clamp, same-project refusal). Route tests. MCP, CLI and voice parity tests against the same fixture. A UI test of drag, drop, dialog and confirm across two tabs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/test/move.test.mjs",
+      "apps/console-web/plugins/project-manager/test/api-parity.test.mjs",
+      "apps/console-web/plugins/project-manager/test/drop-dialog.e2e.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazrgt33x61uj"
+    },
+    {
+     "id": "s9",
+     "text": "Run the full test suite and fix any failures. Write the report _claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md. Add the THREADS row. Open the PR, stating how each feature is reached by deep link, REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -87693,7 +87837,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwav2k3603izhu"
+     "uid": "st-mwazrgt33yoat4"
     }
    ]
   },

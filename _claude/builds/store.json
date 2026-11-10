@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2619,
- "updatedAt": "2026-11-10T17:56:31.565Z",
+ "rev": 2620,
+ "updatedAt": "2026-11-10T17:56:43.818Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5463,31 +5463,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -6408,31 +6383,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -6859,31 +6809,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -7547,31 +7472,6 @@
     "from": "detail",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -8015,31 +7915,6 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -9397,31 +9272,6 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -12234,31 +12084,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -14970,31 +14795,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -19052,31 +18852,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -19735,31 +19510,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -27122,31 +26872,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.826Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -27572,31 +27297,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -28055,31 +27755,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -28263,31 +27938,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -28471,31 +28121,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -28679,31 +28304,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -28887,31 +28487,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -29095,31 +28670,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -29303,31 +28853,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -29694,31 +29219,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -30085,31 +29585,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -30293,31 +29768,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -40099,31 +39549,6 @@
     "from": "detail",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -40874,31 +40299,6 @@
     "from": "detail",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -41345,31 +40745,6 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -42153,31 +41528,6 @@
     "from": "detail",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -42545,31 +41895,6 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -42995,31 +42320,6 @@
     "from": "detail",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -43230,31 +42530,6 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -50932,31 +50207,6 @@
     "from": "brief",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -52115,31 +51365,6 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -66357,31 +65582,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -71687,31 +70887,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -72990,31 +72165,6 @@
     }
    ],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -73681,31 +72831,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -75369,31 +74494,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -79431,31 +78531,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -81432,31 +80507,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -86268,31 +85318,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -88773,31 +87798,6 @@
      }
     ]
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -90162,16 +89162,7 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-10T04:34:31.174Z",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T04:34:31.174Z"
    },
    "steps": [
     {
@@ -90863,31 +89854,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -93249,31 +92215,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -93934,31 +92875,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -94905,31 +93821,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -95120,31 +94011,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -95652,31 +94518,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -95987,31 +94828,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -96784,31 +95600,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -96971,31 +95762,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -97150,31 +95916,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -97454,31 +96195,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -97735,10 +96451,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -98766,31 +97479,6 @@
     "verbatim": false,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -101625,31 +100313,6 @@
     "verbatim": false,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -105950,31 +104613,6 @@
      }
     ]
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -106662,31 +105300,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -106846,31 +105459,6 @@
     "verbatim": true,
     "from": "brief",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -107053,31 +105641,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -107235,31 +105798,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -107453,31 +105991,6 @@
       "verbatim": true
      }
     ]
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -108996,31 +107509,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -109627,31 +108115,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -110787,31 +109250,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -111147,31 +109585,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -111430,31 +109843,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -111624,31 +110012,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -112151,31 +110514,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -112658,31 +110996,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -115086,31 +113399,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -115218,31 +113506,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -116056,31 +114319,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -116414,31 +114652,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -116550,31 +114763,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -117004,31 +115192,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -117166,31 +115329,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -117626,31 +115764,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -118035,31 +116148,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -118233,31 +116321,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -118445,31 +116508,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -118770,10 +116808,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T00:16:15.395Z"
    },
    "steps": [
     {
@@ -119001,10 +117036,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -119813,16 +117845,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -120249,16 +118272,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -120432,16 +118446,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -120779,31 +118784,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -120941,31 +118921,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -121508,31 +119463,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -121957,31 +119887,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -122511,31 +120416,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -123300,31 +121180,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -123593,31 +121448,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -123940,31 +121770,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -124187,31 +121992,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -124387,31 +122167,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -124640,31 +122395,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -124815,31 +122545,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -125296,31 +123001,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -125470,31 +123150,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -125654,31 +123309,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -125816,31 +123446,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -125984,31 +123589,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -126147,31 +123727,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -126309,31 +123864,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -126639,31 +124169,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -126802,31 +124307,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.827Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -126964,31 +124444,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -127338,10 +124793,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -127704,10 +125156,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -127850,31 +125299,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -128039,31 +125463,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -128222,31 +125621,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -128384,31 +125758,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -128558,31 +125907,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -128720,31 +126044,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
    },
    "steps": [
     {
@@ -128908,16 +126207,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -129447,16 +126737,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -129761,16 +127042,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -130265,16 +127537,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -130511,16 +127774,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z",
-    "planned": {
-     "model": "Opus",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
    "steps": [
     {
@@ -130648,31 +127902,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -130755,31 +127984,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -130840,31 +128044,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -130925,31 +128104,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -131224,10 +128378,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T18:53:07.552Z"
    },
    "steps": [
     {
@@ -131566,16 +128717,7 @@
     "splitRequested": "",
     "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
    "steps": [
     {
@@ -131923,10 +129065,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
    "steps": [
     {
@@ -132089,10 +129228,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132259,10 +129395,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132429,10 +129562,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132674,10 +129804,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
    "steps": [
     {
@@ -132959,10 +130086,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T01:57:09.377Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T01:57:09.377Z"
    },
    "steps": [
     {
@@ -133113,16 +130237,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133588,10 +130703,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "2026-11-10T04:19:07.513Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T04:19:07.513Z"
    },
    "steps": [
     {
@@ -134038,10 +131150,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T16:57:09.463Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T16:57:09.463Z"
    },
    "steps": [
     {
@@ -134275,10 +131384,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
    "steps": [
     {
@@ -134500,10 +131606,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
    "steps": [
     {
@@ -134725,10 +131828,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T18:55:16.286Z"
    },
    "steps": [
     {
@@ -134966,10 +132066,7 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "api",
-    "dispatchedAt": "2026-11-10T02:17:28.580Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T02:17:28.580Z"
    },
    "steps": [
     {
@@ -135199,16 +132296,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "2026-11-10T06:15:19.658Z",
-    "planned": {
-     "model": "Opus",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T06:15:19.658Z"
    },
    "steps": [
     {
@@ -135472,10 +132560,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
    "steps": [
     {
@@ -135653,10 +132738,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -135908,10 +132990,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
    "steps": [
     {
@@ -136078,10 +133157,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -136252,10 +133328,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -136422,10 +133495,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -136576,16 +133646,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -136899,10 +133960,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -137147,10 +134205,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -137352,16 +134407,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -137524,10 +134570,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -137694,10 +134737,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -137868,16 +134908,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -138055,10 +135086,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T00:42:13.778Z"
    },
    "steps": [
     {
@@ -138257,16 +135285,7 @@
     "splitRequested": "",
     "note": "launch failed: worktree for skins-as-packages-of-slices-every-section-its-ow: Preparing worktree (resetting branch 'claude/skins-as-packages-of-slices-every-section-its-ow'; was at 538b197a5)\nerror: unable to write file _claude/builds/journal/2026-11-p2.jsonl\nerror: unable to write file _claude/builds/journal/2026",
     "route": "api",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -138417,16 +135436,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -138913,16 +135923,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -139055,16 +136056,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "account-5",
-     "kind": "api",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "routed to API account account-5 (this build is set to run on API)"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -139232,10 +136224,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -139453,10 +136442,7 @@
     "splitRequested": "",
     "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-10T02:48:43.040Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T02:48:43.040Z"
    },
    "steps": [
     {
@@ -139623,10 +136609,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -139797,10 +136780,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -139978,10 +136958,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:33:16.699Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T03:33:16.699Z"
    },
    "steps": [
     {
@@ -140169,10 +137146,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -140350,10 +137324,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:55:23.238Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T03:55:23.238Z"
    },
    "steps": [
     {
@@ -140531,10 +137502,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T04:04:16.333Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T04:04:16.333Z"
    },
    "steps": [
     {
@@ -140709,16 +137677,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -140888,16 +137847,7 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-10T04:28:53.382Z",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T04:28:53.382Z"
    },
    "steps": [
     {
@@ -141048,16 +137998,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -141382,16 +138323,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -141909,10 +138841,7 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-10T14:51:14.691Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T14:51:14.691Z"
    },
    "steps": [
     {
@@ -142075,10 +139004,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -142229,16 +139155,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -142595,10 +139512,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -142772,10 +139686,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T16:07:12.460Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T16:07:12.460Z"
    },
    "steps": [
     {
@@ -142949,10 +139860,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T16:18:16.704Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T16:18:16.704Z"
    },
    "steps": [
     {
@@ -143115,10 +140023,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -143273,16 +140178,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -143638,10 +140534,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -143796,16 +140689,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:56:04.032Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -144019,7 +140903,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:43:05.952Z",
-   "updatedAt": "2026-11-10T17:09:43.992Z",
+   "updatedAt": "2026-11-10T17:56:14.679Z",
    "builtAt": "",
    "notes": [
     {
@@ -144029,6 +140913,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:44:54.065Z"
+    },
+    {
+     "text": "Split by Claude into 9 steps (1 Fable).",
+     "at": "2026-11-10T17:56:14.679Z"
     }
    ],
    "approvals": [],
@@ -144056,38 +140944,32 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-10T15:44:54.065Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+     "at": "2026-11-10T17:56:14.679Z",
+     "by": "fix-the-orchestrator-s-splitter-claude-print-get",
+     "provider": "claude",
+     "steps": 9,
+     "note": "Split by Claude into 9 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwav2k3601cinw",
+     "uid": "st-mwazrgt33q33ow",
      "title": "",
-     "text": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the cross-tab and cross-window drag-and-drop contract for console items. Add a shared MIME type (application/x-axf-item+json) and payload shape {kind, id, title, sourceProject, sourceList}. Add a drop-target registration API that project tabs and project windows use. Add BroadcastChannel hover and drop-accept feedback between windows of the same console origin. Document the contract.",
+     "model": "Fable",
+     "why": "Cross-window drag contract changes how GUIs in every console app exchange items",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/dnd/",
+      "apps/console-web/framework/dnd/README.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -144096,20 +140978,23 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T15:44:54.065Z",
-     "updatedAt": "2026-11-10T15:44:54.065Z"
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwav2k36027f46",
+     "uid": "st-mwazrgt33rnbfb",
      "title": "",
-     "text": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+     "text": "Add the server-side move operation to the Project Manager store. Move a build (or other movable item) from one project to another project's Pending, Queued (with a position: 1-based index or 'last') or Planned list. Validate the item kind and target, clamp the position, write atomically, and record the move in the journal.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/store.mjs",
+      "apps/console-web/plugins/project-manager/server/move.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -144118,14 +141003,172 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T15:44:54.065Z",
-     "updatedAt": "2026-11-10T15:44:54.065Z"
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwav2k3603izhu",
+     "uid": "st-mwazrgt33s39lm",
      "title": "",
-     "text": "Tests green, report _claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md, THREADS row, commit, push, PR",
+     "text": "Add the REST routes. GET /api/projects/:id/lists returns the current queue (in order), pending and plans for the drop dialog. POST /api/projects/:id/items/move takes {item, from, to: pending|queued|planned, position}. Wire both into the console API router.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/routes.mjs",
+      "apps/console-web/server/api/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwazrgt33tqkot",
+     "title": "",
+     "text": "Expose the same move and lists operations through every other API surface. Add MCP console actions and plugin commands (project_lists, project_move_item) and control@1 planner-item support for moves into Planned. Add the CLI subcommands 'projects lists <project>' and 'projects move <item> --to <project> --into pending|queued|planned [--position n|first|last]'. Add AmberX voice intents ('move build X to project Y, queue second').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/mcp.mjs",
+      "apps/console-web/plugins/project-manager/cli.mjs",
+      "apps/console-web/plugins/project-manager/voice.mjs",
+      "apps/console-web/server/control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwazrgt33urhxp",
+     "title": "",
+     "text": "Make build rows (and similar items) in the Project Manager draggable using the new contract. Register each project tab and each project window as a drop target, with hover highlighting and refusal of drops onto the item's own project.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/BuildRow.jsx",
+      "apps/console-web/plugins/project-manager/ui/ProjectTabs.jsx",
+      "apps/console-web/plugins/project-manager/ui/ProjectWindow.jsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwazrgt33vfma8",
+     "title": "",
+     "text": "Build the drop dialog. Show the target project's current queue (numbered), pending list and plans. Let the user choose Pending, Queued or Planned. If Queued, show a position picker (first, second, third… last) with a preview of where the item will land. Confirm calls POST /items/move; cancel leaves everything unchanged.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/DropDialog.jsx",
+      "apps/console-web/plugins/project-manager/ui/drop-dialog.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwazrgt33wu1e8",
+     "title": "",
+     "text": "Add full API control for the drop dialog. Add a deep link through console_show / console_open target 'project-manager/move?item=<id>&to=<project>[&into=queued&position=n]' that opens the dialog prefilled. Make the dialog state (open, item, target project, choice, position) readable through REST and MCP. Make its actions (choose list, set position, confirm, cancel) callable through REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/ui/DropDialog.jsx",
+      "apps/console-web/plugins/project-manager/server/routes.mjs",
+      "apps/console-web/plugins/project-manager/mcp.mjs",
+      "apps/console-web/plugins/project-manager/cli.mjs",
+      "apps/console-web/plugins/project-manager/voice.mjs",
+      "apps/console-web/plugins/project-manager/deeplinks.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwazrgt33x61uj",
+     "title": "",
+     "text": "Write the tests. Unit tests for the store move (each target, positions first, middle and last, out-of-range clamp, same-project refusal). Route tests. MCP, CLI and voice parity tests against the same fixture. A UI test of drag, drop, dialog and confirm across two tabs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/test/move.test.mjs",
+      "apps/console-web/plugins/project-manager/test/api-parity.test.mjs",
+      "apps/console-web/plugins/project-manager/test/drop-dialog.e2e.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwazrgt33yoat4",
+     "title": "",
+     "text": "Run the full test suite and fix any failures. Write the report _claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md. Add the THREADS row. Open the PR, stating how each feature is reached by deep link, REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -144143,8 +141186,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T15:44:54.065Z",
-     "updatedAt": "2026-11-10T15:44:54.065Z"
+     "createdAt": "2026-11-10T17:56:14.679Z",
+     "updatedAt": "2026-11-10T17:56:14.679Z"
     }
    ],
    "profiles": [
@@ -144160,7 +141203,7 @@
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-10T15:44:54.065Z",
+   "defaultAt": "2026-11-10T17:56:14.679Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -144225,16 +141268,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -144385,16 +141419,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -144545,16 +141570,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -144705,16 +141721,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -144865,16 +141872,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -145025,16 +142023,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -145201,10 +142190,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -145355,16 +142341,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -145511,16 +142488,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -145698,10 +142666,7 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-10T17:02:10.384Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T17:02:10.384Z"
    },
    "steps": [
     {
@@ -145868,10 +142833,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -146034,10 +142996,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -146200,10 +143159,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -146362,10 +143318,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T17:26:11.553Z",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": "2026-11-10T17:26:11.553Z"
    },
    "steps": [
     {
@@ -146532,10 +143485,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -146698,10 +143648,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -146852,16 +143799,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147012,16 +143950,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147172,16 +144101,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147328,16 +144248,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147484,16 +144395,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147644,16 +144546,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147800,16 +144693,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -147956,16 +144840,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -148112,16 +144987,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -148268,16 +145134,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -148424,16 +145281,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -148584,16 +145432,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -148744,16 +145583,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -148904,16 +145734,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -149064,16 +145885,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -149224,16 +146036,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:54:44.828Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
