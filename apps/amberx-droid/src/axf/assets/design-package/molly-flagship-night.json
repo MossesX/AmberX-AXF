@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "molly-flagship-night",
+  "name": "Molly Flagship Night",
+  "version": "1.0.0",
+  "description": "Molly's flagship look after dark as a design package: graphite, soft white and luminous violet, with the same type, spacing, elevation and motion as Molly Flagship.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship",
+    "dark"
+  ],
+  "data": {
+    "style-theme": "molly-flagship",
+    "color-theme": "molly-flagship-night",
+    "layout": "classic-ide",
+    "behavior-theme": "molly-flagship",
+    "extras": {
+      "slots": {
+        "context-menu": "compact-classic",
+        "dialog": "molly-flagship",
+        "popup": "molly-flagship",
+        "theme-switch": "molly-flagship-day-night",
+        "typography": "molly-flagship",
+        "density": "standard",
+        "sizing": "standard"
+      },
+      "spacing": "regular",
+      "settings": {}
+    }
+  }
+}

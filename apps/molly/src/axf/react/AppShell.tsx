@@ -3,12 +3,14 @@ import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
+import { TipLayer } from './components/TipLayer';
 import { SkinScope } from './components/SkinScope';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
 import { bannerWidgetsDialog } from './components/BannerWidgets';
 import { chromeDialogs, installChrome } from './components/ChromeContext';
+import { menuItemDialogs } from './components/MenuItemSettings';
 import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
@@ -70,7 +72,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   useWindowShortcuts();
   // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
   installChrome(rt);
-  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...menuItemDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
@@ -111,6 +113,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </main>
           <DialogHost dialogs={allDialogs} />
           <ToastHost />
+          <TipLayer />
           <HelpLayer />
         </div>
       </div>
@@ -178,6 +181,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />
+      <TipLayer />
       {/* Help mode (components/Help.tsx): tooltips on every control, screen intros, What is this?; nothing while it's off */}
       <HelpLayer />
     </div>

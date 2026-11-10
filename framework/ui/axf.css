@@ -554,6 +554,36 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   backdrop-filter: blur(var(--fx-blur)) saturate(1.4); -webkit-backdrop-filter: blur(var(--fx-blur)) saturate(1.4);
 }
 
+/* Menu polish (flagship skin s6): drop-downs open from their button, rows ease their hover, status slots change colour
+   smoothly and a healthy one glows softly; all from the active theme's motion, ease, colours and opacity tokens. */
+.fx-dropdown { transform-origin: top left; animation: fx-menu-in var(--fx-motion) var(--fx-ease) both; }
+.fx-menu__item { transition: background-color var(--fx-motion) var(--fx-ease), color var(--fx-motion) var(--fx-ease); }
+.fx-menu__item:active:not(:disabled) { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 160%), transparent); }
+.fx-menu__icon, .fx-menu__status, .fx-menu__chevron { transition: color var(--fx-motion) var(--fx-ease); }
+.fx-menu__item:hover:not(:disabled) .fx-menu__icon { color: var(--fx-text); }
+.fx-menu__item:hover:not(:disabled) .fx-menu__chevron { color: var(--fx-accent); }
+.fx-menu__status[data-fx-tone='success'] > *, .fx-menu__status[data-fx-tone='danger'] > * {
+  filter: drop-shadow(0 0 calc(var(--fx-space) * 0.4) color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 300%), transparent));
+}
+.fx-menubar__btn { transition: background-color var(--fx-motion) var(--fx-ease), color var(--fx-motion) var(--fx-ease); }
+[data-fx-motion='reduced'] .fx-dropdown, [data-fx-popup-open='none'] .fx-dropdown { animation: none; }
+@media (prefers-reduced-motion: reduce) { .fx-dropdown { animation: none; } .fx-menu__item, .fx-menubar__btn { transition: none; } }
+
+/* Tooltips (components/TipLayer.tsx): a chrome element's title shown as a small inverted tip under it (above when there
+   is no room), fading in once it is placed. */
+.fx-tip {
+  position: fixed; left: var(--fx-tip-x); top: var(--fx-tip-y); z-index: 95; pointer-events: none;
+  max-width: min(calc(var(--fx-space) * 40), calc(100vw - var(--fx-dens-gap-3xl) * 2));
+  padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm);
+  background: var(--fx-text); color: var(--fx-surface); box-shadow: var(--fx-shadow-md);
+  font: 500 var(--fx-type-scale-xs) / 1.35 var(--fx-font); letter-spacing: 0.01em; white-space: normal;
+  opacity: 0;
+}
+.fx-tip[data-fx-side='below'] { margin-top: var(--fx-dens-gap-md); }
+.fx-tip[data-fx-side='above'] { transform: translateY(-100%); margin-top: calc(var(--fx-dens-gap-md) * -1); }
+.fx-tip[data-fx-ready='on'] { opacity: 1; transition: opacity var(--fx-motion) var(--fx-ease); }
+@media (prefers-reduced-motion: reduce) { .fx-tip[data-fx-ready='on'] { transition: none; } }
+
 /* ---------------- toolbar (toolbar asset) ---------------- */
 
 /* Tap-to-confirm (framework/react/tapConfirm.ts): on touch the first tap lights the button for the arm window and a tip

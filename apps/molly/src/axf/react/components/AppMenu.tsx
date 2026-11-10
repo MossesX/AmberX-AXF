@@ -14,11 +14,12 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type { CompiledMenuButton } from '../../core/engines/appmenu';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
-import { MenuScroll, MenuSub } from './MenuList';
-import { focusMenuItem, useMenuFit } from './menuFit';
+import { menuKey, nextMenuIndex } from '../../core/engines/menufit';
+import { MenuRowChevron, MenuRowIcon, MenuRowShortcut, MenuRowStatus, MenuRowValue, MenuScroll, MenuSub, choiceRows, openMenuItemSettings, rowHasSub, rowKeepsOpen, rowLookAttrs, rowRole, rowTitle } from './MenuList';
+import { focusMenuItem, menuRows, useMenuFit } from './menuFit';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
-import { Button, Chip, Kbd } from './Controls';
+import { Button, Chip } from './Controls';
 
 /** Phones drill down instead of opening flyouts (the same breakpoint as the banner's label cut). */
 export const APP_MENU_PHONE_QUERY = '(max-width: 480px)';
@@ -61,6 +62,8 @@ interface ListProps {
   /** phone: enter a submenu (drill down) instead of opening a flyout */
   onEnter?: (item: CompiledMenuItem) => void;
   autoFocus?: boolean;
+  /** a flyout submenu: ArrowLeft / Escape close it and put focus back on its parent row (the parent passes this) */
+  onClose?: () => void;
 }
 
 /** How long a row shows what its button did before it drops off the list. */
@@ -181,35 +184,46 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
   );
 }
 
-const focusables = (root: HTMLElement | null) => root ? Array.from(root.querySelectorAll<HTMLButtonElement>(':scope > li > [role="menuitem"]:not(:disabled)')) : [];
-
-/** One level of the menu. Submenus open as flyouts (desktop) or through `onEnter` (phone). */
-export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListProps) {
+/**
+ * One level of the menu. Submenus open as flyouts (desktop) or through `onEnter` (phone).
+ *
+ * Keyboard (core/engines/menufit.ts `menuKey`): arrows move with wrap, Home / End jump, ArrowRight (or Enter) on a row
+ * with a submenu opens it and puts focus on its first row, ArrowLeft / Escape inside a flyout close it and put focus
+ * back on the parent row, Escape at the root closes the menu (AppMenuDropdown). A submenu that flipped left or up to
+ * stay on screen keeps the same keys: the flip moves the box, never the focus.
+ */
+export function AppMenuList({ items, depth, onDone, onEnter, autoFocus, onClose }: ListProps) {
   const rt = useRuntime();
   const [openSub, setOpenSub] = useState<string | null>(null);
+  // opened with the keyboard: focus goes into the submenu; opened by hover it stays where the pointer is
+  const [subByKey, setSubByKey] = useState(false);
   const [gone, setGone] = useState<ReadonlySet<string>>(() => new Set());
   const onGone = useCallback((id: string) => setGone((g) => new Set(g).add(id)), []);
   const ref = useRef<HTMLUListElement>(null);
 
-  useEffect(() => { if (autoFocus) focusMenuItem(focusables(ref.current)[0]); }, [autoFocus]);
+  useEffect(() => { if (autoFocus) focusMenuItem(menuRows(ref.current)[0]); }, [autoFocus]);
+
+  const rowOf = (id: string) => menuRows(ref.current).find((b) => b.dataset.axfMenuItem === id);
+  const closeSub = useCallback((id: string) => { setOpenSub(null); setSubByKey(false); focusMenuItem(rowOf(id)); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onKey = (e: KeyboardEvent<HTMLUListElement>) => {
-    const list = focusables(ref.current);
+    const list = menuRows(ref.current);
     const at = list.indexOf(document.activeElement as HTMLButtonElement);
-    const go = (i: number) => { focusMenuItem(list[(i + list.length) % list.length]); }; // scrolled into view in a long menu
-    switch (e.key) {
-      case 'ArrowDown': e.preventDefault(); e.stopPropagation(); go(at + 1); break;
-      case 'ArrowUp': e.preventDefault(); e.stopPropagation(); go(at - 1); break;
-      case 'Home': e.preventDefault(); e.stopPropagation(); go(0); break;
-      case 'End': e.preventDefault(); e.stopPropagation(); go(list.length - 1); break;
-      case 'ArrowRight': {
-        const id = list[at]?.dataset.axfMenuItem;
-        const item = items.find((i) => i.id === id);
-        if (item && (item.items || item.provider)) { e.preventDefault(); e.stopPropagation(); if (onEnter) onEnter(item); else setOpenSub(item.id); }
+    const row = list[at];
+    const item = items.find((i) => i.id === row?.dataset.axfMenuItem);
+    const hasSub = !!item && rowHasSub(item);
+    const action = menuKey(e.key, { hasSub, inSub: !!onClose });
+    if (!action || action === 'escape' || action === 'activate') return; // Enter / Space run the button; Escape at the root reaches the drop-down
+    e.preventDefault(); e.stopPropagation();
+    switch (action) {
+      case 'next': case 'prev': case 'first': case 'last': focusMenuItem(list[nextMenuIndex(list.length, at, action)]); break; // scrolled into view in a long menu
+      case 'open':
+        if (onEnter) onEnter(item!);
+        // already open (hover, or a second ArrowRight): just move focus into it
+        else if (openSub === item!.id) focusMenuItem(ref.current?.querySelector<HTMLElement>('.fx-menu__sub [role^="menuitem"]:not(:disabled)'));
+        else { setOpenSub(item!.id); setSubByKey(true); }
         break;
-      }
-      case 'ArrowLeft': if (openSub && !onEnter) { e.preventDefault(); e.stopPropagation(); setOpenSub(null); list[at]?.focus(); } break;
-      default: break;
+      case 'close': onClose?.(); break;
     }
   };
 
@@ -220,38 +234,46 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
       {shown.map((item) => {
         if (item.buttons?.length) return <LiveRow key={item.id} item={item} onGone={onGone} />;
         if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
-        const hasSub = !!item.items || !!item.provider;
+        const hasSub = rowHasSub(item);
         const sub = hasSub && openSub === item.id && !onEnter;
+        const role = rowRole(item);
         return (
-          <li key={item.id} className={`fx-menu__li ${sub ? 'is-open' : ''}`} onMouseEnter={() => !onEnter && setOpenSub(hasSub ? item.id : null)}>
+          <li key={item.id} className={`fx-menu__li ${sub ? 'is-open' : ''}`} onMouseEnter={() => { if (!onEnter) { setOpenSub(hasSub ? item.id : null); setSubByKey(false); } }}>
             <button
               type="button"
-              role={item.check !== undefined ? 'menuitemcheckbox' : 'menuitem'}
-              aria-checked={item.check}
+              role={role}
+              aria-checked={role === 'menuitem' ? undefined : !!item.check}
               aria-haspopup={hasSub ? 'menu' : undefined}
               aria-expanded={hasSub ? sub : undefined}
               className={`fx-menu__item ${item.check ? 'is-checked' : ''}`}
               disabled={item.locked}
               data-axf-menu-item={item.id}
               data-axf-origin={item.origin}
-              title={item.locked ? (rt.lockedByHost({ action: item.action, provider: item.provider }) ?? (item.requires ? `Requires ${item.requires}` : 'Not available')) : undefined}
+              data-axf-path={item.path}
+              data-axf-kind={item.kind}
+              {...rowLookAttrs(item)}
+              title={rowTitle(item, rt.lockedByHost({ action: item.action, provider: item.provider }))}
+              onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); openMenuItemSettings(rt, item, onDone); }}
               onClick={(e) => {
-                if (hasSub) { e.stopPropagation(); if (onEnter) onEnter(item); else setOpenSub(item.id); return; }
+                // a click (Enter / Space too: the button fires click) on a submenu row opens it; from the keyboard focus goes in
+                if (hasSub) { e.stopPropagation(); if (onEnter) onEnter(item); else { setOpenSub(item.id); setSubByKey(e.detail === 0); } return; }
+                // a choice applies at once and the menu stays open, so the value beside the entry shows the change
+                if (rowKeepsOpen(item)) { e.stopPropagation(); if (item.action) rt.dispatch(item.action); return; }
                 onDone();
                 if (item.action) rt.dispatch(item.action);
               }}
             >
-              {item.check !== undefined
-                ? <span className="fx-menu__check" aria-hidden="true">{item.check && <Icon name="check" size={14} />}</span>
-                : <span className="fx-menu__icon">{item.locked ? <Icon name="lock" size={14} /> : <Icon name={item.icon} size={15} />}</span>}
+              <MenuRowIcon item={item} />
               <span className="fx-menu__label">{item.label}</span>
+              <MenuRowStatus item={item} />
+              <MenuRowValue item={item} />
               {item.count !== undefined && item.count > 0 && <span className="fx-menu__badge" aria-label={`${item.count} new`}>{item.count > 99 ? '99+' : item.count}</span>}
-              {item.shortcut && <Kbd>{item.shortcut}</Kbd>}
-              {hasSub && <Icon name="chevron-right" size={14} className="fx-menu__chevron" />}
+              <MenuRowShortcut shortcut={item.shortcut} />
+              {hasSub && <MenuRowChevron />}
             </button>
             {sub && (
               <MenuSub role="presentation">
-                <SubmenuBody item={item} depth={depth + 1} onDone={onDone} open />
+                <SubmenuBody item={item} depth={depth + 1} onDone={onDone} open autoFocus={subByKey} onClose={() => closeSub(item.id)} />
               </MenuSub>
             )}
           </li>
@@ -262,15 +284,17 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
 }
 
 /** The items of a submenu: the compiled ones, or the live list loaded on open. */
-function SubmenuBody({ item, depth, onDone, onEnter, open, autoFocus }: { item: CompiledMenuItem; depth: number; onDone: () => void; onEnter?: (i: CompiledMenuItem) => void; open: boolean; autoFocus?: boolean }) {
+function SubmenuBody({ item, depth, onDone, onEnter, open, autoFocus, onClose }: { item: CompiledMenuItem; depth: number; onDone: () => void; onEnter?: (i: CompiledMenuItem) => void; open: boolean; autoFocus?: boolean; onClose?: () => void }) {
   const loaded = useProviderItems(item.provider, open, depth - 1);
+  // a choice setting's list: one radio row per choice, the current one checked; a pick applies at once
+  if (item.kind === 'choice') return <AppMenuList items={choiceRows(item)} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} onClose={onClose} />;
   if (item.provider) {
     if (!loaded || loaded.state === 'loading') return <div className="fx-menu__row fx-menu__loading" role="status"><span className="fx-menu__spinner" aria-hidden="true" />Loading…</div>;
     if (loaded.state === 'error') return <div className="fx-menu__row fx-menu__error" role="alert"><Icon name="alert" size={14} />Couldn't load this list</div>;
     if (!loaded.items.length) return <div className="fx-menu__row fx-menu__empty">Nothing here</div>;
-    return <AppMenuList items={loaded.items} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} />;
+    return <AppMenuList items={loaded.items} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} onClose={onClose} />;
   }
-  return <AppMenuList items={item.items ?? []} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} />;
+  return <AppMenuList items={item.items ?? []} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} onClose={onClose} />;
 }
 
 /**

@@ -9,14 +9,19 @@
  *   - `useMenuFit()`   keeps a framework menu fitted while it is open (its content changes, the window or keyboard
  *                      resizes, a parent menu scrolls) and keeps its scroll hints (`data-fx-more`) current
  *   - `installMenuFit()` fits every other menu box (plugins' ⋯ menus: `.fx-popover.fx-dropdown`, `.fx-popover[role=menu]`)
- *                      the moment it appears, so plugins inherit the behaviour without code changes
+ *                      the moment it appears, so plugins inherit the behaviour without code changes, and installs the
+ *                      scroll lock below
+ *   - `installMenuScrollLock()` the menu scrolls, not the page (Brett, Nov 10 2026): while any framework menu is open a
+ *                      wheel or touch scroll moves the menu's own scroller when it can, and nothing else; the page under
+ *                      the menu never moves (core/engines/menufit.ts `menuWheel` decides)
  *   - `focusMenuItem()` keyboard navigation: focus a row and scroll it into view (clear of the scroll hints)
+ *   - `menuRows()`      the focusable rows of one menu level (menuitem and menuitemcheckbox alike)
  *
  * Sizes come from tokens: the edge inset from the layout asset, the hint height from density (axf.css). Only measured
  * values are written inline.
  */
 import { useLayoutEffect, type RefObject } from 'react';
-import { fitMenu, menuBox, type FitMode, type FitRect } from '../../core';
+import { fitMenu, menuBox, menuWheel, type FitMode, type FitRect } from '../../core';
 
 let probe: HTMLElement | null = null;
 /** One hidden element that resolves the edge token and the safe-area insets to px. */
@@ -116,6 +121,52 @@ export function focusMenuItem(el: HTMLElement | undefined | null): void {
   el.scrollIntoView?.({ block: 'nearest' });
 }
 
+/** The focusable rows of one menu level: its own `li`s' menu items (check rows included), never a submenu's. */
+export function menuRows(list: HTMLElement | null): HTMLButtonElement[] {
+  return list ? Array.from(list.querySelectorAll<HTMLButtonElement>(':scope > li > [role^="menuitem"]:not(:disabled)')) : [];
+}
+
+/* ---- the menu scrolls, not the page ---- */
+
+const OPEN_MENU = '[data-fx-fit]';
+
+/** Who gets this wheel / touch scroll (`menuWheel` over the DOM): the menu's scroller, or nobody. */
+function decideScroll(doc: Document, target: EventTarget | null, deltaY: number): 'page' | 'menu' | 'block' {
+  const open = !!doc.querySelector(OPEN_MENU);
+  if (!open) return 'page';
+  const el = target instanceof Element ? target : null;
+  const box = el?.closest<HTMLElement>(OPEN_MENU) ?? null;
+  if (!box) return menuWheel({ open, inMenu: false, deltaY });
+  // the scroller the pointer is in: the nearest menu scroller (a submenu's before its parent's), else the box itself
+  const s = el?.closest<HTMLElement>('.fx-menu__scroll') ?? menuScroller(box);
+  return menuWheel({ open, inMenu: true, deltaY, scrollTop: s.scrollTop, scrollHeight: s.scrollHeight, clientHeight: s.clientHeight });
+}
+
+/**
+ * While any framework menu is open, the page never scrolls: a wheel or touch scroll inside a menu moves that menu's
+ * scroller (natively) when it can move that way, and is swallowed otherwise; outside a menu it is swallowed. Installed
+ * once by `installMenuFit`. Returns the remover.
+ */
+export function installMenuScrollLock(doc: Document = document): () => void {
+  const onWheel = (e: WheelEvent) => { if (decideScroll(doc, e.target, e.deltaY) === 'block') e.preventDefault(); };
+  let touchY = 0;
+  const onTouchStart = (e: TouchEvent) => { touchY = e.touches[0]?.clientY ?? 0; };
+  const onTouchMove = (e: TouchEvent) => {
+    const y = e.touches[0]?.clientY ?? touchY;
+    const d = decideScroll(doc, e.target, touchY - y);
+    touchY = y;
+    if (d === 'block' && e.cancelable) e.preventDefault();
+  };
+  doc.addEventListener('wheel', onWheel, { capture: true, passive: false });
+  doc.addEventListener('touchstart', onTouchStart, { capture: true, passive: true });
+  doc.addEventListener('touchmove', onTouchMove, { capture: true, passive: false });
+  return () => {
+    doc.removeEventListener('wheel', onWheel, { capture: true });
+    doc.removeEventListener('touchstart', onTouchStart, { capture: true });
+    doc.removeEventListener('touchmove', onTouchMove, { capture: true });
+  };
+}
+
 /**
  * Re-runs `fit` while a menu is open: content size changes (a live list fills in), window / keyboard / zoom changes,
  * and any scroll outside the menu (a parent menu scrolling moves a submenu's row). Scrolls inside it update its hints.
@@ -192,9 +243,10 @@ function adopt(el: HTMLElement): void {
   stops.set(el, watchMenu(el, fit));
 }
 
-/** Fits every menu box that places itself (plugins' ⋯ menus) as it appears. Returns the remover. */
+/** Fits every menu box that places itself (plugins' ⋯ menus) as it appears, and locks the page's scroll while any menu is open. Returns the remover. */
 export function installMenuFit(root: HTMLElement = document.body): () => void {
-  if (typeof MutationObserver === 'undefined') return () => {};
+  const unlock = installMenuScrollLock(root.ownerDocument);
+  if (typeof MutationObserver === 'undefined') return unlock;
   const scan = (n: Node) => {
     if (!(n instanceof HTMLElement)) return;
     if (n.matches(AUTO)) adopt(n);
@@ -211,5 +263,5 @@ export function installMenuFit(root: HTMLElement = document.body): () => void {
   });
   mo.observe(root, { childList: true, subtree: true });
   scan(root);
-  return () => mo.disconnect();
+  return () => { mo.disconnect(); unlock(); };
 }

@@ -19,7 +19,7 @@
     "style-theme": "molly-flagship",
     "layout": "classic-ide",
     "behavior-theme": "molly-flagship",
-    "design-package": "hub-default",
+    "design-package": "molly-flagship",
     "app-menu": "molly",
     "toolbar": "molly",
     "nav-menu": "molly",

@@ -3,6 +3,7 @@ import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
+import { TipLayer } from './components/TipLayer';
 import { SkinScope } from './components/SkinScope';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
@@ -112,6 +113,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </main>
           <DialogHost dialogs={allDialogs} />
           <ToastHost />
+          <TipLayer />
           <HelpLayer />
         </div>
       </div>
@@ -179,6 +181,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />
+      <TipLayer />
       {/* Help mode (components/Help.tsx): tooltips on every control, screen intros, What is this?; nothing while it's off */}
       <HelpLayer />
     </div>

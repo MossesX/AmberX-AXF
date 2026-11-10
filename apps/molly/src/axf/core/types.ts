@@ -59,11 +59,15 @@ export const ASSET_TYPES = [
   'job-type',
   'card',
   'help',
+  'demonstration',
+  'book',
+  'clip',
+  'docs',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -107,6 +111,19 @@ export interface MenuItem {
   order?: number;
   before?: string;
   after?: string;
+  /* ---- menu-item@2 (spec/MENUS.md; engines/appmenu.ts) ---- */
+  /** what the item is; derived from its shape when absent (`menuItemKind`), must match it when given */
+  kind?: MenuItemKind;
+  /** tooltip: what the row and its icon do (the label when absent); every icon in a menu explains itself on hover */
+  hint?: string;
+  /** a choice setting: the settings key it reads and writes; with `choices` a pick list, without one a switch */
+  setting?: string;
+  /** the values a choice setting offers; the current one shows beside the label and a pick applies at once */
+  choices?: MenuChoice[];
+  /** with `choices`: a click steps to the next choice instead of opening the list */
+  cycle?: boolean;
+  /** live status slot: a source (`counter:<name>` | `setting:<key>` | `slot:<type>` | `hidden:<type>` | `source:<id>`) or the full spec */
+  status?: string | MenuStatusSpec;
   /* ---- live-list rows only (a provider's items; engines/appmenu.ts) ---- */
   /** buttons on the row itself (e.g. Deny / Approve): run without closing the menu, the row flips in place */
   buttons?: MenuItemButton[];
@@ -126,6 +143,46 @@ export interface MenuItem {
   tag?: MenuItemTag;
   /** a small chip after the badge (e.g. the tool, `vps.run`) */
   chip?: string;
+}
+
+/** What a menu item is (menu-item@2). `live-list` is a `provider` item; `choice` a `setting` item. */
+export type MenuItemKind = 'action' | 'submenu' | 'choice' | 'separator' | 'live-list';
+
+/** One value a choice setting offers (`MenuItem.choices`). */
+export interface MenuChoice {
+  value: string | number | boolean;
+  label: string;
+  icon?: string;
+  /** tooltip for this choice */
+  hint?: string;
+}
+
+/** The state a live status slot is in; the tone and animation follow it (asset-types.json → menuItems.statusTones). */
+export type MenuStatusState = 'on' | 'off' | 'busy' | 'warn' | 'unknown';
+export type MenuStatusTone = 'success' | 'danger' | 'accent' | 'warning' | 'info' | 'muted';
+export type MenuStatusAnim = 'none' | 'pulse' | 'spin' | 'blink';
+
+/** A live status slot on a menu row (`MenuItem.status`): where the state comes from and how each state looks. */
+export interface MenuStatusSpec {
+  /** `counter:<name>` (> 0 = on) | `setting:<key>` (truthy = on) | `slot:<type>` (shown = on) | `hidden:<type>` | `source:<id>` (a registered status source) */
+  source: string;
+  /** icon drawn in the slot (the source's own icon, else `circle`) */
+  icon?: string;
+  /** what the icon means; the live state text is appended on hover */
+  tooltip?: string;
+  /** per-state tone overrides (theme tokens only) */
+  tones?: Partial<Record<MenuStatusState, MenuStatusTone>>;
+  /** per-state animation overrides */
+  anims?: Partial<Record<MenuStatusState, MenuStatusAnim>>;
+}
+
+/** What a status source answers (`AppMenuEnv.status`, `rt.registerMenuStatus`). */
+export interface MenuStatusReading {
+  state: MenuStatusState;
+  /** short live text (`Connected`, `3 waiting`) */
+  text?: string;
+  /** the source's own icon, used when the item names none */
+  icon?: string;
 }
 
 /** A live-list row's badge (`MenuItem.tag`). */
@@ -635,6 +692,10 @@ export interface AssetDataMap {
   'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
   card: import('./engines/card-rules.mjs').CardData;
   help: import('./engines/help').HelpData;
+  demonstration: import('./engines/demo-rules.mjs').DemonstrationData;
+  book: import('./engines/demo-rules.mjs').BookData;
+  clip: import('./engines/demo-rules.mjs').ClipData;
+  docs: import('./engines/demo-rules.mjs').DocsData;
   'uac-policy': UACPolicyData;
 }
 
@@ -642,7 +703,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

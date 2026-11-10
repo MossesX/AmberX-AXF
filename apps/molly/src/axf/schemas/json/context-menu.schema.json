@@ -59,6 +59,139 @@
         "after": {
           "type": "string",
           "minLength": 1
+        },
+        "spacer": {
+          "type": "boolean",
+          "description": "boolean — with separator: true, an empty gap instead of a rule"
+        },
+        "kind": {
+          "enum": [
+            "action",
+            "submenu",
+            "choice",
+            "separator",
+            "live-list"
+          ],
+          "description": "string — action | submenu | choice | separator | live-list (derived from the shape when absent; must match it when given)"
+        },
+        "hint": {
+          "type": "string",
+          "minLength": 1,
+          "description": "string — tooltip: what the row (and its icon) does; the label when absent"
+        },
+        "setting": {
+          "type": "string",
+          "minLength": 1,
+          "description": "string — settings key of a choice setting; with `choices` a pick list (current value shown beside the label), without one a switch"
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 24,
+          "description": "array — [{ value, label, icon?, hint? }] the values a choice setting offers (2 to 24)",
+          "items": {
+            "type": "object",
+            "required": [
+              "value",
+              "label"
+            ],
+            "properties": {
+              "value": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "minLength": 1
+              },
+              "hint": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "cycle": {
+          "type": "boolean",
+          "description": "boolean — with `choices`: a click steps to the next choice instead of opening the list"
+        },
+        "status": {
+          "description": "string | object — live status slot: a source (`counter:<name>` | `setting:<key>` | `slot:<type>` | `hidden:<type>` | `source:<id>`) or { source, icon?, tooltip?, tones?, anims? }",
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(counter|setting|slot|hidden|source):.+$"
+            },
+            {
+              "type": "object",
+              "required": [
+                "source"
+              ],
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "pattern": "^(counter|setting|slot|hidden|source):.+$"
+                },
+                "icon": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "tooltip": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "tones": {
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "on",
+                      "off",
+                      "busy",
+                      "warn",
+                      "unknown"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "enum": [
+                      "success",
+                      "danger",
+                      "accent",
+                      "warning",
+                      "info",
+                      "muted"
+                    ]
+                  }
+                },
+                "anims": {
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "on",
+                      "off",
+                      "busy",
+                      "warn",
+                      "unknown"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "enum": [
+                      "none",
+                      "pulse",
+                      "spin",
+                      "blink"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     }

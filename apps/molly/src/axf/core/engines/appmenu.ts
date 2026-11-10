@@ -15,11 +15,30 @@
  * Live-list rows (a provider's items, never an asset's) may also carry `buttons` (Deny / Approve on the row itself,
  * run through the provider's `act`), `detail` (a second line), `deadline` (a live countdown), `paused` and `expand` (details in place, `<kind>:<key>`); they pass
  * through untouched, buttons gated like items (hide drops, disable locks). Runtime only: not asset fields.
+ *
+ * menu-item@2 (spec/MENUS.md, Nov 10 2026): every compiled item carries its `kind` and `path`; a choice setting
+ * (`setting` + `choices`) compiles to its current value, the choices with the picked one marked and the action each
+ * pick runs; a live status slot (`status`) compiles to the state, tone, animation, icon and tooltip to draw; `hint`
+ * is the tooltip of the row and its icon; per-item token overrides (settings key `axf.tokens.menu`, keyed by path)
+ * are applied at compile time: behaviour tokens change the item, appearance tokens ride along as `look`. The pure
+ * rules live in menu-item-rules.mjs (shared with the build engine's validator and control@1).
  */
 import spec from '../../schemas/asset-types.json';
-import type { AppMenuData, Gate, MenuItem, MenuItemButton, MenuItemTag } from '../types';
+import type { AppMenuData, Gate, MenuChoice, MenuItem, MenuItemButton, MenuItemKind, MenuItemTag, MenuStatusReading, MenuStatusSpec } from '../types';
+import {
+  MENU_ITEM_APPEARANCE_TOKENS, choiceAction, compileStatus, currentChoice, menuItemKind, menuItemPath, menuItemV2Errors, nextChoice, normalizeMenuOverrides,
+  parseStatusSource, switchAction, type CompiledMenuStatus, type MenuOverrides, type MenuTokenValue,
+} from './menu-item-rules.mjs';
+export {
+  MENU_ITEMS_VERSION, MENU_KINDS, MENU_STATUS_KINDS, MENU_STATUS_STATES, MENU_STATUS_TONES, MENU_STATUS_ANIMS, MENU_STATUS_DEFAULT_ANIMS, MENU_STATUS_TEXT, MENU_CHOICES_MAX,
+  MENU_TOKENS_KEY, MENU_TOKENS_TARGET, MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_ITEM_TOKENS, MENU_ITEM_TOKEN_IDS, MENU_ITEM_APPEARANCE_TOKENS, MENU_ITEM_BEHAVIOR_TOKENS,
+  menuItemKind, choiceAction, switchAction, parseChoiceAction, currentChoice, nextChoice, parseStatusSource, statusSpec, compileStatus, menuItemPath, isMenuItemPath,
+  normalizeMenuOverrides, normalizeMenuToken, withMenuOverride, withoutMenuOverrides, listMenuOverrides, migrateMenuItems, migrateMenuAsset, menuItemV2Errors,
+  MENU_ITEM_DIALOG, MENU_ITEM_ACTIONS, MENU_TOKEN_SEP, menuTokenPath, parseMenuTokenPath, menuTokenErrors,
+  type CompiledMenuStatus, type MenuOverrides, type MenuTokenValue, type MenuTokenSpec,
+} from './menu-item-rules.mjs';
 
-const MENU_SPEC = spec.menuItems as { optional_fields: Record<string, string>; checkedKinds: string[]; maxDepth: number; providerMax: number; defaultOrder: number };
+const MENU_SPEC = spec.menuItems as { optional_fields: Record<string, string>; checkedKinds: string[]; maxDepth: number; providerMax: number; defaultOrder: number; version: number };
 const TYPE_LABELS = spec.types as unknown as Record<string, { label: string; icon?: string; hideable?: boolean }>;
 
 /** Optional menu-item fields the validators accept (asset-types.json → menuItems.optional_fields). */
@@ -67,15 +86,36 @@ export interface MergedMenuItem extends Omit<MenuItem, 'items' | 'order' | 'befo
 export interface MergedMenu { id: string; label: string; origin: string; items: MergedMenuItem[] }
 export interface MergedAppMenu { menus: MergedMenu[]; conflicts: AppMenuConflict[]; notes: string[] }
 
+/** A compiled choice: the author's choice plus whether it is the current value and the action a pick runs. */
+export interface CompiledMenuChoice extends MenuChoice { on: boolean; action: string }
+
+/** Appearance overrides on a compiled item (menu-item@2 tokens; theme tokens only, never literal colours). */
+export interface CompiledMenuLook { tone?: string; iconTone?: string; weight?: string; emphasis?: string; size?: string }
+
 /** A compiled (display-ready) item: gated, with its badge count and check state resolved. */
 export interface CompiledMenuItem {
   id: string;
   label: string;
+  /** menu-item@2: what the item is, and its stable path (`app-menu/file/exports/json`) for overrides and tests */
+  kind: MenuItemKind;
+  path: string;
+  /** tooltip of the row and its icon (the label when the item gives none) */
+  hint?: string;
   icon?: string;
   action?: string;
   shortcut?: string;
   requires?: string;
   separator?: boolean;
+  /** a choice setting: its key, the current value's label (shown beside the entry), the choices and whether a click cycles */
+  setting?: string;
+  value?: MenuTokenValue | null;
+  valueLabel?: string;
+  choices?: CompiledMenuChoice[];
+  cycle?: boolean;
+  /** the live status slot to draw */
+  status?: CompiledMenuStatus;
+  /** appearance overrides in force (from `axf.tokens.menu`) */
+  look?: CompiledMenuLook;
   /** submenu; empty for a `provider` item until the provider answers */
   items?: CompiledMenuItem[];
   provider?: string;
@@ -124,6 +164,13 @@ export interface AppMenuEnv {
    * out (`locked`). Absent = nothing locked.
    */
   locked?: (item: { action?: string; provider?: string }) => boolean;
+  /* ---- menu-item@2 ---- */
+  /** a registered status source's reading (`status: source:<id>`); null / absent = not registered (the slot reads Unknown) */
+  status?: (id: string) => MenuStatusReading | null | undefined;
+  /** per-item token overrides (the `axf.tokens.menu` settings value, raw: normalized here) */
+  overrides?: unknown;
+  /** path root of the items compiled (`app-menu` for the application menu, `context-menu` for context menus) */
+  pathRoot?: string;
 }
 
 /* ---------------- helpers ---------------- */
@@ -139,6 +186,7 @@ export function titleFromId(id: string): string {
 type Node = {
   id: string; label?: string; icon?: string; action?: string; shortcut?: string; requires?: string; separator?: boolean;
   provider?: string; badge?: string; checked?: string;
+  kind?: MenuItemKind; hint?: string; setting?: string; choices?: MenuChoice[]; cycle?: boolean; status?: string | MenuStatusSpec;
   buttons?: MenuItemButton[]; detail?: string; deadline?: number; paused?: string; tag?: MenuItemTag; chip?: string; expand?: string;
   items?: Node[]; origin: string; order: number; seq: number; before?: string; after?: string;
 };
@@ -156,6 +204,12 @@ function toNode(it: MenuItem, origin: string, seq: number, defaults: { order?: n
     ...(it.provider !== undefined ? { provider: it.provider } : {}),
     ...(it.badge !== undefined ? { badge: it.badge } : {}),
     ...(it.checked !== undefined ? { checked: it.checked } : {}),
+    ...(it.kind !== undefined ? { kind: it.kind } : {}),
+    ...(typeof it.hint === 'string' && it.hint ? { hint: it.hint } : {}),
+    ...(typeof it.setting === 'string' && it.setting ? { setting: it.setting } : {}),
+    ...(Array.isArray(it.choices) && it.choices.length ? { choices: it.choices.map((c) => ({ ...c })) } : {}),
+    ...(it.cycle === true ? { cycle: true } : {}),
+    ...(it.status !== undefined && parseStatusSource(typeof it.status === 'string' ? it.status : it.status?.source) ? { status: typeof it.status === 'string' ? it.status : { ...it.status } } : {}),
     ...(Array.isArray(it.buttons) && it.buttons.length ? { buttons: it.buttons.map((b) => ({ ...b })) } : {}),
     ...(typeof it.detail === 'string' ? { detail: it.detail } : {}),
     ...(typeof it.deadline === 'number' && Number.isFinite(it.deadline) ? { deadline: it.deadline } : {}),
@@ -199,6 +253,12 @@ function strip(n: Node): MergedMenuItem {
   if (n.provider !== undefined) out.provider = n.provider;
   if (n.badge !== undefined) out.badge = n.badge;
   if (n.checked !== undefined) out.checked = n.checked;
+  if (n.kind !== undefined) out.kind = n.kind;
+  if (n.hint !== undefined) out.hint = n.hint;
+  if (n.setting !== undefined) out.setting = n.setting;
+  if (n.choices !== undefined) out.choices = n.choices;
+  if (n.cycle) out.cycle = true;
+  if (n.status !== undefined) out.status = n.status;
   if (n.buttons) out.buttons = n.buttons;
   if (n.detail !== undefined) out.detail = n.detail;
   if (n.deadline !== undefined) out.deadline = n.deadline;
@@ -305,22 +365,96 @@ export function cleanSeparators<T extends { separator?: boolean }>(items: T[]): 
   return items.filter((i, idx, arr) => !(i.separator && (idx === 0 || idx === arr.length - 1 || arr[idx - 1]?.separator)));
 }
 
-function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: number, where: string, notes: string[]): CompiledMenuItem[] {
+/** The state of a status source for the kinds the engine resolves itself; `source:` asks the environment. */
+export function resolveStatus(source: string, env: Pick<AppMenuEnv, 'counter' | 'setting' | 'hidden' | 'status'>): MenuStatusReading | null {
+  const p = parseStatusSource(source);
+  if (!p) return null;
+  switch (p.kind) {
+    case 'counter': { const n = env.counter(p.ref); return n > 0 ? { state: 'on', text: `${n}` } : { state: 'off' }; }
+    case 'setting': return { state: truthy(env.setting(p.ref)) ? 'on' : 'off' };
+    case 'slot': return { state: env.hidden(p.ref) ? 'off' : 'on', text: env.hidden(p.ref) ? 'Hidden' : 'Shown' };
+    case 'hidden': return { state: env.hidden(p.ref) ? 'on' : 'off', text: env.hidden(p.ref) ? 'Hidden' : 'Shown' };
+    case 'source': return env.status?.(p.ref) ?? null;
+    default: return null;
+  }
+}
+
+/** The label a choice setting shows beside its entry. */
+const SWITCH_LABELS = { on: 'On', off: 'Off' };
+
+/**
+ * One item with its token overrides applied: behaviour tokens change the item (a copy), `visible: false` drops it
+ * (null), appearance tokens come back as `look`.
+ */
+function overrideItem(it: MergedMenuItem, o: Record<string, MenuTokenValue> | undefined): { item: MergedMenuItem; look?: CompiledMenuLook } | null {
+  if (!o) return { item: it };
+  if (o.visible === false) return null;
+  const item: MergedMenuItem = { ...it };
+  if (typeof o.label === 'string') item.label = o.label;
+  if (typeof o.icon === 'string') item.icon = o.icon;
+  if (typeof o.hint === 'string') item.hint = o.hint;
+  if (typeof o.action === 'string' && !item.provider && !item.setting) item.action = o.action;
+  if (typeof o.shortcut === 'string') item.shortcut = o.shortcut;
+  const look: CompiledMenuLook = {};
+  for (const t of MENU_ITEM_APPEARANCE_TOKENS) if (typeof o[t] === 'string') (look as Record<string, string>)[t] = o[t] as string;
+  return Object.keys(look).length ? { item, look } : { item };
+}
+
+/** Siblings re-placed by their `order` overrides: overridden ones sort by that order, the rest keep their place as a block at 100. */
+function reorderByOverrides(items: readonly MergedMenuItem[], paths: readonly string[], ov: MenuOverrides): MergedMenuItem[] {
+  if (!items.some((_, i) => typeof ov[paths[i]!]?.order === 'number')) return [...items];
+  return items.map((it, i) => ({ it, i, key: typeof ov[paths[i]!]?.order === 'number' ? (ov[paths[i]!]!.order as number) : MENU_DEFAULT_ORDER }))
+    .sort((a, b) => a.key - b.key || a.i - b.i).map((x) => x.it);
+}
+
+function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: number, where: string, notes: string[], ov: MenuOverrides = normalizeMenuOverrides(env.overrides)): CompiledMenuItem[] {
   const max = env.maxDepth ?? MENU_MAX_DEPTH;
+  const root = env.pathRoot ?? 'app-menu';
   const out: CompiledMenuItem[] = [];
-  for (const it of items) {
-    if (it.separator) { out.push({ id: it.id, label: '', separator: true, locked: false, origin: it.origin }); continue; }
+  const pathOf = (id: string) => menuItemPath(root, [...where.split('/'), id]);
+  for (const raw of reorderByOverrides(items, items.map((i) => pathOf(i.id)), ov)) {
+    const path = pathOf(raw.id);
+    if (raw.separator) { if (ov[path]?.visible === false) continue; out.push({ id: raw.id, label: '', kind: 'separator', path, separator: true, locked: false, origin: raw.origin }); continue; }
+    const over = overrideItem(raw, ov[path]);
+    if (!over) continue;
+    const it = over.item;
     const gate = env.gate(it.requires);
     if (gate === 'hide') continue;
     if (env.taken && (it.action !== undefined || it.provider !== undefined) && env.taken({ action: it.action, provider: it.provider })) continue;
     const hostLock = !!env.locked && (it.action !== undefined || it.provider !== undefined) && env.locked({ action: it.action, provider: it.provider });
-    const c: CompiledMenuItem = { id: it.id, label: it.label ?? titleFromId(it.id), locked: gate === 'disable' || hostLock, origin: it.origin };
+    const c: CompiledMenuItem = { id: it.id, label: it.label ?? titleFromId(it.id), kind: menuItemKind(it), path, locked: gate === 'disable' || hostLock, origin: it.origin };
+    if (it.hint !== undefined) c.hint = it.hint;
+    if (over.look) c.look = over.look;
     if (it.icon !== undefined) c.icon = it.icon;
     if (it.action !== undefined) c.action = it.action;
     if (it.shortcut !== undefined) c.shortcut = it.shortcut;
     if (it.requires !== undefined) c.requires = it.requires;
     if (it.badge !== undefined) { c.badge = it.badge; const n = Math.max(0, Math.floor(env.counter(it.badge)) || 0); if (n > 0) c.count = n; }
-    if (it.checked !== undefined) { c.checked = it.checked; const on = resolveChecked(it.checked, env); if (on !== null) c.check = on; }
+    if (it.checked !== undefined && c.kind !== 'choice') { c.checked = it.checked; const on = resolveChecked(it.checked, env); if (on !== null) c.check = on; }
+    if (it.status !== undefined) {
+      const src = typeof it.status === 'string' ? it.status : it.status.source;
+      const reading = resolveStatus(src, env);
+      if (!reading && parseStatusSource(src)?.kind === 'source') notes.push(`${where}/${it.id}: status source "${parseStatusSource(src)!.ref}" is not registered`);
+      const st = compileStatus(it.status, reading, c.label);
+      if (st) c.status = st;
+    }
+    if (c.kind === 'choice' && it.setting) {
+      // a choice setting: the current value beside the label; a pick (or the switch's click) applies at once
+      c.setting = it.setting;
+      const cur = env.setting(it.setting);
+      c.value = cur === undefined || cur === null || !(typeof cur === 'string' || typeof cur === 'number' || typeof cur === 'boolean') ? null : cur;
+      if (it.choices?.length) {
+        const now = currentChoice(it.choices, cur);
+        c.choices = it.choices.map((ch) => ({ ...ch, on: !!now?.picked && now.choice === ch, action: choiceAction(it.setting!, ch.value) }));
+        c.valueLabel = now?.picked ? now.choice.label : '';
+        if (it.cycle) { c.cycle = true; const nx = nextChoice(it.choices, cur); if (nx) c.action = choiceAction(it.setting, nx.value); }
+      } else {
+        const on = truthy(cur);
+        c.check = on;
+        c.valueLabel = on ? SWITCH_LABELS.on : SWITCH_LABELS.off;
+        c.action = switchAction(it.setting);
+      }
+    }
     if (it.buttons) {
       const bs: CompiledMenuButton[] = [];
       for (const b of it.buttons) { const g = env.gate(b.requires); if (g !== 'hide' && b.id && b.label) bs.push({ ...b, locked: g === 'disable' || c.locked }); }
@@ -343,7 +477,7 @@ function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: n
     if (it.items) {
       if (depth >= max) { notes.push(`${where}/${it.id}: submenu cut at depth ${max}`); if (!it.action) continue; }
       else {
-        const sub = compileList(it.items, env, depth + 1, `${where}/${it.id}`, notes);
+        const sub = compileList(it.items, env, depth + 1, `${where}/${it.id}`, notes, ov);
         if (!sub.length && !it.action) continue;
         if (sub.length) c.items = sub;
       }
@@ -370,6 +504,17 @@ export function buildAppMenu(asset: Pick<AppMenuData, 'menus'>, contributions: r
   return compileAppMenu(mergeAppMenu(asset, contributions), env);
 }
 
+/**
+ * One flat list of items (a context-menu target, a plugin's ⋯ menu) compiled like the application menu: kinds, paths
+ * (`<env.pathRoot>/<where>/<id>`), gating, badges, checks, choice settings, status slots and overrides. `where` is
+ * the list's name (a context target such as `default`); `origin` the module the items come from.
+ */
+export function compileMenuItems(items: readonly MenuItem[], env: AppMenuEnv, where: string, origin: string = ASSET_ORIGIN): { items: CompiledMenuItem[]; notes: string[] } {
+  const notes: string[] = [];
+  const merged = placeSiblings(items.map((it, i) => toNode(it, origin, i))).map(strip);
+  return { items: compileList(merged, env, 1, where, notes), notes };
+}
+
 /* ---------------- live lists (providers) ---------------- */
 
 export interface ProviderOptions {
@@ -382,6 +527,8 @@ export interface ProviderOptions {
   moreLabel?: string;
   /** depth of the provider item (its entries are one deeper) */
   depth?: number;
+  /** the provider item's path inside its menu (`file/recent`); its entries' paths hang under it (default: the id) */
+  where?: string;
 }
 
 /**
@@ -391,12 +538,14 @@ export interface ProviderOptions {
 export function compileProviderItems(items: readonly MenuItem[], env: AppMenuEnv, opts: ProviderOptions): CompiledMenuItem[] {
   const max = Math.max(1, Math.floor(opts.max ?? PROVIDER_MAX));
   const merged = items.map((it, i) => strip(toNode(it, `provider:${opts.id}`, i)));
-  const all = compileList(merged, env, (opts.depth ?? 1) + 1, opts.id, []);
+  const where = opts.where ?? opts.id;
+  const all = compileList(merged, env, (opts.depth ?? 1) + 1, where, []);
   if (all.length <= max) return all;
   const kept = cleanSeparators(all.slice(0, max));
   const rest = all.filter((i) => !i.separator).length - kept.filter((i) => !i.separator).length;
   const more: CompiledMenuItem = {
-    id: `${opts.id}.more`, label: opts.moreLabel ?? (opts.moreAction ? 'More…' : `${rest} more…`), icon: 'more',
+    id: `${opts.id}.more`, label: opts.moreLabel ?? (opts.moreAction ? 'More…' : `${rest} more…`), icon: 'more', kind: 'action',
+    path: menuItemPath(env.pathRoot ?? 'app-menu', [...where.split('/'), `${opts.id}.more`]), hint: opts.moreAction ? 'Show the whole list' : `${rest} more entries are not shown`,
     locked: !opts.moreAction, origin: `provider:${opts.id}`,
     ...(opts.moreAction ? { action: opts.moreAction } : {}),
   };
@@ -469,6 +618,7 @@ export function validateMenuItems(items: unknown, path: string, depth = 0): stri
     if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${CHECKED_KINDS.map((k) => `${k}:<ref>`).join(', ')}`);
     if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
     if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
+    errors.push(...menuItemV2Errors(o, p));
     if ('items' in o) {
       if (depth + 1 >= MENU_MAX_DEPTH) errors.push(`${p}.items is deeper than ${MENU_MAX_DEPTH} levels`);
       else errors.push(...validateMenuItems(o.items, `${p}.items`, depth + 1));

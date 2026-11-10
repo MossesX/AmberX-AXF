@@ -7,8 +7,9 @@ export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priori
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
-export { MenuList, MenuSub, MenuScroll } from './components/MenuList';
-export { useMenuFit, fitMenuEl, menuViewBox, focusMenuItem, installMenuFit } from './components/menuFit';
+export { MenuList, CompiledMenuList, MenuSub, MenuScroll, MenuRowIcon, MenuRowValue, MenuRowStatus, MenuRowShortcut, MenuRowChevron, choiceRows, rowHasSub, rowKeepsOpen, rowRole, rowTitle, rowLookAttrs, openMenuItemSettings, CHOICE_ORIGIN } from './components/MenuList';
+export { MenuItemSettingsPanel, menuItemDialogs, findMenuItem, MENU_ITEM_SETTINGS_DIALOG } from './components/MenuItemSettings';
+export { useMenuFit, fitMenuEl, menuViewBox, focusMenuItem, menuRows, installMenuFit, installMenuScrollLock } from './components/menuFit';
 export { MenuBar, Toolbar, AssetToolbar, NavMenu, StatusBar, mergeNavSections } from './components/Chrome';
 export { NavTree } from './components/NavTree';
 export { NavStyleSettings, NavStyleGroup, NavStylePreview, useNavStyle, setNavStyleField, NAV_STYLE_GROUP_IDS, NAV_STYLE_GROUP_TITLES, NAV_STYLE_GROUP_ICONS, type NavStyleGroupId, type NavStyleItem } from './components/NavStyleSettings';
@@ -28,6 +29,7 @@ export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEdit
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
+export { TipLayer } from './components/TipLayer';
 export { AssetStudio } from './studio/AssetStudio';
 export { AccountView } from './studio/AccountView';
 export { Inspector } from './studio/Inspector';

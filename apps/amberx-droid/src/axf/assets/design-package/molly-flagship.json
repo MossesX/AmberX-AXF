@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "molly-flagship",
+  "name": "Molly Flagship",
+  "version": "1.0.0",
+  "description": "Molly's flagship look as a design package: porcelain, ink and royal violet, Inter, soft radii, layered elevation, quick quiet motion. Leaves the app's own menus, navigation and toolbar alone.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship",
+    "light"
+  ],
+  "data": {
+    "style-theme": "molly-flagship",
+    "color-theme": "molly-flagship-day",
+    "layout": "classic-ide",
+    "behavior-theme": "molly-flagship",
+    "extras": {
+      "slots": {
+        "context-menu": "compact-classic",
+        "dialog": "molly-flagship",
+        "popup": "molly-flagship",
+        "theme-switch": "molly-flagship-day-night",
+        "typography": "molly-flagship",
+        "density": "standard",
+        "sizing": "standard"
+      },
+      "spacing": "regular",
+      "settings": {}
+    }
+  }
+}
