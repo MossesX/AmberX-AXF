@@ -168,7 +168,7 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
 function PhonePopups({ settings, busy, set }: { settings: Status['settings']; busy: boolean; set: (patch: Record<string, unknown>, what: string) => Promise<void> }) {
   const on = (k: 'notifyStart' | 'notifyFinish' | 'notifySound') => settings[k] !== false;
   return (
-    <section className="fx-stack oc-popups" aria-label="Phone pop-ups">
+    <section className="fx-stack oc-popups" aria-label="Phone pop-ups" data-help="phone-popups">
       <h2 className="pd-card__title">Phone pop-ups <span className="fx-muted fx-small">· AmberX, when a build starts and when it finishes: the build, the account, the model or outcome. A tap opens the build here.</span></h2>
       <div className="pl-strip" role="toolbar" aria-label="Phone pop-up settings">
         <Switch label="Build started" text="Started: build on account (model)" checked={on('notifyStart')} disabled={busy} onChange={(v) => set({ notifyStart: v }, `Start pop-ups ${v ? 'on' : 'off'}`)} />

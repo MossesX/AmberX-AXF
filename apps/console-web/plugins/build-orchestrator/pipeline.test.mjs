@@ -315,6 +315,9 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
+    // Brett, Nov 10 2026: a pop-up on every start saying which build and which account
+    assert.deepEqual(r.alertsSent.filter((x) => x.kind === 'launched').map((x) => [x.key, x.title]).sort(),
+      [['pipeline:run:alpha:1', 'Started: Alpha feature on w-max (Fable)'], ['pipeline:run:beta:1', `Started: ${find('beta').title} on w-pro (Opus)`]]);
     assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
   });
   t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {
@@ -353,18 +356,24 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     // the account it freed takes it again in the same tick: run 2
     assert.deepEqual(r.launched.map((l) => l.id), ['alpha']); assert.equal(find('alpha').status, 'running'); assert.equal(find('alpha').pipeline.runs, 2);
     assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    // the crash is a finish, the retry a new start that pops up again (its own key)
+    assert.ok(r.alertsSent.some((x) => x.key === 'pipeline:end:alpha:1' && /^Finished: Alpha feature on w-max, stopped, back in the Queue, 0\/\d+ steps$/.test(x.title)), JSON.stringify(r.alertsSent));
+    assert.ok(r.alertsSent.some((x) => x.key === 'pipeline:run:alpha:2' && x.title.startsWith('Started: Alpha feature on ')), JSON.stringify(r.alertsSent));
     // beta's session ticks its step and ends cleanly
     orch('act', 'step', 'beta', 's1', 'done');
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
     r = json(pipe('tick', '--json'));
     assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
+    const fin = r.alertsSent.find((x) => x.key === 'pipeline:end:beta:1');
+    assert.ok(fin && /^Finished: .* on w-pro, (built|complete), 1\/1 steps$/.test(fin.title), JSON.stringify(r.alertsSent));
   });
   t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
     const r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
     assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending/);
+    assert.ok(r.alertsSent.some((x) => /^pipeline:end:alpha:\d+$/.test(x.key) && /, needs you, /.test(x.title)), JSON.stringify(r.alertsSent));
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));

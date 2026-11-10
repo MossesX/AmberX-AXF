@@ -367,7 +367,7 @@ export function alertFor(kind, d = {}) {
     case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
     case 'launched': {
       const line = `${str(d.title, 120)} on ${acct} (${str(d.model, 20) || '?'})`;
-      return { ...base, link, key: `pipeline:run:${d.id}:${run}`, severity: 'info', title: line,
+      return { ...base, link, key: `pipeline:run:${d.id}:${run}`, severity: 'info', title: str(line, 200),
         body: [`Started: ${line}`, `${d.phase ? `${str(d.phase, 40)} · ` : ''}run ${run}`, d.session ? `session ${str(d.session, 80)}` : ''].filter(Boolean).join(' · '),
         meta: { ...base.meta, label: 'Started', event: 'start', model: d.model ?? '', run, sound } };
     }
@@ -376,7 +376,7 @@ export function alertFor(kind, d = {}) {
       const line = `${str(d.title, 120)} on ${acct}, ${word}${steps}`;
       const needs = str(d.needs, 600);
       const severity = kind === 'failed' ? 'error' : d.outcome === 'finished' ? 'success' : d.outcome === 'returned' ? 'warning' : 'info';
-      return { ...base, link, key: `pipeline:end:${d.id}:${run}`, severity, title: line,
+      return { ...base, link, key: `pipeline:end:${d.id}:${run}`, severity, title: str(line, 200),
         body: [needs ? `Needs: ${needs}` : '', str(d.note, 900)].filter(Boolean).join('\n') || `Finished: ${line}`,
         meta: { ...base.meta, label: 'Finished', event: 'finish', outcome: kind === 'failed' ? 'failed' : d.outcome ?? '', run, done: d.done ?? 0, total: d.total ?? 0, sound } };
     }
