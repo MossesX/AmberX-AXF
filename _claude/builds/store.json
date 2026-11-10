@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2498,
- "updatedAt": "2026-11-10T16:56:28.503Z",
+ "rev": 2499,
+ "updatedAt": "2026-11-10T16:56:41.629Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137661,8 +137661,8 @@
    "pr": "#451",
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T16:56:26.948Z",
-   "builtAt": "2026-11-10T16:56:26.948Z",
+   "updatedAt": "2026-11-10T16:56:39.975Z",
+   "builtAt": "2026-11-10T16:56:39.975Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -137679,6 +137679,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-search-bar-plugin-add-on-search-builds-session-h--gina, own login copy)",
      "at": "2026-11-10T16:22:14.273Z"
+    },
+    {
+     "text": "Headless run axf-search-bar-plugin-add-on-search-builds-session-h--gina: brief only · start 11.4K tokens ($0.03) · cost $7.53 · 151 turns · 6 tools, MCP none",
+     "at": "2026-11-10T16:56:39.975Z"
     }
    ],
    "approvals": [],
