@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 04:22 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
-- 2026-11-09 04:23 UTC · `session-transcripts-api-search-what-was-said-fin` note (all) · pending
-- 2026-11-09 04:30 UTC · `skins` → complete, merged, note (all) · reconciler
 - 2026-11-09 04:30 UTC · `skins-asset-types` → complete, merged, note (all) · reconciler
 - 2026-11-09 04:30 UTC · `demonstration-designer-plugin-new-standalone` → complete, note (all) · reconciler
 - 2026-11-09 04:30 UTC · `urgent-approval-links-say-method-not-allowed` merged, note (all) · reconciler
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:06 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` s3 done, → built (all) · orchestrator
 - 2026-11-10 00:05 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
 - 2026-11-10 00:06 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` PR #418 (all) · foreign-write
+- 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → running, note (all) · pipeline
+- 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` branch claude/fix-it-yourself-rule-in-every-brief-and-session (all) · pipeline
+- 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
 
 ## Token passes (log)
 
