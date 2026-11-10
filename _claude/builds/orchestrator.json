@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:54:28.922Z",
+ "updatedAt": "2026-11-10T20:55:10.284Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89101,7 +89101,7 @@
    "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
    "category": "",
    "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89109,7 +89109,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:53:52.759Z",
+   "updatedAt": "2026-11-10T20:55:06.893Z",
    "builtAt": "",
    "notes": [
     {
@@ -89167,6 +89167,10 @@
     {
      "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T20:51:09.016Z"
+    },
+    {
+     "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T20:55:06.893Z"
     }
    ],
    "approvals": [

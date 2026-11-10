@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` branch claude/enforce-the-merge-queue-every-finished-build-goe (all) · pipeline
 - 2026-11-10 17:02 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · orchestrator
 - 2026-11-10 17:06 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → pending (all) · voice
 - 2026-11-10 17:07 UTC · `amberx-open-url-tapping-the-command-waiting-noti` s1 done, → running (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:54 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
 - 2026-11-10 20:53 UTC · `inline-element-editing-plugin-right-click-any-el` s10 done (all) · orchestrator
 - 2026-11-10 20:53 UTC · `inline-element-editing-plugin-right-click-any-el` s11 done (all) · orchestrator
+- 2026-11-10 20:55 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
