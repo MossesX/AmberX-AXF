@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:40:09.683Z",
+ "updatedAt": "2026-11-10T22:40:23.810Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70753,7 +70753,7 @@
    "pr": "#395",
    "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-10T22:39:24.231Z",
+   "updatedAt": "2026-11-10T22:40:20.473Z",
    "builtAt": "2026-11-10T22:39:24.231Z",
    "notes": [
     {
@@ -70799,6 +70799,10 @@
     {
      "text": "Reconciler: PR #395 names s7, s8, s10, s11, s12, s4, s5, s6, s15 done",
      "at": "2026-11-10T22:30:41.919Z"
+    },
+    {
+     "text": "Headless run axf-molly-one-shell--rhonda: brief only · start 12.6K tokens ($0.03) · cost $15.68 · 260 turns · 6 tools, MCP none",
+     "at": "2026-11-10T22:40:20.473Z"
     }
    ],
    "approvals": [

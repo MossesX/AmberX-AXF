@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2962,
- "updatedAt": "2026-11-10T22:40:09.683Z",
+ "rev": 2963,
+ "updatedAt": "2026-11-10T22:40:23.810Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -119911,7 +119911,7 @@
    "pr": "#395",
    "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-10T22:39:24.231Z",
+   "updatedAt": "2026-11-10T22:40:20.473Z",
    "builtAt": "2026-11-10T22:39:24.231Z",
    "notes": [
     {
@@ -119957,6 +119957,10 @@
     {
      "text": "Reconciler: PR #395 names s7, s8, s10, s11, s12, s4, s5, s6, s15 done",
      "at": "2026-11-10T22:30:41.919Z"
+    },
+    {
+     "text": "Headless run axf-molly-one-shell--rhonda: brief only · start 12.6K tokens ($0.03) · cost $15.68 · 260 turns · 6 tools, MCP none",
+     "at": "2026-11-10T22:40:20.473Z"
     }
    ],
    "approvals": [
@@ -120332,7 +120336,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
