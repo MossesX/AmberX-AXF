@@ -47,6 +47,9 @@ export const MENU_SETTING_SET = 'setting.set';
 export const MENU_SETTING_TOGGLE = 'setting.toggle';
 /** Path roots: which menu an item path starts with. */
 export const MENU_PATH_ROOTS = ['app-menu', 'context-menu'];
+/** The item-settings dialog (right-click on any menu item) and the actions that drive it without the UI (s4). */
+export const MENU_ITEM_DIALOG = 'axf.menu.item';
+export const MENU_ITEM_ACTIONS = { settings: 'menu.item.settings', set: 'menu.item.set', reset: 'menu.item.reset' };
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const isScalar = (v) => typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v));
@@ -246,6 +249,40 @@ export function listMenuOverrides(raw) {
   const out = [];
   for (const [path, map] of Object.entries(normalizeMenuOverrides(raw))) for (const [token, value] of Object.entries(map)) out.push({ path, token, value });
   return out;
+}
+
+/* ---- control@1 `tokens.menu`: one token of one item is the path `<item path>@<token>` ---- */
+
+export const MENU_TOKEN_SEP = '@';
+
+/** `menuTokenPath('app-menu/file/save', 'tone')` → `app-menu/file/save@tone`. */
+export const menuTokenPath = (path, token) => `${path}${MENU_TOKEN_SEP}${token}`;
+
+/** `app-menu/file/save@tone` → { path, token }; a bare item path → { path, token: '' }; null when it isn't an item path. */
+export function parseMenuTokenPath(p) {
+  if (typeof p !== 'string') return null;
+  const at = p.lastIndexOf(MENU_TOKEN_SEP);
+  const path = at < 0 ? p : p.slice(0, at);
+  const token = at < 0 ? '' : p.slice(at + 1);
+  return isMenuItemPath(path) ? { path, token } : null;
+}
+
+/** Everything wrong with a `set` of one token (control@1 validation): the path shape, the token, the value for its kind. */
+export function menuTokenErrors(p, value) {
+  const parsed = parseMenuTokenPath(p);
+  if (!parsed) return [`path must be <item path>@<token>, e.g. app-menu/file/save@tone (roots: ${MENU_PATH_ROOTS.join(', ')})`];
+  if (!parsed.token) return [`path needs a token after ${MENU_TOKEN_SEP}: ${MENU_ITEM_TOKEN_IDS.join(', ')}`];
+  const t = MENU_ITEM_TOKENS[parsed.token];
+  if (!t) return [`unknown menu token ${parsed.token} (one of: ${MENU_ITEM_TOKEN_IDS.join(', ')})`];
+  if (normalizeMenuToken(parsed.token, value) === undefined) {
+    switch (t.kind) {
+      case 'boolean': return ['value must be true or false'];
+      case 'number': return [`value must be a number ${t.min} to ${t.max}`];
+      case 'enum': return [`value must be one of: ${t.options.join(', ')}`];
+      default: return ['value must be a string of at most 200 characters'];
+    }
+  }
+  return [];
 }
 
 /* ---------------- migration (menu-item@1 → @2) ---------------- */

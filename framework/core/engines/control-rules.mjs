@@ -20,6 +20,7 @@
  *   { $axf: 'control@1', op, target, path?, value?, action?, select?, confirm?, by?, reason? }
  *   op      list | get | set | reset | add | remove | act
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav |
+ *           tokens.menu (per menu item, path <item path>@<token>; menu-item@2) |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
  *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
@@ -40,6 +41,7 @@
 import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
 import { NAV_ACCENT_PREFIX, navFieldErrors, navStyleTokens } from './navstyle-rules.mjs';
+import { MENU_ITEM_TOKENS, MENU_TOKENS_KEY, menuTokenErrors, parseMenuTokenPath } from './menu-item-rules.mjs';
 import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
 
 export const CONTROL_FRAME = 'control@1';
@@ -116,6 +118,7 @@ export const CONTROL_TARGETS = {
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
   'tokens.nav': { domain: 'tokens', label: 'Navigation style tokens', asset: 'nav-style', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.' },
+  'tokens.menu': { domain: 'tokens', label: 'Menu item tokens', ops: TOKEN_OPS, paths: 'host', value: 'host', pathShape: '<item path>@<token>', key: MENU_TOKENS_KEY, tokens: MENU_ITEM_TOKENS, doc: `menu-item@2 (core/engines/menu-item-rules.mjs, spec/MENUS.md): per-item behaviour and appearance overrides of every application-menu and context-menu row, the same ones the right-click item-settings dialog writes. path = <item path>@<token>: the item path is app-menu/<menu>/<id>/… or context-menu/<target>/<id>/… (every row carries it as data-axf-path), the token one of ${Object.keys(MENU_ITEM_TOKENS).join(', ')}. Behaviour tokens change the row (label, icon, hint, action, shortcut, visible, order); appearance tokens map to theme tokens only (tone, iconTone, weight, emphasis, size). set stores an override in ${MENU_TOKENS_KEY} (shared through the axHub look); reset with a token drops it, with a bare item path drops every token of that item, with nothing drops them all; list answers every override in force.` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -181,6 +184,8 @@ export function controlPaths(target) {
 /** Is `path` a path of a static token target? (host / entity targets: the host decides.) */
 export function controlPathKnown(target, path) {
   if (target === 'tokens.nav' && typeof path === 'string' && path.startsWith(NAV_ACCENT_PREFIX)) return /^accents\.[a-z0-9][a-z0-9._:/-]{0,119}$/i.test(path);
+  // a menu item token: <item path>@<token> (the item ids are the running app's; the shape and the token are checked here)
+  if (target === 'tokens.menu') { const p = parseMenuTokenPath(path); return !!p && !!p.token && p.token in MENU_ITEM_TOKENS; }
   const ps = controlPaths(target);
   return ps ? ps.some((p) => p.id === path) : null;
 }
@@ -222,6 +227,7 @@ export function controlValueErrors(target, path, value) {
   const t = CONTROL_TARGETS[target];
   if (!t) return [`unknown target ${String(target)}`];
   if (t.paths === 'entity') return [];
+  if (target === 'tokens.menu') return menuTokenErrors(path, value);
   if (t.paths === 'host') return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ? [] : ['value must be a string, number or true / false'];
   if (controlPathKnown(target, path) === false) return [`${target} has no token ${path} (control list ${target} names them)`];
   switch (target) {

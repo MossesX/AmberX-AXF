@@ -33,7 +33,8 @@ export {
   MENU_ITEMS_VERSION, MENU_KINDS, MENU_STATUS_KINDS, MENU_STATUS_STATES, MENU_STATUS_TONES, MENU_STATUS_ANIMS, MENU_STATUS_DEFAULT_ANIMS, MENU_STATUS_TEXT, MENU_CHOICES_MAX,
   MENU_TOKENS_KEY, MENU_TOKENS_TARGET, MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_ITEM_TOKENS, MENU_ITEM_TOKEN_IDS, MENU_ITEM_APPEARANCE_TOKENS, MENU_ITEM_BEHAVIOR_TOKENS,
   menuItemKind, choiceAction, switchAction, parseChoiceAction, currentChoice, nextChoice, parseStatusSource, statusSpec, compileStatus, menuItemPath, isMenuItemPath,
-  normalizeMenuOverrides, withMenuOverride, withoutMenuOverrides, listMenuOverrides, migrateMenuItems, migrateMenuAsset, menuItemV2Errors,
+  normalizeMenuOverrides, normalizeMenuToken, withMenuOverride, withoutMenuOverrides, listMenuOverrides, migrateMenuItems, migrateMenuAsset, menuItemV2Errors,
+  MENU_ITEM_DIALOG, MENU_ITEM_ACTIONS, MENU_TOKEN_SEP, menuTokenPath, parseMenuTokenPath, menuTokenErrors,
   type CompiledMenuStatus, type MenuOverrides, type MenuTokenValue, type MenuTokenSpec,
 } from './menu-item-rules.mjs';
 

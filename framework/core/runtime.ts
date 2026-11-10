@@ -31,7 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_TOKENS_KEY, compileMenuItems, parseChoiceAction, truthy } from './engines/appmenu';
+import { MENU_ITEM_ACTIONS, MENU_ITEM_DIALOG, MENU_ITEM_TOKENS, MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_TOKENS_KEY, compileMenuItems, isMenuItemPath, menuTokenErrors, menuTokenPath, normalizeMenuOverrides, parseChoiceAction, truthy, withMenuOverride, withoutMenuOverrides, type MenuOverrides, type MenuTokenValue } from './engines/appmenu';
 import type { MenuStatusReading } from './types';
 import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
@@ -975,6 +975,34 @@ export class AxfRuntime {
   /** Registered status source ids. */
   menuStatusIds(): string[] { return [...this.menuStatusSources.keys()]; }
 
+  /* ---- per-item token overrides (menu-item@2 s4: the right-click item-settings dialog and control@1 tokens.menu) ---- */
+
+  /** Every per-item override in force (`axf.tokens.menu`, normalized): `{ [item path]: { [token]: value } }`. */
+  menuOverrides(): MenuOverrides { return normalizeMenuOverrides(this.settings.get(MENU_TOKENS_KEY)); }
+
+  /** One item's overrides (empty when it has none). */
+  menuItemTokens(path: string): Record<string, MenuTokenValue> { return this.menuOverrides()[path] ?? {}; }
+
+  /**
+   * Set (or, with null / the default, clear) one token on one item. The setting rides the axHub look like every token
+   * set (`axf.tokens.` prefix), so the change reaches every app; open menus re-render at once. False = bad path or token.
+   */
+  setMenuToken(path: string, token: string, value: MenuTokenValue | null): boolean {
+    if (!isMenuItemPath(path) || !(token in MENU_ITEM_TOKENS)) return false;
+    this.saveMenuOverrides(withMenuOverride(this.settings.get(MENU_TOKENS_KEY), path, token, value));
+    return true;
+  }
+
+  /** Drop one item's overrides (and, with `deep`, its children's); without a path, every menu override. */
+  resetMenuItem(path?: string, deep = false): void {
+    this.saveMenuOverrides(path ? withoutMenuOverrides(this.settings.get(MENU_TOKENS_KEY), path, deep) : {});
+  }
+
+  private saveMenuOverrides(next: MenuOverrides): void {
+    if (Object.keys(next).length) this.settings.set(MENU_TOKENS_KEY, next as unknown as SettingValue);
+    else this.settings.clear(MENU_TOKENS_KEY);
+  }
+
   /**
    * One flat list of items (a context-menu target, a plugin's own menu) compiled like the application menu: kinds,
    * paths under `<root>/<where>`, gating, badges, check marks, choice values, status slots and the `axf.tokens.menu`
@@ -1041,7 +1069,7 @@ export class AxfRuntime {
    * badges and check marks resolved, live lists marked (`provider`) and filled on open with `loadAppMenuProvider`.
    * Conflicts (one id from two modules) are reported once through `diagnostics`, like context items.
    */
-  appMenu(): CompiledAppMenu {
+  appMenu(opts: { /** false = as the asset and contributions say, before the per-item token overrides (the item-settings dialog's inherited values) */ overrides?: boolean } = {}): CompiledAppMenu {
     const asset = this.asset('app-menu').data;
     const active = this.state.active['app-menu'];
     let cache = this.appMenuCache;
@@ -1055,7 +1083,7 @@ export class AxfRuntime {
       this.diagnostics.report({ kind: 'contribution-conflict', what: c.what, id: c.id, was: c.was, now: c.now });
       this.terminal.warn('menus', `${c.what} "${c.id}": ${c.now} replaced the one from ${c.was}`);
     }
-    const out = compileAppMenu(cache.merged, this.appMenuEnv());
+    const out = compileAppMenu(cache.merged, opts.overrides === false ? { ...this.appMenuEnv(), overrides: undefined } : this.appMenuEnv());
     for (const n of out.notes) if (!this.appMenuNoted.has(n)) { this.appMenuNoted.add(n); this.terminal.warn('menus', n); }
     return out;
   }
@@ -2851,6 +2879,28 @@ export class AxfRuntime {
       const k = key ? decodeURIComponent(key) : '';
       if (k) this.settings.set(k, !truthy(this.settings.get(k)));
     }, { label: 'Flip a setting on or off', params: true, effect: 'write' });
+    // Menu item settings (menu-item@2 s4): the right-click dialog and its twins for the API and voice (the path is
+    // URI-encoded: it holds slashes). menu.item.settings:<path> · menu.item.set:<path>:<token>:<value> · menu.item.reset:<path>[:<token>]
+    const itemPath = (p?: string) => { try { return p ? decodeURIComponent(p) : ''; } catch { return ''; } };
+    a.register(MENU_ITEM_ACTIONS.settings, ([path]) => {
+      const p = itemPath(path);
+      if (isMenuItemPath(p)) this.openDialog(MENU_ITEM_DIALOG, { path: p }); else this.toast('That is not a menu item path (app-menu/<menu>/<id>… or context-menu/<target>/<id>…).', 'warning', 'Menu item');
+    }, { label: 'Menu item settings… (behaviour, appearance)', params: true, effect: 'navigate' });
+    a.register(MENU_ITEM_ACTIONS.set, ([path, token = '', ...rest]) => {
+      const p = itemPath(path);
+      const raw = itemPath(rest.join(':'));
+      const kind = MENU_ITEM_TOKENS[token]?.kind;
+      const v: unknown = kind === 'boolean' ? raw === 'true' || raw === 'on' : kind === 'number' ? Number(raw) : raw;
+      const errs = menuTokenErrors(menuTokenPath(p, token), v);
+      if (errs.length) { this.toast(errs[0]!, 'warning', 'Menu item'); return; }
+      this.setMenuToken(p, token, v as MenuTokenValue);
+    }, { label: 'Set a menu item token (label, icon, hint, action, shortcut, visible, order, tone, iconTone, weight, emphasis, size)', params: true, effect: 'write' });
+    a.register(MENU_ITEM_ACTIONS.reset, ([path, token]) => {
+      const p = itemPath(path);
+      if (!p) this.resetMenuItem();
+      else if (token) this.setMenuToken(p, token, null);
+      else this.resetMenuItem(p);
+    }, { label: 'Reset a menu item (or one token) to the asset', params: true, effect: 'write' });
     // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
     a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
     a.register(HELP_ACTIONS.resetIntros, () => { this.resetHelpIntros(); this.toast('Screen intros will show again, once per screen.', 'success', 'Help mode'); }, { label: 'Show the screen intros again' });

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } from 'react';
 import type { MenuItem } from '../../core';
-import type { CompiledMenuItem } from '../../core/engines/appmenu';
+import { MENU_ITEM_DIALOG, type CompiledMenuItem } from '../../core/engines/appmenu';
 import { menuKey, nextMenuIndex } from '../../core/engines/menufit';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
@@ -81,6 +81,23 @@ export function choiceRows(item: CompiledMenuItem): CompiledMenuItem[] {
 /** The tooltip of a row: the lock's reason first, else the item's hint. */
 export const rowTitle = (item: CompiledMenuItem, lockNote: string | null | undefined): string | undefined =>
   item.locked ? (lockNote ?? (item.requires ? `Requires ${item.requires}` : 'Not available')) : item.hint;
+
+/** The row's appearance overrides as `data-fx-*` attributes the stylesheet maps to theme tokens (menu-item@2 s4). */
+export function rowLookAttrs(item: CompiledMenuItem): Record<string, string | undefined> {
+  const l = item.look;
+  return { 'data-fx-tone': l?.tone, 'data-fx-icon-tone': l?.iconTone, 'data-fx-weight': l?.weight, 'data-fx-emphasis': l?.emphasis, 'data-fx-size': l?.size };
+}
+
+/**
+ * Right-click on a row: the item-settings dialog on its path (menu-item@2 s4). The menu closes first; the dialog
+ * is the framework's (`menuItemDialogs`, registered by AppShell). Choice rows (the radio rows of a choice setting) open
+ * their parent setting's path.
+ */
+export function openMenuItemSettings(rt: ReturnType<typeof useRuntime>, item: CompiledMenuItem, onDone: () => void): void {
+  const path = item.origin === CHOICE_ORIGIN ? item.path.slice(0, item.path.lastIndexOf('/')) : item.path;
+  onDone();
+  rt.openDialog(MENU_ITEM_DIALOG, { path, label: item.label });
+}
 
 /** The left slot: a check mark for check / switch / choice rows, else the item's icon (a lock while locked), explained on hover. */
 export function MenuRowIcon({ item, show = true }: { item: CompiledMenuItem; show?: boolean }) {
@@ -196,8 +213,10 @@ export function CompiledMenuList({ items, onDone, payload, showIcons = true, sho
               data-axf-path={item.path}
               data-axf-kind={item.kind}
               data-axf-action={item.action}
+              {...rowLookAttrs(item)}
               disabled={item.locked}
               title={rowTitle(item, item.action ? rt.lockedByHost({ action: item.action }) : null)}
+              onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); openMenuItemSettings(rt, item, onDone); }}
               onClick={(e) => {
                 if (hasSub) {
                   e.stopPropagation();

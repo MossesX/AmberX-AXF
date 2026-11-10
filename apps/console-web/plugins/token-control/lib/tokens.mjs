@@ -13,6 +13,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFile
 import { dirname, join } from 'node:path';
 import { controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, effectiveTokenOverrides, normalizeTokenOverrides, tokenValueIn, withTokenOverride, withoutTokenOverride } from '../../../../../framework/core/engines/control-tokens.mjs';
+import { MENU_ITEM_TOKENS, MENU_TOKENS_KEY, listMenuOverrides, menuTokenPath, normalizeMenuOverrides, parseMenuTokenPath, withMenuOverride, withoutMenuOverrides } from '../../../../../framework/core/engines/menu-item-rules.mjs';
 import { ROOT, DATA_DIR, ControlError } from './common.mjs';
 import { setSlotEverywhere } from '../../../../../framework/cli/skins.mjs';
 
@@ -97,6 +98,7 @@ export function runTokens(c) {
     throw new ControlError('not_implemented', `${c.target} was retired on Nov 1 2026 (look sliders and per-asset tokens); set the same value through tokens.theme / style / layout / typography / density / sizing instead`);
   }
   if (c.target === 'tokens.slots') return runSlots(c, doc);
+  if (c.target === 'tokens.menu') return runMenuTokens(c, doc);
   const spec = CONTROL_TOKEN_SLOTS[c.target];
   const paths = controlPaths(c.target) ?? [];
   switch (c.op) {
@@ -116,6 +118,50 @@ export function runTokens(c) {
       return { changed, ...(c.path ? { item: tokenRow(c.target, readAppearance(), paths.find((x) => x.id === c.path)) } : { cleared: Object.keys(before['*'] ?? {}) }) };
     }
     default: throw new ControlError('invalid', `${c.target} does not take ${c.op}`);
+  }
+}
+
+/**
+ * tokens.menu (menu-item@2): per-item overrides under `axf.tokens.menu` in the look document, `<item path>@<token>`.
+ * list = every override in force (+ the token registry); get = one token (its override, else the token's default);
+ * set = one token; reset = one token, every token of an item (bare path), or everything (no path).
+ */
+function runMenuTokens(c, doc) {
+  const raw = doc.settings?.[MENU_TOKENS_KEY];
+  const row = (path, token, value) => ({ id: menuTokenPath(path, token), path, token, value, kind: MENU_ITEM_TOKENS[token]?.kind, group: MENU_ITEM_TOKENS[token]?.group, overridden: value !== undefined && value !== MENU_ITEM_TOKENS[token]?.default });
+  switch (c.op) {
+    case 'list': { const items = listMenuOverrides(raw).map((o) => row(o.path, o.token, o.value)); return { items, total: items.length, key: MENU_TOKENS_KEY, tokens: MENU_ITEM_TOKENS }; }
+    case 'get': {
+      const p = parseMenuTokenPath(c.path);
+      if (!p) throw new ControlError('validation', 'path must be <item path>@<token>');
+      const o = normalizeMenuOverrides(raw);
+      if (!p.token) return { item: { path: p.path, tokens: o[p.path] ?? {} }, value: o[p.path] ?? {} };
+      if (!MENU_ITEM_TOKENS[p.token]) throw new ControlError('not_found', `no menu token ${p.token}`);
+      const v = o[p.path]?.[p.token] ?? MENU_ITEM_TOKENS[p.token].default ?? null;
+      return { item: row(p.path, p.token, v), value: v };
+    }
+    case 'set': {
+      const p = parseMenuTokenPath(c.path);
+      if (!p?.token) throw new ControlError('validation', 'path must be <item path>@<token>');
+      const next = withMenuOverride(raw, p.path, p.token, c.value);
+      const after = writeAppearance({ settings: { [MENU_TOKENS_KEY]: Object.keys(next).length ? next : null } }, c.by);
+      const v = normalizeMenuOverrides(after.settings?.[MENU_TOKENS_KEY])[p.path]?.[p.token] ?? MENU_ITEM_TOKENS[p.token].default ?? null;
+      return { changed: true, item: row(p.path, p.token, v), key: MENU_TOKENS_KEY };
+    }
+    case 'reset': {
+      const before = normalizeMenuOverrides(raw);
+      let next;
+      if (!c.path) next = {};
+      else {
+        const p = parseMenuTokenPath(c.path);
+        if (!p) throw new ControlError('validation', 'path must be an item path, <item path>@<token>, or nothing (reset all)');
+        next = p.token ? withMenuOverride(before, p.path, p.token, null) : withoutMenuOverrides(before, p.path);
+      }
+      const changed = JSON.stringify(before) !== JSON.stringify(next);
+      if (changed) writeAppearance({ settings: { [MENU_TOKENS_KEY]: Object.keys(next).length ? next : null } }, c.by);
+      return { changed, cleared: listMenuOverrides(before).filter((o) => next[o.path]?.[o.token] === undefined).map((o) => menuTokenPath(o.path, o.token)) };
+    }
+    default: throw new ControlError('invalid', `tokens.menu does not take ${c.op}`);
   }
 }
 

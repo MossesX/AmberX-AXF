@@ -18,6 +18,12 @@ export const MENU_TOKENS_TARGET: 'tokens.menu';
 export const MENU_SETTING_SET: 'setting.set';
 export const MENU_SETTING_TOGGLE: 'setting.toggle';
 export const MENU_PATH_ROOTS: readonly string[];
+export const MENU_ITEM_DIALOG: 'axf.menu.item';
+export const MENU_ITEM_ACTIONS: { readonly settings: 'menu.item.settings'; readonly set: 'menu.item.set'; readonly reset: 'menu.item.reset' };
+export const MENU_TOKEN_SEP: '@';
+export function menuTokenPath(path: string, token: string): string;
+export function parseMenuTokenPath(p: unknown): { path: string; token: string } | null;
+export function menuTokenErrors(p: unknown, value: unknown): string[];
 
 export function menuItemKind(item: unknown): MenuItemKind;
 

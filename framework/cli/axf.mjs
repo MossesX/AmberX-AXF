@@ -363,6 +363,23 @@ try {
       console.log(c.ok(`✓ wrote ${files.length} JSON Schemas`));
       break;
     }
+    case 'menus': {
+      // axf menus migrate <asset.json>… [--write]   menu-item@1 → @2 (explicit kinds; a check bound to a setting with nothing to run → a switch); spec/MENUS.md
+      const { migrateMenuAsset } = await import('../core/engines/menu-item-rules.mjs');
+      const { readFileSync: readJson, writeFileSync: writeJson } = await import('node:fs');
+      const [verb, ...files] = rest;
+      if (verb !== 'migrate' || !files.filter((f) => !f.startsWith('--')).length) { console.log('Usage: axf menus migrate <app-menu or context-menu asset.json>… [--write]'); break; }
+      const write = files.includes('--write');
+      for (const f of files.filter((x) => !x.startsWith('--'))) {
+        const asset = JSON.parse(readJson(f, 'utf8'));
+        const r = migrateMenuAsset(asset);
+        if (!r.changed) { console.log(c.dim(`· ${f}: nothing to migrate`)); continue; }
+        for (const n of r.notes) console.log(c.dim(`  ${n}`));
+        if (write) { writeJson(f, JSON.stringify(r.asset, null, 2) + '\n'); console.log(c.ok(`✓ ${f}: menu-item@2 written (${r.notes.length} note(s))`)); }
+        else console.log(c.ok(`✓ ${f}: would migrate to menu-item@2 (${r.notes.length} note(s); add --write to save)`));
+      }
+      break;
+    }
     default:
       console.log(`AmberX AXF ${FRAMEWORK_VERSION}\n\nCommands: init, validate, list, new-asset, schemas, plugins, <plugin> <command>`);
   }

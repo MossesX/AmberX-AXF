@@ -15,7 +15,7 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type Reac
 import type { CompiledMenuButton } from '../../core/engines/appmenu';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
 import { menuKey, nextMenuIndex } from '../../core/engines/menufit';
-import { MenuRowChevron, MenuRowIcon, MenuRowShortcut, MenuRowStatus, MenuRowValue, MenuScroll, MenuSub, choiceRows, rowHasSub, rowKeepsOpen, rowRole, rowTitle } from './MenuList';
+import { MenuRowChevron, MenuRowIcon, MenuRowShortcut, MenuRowStatus, MenuRowValue, MenuScroll, MenuSub, choiceRows, openMenuItemSettings, rowHasSub, rowKeepsOpen, rowLookAttrs, rowRole, rowTitle } from './MenuList';
 import { focusMenuItem, menuRows, useMenuFit } from './menuFit';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
@@ -251,7 +251,9 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus, onClose 
               data-axf-origin={item.origin}
               data-axf-path={item.path}
               data-axf-kind={item.kind}
+              {...rowLookAttrs(item)}
               title={rowTitle(item, rt.lockedByHost({ action: item.action, provider: item.provider }))}
+              onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); openMenuItemSettings(rt, item, onDone); }}
               onClick={(e) => {
                 // a click (Enter / Space too: the button fires click) on a submenu row opens it; from the keyboard focus goes in
                 if (hasSub) { e.stopPropagation(); if (onEnter) onEnter(item); else { setOpenSub(item.id); setSubByKey(e.detail === 0); } return; }

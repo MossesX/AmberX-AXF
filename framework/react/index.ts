@@ -7,7 +7,8 @@ export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priori
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
-export { MenuList, CompiledMenuList, MenuSub, MenuScroll, MenuRowIcon, MenuRowValue, MenuRowStatus, MenuRowShortcut, MenuRowChevron, choiceRows, rowHasSub, rowKeepsOpen, rowRole, rowTitle, CHOICE_ORIGIN } from './components/MenuList';
+export { MenuList, CompiledMenuList, MenuSub, MenuScroll, MenuRowIcon, MenuRowValue, MenuRowStatus, MenuRowShortcut, MenuRowChevron, choiceRows, rowHasSub, rowKeepsOpen, rowRole, rowTitle, rowLookAttrs, openMenuItemSettings, CHOICE_ORIGIN } from './components/MenuList';
+export { MenuItemSettingsPanel, menuItemDialogs, findMenuItem, MENU_ITEM_SETTINGS_DIALOG } from './components/MenuItemSettings';
 export { useMenuFit, fitMenuEl, menuViewBox, focusMenuItem, menuRows, installMenuFit, installMenuScrollLock } from './components/menuFit';
 export { MenuBar, Toolbar, AssetToolbar, NavMenu, StatusBar, mergeNavSections } from './components/Chrome';
 export { NavTree } from './components/NavTree';

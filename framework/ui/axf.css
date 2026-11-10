@@ -416,6 +416,38 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 @media (prefers-reduced-motion: reduce) { .fx-menu__status > * { animation: none !important; } }
 [data-fx-motion='reduced'] .fx-menu__status > * { animation: none !important; }
 .fx-menu__item[role='menuitemradio'] .fx-menu__check { color: var(--fx-accent); }
+/* per-item appearance tokens (menu-item@2 s4, the right-click item-settings dialog; control@1 tokens.menu): every value
+   is a theme token, so a theme swap restyles the row too */
+.fx-menu__item[data-fx-tone='text'] { color: var(--fx-text); }
+.fx-menu__item[data-fx-tone='muted'] { color: var(--fx-muted); }
+.fx-menu__item[data-fx-tone='accent'] { color: var(--fx-accent); }
+.fx-menu__item[data-fx-tone='info'] { color: var(--fx-info); }
+.fx-menu__item[data-fx-tone='success'] { color: var(--fx-success); }
+.fx-menu__item[data-fx-tone='warning'] { color: var(--fx-warning); }
+.fx-menu__item[data-fx-tone='danger'] { color: var(--fx-danger); }
+.fx-menu__item[data-fx-icon-tone='text'] .fx-menu__icon { color: var(--fx-text); }
+.fx-menu__item[data-fx-icon-tone='muted'] .fx-menu__icon { color: var(--fx-muted); }
+.fx-menu__item[data-fx-icon-tone='accent'] .fx-menu__icon { color: var(--fx-accent); }
+.fx-menu__item[data-fx-icon-tone='info'] .fx-menu__icon { color: var(--fx-info); }
+.fx-menu__item[data-fx-icon-tone='success'] .fx-menu__icon { color: var(--fx-success); }
+.fx-menu__item[data-fx-icon-tone='warning'] .fx-menu__icon { color: var(--fx-warning); }
+.fx-menu__item[data-fx-icon-tone='danger'] .fx-menu__icon { color: var(--fx-danger); }
+.fx-menu__item[data-fx-weight='regular'] { font-weight: 400; }
+.fx-menu__item[data-fx-weight='medium'] { font-weight: 500; }
+.fx-menu__item[data-fx-weight='semibold'] { font-weight: 600; }
+.fx-menu__item[data-fx-weight='bold'] { font-weight: 700; }
+.fx-menu__item[data-fx-emphasis='soft'] { background: var(--fx-accent-soft); }
+.fx-menu__item[data-fx-emphasis='outline'] { box-shadow: inset 0 0 0 var(--fx-border-w) var(--fx-border); }
+.fx-menu__item[data-fx-emphasis='filled'] { background: var(--fx-accent); color: var(--fx-accent-text); }
+.fx-menu__item[data-fx-emphasis='filled'] .fx-menu__icon, .fx-menu__item[data-fx-emphasis='filled'] .fx-menu__value, .fx-menu__item[data-fx-emphasis='filled'] .fx-menu__chevron { color: inherit; }
+.fx-menu__item[data-fx-size='sm'] { font-size: var(--fx-type-scale-sm); }
+.fx-menu__item[data-fx-size='md'] { font-size: var(--fx-type-scale-md); }
+.fx-menu__item[data-fx-size='lg'] { font-size: var(--fx-type-scale-lg); }
+/* the item-settings dialog (components/MenuItemSettings.tsx): layout only, every control is a framework control */
+.axf-menu-item-settings__path { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; margin: 0; }
+.axf-menu-item-settings__label { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); }
+.axf-menu-item-settings__icon { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); }
+.axf-menu-item-settings__foot { justify-content: flex-end; }
 .fx-menu__item.is-checked { color: var(--fx-text); }
 .fx-menu__chevron { color: var(--fx-muted); }
 .fx-menu__badge {

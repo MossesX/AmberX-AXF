@@ -169,9 +169,19 @@ constraints (`menuItemV2SchemaProperties`). The fixture's `validation` cases `v2
 - Every icon has a tooltip: the row's icon (`hint`, else the label), the status slot (its tooltip), the key cap
   ("Shortcut: Ctrl+S"), the sub-menu chevron ("Opens a sub-menu"); the row itself carries `hint` as its title (a lock's reason
   wins). Done in s3.
-- Right-click on any item opens the item-settings dialog on its `path`, writing `axf.tokens.menu` through control@1
-  `tokens.menu`; `look` renders through `data-fx-tone` / `data-fx-icon-tone` / `data-fx-weight` / `data-fx-emphasis` /
-  `data-fx-size` styled by asset tokens only (s4).
+- Right-click on any row (application menu, context menu, a choice's radio row opens its setting row) closes the menu and
+  opens the item-settings dialog on the row's path (`react/components/MenuItemSettings.tsx`, dialog `axf.menu.item`,
+  registered by AppShell): tab **Behaviour** (label, icon, hint, action, shortcut, visible, order), tab **Appearance** (text
+  colour, icon colour, weight, emphasis, text size: theme tokens only). Each field is a token; typing the inherited value back
+  clears it; every changed token has its own reset, **Reset this item** drops them all. Writes go through
+  `rt.setMenuToken(path, token, value | null)` / `rt.resetMenuItem(path?, deep?)` into `axf.tokens.menu`, which rides the axHub
+  look (an `axf.tokens.` key), so the change reaches every app and open menus re-render at once. `look` renders as
+  `data-fx-tone` / `data-fx-icon-tone` / `data-fx-weight` / `data-fx-emphasis` / `data-fx-size` on the row, styled by asset tokens
+  only. Done in s4 (`check-menu-settings.mts`).
+- The same without the UI: actions `menu.item.settings:<path>` (opens the dialog; `console_action`, voice),
+  `menu.item.set:<path>:<token>:<value>` and `menu.item.reset:<path>[:<token>]` (path URI-encoded); REST / MCP / CLI through
+  control@1 `tokens.menu` (`path` = `<item path>@<token>`; the console's Token control runner writes the look document). CLI
+  `axf menus migrate <asset.json> [--write]` rewrites menu-item@1 assets.
 
 ## Ports
 

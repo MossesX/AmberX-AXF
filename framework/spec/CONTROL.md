@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.menu` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -49,6 +49,14 @@ and range. The static targets (theme, style, layout, typography, density, sizing
 `tokens.nav` (nav-style@1, `core/engines/navstyle-rules.mjs`) tunes the navigation menu with sub menus: colours, font, icons,
 density, width, the sub-menu animation, behaviour, pinned / hidden / ordered items and `accents.<item id>`; only navs that opt in
 (nav-menu `navStyle: true`) read it.
+`tokens.menu` (menu-item@2, `core/engines/menu-item-rules.mjs`, spec/MENUS.md; build molly-flagship-skin, Nov 10 2026) holds the
+per-item overrides of every application-menu and context-menu row, the same ones the right-click item-settings dialog writes:
+`path` = `<item path>@<token>` (`app-menu/file/save@tone`, `context-menu/default/copy@visible`; every row carries its path as
+`data-axf-path`), tokens `label` · `icon` · `hint` · `action` · `shortcut` · `visible` · `order` (behaviour) and `tone` · `iconTone` ·
+`weight` · `emphasis` · `size` (appearance, theme tokens only). `set` writes `axf.tokens.menu` in the look document; `reset` with a
+token drops it, with a bare item path every token of that item, with nothing all of them; `list` is every override in force. In an
+open console the same three things are the actions `menu.item.settings:<path>`, `menu.item.set:<path>:<token>:<value>` and
+`menu.item.reset:<path>[:<token>]` (path URI-encoded), so `console_action` and voice reach them too.
 
 **AmberX** (`amberx.items`, `amberx.lists`): amberx-notes@1 records (apps/amberx-droid notes core; one store for notes, to-dos and
 tasks on every device). Fields, filters and verbs are the notes core's own (`done`, `move`, `merge`, `pin`, `star`, `check` on items;
