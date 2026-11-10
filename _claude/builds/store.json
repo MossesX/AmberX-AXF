@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2977,
- "updatedAt": "2026-11-10T23:13:34.929Z",
+ "rev": 2978,
+ "updatedAt": "2026-11-10T23:13:52.457Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153605,6 +153605,10 @@
     {
      "text": "Claude account: account-5 (axf-orchestrator-merge-first-switch-separate-merger--gina, own login copy)",
      "at": "2026-11-10T23:13:32.411Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-merge-first-switch-separate-merger--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:13:09.184Z"
     }
    ],
    "approvals": [],

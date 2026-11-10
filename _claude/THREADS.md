@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:29 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` note (all) · orchestrator
 - 2026-11-10 18:29 UTC · `resolve-conflicts-and-land-pr-449-account-order` → running, note (all) · pipeline
 - 2026-11-10 18:29 UTC · `resolve-conflicts-and-land-pr-449-account-order` branch claude/resolve-conflicts-and-land-pr-449-account-order (all) · pipeline
 - 2026-11-10 18:29 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
 - 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
+- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · builds-live
 
 ## Token passes (log)
 
