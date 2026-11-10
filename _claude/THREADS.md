@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` added (0 steps) (all) · console
 - 2026-11-10 03:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` → queued, note (all) · console
 - 2026-11-10 03:12 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 - 2026-11-10 03:13 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:53 UTC · `search-bar-plugin-add-on-search-builds-session-h` s2 done (all) · foreign-write
 - 2026-11-10 16:55 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s2 done (all) · orchestrator
 - 2026-11-10 16:55 UTC · `search-bar-plugin-add-on-search-builds-session-h` PR #451 (all) · builds-live
+- 2026-11-10 16:56 UTC · `search-bar-plugin-add-on-search-builds-session-h` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

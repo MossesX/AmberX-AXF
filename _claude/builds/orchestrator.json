@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:55:58.085Z",
+ "updatedAt": "2026-11-10T16:56:28.503Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84944,7 +84944,7 @@
    "title": "Search bar plugin add-on: search builds, session histories and build notes; jump to the highlighted spot in the log",
    "category": "",
    "detail": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -84952,8 +84952,8 @@
    "pr": "#451",
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T16:55:56.160Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T16:56:26.948Z",
+   "builtAt": "2026-11-10T16:56:26.948Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -85039,8 +85039,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:56:26.948Z",
      "note": "",
      "uid": "st-mwauub0503p09q"
     }
