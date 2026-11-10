@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2682,
- "updatedAt": "2026-11-10T18:38:37.751Z",
+ "rev": 2683,
+ "updatedAt": "2026-11-10T18:38:53.822Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -148981,7 +148981,7 @@
    "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
    "category": "",
    "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -148989,7 +148989,7 @@
    "pr": "#463",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-10T18:11:54.228Z",
+   "updatedAt": "2026-11-10T18:38:52.562Z",
    "builtAt": "",
    "notes": [
     {
@@ -149011,6 +149011,10 @@
     {
      "text": "Headless run axf-orchestrator-hold-status-archive-tab-deleted-tab--sully: brief only · start 11.1K tokens ($0.03) · cost $4.70 · 100 turns · 6 tools, MCP none",
      "at": "2026-11-10T18:11:54.228Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T18:38:52.562Z"
     }
    ],
    "approvals": [],
@@ -149131,7 +149135,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
