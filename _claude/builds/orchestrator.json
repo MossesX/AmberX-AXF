@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:50:50.032Z",
+ "updatedAt": "2026-11-10T17:51:06.770Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89769,6 +89769,43 @@
    "origin": {
     "said": "I need to get that Llama build going with Mistral.",
     "at": "2026-11-10T17:50:25.480Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "ollama-model-pick-mistral-small-24b-q4-default-m",
+   "title": "Ollama model pick: Mistral Small 24B (Q4) default + Mistral 7B for quick tasks (VPS has 64 GB)",
+   "category": "",
+   "detail": "Amends the Ollama + Mistral build. VPS now has 64 GB RAM. Use Mistral Small (24B, Q4 quant, ~14 GB) as the default model; also pull Mistral 7B for fast lightweight tasks. Keep headroom for builds (cap Ollama memory, one model loaded at a time, unload after idle).",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:50:42.350Z",
+   "updatedAt": "2026-11-10T17:50:44.009Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:50:44.009Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Pick the model. I got 64 gigs now.",
+    "at": "2026-11-10T17:50:42.350Z",
     "source": "",
     "session": "",
     "link": "",
