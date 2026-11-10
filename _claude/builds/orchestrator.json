@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:07:09.525Z",
+ "updatedAt": "2026-11-10T18:07:43.185Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92465,7 +92465,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T17:35:51.386Z",
+   "updatedAt": "2026-11-10T18:07:41.463Z",
    "builtAt": "",
    "notes": [
     {
@@ -92475,6 +92475,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:35:51.386Z"
+    },
+    {
+     "text": "Split by Claude into 7 steps (0 Fable).",
+     "at": "2026-11-10T18:07:41.463Z"
     }
    ],
    "approvals": [],
@@ -92494,51 +92498,15 @@
    "steps": [
     {
      "id": "s1",
-     "text": "PR #449 (claude/account-order-switch-custom-drag-and-drop-order) failed to merge: merge conflicts with main. Merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, then merge the PR and redeploy the console. Notify on AmberX.",
+     "text": "Fetch origin, check out PR #449's branch claude/account-order-switch-custom-drag-and-drop-order in this checkout, merge latest origin/main into it (no rebase, no force-push), and list every conflicted file with which side changed what. Read PR #449's description and main's commits on the same files so each side's intent is known before editing.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwaz18wq04nzne"
-    },
-    {
-     "id": "s2",
-     "text": "Yeah, land it.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwaz18wq05g95n"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
+     "estimate": "10 min",
      "files": [
-      "_claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md",
-      "_claude/THREADS.md"
+      "git: claude/account-order-switch-custom-drag-and-drop-order",
+      "origin/main"
      ],
      "checks": [],
      "session": "same",
@@ -92547,7 +92515,138 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwaz18wq06vlft"
+     "uid": "st-mwb066qf7vnfie"
+    },
+    {
+     "id": "s2",
+     "text": "Resolve the code conflicts in the account order switch and the account code it touches (console-web accounts / account-switch plugin, its routes and store). Keep both sides: the PR's custom drag-and-drop order and main's newer account changes, such as failover and health. The saved order must still apply after main's changes. Delete no behaviour from either side. Commit the merge resolution.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/ (account order switch plugin and its server routes)",
+      "conflicted files listed in step 1"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb066qf7wfi3w"
+    },
+    {
+     "id": "s3",
+     "text": "Resolve the remaining non-code conflicts (docs, glossary, _claude/THREADS.md, builds JSON, changelog entries) by keeping both sides' rows and entries, valid JSON, and no duplicated ids. Then grep the tree for leftover conflict markers.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/",
+      "docs/",
+      "changes/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb066qf7x1oka"
+    },
+    {
+     "id": "s4",
+     "text": "Check that the account order feature follows Everything comes with an API (main gained this rule after the PR branched). It needs a console_show/console_open deep link to the account order UI, the current order readable, and set order / move account / reset order callable through console REST, MCP console actions, the CLI and AmberX voice, all four the same. Add whatever the PR is missing in the plugin, routes, MCP action list, CLI and voice intents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/ (account order plugin, plugin commands, console actions)",
+      "apps/console-web/server/ routes",
+      "CLI and AmberX voice intent files for accounts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb066qf7yi9iy"
+    },
+    {
+     "id": "s5",
+     "text": "Run the console-web unit and route tests and the account/failover tests. Fix any failures the merge caused, keeping both sides' intent, until the suite is green. Add tests for the account order API parity (REST, MCP, CLI and voice give the same results).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/ (account order tests)",
+      "apps/console-web/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb066qf7zklh7"
+    },
+    {
+     "id": "s6",
+     "text": "Push the merged branch to origin (plain push, no force). Wait for CI on PR #449 to go green and confirm GitHub shows the PR as mergeable with no conflicts. If main moved again, repeat the merge for the new commits only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "git: claude/account-order-switch-custom-drag-and-drop-order",
+      "PR #449"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb066qf80beeo"
+    },
+    {
+     "id": "s7",
+     "text": "Final step. Re-run the tests. Write the report at _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md, covering conflicts and how each was resolved, tests before→after, and how account order is reached via deep link, state read, actions and settings over REST, MCP, CLI and voice. Add the THREADS row. Put the API reach note on PR #449 and merge it. Redeploy the console and check that the account order switch works on the live console. Notify Brett on AmberX that #449 landed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "_claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md",
+      "_claude/THREADS.md",
+      "PR #449",
+      "console deploy"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb066qf81b31o"
     }
    ]
   },

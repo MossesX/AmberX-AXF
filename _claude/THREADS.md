@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 14:51 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` branch claude/one-vps-plugin-everything-vps-in-one-place-gauge (all) · pipeline
 - 2026-11-10 14:51 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` note (all) · orchestrator
 - 2026-11-10 14:54 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` PR #442 (all) · builds-live
 - 2026-11-10 14:54 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:06 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:06 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · builds-live
 - 2026-11-10 18:06 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · foreign-write
+- 2026-11-10 18:07 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 
 ## Token passes (log)
 
