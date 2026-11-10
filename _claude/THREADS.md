@@ -770,8 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:26 UTC · `per-account-queues-long-press-a-queued-build-to` added (0 steps) (all) · console
-- 2026-11-09 20:26 UTC · `per-account-queues-long-press-a-queued-build-to` → queued, note (all) · console
 - 2026-11-09 20:26 UTC · `one-source-of-truth-for-claude-accounts-the-orch` added (0 steps) (all) · console
 - 2026-11-09 20:26 UTC · `one-source-of-truth-for-claude-accounts-the-orch` → queued, note (all) · console
 - 2026-11-09 20:27 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
@@ -1170,6 +1168,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:35 UTC · `self-healing-build-folders-auto-clear-stale-git` s2 done (all) · orchestrator
 - 2026-11-10 03:35 UTC · `self-healing-build-folders-auto-clear-stale-git` → queued, note (all) · pipeline
 - 2026-11-10 03:36 UTC · `self-healing-build-folders-auto-clear-stale-git` PR #435 (all) · builds-live
+- 2026-11-10 03:36 UTC · `self-healing-build-folders-auto-clear-stale-git` s3 done, → built (all) · orchestrator
+- 2026-11-10 03:36 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 
 ## Token passes (log)
 

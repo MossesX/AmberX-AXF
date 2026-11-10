@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2276,
- "updatedAt": "2026-11-10T03:36:11.855Z",
+ "rev": 2277,
+ "updatedAt": "2026-11-10T03:36:38.089Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134613,7 +134613,7 @@
    "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
    "category": "",
    "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134621,8 +134621,8 @@
    "pr": "#435",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:36:07.729Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:36:20.579Z",
+   "builtAt": "2026-11-10T03:36:10.823Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -134679,6 +134679,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-10T03:33:04.411Z"
+    },
+    {
+     "text": "Done, PR #435. Ping Paulie restored and finished Janitor Joey's self-heal.mjs from /root/archive/self-heal-joey-2026-11-10 after the double dispatch. It is wired into tick, launch, land and builds-live, and the dispatcher now refuses to launch a build that already has a live session. Cleared 10 real stale index.locks on the VPS.",
+     "at": "2026-11-10T03:36:20.579Z"
     },
     {
      "text": "Self-check: self-healing-build-folders-auto-clear-stale-git was marked running on account-5 with no session: released and back in the Queue.",
@@ -134791,12 +134795,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:36:10.823Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T02:24:12.593Z",
-     "updatedAt": "2026-11-10T02:24:12.593Z"
+     "updatedAt": "2026-11-10T03:36:11.153Z"
     }
    ],
    "profiles": [
@@ -134807,7 +134811,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
