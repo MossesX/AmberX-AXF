@@ -319,7 +319,9 @@ function gitHistoryItems(file, max = 400) {
 export function gatherSources({ history = true } = {}) {
   const reg = readProfiles();
   const ids = new Set(reg.profiles.map((p) => p.id));
-  for (const d of [join(REPO_ROOT, '_claude/builds/profiles'), join(REPO_ROOT, 'framework/plan/profiles')]) if (existsSync(d)) for (const x of readdirSync(d)) if (core.slug(x) === x) ids.add(x);
+  for (const d of [join(REPO_ROOT, '_claude/builds/profiles'), join(REPO_ROOT, 'framework/plan/profiles')]) if (existsSync(d)) for (const x of readdirSync(d)) if (core.slug(x) === x && !core.RETIRED_PROFILES.includes(x)) ids.add(x);
+  // a retired profile's folder that a merge brought back (Nov 10 2026: breakroom, re-added by a leftover-work commit) is
+  // not a source: its builds were folded into the base profile, and checking it again failed every PR's light checks
   const hub = persistRoot();
   const profiles = [];
   for (const id of [BASE_PROFILE, ...[...ids].filter((x) => x !== BASE_PROFILE)]) {
