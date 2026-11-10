@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:43:23.531Z",
+ "updatedAt": "2026-11-10T15:44:56.420Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85272,12 +85272,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:43:05.952Z",
-   "updatedAt": "2026-11-10T15:43:08.021Z",
+   "updatedAt": "2026-11-10T15:44:54.065Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:43:08.021Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:44:54.065Z"
     }
    ],
    "approvals": [],
@@ -85294,7 +85298,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwav2k3601cinw"
+    },
+    {
+     "id": "s2",
+     "text": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwav2k36027f46"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/project-manager-add-on-drag-a-build-to-another-p.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwav2k3603izhu"
+    }
+   ]
   }
  ]
 }
