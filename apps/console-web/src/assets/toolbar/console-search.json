@@ -39,13 +39,13 @@
           {
             "id": "build",
             "icon": "play",
-            "label": "Build queue",
+            "label": "Queued & active builds",
             "action": "nav:build"
           },
           {
             "id": "pending",
             "icon": "clock",
-            "label": "Pending builds",
+            "label": "Pending & complete builds",
             "action": "nav:pending"
           }
         ]
