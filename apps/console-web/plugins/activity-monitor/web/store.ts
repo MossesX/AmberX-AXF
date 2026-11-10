@@ -107,7 +107,9 @@ export function installCapture(rt: AxfRuntime): () => void {
     if (on('captureActions') && !spec.startsWith('activity-monitor.')) {
       const id = spec.split(':')[0] ?? spec; const meta = bus.get(id)?.meta;
       const label = meta?.label || spec;
-      emitEvent({ kind: 'action', actor: 'You', verb: 'ran', object: `“${label}”${spec.includes(':') ? ` (${spec.split(':').slice(1).join(':')})` : ''}`,
+      const arg = spec.split(':').slice(1).join(':');
+      const nav = id === 'nav' && arg;
+      emitEvent({ kind: 'action', actor: 'You', verb: nav ? 'opened' : 'ran', object: nav ? `the ${arg.replace(/[-_.]/g, ' ')} page` : `“${label}”${arg ? ` (${arg})` : ''}`,
         result: err ? 'failed' : ok ? 'done' : 'refused', reason: err ? String((err as Error)?.message ?? err) : '', ref: { type: 'action', id: spec, action: spec, retry: spec, label }, raw: { spec, module: meta?.module } });
     }
     if (err) throw err;

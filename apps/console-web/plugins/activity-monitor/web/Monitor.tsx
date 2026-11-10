@@ -84,7 +84,7 @@ export function MonitorView() {
         <Container title={v.view === 'tree' ? 'What happened, one request at a time' : 'What happened'} icon="list" collapsible className="axp-activity-monitor__logpane">
           <div ref={listRef} className="axp-activity-monitor__log" role="log" aria-live={v.follow && !v.paused ? 'polite' : 'off'} aria-label="Activity log">
             {v.view === 'tree'
-              ? ordered.map((c) => <ChainRow key={c.chain} c={c} matched={matched} settings={s} selected={v.selected} open={v.open[c.chain] ?? c.count <= 3} />)
+              ? ordered.map((c) => <ChainRow key={c.chain} c={c} matched={matched} settings={s} selected={v.selected} open={v.open[c.chain] ?? c.count <= 12} />)
               : events.map((e) => <EventRow key={e.id} e={e} settings={s} selected={v.selected === e.id} />)}
             {!all.length && !err && <p className="axp-activity-monitor__empty">Nothing here yet. Taps, actions, builds, axHub runs and errors show up as they happen.</p>}
           </div>

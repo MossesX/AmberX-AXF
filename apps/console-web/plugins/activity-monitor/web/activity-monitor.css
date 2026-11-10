@@ -39,7 +39,7 @@ button.axp-activity-monitor__row { all: unset; box-sizing: border-box; display: 
 .axp-activity-monitor__row--warning .axp-activity-monitor__text { color: var(--fx-warning) }
 .axp-activity-monitor__row--debug { opacity: var(--fx-opacity-muted) }
 .axp-activity-monitor__time { flex: none; color: var(--fx-muted); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: var(--fx-type-root-xs) }
-.axp-activity-monitor__icon { flex: none; align-self: center; display: inline-flex; color: var(--axp-am-tone) }
+.axp-activity-monitor__icon { flex: none; align-self: flex-start; padding-top: var(--fx-dens-gap-2xs); display: inline-flex; color: var(--axp-am-tone) }
 .axp-activity-monitor__kind { flex: none; color: var(--axp-am-tone); text-transform: uppercase; letter-spacing: var(--fx-tracking); font-size: var(--fx-type-root-2xs); min-width: calc(var(--fx-row-h) * 2.4) }
 .axp-activity-monitor__text { flex: 1; min-width: 0; overflow-wrap: anywhere; font-family: var(--fx-font) }
 .axp-activity-monitor__app { flex: none; color: var(--fx-info); font-size: var(--fx-type-root-xs) }

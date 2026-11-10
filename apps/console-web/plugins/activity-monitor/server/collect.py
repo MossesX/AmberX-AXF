@@ -279,9 +279,13 @@ def from_terminal(lines: Callable[[], list[dict[str, Any]]] | None, cur: dict[st
         ch, lvl, text = str(ln.get("channel") or "console")[:40], str(ln.get("level") or "info"), str(ln.get("text") or "")[:500]
         if not text or ch == "activity-monitor":
             continue
-        kind = "error" if lvl == "error" else "command" if any(k in ch.lower() for k in ("mcp", "api", "control", "command", "plugin")) else "system"
+        # MCP / control calls are commands someone ran; every other info line (plugins loading, housekeeping) is debug,
+        # hidden until "debug" is switched on in What to show
+        cmd = any(k in ch.lower() for k in ("mcp", "control", "command"))
+        kind = "error" if lvl == "error" else "command" if cmd else "system"
+        sev = {"error": "error", "warn": "warning", "warning": "warning"}.get(lvl, "info" if cmd else "debug")
         out.append({"id": f"term:{at}:{_h(ch, text)}", "at": at, "app": "console", "source": "terminal", "kind": kind,
-                    "severity": {"error": "error", "warn": "warning", "warning": "warning", "debug": "debug"}.get(lvl, "info"),
+                    "severity": sev,
                     "sentence": f"{ch}: {text}", "actor": "", "raw": ln})
         since = max(since, at)
     cur["terminal.at"] = since
