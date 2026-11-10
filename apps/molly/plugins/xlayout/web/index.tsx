@@ -10,7 +10,7 @@ import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } f
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
 const WARM_APPS = ['console'];
-import { APP_TAB, AppMain, AppTab, applyPresetById, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import { APP_TAB, AppMain, AppTab, applyPresetById, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, groupOfPane, openApp, openRefIn, setTabGroup } from './workspace';
 import { LAYOUT_MODE_PRESET, type LayoutMode } from '../../../src/axf/core/engines/xlayout';
 import helpPack from '../help.json';
 import './xlayout.css';
@@ -177,6 +177,21 @@ export const plugin: AxfWebLibrary = {
       openApp(rt, app, target === 'pane' || target === 'floating' ? target : 'main');
     }, { label: 'Open an app in the main area, a floating window or a pane' });
     on('xlayout.customize', (_args, ctx) => customize(rt, ctx.payload), { label: 'Customize toolbar…' });
+    // containers (s10): a pane as a tab group or not, and opening any menu item in a given pane, without the mouse
+    on('xlayout.container.tabs', (args, ctx) => {
+      // xlayout.container.tabs[:on|off][:<pane number | group id>] (the context menu passes the group as payload)
+      const flag = args[0] === 'on' ? true : args[0] === 'off' ? false : undefined;
+      const which = (flag === undefined ? args[0] : args[1]) ?? ctx.payload ?? '';
+      const group = /^\d+$/.test(which) ? groupOfPane(rt, Number(which)) : which || null;
+      const now = group ? setTabGroup(rt, group, flag) : null;
+      if (now === null) { rt.toast('Pick a pane in IDE mode first.', 'info', 'Tab group'); return; }
+      rt.toast(now ? 'This pane holds tabs now: what you drop on it opens as a new tab.' : 'This pane shows one thing: what you drop on it replaces it.', 'info', now ? 'Tab group on' : 'Tab group off');
+    }, { label: 'Pane as a tab group on / off', params: true });
+    on('xlayout.drop', (args) => {
+      // xlayout.drop:<pane number>:<ref>: what dropping a menu item on that pane does (voice, API, CLI)
+      const [pane = '', ...ref] = args;
+      if (!openRefIn(rt, groupOfPane(rt, Number(pane)), ref.join(':'))) rt.toast(`Nothing to open for ${ref.join(':')}.`, 'warning', 'Open in pane');
+    }, { label: 'Open a menu item in a pane', params: true });
     provideMollyService(PLUGIN_ID, XLAYOUT_SERVICE, {
       layout: () => effectiveXLayout(rt),
       chrome: () => h.chrome(),
@@ -212,6 +227,9 @@ export const plugin: AxfWebLibrary = {
     { id: 'xlayout.toolbar', target: TOOLBAR_CTX, items: [
       { id: 'xlayout.customize', label: 'Customize toolbar…', icon: 'edit', action: 'xlayout.customize' },
       { id: 'xlayout.toolbar-settings', label: 'Toolbar settings…', icon: 'settings', action: 'settings.open:xlayout' },
+    ] },
+    { id: 'xlayout.tabgroup', target: 'tab-group', items: [
+      { id: 'xlayout.container-tabs', label: 'Tab group on / off', icon: 'layers', action: 'xlayout.container.tabs:{payload}' },
     ] },
     { id: 'xlayout.nav', target: 'nav-item', items: [
       { id: 'xlayout.nav-pane', label: 'Open in a pane', icon: 'grid', action: 'xlayout.open:pane:{payload}' },

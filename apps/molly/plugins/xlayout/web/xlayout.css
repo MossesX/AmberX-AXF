@@ -22,6 +22,11 @@
 .axp-xlayout-ide > .fx-dock { flex: 1 1 auto; min-height: 0; }
 .fx-tabgroup .molly-slot[data-fill='self'] { flex: 1 1 auto; align-self: stretch; }
 
+/* a menu item dragged over a pane (drop opens it there) */
+.axp-xlayout-ide .fx-tabgroup[data-axp-drop='on'] { outline: var(--fx-border-w) dashed var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); }
+/* while a menu item is dragged, the frames let the pointer through to the panes */
+body:has([data-axp-drop]) .molly-frame { pointer-events: none; }
+
 /* while a tab or a splitter is dragged, the frames let the pointer through to the dock's drop zones */
 body:has(.fx-dragghost) .molly-frame, body:has(.fx-splitter.is-active) .molly-frame { pointer-events: none; }
 

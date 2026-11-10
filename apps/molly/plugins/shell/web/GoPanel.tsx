@@ -4,7 +4,7 @@
  * Each item opens with a tap; its star adds it to Favorites; on a wide screen the side buttons open it in a pane or a
  * floating window. Items can be dragged (text/x-axf-ref) for hosts that take a dropped ref.
  */
-import { useMemo, useState, useSyncExternalStore } from 'react';
+import { useMemo, useState, useSyncExternalStore, type DragEvent } from 'react';
 import type { MenuGroupNode, MenuNode } from '../../../src/axf/core/engines/menu-index';
 import { searchMenu } from '../../../src/axf/core/engines/menu-index';
 import type { OpenTarget } from '../../../src/axf/core/engines/xlayout';
@@ -23,8 +23,15 @@ export function GoPanel({ model, close, query: q0 = '' }: { model: ShellModel; c
   const hits = query.trim() ? searchMenu(index, query, { recents, limit: 40 }) : null;
   const open = (ref: string, target: OpenTarget = 'main') => { if (model.open(ref, target)) close(); };
 
+  // Drag onto a pane of the IDE layout (it opens there as a tab): while dragging, this dialog steps aside so the panes
+  // behind it take the drop (data-axf-ref-drag, shell.css); a drop that landed closes it.
+  const dragStart = (e: DragEvent, ref: string) => {
+    e.dataTransfer.setData(REF_MIME, ref); e.dataTransfer.setData('text/plain', ref); e.dataTransfer.effectAllowed = 'copy';
+    setTimeout(() => { document.body.dataset.axfRefDrag = 'on'; }, 0);
+  };
+  const dragEnd = (e: DragEvent) => { delete document.body.dataset.axfRefDrag; if (e.dataTransfer.dropEffect !== 'none') close(); };
   const itemRow = (n: { id: string; label: string; icon?: string; favorite?: boolean }, detail?: string) => (
-    <li key={n.id} className="fx-menu__li axp-shell-go__row" draggable onDragStart={(e) => { e.dataTransfer.setData(REF_MIME, n.id); e.dataTransfer.setData('text/plain', n.id); e.dataTransfer.effectAllowed = 'copy'; }}>
+    <li key={n.id} className="fx-menu__li axp-shell-go__row" draggable onDragStart={(e) => dragStart(e, n.id)} onDragEnd={dragEnd}>
       <button type="button" className="fx-menu__item" onClick={() => open(n.id)} data-axf-ref={n.id}>
         <span className="fx-menu__icon"><Icon name={n.icon ?? 'arrow-right'} size={14} /></span>
         <span className="fx-menu__label">{n.label}{detail && <span className="fx-muted axp-shell-go__detail"> · {detail}</span>}</span>

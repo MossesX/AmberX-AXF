@@ -5,12 +5,14 @@
  * the main area, a floating window or a pane (`openApp`); a layout preset lays the open apps out (the layout picker,
  * with a preview before it applies). The arrangement is kept (`xlayout.ide.dock`) and comes back with the switch.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { AxfRuntime } from '../../../src/axf/core';
 import type { TabSpec } from '../../../src/axf/core/engines/windows';
 import { paneGroups } from '../../../src/axf/core/engines/windows';
 import { normalizeDockLayout, type DockLayoutData } from '../../../src/axf/core/engines/dock';
-import { LAYOUT_MODE_PRESET, dockRulesOf, idePresets, type LayoutMode, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
+import { LAYOUT_MODE_PRESET, containerIsTabs, dockRulesOf, idePresets, setContainerTabs, type LayoutMode, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
+import { parseRef } from '../../../src/axf/core/engines/shell-surface';
+import { mollyService } from '../../../src/molly/host';
 import { Button, Icon, useAxfState, useRuntime } from '../../../src/axf/react';
 import { DockHost, DockPresetThumb } from '../../../src/axf/react/windows/DockHost';
 import { useWindowState } from '../../../src/axf/react/windows/WindowHost';
@@ -22,8 +24,11 @@ import { docked, effectiveXLayout, K } from './model';
 /** Tab kind of an app in a pane (payload = the app id). */
 export const APP_TAB = 'molly-app';
 export const LAYOUT_DIALOG = 'xlayout.layout';
+/** Drag payload of a menu item (One shell's menus and Go to anything): a qualified ref `<app>:<kind>:<id>`. */
+export const REF_MIME = 'text/x-axf-ref';
 const tabId = (app: string) => `molly-app:${app}`;
-const tabOf = (app: string): TabSpec => { const a = mollyApp(app); return { id: tabId(app), title: a?.label ?? app, kind: APP_TAB, payload: app, icon: a?.icon ?? 'box', closable: true }; };
+/** A tab for an app, or one of its screens (`console/plan`, a native app's screen). */
+const tabOf = (app: string, title?: string): TabSpec => { const a = mollyApp(app.split('/')[0]); return { id: tabId(app), title: title ?? a?.label ?? app, kind: APP_TAB, payload: app, icon: a?.icon ?? 'box', closable: true }; };
 
 /** Where an app's tab is in the dock (group + index), or null. */
 function findTab(rt: AxfRuntime, app: string): { group: string; index: number; windowId: string } | null {
@@ -79,6 +84,90 @@ export function openApp(rt: AxfRuntime, app: string, target: OpenTarget): void {
   if (inDock) showInDock(rt, app);
 }
 
+/* ---------- containers: tab groups, and dropping a menu item onto one (molly-one-shell s10) ---------- */
+
+/** The pane number (1-based, the dock's pane order) of a group in the main dock; 0 when it isn't there. */
+export function paneOf(rt: AxfRuntime, group: string): number {
+  const tree = rt.windows.state.layouts[rt.windows.mainWindowId];
+  return tree ? paneGroups(tree).indexOf(group) + 1 : 0;
+}
+/** The group of pane `n` (1-based) in the main dock, or null. */
+export function groupOfPane(rt: AxfRuntime, n: number): string | null {
+  const tree = rt.windows.state.layouts[rt.windows.mainWindowId];
+  return tree ? paneGroups(tree)[n - 1] ?? null : null;
+}
+/** Is this container a tab group (xlayout@1: tabs mode = the first pane; split / IDE = the user's per-container switch)? */
+export function isTabGroup(rt: AxfRuntime, group: string): boolean {
+  const l = effectiveXLayout(rt);
+  return containerIsTabs({ mode: l.mode, containers: l.ide.containers }, paneOf(rt, group));
+}
+/** Switch a container to a tab group or back (`on` absent = flip). */
+export function setTabGroup(rt: AxfRuntime, group: string, on?: boolean): boolean | null {
+  const pane = paneOf(rt, group);
+  if (!pane) return null;
+  const next = on ?? !isTabGroup(rt, group);
+  rt.settings.set(K.containers, JSON.stringify(setContainerTabs(effectiveXLayout(rt).ide.containers, pane, next)));
+  return next;
+}
+
+interface ShellLike { surfaces(): { app: { id: string }; items: { kind: string; id: string; label: string }[] }[]; open(ref: string, target?: OpenTarget): boolean }
+
+/**
+ * Open a menu item (a qualified ref) in a container: an app's screen becomes a tab there (after the front tab when the
+ * container is a tab group; alone otherwise, xlayout@1 `openInContainer`); anything else (an action, a setting, a
+ * dialog, one of Molly's own screens) just runs through One shell. `group` null = the current pane.
+ */
+export function openRefIn(rt: AxfRuntime, group: string | null, ref: string): boolean {
+  const p = parseRef(ref);
+  const shell = mollyService<ShellLike>('axf.shell@1');
+  if (!p) return false;
+  const app = mollyApp(p.app);
+  if (!app || p.kind !== 'screen') return shell?.open(ref) ?? false;
+  const payload = p.id === 'home' ? app.id : `${app.id}/${p.id}`;
+  const label = shell?.surfaces().find((s) => s.app.id === app.id)?.items.find((i) => i.kind === 'screen' && i.id === p.id)?.label;
+  const wm = rt.windows;
+  const g = group ?? currentGroup(rt);
+  if (!g) { wm.openGroup([tabOf(payload, label && p.id !== 'home' ? `${app.label}: ${label}` : undefined)]); keepIde(rt); return true; }
+  const at = findTab(rt, payload);
+  if (at && at.group === g) { wm.activate(at.group, at.index); return true; }
+  if (at) wm.closeTab(tabId(payload));
+  const grp = wm.state.groups[g];
+  const tabs = isTabGroup(rt, g);
+  wm.addTab(g, tabOf(payload, label && p.id !== 'home' ? `${app.label}: ${label}` : undefined), tabs && grp ? grp.active + 1 : -1);
+  const now = findTab(rt, payload);
+  if (now) wm.activate(now.group, now.index);
+  // not a tab group: the container shows only the new thing
+  if (!tabs) for (const t of [...(wm.state.groups[g]?.tabs ?? [])]) if (t.id !== tabId(payload)) wm.closeTab(t.id);
+  keepIde(rt);
+  return true;
+}
+
+/** Drop handlers for the IDE dock: a menu item dragged onto a pane opens there; the pane under the pointer lights up. */
+function useRefDrop(rt: AxfRuntime) {
+  const paneAt = (e: { target: EventTarget | null }) => (e.target as Element | null)?.closest?.('.fx-tabgroup[data-fx-ctx-payload]') as HTMLElement | null;
+  const clear = () => document.querySelectorAll('[data-axp-drop]').forEach((el) => el.removeAttribute('data-axp-drop'));
+  return {
+    // capture phase: a menu item dropped on a pane is the dock's, never the app screen's inside it (its own drop zones)
+    onDragOverCapture: (e: DragEvent) => {
+      if (!e.dataTransfer.types.includes(REF_MIME)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = 'copy';
+      const pane = paneAt(e);
+      if (pane && !pane.hasAttribute('data-axp-drop')) { clear(); pane.setAttribute('data-axp-drop', 'on'); }
+    },
+    onDragLeave: (e: DragEvent) => { if (!(e.currentTarget as Element).contains(e.relatedTarget as Node | null)) clear(); },
+    onDropCapture: (e: DragEvent) => {
+      const ref = e.dataTransfer.getData(REF_MIME);
+      clear();
+      if (!ref) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openRefIn(rt, paneAt(e)?.getAttribute('data-fx-ctx-payload') ?? null, ref);
+    },
+  };
+}
+
 /** Put the xlayout's pane limit in force, and bring back the arrangement kept from last time. */
 export function enterIde(rt: AxfRuntime): void {
   const l = effectiveXLayout(rt);
@@ -111,8 +200,9 @@ export function Workspace({ app }: { app: string }) {
   useEffect(() => { enterIde(rt); showInDock(rt, app); }, [rt, app]);
   // keep the arrangement whenever it changes (debounced: a splitter drag changes it on every move)
   useEffect(() => { const t = setTimeout(() => keepIde(rt), 400); return () => clearTimeout(t); }, [rt, s.layouts, s.groups]);
+  const drop = useRefDrop(rt);
   return (
-    <div className="axp-xlayout-ide" data-fx-ctx-target="xlayout-ide">
+    <div className="axp-xlayout-ide" data-fx-ctx-target="xlayout-ide" {...drop}>
       <DockHost empty={<div className="fx-empty">No apps open. Pick one from the navigation, or a layout from View → Pane layout.</div>} />
     </div>
   );

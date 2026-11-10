@@ -29,6 +29,7 @@ import { AxfProvider } from './AxfProvider';
 import type { ViewMap } from './AppShell';
 import { DialogHost, ToastHost, type DialogMap } from './components/Overlays';
 import { SlotsProvider } from './components/Slots';
+import { useSearchHost } from './components/Search';
 import type { SlotDef } from './library';
 import { TabRenderersProvider, windowDialogs, type TabRenderers } from './windows/WindowHost';
 import { builtinDialogs } from './studio/builtinDialogs';
@@ -99,6 +100,9 @@ export function createNativeSurface(spec: NativeSurfaceSpec): NativeSurface {
       queueMicrotask(notify);
     }
     const dialogs: DialogMap = { ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...(c.dialogs ?? {}) };
+    // the app's screens and dialogs go into its search index, as its own shell (AppShell) would put them: the shell's
+    // menus are built from that index (searchEntries)
+    useSearchHost(c.views, dialogs);
     const fallback = c.views.home ?? Object.values(c.views)[0];
     return (
       <SlotsProvider slots={c.slots ?? {}}>

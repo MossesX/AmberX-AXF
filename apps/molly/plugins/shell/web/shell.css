@@ -13,3 +13,5 @@
 /* phones (the framework's narrow layout) and touch screens: the side buttons (pane / floating window) give way; the star stays */
 :where([data-fx-narrow]) .axp-shell-go__wide { display: none; }
 @media (pointer: coarse) { .axp-shell-go__wide { display: none; } }
+/* a menu item being dragged onto a pane: the dialog steps aside so the panes behind it take the drop */
+body[data-axf-ref-drag] .fx-backdrop { opacity: 0; pointer-events: none; }

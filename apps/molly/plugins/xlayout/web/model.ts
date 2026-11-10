@@ -18,6 +18,8 @@ export const K = {
   paneLimit: 'xlayout.ide.paneLimit',
   /** the IDE dock as last arranged (dock@1 snapshot), restored when IDE mode comes back */
   dock: 'xlayout.ide.dock',
+  /** which panes of the IDE dock are tab groups (xlayout@1 `ide.containers`, JSON list of { pane, tabs }) */
+  containers: 'xlayout.ide.containers',
   visible: (slot: number) => `xlayout.toolbar.${slot}.visible`,
   location: (slot: number) => `xlayout.toolbar.${slot}.location`,
   /** a slot's items as the Toolbar designer saved them (JSON list of xlayout toolbar items) */
@@ -45,6 +47,7 @@ export function effectiveXLayout(rt: AxfRuntime): XLayoutData {
   if (has(K.ideOn)) ide.on = saved[K.ideOn] === true;
   if (has(K.preset)) ide.preset = saved[K.preset];
   if (has(K.paneLimit)) ide.paneLimit = Number(saved[K.paneLimit]);
+  const containers = parseJson(saved[K.containers]); if (Array.isArray(containers)) ide.containers = containers;
   const bars = Array.isArray(raw.toolbars) ? (raw.toolbars as Record<string, unknown>[]).map((t) => ({ ...t })) : [];
   for (const slot of SLOTS) {
     let t = bars.find((b) => b.slot === slot);

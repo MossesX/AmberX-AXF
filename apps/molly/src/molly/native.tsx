@@ -4,7 +4,7 @@ import type { AxfRuntime } from '../axf/core';
 import { surfaceFromSearch, type SurfaceItem } from '../axf/core/engines/shell-surface';
 import type { OpenTarget } from '../axf/core/engines/xlayout';
 import { MOLLY_APPS, mollyApp, type MollyApp } from './apps';
-import { mollyService } from './host';
+import { mollyHooks, mollyService } from './host';
 
 /**
  * Molly's native host (shell-surface@1, build molly-one-shell s7/s8, Nov 2026): every app's screens mount in Molly's own
@@ -151,7 +151,8 @@ function registerWithShell(rt: AxfRuntime, app: MollyApp, mod: SurfaceModule, ur
     if (!shell) return;
     const surface = surfaceFromSearch(
       { id: app.id, label: app.label, icon: app.icon, description: app.description, url: app.url },
-      { kind: 'native', module: url, api: new URL(url).origin, auth: app.auth ?? 'none' },
+      // module: the app's module id (shell-surface@1 keeps ids, not addresses); api: the server it was loaded from
+      { kind: 'native', module: `@axf-app/${app.id}`, api: new URL(url).origin, auth: app.auth ?? 'none' },
       mod.searchEntries() as Parameters<typeof surfaceFromSearch>[2],
     );
     if (!surface) return;
@@ -168,13 +169,20 @@ export function openNative(rt: AxfRuntime, app: string, item: Pick<SurfaceItem, 
   return s.mod.run(item.kind, item.id, item.parent);
 }
 
+/** One of an app's screens as Molly's main area shows it: through the layout plugin when there is one (`main` hook, so
+ *  the IDE dock and toolbars stay), else on its own. */
+function screenView(app: string, screen: string) {
+  const main = mollyHooks().main;
+  return main ? main(`${app}/${screen}`) : <NativeView app={app} view={screen} />;
+}
+
 /** Molly views for every native app's screens (`<app>/<screen>`). */
 export function nativeViews(): ViewMap {
   const out: ViewMap = {};
   for (const a of nativeApps()) {
     const s = loads.get(a.id);
     if (s?.state !== 'ready') continue;
-    for (const sc of s.mod.screens()) if (sc.id !== 'home') out[`${a.id}/${sc.id}`] = { title: `${a.label}: ${sc.title}`, icon: sc.icon ?? a.icon, render: () => <NativeView app={a.id} view={sc.id} /> };
+    for (const sc of s.mod.screens()) if (sc.id !== 'home') out[`${a.id}/${sc.id}`] = { title: `${a.label}: ${sc.title}`, icon: sc.icon ?? a.icon, render: () => screenView(a.id, sc.id) };
   }
   return out;
 }
