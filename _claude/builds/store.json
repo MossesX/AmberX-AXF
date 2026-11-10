@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2453,
- "updatedAt": "2026-11-10T16:27:27.185Z",
+ "rev": 2454,
+ "updatedAt": "2026-11-10T16:28:06.467Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138398,6 +138398,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T15:44:54.065Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-assigns-builds-steps-to-employee-ag",
+   "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
+   "category": "",
+   "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T16:28:04.849Z",
+   "updatedAt": "2026-11-10T16:28:04.849Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.",
+    "at": "2026-11-10T16:28:04.849Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 547
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

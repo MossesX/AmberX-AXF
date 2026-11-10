@@ -2950,6 +2950,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-assigns-builds-steps-to-employee-ag": {
+   "said": "When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.",
+   "at": "2026-11-10T16:28:04.849Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-chain-trace-brownie-molly-group-cha": {
    "said": "All right, I want a plugin from now. I want actually, I want settings in the orchestrator. But for the chains... I want to see what exactly he receives, for instructions, what he does with those instructions, who he what he launches on the VPS, if anything, what. And then what other se sections he sends information to, like he has to send it to the plant studio... Molly is the plant studio, so I want to see Brownie sending the stuff to to uh, whatever her name is in the group chat. Talking back and forth.",
    "at": "",
