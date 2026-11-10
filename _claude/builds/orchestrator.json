@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:48:15.478Z",
+ "updatedAt": "2026-11-10T21:48:34.005Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94912,8 +94912,8 @@
    "pr": "#476",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-10T21:48:04.562Z",
-   "builtAt": "2026-11-10T21:47:57.395Z",
+   "updatedAt": "2026-11-10T21:48:20.598Z",
+   "builtAt": "2026-11-10T21:48:20.598Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -94930,6 +94930,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie, own login copy)",
      "at": "2026-11-10T21:29:11.812Z"
+    },
+    {
+     "text": "Headless run axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie: brief only · start 11.1K tokens ($0.03) · cost $4.85 · 105 turns · 6 tools, MCP none",
+     "at": "2026-11-10T21:48:20.598Z"
     },
     {
      "text": "PR #476. console_go runs at once with no veto timer; a console behind is brought to the front through AmberX. Install the AmberX APK from the PR's CI run. No UI Review shots: the headless console stopped at 'Waiting for axHub'.",
