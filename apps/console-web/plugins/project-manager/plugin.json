@@ -1,0 +1,284 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.project-manager",
+  "name": "Project Manager",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every project is its own console instance with its own builds, notes and data: create, open, rename, switch and remove projects. Two types: Framework / self development (the console building itself, or framework tools) and New app (a real app made with every console tool, folder apps/<id> with a project manifest). Setting Multi-project view: the whole console shows a tab group (or side by side) with each project's console running. Live preview: the app being built renders in a floating or docked window while you work. Full API: REST, MCP (project-manager_*), CLI (projects.mjs / axf project-manager \u2026) and voice, no AI needed.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:project-manager",
+    "settings-tab:project-manager"
+  ],
+  "scopes": [
+    "ROUTES",
+    "FILES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/project-manager",
+    "env": [
+      "AXF_PROJECT_MANAGER_DATA"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      "_claude/THREADS.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "list",
+        "route": "GET /projects",
+        "title": "Every project",
+        "description": "Every project (the Dev Console itself plus each one made here): type, its console link (?project=<id>), its builds/notes/data counts, which is active, and the multi-project view + preview settings.",
+        "readOnly": true,
+        "output": "{ projects, settings, types }"
+      },
+      {
+        "id": "get",
+        "route": "GET /projects/{pid}",
+        "title": "One project",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "pid": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "pid"
+          ]
+        }
+      },
+      {
+        "id": "create",
+        "route": "POST /projects",
+        "title": "Create a project",
+        "description": "A new project with its own console instance and its own builds, notes and data folders. type app = a new real app (folder apps/<id> with a project manifest); type framework = developing the console or framework tools.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "app",
+                "framework"
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "root": {
+              "type": "string",
+              "description": "folder in the repo (app default apps/<id>, framework default the repo)"
+            },
+            "previewUrl": {
+              "type": "string",
+              "description": "where the app runs (http(s):// or a console path)"
+            },
+            "scaffold": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "output": "{ project, scaffolded }"
+      },
+      {
+        "id": "rename",
+        "route": "POST /rename",
+        "title": "Rename a project",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        }
+      },
+      {
+        "id": "update",
+        "route": "POST /update",
+        "title": "Change a project",
+        "description": "Name, type, description or preview URL.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "app",
+                "framework"
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "previewUrl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "open",
+        "route": "POST /open",
+        "title": "Switch to a project",
+        "description": "Makes it the active project and opens its tab in the multi-project view. The open console follows within a few seconds.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "close",
+        "route": "POST /close",
+        "title": "Close a project's tab",
+        "description": "Closes its tab in the multi-project view; the project and its data stay.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "delete",
+        "route": "POST /delete",
+        "title": "Remove a project",
+        "destructive": true,
+        "confirm": true,
+        "description": "Removes it from the list; data=true also removes its builds/notes/data folder. App folders under apps/ stay.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "data": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "settings",
+        "route": "GET /settings",
+        "title": "Project Manager settings",
+        "readOnly": true
+      },
+      {
+        "id": "set-settings",
+        "route": "PUT /settings",
+        "title": "Change Project Manager settings",
+        "description": "multiView on/off (the whole console shows a tab group with each project's console running), layout tabs|split (side by side), active project.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "multiView": {
+              "type": "boolean"
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "tabs",
+                "split"
+              ]
+            },
+            "active": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "preview",
+        "route": "POST /preview",
+        "title": "Live preview window",
+        "description": "Open or close the live preview of the app being built: floating window or docked (right / bottom), for a project (default the active one).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "open": {
+              "type": "boolean"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "float",
+                "dock"
+              ]
+            },
+            "side": {
+              "type": "string",
+              "enum": [
+                "right",
+                "bottom"
+              ]
+            },
+            "project": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "{ preview, project, url }"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-10"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

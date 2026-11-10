@@ -1,0 +1,126 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "project-manager-help",
+  "name": "Project Manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries of the Project Manager plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:project-manager",
+    "entries": [
+      {
+        "target": "view:project-manager",
+        "title": "Project Manager",
+        "text": "Every project is its own console with its own builds, notes and data. Create, rename, switch and remove projects here.",
+        "kind": "screen"
+      },
+      {
+        "target": "new-project",
+        "title": "New project",
+        "text": "Opens the form for a new project: a new app, or framework / self development."
+      },
+      {
+        "target": "create-project",
+        "title": "Create project",
+        "text": "Makes the project: its own console link, its own builds, notes and data folders, and for a new app a folder under apps/ with a project manifest."
+      },
+      {
+        "target": "multi-project-view",
+        "title": "Multi-project view",
+        "text": "On: the whole console shows a tab group with each project's console running. Off: just this console."
+      },
+      {
+        "target": "layout",
+        "title": "Layout",
+        "text": "Tabs show one project's console at a time; side by side shows every open project at once."
+      },
+      {
+        "target": "live-preview",
+        "title": "Live preview",
+        "text": "Opens a window where the app being built renders live while you work in the console."
+      },
+      {
+        "target": "live-preview-window",
+        "title": "Live preview window",
+        "text": "Turns the live preview window on or off."
+      },
+      {
+        "target": "preview-window",
+        "title": "Preview window",
+        "text": "Floating (drag it anywhere) or docked on the right or at the bottom."
+      },
+      {
+        "target": "switch-to",
+        "title": "Switch to",
+        "text": "Makes this the active project; in the multi-project view its tab comes to the front."
+      },
+      {
+        "target": "open-its-console",
+        "title": "Open its console",
+        "text": "Opens this project's own console instance in a new browser tab."
+      },
+      {
+        "target": "rename",
+        "title": "Rename",
+        "text": "Change the project's name or the URL its live preview shows."
+      },
+      {
+        "target": "preview-url",
+        "title": "Preview URL",
+        "text": "Where the app runs while you build it (http(s):// or a path on the console). The live preview shows it."
+      },
+      {
+        "target": "remove",
+        "title": "Remove",
+        "text": "Takes the project off the list. Its app folder stays; its builds, notes and data folder stays unless removed through the API."
+      },
+      {
+        "target": "project-manager",
+        "title": "Project Manager settings",
+        "text": "Multi-project view, layout and the live preview window, plus install and uninstall."
+      },
+      {
+        "target": "turn-the-multi-project-view-off",
+        "title": "Turn the multi-project view off",
+        "text": "Closes the project tabs and goes back to just this console. The projects stay.",
+        "kind": "button"
+      },
+      {
+        "target": "dock-it",
+        "title": "Dock it",
+        "text": "Docks the live preview on the right edge of the console (or at the bottom).",
+        "kind": "button"
+      },
+      {
+        "target": "float-it",
+        "title": "Float it",
+        "text": "Turns the docked live preview back into a window you can drag and resize.",
+        "kind": "button"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "project-manager",
+        "title": "Project Manager",
+        "steps": [
+          {
+            "say": "Every project here is its own console, with its own builds, notes and data.",
+            "target": ""
+          },
+          {
+            "say": "New project makes one: a new app, or work on the console itself.",
+            "target": "new-project"
+          },
+          {
+            "say": "Turn on the multi-project view to see every project's console in tabs, and open the live preview to watch the app as you build it.",
+            "target": "multi-project-view"
+          }
+        ]
+      }
+    ]
+  }
+}

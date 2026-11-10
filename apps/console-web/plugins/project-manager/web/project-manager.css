@@ -1,0 +1,34 @@
+/* Project Manager (project-manager@1): layout only; colours, sizes, spacing, type, radii and borders come from the --fx-* tokens. */
+.axp-project-manager__actions { display: inline-flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center; }
+.axp-project-manager__form { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 30), 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-project-manager__list { display: grid; gap: var(--fx-dens-gap-md); }
+.axp-project-manager__title { display: inline-flex; gap: var(--fx-dens-gap-sm); align-items: center; }
+.axp-project-manager__meta { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.axp-project-manager__desc { margin: var(--fx-dens-gap-xs) 0 0; }
+.axp-project-manager__row .axp-project-manager__actions { margin-top: var(--fx-dens-gap-sm); }
+
+/* multi-project view: the tab row above the application menu, and each project's console below it */
+.axp-project-manager__multi-head { background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); padding: 0 var(--fx-dens-gap-md); }
+.axp-project-manager__frames { position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; display: grid; background: var(--fx-bg); }
+.axp-project-manager__frames.is-split { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--fx-border-w); background: var(--fx-border); }
+.axp-project-manager__frame { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--fx-bg); }
+.axp-project-manager__frame[hidden] { display: none; }
+.axp-project-manager__frame-head { flex: none; display: flex; gap: var(--fx-dens-gap-sm); align-items: center; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: var(--fx-type-root-sm); }
+.axp-project-manager__iframe { flex: 1 1 auto; width: 100%; min-height: 0; border: 0; background: var(--fx-bg); }
+
+/* inside a project's own console instance */
+.axp-project-manager__bar { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: var(--fx-type-root-sm); }
+
+/* live preview: floating, docked (right / bottom) or a full-screen sheet on a phone */
+.axp-project-manager__preview { position: fixed; z-index: 90; display: flex; flex-direction: column; overflow: hidden; background: var(--fx-bg); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-sm); }
+.axp-project-manager__preview.is-float { right: var(--fx-dens-gap-xl); bottom: var(--fx-dens-gap-xl); width: calc(var(--fx-space) * 120); height: calc(var(--fx-space) * 80); max-width: calc(100vw - 2 * var(--fx-dens-gap-xl)); max-height: calc(100vh - 2 * var(--fx-dens-gap-xl)); resize: both; border-radius: var(--fx-radius-md); }
+.axp-project-manager__preview.is-dock.is-right { top: 0; right: 0; bottom: 0; width: 40vw; resize: horizontal; direction: rtl; }
+.axp-project-manager__preview.is-dock.is-right > * { direction: ltr; }
+.axp-project-manager__preview.is-dock.is-bottom { left: 0; right: 0; bottom: 0; height: 40vh; }
+.axp-project-manager__preview.is-sheet { inset: 0; border: 0; }
+.axp-project-manager__preview-head { flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-height: var(--fx-row-h); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: var(--fx-type-root-sm); user-select: none; touch-action: none; }
+.axp-project-manager__preview.is-float .axp-project-manager__preview-head { cursor: move; }
+.axp-project-manager__preview-head .axp-project-manager__actions { margin-left: auto; }
+.axp-project-manager__preview-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.axp-project-manager__preview-note { margin: var(--fx-dens-gap-md); }
+.axp-project-manager__live { flex: none; width: var(--fx-dens-gap-sm); height: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-danger); }
