@@ -13,10 +13,12 @@
   "provides": [
     "banner:push-banner",
     "service:axf.merge-queue@1",
-    "settings-tab:push-banner"
+    "settings-tab:push-banner",
+    "service:axf.push@1"
   ],
   "optional": [
-    "service:axf.activity@1"
+    "service:axf.activity@1",
+    "service:axf.merge-holds@1"
   ],
   "scopes": [
     "ROUTES"
