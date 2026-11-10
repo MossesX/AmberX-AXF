@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2835,
- "updatedAt": "2026-11-10T20:59:21.839Z",
+ "rev": 2836,
+ "updatedAt": "2026-11-10T20:59:36.910Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146310,10 +146310,10 @@
     "route": "",
     "dispatchedAt": "2026-11-10T19:39:11.590Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T18:53:03.053Z",
+     "at": "2026-11-10T20:59:22.044Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -146637,7 +146637,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154825,7 +154825,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-10T20:59:22.044Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": ""
    },
@@ -154908,12 +154914,86 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T20:59:19.999Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "queue-drag-and-drop-reorder-dispatcher-follows-t",
+   "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
+   "category": "",
+   "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:59:27.366Z",
+   "updatedAt": "2026-11-10T20:59:29.681Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:59:29.681Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.",
+    "at": "2026-11-10T20:59:27.366Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T20:59:29.148Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 588
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

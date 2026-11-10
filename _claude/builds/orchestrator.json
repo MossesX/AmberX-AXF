@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:59:21.839Z",
+ "updatedAt": "2026-11-10T20:59:36.910Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95203,6 +95203,43 @@
      "uid": "st-mwb6ax4v035xp5"
     }
    ]
+  },
+  {
+   "id": "queue-drag-and-drop-reorder-dispatcher-follows-t",
+   "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
+   "category": "",
+   "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:59:27.366Z",
+   "updatedAt": "2026-11-10T20:59:29.681Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:59:29.681Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.",
+    "at": "2026-11-10T20:59:27.366Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

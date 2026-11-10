@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:08 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
-- 2026-11-10 17:08 UTC · `merge-queue-batching-orchestrator-combines-ready` → running, note (all) · pipeline
 - 2026-11-10 17:08 UTC · `merge-queue-batching-orchestrator-combines-ready` branch claude/merge-queue-batching-orchestrator-combines-ready (all) · pipeline
 - 2026-11-10 17:09 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
 - 2026-11-10 17:09 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · pipeline
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:58 UTC · `amberx-notify-panel` → queued, note (all) · console
 - 2026-11-10 20:58 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:59 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
+- 2026-11-10 20:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` added (0 steps) (all) · console
+- 2026-11-10 20:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
 
 ## Token passes (log)
 

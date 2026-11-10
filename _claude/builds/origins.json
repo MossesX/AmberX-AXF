@@ -3901,6 +3901,18 @@
    "from": "detail",
    "addenda": []
   },
+  "queue-drag-and-drop-reorder-dispatcher-follows-t": {
+   "said": "Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.",
+   "at": "2026-11-10T20:59:27.366Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "readme-rule-every-build": {
    "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
    "at": "2026-11-04T00:00:00Z",
