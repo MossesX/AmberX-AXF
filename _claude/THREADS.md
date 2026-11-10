@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 23:44 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` → queued, note (all) · console
 - 2026-11-09 23:45 UTC · `standing-rule-in-every-brief-fix-problems-yourse` added (0 steps) (all) · console
 - 2026-11-09 23:45 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` note (all) · orchestrator
 - 2026-11-09 23:46 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` → running, note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:28 UTC · `audit-pending-fable-builds-against-main-close-wh` note (all) · orchestrator
 - 2026-11-10 04:29 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · builds-live
 - 2026-11-10 04:29 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, branch claude/audit-pending-fable-builds-against-main-close-wh, note (all) · builds-live
+- 2026-11-10 04:29 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 
 ## Token passes (log)
 

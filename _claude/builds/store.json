@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2333,
- "updatedAt": "2026-11-10T04:29:23.051Z",
+ "rev": 2334,
+ "updatedAt": "2026-11-10T04:29:48.028Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96246,7 +96246,7 @@
    "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-09T20:51:26.623Z",
+   "updatedAt": "2026-11-10T04:29:44.054Z",
    "builtAt": "2026-11-09T20:51:26.623Z",
    "notes": [
     {
@@ -96296,6 +96296,10 @@
     {
      "text": "Headless run axf-owner-only-settings-brett-s-admin-console-login---sully: brief only · start 10.9K tokens ($0.03) · cost $1.55 · 57 turns · 6 tools, MCP none",
      "at": "2026-11-09T20:51:23.444Z"
+    },
+    {
+     "text": "Earlier step list (framework/plan/pending.json, before this build was re-split), kept so nothing is lost:\n1. Find why the owner check rejects Brett's admin console session; link admin login to owner identity (his own signed-in hub session)\n2. Owner-only switches (No wait etc.) clickable for Brett; still refused for sessions/agents/tools; tests\n3. Find why the owner check rejects Brett's admin console session; link admin login to owner identity (his own signed-in hub session)\n4. Owner-only switches (No wait etc.) clickable for Brett; still refused for sessions/agents/tools; tests",
+     "at": "2026-11-10T04:29:44.054Z"
     }
    ],
    "approvals": [],
@@ -96501,7 +96505,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
