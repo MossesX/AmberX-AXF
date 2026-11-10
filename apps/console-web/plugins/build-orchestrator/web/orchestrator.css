@@ -5,7 +5,15 @@ button.oc-model { cursor: pointer }
 .oc-model.is-opus { color: var(--fx-info); border-color: var(--fx-info) }
 .oc-badge.is-running { color: var(--fx-accent) }
 .oc-badge.is-queued { color: var(--fx-info) }
-.oc-badge.is-waiting, .oc-badge.is-blocked { color: var(--fx-warning) }
+.oc-badge.is-waiting, .oc-badge.is-blocked, .oc-badge.is-needs { color: var(--fx-warning) }
+.oc-badge.is-ready { color: var(--fx-info) }
+.oc-badge.is-landed { color: var(--fx-success) }
+/* the need on a row (Nov 10 2026): badge, one plain sentence, the button that does it */
+.oc-need { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.oc-need__text { color: var(--fx-warning); white-space: normal }
+.oc-need__kind { color: var(--fx-warning) }
+.oc-bar__field { flex: 0 1 auto; min-width: 0 }
+:where([data-fx-small]) .oc-bar__field { flex: 1 1 calc(var(--fx-font-size) * 9) }
 .oc-badge.is-archived { color: var(--fx-muted) }
 .oc-count { margin-left: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent); font-size: var(--fx-type-root-xs) }
 .oc-gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }

@@ -47,7 +47,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { normPipeline } from '../core/build-pipeline.mjs';
+import { buildTruth, normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -389,8 +389,10 @@ export function buildProgress(b) {
   const done = steps.filter((s) => s.done).length;
   const finished = [...FINISHED, 'archived'].includes(b.status);
   const pct = total ? Math.round((done / total) * 100) : finished ? 100 : 0;
-  const active = b.status === 'running' || (done > 0 && done < total && !finished);
-  return { total, done, pct, active, status: b.status };
+  // live only while it really runs (Nov 10 2026: statuses tell the truth): a half-done build with no session is not active
+  const truth = buildTruth(b);
+  const active = truth.state === 'running';
+  return { total, done, pct, active, status: b.status, truth: truth.state, ...(truth.need ? { need: truth.need.text } : {}) };
 }
 /** One profile's progress: steps done over all steps of builds still on the list (archived builds left out). */
 export function profileProgress(store, profile) {

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, PriorityTag, Segmented, SelectField, Slot, Switch, originSubtitle, setBuildPriority, useRuntime } from '@console/axf/react';
-import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
+import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import * as consoleApi from '@console/api';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
 
@@ -23,7 +24,8 @@ export const api = pluginApi(FOLDER, 'Builds', { unavailable: 'The Builds page i
 export type Progress = { total: number; done: number; pct: number; active: boolean; status?: string };
 type Priority = Parameters<typeof setBuildPriority>[1];
 export type StepV = { uid: string; id: string; title: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; done: boolean; doneAt: string; skip: boolean; note: string; rev: number; origin?: { build: string; step: string; how: string }; index: number; build: string; buildTitle: string; buildSaid?: string; kind: string; target: string; next: boolean };
-export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[]; origin?: unknown };
+export type Truth = { state: string; label: string; tone: string; need: { kind: string; label: string; text: string; action: { label: string; href?: string; action?: string } } | null };
+export type BuildV = { truth?: Truth; queuedAt?: string; account?: string; priority?: string; id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[]; origin?: unknown };
 type ProfileV = { id: string; name: string; base: boolean; builds: number; progress: Progress & { builds: number; complete: number } };
 export type Op = Record<string, unknown> & { op: string };
 type StateV = { ok: boolean; error?: string; rev: number; profile: string; active: string; profiles: ProfileV[]; progress: Progress & { builds: number; complete: number }; builds: BuildV[]; draft: { ops: Op[]; count: number; updatedAt: string; log: string[] }; log?: string[] };
@@ -69,7 +71,7 @@ function tickNow(build: string, uid: string, done: boolean) {
 }
 
 const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { running: 'accent', built: 'success', complete: 'success', waiting: 'warning', blocked: 'warning', failed: 'danger' };
-const STATUS_LABEL: Record<string, string> = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
+const STATUS_LABEL: Record<string, string> = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Needs something', failed: 'Failed', built: 'Ready to land', complete: 'Landed', archived: 'Archived' };
 const fmtMin = (m: number) => (!m ? '' : m < 60 ? `${m} min` : `${Math.round(m / 30) / 2} h`);
 const stepName = (s: StepV): string => s.title || (s.text.split('\n')[0] ?? '');
 const isPhone = () => globalThis.matchMedia?.('(pointer: coarse)').matches ?? false;
@@ -277,31 +279,57 @@ function DraftBar({ state }: { state: StateV }) {
   );
 }
 
-function StatusChip({ b }: { b: BuildV }) { return <Chip tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status] ?? b.status}</Chip>; }
+/** The honest state (build-pipeline@1 buildTruth, same as the orchestrator): Running only with a live session; a need shows what it is. */
+function StatusChip({ b }: { b: BuildV }) {
+  const t = b.truth;
+  if (!t) return <Chip tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status] ?? b.status}</Chip>;
+  return <span className="axp-builds__status" title={t.need?.text}>{t.need && <span className="fx-small fx-muted axp-builds__need">{t.need.text}</span>}<Chip tone={(['accent', 'success', 'warning', 'danger'].includes(t.tone) ? t.tone : undefined) as 'accent' | 'success' | 'warning' | 'danger' | undefined}>{t.label}{t.need ? ` · ${t.need.label}` : ''}</Chip></span>;
+}
 function Bar({ p, label }: { p: Progress; label: string }) {
   return <span className="axp-builds__bar-cell"><Meter small value={p.pct} active={p.active} done={p.pct === 100} label={label} /><span className="fx-small axp-builds__num" data-active={p.active || undefined}>{p.pct}%</span></span>;
 }
 
+/** Group by (Nov 10 2026: category is optional, never forced): none, category, status (the honest state), priority, account. */
+const GROUP_BY = [{ value: '', label: 'No grouping' }, { value: 'category', label: 'Category' }, { value: 'status', label: 'Status' }, { value: 'priority', label: 'Priority' }, { value: 'account', label: 'Account' }];
+const groupKeyOf = (b: BuildV, by: string) => by === 'category' ? (b.category || 'Uncategorised') : by === 'status' ? (b.truth?.label ?? STATUS_LABEL[b.status] ?? b.status) : by === 'priority' ? (b.priority || 'P2') : by === 'account' ? (b.account || 'No account') : '';
+const fmtDay = (v?: string) => { const d = new Date(v || ''); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
+
 function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rt = useRuntime();
   const [expanded, setExpanded] = useState<string[]>([]);
+  // sort (any column, date ones too) and Group by are remembered; tapping a sorted column flips its direction
+  const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('builds-sort', null));
+  const [groupBy, setGroupBy] = useState<string>(() => consoleApi.readLocal('builds-group', ''));
+  useEffect(() => { consoleApi.writeLocal('builds-sort', sort); consoleApi.writeLocal('builds-group', groupBy); }, [sort, groupBy]);
+  const onSort = (col: string | null) => setSort((cur) => (!col ? null : cur?.col === col ? { col, dir: cur.dir === 1 ? -1 : 1 } : { col, dir: ['added', 'updated', 'queued'].includes(col) ? -1 : 1 }));
   const toggleOpen = (id: string) => setExpanded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
       render: (b) => <span className="axp-builds__cell-title"><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span>{originSubtitle(b.origin) && <span className="axf-origin-sub" title={originSubtitle(b.origin, 600)}>“{originSubtitle(b.origin)}”</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-space) * 16)', render: (b) => <PriorityTag build={b.id} /> },
-    { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
+    { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.truth?.label ?? b.status, render: (b) => <StatusChip b={b} /> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
     { id: 'left', label: 'Left', width: 'calc(var(--fx-space) * 10)', align: 'end', sortable: true, sortValue: (b) => b.minutesLeft, render: (b) => <span className="fx-small">{fmtMin(b.minutesLeft)}</span> },
+    { id: 'added', label: 'Added', width: 'calc(var(--fx-space) * 14)', align: 'end', sortable: true, sortValue: (b) => b.createdAt, render: (b) => <span className="fx-small">{fmtDay(b.createdAt)}</span> },
+    { id: 'updated', label: 'Updated', width: 'calc(var(--fx-space) * 14)', align: 'end', sortable: true, sortValue: (b) => b.updatedAt || b.createdAt, render: (b) => <span className="fx-small">{fmtDay(b.updatedAt)}</span> },
+    { id: 'queued', label: 'Queued', width: 'calc(var(--fx-space) * 14)', align: 'end', sortable: true, sortValue: (b) => b.queuedAt || '', render: (b) => <span className="fx-small">{b.queuedAt ? fmtDay(b.queuedAt) : '—'}</span> },
   ];
-  const groups: GridGroup<BuildV>[] = [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: state.progress.pct }];
+  const groups: GridGroup<BuildV>[] = groupBy
+    ? [...builds.reduce((m, b) => m.set(groupKeyOf(b, groupBy), [...(m.get(groupKeyOf(b, groupBy)) ?? []), b]), new Map<string, BuildV[]>()).entries()].sort((a, c) => a[0].localeCompare(c[0])).map(([k, rows]) => ({ id: `${groupBy}:${k}`, title: `${k} (${rows.length})`, rows, groups: [] }))
+    : [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: state.progress.pct }];
   return (
-    <DataGrid<BuildV> id="builds.builds" label="Builds" groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title} hidden={[]}
+    <>
+    <div className="axp-builds__bar" role="toolbar" aria-label="Group and sort builds">
+      <SelectField label="Group by" value={groupBy} onChange={setGroupBy} options={GROUP_BY} />
+      <SelectField label="Sort by" value={sort?.col ?? ''} onChange={(v) => setSort(v ? { col: v, dir: sort?.dir ?? (['added', 'updated', 'queued'].includes(v) ? -1 : 1) } : null)} options={[{ value: '', label: 'Your order' }, { value: 'added', label: 'Date added' }, { value: 'updated', label: 'Last updated' }, { value: 'queued', label: 'Date queued' }, { value: 'status', label: 'Status' }, { value: 'title', label: 'Name' }, { value: 'progress', label: 'Progress' }]} />
+      {sort && <Segmented size="sm" label="Direction" value={sort.dir === -1 ? 'desc' : 'asc'} onChange={(d) => setSort({ col: sort.col, dir: d === 'desc' ? -1 : 1 })} options={[{ value: 'desc', label: 'Newest / Z → A', icon: 'chevron-down' }, { value: 'asc', label: 'Oldest / A → Z', icon: 'chevron-up' }]} />}
+    </div>
+    <DataGrid<BuildV> id="builds.builds" label="Builds" groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title} hidden={[]} sort={sort} onSort={onSort}
       // a tap anywhere on the row opens it: the expand chevron sits past the right edge on a phone
       expanded={expanded} onToggleExpand={toggleOpen} onRowClick={(b, e) => { if (e.detail <= 1) toggleOpen(b.id); }}
-      rowTone={(b) => (b.status === 'complete' || b.status === 'built' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
+      rowTone={(b) => b.truth?.tone ?? (b.status === 'complete' || b.status === 'built' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
       rowRef={(b) => ({ kind: 'build', id: b.id })}
       onMove={(item, target, pos) => {
         if (item.kind !== 'row' || target.kind !== 'row' || item.id === target.id) return;
@@ -312,6 +340,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
       }}
       renderDetail={(b) => <BuildDetail b={b} />}
       empty={<p className="fx-muted">No builds here.</p>} />
+    </>
   );
 }
 

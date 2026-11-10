@@ -170,7 +170,8 @@ t('a draft op that cannot apply is refused when added', () => assert.throws(() =
 
 // ------------------------------------------------------------------ progress bars
 t('progress per build and per profile', () => {
-  const b = c.buildProgress(shared()); assert.deepEqual([b.done, b.total, b.pct, b.active], [1, 2, 50, true]);
+  const b = c.buildProgress(shared()); assert.deepEqual([b.done, b.total, b.pct, b.active], [1, 2, 50, false], 'half done with no live session is not active (statuses tell the truth)');
+  assert.equal(c.buildProgress({ ...shared(), status: 'running', pipeline: { session: 'axf-shared--a' } }).active, true, 'a running build with its session is');
   const p = c.profileProgress(M, P); assert.equal(p.builds, 2); assert.equal(p.total, 3); assert.equal(p.pct, 33);
 });
 

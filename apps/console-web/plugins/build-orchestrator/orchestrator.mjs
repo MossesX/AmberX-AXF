@@ -24,6 +24,8 @@
  * Brett. Approving one here works only when the caller is Brett: the console server (his signed-in click) or its
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
+ *   … truth [id]                      the honest state of every build (or one): Running only with a live session, Needs
+ *                                     something with the exact need, Ready to land, Landed (build-pipeline@1 buildTruth)
  *   … where                           the tracker file in use
  *   --json on any command prints JSON (the console server uses this).
  */
@@ -41,6 +43,7 @@ loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setti
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
+import { buildTruth } from '../../../../framework/core/build-pipeline.mjs';
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
@@ -87,10 +90,23 @@ export function upgradeAsk(b, p, req) {
   };
 }
 
+/**
+ * The state as the console and the API read it: each build with its honest state (`truth`) and the read-only store fields
+ * the list needs (pipeline record, planRef, kind) for roots, date sorts and Group by. Never written back: the
+ * orchestrator projection does not carry them.
+ */
+export function decorate(state) {
+  if (legacy() || !state?.builds) return state;
+  let store; try { store = loadStore(); } catch { return state; }
+  const byId = new Map(store.builds.map((b) => [b.id, b]));
+  return { ...state, builds: state.builds.map((b) => { const rec = byId.get(b.id) ?? {}; const full = { ...rec, ...b, pipeline: rec.pipeline ?? null };
+    return { ...b, pipeline: rec.pipeline ?? null, ...(rec.planRef ? { planRef: rec.planRef } : {}), ...(rec.kind ? { kind: rec.kind } : {}), truth: buildTruth(full) }; }) };
+}
+
 function line(b, rules) {
   const p = core.progress(b); const n = core.nextUp(b, rules);
   const next = n.done ? 'done' : n.needsApproval ? `Brett: upgrade ${n.phase.from}→${n.phase.model}` : `${n.step?.model} ${n.step?.id}`;
-  return `${b.id.padEnd(34)} ${priorityLabel(effectivePriority(b)).padEnd(7)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
+  return `${b.id.padEnd(34)} ${priorityLabel(effectivePriority(b)).padEnd(7)} ${core.STATUS_LABEL[b.status].padEnd(16)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
 }
 
 async function main(argv) {
@@ -99,7 +115,12 @@ async function main(argv) {
   const [cmd = 'list', ...rest] = args;
   const s = load();
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
-  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  if (cmd === 'truth') {
+    const d = decorate(s).builds.filter((b) => (rest[0] ? b.id === rest[0] : !b.hidden && b.status !== 'archived'));
+    if (rest[0] && !d.length) throw new Error(`no build "${rest[0]}"`);
+    return out({ ok: true, builds: d.map((b) => ({ id: b.id, title: b.title, status: b.status, truth: b.truth })) }, d.map((b) => `${b.id.padEnd(40)} ${b.truth.label}${b.truth.need ? ` · ${b.truth.need.label}: ${b.truth.need.text}` : ''}`).join('\n') || 'No builds.');
+  }
+  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: json ? decorate(s) : s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');
@@ -130,7 +151,7 @@ async function main(argv) {
         : action === 'rename' ? { action, id, title: rest.slice(2).join(' ') } : action === 'rename-step' ? { action, id, step: a, title: rest.slice(3).join(' ') } : { action, id };
     }
     const r = act(change);
-    return out({ ok: true, state: r.state, build: r.build, log: r.log }, r.log.join('\n'));
+    return out({ ok: true, state: json ? decorate(r.state) : r.state, build: r.build, log: r.log }, r.log.join('\n'));
   }
   throw new Error(`unknown command ${cmd}`);
 }
