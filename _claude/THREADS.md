@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:08 UTC · `amberx-open-url-tapping-the-command-waiting-noti` note (all) · orchestrator
 - 2026-11-10 17:08 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running (all) · builds-live
 - 2026-11-10 17:07 UTC · `amberx-open-url-tapping-the-command-waiting-noti` PR #454 (all) · builds-live
 - 2026-11-10 17:07 UTC · `amberx-open-url-tapping-the-command-waiting-noti` s3 done, → built (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:57 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · builds-live
 - 2026-11-10 20:57 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s9 done (all) · orchestrator
 - 2026-11-10 20:57 UTC · `build-notifications-same-notification-per-build` added (0 steps) (all) · console
+- 2026-11-10 20:57 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · console
 
 ## Token passes (log)
 
