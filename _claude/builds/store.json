@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3031,
- "updatedAt": "2026-11-10T23:37:53.205Z",
+ "rev": 3032,
+ "updatedAt": "2026-11-10T23:37:58.275Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155025,7 +155025,7 @@
    "title": "AI assistant = Gizmo moved to the console: remove the old console assistant, move the AmberX Gizmo chat plugin into a console plugin named 'AI assistant'",
    "category": "",
    "detail": "1) Remove the existing console AI assistant screen/plugin (ai-assistant). 2) Move the Gizmo chat plugin from AmberX into the console as a console plugin named 'AI assistant' (screen id ai-assistant, opens by link/voice). 3) Fold in the earlier asks: full Claude-style chat (Gizmo rebuild), per-chat model switch Claude or local Ollama, mic/voice chat mode, console control API tools (jump to screens, settings, file builds, answer console questions), agent picker in the chat window with agents trainable in the Agent section. AmberX keeps access to the same chat via the console plugin/web link.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155034,7 +155034,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T21:54:10.024Z",
    "updatedAt": "2026-11-10T23:37:51.588Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T23:37:51.588Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -155075,6 +155075,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-10T23:36:53.373Z"
+    },
+    {
+     "text": "PR #482 open. UI Review shots not taken in this session (console with the branch not running here): take desktop + phone shots of the ai-assistant screen after deploy and submit to UI Review.",
+     "at": "2026-11-10T23:26:13.546Z"
     }
    ],
    "approvals": [],
@@ -155186,12 +155190,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:26:11.649Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T21:55:23.078Z",
-     "updatedAt": "2026-11-10T21:55:23.078Z"
+     "updatedAt": "2026-11-10T23:26:11.852Z"
     }
    ],
    "profiles": [

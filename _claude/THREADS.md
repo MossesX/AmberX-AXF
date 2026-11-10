@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:11 UTC · `orchestrator-checks-each-build-against-main-righ` PR #464 (all) · builds-live
-- 2026-11-10 19:11 UTC · `orchestrator-checks-each-build-against-main-righ` s3 done, → built (all) · orchestrator
 - 2026-11-10 19:11 UTC · `orchestrator-checks-each-build-against-main-righ` note (all) · orchestrator
 - 2026-11-10 19:12 UTC · `full-api-cli-control-of-everything-plus-an-offli` → running, note (all) · pipeline
 - 2026-11-10 19:12 UTC · `full-api-cli-control-of-everything-plus-an-offli` branch claude/full-api-cli-control-of-everything-plus-an-offli (all) · pipeline
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:36 UTC · `auto-requeue-builds-whose-session-stops-early-go` → queued, note (all) · console
 - 2026-11-10 23:37 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → pending, note (all) · reconciler
 - 2026-11-10 23:37 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
+- 2026-11-10 23:26 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` PR #482 (all) · builds-live
+- 2026-11-10 23:26 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
