@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:57:30.508Z",
+ "updatedAt": "2026-11-10T17:57:54.668Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88119,7 +88119,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T16:29:56.158Z",
+   "updatedAt": "2026-11-10T17:57:53.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -88129,6 +88129,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:29:56.158Z"
+    },
+    {
+     "text": "Split by Claude into 17 steps (3 Fable).",
+     "at": "2026-11-10T17:57:53.486Z"
     }
    ],
    "approvals": [],
@@ -88148,13 +88152,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
+     "text": "Design the control-registry@1 contract: one entry shape for everything controllable (id, type page/app/plugin/tool/behavior/display/setting, owner app, where it lives, deep link / console_open target, state read path, actions with parameters, parameter types, allowed values/ranges/defaults, needsAI flag, surfaces REST/MCP/CLI/voice). Extend the ui-api-parity and universal-voice-api-control declarations rather than replacing them. Write the JSON schema, a migration note for existing declarations, and the contract doc.",
      "model": "Fable",
-     "why": "foundation words in the step",
+     "why": "Cross-port contract and schema design shared by console, Molly, axHub and the AmberX app",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "contracts/control-registry@1.schema.json",
+      "docs/contracts/control-registry.md",
+      "apps/console-web/lib/ui-api-parity/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -88162,17 +88170,22 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawoh1a04c5v2"
+     "uid": "st-mwaztl1q499mlu"
     },
     {
      "id": "s2",
-     "text": "I need extensive API and CLI control over every single page, app, plugin, tool, behavior, display, and setting with every single option or possibility for a parameter. Need to be able to completely run the console, Molly, axHub, Hostinger, Coolify, VPS, Moshi app, AmberX app. I need a powerful complete index and registry for offline management and internal logic. Anything that can possibly be done without AI needs to be, with AI only as a fallback by default unless you have made Claude available to the console in Claude settings.",
+     "text": "Build the registry engine: collect entries from plugin manifests, ui-api-parity declarations and voice intents into one versioned offline index (JSON file plus in-memory query: list, get, search, by owner/type), with validation against the schema, change detection and an export/import for offline use. No AI anywhere in this path.",
      "model": "Fable",
-     "why": "foundation words in the step",
+     "why": "Engine internals: the index every surface and the internal logic reads from",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/lib/registry/index.mjs",
+      "apps/console-web/lib/registry/collect.mjs",
+      "apps/console-web/lib/registry/store.mjs",
+      "_claude/builds/registry/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -88180,17 +88193,320 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawoh1a05v17k"
+     "uid": "st-mwaztl1q4ahnb6"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/full-api-cli-control-of-everything-plus-an-offli.md, THREADS row, commit, push, PR",
+     "text": "Deterministic dispatcher with an AI-fallback gate: resolve a command, CLI call or voice phrase to a registry action and validated parameters using exact ids, aliases, synonyms and allowed values only. Fall back to Claude only when nothing matches and 'Make Claude available to the console' is on in Claude settings; otherwise return the closest registry matches and the gap. Reuse the universal-voice-api-control resolver.",
+     "model": "Fable",
+     "why": "Engine internals that change how every app routes actions (no-AI-first rule)",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/lib/registry/dispatch.mjs",
+      "apps/console-web/lib/registry/ai-fallback.mjs",
+      "apps/console-web/lib/voice-api/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4b85d7"
+    },
+    {
+     "id": "s4",
+     "text": "Console REST API for the registry and control: GET /api/registry (list/search/filter), GET /api/registry/:id, GET /api/registry/export, GET /api/control/:id/state, POST /api/control/:id/:action with parameter validation from the registry, POST /api/control/resolve (deterministic first, gated AI fallback). Auth and audit like the existing console API.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/server/routes/registry.mjs",
+      "apps/console-web/server/routes/control.mjs",
+      "apps/console-web/server/index.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4csaj6"
+    },
+    {
+     "id": "s5",
+     "text": "MCP tools on the same dispatcher: registry_list, registry_get, registry_search, control_state, control_invoke, control_resolve; map token and planner items to control@1 and keep console_show / console_open targets in sync with registry deep links.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/mcp/tools/registry.mjs",
+      "apps/console-web/mcp/tools/control.mjs",
+      "apps/console-web/mcp/index.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4dt43x"
+    },
+    {
+     "id": "s6",
+     "text": "CLI `axf ctl`: list, get, search, state, set, do, open, resolve, export; reads the offline index when the console is unreachable; argument validation and shell completion generated from the registry's parameters and allowed values.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "bin/axf-ctl.mjs",
+      "apps/console-web/lib/registry/cli.mjs",
+      "completions/axf-ctl.bash"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4embgf"
+    },
+    {
+     "id": "s7",
+     "text": "Register the console itself: every page, plugin, tool, display option and setting with every parameter and allowed value, each with its deep link, state read and actions; fill gaps found against the ui-api-parity declarations.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/*/registry.json",
+      "apps/console-web/lib/registry/console-entries.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4fvy87"
+    },
+    {
+     "id": "s8",
+     "text": "Register Molly: pages, behaviors, settings and actions with parameters and allowed values, wired to the dispatcher and the four surfaces.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/molly/registry.json",
+      "apps/molly/server/control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4gsje6"
+    },
+    {
+     "id": "s9",
+     "text": "Register axHub: projects, connections, sync, profiles and settings, with deep links, state and actions; expose the provider bridge used by the next three steps.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/registry.json",
+      "apps/axhub/server/control.mjs",
+      "apps/axhub/providers/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4hjdhd"
+    },
+    {
+     "id": "s10",
+     "text": "Hostinger through axHub: domains, DNS records, VPS power/state, backups and plan info as registry entries with parameters and allowed values, called through the axHub connection (no direct secrets in the console).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/providers/hostinger/control.mjs",
+      "apps/axhub/providers/hostinger/registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4itfk8"
+    },
+    {
+     "id": "s11",
+     "text": "Coolify through axHub: projects, applications, services, deployments, env vars, logs and restart/redeploy actions as registry entries with parameters and allowed values.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/providers/coolify/control.mjs",
+      "apps/axhub/providers/coolify/registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4j3y4w"
+    },
+    {
+     "id": "s12",
+     "text": "VPS through axHub: systemd services, processes, disk/memory state, logs, reboot and allow-listed maintenance commands as registry entries; destructive actions flagged and confirmation-gated.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/providers/vps/control.mjs",
+      "apps/axhub/providers/vps/registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4kso5e"
+    },
+    {
+     "id": "s13",
+     "text": "AmberX app: register screens, settings and actions with Android deep links/intents, state read over the existing app channel, and voice phrases routed through the deterministic dispatcher with the gated AI fallback.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/amberx-android/app/src/main/AndroidManifest.xml",
+      "apps/amberx-android/app/src/main/java/",
+      "apps/amberx-android/registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4ls4r8"
+    },
+    {
+     "id": "s14",
+     "text": "Moshi (third-party SSH app): find which deep links/intents it accepts, register only those (open host/session), mark everything else as an uncontrollable gap with the reason in the registry and docs.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/amberx-android/registry/moshi.json",
+      "docs/integrations/moshi.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4mmuct"
+    },
+    {
+     "id": "s15",
+     "text": "Console Registry page: browse, search and filter all entries, see each entry's surfaces and gaps, run actions, and show whether the AI fallback is on. API part in the same step: deep link console_open target 'registry' (with id/query params), its state readable, its actions and filters callable via REST, MCP, CLI and voice, and the page registered in the registry itself.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/registry/",
+      "apps/console-web/plugins/registry/registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4nifja"
+    },
+    {
+     "id": "s16",
+     "text": "Parity and coverage checker: fail when any UI page, setting or action lacks a registry entry or is missing any of REST/MCP/CLI/voice, or when a parameter has no allowed values; produce a gap report; add it to CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "scripts/check-registry-coverage.mjs",
+      "apps/console-web/lib/registry/coverage.mjs",
+      ".github/workflows/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaztl1q4oj7wr"
+    },
+    {
+     "id": "s17",
+     "text": "Tests (schema validation, index build, dispatcher no-AI paths and AI gate on/off, REST/MCP/CLI parity, provider mocks for Hostinger/Coolify/VPS, coverage check), write the report with how each feature is reached by deep link, REST, MCP, CLI and voice, add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/test/registry/",
+      "apps/axhub/test/control/",
       "_claude/builds/reports/full-api-cli-control-of-everything-plus-an-offli.md",
       "_claude/THREADS.md"
      ],
@@ -88201,7 +88517,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawoh1a0618wv"
+     "uid": "st-mwaztl1q4pip7s"
     }
    ]
   },

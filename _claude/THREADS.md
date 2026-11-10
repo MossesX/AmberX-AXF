@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 06:10 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 06:15 UTC · `audit-pending-fable-builds-against-main-close-wh` → pending, note (all) · pipeline
 - 2026-11-10 06:15 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 06:15 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → running, note (all) · pipeline
 - 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` branch claude/orchestrator-hold-status-archive-tab-deleted-tab (all) · pipeline
 - 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
+- 2026-11-10 17:57 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 
 ## Token passes (log)
 
