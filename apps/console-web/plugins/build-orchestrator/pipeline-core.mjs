@@ -329,9 +329,16 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 export const ALERT_SOURCE = 'pipeline';
 /** The console's alerts API takes http(s)://, view:<id> or settings:<tab>. A build's own alert links to that build. */
 export const ALERT_LINK = 'view:build-orchestrator';
-/** The deep link that opens one build in the orchestrator (web/index.tsx reads it): <console>/?orch-build=<id>. */
+/**
+ * The deep link that opens one build in the orchestrator: <console>/?axf-action=build-orchestrator.open-build:<id>.
+ * The console runs a navigate action named in `axf-action` once it has started, loading this plugin if it is lazy
+ * (console src/urlAction.ts); `orch-build` is the page's own parameter, read when the plugin is already loaded.
+ */
 export const BUILD_PARAM = 'orch-build';
-export const buildLink = (id, base = '') => (id && base ? `${base.replace(/\/+$/, '')}/?${BUILD_PARAM}=${encodeURIComponent(id)}` : ALERT_LINK);
+export const OPEN_BUILD_ACTION = 'build-orchestrator.open-build';
+export const buildLink = (id, base = '') => (id && base
+  ? `${base.replace(/\/+$/, '')}/?axf-action=${encodeURIComponent(`${OPEN_BUILD_ACTION}:${id}`)}&${BUILD_PARAM}=${encodeURIComponent(id)}`
+  : ALERT_LINK);
 
 /** One word or phrase for how a run ended, as the phone shows it. */
 export function outcomeWord(outcome, { status = '', phaseSwitch = false } = {}) {

@@ -400,7 +400,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 
 t('start / finish pop-ups: the phone line, per-run keys, the deep link, grouping, settings defaults', () => {
   const link = P.buildLink('my-build', 'https://console.example.com/');
-  assert.equal(link, 'https://console.example.com/?orch-build=my-build');
+  assert.equal(link, 'https://console.example.com/?axf-action=build-orchestrator.open-build%3Amy-build&orch-build=my-build');
+  assert.equal(new URL(link).searchParams.get('axf-action'), 'build-orchestrator.open-build:my-build');
   assert.equal(P.buildLink('x', ''), P.ALERT_LINK);
   const s = P.alertFor('launched', { id: 'my-build', title: 'My build', account: 'Work max', model: 'Fable', run: 2, link });
   assert.equal(`${s.meta.label}: ${s.title}`, 'Started: My build on Work max (Fable)');

@@ -19,6 +19,7 @@ import { Standards } from './views/Standards';
 import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
+import { runUrlAction, takeUrlAction } from './urlAction';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
 import { createAlertsLibrary } from './axf/libs/alerts';
@@ -147,6 +148,13 @@ function usePlugins() {
     return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
   }, [rt, status, loaded, managed, hostIds, lazy]);
   useEffect(() => { loader.markInstalled(); }, [contributed]);
+  // ?axf-action=<id>[:args] (an AmberX notification's tap): once the plugins are in, open what it names
+  const urlAction = useRef<string | null>(null);
+  useEffect(() => {
+    if (!loaded && !managed) return;
+    if (urlAction.current === null) urlAction.current = takeUrlAction();
+    if (urlAction.current) { const spec = urlAction.current; urlAction.current = ''; runUrlAction(rt, spec); }
+  }, [contributed, loaded, managed, rt]);
   return { contributed };
 }
 
