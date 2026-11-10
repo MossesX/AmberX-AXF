@@ -1,5 +1,5 @@
 import { installConsoleSearch } from './consoleSearch';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
@@ -17,7 +17,7 @@ import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
 import type { AxfWebLibrary } from './axf/react/library';
-import { bundledPlugins, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
+import { bundledPlugins, dedupeAgainstHost, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
@@ -131,21 +131,35 @@ function usePlugins() {
     folders.forEach((f) => tried.current.add(f));
     void Promise.all(folders.map((f) => post(`plugins/${f}/enabled`, { enabled: true }).catch(() => null))).then(() => reload());
   }, [managed, status, hostIds, reload]);
+  // Inside a host that already has some of these plugins (embed@1 `host-plugins`, docs/contracts/molly-plugin-dedupe.md;
+  // Brett, Nov 10 2026: nothing renders twice in Molly): plugin installs hold until the host has answered or the deadline
+  // passed (`waiting`), then every plugin the host lists is left out. A later answer applies at once. Every plugin, not one.
+  const hostOwn = useSyncExternalStore(rt.onHostOwnPlugins, () => `${rt.hostOwnPluginsState}:${(rt.hostOwnPlugins ?? []).map((p) => `${p.id}@${p.version ?? ''}`).join(',')}`, () => 'none:');
+  const holding = rt.hostOwnPluginsState === 'waiting';
+  useEffect(() => { rt.askHostOwnPlugins(); }, [rt]);
   useEffect(() => {
-    if (!loaded && !managed) return;
-    const on = managed ? (hostIds ?? []).map((id) => bundledPlugins.find((p) => p.manifest.id === id)?.folder).filter((f): f is string => !!f) : enabledFolders(status);
+    if ((!loaded && !managed) || holding) return;
+    const chosen = managed ? (hostIds ?? []).map((id) => bundledPlugins.find((p) => p.manifest.id === id)).filter((p): p is BundledPlugin => !!p) : bundledPlugins.filter((p) => enabledFolders(status).includes(p.folder));
+    const on = dedupeAgainstHost(chosen, rt).run.map((p) => p.folder);
     loader.enabledNow = new Set(on);
     loader.boot(on);
-  }, [loaded, managed, status, hostIds]);
+  }, [rt, loaded, managed, status, hostIds, holding, hostOwn]);
   const contributed = useMemo(() => {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     // A plugin switched off in the lazy loader keeps only commands that say so.
-    const all = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
-    const enabled = all.filter((p) => loader.config.modes[p.folder] !== 'off');
-    const off = all.filter((p) => !enabled.includes(p)).map((p) => loader.disabledLibrary(p.folder, p.manifest.name)).filter((l): l is AxfWebLibrary => !!l);
+    const all = holding ? [] : managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
+    const { run, skipped } = dedupeAgainstHost(all, rt);
+    const enabled = run.filter((p) => loader.config.modes[p.folder] !== 'off');
+    const off = run.filter((p) => !enabled.includes(p)).map((p) => loader.disabledLibrary(p.folder, p.manifest.name)).filter((l): l is AxfWebLibrary => !!l);
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
+    // the skipped list (Settings → Plugins, the terminal) follows the host's answer: noted once, dropped when it no longer names them
+    if (!holding) {
+      const fresh = rt.noteSkippedLibraries(skipped.map((s) => ({ id: s.id, label: all.find((p) => p.manifest.id === s.id)?.manifest.name ?? s.id, version: s.version ?? '', reason: s.reason })));
+      for (const s of skipped) if (s.mismatch && fresh.some((f) => f.id === s.id)) rt.terminal.warn('libraries', `${s.id}: ${rt.embedded?.host ?? 'the host'} has ${s.hostVersion}, this console has ${s.version}; the host's copy renders`);
+      rt.forgetSkippedLibraries(run.map((p) => p.manifest.id));
+    }
     return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
-  }, [rt, status, loaded, managed, hostIds, lazy]);
+  }, [rt, status, loaded, managed, hostIds, lazy, holding, hostOwn]);
   useEffect(() => { loader.markInstalled(); }, [contributed]);
   return { contributed };
 }

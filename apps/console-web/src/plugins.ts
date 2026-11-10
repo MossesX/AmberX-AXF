@@ -7,7 +7,8 @@
  * Folders starting with "_" are templates and never load.
  */
 import type { AxfWebLibrary } from './axf/react/library';
-import type { EmbedPlugin, EmbedPluginTab } from './axf/core';
+import type { AxfRuntime, EmbedPlugin, EmbedPluginTab } from './axf/core';
+import { hostPluginSkips, type HostPluginSkip } from './axf/core/engines/embed';
 import { authHeaders, createApiClient, STANDARD_MESSAGES, type ApiClient } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
 import { loader, setHelpSource } from './pluginLoader';
@@ -125,6 +126,19 @@ export function enabledPlugins(status: PluginStatus[] | null): BundledPlugin[] {
 export function hostEnabledPlugins(hostIds: readonly string[] | null): BundledPlugin[] {
   if (!hostIds) return [];
   return bundledPlugins.filter((p) => p.library && hostIds.includes(p.manifest.id));
+}
+
+/**
+ * Inside a host that already has some of these plugins (embed@1 `host-plugins`, docs/contracts/molly-plugin-dedupe.md;
+ * Brett, Nov 10 2026: "Molly is only to render the console's plugin if Molly doesn't have it already"): the plugins to
+ * run, and the ones left out with why. Every plugin, matched by its plugin@1 id; the host's copy wins whatever the
+ * versions. Nothing is left out standalone, in page mode, or until the host has answered (`rt.hostOwnPlugins` null).
+ */
+export function dedupeAgainstHost(list: BundledPlugin[], rt: Pick<AxfRuntime, 'embedded' | 'hostOwnPlugins'>): { run: BundledPlugin[]; skipped: HostPluginSkip[] } {
+  const skipped = hostPluginSkips(rt.embedded, rt.hostOwnPlugins, list.map((p) => ({ id: p.manifest.id, ...(p.manifest.version ? { version: p.manifest.version } : {}) })));
+  if (!skipped.length) return { run: list, skipped };
+  const out = new Set(skipped.map((s) => s.id));
+  return { run: list.filter((p) => !out.has(p.manifest.id)), skipped };
 }
 
 /**

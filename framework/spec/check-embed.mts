@@ -7,7 +7,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, HOST_PLUGINS_WAIT_MS, hostPluginSkips, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { hiddenSlots } from '../core/engines/hide';
 import { AxfRuntime, HIDE_KEY } from '../core/runtime';
 import { readdirSync } from 'node:fs';
@@ -104,6 +104,11 @@ for (const c of t.viewPages) { eq(embedPage(c.input), c.page, `view page ${c.inp
 for (const c of t.viewUrls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `view url ${c.url}`);
 for (const c of t.viewDetect) eq(embedFromQueryFull(c.search), c.embed, `view detect ${c.search}`);
 for (const c of t.pluginTabs) eq(parseEmbedMessage(c.input), c.message, 'plugin tabs');
+// Plugins the host already has (`host-plugins` dedupe, docs/contracts/molly-plugin-dedupe.md; web only so far, Kotlin deferred).
+eq(HOST_PLUGINS_WAIT_MS, t.hostPluginWaitMs, 'host plugins wait');
+for (const c of t.hostPluginMessages) eq(parseEmbedMessage(c.input), c.message, `host plugin message ${JSON.stringify(c.input).slice(0, 60)}`);
+for (const c of t.hostPluginSkips) eq(hostPluginSkips(c.embed, c.host, c.mine), c.skips, `host plugin skips ${JSON.stringify([c.embed?.host, c.embed?.page, c.host]).slice(0, 80)}`);
+assert.ok(t.hostPluginSkips.some((c: { skips: { mismatch: boolean }[] }) => c.skips.some((s) => s.mismatch)) && t.hostPluginSkips.some((c: { skips: { mismatch: boolean }[] }) => c.skips.some((s) => !s.mismatch)), 'fixture carries both mismatch and match'); checks++;
 eq(skipReason({ host: 'host', hidden: ['banner'], page: 'view:todos' }, ['embedded']), null, 'a view page never skips');
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
 // Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
@@ -285,6 +290,72 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   noTake.openContext(1, 2, 'default');
   eq(noTake.getState().context?.target, 'default', 'context: a host that does not take it changes nothing');
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
+}
+
+/* ---------- runtime: plugins the host already has (host-plugins dedupe, docs/contracts/molly-plugin-dedupe.md) ---------- */
+{
+  const tick = () => new Promise<void>((r) => setTimeout(r, 0));
+  const posted: { type?: string }[] = [];
+  (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
+  // runtimes the sections above made still owe their own request (it goes out on the microtask after construction): let them
+  await tick();
+  posted.length = 0;
+  const guest = make({ host: 'molly', hidden: ['banner'] });
+  eq(guest.hostOwnPluginsState, 'none', 'dedupe: not asked during construction');
+  await tick();
+  eq(posted, [{ $axf: 'embed@1', type: 'host-plugins-request' }], 'dedupe: the runtime asked the host by itself');
+  eq(guest.hostOwnPluginsState, 'waiting', 'dedupe: waiting for the answer');
+  eq(guest.hostOwnPlugins, null, 'dedupe: no list yet');
+  eq(guest.askHostOwnPlugins(), true, 'dedupe: asking again is a no-op');
+  eq(posted.length, 1, 'dedupe: asked once');
+  let told = 0;
+  guest.onHostOwnPlugins(() => { told++; });
+  const receive = (m: unknown) => (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify(m));
+  receive({ $axf: 'embed@1', type: 'host-plugins', plugins: [{ id: 'ai.amberx.axf.inline-edit', version: '0.1.0' }, 'ai.amberx.axf.molly.xlayout'] });
+  eq(guest.hostOwnPluginsState, 'answered', 'dedupe: answered');
+  eq(guest.hostOwnPlugins, [{ id: 'ai.amberx.axf.inline-edit', version: '0.1.0' }, { id: 'ai.amberx.axf.molly.xlayout' }], 'dedupe: the host list kept');
+  eq(told, 1, 'dedupe: listeners told');
+  const mine = [{ id: 'ai.amberx.axf.inline-edit', version: '0.2.0' }, { id: 'ai.amberx.axf.console.plan-studio', version: '1.0.0' }];
+  eq(hostPluginSkips(guest.embedded, guest.hostOwnPlugins, mine).map((s) => [s.id, s.mismatch, s.reason]), [['ai.amberx.axf.inline-edit', true, 'Molly already has ai.amberx.axf.inline-edit 0.1.0 (this app has 0.2.0)']], 'dedupe: the host copy wins, the mismatch is flagged');
+  // a later answer replaces the list (a plugin switched off in the host comes back here)
+  receive({ $axf: 'embed@1', type: 'host-plugins', plugins: [] });
+  eq(guest.hostOwnPlugins, [], 'dedupe: a later answer replaces the list');
+  eq(hostPluginSkips(guest.embedded, guest.hostOwnPlugins, mine), [], 'dedupe: nothing skipped once the host has none');
+  eq(told, 2, 'dedupe: listeners told again');
+  // skipped-list bookkeeping: noted once, forgotten when the host no longer names it
+  const entry = { id: 'ai.amberx.axf.inline-edit', label: 'Inline edit', version: '0.2.0', reason: 'Molly already has ai.amberx.axf.inline-edit 0.1.0' };
+  eq(guest.noteSkippedLibraries([entry]).length, 1, 'dedupe: skip noted');
+  eq(guest.noteSkippedLibraries([entry]).length, 0, 'dedupe: not noted twice');
+  eq(guest.skippedLibraries.map((l) => l.id), ['ai.amberx.axf.inline-edit'], 'dedupe: in the skipped list');
+  guest.forgetSkippedLibraries(['ai.amberx.axf.inline-edit', 'never-there']);
+  eq(guest.skippedLibraries, [], 'dedupe: forgotten when it loads after all');
+  // page mode and standalone never ask
+  posted.length = 0;
+  const page = make({ host: 'molly', hidden: ['banner'], page: 'view:inline-edit' });
+  const solo = make(null);
+  await tick();
+  eq(posted, [], 'dedupe: a page shown alone and a standalone app never ask');
+  eq([page.hostOwnPluginsState, solo.hostOwnPluginsState], ['none', 'none'], 'dedupe: state none when never asked');
+  eq(page.askHostOwnPlugins(), false, 'dedupe: a page cannot ask');
+  eq(hostPluginSkips(page.embedded, [{ id: 'ai.amberx.axf.inline-edit' }], mine), [], 'dedupe: page mode never skips');
+  // no answer: the deadline passes and everything runs (fail open), with a warning
+  const slow = make({ host: 'old-host', hidden: ['banner'] });
+  await tick();
+  eq(slow.hostOwnPluginsState, 'waiting', 'dedupe: waiting on a host that never answers');
+  await new Promise((r) => setTimeout(r, HOST_PLUGINS_WAIT_MS + 100));
+  eq(slow.hostOwnPluginsState, 'timeout', 'dedupe: deadline passed');
+  eq(slow.hostOwnPlugins, null, 'dedupe: still no list');
+  eq(hostPluginSkips(slow.embedded, slow.hostOwnPlugins, mine), [], 'dedupe: after the deadline nothing is skipped');
+  eq(slow.terminal.lines.some((l) => /no host-plugins answer in 1500 ms, running every plugin/.test(l.text)), true, 'dedupe: the terminal says so');
+  // a late answer still applies
+  receive({ $axf: 'embed@1', type: 'host-plugins', plugins: [{ id: 'ai.amberx.axf.inline-edit', version: '0.2.0' }] });
+  eq(slow.hostOwnPluginsState, 'answered', 'dedupe: a late answer is applied');
+  eq(hostPluginSkips(slow.embedded, slow.hostOwnPlugins, mine).map((s) => [s.id, s.mismatch, s.reason]), [['ai.amberx.axf.inline-edit', false, 'Old-host already has ai.amberx.axf.inline-edit 0.2.0']], 'dedupe: late answer skips, same version is no mismatch');
+  // no host to reach at all (no bridge, no parent): timeout at once, nothing to wait for
+  delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
+  const unreachable = make({ host: 'molly', hidden: ['banner'] });
+  await tick();
+  eq(unreachable.hostOwnPluginsState, 'timeout', 'dedupe: no host to reach = timeout at once');
 }
 
 console.log(`check-embed: ${checks} checks passed`);

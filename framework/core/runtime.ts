@@ -22,7 +22,7 @@ import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, ty
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
+import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, HOST_PLUGINS_WAIT_MS, type Embed, type EmbedHostPlugin, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
@@ -359,7 +359,12 @@ export class AxfRuntime {
     this.manifest = opts.manifest;
     announceWatchLiveRuntime(this);
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
-    if (this.embedded) this.listenToHost();
+    if (this.embedded) {
+      this.listenToHost();
+      // ask the host which plugins it already has (docs/contracts/molly-plugin-dedupe.md); after construction, so the
+      // terminal and listeners exist if there is no host to reach
+      queueMicrotask(() => this.askHostOwnPlugins());
+    }
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
@@ -2213,6 +2218,7 @@ export class AxfRuntime {
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
+      if (m?.type === 'host-plugins') this.receiveHostOwnPlugins(m.plugins);
       if (m?.type === 'shown' && m.on !== this.hostShown) {
         this.hostShown = m.on;
         for (const f of this.frontSubs) try { f(); } catch { /* a listener's own problem */ }
@@ -2236,12 +2242,73 @@ export class AxfRuntime {
    * The launch log of libraries a host made unneeded (installLibraries calls this once per install): kept in
    * `skippedLibraries` for Settings → Plugins and written to the terminal, one line each and one summary line.
    */
-  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): void {
+  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): { id: string; label: string; version: string; reason: string }[] {
     const fresh = list.filter((s) => !this.skippedLibraries.some((x) => x.id === s.id));
-    if (!fresh.length) return;
+    if (!fresh.length) return [];
     this.skippedLibraries.push(...fresh);
     for (const s of fresh) this.terminal.log('libraries', `${s.label} ${s.version} not loaded: ${s.reason}`);
     this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: ${fresh.length} plugin(s) not loaded (${fresh.map((s) => s.label).join(', ')})`);
+    return fresh;
+  }
+
+  /** Skipped libraries that now load after all (the host's `host-plugins` list no longer names them) leave the list. */
+  forgetSkippedLibraries(ids: readonly string[]): void {
+    if (!ids.length) return;
+    const drop = new Set(ids);
+    for (let i = this.skippedLibraries.length - 1; i >= 0; i--) if (drop.has(this.skippedLibraries[i]!.id)) this.skippedLibraries.splice(i, 1);
+  }
+
+  /* ---------------- embed@1: plugins the host already has (docs/contracts/molly-plugin-dedupe.md) ---------------- */
+
+  /**
+   * The plugins the host itself runs (`host-plugins` answer: ids and versions), or null until it has answered. A guest
+   * skips its own copy of each one so a plugin that ships in both apps renders once (the host's copy, whatever the
+   * version; Brett, Nov 10 2026). `hostOwnPluginsState`: `none` (standalone or page mode: never asked), `waiting` (asked,
+   * the deadline HOST_PLUGINS_WAIT_MS is running: hold plugin installs), `answered`, `timeout` (no answer: run everything).
+   */
+  hostOwnPlugins: EmbedHostPlugin[] | null = null;
+  hostOwnPluginsState: 'none' | 'waiting' | 'answered' | 'timeout' = 'none';
+  private readonly hostOwnSubs = new Set<() => void>();
+  private hostOwnTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Told whenever `hostOwnPlugins` / `hostOwnPluginsState` change. → unsubscribe. */
+  onHostOwnPlugins(fn: () => void): () => void { this.hostOwnSubs.add(fn); return () => { this.hostOwnSubs.delete(fn); }; }
+
+  /**
+   * Ask the host which plugins it already has (`host-plugins-request`) and start the deadline. Once per page: a second
+   * call is a no-op (true). False standalone, in page mode, or when there is no host to reach (then the state is
+   * `timeout` at once: nothing to wait for). The runtime asks by itself when it starts embedded.
+   */
+  askHostOwnPlugins(waitMs = HOST_PLUGINS_WAIT_MS): boolean {
+    if (!this.embedded || this.embedded.page) return false;
+    if (this.hostOwnPluginsState !== 'none') return true;
+    this.hostOwnPluginsState = 'waiting';
+    if (!this.postToHost({ $axf: EMBED_MESSAGE, type: 'host-plugins-request' })) {
+      this.hostOwnPluginsState = 'timeout';
+      this.hostOwnChanged();
+      return false;
+    }
+    this.hostOwnTimer = setTimeout(() => {
+      this.hostOwnTimer = null;
+      if (this.hostOwnPluginsState !== 'waiting') return;
+      this.hostOwnPluginsState = 'timeout';
+      this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: no host-plugins answer in ${waitMs} ms, running every plugin`);
+      this.hostOwnChanged();
+    }, waitMs);
+    return true;
+  }
+
+  /** The host's own plugin list arrived (also for tests and Android hosts through AxfEmbedGuest). Applied at once, late or not. */
+  receiveHostOwnPlugins(list: readonly EmbedHostPlugin[]): void {
+    if (this.hostOwnTimer) { clearTimeout(this.hostOwnTimer); this.hostOwnTimer = null; }
+    this.hostOwnPlugins = list.map((p) => ({ ...p }));
+    this.hostOwnPluginsState = 'answered';
+    this.hostOwnChanged();
+  }
+
+  private hostOwnChanged(): void {
+    for (const f of this.hostOwnSubs) try { f(); } catch { /* a listener's own problem */ }
+    this.set({});
   }
 
   /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */

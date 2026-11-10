@@ -17,6 +17,9 @@
  *
  * Pure; the Kotlin kernel mirrors it as EmbedEngine (fixture spec/fixtures/embed.json). The host side uses
  * `userAgentSuffix` / `embedUrl` to mark what it loads; the guest side uses `detectEmbed`.
+ *
+ * Further down: what a host takes over (`takes`, page mode), the host/guest messages, plugins a host makes unneeded
+ * (`skipWhen`) and plugins the host already has (`host-plugins`, docs/contracts/molly-plugin-dedupe.md).
  */
 import { hideable, hideableTypes } from './hide';
 import { parseChromeBundle, type ChromeBundle } from './chrome';
@@ -375,6 +378,10 @@ export type EmbedMessage =
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-enabled'; plugins: string[] }
   /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' }
+  /** guest → host: which plugins do you already have? (plugin dedupe, docs/contracts/molly-plugin-dedupe.md) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'host-plugins-request' }
+  /** host → guest: the plugins the host itself has installed and running now; the guest skips its own copies of them */
+  | { $axf: typeof EMBED_MESSAGE; type: 'host-plugins'; plugins: EmbedHostPlugin[] }
   /** guest → host (the host takes nav-menu / context-menu / toolbar / widgets): the app's chrome as data (chrome@1, engines/chrome.ts) */
   | { $axf: typeof EMBED_MESSAGE; type: 'chrome'; chrome: ChromeBundle }
   /** host → guest: send your chrome now (the host just loaded, or its layout changed) */
@@ -399,6 +406,8 @@ export type EmbedMessage =
  * the view page `view:<view>`.
  */
 export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean; tab?: EmbedPluginTab; /** the model that built it (plugin@1 builtWith.model, Oct 23 2026): a lowercase family name */ model?: string }
+/** One plugin a host says it has itself (`host-plugins`): its plugin@1 id and, when known, its version. Data only. */
+export interface EmbedHostPlugin { id: string; version?: string }
 export interface EmbedPluginTab {
   view: string; label?: string; icon?: string;
   /** the plugin's own settings tab in its app (Oct 23 2026): the host's combined settings gets a tab for it, opening the
@@ -505,6 +514,24 @@ function parsePlugins(raw: unknown): EmbedPlugin[] | null {
   }
   return out;
 }
+/** A host's own plugin list (`host-plugins`), checked and cut to size: id + version only, repeats and bad entries dropped, ≤ 200. */
+function parseHostPlugins(raw: unknown): EmbedHostPlugin[] | null {
+  if (!Array.isArray(raw)) return null;
+  const L = EMBED_MESSAGE_LIMITS;
+  const seen = new Set<string>();
+  const out: EmbedHostPlugin[] = [];
+  for (const v of raw) {
+    if (out.length >= L.plugins) break;
+    // a bare id string is allowed too (a host without versions)
+    const o = typeof v === 'string' ? { id: v } : v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
+    if (!o || typeof o.id !== 'string' || !EMBED_PLUGIN_ID.test(o.id) || seen.has(o.id)) continue;
+    seen.add(o.id);
+    const p: EmbedHostPlugin = { id: o.id };
+    const ver = clip(o.version, L.version); if (ver) p.version = ver;
+    out.push(p);
+  }
+  return out;
+}
 const LEVELS = ['info', 'success', 'warning', 'error'] as const;
 
 function clip(v: unknown, max: number): string | undefined {
@@ -530,7 +557,7 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     try { m = JSON.parse(raw); } catch { return null; }
     // a menu and a plugin list may be long (both capped by their own limits); every other message stays small
     const t = (m as { type?: unknown } | null)?.type;
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled' && t !== 'chrome') return null;
+    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled' && t !== 'host-plugins' && t !== 'chrome') return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -575,6 +602,11 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: ids };
     }
     case 'plugins-request': return { $axf: EMBED_MESSAGE, type: 'plugins-request' };
+    case 'host-plugins-request': return { $axf: EMBED_MESSAGE, type: 'host-plugins-request' };
+    case 'host-plugins': {
+      const plugins = parseHostPlugins(o.plugins);
+      return plugins ? { $axf: EMBED_MESSAGE, type: 'host-plugins', plugins } : null;
+    }
     case 'chrome': {
       const chrome = parseChromeBundle(o.chrome);
       return chrome ? { $axf: EMBED_MESSAGE, type: 'chrome', chrome } : null;
@@ -622,6 +654,57 @@ export function embedSkipReason(e: Embed | null | undefined, skipWhen: readonly 
     if (w.startsWith('hidden:') && e.hidden.includes(w.slice(7))) return `${e.host} hides the ${w.slice(7)}`;
   }
   return null;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Plugins the host already has (Brett, Nov 10 2026: "Molly is only to render the console's plugin if Molly doesn't have
+ * it already"; docs/contracts/molly-plugin-dedupe.md). A guest asks its host which plugins it has (`host-plugins-request`),
+ * the host answers with their ids and versions (`host-plugins`), and the guest skips its own copy of each one, so a
+ * plugin that ships in both apps is on screen once: the host's copy, whatever the versions. The guest waits
+ * HOST_PLUGINS_WAIT_MS for the answer and then runs everything (an old or foreign host keeps a complete app); a later
+ * answer still applies. Page mode never skips (the host asked for that exact page). Plugins only, never libraries.
+ * --------------------------------------------------------------------------------------------------------------- */
+
+/** How long a guest waits for the host's `host-plugins` answer before it installs every plugin (ms). */
+export const HOST_PLUGINS_WAIT_MS = 1500;
+
+/** One plugin a guest leaves out because its host already has it. */
+export interface HostPluginSkip {
+  id: string;
+  /** what the skipped list and the terminal say */
+  reason: string;
+  /** the guest's own version, when known */
+  version?: string;
+  /** the host's version, when it said */
+  hostVersion?: string;
+  /** both versions known and different: the host's copy still wins, the guest warns */
+  mismatch: boolean;
+}
+
+/**
+ * Which of `mine` (the plugins this guest would install) the host already has, with why. Empty when standalone, in page
+ * mode, or before the host has answered (`host` null). Pure; the fixture `hostPluginSkips` replays it.
+ */
+export function hostPluginSkips(e: Embed | null | undefined, host: readonly EmbedHostPlugin[] | null | undefined, mine: readonly { id: string; version?: string }[]): HostPluginSkip[] {
+  if (!e || e.page || !host) return [];
+  const have = new Map<string, EmbedHostPlugin>();
+  for (const p of host) if (p && typeof p.id === 'string' && !have.has(p.id)) have.set(p.id, p);
+  const label = embedHostLabel(e);
+  const out: HostPluginSkip[] = [];
+  const seen = new Set<string>();
+  for (const m of mine) {
+    if (!m || typeof m.id !== 'string' || seen.has(m.id)) continue;
+    const h = have.get(m.id);
+    if (!h) continue;
+    seen.add(m.id);
+    const mismatch = !!m.version && !!h.version && m.version !== h.version;
+    const reason = `${label} already has ${m.id}${h.version ? ` ${h.version}` : ''}${mismatch ? ` (this app has ${m.version})` : ''}`;
+    const s: HostPluginSkip = { id: m.id, reason, mismatch };
+    if (m.version) s.version = m.version;
+    if (h.version) s.hostVersion = h.version;
+    out.push(s);
+  }
+  return out;
 }
 
 /** The settings tab an action names (`settings.open:<tab>` → tab), else undefined. */

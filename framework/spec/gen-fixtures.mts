@@ -19,7 +19,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, HOST_PLUGINS_WAIT_MS, hostPluginSkips, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -521,6 +521,39 @@ write('hide.json', {
         { id: 'ai.amberx.axf.example.delta', name: 'Delta', on: true, tab: true },
       ] },
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Plugins the host already has (`host-plugins-request` / `host-plugins`, hostPluginSkips; Nov 10 2026,
+    // docs/contracts/molly-plugin-dedupe.md). Web only so far (Kotlin deferred, PORTING.md).
+    hostPluginWaitMs: HOST_PLUGINS_WAIT_MS,
+    hostPluginMessages: [
+      { $axf: 'embed@1', type: 'host-plugins-request' },
+      { $axf: 'embed@1', type: 'host-plugins-request', extra: 1 },
+      { $axf: 'embed@1', type: 'host-plugins', plugins: [{ id: 'ai.amberx.axf.inline-edit', version: ' 0.1.0\n' }, 'ai.amberx.axf.molly.xlayout', { id: 'ai.amberx.axf.inline-edit', version: '9.9.9' }, { id: 'bad id!' }, { id: 'ai.amberx.axf.example.beta', version: 'v'.repeat(60), name: 'ignored' }, { version: '1.0.0' }, 7, null, ['x']] },
+      { $axf: 'embed@1', type: 'host-plugins', plugins: [] },
+      { $axf: 'embed@1', type: 'host-plugins', plugins: 'nope' },
+      { $axf: 'embed@1', type: 'host-plugins' },
+      JSON.stringify({ $axf: 'embed@1', type: 'host-plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, version: '1.0.0' })) }),
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    hostPluginSkips: (() => {
+      const molly = { host: 'molly', hidden: ['banner', 'nav-menu'], takes: ['nav-menu'] };
+      const mine = [{ id: 'ai.amberx.axf.inline-edit', version: '0.1.0' }, { id: 'ai.amberx.axf.console.plan-studio', version: '1.2.0' }, { id: 'ai.amberx.axf.console.molly-guide' }];
+      const have = [{ id: 'ai.amberx.axf.inline-edit', version: '0.1.0' }, { id: 'ai.amberx.axf.molly.xlayout', version: '0.1.0' }];
+      const cases: { embed: unknown; host: unknown; mine: unknown }[] = [
+        { embed: molly, host: have, mine },                                                                                  // same version: skipped, no mismatch
+        { embed: molly, host: [{ id: 'ai.amberx.axf.inline-edit', version: '0.2.0' }], mine },                               // host newer: still skipped, mismatch
+        { embed: molly, host: [{ id: 'ai.amberx.axf.inline-edit', version: '0.0.1' }], mine },                               // host older: still skipped, mismatch
+        { embed: molly, host: [{ id: 'ai.amberx.axf.inline-edit' }], mine },                                                 // host version unknown: no mismatch
+        { embed: molly, host: [{ id: 'ai.amberx.axf.console.molly-guide', version: '0.1.0' }], mine },                       // own version unknown: no mismatch
+        { embed: molly, host: [{ id: 'ai.amberx.axf.inline-edit', version: '0.1.0' }, { id: 'ai.amberx.axf.console.plan-studio', version: '1.2.0' }], mine }, // two skipped, order of `mine`
+        { embed: molly, host: [], mine },                                                                                    // the host has none: nothing skipped
+        { embed: molly, host: null, mine },                                                                                  // no answer yet: nothing skipped
+        { embed: null, host: have, mine },                                                                                   // standalone: nothing skipped
+        { embed: { ...molly, page: 'view:inline-edit' }, host: have, mine },                                                 // page mode: nothing skipped
+        { embed: { host: 'other-host', hidden: ['banner'] }, host: have, mine },                                             // any host, labelled by its id
+        { embed: molly, host: [...have, ...have], mine: [...mine, ...mine] },                                                // repeats on either side: one skip each
+        { embed: molly, host: have, mine: [] },                                                                              // nothing to install
+      ];
+      return cases.map((c) => ({ ...c, skips: hostPluginSkips(c.embed as never, c.host as never, c.mine as never) }));
+    })(),
   });
 }
 // Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.

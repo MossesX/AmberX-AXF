@@ -3938,5 +3938,1414 @@
         ]
       }
     }
+  ],
+  "hostPluginWaitMs": 1500,
+  "hostPluginMessages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "host-plugins-request"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "host-plugins-request"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "host-plugins-request",
+        "extra": 1
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "host-plugins-request"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "host-plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.inline-edit",
+            "version": " 0.1.0\n"
+          },
+          "ai.amberx.axf.molly.xlayout",
+          {
+            "id": "ai.amberx.axf.inline-edit",
+            "version": "9.9.9"
+          },
+          {
+            "id": "bad id!"
+          },
+          {
+            "id": "ai.amberx.axf.example.beta",
+            "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+            "name": "ignored"
+          },
+          {
+            "version": "1.0.0"
+          },
+          7,
+          null,
+          [
+            "x"
+          ]
+        ]
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "host-plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.inline-edit",
+            "version": "0.1.0"
+          },
+          {
+            "id": "ai.amberx.axf.molly.xlayout"
+          },
+          {
+            "id": "ai.amberx.axf.example.beta",
+            "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "host-plugins",
+        "plugins": []
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "host-plugins",
+        "plugins": []
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "host-plugins",
+        "plugins": "nope"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "host-plugins"
+      },
+      "message": null
+    },
+    {
+      "input": "{\"$axf\":\"embed@1\",\"type\":\"host-plugins\",\"plugins\":[{\"id\":\"ai.amberx.axf.p0\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p1\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p2\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p3\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p4\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p5\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p6\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p7\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p8\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p9\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p10\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p11\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p12\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p13\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p14\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p15\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p16\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p17\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p18\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p19\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p20\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p21\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p22\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p23\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p24\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p25\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p26\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p27\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p28\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p29\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p30\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p31\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p32\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p33\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p34\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p35\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p36\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p37\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p38\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p39\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p40\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p41\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p42\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p43\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p44\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p45\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p46\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p47\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p48\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p49\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p50\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p51\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p52\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p53\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p54\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p55\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p56\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p57\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p58\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p59\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p60\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p61\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p62\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p63\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p64\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p65\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p66\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p67\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p68\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p69\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p70\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p71\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p72\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p73\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p74\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p75\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p76\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p77\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p78\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p79\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p80\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p81\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p82\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p83\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p84\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p85\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p86\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p87\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p88\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p89\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p90\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p91\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p92\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p93\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p94\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p95\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p96\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p97\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p98\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p99\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p100\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p101\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p102\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p103\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p104\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p105\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p106\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p107\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p108\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p109\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p110\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p111\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p112\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p113\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p114\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p115\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p116\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p117\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p118\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p119\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p120\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p121\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p122\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p123\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p124\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p125\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p126\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p127\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p128\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p129\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p130\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p131\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p132\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p133\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p134\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p135\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p136\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p137\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p138\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p139\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p140\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p141\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p142\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p143\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p144\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p145\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p146\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p147\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p148\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p149\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p150\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p151\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p152\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p153\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p154\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p155\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p156\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p157\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p158\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p159\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p160\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p161\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p162\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p163\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p164\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p165\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p166\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p167\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p168\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p169\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p170\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p171\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p172\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p173\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p174\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p175\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p176\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p177\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p178\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p179\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p180\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p181\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p182\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p183\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p184\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p185\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p186\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p187\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p188\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p189\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p190\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p191\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p192\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p193\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p194\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p195\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p196\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p197\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p198\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p199\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p200\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p201\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p202\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p203\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p204\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p205\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p206\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p207\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p208\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p209\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p210\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p211\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p212\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p213\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p214\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p215\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p216\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p217\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p218\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p219\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p220\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p221\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p222\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p223\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p224\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p225\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p226\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p227\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p228\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p229\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p230\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p231\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p232\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p233\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p234\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p235\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p236\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p237\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p238\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p239\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p240\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p241\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p242\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p243\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p244\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p245\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p246\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p247\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p248\",\"version\":\"1.0.0\"},{\"id\":\"ai.amberx.axf.p249\",\"version\":\"1.0.0\"}]}",
+      "message": {
+        "$axf": "embed@1",
+        "type": "host-plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.p0",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p1",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p2",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p3",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p4",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p5",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p6",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p7",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p8",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p9",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p10",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p11",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p12",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p13",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p14",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p15",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p16",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p17",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p18",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p19",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p20",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p21",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p22",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p23",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p24",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p25",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p26",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p27",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p28",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p29",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p30",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p31",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p32",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p33",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p34",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p35",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p36",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p37",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p38",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p39",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p40",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p41",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p42",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p43",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p44",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p45",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p46",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p47",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p48",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p49",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p50",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p51",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p52",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p53",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p54",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p55",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p56",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p57",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p58",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p59",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p60",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p61",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p62",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p63",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p64",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p65",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p66",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p67",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p68",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p69",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p70",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p71",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p72",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p73",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p74",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p75",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p76",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p77",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p78",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p79",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p80",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p81",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p82",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p83",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p84",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p85",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p86",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p87",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p88",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p89",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p90",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p91",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p92",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p93",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p94",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p95",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p96",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p97",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p98",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p99",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p100",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p101",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p102",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p103",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p104",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p105",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p106",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p107",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p108",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p109",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p110",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p111",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p112",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p113",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p114",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p115",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p116",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p117",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p118",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p119",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p120",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p121",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p122",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p123",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p124",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p125",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p126",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p127",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p128",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p129",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p130",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p131",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p132",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p133",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p134",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p135",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p136",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p137",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p138",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p139",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p140",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p141",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p142",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p143",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p144",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p145",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p146",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p147",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p148",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p149",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p150",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p151",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p152",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p153",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p154",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p155",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p156",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p157",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p158",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p159",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p160",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p161",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p162",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p163",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p164",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p165",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p166",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p167",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p168",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p169",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p170",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p171",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p172",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p173",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p174",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p175",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p176",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p177",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p178",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p179",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p180",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p181",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p182",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p183",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p184",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p185",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p186",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p187",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p188",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p189",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p190",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p191",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p192",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p193",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p194",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p195",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p196",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p197",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p198",
+            "version": "1.0.0"
+          },
+          {
+            "id": "ai.amberx.axf.p199",
+            "version": "1.0.0"
+          }
+        ]
+      }
+    }
+  ],
+  "hostPluginSkips": [
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Molly already has ai.amberx.axf.inline-edit 0.1.0",
+          "mismatch": false,
+          "version": "0.1.0",
+          "hostVersion": "0.1.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.2.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Molly already has ai.amberx.axf.inline-edit 0.2.0 (this app has 0.1.0)",
+          "mismatch": true,
+          "version": "0.1.0",
+          "hostVersion": "0.2.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.0.1"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Molly already has ai.amberx.axf.inline-edit 0.0.1 (this app has 0.1.0)",
+          "mismatch": true,
+          "version": "0.1.0",
+          "hostVersion": "0.0.1"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Molly already has ai.amberx.axf.inline-edit",
+          "mismatch": false,
+          "version": "0.1.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.console.molly-guide",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.console.molly-guide",
+          "reason": "Molly already has ai.amberx.axf.console.molly-guide 0.1.0",
+          "mismatch": false,
+          "hostVersion": "0.1.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Molly already has ai.amberx.axf.inline-edit 0.1.0",
+          "mismatch": false,
+          "version": "0.1.0",
+          "hostVersion": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "reason": "Molly already has ai.amberx.axf.console.plan-studio 1.2.0",
+          "mismatch": false,
+          "version": "1.2.0",
+          "hostVersion": "1.2.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": []
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": null,
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": []
+    },
+    {
+      "embed": null,
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": []
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ],
+        "page": "view:inline-edit"
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": []
+    },
+    {
+      "embed": {
+        "host": "other-host",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Other-host already has ai.amberx.axf.inline-edit 0.1.0",
+          "mismatch": false,
+          "version": "0.1.0",
+          "hostVersion": "0.1.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        },
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.plan-studio",
+          "version": "1.2.0"
+        },
+        {
+          "id": "ai.amberx.axf.console.molly-guide"
+        }
+      ],
+      "skips": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "reason": "Molly already has ai.amberx.axf.inline-edit 0.1.0",
+          "mismatch": false,
+          "version": "0.1.0",
+          "hostVersion": "0.1.0"
+        }
+      ]
+    },
+    {
+      "embed": {
+        "host": "molly",
+        "hidden": [
+          "banner",
+          "nav-menu"
+        ],
+        "takes": [
+          "nav-menu"
+        ]
+      },
+      "host": [
+        {
+          "id": "ai.amberx.axf.inline-edit",
+          "version": "0.1.0"
+        },
+        {
+          "id": "ai.amberx.axf.molly.xlayout",
+          "version": "0.1.0"
+        }
+      ],
+      "mine": [],
+      "skips": []
+    }
   ]
 }
