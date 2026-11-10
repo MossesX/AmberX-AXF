@@ -772,12 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:10 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
-- 2026-11-10 18:11 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · pipeline
-- 2026-11-10 18:11 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
-- 2026-11-10 18:11 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-10 18:11 UTC · `pass-approval-hook-deep-link-amberx-notification` branch claude/pass-approval-hook-deep-link-amberx-notification (all) · pipeline
-- 2026-11-10 18:11 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` PR #463 (all) · builds-live
 - 2026-11-10 18:11 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
 - 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
 - 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
@@ -1172,6 +1166,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` branch claude/ai-assistant-gizmo-moved-to-the-console-remove-t (all) · pipeline
 - 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
 - 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` → running, note (all) · pipeline
+- 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` branch claude/orchestrator-merge-first-switch-separate-merger (all) · pipeline
+- 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
+- 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` → running, note (all) · pipeline
+- 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` branch claude/api-accounts-need-no-approval-builds-route-there (all) · pipeline
+- 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
 
 ## Token passes (log)
 
