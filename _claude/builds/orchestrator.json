@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:44:19.514Z",
+ "updatedAt": "2026-11-10T20:44:30.862Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89101,7 +89101,7 @@
    "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
    "category": "",
    "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89109,7 +89109,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:43:20.189Z",
+   "updatedAt": "2026-11-10T20:44:23.179Z",
    "builtAt": "",
    "notes": [
     {
@@ -89155,6 +89155,10 @@
     {
      "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T20:41:33.492Z"
+    },
+    {
+     "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T20:44:23.179Z"
     }
    ],
    "approvals": [
@@ -94668,6 +94672,43 @@
      "uid": "st-mwb5rlfw03tnr2"
     }
    ]
+  },
+  {
+   "id": "finish-and-land-the-git-status-board-every-ready",
+   "title": "Finish and land the Git status board: every ready-to-merge PR viewable in the console",
+   "category": "",
+   "detail": "git-status-board (PR #291, 5 of 6 steps): finish s6, land it, redeploy. Make sure it lists every open PR ready to merge (title, build, CI, conflicts, age) with Merge / Fix / Open on GitHub actions, so Brett can view them in the console instead of GitHub. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:44:19.333Z",
+   "updatedAt": "2026-11-10T20:44:20.714Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:44:20.714Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Git status board, put them in the console.",
+    "at": "2026-11-10T20:44:19.333Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

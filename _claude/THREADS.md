@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:55 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s2 done (all) · orchestrator
-- 2026-11-10 16:55 UTC · `search-bar-plugin-add-on-search-builds-session-h` PR #451 (all) · builds-live
-- 2026-11-10 16:56 UTC · `search-bar-plugin-add-on-search-builds-session-h` s3 done, → built (all) · orchestrator
 - 2026-11-10 16:56 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
 - 2026-11-10 16:56 UTC · `search-bar-plugin-snappable-search-asset-globe-e` PR #452 (all) · builds-live
 - 2026-11-10 16:57 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s3 done, → built (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:43 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` added (0 steps) (all) · console
 - 2026-11-10 20:43 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → queued, note (all) · console
 - 2026-11-10 20:44 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
+- 2026-11-10 20:44 UTC · `finish-and-land-the-git-status-board-every-ready` added (0 steps) (all) · console
+- 2026-11-10 20:44 UTC · `finish-and-land-the-git-status-board-every-ready` → queued, note (all) · console
+- 2026-11-10 20:44 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
