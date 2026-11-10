@@ -3,14 +3,15 @@
  * entry; the API base comes from the setting override or the default; each scheme prepares a request its own way
  * (bearer: Authorization and no cookies; session: cookies, CSRF on writes; none: nothing); `check` maps the backend's
  * answer to signed-in / signed-out / unreachable; sign-in and sign-out; a plugin's provider replaces the default and
- * is restored when its owner is cleared; the API client rides the seam.
+ * is restored when its owner is cleared; the API client rides the seam. The App connections screen (s2): status in the
+ * systems check's words, issues first, the buttons each connection offers, and the #/connections[/<app>] page link.
  *   npx -y tsx framework/spec/check-molly-credentials.mts
  */
 import assert from 'node:assert/strict';
-import { MOLLY_APPS } from '../../apps/molly/src/molly/apps';
+import { MOLLY_APPS, MOLLY_PAGES, pageLink } from '../../apps/molly/src/molly/apps';
 import {
   AUTH_SCHEMES, CONNECTION_STATES, CREDENTIALS_CONTRACT, CredentialSeam, MOLLY_BACKENDS, WRITE_METHODS, authSettingKeys, backendErrors, backendOf,
-  connectionLine, joinUrl, memoryTokens, normalizeApiBase, originOf, type AppConnection, type AuthProvider,
+  CONNECTION_STATUS_LABEL, connectionLine, connectionOffers, connectionStatus, connectionSummary, joinUrl, memoryTokens, normalizeApiBase, originOf, type AppConnection, type AuthProvider,
 } from '../../apps/molly/src/molly/credentials';
 
 let checks = 0;
@@ -213,5 +214,58 @@ const hubApi = seam.api('axhub');
 await hub.check();
 await hubApi.post('auth/api/approvals/x/approve', { note: 'ok' });
 eq([header(last(), 'X-AxHub-CSRF'), last().init.credentials, header(last(), 'authorization')], ['csrf-1', 'include', null], 'a hub write through the client: cookie + CSRF, no bearer');
+
+// ---- App connections screen (s2): status the systems check way, issues first, offers, page link ----
+const conn = (app: string, state: AppConnection['state'], extra: Partial<AppConnection> = {}): AppConnection => ({
+  app, label: app, scheme: backendOf(app)?.scheme ?? 'none', apiBase: '', baseOverridden: false, state, who: '', detail: '',
+  signInUrl: '', hasToken: false, checkedAt: null, ...extra,
+});
+eq(connectionStatus(conn('console', 'signed-in')), 'ok', 'signed in is ok');
+eq(connectionStatus(conn('amberx', 'none')), 'ok', 'nothing to sign in to is ok');
+eq(connectionStatus(conn('console', 'signed-out')), 'warn', 'signed out is a warning (sign in)');
+eq(connectionStatus(conn('console', 'unreachable')), 'error', "unreachable is an error (can't reach)");
+eq(connectionStatus(conn('console', 'unknown')), 'unknown', 'not checked yet');
+eq(Object.keys(CONNECTION_STATUS_LABEL).sort(), ['error', 'ok', 'unknown', 'warn'], 'every status has a label');
+for (const st of CONNECTION_STATES) ok(CONNECTION_STATUS_LABEL[connectionStatus(conn('console', st))], `state ${st} has a label`);
+const sum = connectionSummary([conn('amberx', 'none'), conn('axhub', 'signed-out'), conn('console', 'unknown'), conn('expenses', 'unreachable'), conn('x', 'signed-out')]);
+eq(sum.counts, { ok: 1, warn: 2, error: 1, unknown: 1 }, 'counts per status');
+eq(sum.issues, 3, 'issues are errors + warnings');
+eq(sum.ordered.map((c) => c.app), ['expenses', 'axhub', 'x', 'console', 'amberx'], 'errors, then warnings (app order kept), then unknown, then ok');
+eq(connectionSummary([]), { counts: { ok: 0, warn: 0, error: 0, unknown: 0 }, issues: 0, ordered: [] }, 'empty summary');
+eq(connectionOffers(conn('amberx', 'none')), { token: false, signInPage: false, signOut: false, check: false }, 'AmberX offers nothing');
+eq(connectionOffers(conn('console', 'signed-out')), { token: true, signInPage: false, signOut: false, check: true }, 'console signed out: paste a token, check');
+eq(connectionOffers(conn('console', 'signed-in', { hasToken: true })).signOut, true, 'console with a token: sign out (forget it)');
+eq(connectionOffers(conn('axhub', 'signed-out', { signInUrl: 'https://axhub.amberxai.com/login' })), { token: false, signInPage: true, signOut: false, check: true }, 'hub signed out: its sign-in page');
+eq(connectionOffers(conn('axhub', 'signed-in', { signInUrl: 'https://axhub.amberxai.com/login' })).signOut, true, 'hub signed in: sign out through its API');
+eq(connectionOffers(conn('expenses', 'signed-out', { signInUrl: 'https://expenses.amberxai.com/' })), { token: true, signInPage: true, signOut: false, check: true }, 'Expenses: its page or a pasted token');
+eq(connectionOffers(conn('expenses', 'signed-in')).signOut, false, 'Expenses session without a token and no sign-out API: nothing to sign out here');
+eq(connectionOffers(conn('nope', 'unknown')).check, false, 'an app without a backend offers nothing');
+eq(MOLLY_PAGES, ['connections'], 'Molly pages with a deep link');
+eq(pageLink('#/connections'), { view: 'connections', app: '' }, 'page link: the page');
+eq(pageLink('#/connections/console'), { view: 'connections', app: 'console' }, 'page link: the page on one app');
+eq(pageLink('#connections/nope'), { view: 'connections', app: '' }, 'page link: an unknown app is dropped');
+eq(pageLink('#/console/builds'), null, 'an app deep link is not a page link');
+eq(pageLink(''), null, 'no hash, no page');
+
+// ---- wiring: every action the screen offers exists, the screen is reachable, a token never rides an action spec ----
+{
+  const { readFileSync } = await import('node:fs');
+  const root = new URL('../../apps/molly/', import.meta.url);
+  const read = (p: string) => readFileSync(new URL(p, root), 'utf8');
+  const actions = read('src/actions.ts');
+  for (const id of ['molly.auth.open', 'molly.auth.status', 'molly.auth.check', 'molly.auth.sign-in', 'molly.auth.sign-out', 'molly.auth.base', 'molly.auth.user'])
+    ok(actions.includes(`on('${id}'`), `action ${id} is registered`);
+  const screen = read('src/molly/Connections.tsx');
+  for (const m of screen.matchAll(/dispatch\(`?'?(molly\.auth\.[a-z-]+)/g)) ok(actions.includes(`on('${m[1]}'`), `the screen's ${m[1]} is a registered action`);
+  ok(!/dispatch\([^)]*sign-in:[^)]*token/.test(screen), 'a typed token is never put in an action spec');
+  ok(screen.includes('signInApp(rt, c.app, token'), 'the token field signs in through signInApp');
+  ok(screen.includes(`[CONNECTIONS_VIEW]`) && screen.includes(`id: CONNECTIONS_TAB`), 'the screen is a view and a Settings tab');
+  ok(read('src/App.tsx').includes('connectionsLibrary'), 'Molly installs the App connections library');
+  const nav = JSON.parse(read('src/assets/nav-menu/molly.json')) as { data: { sections: { items: { view?: string }[] }[] } };
+  ok(nav.data.sections.some((s) => s.items.some((i) => i.view === 'connections')), 'navigation opens App connections');
+  const menu = read('src/assets/app-menu/molly.json');
+  ok(menu.includes('"action": "molly.auth.open"'), 'the application menu opens App connections');
+  ok(read('src/main.tsx').includes('pageLink('), 'the #/connections page link is read at start and on hash change');
+}
 
 console.log(`check-molly-credentials: ok (${checks} checks)`);
