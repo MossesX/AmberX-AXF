@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:42:10.819Z",
+ "updatedAt": "2026-11-10T15:43:07.865Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85258,6 +85258,37 @@
      "uid": "st-mwauz0p606osns"
     }
    ]
+  },
+  {
+   "id": "project-manager-add-on-drag-a-build-to-another-p",
+   "title": "Project Manager add-on: drag a build to another project's tab/window, drop dialog picks Pending, Queued (with position) or Planned",
+   "category": "",
+   "detail": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T15:43:05.952Z",
+   "updatedAt": "2026-11-10T15:43:05.952Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+    "at": "2026-11-10T15:43:05.952Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

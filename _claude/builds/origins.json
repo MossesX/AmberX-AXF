@@ -3445,6 +3445,18 @@
    "from": "brief",
    "addenda": []
   },
+  "project-manager-add-on-drag-a-build-to-another-p": {
+   "said": "Drag a build over to another tab or window with the other project and drop it, and a dialog asks if you want to drop into pending, queued or planned. If queued, it asks what spot in the queue, first, second, third or last, while listing the current queue, the current pending, the current plan.",
+   "at": "2026-11-10T15:43:05.952Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "project-manager-add-on-new-project-prompt-asks-i": {
    "said": "When you start a project, it will ask you if it's going to be an internal build or if you want a boilerplate to build an external app.",
    "at": "2026-11-10T15:40:48.813Z",
