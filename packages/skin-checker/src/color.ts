@@ -136,7 +136,8 @@ export function passingShade(fg: Rgba, bg: Rgba, target: number): string {
   if (!cands.length) return toHex(luminance(bg.a < 1 ? composite(bg, { r: 255, g: 255, b: 255, a: 1 }) : bg) > 0.18 ? { r: 0, g: 0, b: 0, a: 1 } : { r: 255, g: 255, b: 255, a: 1 });
   const L = cands.sort((x, y) => Math.abs(x - lab.L) - Math.abs(y - lab.L))[0]!;
   // the hex rounding can land a hair under the target: nudge until it passes
-  let out = fromOklab({ ...lab, L }, 1);
-  for (let i = 0; i < 20 && contrastRatio({ ...out, a: fg.a }, bg) < target; i++) out = fromOklab({ ...lab, L: L < lab.L ? L - 0.002 * (i + 1) : L + 0.002 * (i + 1) }, 1);
-  return toHex(out);
+  const hexAt = (l: number) => toHex(fromOklab({ ...lab, L: clamp(l, 0, 1) }, 1));
+  let hex = hexAt(L);
+  for (let i = 1; i <= 40 && contrastRatio({ ...parseColor(hex)!, a: fg.a }, bg) < target; i++) hex = hexAt(L < lab.L ? L - 0.002 * i : L + 0.002 * i);
+  return hex;
 }

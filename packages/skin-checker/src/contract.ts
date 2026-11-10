@@ -343,7 +343,8 @@ export interface SkinCheckEngine {
   /** The registered rules, in run order. */
   rules(): readonly SkinCheckRule[];
   /** Run every rule not switched off; `now` is injectable so results are reproducible in tests. */
-  check(subject: SkinCheckSubject, settings?: Partial<SkinCheckSettings> | null, now?: Date): SkinCheckResult;
+  /** `settings` may be nested or flat dotted keys (`{ 'contrast.text': 7 }`); normalizeSettings fills the rest. */
+  check(subject: SkinCheckSubject, settings?: Partial<SkinCheckSettings> | Record<string, unknown> | null, now?: Date): SkinCheckResult;
   /** Apply the fixes of the given issues (by id) to the subject; writes are returned for the caller to persist. */
   applyFixes(subject: SkinCheckSubject, result: SkinCheckResult, issueIds: readonly string[]): SkinCheckApplied;
   /** Apply every fix the result offers. */

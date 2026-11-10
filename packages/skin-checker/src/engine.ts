@@ -125,7 +125,7 @@ export function createSkinCheckEngine(registered: readonly SkinCheckRule[]): Ski
 
     applyFixes(subject, result, issueIds): SkinCheckApplied {
       const byId = new Map(result.issues.map((i) => [i.id, i]));
-      const written = new Set<string>();
+      const written = new Map<string, string>();
       const writes: SkinCheckWrite[] = [];
       const fixed: string[] = [];
       const unfixable: string[] = [];
@@ -135,13 +135,18 @@ export function createSkinCheckEngine(registered: readonly SkinCheckRule[]): Ski
         if (!fix || !fix.writes.length) { unfixable.push(id); continue; }
         // Two fixes for the same token (a merge and a contrast shade on one colour): the first wins, the other waits
         // for the next run, which sees the new value.
-        const fresh = fix.writes.filter((w) => !written.has(`${w.token.type}:${w.token.id}/${w.token.path}`));
-        if (!fresh.length) { unfixable.push(id); continue; }
+        const key = (w: SkinCheckWrite) => `${w.token.type}:${w.token.id}/${w.token.path}`;
+        const fresh = fix.writes.filter((w) => !written.has(key(w)));
+        if (!fresh.length) {
+          // already written by an earlier fix: fixed when it wrote the same value (one shade for every pair of a token)
+          (fix.writes.every((w) => written.get(key(w)) === JSON.stringify(w.value)) ? fixed : unfixable).push(id);
+          continue;
+        }
         for (const w of fresh) {
           const next = writeSubject(cur, w);
           if (next === cur) continue;
           cur = next;
-          written.add(`${w.token.type}:${w.token.id}/${w.token.path}`);
+          written.set(key(w), JSON.stringify(w.value));
           writes.push({ token: { type: w.token.type, id: w.token.id, path: w.token.path }, value: w.value });
         }
         fixed.push(id);
