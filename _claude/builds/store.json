@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2340,
- "updatedAt": "2026-11-10T04:32:48.830Z",
+ "rev": 2341,
+ "updatedAt": "2026-11-10T04:33:11.808Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136470,7 +136470,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T04:28:17.210Z",
-   "updatedAt": "2026-11-10T04:29:49.431Z",
+   "updatedAt": "2026-11-10T04:32:49.690Z",
    "builtAt": "",
    "notes": [
     {
@@ -136480,6 +136480,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T04:29:49.431Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:32:49.690Z"
     }
    ],
    "approvals": [],
@@ -136507,7 +136511,7 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-10T04:29:49.431Z",
+     "at": "2026-11-10T04:32:49.690Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 3,
@@ -136521,7 +136525,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwa6yeif01g9n7",
+     "uid": "st-mwa729lm01ud5e",
      "title": "",
      "text": "Plain code in the orchestrator dispatcher, no AI. 1) The moment a build's session finishes with its steps ticked and tests green, the orchestrator lands it straight away: clean sync files and stray logs, clear stale locks, merge origin/main, rerun the build's own tests, push to main. No waiting on a person or a later session. 2) UPDATE THE CONSOLE ON EVERY LAND: right after each push to main, trigger the console redeploy immediately (the same path as install-console.sh's auto-update, run now, not on the 5-minute timer), and rebuild any other app the change touched (AmberX web, axHub web, Molly and so on). Wait for it to come up healthy, then refresh open consoles. If the deploy fails, roll back to the last good image and queue a fix. 3) UI Review never blocks landing: screenshots and picks can follow after landing, and changes come as follow-up builds. 4) If main moved and tests fail after the merge, or there's a code clash, the orchestrator immediately queues a conflict-fix run on the same branch (top priority, any working account) and lands when green. It retries until it's on main. 5) Land in finish order, one at a time (a merge lock), so each lands on the newest main. Batch redeploys if several land within a minute. 6) Backfill now: land every finished-but-unlanded build (about 134), oldest first, skipping ones superseded or already on main, with conflict-fix runs where needed. 7) Each land and deploy shows in the Activity Monitor and fix log, with a phone FYI only for failures that need Brett. Tests with fake clashes and a fake failed deploy. Supersedes any auto-land pieces in other builds; don't duplicate.",
      "model": "Opus",
@@ -136538,12 +136542,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T04:29:49.431Z",
-     "updatedAt": "2026-11-10T04:29:49.431Z"
+     "createdAt": "2026-11-10T04:32:49.690Z",
+     "updatedAt": "2026-11-10T04:32:49.690Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwa6yeif02d5au",
+     "uid": "st-mwa729ln02bs9b",
      "title": "",
      "text": "You realize when you don't merge stuff right away you have to pull in main again, and tests are gonna fail. Why do you not just merge this as soon as it's done? ... Right, so when something lands, update the console. Period.",
      "model": "Opus",
@@ -136560,12 +136564,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T04:29:49.431Z",
-     "updatedAt": "2026-11-10T04:29:49.431Z"
+     "createdAt": "2026-11-10T04:32:49.690Z",
+     "updatedAt": "2026-11-10T04:32:49.690Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwa6yeif0357oi",
+     "uid": "st-mwa729ln03cxzu",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/auto-land-every-build-the-moment-it-finishes-red.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -136585,8 +136589,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T04:29:49.431Z",
-     "updatedAt": "2026-11-10T04:29:49.431Z"
+     "createdAt": "2026-11-10T04:32:49.690Z",
+     "updatedAt": "2026-11-10T04:32:49.690Z"
     }
    ],
    "profiles": [
@@ -136597,12 +136601,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-10T04:29:49.431Z",
+   "defaultAt": "2026-11-10T04:32:49.690Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
