@@ -771,11 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
-- 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` branch claude/one-amberx-build-notification-veto-approval-befo (all) · pipeline
-- 2026-11-10 03:29 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
-- 2026-11-10 03:30 UTC · `self-healing-build-folders-auto-clear-stale-git` → running, note (all) · pipeline
-- 2026-11-10 03:30 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:31 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
 - 2026-11-10 03:31 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` → archived (all) · orchestrator
 - 2026-11-10 03:31 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · orchestrator
@@ -1171,6 +1166,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:00 UTC · `skins-own-everything-colour-theme-swaps-independ` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 17:01 UTC · `project-manager-every-project-its-own-console-in` s3 done, → built (all) · orchestrator
+- 2026-11-10 17:01 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · pipeline
+- 2026-11-10 17:01 UTC · `amberx-open-url-tapping-the-command-waiting-noti` → running, note (all) · pipeline
+- 2026-11-10 17:01 UTC · `amberx-open-url-tapping-the-command-waiting-noti` branch claude/amberx-open-url-tapping-the-command-waiting-noti (all) · pipeline
+- 2026-11-10 17:01 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
+- 2026-11-10 17:01 UTC · `amberx-open-url-tapping-the-command-waiting-noti` note (all) · orchestrator
 
 ## Token passes (log)
 
