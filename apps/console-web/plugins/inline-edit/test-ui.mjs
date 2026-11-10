@@ -139,6 +139,27 @@ try {
     await page.locator('.axp-inline-edit__page').waitFor();
     ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 2), `${vp}: the overrides list shows both overrides`);
     await shot('overrides-list');
+
+    // tree root, tabs, search and a deep link: the list follows each, live
+    await page.locator('.axp-inline-edit__onode-head').getByRole('button', { name: 'menu console' }).first().click();
+    ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 1), `${vp}: picking a root in the tree shows only what is under it`);
+    await page.getByRole('button', { name: 'New tab with the selected root' }).click();
+    ok(await until(async () => (await rest('GET', 'overrides')).tabs.length === 2), `${vp}: a new tab keeps that root (per user, on the server)`);
+    await shot('overrides-tab');
+    await page.getByRole('tab', { name: 'Everything' }).click();
+    ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 2), `${vp}: the Everything tab shows both again`);
+    await page.getByRole('searchbox', { name: 'Search' }).fill('Gap');
+    ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 1), `${vp}: full-text search narrows the list`);
+    await page.getByRole('searchbox', { name: 'Search' }).fill('');
+    await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 2);
+    await page.evaluate(() => { const g = globalThis; (g.AXF_VIEW_ARGS ??= {})['inline-edit-overrides'] = 'filter=%7B%22scope%22%3A%22parent%22%7D'; g.dispatchEvent(new CustomEvent('axf:view-arg', { detail: { view: 'inline-edit-overrides', arg: 'filter=%7B%22scope%22%3A%22parent%22%7D' } })); });
+    ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 1), `${vp}: a deep link's filter (scope = parent) applies to the open page`);
+    await rest('PUT', 'overrides/state', { filter: {}, q: '' });
+    await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 2);
+    const extra = (await rest('GET', 'overrides')).tabs.find((x) => x.id !== 'all');
+    if (extra) await rest('POST', 'overrides/tabs/close', { id: extra.id });
+    await rest('PUT', 'overrides/state', { tab: 'all' });
+    ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 2), `${vp}: a tab closed through REST: the page follows`);
     const item = page.locator('.axp-inline-edit__orow', { hasText: 'Text colour' });
     await item.getByRole('button', { name: 'Reset to axHub' }).click();
     ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 1), `${vp}: Reset to axHub removed only that item, live`);

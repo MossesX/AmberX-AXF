@@ -336,7 +336,8 @@ export const OPS = {
       if (!t) fail('not_found', `no tab ${input.tab} (tabs: ${o.tabs.map((x) => x.id).join(', ')})`);
       o.tab = t.id; o.root = t.root;
     }
-    if (input.root !== undefined) o.tabs = o.tabs.map((t) => (t.id === o.tab ? { ...t, root: o.root } : t));
+    // a root picked in a tab becomes that tab's root; the Everything tab stays everything (the pick is only the view)
+    if (input.root !== undefined) o.tabs = o.tabs.map((t) => (t.id === o.tab && t.id !== 'all' ? { ...t, root: o.root } : t));
     writeUi(ctx.user, { ...ui, overrides: o });
     return o;
   },
