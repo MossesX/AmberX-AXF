@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:24:32.524Z",
+ "updatedAt": "2026-11-10T23:24:46.306Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95821,7 +95821,7 @@
    "pr": "#480",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
-   "updatedAt": "2026-11-10T23:23:59.250Z",
+   "updatedAt": "2026-11-10T23:24:06.902Z",
    "builtAt": "2026-11-10T23:21:24.841Z",
    "notes": [
     {
@@ -95875,6 +95875,10 @@
     {
      "text": "PR #480 open. UI Review desktop/phone shots still to take (headless session had no console on the branch).",
      "at": "2026-11-10T23:21:10.117Z"
+    },
+    {
+     "text": "Session axf-orchestrator-merge-first-switch-separate-merger--joey on account-5 ended (exit 0); the build was already built.",
+     "at": "2026-11-10T23:24:06.902Z"
     },
     {
      "text": "Headless run axf-orchestrator-merge-first-switch-separate-merger--joey: brief only · start 10.8K tokens ($0.03) · cost $0.31 · 14 turns · 6 tools, MCP none",
@@ -97604,7 +97608,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:08:12.434Z",
-   "updatedAt": "2026-11-10T23:23:16.372Z",
+   "updatedAt": "2026-11-10T23:24:31.015Z",
    "builtAt": "",
    "notes": [
     {
@@ -97622,6 +97626,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-stall-watchdog-detect-when-nothing-is-building-a--lenny, own login copy)",
      "at": "2026-11-10T23:14:16.511Z"
+    },
+    {
+     "text": "Headless run axf-stall-watchdog-detect-when-nothing-is-building-a--lenny: brief only · start 11.2K tokens ($0.03) · cost $3.24 · 65 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:24:31.015Z"
     }
    ],
    "approvals": [],
