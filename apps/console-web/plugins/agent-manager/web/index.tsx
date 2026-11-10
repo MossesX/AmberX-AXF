@@ -25,6 +25,9 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('agent-manager.vinny', () => rt.openDialog('agent-manager.vinny'), { label: "Vinny's commands and triggers" });
     rt.actions.register('agent-manager.wizard', ([kind]) => rt.openDialog('agent-manager.wizard', { kind: kind && WIZARDS[kind] ? kind : 'builder' }), { label: 'Open an agent manager wizard' });
+    // Capability-style action (axf.agents@1 UI): other plugins (the AI assistant's agent picker) open the agents
+    // section to train or edit an agent without naming this plugin.
+    rt.actions.register('agents.open', () => rt.navigate('agent-manager'), { label: 'Open the agents (train and edit agents)' });
   },
   views: { 'agent-manager': { title: 'Agent manager', icon: 'layers', render: () => <AgentManagerView /> } },
   dialogs: {

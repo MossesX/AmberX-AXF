@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ai-assistant",
   "name": "AI assistant",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, any OpenAI-compatible server), setup wizard in Settings → Plugins → AI assistant, settings dialog inside the chat, live sessions on an open host registry, write-mode approval cards, the Claude Code MCP bridge. Its title bar shows axHub approvals and held calls (lib-approvals badge: click to approve on the hub page, or Deny before a countdown ends). Chats as an agent from an installed agent manager. Hub users (behind axHub's sign-in wall) chat at /api/plugins/ai-assistant/app with permissions from the hub's users page.",
+  "description": "The console's AI assistant is Gizmo (Nov 10 2026: the old assistant chat is gone, Gizmo's chat moved here from AmberX). A Claude-style chat on the framework's assistant engine (assistant@1): chats drawer with search and pins, streaming replies that survive a reload, markdown and code, tool cards, write-mode approval cards, images and files, edit and resend, regenerate, read aloud, export; per chat an agent picker (Gizmo or any agent trained in the agents section) and a model switch (Claude Opus / Fable, or a local Ollama model); voice chat (push to talk, hands-free) in the browser; console control tools (open screens and settings, run actions, file builds). Every provider in the shared registry, setup wizard in Settings → Plugins → AI assistant. AmberX's Gizmo uses the same engine and chats. Hub users chat at /api/plugins/ai-assistant/app.",
   "targets": [
     "axf-console",
     "axf-web-app",
@@ -19,12 +19,18 @@
     "action:ai-assistant.open",
     "action:ai.chat.start",
     "service:axf.llm@1",
-    "service:axf.live-sessions@1"
+    "service:axf.live-sessions@1",
+    "action:ai-assistant.new",
+    "action:ai-assistant.talk",
+    "action:ai-assistant.model",
+    "action:ai-assistant.agent"
   ],
   "optional": [
     "service:axf.agents@1",
     "service:axf.containers@1",
-    "service:axf.live-host@1"
+    "service:axf.live-host@1",
+    "service:console-commands@1",
+    "service:axf.build-dispatch@1"
   ],
   "scopes": [
     "ROUTES",

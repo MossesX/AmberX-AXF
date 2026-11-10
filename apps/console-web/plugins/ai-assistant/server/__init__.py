@@ -512,7 +512,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 agent = {**agent, "tools": []}
         groups = dict(cfg.get("tools", {}))
         if not me.admin:
-            groups = {g: bool(v) and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
+            groups = {g: bool(v) and g not in tools.ADMIN_GROUPS and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
+            groups.update({g: False for g in tools.ADMIN_GROUPS})
         context = contract.normalize_chat_context(body.get("context"))
         tool_on = st.get("tools", True) is not False
         base_specs = tools.specs(groups) if tool_on else []

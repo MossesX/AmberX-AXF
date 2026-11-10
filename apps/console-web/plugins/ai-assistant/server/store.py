@@ -59,7 +59,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "fallback": [],
     "params": {"temperature": 0.7, "max_tokens": 4096, "top_p": None, "thinking": False, "thinking_budget": 4096, "reasoning_effort": ""},
     "contextMessages": 40,
-    "tools": {"repo": True, "utility": True, "web": False},
+    "tools": {"repo": True, "utility": True, "web": False, "console": True},
     "maxToolRounds": 12,
     "autoTitle": True,
     "showUsage": True,

@@ -4,6 +4,12 @@ repo_list / repo_read / repo_search  the framework repo (never .git, .axf-consol
 current_time                         date, time and time zone of the console server
 calculator                           arithmetic only (AST-checked, no names, no calls)
 web_fetch                            public http(s) pages as text (private/loopback/link-local addresses refused)
+console_open / console_settings /    drive the open Dev Console (console-commands@1): open a screen or a Settings tab,
+console_action / console_where /     run a registered action, say where it is, list what it has. Admins only.
+console_list
+build_file / build_status            file a build into the pipeline and read one back (axf.build-dispatch@1). Admins only.
+
+The console group reaches other plugins only through capability services (plugin_services), never by folder.
 """
 from __future__ import annotations
 
@@ -34,13 +40,29 @@ SPECS: list[dict[str, Any]] = [
      "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"], "additionalProperties": False}},
     {"name": "web_fetch", "group": "web", "description": "Fetch a public web page (http/https) and return its readable text, up to 40k characters.",
      "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"], "additionalProperties": False}},
+    {"name": "console_open", "group": "console", "description": "Open a screen in Brett's open Dev Console: its view id ('plan-studio'), title or a few words ('builds'). Not sure of the name? console_list first.",
+     "parameters": {"type": "object", "properties": {"screen": {"type": "string"}}, "required": ["screen"], "additionalProperties": False}},
+    {"name": "console_settings", "group": "console", "description": "Open a Settings tab in the open console: its id ('appearance'), 'plugins/<plugin>' for a plugin's sub-tab, or its title. anchor='setting:<key>' scrolls to one setting.",
+     "parameters": {"type": "object", "properties": {"tab": {"type": "string"}, "anchor": {"type": "string"}}, "required": ["tab"], "additionalProperties": False}},
+    {"name": "console_action", "group": "console", "description": "Run a registered console action by id ('terminal.open'), spec with arguments ('swap:color-theme:dark') or label. One that deletes or resets answers confirmation_required with a token: tell Brett, then call again with confirm=<token>.",
+     "parameters": {"type": "object", "properties": {"action": {"type": "string"}, "args": {"type": "array", "items": {"type": "string"}}, "confirm": {"type": "string"}}, "required": ["action"], "additionalProperties": False}},
+    {"name": "console_where", "group": "console", "description": "Where Brett's open console is now: screen, open dialog, settings tab.", "parameters": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "console_list", "group": "console", "description": "What the open console has: kind = screens | dialogs | settings | actions, best matches for q first.",
+     "parameters": {"type": "object", "properties": {"kind": {"type": "string", "enum": ["screens", "dialogs", "settings", "actions"]}, "q": {"type": "string"}}, "additionalProperties": False}},
+    {"name": "build_file", "group": "console", "description": "File a build into the build pipeline (Brett asked for something to be built). title = short name; detail = what to build; said = Brett's own words, verbatim; priority = '' or 'urgent'; queue=false only files it as pending.",
+     "parameters": {"type": "object", "properties": {"title": {"type": "string"}, "detail": {"type": "string"}, "said": {"type": "string"}, "priority": {"type": "string"}, "queue": {"type": "boolean"}}, "required": ["title"], "additionalProperties": False}},
+    {"name": "build_status", "group": "console", "description": "One build's state: status, steps, pipeline (by build id).",
+     "parameters": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"], "additionalProperties": False}},
 ]
-GROUPS = {"repo": "Read the AXF repository", "utility": "Time and calculator", "web": "Fetch public web pages"}
+GROUPS = {"repo": "Read the AXF repository", "utility": "Time and calculator", "web": "Fetch public web pages", "console": "Drive the open Dev Console and file builds"}
+#: tool groups only admins get (they act on the console and the build pipeline)
+ADMIN_GROUPS = {"console"}
 
 
 # What says a message needs a built-in group (chat mode): a plain assistant has no skills to take these from.
 _GROUP_TRIGGERS = {"repo": ["code", "file", "files", "repo", "repository", "codebase", "framework", "readme", "function", "class"],
-                   "utility": ["time", "date", "calculate", "add up", "sum"], "web": ["http", "https", "website", "web page", "url", "link", "fetch"]}
+                   "utility": ["time", "date", "calculate", "add up", "sum"], "web": ["http", "https", "website", "web page", "url", "link", "fetch"],
+                   "console": ["open", "show me", "go to", "jump", "screen", "settings", "console", "build", "file a build", "where am i", "take me"]}
 
 
 def groups_for(offered: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -130,8 +152,59 @@ def web_fetch(url: str) -> str:
     return (f"HTTP {code}\n\n" if code >= 400 else "") + text[:40_000]
 
 
+def _service(name: str) -> Any:
+    try:
+        import plugin_services  # the console's capability registry (absent in unit tests run outside the console)
+    except ImportError as e:
+        raise ValueError(f"{name} is not available outside the console") from e
+    svc = plugin_services.get(name)
+    if svc is None:
+        raise ValueError(f"no enabled plugin provides {name}")
+    return svc
+
+
+def console_command(command: dict[str, Any]) -> str:
+    """One console-commands@1 command (the same wire the console MCP tools use), answered as JSON text."""
+    command = {k: v for k, v in command.items() if v not in (None, "", {}, [])}
+    command.setdefault("by", "ai-assistant")
+    r = _service("console-commands@1").run(command, ["*"], "ai-assistant")
+    return json.dumps(r, default=str)[:20_000]
+
+
+def console_tool(name: str, a: dict[str, Any]) -> str:
+    if name == "console_open":
+        return console_command({"op": "act", "target": "console.screens", "path": str(a.get("screen") or ""), "action": "open"})
+    if name == "console_settings":
+        return console_command({"op": "act", "target": "console.settings", "path": str(a.get("tab") or ""), "action": "open", "input": {"anchor": str(a.get("anchor") or "")} if a.get("anchor") else {}})
+    if name == "console_action":
+        args = [str(x) for x in (a.get("args") or [])][:20]
+        return console_command({"op": "act", "target": "console.actions", "path": str(a.get("action") or ""), "action": "run", "input": {"args": args} if args else {}, "confirm": str(a.get("confirm") or "")})
+    if name == "console_where":
+        return console_command({"op": "get", "target": "console.nav", "path": "here"})
+    if name == "console_list":
+        kind = str(a.get("kind") or "screens")
+        if kind not in ("screens", "dialogs", "settings", "actions"):
+            raise ValueError("kind is screens, dialogs, settings or actions")
+        return console_command({"op": "list", "target": f"console.{kind}", "select": {"q": str(a.get("q") or ""), "limit": 50} if a.get("q") else {"limit": 50}})
+    if name == "build_file":
+        title = str(a.get("title") or "").strip()[:200]
+        if not title:
+            raise ValueError("a build needs a title")
+        r = _service("axf.build-dispatch@1").request(title, str(a.get("detail") or "")[:8000], by="ai-assistant", source="ai-assistant",
+                                                      said=str(a.get("said") or "")[:8000], priority=str(a.get("priority") or ""), queue=a.get("queue") is not False)
+        return json.dumps(r, default=str)[:20_000]
+    if name == "build_status":
+        return json.dumps(_service("axf.build-dispatch@1").build(str(a.get("id") or "")), default=str)[:20_000]
+    raise ValueError(f"unknown tool {name}")
+
+
+CONSOLE_NAMES = {"console_open", "console_settings", "console_action", "console_where", "console_list", "build_file", "build_status"}
+
+
 def run(name: str, args: dict[str, Any]) -> str:
     a = args or {}
+    if name in CONSOLE_NAMES:
+        return console_tool(name, a)
     if name == "repo_list":
         return repo_list(str(a.get("dir") or "."))
     if name == "repo_read":

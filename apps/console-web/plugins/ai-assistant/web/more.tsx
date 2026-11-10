@@ -5,11 +5,12 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Icon, IconButton } from '@console/axf/react';
+import { Button, Icon, IconButton } from '@console/axf/react';
 
-export interface MoreItem { label: string; icon?: string; onPick: () => void; disabled?: boolean; title?: string; danger?: boolean }
+export interface MoreItem { label: string; icon?: string; onPick: () => void; disabled?: boolean; title?: string; danger?: boolean; checked?: boolean }
 
-export function MoreMenu({ items, label = 'More', icon = 'more' }: { items: (MoreItem | false | null | undefined)[]; label?: string; icon?: string }) {
+/** `text`: a small labelled button (a picker showing its current value) instead of the ⋯ icon. */
+export function MoreMenu({ items, label = 'More', icon = 'more', text }: { items: (MoreItem | false | null | undefined)[]; label?: string; icon?: string; text?: string }) {
   const [at, setAt] = useState<{ top: number; left: number } | null>(null);
   const btn = useRef<HTMLSpanElement>(null);
   const pop = useRef<HTMLDivElement>(null);
@@ -30,14 +31,16 @@ export function MoreMenu({ items, label = 'More', icon = 'more' }: { items: (Mor
   };
   return (
     <>
-      <span ref={btn} className="axp-ai-assistant__morebtn"><IconButton icon={icon} label={label} aria-haspopup="menu" aria-expanded={!!at} onClick={open} /></span>
+      <span ref={btn} className="axp-ai-assistant__morebtn">{text
+        ? <Button size="sm" icon={icon} title={label} aria-label={`${label}: ${text}`} aria-haspopup="menu" aria-expanded={!!at} onClick={open}>{text}</Button>
+        : <IconButton icon={icon} label={label} aria-haspopup="menu" aria-expanded={!!at} onClick={open} />}</span>
       {at && createPortal(
         <div ref={pop} className="fx-popover fx-dropdown axp-ai-assistant__more" style={{ top: at.top, left: at.left }} role="menu" aria-label={label}>
           <ul className="fx-menu">
             {list.map((it) => (
               <li key={it.label} className="fx-menu__li">
-                <button type="button" role="menuitem" className="fx-menu__item" disabled={it.disabled} title={it.title} onClick={() => { setAt(null); it.onPick(); }}>
-                  <span className="fx-menu__icon">{it.icon && <Icon name={it.icon} size={14} />}</span><span className="fx-menu__label">{it.label}</span>
+                <button type="button" role={it.checked === undefined ? 'menuitem' : 'menuitemradio'} aria-checked={it.checked} className="fx-menu__item" disabled={it.disabled} title={it.title} onClick={() => { setAt(null); it.onPick(); }}>
+                  <span className="fx-menu__icon">{it.checked ? <Icon name="check" size={14} /> : it.icon && <Icon name={it.icon} size={14} />}</span><span className="fx-menu__label">{it.label}</span>
                 </button>
               </li>
             ))}

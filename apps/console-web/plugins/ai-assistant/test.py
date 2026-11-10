@@ -915,4 +915,56 @@ check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessage
 c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
 plugin_services.withdraw("fake-agent-manager")
 
+# ---- console control tools (Nov 10 2026, Gizmo moved to the console): console-commands@1 + axf.build-dispatch@1
+class _FakeConsole:
+    def __init__(self):
+        self.seen = []
+
+    def run(self, command, scopes, by):
+        self.seen.append((command, scopes, by))
+        return {"ok": True, "echo": command}
+
+
+class _FakeDispatch:
+    def __init__(self):
+        self.asked = []
+
+    def request(self, title, detail="", **kw):
+        self.asked.append((title, detail, kw))
+        return {"ok": True, "id": "b-1", "status": "queued"}
+
+    def build(self, build_id):
+        return {"id": build_id, "status": "queued"}
+
+
+tools_c = tools_mod
+fc, fd = _FakeConsole(), _FakeDispatch()
+plugin_services.provide("console-commands@1", fc, "fake-console-commands")
+plugin_services.provide("axf.build-dispatch@1", fd, "fake-orchestrator")
+r = json.loads(tools_c.run("console_open", {"screen": "plan studio"}))
+check(r["ok"] and fc.seen[-1][0]["target"] == "console.screens" and fc.seen[-1][0]["path"] == "plan studio" and fc.seen[-1][2] == "ai-assistant", "console_open: one console-commands@1 open")
+tools_c.run("console_settings", {"tab": "plugins/ai-assistant", "anchor": "setting:x"})
+check(fc.seen[-1][0]["target"] == "console.settings" and fc.seen[-1][0]["input"] == {"anchor": "setting:x"}, "console_settings: tab + anchor")
+tools_c.run("console_action", {"action": "swap:color-theme:dark", "args": ["a"]})
+check(fc.seen[-1][0]["action"] == "run" and fc.seen[-1][0]["input"] == {"args": ["a"]} and "confirm" not in fc.seen[-1][0], "console_action: run, empty confirm dropped")
+tools_c.run("console_list", {"kind": "actions", "q": "theme"})
+check(fc.seen[-1][0]["target"] == "console.actions" and fc.seen[-1][0]["op"] == "list", "console_list: kind → target")
+try:
+    tools_c.run("console_list", {"kind": "files"})
+    check(False, "console_list: bad kind refused")
+except ValueError:
+    check(True, "console_list: bad kind refused")
+r = json.loads(tools_c.run("build_file", {"title": "Make X", "detail": "d", "said": "Make X please"}))
+check(r["id"] == "b-1" and fd.asked[-1][2]["said"] == "Make X please" and fd.asked[-1][2]["queue"] is True and fd.asked[-1][2]["by"] == "ai-assistant", "build_file: through axf.build-dispatch@1, queued, his words kept")
+check(json.loads(tools_c.run("build_status", {"id": "b-1"}))["id"] == "b-1", "build_status: reads one build")
+check({s["name"] for s in tools_c.specs({"console": True})} >= tools_c.CONSOLE_NAMES and not ({s["name"] for s in tools_c.specs({"console": False})} & tools_c.CONSOLE_NAMES), "console group: switchable in Tools")
+check("console" in tools_c.ADMIN_GROUPS, "console group: admins only")
+plugin_services.withdraw("fake-console-commands")
+plugin_services.withdraw("fake-orchestrator")
+try:
+    tools_c.run("console_where", {})
+    check(False, "console tools: no provider = a clear error")
+except ValueError as e:
+    check("console-commands@1" in str(e), "console tools: no provider = a clear error")
+
 print(f"all {ok} checks passed")
