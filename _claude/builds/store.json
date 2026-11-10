@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2956,
- "updatedAt": "2026-11-10T22:30:25.102Z",
+ "rev": 2957,
+ "updatedAt": "2026-11-10T22:30:43.112Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117661,7 +117661,7 @@
    "pr": "#395",
    "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-10T22:30:22.773Z",
+   "updatedAt": "2026-11-10T22:30:41.919Z",
    "builtAt": "",
    "notes": [
     {
@@ -117703,6 +117703,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-one-shell--rhonda, own login copy)",
      "at": "2026-11-10T21:50:17.821Z"
+    },
+    {
+     "text": "Reconciler: PR #395 names s7, s8, s10, s11, s12, s4, s5, s6, s15 done",
+     "at": "2026-11-10T22:30:41.919Z"
     }
    ],
    "approvals": [
@@ -118078,7 +118082,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
