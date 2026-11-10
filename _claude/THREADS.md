@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:39 UTC · `walkthrough-studio-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `hubstore-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `banner-group-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `banner-working-icon-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:51 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` note (all) · orchestrator
 - 2026-11-10 17:51 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` → queued, note (all) · console
 - 2026-11-10 17:52 UTC · `ollama-model-pick-mistral-small-24b-q4-default-m` note (all) · orchestrator
+- 2026-11-10 17:52 UTC · `approval-page-allow-all-deny-all-for-a-set-time` note (all) · builds-live
 
 ## Token passes (log)
 

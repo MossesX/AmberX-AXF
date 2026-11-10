@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:52:37.201Z",
+ "updatedAt": "2026-11-10T17:52:50.356Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86319,12 +86319,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:26:32.806Z",
-   "updatedAt": "2026-11-10T15:27:24.689Z",
+   "updatedAt": "2026-11-10T17:52:41.548Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:27:24.689Z"
+    },
+    {
+     "text": "Split by Claude into 10 steps (1 Fable).",
+     "at": "2026-11-10T17:52:41.548Z"
     }
    ],
    "approvals": [],
@@ -86344,51 +86348,16 @@
    "steps": [
     {
      "id": "s1",
-     "text": "axHub approval page settings: 1) Allow all approvals for the next 1 hour, 2 hours, or a custom duration / until a set time. 2) Deny all for a custom duration / until a set time. 3) A setting to change the veto countdown length (today fixed at 90 seconds). Show the active window and let it be cancelled early. Full API control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the approval policy schema and migration: a 'window' record (mode allow|deny, starts_at, ends_at, created_by, source ui|rest|mcp|cli|voice, cancelled_at) and a 'veto_countdown_sec' setting (default 90, bounds 10–3600). Only one active window at a time; a new window replaces the old one. Write the migration so existing installs keep 90 s and have no window. Document the contract in the approvals schema doc.",
+     "model": "Fable",
+     "why": "Schema + migration design for persisted approval policy shared by server, MCP, CLI and voice",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwaug2du01b98k"
-    },
-    {
-     "id": "s2",
-     "text": "I need a settings on the approval page to allow all for the next hour or two hours or a custom field that I can enter, or deny all for a custom field. Until a certain time or amount of time. And where's the switch? A setting to control the time of the 90 seconds.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwaug2du02tegg"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/approval-page-allow-all-deny-all-for-a-set-time.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
+     "estimate": "25 min",
      "files": [
-      "_claude/builds/reports/approval-page-allow-all-deny-all-for-a-set-time.md",
-      "_claude/THREADS.md"
+      "apps/console-web/plugins/approvals/schema/",
+      "apps/console-web/plugins/approvals/migrations/",
+      "docs/approvals/policy-schema.md"
      ],
      "checks": [],
      "session": "same",
@@ -86397,7 +86366,199 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwaug2du03wfew"
+     "uid": "st-mwazmwcs2zc2aw"
+    },
+    {
+     "id": "s2",
+     "text": "Engine: before an approval is queued, check the active window. In an allow window, auto-approve it; in a deny window, auto-deny it. Log every auto-decision with the window id. Expire windows lazily on read and with a timer so expiry clears without a restart. Replace the hard-coded 90 s veto countdown with the veto_countdown_sec setting, read when each countdown starts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/approvals/engine/",
+      "apps/console-web/plugins/approvals/store/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs302r1m"
+    },
+    {
+     "id": "s3",
+     "text": "Policy service: setWindow({mode, duration|until}), cancelWindow(), getPolicy() returning the active window with remaining time, and get/set veto_countdown_sec. Validate inputs: until must be in the future, duration must be within 24 h unless forced, countdown must be within bounds. Emit change events so the UI and phone notifications update live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/approvals/policy.mjs",
+      "apps/console-web/plugins/approvals/events/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs31ngye"
+    },
+    {
+     "id": "s4",
+     "text": "REST routes: GET /api/approvals/policy, POST /api/approvals/policy/window ({mode:'allow'|'deny', minutes | until}), DELETE /api/approvals/policy/window, GET/PUT /api/approvals/policy/veto-countdown. Use the existing console auth and audit logging.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/approvals/routes/",
+      "apps/console-web/server/routes/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs32ad19"
+    },
+    {
+     "id": "s5",
+     "text": "Approval page UI, settings section: 'Allow all for' with 1 h and 2 h presets, a custom duration field and an until-time picker; 'Deny all for' with a custom duration and an until-time picker; a 'Veto countdown' number field (seconds, defaults to 90) with a save button. Use the plugin framework components and call the REST routes from the previous step.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/approvals/ui/settings/",
+      "apps/console-web/plugins/approvals/ui/approvals-page.*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs33blx1"
+    },
+    {
+     "id": "s6",
+     "text": "Approval page UI, active-window banner: show the mode (allow or deny), a live countdown to the end time and the end time itself, plus a 'Cancel now' button. Show the same badge in the axHub header while a window is active. Update live from the policy change events.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/approvals/ui/window-banner.*",
+      "apps/console-web/ui/header/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs34pv1j"
+    },
+    {
+     "id": "s7",
+     "text": "API part for the UI (deep links and state): register console_show / console_open targets approvals/settings, approvals/settings#window and approvals/settings#veto-countdown. Expose the policy state through console state read. Add MCP console actions approvals.policy.get, approvals.window.set, approvals.window.cancel, approvals.vetoCountdown.get and approvals.vetoCountdown.set, all backed by the same policy service.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/approvals/plugin.json",
+      "apps/console-web/plugins/approvals/mcp/",
+      "apps/console-web/console-api/targets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs35qum4"
+    },
+    {
+     "id": "s8",
+     "text": "CLI and voice: add `axf approvals allow --for 2h|--until 18:30`, `axf approvals deny --for 30m|--until …`, `axf approvals window cancel`, `axf approvals status` and `axf approvals veto-countdown [<sec>]`. Add AmberX voice intents with the same meanings, for example 'allow all approvals for two hours', 'deny all until 6 pm', 'cancel the approval window', 'set veto countdown to 60 seconds' and 'what's the approval window', each confirmed by voice. Both go through the REST API.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/cli/commands/approvals/",
+      "apps/amberx/voice/intents/approvals.*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs36ckev"
+    },
+    {
+     "id": "s9",
+     "text": "Tests: policy service (set, replace, expire and cancel a window; validation), engine auto-approve/deny inside a window and normal flow outside it, configurable countdown, REST routes, MCP actions, CLI parsing of durations and until times, and the voice intent parse. Add a UI test for the settings form and the banner cancel button.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/approvals/test/",
+      "apps/cli/test/approvals.test.*",
+      "apps/amberx/voice/test/approvals.test.*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs37fmwd"
+    },
+    {
+     "id": "s10",
+     "text": "Final: run the full test suite. Write the report _claude/builds/reports/approval-page-allow-all-deny-all-for-a-set-time.md, including an API table showing how each feature is reached through the deep link, state read, REST, MCP, CLI and voice. Add the THREADS row in _claude/THREADS.md. Open the PR, with the same per-feature API reach list in its description.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/approval-page-allow-all-deny-all-for-a-set-time.md",
+      "_claude/THREADS.md",
+      "docs/approvals/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmwcs38idqc"
     }
    ]
   },
