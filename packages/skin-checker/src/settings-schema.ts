@@ -11,7 +11,7 @@
  * Per-rule severity overrides live under `rules.<ruleId>` (`error | warning | info | off`); `off` disables the rule.
  * Pure, no DOM. Kotlin twin deferred (framework/spec/PORTING.md, "skin-check@1").
  */
-import { SKIN_CHECK_CATEGORY_LABEL, SKIN_CHECK_RULES, isSkinCheckRuleId, type SkinCheckCategory, type SkinCheckRuleId, type SkinCheckSeverityOverride } from './contract';
+import { SKIN_CHECK_CATEGORY_LABEL, SKIN_CHECK_RULES, isSkinCheckRuleId, type SkinCheckCategory, type SkinCheckRuleId, type SkinCheckSeverityOverride } from './contract.ts';
 
 export const SKIN_CHECK_SETTINGS_FRAME = 'skin-check-settings@1' as const;
 

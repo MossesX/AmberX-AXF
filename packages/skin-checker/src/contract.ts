@@ -19,7 +19,7 @@
 import type { SkinData } from '../../../framework/core/engines/skin';
 import type { ScaleData } from '../../../framework/core/engines/scale-rules.mjs';
 import type { ColorThemeData, StyleThemeData } from '../../../framework/core/types';
-import type { SkinCheckSettings } from './settings-schema';
+import type { SkinCheckSettings } from './settings-schema.ts';
 
 export const SKIN_CHECK_FRAME = 'skin-check@1' as const;
 
