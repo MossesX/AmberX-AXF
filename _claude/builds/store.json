@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2927,
- "updatedAt": "2026-11-10T21:55:30.490Z",
+ "rev": 2928,
+ "updatedAt": "2026-11-10T21:56:19.738Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157035,12 +157035,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:55:14.370Z",
-   "updatedAt": "2026-11-10T21:55:16.256Z",
+   "updatedAt": "2026-11-10T21:56:18.242Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:55:16.256Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:56:18.242Z"
     }
    ],
    "approvals": [],
@@ -157067,16 +157071,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T21:56:18.242Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb8c6o2011c0h",
+     "title": "",
+     "text": "Shared employee hook (framework-wide): every place an agent/employee is shown or mentioned (agent picker in AI assistant, Crew, orchestrator rows, banners, builds, chats) gets right-click/long-press context menu > employee name > sub menu: Open employee info (ID card/profile), Group chats, Direct chat, Training, Assigned builds, Settings. Each item can open in place as a dialog over the current screen or jump to its page. Register as a reusable hook so new screens get it automatically. 2) Merge the earlier Gizmo rebuild build (Claude-style chat, Claude/Ollama switch) into the 'AI assistant' console plugin build (d2180ddc); one build, not two.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:56:18.242Z",
+     "updatedAt": "2026-11-10T21:56:18.242Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb8c6o202eru3",
+     "title": "",
+     "text": "The agent picker will have a hook to jump to the agents, different places where agents are managed and referenced. It can go to its group chats, its training section or its employee information. Anywhere an employee is mentioned, you can access its information directly from a hook, probably a context menu with a sub menu showing everything you can do, or open one of the employee's dialogs right there on the spot. And yeah, merge the Gizmo rebuild in.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:56:18.242Z",
+     "updatedAt": "2026-11-10T21:56:18.242Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb8c6o203onp0",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/employee-hooks-everywhere-any-mention-of-an-agen.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/employee-hooks-everywhere-any-mention-of-an-agen.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:56:18.242Z",
+     "updatedAt": "2026-11-10T21:56:18.242Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -157085,12 +157165,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T21:56:18.242Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
