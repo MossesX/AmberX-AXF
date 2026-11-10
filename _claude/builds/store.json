@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2544,
- "updatedAt": "2026-11-10T17:22:30.041Z",
+ "rev": 2545,
+ "updatedAt": "2026-11-10T17:22:40.488Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140049,7 +140049,7 @@
    "title": "Merge queue batching: orchestrator combines ready PRs 5 at a time into one build, pulls main, merges as one",
    "category": "",
    "detail": "Amends the enforce-merge-queue build. Main changes so fast that separate merges keep breaking. As soon as PRs are ready, the orchestrator takes them in batches of 5 (setting), combines them into one branch/build, resolves conflicts, pulls latest main into it, runs CI once, and merges the batch as one. Plain code, no AI except conflict resolution fallback when enabled.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140058,7 +140058,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T16:44:49.604Z",
    "updatedAt": "2026-11-10T17:22:08.084Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T17:22:08.084Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -140079,6 +140079,10 @@
     {
      "text": "Headless run axf-merge-queue-batching-orchestrator-combines-ready--earl: brief only · start 11.1K tokens ($0.03) · cost $3.64 · 58 turns · 6 tools, MCP none",
      "at": "2026-11-10T17:22:08.084Z"
+    },
+    {
+     "text": "PR #457 open. UI Review shots not taken: the session's live preview wasn't running. The settings block and batch line need desktop + phone shots in UI Review before the PR is ready.",
+     "at": "2026-11-10T17:21:56.468Z"
     }
    ],
    "approvals": [],
@@ -140180,12 +140184,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:21:58.259Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:47:19.457Z",
-     "updatedAt": "2026-11-10T16:47:19.457Z"
+     "updatedAt": "2026-11-10T17:21:58.420Z"
     }
    ],
    "profiles": [
@@ -140196,7 +140200,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
