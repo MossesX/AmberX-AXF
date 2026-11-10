@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2167,
- "updatedAt": "2026-11-10T01:33:09.577Z",
+ "rev": 2168,
+ "updatedAt": "2026-11-10T01:34:05.326Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130197,8 +130197,8 @@
    "pr": "#427",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-10T01:32:53.905Z",
-   "builtAt": "2026-11-10T01:32:53.905Z",
+   "updatedAt": "2026-11-10T01:33:11.667Z",
+   "builtAt": "2026-11-10T01:33:11.667Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -130267,6 +130267,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-urgent-terminal-pops-up-every-time-the-console-o--lenny, own login copy)",
      "at": "2026-11-10T01:19:10.305Z"
+    },
+    {
+     "text": "Headless run axf-urgent-terminal-pops-up-every-time-the-console-o--lenny: brief only · start 0 tokens · cost $3.68 · 90 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:33:11.667Z"
     }
    ],
    "approvals": [],
