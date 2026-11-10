@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:10:27.042Z",
+ "updatedAt": "2026-11-10T15:10:36.761Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83163,8 +83163,8 @@
    "pr": "#443",
    "priority": "P1",
    "createdAt": "2026-11-10T02:44:38.021Z",
-   "updatedAt": "2026-11-10T15:10:09.706Z",
-   "builtAt": "2026-11-10T15:10:08.567Z",
+   "updatedAt": "2026-11-10T15:10:22.011Z",
+   "builtAt": "2026-11-10T15:10:22.011Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83181,6 +83181,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully, own login copy)",
      "at": "2026-11-10T14:51:42.208Z"
+    },
+    {
+     "text": "Headless run axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully: brief only · start 12.3K tokens ($0.04) · cost $4.77 · 77 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:10:22.011Z"
     },
     {
      "text": "PR #443 open. UI Review screenshots (desktop + phone) not taken in this session: needed before the PR counts as ready.",
