@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2232,
- "updatedAt": "2026-11-10T02:59:07.035Z",
+ "rev": 2233,
+ "updatedAt": "2026-11-10T03:00:02.090Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131610,10 +131610,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/test-button-on-every-claude-account-subscription",
-   "pr": "",
+   "pr": "#434",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T02:57:58.485Z",
+   "updatedAt": "2026-11-10T02:59:56.085Z",
    "builtAt": "",
    "notes": [
     {
@@ -131833,7 +131833,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
