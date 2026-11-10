@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:47:31.388Z",
+ "updatedAt": "2026-11-10T02:47:53.731Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78850,7 +78850,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-10T02:46:38.859Z",
+   "updatedAt": "2026-11-10T02:46:53.740Z",
    "builtAt": "2026-11-10T02:46:38.859Z",
    "notes": [
     {
@@ -78952,6 +78952,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-split-builds-pages-build-manager-pending-complet--sully, own login copy)",
      "at": "2026-11-10T02:17:18.311Z"
+    },
+    {
+     "text": "PR #432 open. All 3 steps done; tests and checks green. UI Review shots not taken (headless run, no browser): desktop + phone shots of Build manager (Pending, Complete) and Build orchestrator (Queued, Active) still to submit.",
+     "at": "2026-11-10T02:46:53.740Z"
     }
    ],
    "approvals": [],
