@@ -155,10 +155,20 @@ constraints (`menuItemV2SchemaProperties`). The fixture's `validation` cases `v2
   `installMenuScrollLock`); keyboard: arrows wrap over every row, ArrowRight / Enter open a submenu with focus on its first row,
   ArrowLeft / Escape close it with focus back on the parent row, Escape at the root closes the menu, hover opens without moving
   focus, and a flip never moves focus (`menuKey`, `nextMenuIndex`; `check-menu-fit.mts`, `check-menu-keys.mts`). Done in s2.
-- A choice row shows `valueLabel` beside the label (`.fx-menu__value`), opens its choices as a sub-menu (the picked one checked),
-  applies a pick at once; a switch flips on click; a `cycle` row steps (s3).
-- A status slot draws `icon` in `tone` with `anim`, `title` = `tooltip`; it re-renders when the source changes (s3).
-- Every icon has a tooltip (`hint`, status tooltip, chevron, key cap) (s3).
+- A choice row shows `valueLabel` beside the label (`.fx-menu__value`), opens its choices as radio rows (`menuitemradio`, the
+  picked one checked, `choiceRows`), and a pick applies at once through `setting.set` while the menu **stays open** so the value
+  beside the entry shows the change; a switch (`menuitemcheckbox`) flips on click through `setting.toggle`; a `cycle` row
+  steps. Context menus get the same rows: `MenuList` compiles its raw items through `rt.compileMenuItems(items, target)`.
+  Done in s3 (`check-menu-items.mts`).
+- A status slot (`.fx-menu__status`) draws `icon` in `tone` (`data-fx-tone`, theme tokens) with `anim` (`data-fx-anim`: pulse /
+  spin / blink from `--fx-motion`, still under reduced motion), `title` + `aria-label` = `tooltip`; sources:
+  `rt.registerMenuStatus(id, source | read | reading, module?)` (a `subscribe` re-renders open menus), `rt.setMenuStatus(id,
+  reading)` for pushers, `rt.menuStatus(id)`; a module's sources go with `removeAppMenuItems(module)`. lib-hub keeps `hub`
+  (`useHubMenuStatus`, mounted by `useHubBannerCount`): connected = on (green), signed out / unreachable = off (red), not an
+  admin = warn, checking = busy. Done in s3.
+- Every icon has a tooltip: the row's icon (`hint`, else the label), the status slot (its tooltip), the key cap
+  ("Shortcut: Ctrl+S"), the sub-menu chevron ("Opens a sub-menu"); the row itself carries `hint` as its title (a lock's reason
+  wins). Done in s3.
 - Right-click on any item opens the item-settings dialog on its `path`, writing `axf.tokens.menu` through control@1
   `tokens.menu`; `look` renders through `data-fx-tone` / `data-fx-icon-tone` / `data-fx-weight` / `data-fx-emphasis` /
   `data-fx-size` styled by asset tokens only (s4).

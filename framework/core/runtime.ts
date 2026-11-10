@@ -31,6 +31,8 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_TOKENS_KEY, compileMenuItems, parseChoiceAction, truthy } from './engines/appmenu';
+import type { MenuStatusReading } from './types';
 import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
@@ -184,6 +186,18 @@ export interface ContextContribution {
  * the items to show (sync or async; the web renderer shows a loading row meanwhile). `max` caps the list before a
  * More… entry that runs `moreAction`. (Android twin deferred: port on hold, Oct 21 2026.)
  */
+/**
+ * A live status source for menu rows (`MenuItem.status: source:<id>`, menu-item@2): what state it is in now, and a way
+ * to hear about changes. `rt.setMenuStatus(id, reading)` is the short form for sources that push their state.
+ */
+export interface MenuStatusSource {
+  read: () => MenuStatusReading;
+  /** called back on every change; the runtime re-renders open menus. Absent: the source is read on every render. */
+  subscribe?: (fn: () => void) => () => void;
+  /** the module that registered it (`removeAppMenuItems(module)` also drops its sources) */
+  module?: string;
+}
+
 export interface AppMenuProvider {
   items: () => MenuItem[] | Promise<MenuItem[]>;
   max?: number;
@@ -907,12 +921,69 @@ export class AxfRuntime {
     this.set({});
   }
 
-  /** Remove every contribution and provider of a module (a plugin was disabled or removed), or one contribution by id. */
+  /** Remove every contribution, provider and status source of a module (a plugin was disabled or removed), or one contribution by id. */
   removeAppMenuItems(moduleOrId: string): void {
     let changed = this.appMenuContributions.delete(moduleOrId);
     for (const [id, c] of this.appMenuContributions) if (c.module === moduleOrId) { this.appMenuContributions.delete(id); changed = true; }
     for (const [id, p] of this.appMenuProviders) if (p.module === moduleOrId) { this.appMenuProviders.delete(id); changed = true; }
+    for (const [id, s] of this.menuStatusSources) if (s.source.module === moduleOrId) { this.unregisterMenuStatus(id); changed = true; }
     if (changed) { this.appMenuCache = null; this.set({}); }
+  }
+
+  /* ---- live status slots (menu-item@2: "the little green axHub logo, red if not") ---- */
+
+  private readonly menuStatusSources = new Map<string, { source: MenuStatusSource; off?: () => void }>();
+
+  /**
+   * Register (or replace) a status source; a row with `status: source:<id>` draws its state. A reading or a read
+   * function makes a static source (update it with `setMenuStatus`); a source with `subscribe` re-renders open menus on
+   * its own changes. Returns a remover.
+   */
+  registerMenuStatus(id: string, source: MenuStatusSource | MenuStatusSource['read'] | MenuStatusReading, module?: string): () => void {
+    const s: MenuStatusSource = typeof source === 'function' ? { read: source } : 'read' in source ? source : { read: () => source };
+    if (module && !s.module) s.module = module;
+    this.menuStatusSources.get(id)?.off?.();
+    const entry: { source: MenuStatusSource; off?: () => void } = { source: s };
+    entry.off = s.subscribe?.(() => this.set({}));
+    this.menuStatusSources.set(id, entry);
+    this.set({});
+    return () => { if (this.menuStatusSources.get(id) === entry) this.unregisterMenuStatus(id); };
+  }
+
+  /** Push a source's state (registers a static source the first time). Nothing happens when the reading is the same. */
+  setMenuStatus(id: string, reading: MenuStatusReading, module?: string): void {
+    const cur = this.menuStatusSources.get(id);
+    if (cur && !cur.source.subscribe && JSON.stringify(cur.source.read()) === JSON.stringify(reading)) return;
+    this.registerMenuStatus(id, reading, module ?? cur?.source.module);
+  }
+
+  unregisterMenuStatus(id: string): void {
+    const cur = this.menuStatusSources.get(id);
+    if (!cur) return;
+    cur.off?.();
+    this.menuStatusSources.delete(id);
+    this.set({});
+  }
+
+  /** A source's current reading, or null when none is registered (the row's slot reads Unknown). */
+  menuStatus(id: string): MenuStatusReading | null {
+    const s = this.menuStatusSources.get(id)?.source;
+    if (!s) return null;
+    try { return s.read(); } catch (e) { this.terminal.warn('menus', `status source "${id}" failed: ${String((e as Error)?.message ?? e)}`); return { state: 'unknown' }; }
+  }
+
+  /** Registered status source ids. */
+  menuStatusIds(): string[] { return [...this.menuStatusSources.keys()]; }
+
+  /**
+   * One flat list of items (a context-menu target, a plugin's own menu) compiled like the application menu: kinds,
+   * paths under `<root>/<where>`, gating, badges, check marks, choice values, status slots and the `axf.tokens.menu`
+   * overrides. Context menus pass their target as `where`.
+   */
+  compileMenuItems(items: readonly MenuItem[], where: string, root = 'context-menu'): CompiledMenuItem[] {
+    const r = compileMenuItems(items, { ...this.appMenuEnv(), pathRoot: root }, where);
+    for (const n of r.notes) if (!this.appMenuNoted.has(n)) { this.appMenuNoted.add(n); this.terminal.warn('menus', n); }
+    return r.items;
   }
 
   /** Every contribution, in the order added. */
@@ -959,6 +1030,9 @@ export class AxfRuntime {
       providers: this.appMenuProviderIds(),
       taken: (it) => this.takenByHost(it),
       locked: (it) => this.lockedByHost(it) !== null,
+      // menu-item@2: live status sources and the per-item token overrides
+      status: (id) => this.menuStatus(id),
+      overrides: this.settings.get(MENU_TOKENS_KEY),
     };
   }
 
@@ -2766,6 +2840,17 @@ export class AxfRuntime {
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
     a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
+    // Choice settings (menu-item@2, spec/MENUS.md): a pick in a menu applies at once, no dialog.
+    //   setting.set:<key>:<json value, URI-encoded> · setting.toggle:<key>
+    a.register(MENU_SETTING_SET, (args) => {
+      const c = parseChoiceAction(args);
+      if (!c) return this.toast('That choice could not be read.', 'warning');
+      this.settings.set(c.key, c.value);
+    }, { label: 'Set a setting to a value', params: true, effect: 'write' });
+    a.register(MENU_SETTING_TOGGLE, ([key]) => {
+      const k = key ? decodeURIComponent(key) : '';
+      if (k) this.settings.set(k, !truthy(this.settings.get(k)));
+    }, { label: 'Flip a setting on or off', params: true, effect: 'write' });
     // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
     a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
     a.register(HELP_ACTIONS.resetIntros, () => { this.resetHelpIntros(); this.toast('Screen intros will show again, once per screen.', 'success', 'Help mode'); }, { label: 'Show the screen intros again' });

@@ -234,6 +234,7 @@ export function ContextMenuHost() {
         {/* focus goes to the first row as the menu opens, so arrows, Enter and Escape work at once */}
         <MenuList
           items={items}
+          where={ctx.target || 'default'}
           payload={state.context.payload}
           onDone={() => rt.closeContext()}
           showIcons={cm.showIcons}

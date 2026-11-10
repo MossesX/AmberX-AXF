@@ -79,13 +79,38 @@ export interface HubBannerCountOptions {
   origin?: string;
 }
 
+/** The menu status source id lib-hub keeps (`MenuItem.status: source:hub`): the little axHub mark, green when connected, red when not. */
+export const HUB_MENU_STATUS = 'hub';
+
+/** What the hub feed state reads as on a menu row (menu-item@2 live status slot). */
+export function hubMenuStatus(state: Pick<HubWatchState, 'phase' | 'status' | 'count'>): { state: 'on' | 'off' | 'busy' | 'warn' | 'unknown'; text: string; icon: string } {
+  const icon = 'cloud';
+  if (state.phase !== 'checked') return { state: 'busy', text: 'Checking axHub', icon };
+  switch (state.status) {
+    case 'ok': return { state: 'on', text: state.count > 0 ? `Connected, ${state.count} waiting` : 'Connected', icon };
+    case 'signed-out': return { state: 'off', text: 'Signed out of axHub', icon };
+    case 'not-admin': return { state: 'warn', text: 'Signed in, not an admin', icon };
+    default: return { state: 'off', text: 'axHub unreachable', icon };
+  }
+}
+
+/** Keeps the `hub` menu status source in step with the feed, so any row with `status: source:hub` shows it live. */
+export function useHubMenuStatus(hub: string): void {
+  const rt = useRuntime();
+  const { state } = useHubApprovals(hub);
+  const reading = hubMenuStatus(state);
+  useEffect(() => { rt.setMenuStatus(HUB_MENU_STATUS, reading, 'lib-hub'); }, [rt, reading.state, reading.text, reading.icon]); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
 /**
  * Keeps a runtime counter equal to the number of approvals waiting (0 while signed out or unreachable), and optionally
- * puts a counter widget on the banner. Mount it once near the root (it polls through the shared watcher).
+ * puts a counter widget on the banner. Mount it once near the root (it polls through the shared watcher). The `hub`
+ * menu status source rides along, so the app menu's axHub rows show the connection live.
  */
 export function useHubBannerCount(hub: string, opts: HubBannerCountOptions = {}): void {
   const rt = useRuntime();
   const { state } = useHubApprovals(hub);
+  useHubMenuStatus(hub);
   const counter = opts.counter ?? 'approvals.waiting';
   const n = state.status === 'ok' ? state.count : 0;
   useEffect(() => { rt.setBadge(counter, n); }, [rt, counter, n]);

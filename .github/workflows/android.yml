@@ -247,6 +247,7 @@ jobs:
             npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room; submenus flip left + up; the menu scrolls, not the page; keyboard rules
             npx -y tsx framework/spec/check-menu-keys.mts              # keyboard focus into / out of sub-menus (app menu + context menus, jsdom) and the page scroll lock while a menu is open
+            npx -y tsx framework/spec/check-menu-items.mts             # menu-item@2 in the DOM: choice settings apply at once with the value beside the entry, live status slots (green / red / pulsing), a tooltip on every icon, context menus compiled the same way
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
             npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)

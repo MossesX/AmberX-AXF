@@ -397,6 +397,25 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__sub { position: absolute; left: 100%; top: 0; min-width: 200px; padding: var(--fx-dens-gap-md); }
 /* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
 .fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }
+/* menu-item@2 (spec/MENUS.md): a choice setting's current value beside its label, and a live status slot: an icon in the
+   state's tone (theme tokens only), still, pulsing, spinning or blinking; its title explains it on hover */
+.fx-menu__value { flex: none; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-sm); color: var(--fx-muted); }
+.fx-menu__item:hover:not(:disabled) .fx-menu__value { color: var(--fx-text); }
+.fx-menu__status { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 16px; color: var(--fx-muted); }
+.fx-menu__status[data-fx-tone='success'] { color: var(--fx-success); }
+.fx-menu__status[data-fx-tone='danger'] { color: var(--fx-danger); }
+.fx-menu__status[data-fx-tone='warning'] { color: var(--fx-warning); }
+.fx-menu__status[data-fx-tone='accent'] { color: var(--fx-accent); }
+.fx-menu__status[data-fx-tone='info'] { color: var(--fx-info); }
+.fx-menu__status[data-fx-tone='muted'] { color: var(--fx-muted); }
+.fx-menu__status[data-fx-anim='pulse'] > * { animation: fx-pulse calc(var(--fx-motion) * 8) var(--fx-ease) infinite; }
+.fx-menu__status[data-fx-anim='spin'] > * { animation: fx-spin calc(var(--fx-motion) * 6) linear infinite; }
+.fx-menu__status[data-fx-anim='blink'] > * { animation: fx-blink calc(var(--fx-motion) * 6) steps(1, end) infinite; }
+@keyframes fx-pulse { 50% { opacity: var(--fx-opacity-muted); transform: scale(.85); } }
+@keyframes fx-blink { 50% { opacity: var(--fx-opacity-disabled); } }
+@media (prefers-reduced-motion: reduce) { .fx-menu__status > * { animation: none !important; } }
+[data-fx-motion='reduced'] .fx-menu__status > * { animation: none !important; }
+.fx-menu__item[role='menuitemradio'] .fx-menu__check { color: var(--fx-accent); }
 .fx-menu__item.is-checked { color: var(--fx-text); }
 .fx-menu__chevron { color: var(--fx-muted); }
 .fx-menu__badge {
