@@ -1,6 +1,7 @@
 import type { AxfRuntime } from './axf/core';
 import { mollyApp } from './molly/apps';
 import { authSettingKeys, connectionLine, normalizeApiBase } from './molly/credentials';
+import { CONNECTIONS_VIEW, focusConnection } from './molly/Connections';
 import { reloadFrame } from './molly/FrameDeck';
 import { mollyCredentials } from './molly/host';
 
@@ -23,6 +24,19 @@ export function registerActions(axf: AxfRuntime) {
   registerAuthActions(axf);
 }
 
+/**
+ * Sign in to `app` (the `molly.auth.sign-in` action and the App connections screen run this one function, so a token
+ * typed on the screen never goes through an action spec): a token is saved and checked; a session app opens its page.
+ */
+export async function signInApp(axf: AxfRuntime, app: string, secret?: string) {
+  const p = mollyCredentials().provider(app);
+  if (!p) return null;
+  const { connection, open } = await p.signIn(secret);
+  if (open) { window.open(open, '_blank', 'noopener'); axf.toast(`Sign in to ${connection.label} in the tab that opened, then check again.`, 'info', 'App connections'); }
+  else axf.toast(connectionLine(connection), connection.state === 'signed-in' ? 'success' : 'warning', 'App connections');
+  return connection;
+}
+
 /** `molly.auth.<x>:<app>[:rest]` → the app and the rest of the arguments joined back (a URL keeps its colons). */
 const argsOf = (args: string[], payload?: string): { app: string; rest: string } => {
   const all = args.length ? args : (payload ?? '').split(':');
@@ -43,6 +57,13 @@ function registerAuthActions(axf: AxfRuntime) {
     return p;
   };
 
+  on('molly.auth.open', (args, ctx) => {
+    const { app } = argsOf(args, ctx.payload);
+    if (app && !need(app)) return;
+    focusConnection(app);
+    axf.navigate(CONNECTIONS_VIEW);
+  }, { label: 'App connections: open (app)', params: true, effect: 'navigate' });
+
   on('molly.auth.status', () => {
     const cs = seam().connections();
     axf.toast(cs.map(connectionLine).join('\n'), 'info', title);
@@ -58,12 +79,8 @@ function registerAuthActions(axf: AxfRuntime) {
 
   on('molly.auth.sign-in', (args, ctx) => {
     const { app, rest } = argsOf(args, ctx.payload);
-    const p = need(app);
-    if (!p) return;
-    void p.signIn(rest || undefined).then(({ connection, open }) => {
-      if (open) { window.open(open, '_blank', 'noopener'); axf.toast(`Sign in to ${connection.label} in the tab that opened, then check again.`, 'info', title); return; }
-      axf.toast(connectionLine(connection), connection.state === 'signed-in' ? 'success' : 'warning', title);
-    });
+    if (!need(app)) return;
+    void signInApp(axf, app, rest || undefined);
   }, { label: 'App connections: sign in (app, token)', params: true, effect: 'write' });
 
   on('molly.auth.sign-out', (args, ctx) => {
@@ -86,4 +103,18 @@ function registerAuthActions(axf: AxfRuntime) {
     axf.toast(`${p.connection().label} API: ${base}. Check the connection again.`, 'info', title);
     return base;
   }, { label: 'App connections: API base (app, url | default)', params: true, effect: 'write' });
+
+  on('molly.auth.user', (args, ctx) => {
+    const { app, rest } = argsOf(args, ctx.payload);
+    const p = need(app);
+    if (!p) return;
+    const key = authSettingKeys(app).user;
+    if (!rest) { const u = axf.settings.get(key); axf.toast(`${p.connection().label} token calls act as ${typeof u === 'string' && u ? u : 'nobody yet'}.`, 'info', title); return typeof u === 'string' ? u : ''; }
+    if (rest === 'default') { axf.settings.clear(key); axf.toast(`${p.connection().label}: no user set for token calls.`, 'info', title); return ''; }
+    const user = rest.replace(/\s+/g, '').slice(0, 64);
+    if (!/^[A-Za-z0-9._@-]+$/.test(user)) { axf.toast('A user name is letters, digits and . _ @ - only.', 'danger', title); return; }
+    axf.settings.set(key, user);
+    axf.toast(`${p.connection().label} token calls act as ${user}. Check the connection again.`, 'info', title);
+    return user;
+  }, { label: 'App connections: user for token calls (app, name | default)', params: true, effect: 'write' });
 }

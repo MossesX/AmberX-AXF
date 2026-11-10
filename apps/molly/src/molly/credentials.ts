@@ -426,6 +426,39 @@ export function backendErrors(apps: readonly { id: string }[] = MOLLY_APPS, back
   return out;
 }
 
+/* ================================================================== status, the systems check way */
+
+/** A connection's status in the systems check's words: ok, warn (sign in), error (can't reach), unknown (not checked). */
+export type ConnectionStatus = 'ok' | 'warn' | 'error' | 'unknown';
+export const CONNECTION_STATUS_LABEL: Record<ConnectionStatus, string> = { ok: 'OK', warn: 'Sign in', error: "Can't reach", unknown: 'Not checked' };
+
+export function connectionStatus(c: AppConnection): ConnectionStatus {
+  if (c.state === 'signed-in' || c.state === 'none') return 'ok';
+  if (c.state === 'signed-out') return 'warn';
+  if (c.state === 'unreachable') return 'error';
+  return 'unknown';
+}
+
+/** Counts per status and the issues first (error, warn, unknown, ok), app order kept within each. */
+export function connectionSummary(cs: readonly AppConnection[]): { counts: Record<ConnectionStatus, number>; issues: number; ordered: AppConnection[] } {
+  const rank: Record<ConnectionStatus, number> = { error: 0, warn: 1, unknown: 2, ok: 3 };
+  const counts: Record<ConnectionStatus, number> = { ok: 0, warn: 0, error: 0, unknown: 0 };
+  for (const c of cs) counts[connectionStatus(c)]++;
+  const ordered = cs.map((c, i) => ({ c, i })).sort((a, b) => rank[connectionStatus(a.c)] - rank[connectionStatus(b.c)] || a.i - b.i).map((x) => x.c);
+  return { counts, issues: counts.error + counts.warn, ordered };
+}
+
+/** What a connection offers right now (the screen's buttons and the actions agree on this). */
+export function connectionOffers(c: AppConnection, b: AppBackend | undefined = backendOf(c.app)): { token: boolean; signInPage: boolean; signOut: boolean; check: boolean } {
+  if (c.scheme === 'none' || !b) return { token: false, signInPage: false, signOut: false, check: false };
+  return {
+    token: !!b.tokenKey,
+    signInPage: !!c.signInUrl,
+    signOut: c.hasToken || (c.scheme === 'session' && !!b.signOut && c.state === 'signed-in'),
+    check: true,
+  };
+}
+
 /** One line per connection, the way the status action and the CLI say it. */
 export function connectionLine(c: AppConnection): string {
   const state = c.state === 'signed-in' ? `signed in${c.who ? ` as ${c.who}` : ''}` : c.state === 'none' ? 'no sign-in' : c.state.replace('-', ' ');
