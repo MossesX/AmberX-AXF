@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3055,
- "updatedAt": "2026-11-10T23:46:39.668Z",
+ "rev": 3056,
+ "updatedAt": "2026-11-10T23:46:44.811Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156928,6 +156928,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "per-agent-api-control-switch-in-each-employee-s",
+   "title": "Per-agent API control: switch in each employee's control panel; Amber and Molly on by default",
+   "category": "",
+   "detail": "Amends 3f5775eb. Console API/control access is a per-agent permission, off by default. In each employee's control panel (Agent Manager / Crew profile) add an 'API control' switch (with scope: open screens, change settings, run commands, file/queue builds). The AI assistant uses the permissions of the agent selected in its chat. Defaults: Amber = on, Molly = on, everyone else off. Changes are audited and show on the employee hook card.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T23:46:39.715Z",
+   "updatedAt": "2026-11-10T23:46:39.715Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the individual agents and the AI assistant to have API access, not all of them, just a couple. I need to be able to give it to them in their employee control panel. Give Amber and Molly control by default.",
+    "at": "2026-11-10T23:46:39.715Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 611
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -3778,6 +3778,18 @@
    "from": "",
    "addenda": []
   },
+  "per-agent-api-control-switch-in-each-employee-s": {
+   "said": "I want the individual agents and the AI assistant to have API access, not all of them, just a couple. I need to be able to give it to them in their employee control panel. Give Amber and Molly control by default.",
+   "at": "2026-11-10T23:46:39.715Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "permissions-control-panel-every-axhub-tool-s-pol": {
    "said": "I need a control panel for all those settings, those permission settings.",
    "at": "",
