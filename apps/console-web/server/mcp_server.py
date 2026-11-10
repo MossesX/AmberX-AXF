@@ -432,6 +432,20 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             raise ToolError(r.get("error") or "upgrade approval failed")
         return {"build": build, "phase": phase, "log": r.get("log", [])}
 
+    @mcp.tool(annotations=WRITE)
+    async def orchestrator_route_approve(request: str) -> dict[str, Any]:
+        """Brett approves an API route request: the builds in it run on API-key accounts (billed per token, under each
+        account's daily and weekly caps). axHub runs this only after Brett approves it there (policy confirm, never veto);
+        voice, MCP or a session asks with `pipeline.mjs route <build> api [--account A]` (or POST /pipeline/route), sends
+        this call once through axHub with the reason it printed, and keeps working. Never call it directly: a Claude
+        session, headless build or agent calling it is refused and changes nothing."""
+        if not re.fullmatch(r"rr-[a-z0-9-]{1,40}", request or ""):
+            raise ToolError("request is a route request id (rr-…) from pipeline.mjs route-requests")
+        r = await anyio.to_thread.run_sync(lambda: route_via_axhub(request))
+        if not r.get("ok"):
+            raise ToolError(r.get("error") or "route approval failed")
+        return {"request": r.get("request"), "builds": r.get("builds", [])}
+
     @mcp.tool(annotations=READ)
     async def project_list() -> dict[str, Any]:
         """Every project in the repo with a manifest (project.manifest.json, project-manifest@1): its name (= its folder
@@ -609,6 +623,20 @@ def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, An
     env.update(AXF_APPROVER=f"brett (axHub approval{' ' + request[:60] if request else ''})", AXF_APPROVER_VIA="axhub", AXF_ACTOR="axhub-approval")
     change = {"action": "approve", "id": build, "phase": phase}
     p = subprocess.run(["node", str(ORCH_CLI), "act", json.dumps(change), "--json"], cwd=ORCH_CLI.parents[4], capture_output=True, text=True, timeout=60, env=env)
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
+def route_via_axhub(request: str) -> dict[str, Any]:
+    """Record Brett's axHub approval of an API route request in the pipeline. Like upgrade_via_axhub, the CLI still
+    refuses when this process runs inside a Claude session, headless build or agent."""
+    env = {k: v for k, v in os.environ.items() if k not in ("AXF_APPROVER", "AXF_APPROVER_VIA")}
+    env.update(AXF_APPROVER="brett (axHub approval)", AXF_APPROVER_VIA="axhub", AXF_ACTOR="axhub-approval")
+    cli = ORCH_CLI.parent / "pipeline.mjs"
+    p = subprocess.run(["node", str(cli), "route-approve", request, "--json"], cwd=ORCH_CLI.parents[4], capture_output=True, text=True, timeout=60, env=env)
     lines = p.stdout.strip().splitlines()
     try:
         return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}

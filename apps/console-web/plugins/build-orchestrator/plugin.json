@@ -349,13 +349,24 @@
         "id": "pipeline-route",
         "route": "POST /pipeline/route",
         "title": "Route a build to API or subscriptions",
-        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; Brett's own click), subscription (never an API account) or auto (subscriptions, API only by the overflow rule).",
+        "description": "Where a build may run: api (API-key accounts only, billed per token under each account's daily and weekly caps; optionally pinned to one account), subscription (never an API account) or auto (subscriptions, API only by the overflow rule). api from voice, MCP, a session or the CLI files a request Brett approves (202 {pending, request, ask}: send ask once through axHub); his own console click applies it. ids or all_queued routes several builds with one approval.",
         "input": {
           "type": "object",
           "properties": {
             "id": {
               "type": "string",
               "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several build ids (route api only, one approval)"
+            },
+            "all_queued": {
+              "type": "boolean",
+              "description": "Every queued build not already on API (route api only, one approval)"
             },
             "route": {
               "type": "string",
@@ -364,14 +375,73 @@
                 "subscription",
                 "auto"
               ]
+            },
+            "account": {
+              "type": "string",
+              "description": "route api: the one API account to use, e.g. account-5 (its caps still apply)"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why, shown to Brett on the approval"
             }
           },
           "required": [
-            "id",
             "route"
           ]
         },
-        "output": "{ id, route }"
+        "output": "{ id, route, account, pending, request?, ask? }"
+      },
+      {
+        "id": "pipeline-route-requests",
+        "route": "GET /pipeline/route/requests",
+        "title": "API route requests",
+        "readOnly": true,
+        "description": "Open API route requests waiting for Brett (all=true: every one kept) and the approved account pins.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "all": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ requests, pins }"
+      },
+      {
+        "id": "pipeline-route-approve",
+        "route": "POST /pipeline/route/approve",
+        "title": "Approve an API run request",
+        "description": "Brett approves an API route request: its builds run on API (caps still apply). Only his own console click; axHub approval goes through the MCP tool orchestrator_route_approve.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "request"
+          ]
+        },
+        "output": "{ request, builds }"
+      },
+      {
+        "id": "pipeline-route-deny",
+        "route": "POST /pipeline/route/deny",
+        "title": "Deny an API run request",
+        "description": "Brett denies an API route request: the builds stay on subscription accounts.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "request"
+          ]
+        },
+        "output": "{ request, builds }"
       },
       {
         "id": "pipeline-settings",

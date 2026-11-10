@@ -216,6 +216,18 @@ t('routeFor: subscriptions first; overflow off = wait and say so; overflow on = 
   const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', P.normSettings({ apiOverflow: true }));
   assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
 });
+t('routeFor: a pinned API account is the only one used, and its caps still apply', () => {
+  const accts = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('account-5'), apiRow('capped-api', { spend: { day: 12, week: 12, state: 'capped', why: 'daily cap $10 reached ($12.00)' } })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
+  const b = build('x', 'queued', [], { pipeline: { route: 'api' } });
+  assert.equal(P.routeFor(b, accts, 'Opus', P.normSettings({}), { apiAccount: 'account-5' }).account, 'account-5');
+  const capped = P.routeFor(b, accts, 'Opus', P.normSettings({}), { apiAccount: 'capped-api' });
+  assert.equal(capped.account, ''); assert.match(capped.why, /capped-api: spend cap reached: daily cap/);
+  assert.match(P.routeFor(b, accts, 'Opus', P.normSettings({}), { apiAccount: 'gone-api' }).why, /gone-api, which is not set up/);
+  const r = P.plan({ builds: [build('x', 'queued', [step('s1', 'Opus')], { pipeline: { route: 'api', queuedAt: now } })], accounts: accts, slots: { free: 2, used: 0, cap: 4 }, pins: { x: 'account-5' } });
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account]), [['x', 'account-5']]);
+  const a = P.alertFor('route-request', { id: 'x', title: 'X', account: 'account-5', by: 'amberx-voice', request: 'rr-1', count: 1 });
+  assert.equal(a.key, 'pipeline:route:rr-1'); assert.match(a.title, /^Approve API run: X/); assert.match(a.body, /account-5/); assert.match(a.body, /daily and weekly caps/);
+});
 t('plan: overflow fills an API account up to its cap, then the rest wait with the reason', () => {
   const s = P.normSettings({ parallelPerAccount: 2, apiOverflow: true });
   const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });
@@ -338,7 +350,11 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(r.id, 'fix-systems-check-mosh-server'); assert.equal(find(r.id).status, 'queued'); assert.equal(find(r.id).priority, 'P1'); assert.equal(find(r.id).pipeline.queuedBy, 'systems-check');
     const r2 = json(pipe('request', '--title', 'Fix systems check: mosh server', '--json'));
     assert.equal(r2.id, 'fix-systems-check-mosh-server-2'); assert.equal(find(r2.id).status, 'pending', 'unique id; without --queue it waits in Pending');
-    json(pipe('route', r2.id, 'api', '--json')); assert.equal(find(r2.id).pipeline.route, 'api');
+    assert.equal(json(pipe('route', r2.id, 'api', '--json')).pending, true); assert.equal(find(r2.id).pipeline?.route ?? '', '', 'route api without Brett is a request, never set silently');
+    const human = { ...env, AXF_APPROVER: 'Brett', AXF_APPROVER_VIA: 'console' }; for (const k of ['CLAUDECODE', 'CLAUDE_CODE_ENTRYPOINT', 'AI_AGENT', 'AXF_SURFACE', 'AXF_SESSION']) delete human[k];
+    spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'route', r2.id, 'api', '--json'], { cwd: ROOT, env: human, encoding: 'utf8' }); assert.equal(find(r2.id).pipeline.route, 'api');
+    const r3 = json(pipe('request', '--title', 'Run me on API', '--route', 'api', '--account', 'account-5', '--json'));
+    assert.equal(find(r3.id).pipeline?.route ?? '', ''); assert.equal(r3.routeRequest.account, 'account-5'); assert.equal(r3.ask.tool, 'axf.orchestrator_route_approve');
     json(pipe('route', r2.id, 'auto', '--json')); assert.equal(find(r2.id).pipeline?.route ?? '', '');
     assert.notEqual(pipe('route', r2.id, 'nowhere', '--json', '--expect-fail').status, 0);
     assert.equal(json(pipe('show', r.id, '--json')).build.status, 'queued');
@@ -379,6 +395,34 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(find('gamma').pipeline.splitRequested);
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['gamma']);
     assert.equal(find('gamma').steps.length, 2); assert.equal(find('gamma').pipeline.splitRequested, '');
+  });
+  t('e2e API route: voice / a session files a request (nothing changes); only Brett\'s approval applies it, pinned to the account', () => {
+    const asVoice = (...a) => { const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), ...a], { cwd: ROOT, env: { ...env, AXF_SESSION: 'amberx-voice' }, encoding: 'utf8', timeout: 120000 }); return r; };
+    const human = { ...env }; for (const k of ['CLAUDECODE', 'CLAUDE_CODE_ENTRYPOINT', 'AI_AGENT', 'AXF_SURFACE', 'AXF_SESSION']) delete human[k];
+    const asBrett = (via, ...a) => spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), ...a], { cwd: ROOT, env: { ...human, AXF_APPROVER: 'Brett', AXF_APPROVER_VIA: via }, encoding: 'utf8', timeout: 120000 });
+    orch('act', JSON.stringify({ action: 'add', id: 'eps', title: 'Epsilon', steps: [{ text: 'do eps', model: 'Opus', estimate: '20 min' }] }));
+    const r = json(asVoice('route', 'eps', 'api', '--account', 'account-5', '--reason', 'Fable credits are out', '--by', 'amberx-voice', '--json'));
+    assert.equal(r.pending, true); assert.equal(r.request.state, 'open'); assert.deepEqual(r.request.builds, ['eps']); assert.equal(r.request.account, 'account-5');
+    assert.equal(r.ask.tool, 'axf.orchestrator_route_approve'); assert.deepEqual(r.ask.arguments, { request: r.request.id }); assert.match(r.ask.reason.title, /^Run Epsilon on API account account-5/); assert.match(r.ask.reason.description, /daily and weekly spend caps/);
+    assert.equal(find('eps').pipeline?.route ?? '', '', 'nothing routed yet'); assert.match(find('eps').notes.at(-1).text, /amberx-voice asked to run this build on API account account-5/);
+    assert.ok(store().log?.some?.((l) => l.action === 'pipeline:route-request') ?? true, 'audited in the store log');
+    assert.equal(json(asVoice('route', 'eps', 'api', '--account', 'account-5', '--json')).request.id, r.request.id, 'the same open request is reused, never filed twice');
+    const self = asVoice('route-approve', r.request.id, '--json'); assert.equal(self.status, 2); assert.match(json(self).error, /only Brett approves an API run/);
+    const sneaky = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'route-approve', r.request.id, '--json'], { cwd: ROOT, env: { ...env, AXF_SESSION: 'x', AXF_APPROVER: 'Brett', AXF_APPROVER_VIA: 'axhub' }, encoding: 'utf8' });
+    assert.equal(sneaky.status, 2, 'a session holding approver variables is still refused');
+    assert.ok(json(pipe('route-requests', '--json')).requests.some((q) => q.id === r.request.id && q.state === 'open'));
+    const ok = json(asBrett('axhub', 'route-approve', r.request.id, '--json'));
+    assert.equal(ok.request.state, 'approved'); assert.deepEqual(ok.builds, ['eps']);
+    assert.equal(find('eps').pipeline.route, 'api'); assert.match(find('eps').notes.at(-1).text, /API account account-5 .*approved by Brett \(axhub\)/);
+    const st = json(pipe('status', '--json')); assert.equal(st.routes.pins.eps, 'account-5'); assert.ok(!st.routes.open.some((q) => q.id === r.request.id));
+    json(pipe('route', 'eps', 'subscription', '--json'));
+    assert.equal(find('eps').pipeline.route, 'subscription'); assert.equal(json(pipe('route-requests', '--json')).pins.eps, undefined, 'leaving API drops the pin');
+    const direct = json(asBrett('console', 'route', 'eps', 'api', '--json')); assert.equal(direct.pending, false); assert.equal(find('eps').pipeline.route, 'api', 'Brett\'s own click applies at once');
+    json(pipe('route', 'eps', 'auto', '--json'));
+    json(pipe('queue', 'eps', '--json'));
+    const all = json(asVoice('route', '--all-queued', 'api', '--json'));
+    assert.equal(all.pending, true); assert.ok(all.request.builds.includes('eps')); assert.match(all.ask.reason.title, /^Run (Epsilon|\d+ builds) on an API-key account/);
+    const denied = json(asBrett('console', 'route-deny', all.request.id, '--json')); assert.equal(denied.request.state, 'denied'); assert.equal(find('eps').pipeline.route, '');
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');

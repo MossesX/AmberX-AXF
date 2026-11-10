@@ -20,8 +20,10 @@ type Status = {
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
+  routes?: { pins: Record<string, string>; open: RouteRequest[] };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
 };
+type RouteRequest = { id: string; builds: string[]; account: string; by: string; reason: string; at: string; state: string };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
@@ -46,7 +48,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
     return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); };
   }, []);
   const act = async (path: string, body: Record<string, unknown>, what: string) => {
-    setBusy(String(body.id ?? body.name ?? path));
+    setBusy(String(body.id ?? body.name ?? body.request ?? path));
     try { const r = await api.post<{ ok: boolean; error?: string }>(path, body); if (!r.ok) throw new Error(r.error); log(what, 'ok'); rt.toast(what, 'success'); await load(); }
     catch (e) { log((e as Error).message, 'error'); rt.toast((e as Error).message, 'danger'); }
     finally { setBusy(''); }
@@ -68,6 +70,17 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="API overflow" text="Every subscription account full or out → an API-key account (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
+      {(s.routes?.open ?? []).map((q) => (
+        <Note key={q.id} tone="warning">
+          <div className="fx-stack">
+            <span><b>API run asked for</b> by {q.by} {ago(q.at)}: {q.builds.join(', ')} on {q.account ? `API account ${q.account}` : 'an API-key account'} (billed per token, under its daily and weekly caps).{q.reason ? ` ${q.reason}` : ''}</span>
+            <div className="fx-row fx-row--wrap">
+              <Button size="sm" tone="primary" icon="check" disabled={busy === q.id} onClick={() => act('pipeline/route/approve', { request: q.id }, `${q.id}: approved, runs on API`)}>Approve</Button>
+              <Button size="sm" tone="neutral" icon="x" disabled={busy === q.id} onClick={() => act('pipeline/route/deny', { request: q.id }, `${q.id}: denied`)}>Deny</Button>
+            </div>
+          </div>
+        </Note>
+      ))}
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       <section className="fx-stack">
@@ -91,6 +104,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
                   <Button size="sm" tone="neutral" icon="zap" disabled={busy === a.name} title={`Fable access is from the ${a.fableFrom}; tap to set it by hand (on, off) or back to auto`} onClick={() => act('pipeline/account', { name: a.name, fable: a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on' }, `${a.name}: Fable ${a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on'}`)}>Toggle Fable</Button>
                   <Button size="sm" tone="neutral" icon="minus" disabled={busy === a.name || a.parallel <= 1} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel - 1 }, `${a.name}: ${a.parallel - 1} at once`)}>Less parallel</Button>
                   <Button size="sm" tone="neutral" icon="plus" disabled={busy === a.name || a.parallel >= 12} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel + 1 }, `${a.name}: ${a.parallel + 1} at once`)}>More parallel</Button>
+                  {a.kind === 'api' && s.table.queued.some((r) => r.pipeline?.route !== 'api') && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy === 'pipeline/route'} title="Every queued build not already on API runs on this account (billed per token; its caps still apply)" onClick={() => act('pipeline/route', { all_queued: true, route: 'api', account: a.name }, `Queued builds → ${a.name}`)}>Run queued here</Button>}
                   <Button size="sm" tone="neutral" icon={a.why === 'switched off for the pipeline' ? 'check' : 'x'} disabled={busy === a.name} onClick={() => act('pipeline/account', { name: a.name, use: a.why === 'switched off for the pipeline' ? 'on' : 'off' }, `${a.name}: ${a.why === 'switched off for the pipeline' ? 'back in' : 'off'}`)}>Toggle use</Button>
                 </div>
               </article>
@@ -106,7 +120,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
               {t === 'queued' && <span className="fx-muted fx-small"> · in start order</span>}
             </h2>
             {s.table[t].length === 0 ? <div className="fx-empty">{t === 'pending' ? 'Nothing pending.' : t === 'queued' ? 'The Queue is empty.' : 'Nothing is building.'}</div>
-              : s.table[t].map((r) => <PipelineCard key={r.id} r={r} table={t} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} />)}
+              : s.table[t].map((r) => <PipelineCard key={r.id} r={r} table={t} busy={busy === r.id} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} pin={s.routes?.pins?.[r.id] ?? ''} />)}
           </section>
         ))}
       </div>
@@ -124,7 +138,7 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
+function PipelineCard({ r, table, busy, wait, launch, act, pin = '' }: { pin?: string; r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
   const p = r.pipeline;
   return (
     <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
@@ -150,7 +164,7 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
       <div className="fx-row fx-row--wrap">
         {table === 'pending' && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy} onClick={() => act('pipeline/queue', { id: r.id }, `${r.id} → Queue`)}>Queue</Button>}
         {table === 'queued' && <Button size="sm" tone="neutral" icon="arrow-left" disabled={busy} onClick={() => act('pipeline/unqueue', { id: r.id }, `${r.id} → Pending`)}>Back to Pending</Button>}
-        {table !== 'building' && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions, API only by overflow), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
+        {table !== 'building' && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions, API only by overflow), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}{pin ? ` (${pin})` : ''}</Button>}
         {table !== 'building' && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
       </div>
     </article>

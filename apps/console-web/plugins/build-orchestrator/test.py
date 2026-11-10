@@ -126,13 +126,41 @@ try:
             code = e.status_code
         check(code == want, f"API overflow {'on' if body['apiOverflow'] else 'off'} by {'Brett' if brett else 'a session'}: {want}")
     check(_calls[-1][-2] == "apiOverflow=true", "a Python bool reaches the CLI as true/false")
-    for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
+    _envs: list[dict] = []
+    _plain = srv.subprocess.run
+
+    def _env_run(cmd, **kw):  # noqa: ANN001
+        _envs.append(kw.get("env") or {})
+        return _plain(cmd, **kw)
+
+    srv.subprocess.run = _env_run
+    for route, brett, want in (("api", False, 200), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:
-            asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))
+            asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route, "account": "account-5", "reason": "Fable credits are out"}, brett)))
             code = 200
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+        if route == "api":
+            env, cmd = _envs[-1], _calls[-1]
+            check(("AXF_APPROVER" in env) == brett, f"route api by {'Brett carries his approval' if brett else 'a session carries no approver: the CLI files a request for Brett'}")
+            check(cmd[cmd.index("--account") + 1] == "account-5" and cmd[cmd.index("--reason") + 1] == "Fable credits are out", "the account and reason reach the CLI")
+    asyncio.run(srv.pipeline_route(_Req({"all_queued": True, "route": "api"}, False)))
+    check("--all-queued" in _calls[-1] and "AXF_APPROVER" not in _envs[-1], "every queued build to API: one request, no approver")
+    for bad in ({"id": "alpha", "route": "api", "account": "Bad Name"}, {"ids": ["alpha"], "route": "subscription"}):
+        try:
+            asyncio.run(srv.pipeline_route(_Req(bad, True)))
+            check(False, f"refused: {bad}")
+        except srv.HTTPException as e:
+            check(e.status_code == 400, f"refused with 400: {bad}")
+    for fn, brett, want in ((srv.pipeline_route_approve, False, 403), (srv.pipeline_route_approve, True, 200), (srv.pipeline_route_deny, False, 403), (srv.pipeline_route_deny, True, 200)):
+        try:
+            asyncio.run(fn(_Req({"request": "rr-abc-12"}, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"{fn.__name__} by {'Brett' if brett else 'a session'}: {want}")
+    check(_envs[-1].get("AXF_APPROVER_VIA") == "console", "Brett's answer reaches the CLI as his console approval")
 finally:
     srv.subprocess.run = _real_run
 

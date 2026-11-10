@@ -159,11 +159,15 @@ export function apiNoAccountWhy(accounts, model) {
  * (settings.apiOverflow, every subscription account full or out) | '' (a subscription account, the normal case).
  * No account = account '' and `why` says what keeps each option out (a missing key, a cap, a full account).
  */
-export function routeFor(b, accounts, model, settings = normSettings()) {
+export function routeFor(b, accounts, model, settings = normSettings(), { apiAccount = '' } = {}) {
   const route = b?.pipeline?.route || '';
   if (route === 'api') {
-    const a = apiCandidates(accounts, model)[0];
-    return a ? { account: a.name, kind: 'api', rule: 'override', why: `routed to API account ${a.name} (this build is set to run on API)` } : { account: '', kind: '', rule: 'override', why: `set to run on API, ${apiNoAccountWhy(accounts, model)}` };
+    // a pinned API account (route api --account X, Brett-approved) is the only one it may use; its caps still apply
+    const pool = apiAccount ? list(accounts).filter((a) => a.name === apiAccount) : accounts;
+    const a = apiCandidates(pool, model)[0];
+    if (a) return { account: a.name, kind: 'api', rule: 'override', why: `routed to API account ${a.name} (this build is set to run on API${apiAccount ? `, pinned to ${apiAccount}` : ''})` };
+    if (apiAccount && !pool.length) return { account: '', kind: '', rule: 'override', why: `set to run on API account ${apiAccount}, which is not set up (Claude accounts → Job routing → API accounts)` };
+    return { account: '', kind: '', rule: 'override', why: `set to run on API${apiAccount ? ` account ${apiAccount}` : ''}, ${apiNoAccountWhy(pool, model)}` };
   }
   const sub = candidates(accounts, model)[0];
   if (sub) return { account: sub.name, kind: 'subscription', rule: '', why: '' };
@@ -195,7 +199,7 @@ export function noAccountWhy(accounts, model) {
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, settings = normSettings(), rules, pins = {}, now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
   const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
@@ -209,7 +213,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
     if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
-    const r = routeFor(b, acc, model, settings);
+    const r = routeFor(b, acc, model, settings, { apiAccount: pins?.[b.id] || '' });
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
     a.running += 1; a.free -= 1; free -= 1;
@@ -327,6 +331,7 @@ export function alertFor(kind, d = {}) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'route-request': return { ...base, key: `pipeline:route:${d.request}`, severity: 'warning', title: `Approve API run: ${str(d.title, 120)}`, body: `${str(d.by, 80)} asks to run ${d.count > 1 ? `${d.count} builds` : 'this build'} on ${d.account ? `API account ${d.account}` : 'an API-key account'} (billed per token, under its daily and weekly caps). Approve or deny in Build orchestrator → Pipeline, or on axHub.${d.reason ? ` Reason: ${str(d.reason, 600)}` : ''}` };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

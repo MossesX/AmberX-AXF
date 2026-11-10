@@ -22,6 +22,11 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *       [--account A] [--reason R]     api from anyone but Brett (voice, MCP, a session, REST without his click) files an
+ *                                     API route request instead (routes.json, a build note, a console alert, the axHub
+ *                                     confirm call axf.orchestrator_route_approve to send once); Brett's approval applies it
+ *   … route <id…> api | route --all-queued api   one request for several builds (one approval)
+ *   … route-requests [--all] · route-approve <request> · route-deny <request>   (approve / deny: Brett only)
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -54,6 +59,7 @@ import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
 import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
+import { approverFrom } from '../../../../framework/core/model-switch.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
@@ -81,7 +87,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), routes: join(d, 'routes.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -106,6 +112,12 @@ export function saveOwnAccount(name, patch) {
 }
 export const loadState = () => ({ $axf: SCHEMA_STATE, at: '', plan: null, slots: null, accounts: [], idle: null, alerts: [], launchFails: {}, recent: [], ...(readJson(files().state, {}) ?? {}) });
 const saveState = (s) => writeJson(files().state, { ...s, $axf: SCHEMA_STATE });
+/** routes.json: Brett-approved API account pins ({ build: account }) and the API route requests (open / approved / denied / withdrawn). */
+export function loadRoutes() {
+  const j = readJson(files().routes, {}) ?? {};
+  return { pins: j.pins && typeof j.pins === 'object' && !Array.isArray(j.pins) ? j.pins : {}, requests: Array.isArray(j.requests) ? j.requests : [] };
+}
+const saveRoutes = (r) => writeJson(files().routes, { $axf: 'pipeline-routes@1', pins: r.pins, requests: r.requests.slice(-200) });
 const logLine = (o) => { try { mkdirSync(files().dir, { recursive: true }); appendFileSync(files().log, `${JSON.stringify({ at: nowIso(), ...o })}\n`); } catch { /* the log is a courtesy */ } };
 
 // ------------------------------------------------------------------ reads
@@ -143,14 +155,15 @@ export function status() {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
   const builds = live(store);
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const routes = loadRoutes();
+  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store), pins: routes.pins });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, routes: { pins: routes.pins, open: routes.requests.filter((q) => q.state === 'open') }, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -394,7 +407,7 @@ export function tick({ env = process.env } = {}) {
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const accounts = accountsNow(store, settings); const sl = slotsNow();
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules, pins: loadRoutes().pins });
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
   for (const l of plan.launches) {
@@ -463,9 +476,11 @@ const slugId = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').
  * `queue` it goes straight to the Queue. Returns the build. This replaces every direct launch (Build manager Start,
  * Fix with Claude, feature assist): they all end here and the dispatcher starts the build.
  */
-export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
+export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '', account = '', reason = '', env = process.env } = {}) {
   const t = str(title, 300).trim(); if (!t) throw Object.assign(new Error('a build needs a title'), { code: 2 });
   if (route && !BP.ROUTES.includes(route)) throw Object.assign(new Error(`route is api, subscription or auto, not ${route}`), { code: 2 });
+  const askApi = route === 'api' && !approverFrom(env).ok; // an API run is Brett's confirm approval: file it, never set it silently
+  if (askApi) route = '';
   const taken = new Set(loadStore().builds.map((b) => b.id));
   const base = slugId(t); let id = base; let k = 2;
   while (taken.has(id)) id = `${base}-${k++}`;
@@ -473,16 +488,114 @@ export function request({ title, detail = '', said = '', priority = '', route = 
   const p = normPriority(priority);
   if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
   logLine({ event: 'requested', build: id, by, queue: !!toQueue, route });
-  return toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+  if (!askApi && route === 'api' && account) pinAccount([id], account);
+  const asked = askApi ? requestApiRoute([id], { account, by, reason, env }) : null;
+  const b = toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+  return asked ? Object.assign(b, { routeRequest: asked.request, ask: asked.ask }) : b;
 }
 
-/** The per-build override: api (API-key accounts only), subscription (never API), auto ('' = the default rules). */
-export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+const ROUTE_NOTE = { api: 'API-key accounts only (billed per token, under their daily and weekly caps)', subscription: 'subscription accounts only', '': 'the default accounts (subscriptions; API only by the overflow rule)' };
+const ROUTE_TOOL = 'axf.orchestrator_route_approve';
+
+function pinAccount(ids, account) {
+  const r = loadRoutes();
+  for (const id of ids) { if (account) r.pins[id] = account; else delete r.pins[id]; }
+  saveRoutes(r);
+}
+
+/** The axHub call that asks Brett to approve an API route request (confirm policy: he approves, then it applies). */
+export function routeAsk(q, titles = {}) {
+  const names = q.builds.map((id) => str(titles[id] || id, 80));
+  const list = names.length > 4 ? `${names.slice(0, 4).join('; ')} and ${names.length - 4} more` : names.join('; ');
+  const where = q.account ? `API account ${q.account}` : 'an API-key account';
+  return {
+    tool: ROUTE_TOOL,
+    arguments: { request: q.id },
+    reason: {
+      title: `Run ${q.builds.length === 1 ? names[0] : `${q.builds.length} builds`} on ${where}`.slice(0, 120),
+      description: `${q.by} asks to run ${list} on ${where}, billed per token. The account's daily and weekly spend caps and its parallel limit still apply; a capped account takes nothing.${q.reason ? ` Why: ${q.reason}` : ''} Deny keeps ${q.builds.length === 1 ? 'it' : 'them'} on subscription accounts.`.slice(0, 1000),
+    },
+  };
+}
+
+/**
+ * Ask for an API route (voice, MCP, a session, the REST API without Brett's click): one request for one or more builds,
+ * recorded in routes.json, noted on each build (audited store write), logged, and raised as a console alert. Nothing
+ * changes until Brett approves it (console click or the axHub approval in `ask`). An open request for the same builds
+ * and account is reused, never filed twice.
+ */
+export function requestApiRoute(ids, { account = '', by = process.env.AXF_ACTOR || 'console', reason = '', env = process.env } = {}) {
+  const want = [...new Set((Array.isArray(ids) ? ids : [ids]).map((x) => str(x, 80)).filter(Boolean))];
+  if (!want.length) throw Object.assign(new Error('name at least one build'), { code: 2 });
+  if (account && !BP.accountName(account)) throw Object.assign(new Error(`not an account name: ${account}`), { code: 2 });
+  const store = loadStore(); const titles = {};
+  for (const id of want) {
+    const b = storeCore.findBuild(store, id); if (!b || b.deleted) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    titles[id] = b.title;
+  }
+  const r = loadRoutes();
+  const key = (q) => `${[...q.builds].sort().join(',')}|${q.account}`;
+  let q = r.requests.find((x) => x.state === 'open' && key(x) === key({ builds: want, account }));
+  const fresh = !q;
+  if (!q) {
+    q = { id: `rr-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, route: 'api', builds: want, account, by: str(by, 80), reason: str(reason, 600), at: nowIso(), state: 'open' };
+    r.requests.push(q); saveRoutes(r);
+    const where = account ? `API account ${account}` : 'an API-key account';
+    for (const id of want) setPipeline(id, { note: `API run asked for by ${q.by}: waiting for Brett's approval` }, { note: `${q.by} asked to run this build on ${where} (request ${q.id}); it waits for Brett's approval.`, by: q.by, action: 'pipeline:route-request' });
+    logLine({ event: 'route-request', request: q.id, builds: want, account, by: q.by });
+    const first = storeCore.findBuild(store, want[0]);
+    try { const a = P.alertFor('route-request', { id: want[0], title: want.length > 1 ? `${first.title} +${want.length - 1}` : first.title, account, by: q.by, reason: q.reason, request: q.id, count: want.length }); makeConsole(env)('POST', '/api/alerts', a); } catch { /* the console is told when it can be */ }
+  }
+  return { request: q, fresh, ask: routeAsk(q, titles) };
+}
+
+/** Apply an API route (Brett only): the route, the optional pinned account, a note on each build. */
+function applyApi(ids, account, by) {
+  pinAccount(ids, account);
+  return ids.map((id) => setPipeline(id, { route: 'api', note: '' }, { note: `Runs on ${account ? `API account ${account} (billed per token, under its daily and weekly caps)` : ROUTE_NOTE.api} (approved by ${by}).`, by, action: 'pipeline:route' }));
+}
+
+/** Brett's answer to an API route request: approve applies it to every build in it, deny leaves them where they are. */
+export function decideRoute(requestId, decision, { env = process.env } = {}) {
+  const a = approverFrom(env);
+  if (!a.ok) throw Object.assign(new Error(`only Brett approves an API run (his console click or an axHub approval): ${a.why.replace(/model upgrade/g, 'API run')}`), { code: 2 });
+  const who = `${a.by} (${a.via})`;
+  const r = loadRoutes(); const q = r.requests.find((x) => x.id === requestId);
+  if (!q) throw Object.assign(new Error(`no route request "${requestId}"`), { code: 2 });
+  if (q.state !== 'open') return { request: q, builds: [] };
+  const ok = decision === 'approve';
+  Object.assign(q, { state: ok ? 'approved' : 'denied', decidedBy: who, decidedAt: nowIso() }); saveRoutes(r);
+  const store = loadStore(); const ids = q.builds.filter((id) => storeCore.findBuild(store, id));
+  const builds = ok ? applyApi(ids, q.account, who)
+    : ids.map((id) => setPipeline(id, { note: '' }, { note: `API run denied by ${who} (request ${q.id}).`, by: who, action: 'pipeline:route-deny' }));
+  logLine({ event: ok ? 'route-approved' : 'route-denied', request: q.id, builds: ids, account: q.account, by: who });
+  return { request: q, builds };
+}
+
+/**
+ * The per-build override: api (API-key accounts only, optionally one pinned account), subscription (never API), auto
+ * ('' = the default rules). api from anyone but Brett files a request (requestApiRoute) and changes nothing yet;
+ * subscription / auto apply at once (they never spend) and withdraw the build from any open API request.
+ * Returns { build, pending, request?, ask? }.
+ */
+export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console', account = '', reason = '', env = process.env } = {}) {
   const r = route === 'auto' ? '' : route;
   if (!BP.ROUTES.includes(r)) throw Object.assign(new Error('route is api, subscription or auto'), { code: 2 });
-  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (subscriptions; API only by the overflow rule)'} (${by}).`, by, action: 'pipeline:route' });
+  if (account && (r !== 'api' || !BP.accountName(account))) throw Object.assign(new Error(r === 'api' ? `not an account name: ${account}` : 'an account goes with route api only'), { code: 2 });
+  if (r === 'api') {
+    const a = approverFrom(env);
+    if (!a.ok) { const q = requestApiRoute([id], { account, by, reason, env }); return { build: storeCore.findBuild(loadStore(), id), pending: true, ...q }; }
+    const [b] = applyApi([id], account, `${a.by} (${a.via})`);
+    logLine({ event: 'route', build: id, route: 'api', account, by: a.by });
+    return { build: b, pending: false };
+  }
+  const rt = loadRoutes(); let changed = false;
+  if (rt.pins[id]) { delete rt.pins[id]; changed = true; }
+  for (const q of rt.requests) if (q.state === 'open' && q.builds.includes(id)) { q.builds = q.builds.filter((x) => x !== id); if (!q.builds.length) Object.assign(q, { state: 'withdrawn', decidedBy: str(by, 80), decidedAt: nowIso() }); changed = true; }
+  if (changed) saveRoutes(rt);
+  const out = setPipeline(id, { route: r }, { note: `Runs on ${ROUTE_NOTE[r]} (${by}).`, by, action: 'pipeline:route' });
   logLine({ event: 'route', build: id, route: r || 'auto', by });
-  return out;
+  return { build: out, pending: false };
 }
 
 // ------------------------------------------------------------------ probe
@@ -506,6 +619,13 @@ export function probe(name, env = process.env) {
 }
 
 // ------------------------------------------------------------------ CLI
+
+/** What a caller is told after asking for an API run: it waits for Brett, and the one axHub call to send (once). */
+function askText(q, ask) {
+  return [`API run requested (${q.id}) for ${q.builds.join(', ')}${q.account ? ` on ${q.account}` : ''}: it waits for Brett's approval (console alert + Build orchestrator → Pipeline).`,
+    `  axHub call ${ask.tool} ${JSON.stringify(ask.arguments)} with reason ${JSON.stringify(ask.reason)}`,
+    '  Send it once, never approve it yourself, and keep working.'].join('\n');
+}
 
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json' && a !== '--expect-fail');
@@ -537,11 +657,33 @@ async function main(argv) {
   }
   if (cmd === 'request') {
     const df = flag('detail-file'); const detail = df ? readFileSync(df, 'utf8') : flag('detail');
-    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
-    return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
+    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source'), account: flag('account'), reason: flag('reason') });
+    return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status }, ...(b.routeRequest ? { routeRequest: b.routeRequest, ask: b.ask } : {}) },
+      [`${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`, ...(b.routeRequest ? [askText(b.routeRequest, b.ask)] : [])].join('\n'));
   }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
-  if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
+  if (cmd === 'route') {
+    const VALUED = new Set(['--account', '--reason', '--by']);
+    const pos = rest.filter((a, i) => !a.startsWith('--') && !VALUED.has(rest[i - 1]));
+    if (has('all-queued') || pos.length > 2) { // route api for several builds at once: one request, one approval
+      const ids = has('all-queued') ? live(loadStore()).filter((b) => b.status === 'queued' && b.pipeline?.route !== 'api').map((b) => b.id) : pos.slice(0, -1);
+      const routeArg = has('all-queued') ? pos[0] : pos[pos.length - 1];
+      if (routeArg !== 'api') throw Object.assign(new Error('several builds at once: route api only'), { code: 2 });
+      if (!ids.length) return out({ ok: true, builds: [], pending: false }, 'No queued build left off API.');
+      const a = approverFrom(process.env);
+      if (a.ok) { const bs = applyApi(ids, flag('account'), `${a.by} (${a.via})`); return out({ ok: true, builds: bs.map((b) => b.id), route: 'api', pending: false }, `${bs.length} builds: route api`); }
+      const q = requestApiRoute(ids, { account: flag('account'), by, reason: flag('reason') });
+      return out({ ok: true, builds: ids, pending: true, request: q.request, ask: q.ask }, askText(q.request, q.ask));
+    }
+    const r = setRoute(pos[0], pos[1], { by, account: flag('account'), reason: flag('reason') }); const b = r.build;
+    return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto', account: loadRoutes().pins[b.id] || '', pending: r.pending, ...(r.pending ? { request: r.request, ask: r.ask } : {}) },
+      r.pending ? askText(r.request, r.ask) : `${b.id}: route ${b.pipeline?.route || 'auto'}${loadRoutes().pins[b.id] ? ` (${loadRoutes().pins[b.id]})` : ''}`);
+  }
+  if (cmd === 'route-requests') { const r = loadRoutes(); const open = r.requests.filter((q) => has('all') || q.state === 'open'); return out({ ok: true, requests: open, pins: r.pins }, open.map((q) => `${q.id} ${q.state.padEnd(9)} ${q.builds.join(', ')} → ${q.account || 'any API account'} (by ${q.by})`).join('\n') || 'No open API route requests.'); }
+  if (cmd === 'route-approve' || cmd === 'route-deny') {
+    const r = decideRoute(rest[0], cmd === 'route-approve' ? 'approve' : 'deny');
+    return out({ ok: true, request: r.request, builds: r.builds.map((b) => b.id) }, `${r.request.id}: ${r.request.state}${r.builds.length ? ` (${r.builds.map((b) => b.id).join(', ')})` : ''}`);
+  }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
@@ -562,7 +704,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] [--account A] | route <id> api|subscription|auto [--account A] [--reason R] | route <id…> api | route --all-queued api | route-requests [--all] | route-approve <request> | route-deny <request> [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

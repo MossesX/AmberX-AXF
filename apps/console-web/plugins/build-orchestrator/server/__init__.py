@@ -401,12 +401,15 @@ PIPELINE_CLI = CLI.parent / "pipeline.mjs"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
 
 
-def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
+def _pipeline(*args: str, who: str = "", approver: str = "") -> dict[str, Any]:
     """Run the pipeline CLI (reads the store, the slots store, the accounts and the dispatcher's state file; writes go
-    through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it."""
-    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it.
+    `approver` = Brett's name when this is his own console click (an API route applies at once; else it is requested)."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}  # never inherited: only Brett's click sets them
     if who:
         env["AXF_ACTOR"] = who
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
     cmd = ["node", str(PIPELINE_CLI), *args, "--json"]
     proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=120, env=env)
     out = proc.stdout.strip().splitlines()
@@ -502,18 +505,76 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     return _pipeline("set", *pairs)
 
 
+ACCOUNT_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,31}$")
+REQUEST_RE = re.compile(r"^rr-[a-z0-9-]{1,40}$")
+
+
+def _route_extras(body: dict[str, Any]) -> list[str]:
+    out: list[str] = []
+    account = str(body.get("account") or "").strip()
+    if account:
+        if not ACCOUNT_RE.match(account):
+            raise HTTPException(400, "bad account name")
+        out += ["--account", account]
+    reason = body.get("reason")
+    text = " ".join(str((reason or {}).get("title") if isinstance(reason, dict) else reason or "").split())[:600]
+    if text:
+        out += ["--reason", text]
+    return out
+
+
 @router.post("/pipeline/route")
-async def pipeline_route(request: Request) -> dict[str, Any]:
-    """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under
-    their caps; Brett's own click), subscription = never an API account, auto = subscriptions, API only by overflow."""
+async def pipeline_route(request: Request) -> Any:
+    """{id | ids: [..] | all_queued: true, route: api|subscription|auto, account?, reason?}: the per-build override.
+    api = only API-key accounts (billed per token, under their daily and weekly caps), optionally pinned to one account.
+    Brett's own click applies it at once. Anyone else (voice, MCP, a session, a script with the console token) gets a
+    route request instead: 202 with {pending: true, request, ask}; Brett approves it in the console or on axHub (the
+    `ask` is the axHub confirm call to send once). subscription / auto apply for anyone (they never spend)."""
+    from fastapi.responses import JSONResponse
     body = await _json_body(request)
     route = str(body.get("route") or "")
     if route not in ("api", "subscription", "auto"):
         raise HTTPException(400, "route is api, subscription or auto")
     who = brett_click(request)
-    if route == "api" and not who:
-        raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
-    return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
+    by = (who or str(body.get("by") or "") or "console")[:80]
+    extras = _route_extras(body) if route == "api" else []
+    if body.get("all_queued") is True or isinstance(body.get("ids"), list):
+        if route != "api":
+            raise HTTPException(400, "several builds at once: route api only")
+        ids = ["--all-queued"] if body.get("all_queued") is True else [_build_id(x) for x in body["ids"][:50]]
+        res = _pipeline("route", *ids, "api", *extras, "--by", by, approver=who)
+    else:
+        res = _pipeline("route", _build_id(body.get("id")), route, *extras, "--by", by, approver=who)
+    return JSONResponse(res, status_code=202) if res.get("pending") else res
+
+
+@router.get("/pipeline/route/requests")
+def pipeline_route_requests(all: bool = False) -> dict[str, Any]:
+    """Open API route requests (all=true: every one kept) and the Brett-approved account pins."""
+    return _pipeline("route-requests", *(["--all"] if all else []))
+
+
+async def _route_decide(request: Request, cmd: str) -> dict[str, Any]:
+    body = await _json_body(request)
+    rid = str(body.get("request") or "").strip()
+    if not REQUEST_RE.match(rid):
+        raise HTTPException(400, "bad request id")
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, "only Brett answers an API run request: his own click in the console, or the axHub approval")
+    return _pipeline(cmd, rid, approver=who)
+
+
+@router.post("/pipeline/route/approve")
+async def pipeline_route_approve(request: Request) -> dict[str, Any]:
+    """{request}: Brett approves an API route request; every build in it runs on API (its caps still apply)."""
+    return await _route_decide(request, "route-approve")
+
+
+@router.post("/pipeline/route/deny")
+async def pipeline_route_deny(request: Request) -> dict[str, Any]:
+    """{request}: Brett denies an API route request; the builds stay on subscription accounts."""
+    return await _route_decide(request, "route-deny")
 
 
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",
