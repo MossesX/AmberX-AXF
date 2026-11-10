@@ -17,6 +17,8 @@ const RenderersCtx = createContext<TabRenderers>({});
 const WindowCtx = createContext<WindowSpec | null>(null);
 /** The window a tab is rendered in (null in the main shell) — content reads `mode` from it (tree / grid). */
 export const useWindowSpec = () => useContext(WindowCtx);
+/** A dock host's "new tab" for its tab rows (DockHost `onNewTab`): set, every tab row in it shows a + button. */
+export const NewTabCtx = createContext<((groupId: string) => void) | null>(null);
 
 export function useWindowManager(): WindowManager { return useRuntime().windows; }
 export function useWindowState(): WindowState { const wm = useWindowManager(); return useSyncExternalStore(wm.subscribe.bind(wm), () => wm.state, () => wm.state); }
@@ -52,6 +54,7 @@ export function TabGroupView({ group }: { group: TabGroup }) {
   const rt = useRuntime();
   const wm = rt.windows;
   const renderers = useContext(RenderersCtx);
+  const newTab = useContext(NewTabCtx);
   const ref = useRef<HTMLDivElement>(null);
   const active = group.tabs[group.active];
   // report bounds for drop targeting: the group's rect, its header height and each tab's right edge (dock@1 zones)
@@ -74,6 +77,7 @@ export function TabGroupView({ group }: { group: TabGroup }) {
       <div className="fx-tabgroup__bar" onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
         {brand?.svg && <span className="fx-tabgroup__brand"><BrandMark slot="tab-group" height={16} /></span>}
         {group.tabs.map((t, i) => <TabChip key={t.id} tab={t} group={group} active={i === group.active} onActivate={() => wm.activate(group.id, i)} />)}
+        {newTab && <button className="fx-iconbtn fx-tabgroup__new" title="New tab" aria-label="New tab" onClick={() => newTab(group.id)}><Icon name="plus" /></button>}
         <span className="fx-tabgroup__spacer" />
         <button className="fx-iconbtn" title="Undock to floating window" onClick={() => wm.undock(group.id)}><Icon name="external" /></button>
         <button className="fx-iconbtn" title="Split vertical" onClick={() => wm.split(group.id, 'vertical')}><Icon name="layout" /></button>

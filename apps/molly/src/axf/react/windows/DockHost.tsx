@@ -5,7 +5,7 @@ import { Button } from '../components/Controls';
 import type { Pane } from '../../core/engines/windows';
 import { paneGroups } from '../../core/engines/windows';
 import { normalizeDockLayout, presetSvg, type DockDropPreview, type DockLayoutData, type PanePath } from '../../core/engines/dock';
-import { TabGroupView, useWindowManager, useWindowState } from './WindowHost';
+import { NewTabCtx, TabGroupView, useWindowManager, useWindowState } from './WindowHost';
 
 /*
  * DockHost (dock@1, dock-engine s3): renders one window's pane tree with draggable splitters, reports the host's bounds
@@ -13,8 +13,11 @@ import { TabGroupView, useWindowManager, useWindowState } from './WindowHost';
  * shows where the tab would land. Everything visual reads theme tokens (framework/ui/axf.css, dock section).
  */
 
-/** The dock of one window (main by default): its tree with splitters; `empty` shows when nothing is docked. */
-export function DockHost({ windowId, empty, className }: { windowId?: string; empty?: ReactNode; className?: string }) {
+/**
+ * The dock of one window (main by default): its tree with splitters; `empty` shows when nothing is docked. `onNewTab`
+ * puts a + button on every tab row in it (called with the row's group id).
+ */
+export function DockHost({ windowId, empty, className, onNewTab }: { windowId?: string; empty?: ReactNode; className?: string; onNewTab?: (groupId: string) => void }) {
   const wm = useWindowManager();
   const s = useWindowState();
   const id = windowId ?? wm.mainWindowId;
@@ -30,9 +33,11 @@ export function DockHost({ windowId, empty, className }: { windowId?: string; em
   }, [wm, id]);
   const layout = s.layouts[id];
   return (
-    <div ref={ref} className={`fx-dock ${className ?? ''}`.trim()} data-fx-dock={id} data-fx-panes={layout ? paneGroups(layout).length : 0}>
-      {layout ? <DockPaneView pane={layout} path={[]} windowId={id} /> : empty ?? <div className="fx-empty">No tabs — open something here, or drag a tab in.</div>}
-    </div>
+    <NewTabCtx.Provider value={onNewTab ?? null}>
+      <div ref={ref} className={`fx-dock ${className ?? ''}`.trim()} data-fx-dock={id} data-fx-panes={layout ? paneGroups(layout).length : 0}>
+        {layout ? <DockPaneView pane={layout} path={[]} windowId={id} /> : empty ?? <div className="fx-empty">No tabs — open something here, or drag a tab in.</div>}
+      </div>
+    </NewTabCtx.Provider>
   );
 }
 

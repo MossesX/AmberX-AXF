@@ -10,7 +10,7 @@ import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } f
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
 const WARM_APPS = ['console'];
-import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp, tabRowCommand } from './workspace';
 import helpPack from '../help.json';
 import './xlayout.css';
 
@@ -170,6 +170,13 @@ export const plugin: AxfWebLibrary = {
       if (!inst) { rt.toast('Open an app first.', 'info', 'Open in'); return; }
       openApp(rt, inst, target === 'pane' || target === 'floating' ? target : 'main');
     }, { label: 'Open an app in the main area, a floating window or a pane', params: true });
+    // a dock tab row's commands (payload = the group id; they act on its active tab, which a right-click selects)
+    on('xlayout.tab', (args, ctx) => {
+      const [op = '', ...rest] = args;
+      const g = rest.join(':') || ctx.payload || '';
+      if (!g || !rt.windows.state.groups[g]) { rt.toast('No such tab row. In IDE mode, right-click a tab.', 'info', 'Tab'); return; }
+      tabRowCommand(rt, op, g);
+    }, { label: 'Tab row: new / close / float / pane for the active tab of a dock group', params: true });
     on('xlayout.customize', (_args, ctx) => customize(rt, ctx.payload), { label: 'Customize toolbar…' });
     provideMollyService(PLUGIN_ID, XLAYOUT_SERVICE, {
       layout: () => effectiveXLayout(rt),
@@ -205,6 +212,12 @@ export const plugin: AxfWebLibrary = {
     { id: 'xlayout.toolbar', target: TOOLBAR_CTX, items: [
       { id: 'xlayout.customize', label: 'Customize toolbar…', icon: 'edit', action: 'xlayout.customize' },
       { id: 'xlayout.toolbar-settings', label: 'Toolbar settings…', icon: 'settings', action: 'settings.open:xlayout' },
+    ] },
+    { id: 'xlayout.tab', target: 'tab-group', items: [
+      { id: 'xlayout.tab-new', label: 'New tab of this app', icon: 'plus', action: 'xlayout.tab:new:{payload}' },
+      { id: 'xlayout.tab-float', label: 'Open this tab in a floating window', icon: 'monitor', action: 'xlayout.tab:float:{payload}' },
+      { id: 'xlayout.tab-pane', label: 'Open this tab in a new pane', icon: 'grid', action: 'xlayout.tab:pane:{payload}' },
+      { id: 'xlayout.tab-close', label: 'Close this tab', icon: 'x', action: 'xlayout.tab:close:{payload}' },
     ] },
     { id: 'xlayout.nav', target: 'nav-item', items: [
       { id: 'xlayout.nav-pane', label: 'Open in a pane', icon: 'grid', action: 'xlayout.open:pane:{payload}' },

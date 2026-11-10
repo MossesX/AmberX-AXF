@@ -107,6 +107,24 @@ function appTabs(rt: AxfRuntime): string[] {
   return Object.values(rt.windows.state.groups).flatMap((g) => g.tabs).filter((t) => t.kind === APP_TAB && t.payload).map((t) => t.payload!);
 }
 
+/** The copy a dock group shows now (its active tab), or null when that tab is not an app copy. */
+export function activeInstanceOf(rt: AxfRuntime, groupId: string): string | null {
+  const g = rt.windows.state.groups[groupId];
+  const t = g?.tabs[g.active];
+  return t?.kind === APP_TAB && t.payload ? t.payload : null;
+}
+
+/** The tab row's + and its menu (molly-multi-instance-tabs s2): what a tab-row command does to the group's active copy. */
+export function tabRowCommand(rt: AxfRuntime, op: string, groupId: string): void {
+  const inst = activeInstanceOf(rt, groupId);
+  const app = inst ? appOfInstance(inst)?.id : null;
+  if (op === 'new') { rt.dispatch(`molly.new-tab${app ? `:${app}` : ''}`); return; }
+  if (!inst) { rt.toast('That tab is not an app.', 'info', 'Tab'); return; }
+  if (op === 'close') { rt.dispatch(`molly.close-tab:${inst}`); if ((parseInstance(inst)?.n ?? 1) === 1) rt.windows.closeTab(tabId(inst)); return; }
+  if (op === 'float' || op === 'pane') { openApp(rt, inst, op === 'float' ? 'floating' : 'pane'); return; }
+  rt.toast(`No tab command ${op}. Commands: new, close, float, pane.`, 'warning', 'Tab');
+}
+
 /** The tab body of a copy in a pane: its frame's slot, covering only the pane. */
 export function AppTab({ app }: { app: string }) {
   return <AppSlot id={app} fill="self" />;
@@ -130,7 +148,7 @@ export function Workspace({ app }: { app: string }) {
   }, [rt, s.groups, openInstances().join(',')]);
   return (
     <div className="axp-xlayout-ide" data-fx-ctx-target="xlayout-ide">
-      <DockHost empty={<div className="fx-empty">No apps open. Pick one from the navigation, or a layout from View → Pane layout.</div>} />
+      <DockHost onNewTab={(g) => tabRowCommand(rt, 'new', g)} empty={<div className="fx-empty">No apps open. Pick one from the navigation, or a layout from View → Pane layout.</div>} />
     </div>
   );
 }

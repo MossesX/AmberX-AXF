@@ -1,7 +1,7 @@
 # Molly (Fable version): the one interface for AmberX, axHub and the console
 
-Build `molly-fable-version-the-one-interface-for-amberx`, step s1, Nov 10 2026. Model: Fable throughout (no fallback
-to Opus). Branch `claude/molly-fable-version-the-one-interface-for-amberx`.
+Build `molly-fable-version-the-one-interface-for-amberx`, Nov 10 2026. s1 on Fable; s2 and s3 on Opus (the
+orchestrator's phase 2 downgrade, recorded on the build). Branch `claude/molly-fable-version-the-one-interface-for-amberx`.
 
 Brett (Nov 10 2026): "Build the molly apps fable."
 
@@ -34,6 +34,37 @@ build adds the Fable layer the molly-opus build promised, on top of what is on m
    subscriber (stack overflow: the merged nav never finished), and the app area no longer filled the main region
    because the framework now wraps every view in a skin scope (`fx-ui-scope`), so the frames measured 0 px high and
    stayed hidden. Both would have hit the next CI re-bake of Molly on main regardless of this build.
+
+## Phase 2 (s2, Opus): tab row + and tab menu
+
+s2's text repeats the request ("Build the molly apps fable"), and s1 already built that on Fable. So s2 (Opus,
+downgrade recorded) took the next open piece from the multi-instance tabs work (molly-multi-instance-tabs s2):
+
+- **+ on every dock tab row.** `DockHost` takes an optional `onNewTab(groupId)`; when it is set, every tab row in that
+  dock shows a + button (`framework/react/windows/{DockHost,WindowHost}.tsx`, the existing `fx-iconbtn` chrome, no
+  new CSS). Nothing changes for an app that does not pass it. Molly passes it: + opens another copy of the row's
+  active app (`Console` → `Console 2`) in that row.
+- **Tab menu.** Right-clicking a tab selects it and opens the row's menu (`tab-group` target, payload = the group).
+  xLayout adds New tab of this app, Open this tab in a floating window, Open this tab in a new pane, and Close this
+  tab, all through one action, `xlayout.tab:<new|float|pane|close>:<group>`. Closing the first copy also takes its
+  tab out of the dock.
+- API: the same commands as Molly actions (`molly.new-tab[:<app>]`, `molly.close-tab[:<instance>]`,
+  `xlayout.open:floating|pane:<instance>`) on REST `POST /api/console/action`, MCP `console_action`, CLI
+  `axf console action …` and voice, as in the table below. `xlayout.tab` is one more action on the same paths, but
+  it needs a dock group id, so remote callers should use the instance-based actions.
+- Checked: Molly `tsc` + `vite build`; `check-molly-shell` 287, `check-dock` 1679, `check-xlayout` 199,
+  `check-embed` 429; `console-commands/test.mjs` 7; `check-theme`, `check-controls`, `check-toolbars`,
+  `check-chrome-assets` green. Browser (Playwright, Molly's dist with the guests 404ing), desktop 1440×900 and phone
+  412×915: View → IDE mode puts Console in a tab row with a +; + gives `Console | Console 2`; right-clicking a tab shows
+  the four items under the group menu; Close this tab leaves `Console 2`.
+- UI Review: r-20261110-78bbq01 (tab row +) and r-20261110-g4lvv01 (tab menu), group "molly-fable-version-the-one-interface-for-amberx - Nov 10 2:40 PM".
+  **These stay in this worktree.** This headless session had no `AXF_CONSOLE_URL` / `AXF_TOKEN`, so `--console`
+  could not upload them. Resubmit them with `--console` from a session that has those variables. The shots are
+  `/tmp/molly-s2/shots/tabrow-{plus,menu}-{desktop,phone}.png` on the VPS.
+- The baked copies of the two framework files were updated in Molly by hand, with their `axf.lock.json` hashes.
+  `rebake apply apps/molly` refuses because three baked files on main had already drifted (`build-priority.mjs`,
+  `engines/actions.ts`, `engines/console-commands.d.mts`). console-web, axhub-web, amberx-droid and
+  walkthrough-studio pick up the new optional prop at the next CI re-bake; nothing in them uses it.
 
 ## How every UI feature is reached without the UI (Brett, Nov 8 2026)
 
@@ -93,8 +124,9 @@ console's `where` carries only screen / label fields. Noted as a gap below.
 ## Builds this supersedes or folds in
 
 - **molly-multi-instance-tabs #328 (unlanded, 119 conflicts with main):** instances, new tab, close tab, rename of
-  copies ("Console 2") and the dock sync are here. Still open from it: the + button and right-click menu on every
-  `TabGroupView`, touch long-press drag, drop outside the dock pops a window. Close #328 or re-scope to those.
+  copies ("Console 2") and the dock sync are here. The + button and the right-click tab menu on dock tab rows
+  came in s2. Still open from it: tab rename, touch long-press drag, and a drop outside the dock opening a window.
+  Close #328 or re-scope it to those.
 - **molly-one-shell #395 s12 (API / MCP / CLI / voice control of every Molly UI):** done here through the console
   inside Molly. s7–s11 (native mounts, no iframe) and s13–s14 stay that build's.
 - **molly-console-commands:** its "client reported as molly/console-web, recent = the visible client" stands; this
@@ -117,6 +149,7 @@ the console is redeployed, Molly's own items are not reachable remotely; the con
 
 - Structured JSON read of the shell state over REST / MCP: today it rides the console's `where` label and the
   screens list. A `molly.state` read endpoint would need the console server to carry host reads (control@1 `get`).
-- The + button on tab rows, tab rename and touch drag (molly-multi-instance-tabs s2) are not here.
+- Tab rename, touch long-press drag, and a drop outside the dock opening a window (molly-multi-instance-tabs s2) are
+  not here. The + button and the tab menu landed in s2.
 - Android twin of molly-shell@1 deferred (`framework/spec/PORTING.md`).
 - UI Review: desktop + phone shots submitted, grouped by screen (group "molly-fable-version-the-one-interface-for-amberx - Nov 10 3:45 PM": r-20261110-c7431f42 Console in Molly, r-20261110-c1e811c0 Console 2, r-20261110-da7101c2 IDE mode, r-20261110-22ea3d4f Tabs menu, r-20261110-aef8deb0 Molly control settings, r-20261110-19dc983a start page); PR #447; waiting there.
