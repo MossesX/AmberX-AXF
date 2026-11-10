@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2249,
- "updatedAt": "2026-11-10T03:14:32.415Z",
+ "rev": 2250,
+ "updatedAt": "2026-11-10T03:17:13.654Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135493,12 +135493,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T03:14:09.017Z",
-   "updatedAt": "2026-11-10T03:14:14.246Z",
+   "updatedAt": "2026-11-10T03:17:06.231Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T03:14:14.246Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T03:17:06.231Z"
     }
    ],
    "approvals": [],
@@ -135525,13 +135529,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T03:17:06.231Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwa4cvup01o3t5",
+     "title": "",
+     "text": "Two finished builds can't land because they clash with main. 1) claude/running-builds-watchdog clashes in build-orchestrator pipeline-core.mjs, pipeline.mjs, server/__init__.py and web/pipeline.tsx. 2) claude/amberx-approvals-fix (PR #353) failed with 'Merge with strategy ort failed' and is 1054 commits behind. For each: merge origin/main into the branch, resolve conflicts keeping both behaviours (main's newer code wins on structure, with the branch's feature re-applied), run the plugin tests, then land with build_land. Redo nothing that main already has. Report what each kept.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T03:17:06.231Z",
+     "updatedAt": "2026-11-10T03:17:06.231Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwa4cvup028gsf",
+     "title": "",
+     "text": "When I tell you to do something, you do it till you get it right.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T03:17:06.231Z",
+     "updatedAt": "2026-11-10T03:17:06.231Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwa4cvup035x92",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/resolve-merge-conflicts-and-land-running-builds.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/resolve-merge-conflicts-and-land-running-builds.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T03:17:06.231Z",
+     "updatedAt": "2026-11-10T03:17:06.231Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -135540,12 +135620,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T03:17:06.231Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

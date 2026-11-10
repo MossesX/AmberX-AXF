@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:14:32.415Z",
+ "updatedAt": "2026-11-10T03:17:13.654Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83425,12 +83425,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T03:14:09.017Z",
-   "updatedAt": "2026-11-10T03:14:14.246Z",
+   "updatedAt": "2026-11-10T03:17:06.231Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T03:14:14.246Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T03:17:06.231Z"
     }
    ],
    "approvals": [],
@@ -83447,7 +83451,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Two finished builds can't land because they clash with main. 1) claude/running-builds-watchdog clashes in build-orchestrator pipeline-core.mjs, pipeline.mjs, server/__init__.py and web/pipeline.tsx. 2) claude/amberx-approvals-fix (PR #353) failed with 'Merge with strategy ort failed' and is 1054 commits behind. For each: merge origin/main into the branch, resolve conflicts keeping both behaviours (main's newer code wins on structure, with the branch's feature re-applied), run the plugin tests, then land with build_land. Redo nothing that main already has. Report what each kept.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa4cvup01o3t5"
+    },
+    {
+     "id": "s2",
+     "text": "When I tell you to do something, you do it till you get it right.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa4cvup028gsf"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/resolve-merge-conflicts-and-land-running-builds.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/resolve-merge-conflicts-and-land-running-builds.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa4cvup035x92"
+    }
+   ]
   }
  ]
 }
