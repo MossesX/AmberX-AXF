@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2740,
- "updatedAt": "2026-11-10T19:32:25.623Z",
+ "rev": 2741,
+ "updatedAt": "2026-11-10T19:37:53.732Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145782,15 +145782,15 @@
    "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
    "category": "",
    "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/agent-manager-training-wizard-for-employee-agent",
-   "pr": "",
+   "pr": "#467",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T19:25:18.029Z",
+   "updatedAt": "2026-11-10T19:37:52.585Z",
    "builtAt": "",
    "notes": [
     {
@@ -145831,12 +145831,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:29:32.033Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-agent-manager-training-wizard-for-employee-agent--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T19:25:14.224Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T17:58:33.406Z",
@@ -145848,7 +145848,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T19:25:14.224Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -145857,7 +145857,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T19:25:14.224Z"
+    "pickedAt": ""
    },
    "steps": [
     {
