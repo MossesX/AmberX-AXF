@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:34:57.829Z",
+ "updatedAt": "2026-11-10T17:35:27.023Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87596,9 +87596,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:34:36.360Z",
-   "updatedAt": "2026-11-10T17:34:37.179Z",
+   "updatedAt": "2026-11-10T17:35:25.480Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:35:25.480Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -87613,7 +87618,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Shared screenshot registry reachable from anywhere by hook (not only UI Review): Shipped Features entries, Plan Studio plans, orchestrator builds (Build Manager is being retired), errors, any mention of a build/feature/error links its screenshots. 2) Opening a screenshot of an element: side pane with every token/style/parameter for that screen; tweak live with a hot-rendered live preview of the same screen; Save. 3) New asset type: screen skin (colour, style, layout, behavior, icon themes etc.) applied to one particular UI screen only. Full API/CLI control.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz0ox401xe53"
+    },
+    {
+     "id": "s2",
+     "text": "Screenshots go into a shared registry that can be accessed from anywhere. Plan Studio, features, builds, errors tie into it through a hook, not directly through UI review. View the screenshot of an element, open a pane with all the tokens, styles, parameters, tweak it live with a hot rendering preview of the same screen, save it. That creates a new asset type with the color, style, layout, behavior, icon themes that applies to just a particular UI screen.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz0ox402ycuf"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/shared-screenshot-registry-hooked-everywhere-liv.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/shared-screenshot-registry-hooked-everywhere-liv.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz0ox403cdzd"
+    }
+   ]
   },
   {
    "id": "resolve-conflicts-and-land-pr-449-account-order",
