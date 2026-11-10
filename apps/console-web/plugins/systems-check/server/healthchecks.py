@@ -159,6 +159,34 @@ _RUNS_AT = re.compile(r'"?runsAt"?\s*[:=]\s*"?([0-9T:.\-Z+]{10,40}|\d{10,13})')
 _JOB_ID = re.compile(r'"?job_?[iI]d"?\s*[:=]\s*"?([0-9a-f-]{8,64})')
 
 
+AMBERX_LINKS_URL = "https://amberx.amberxai.com/.well-known/assetlinks.json"
+
+
+def amberx_app_links(status: int | None, body: Any) -> dict[str, Any]:
+    """AmberX app links (Nov 10 2026): https://amberx.amberxai.com/gizmo opens the AmberX app only once Android verifies
+    the site's assetlinks.json against the APK's signing key; until then the links open the AmberX web app."""
+    if status is None:
+        return {"status": "unknown", "summary": "amberx.amberxai.com didn't answer, so its app-link file can't be checked."}
+    if status != 200 or not isinstance(body, list):
+        return {"status": "warn", "summary": f"AmberX's app-link file answered {status}: Gizmo links open the web app, not the app."}
+    prints = [p for e in body if isinstance(e, dict) for p in ((e.get("target") or {}).get("sha256_cert_fingerprints") or [])]
+    if not prints:
+        return {"status": "warn", "summary": "AmberX's app-link file names no signing key yet: Gizmo links open the AmberX web app, not the app."}
+    return {"status": "ok", "summary": f"AmberX app links verified against {len(prints)} signing key{'s' if len(prints) != 1 else ''}."}
+
+
+def _amberx_links_probe() -> dict[str, Any]:
+    import json
+    import urllib.request
+    try:
+        with urllib.request.urlopen(urllib.request.Request(AMBERX_LINKS_URL, headers={"Accept": "application/json"}), timeout=10) as r:  # noqa: S310 — fixed https URL
+            return amberx_app_links(r.status, json.loads(r.read(100_000) or b"null"))
+    except urllib.error.HTTPError as e:
+        return amberx_app_links(e.code, None)
+    except Exception:  # noqa: BLE001
+        return amberx_app_links(None, None)
+
+
 def veto_fix(command: str, call: Callable[..., dict[str, Any]], now: float | None = None) -> dict[str, Any]:
     """Send one fixed VPS command through axHub as a veto call (Vinnie runs it after the countdown unless Brett denies
     it). Never polled: the monitor checks again once it should have run."""
@@ -275,6 +303,12 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
                   "when": lambda: plugin_services.get("axf.containers@1") is not None, "run": amberx_bk,
                   "instructions": ["Fix runs docker logs on the backup container through axHub; read the cause, fix it in /opt/amberx-app/src/deploy/prod, then: docker compose -p amberx-app --env-file /opt/amberx-app/.env up -d --no-deps backup.",
                                    "Take a dump now: docker exec amberx-app-backup-1 /bin/sh /usr/local/bin/backup.sh --once (dumps live in /opt/amberx-app/backups, 14 days kept)."]}, OWNER)
+
+    reg.register({"id": "amberx-app-links", "label": "AmberX app links (Gizmo links open the app)", "service": "vps", "order": 37, "severity": "warn",
+                  "interval": 60 * 60, "run": _amberx_links_probe,
+                  "instructions": ["Get the APK's signing key fingerprint: on a machine with the CI debug keystore (GitHub secret ANDROID_DEBUG_KEYSTORE, base64), run keytool -list -v -keystore debug.keystore -storepass android and copy the SHA256 line (AA:BB:…).",
+                                   "On the VPS: APP_CERT_SHA256=<that fingerprint> bash /opt/axf/apps/amberx-droid/deploy/install.sh (it is remembered for later updates).",
+                                   "Check: curl https://amberx.amberxai.com/.well-known/assetlinks.json lists it. Then on the phone: Settings → Apps → AmberX → Open by default → amberx.amberxai.com is verified (or reinstall the APK)."]}, OWNER)
 
     reg.register({"id": "disk", "label": "Disk space", "service": "vps", "order": 36, "run": lambda: probes.disk("/"),
                   "fix": {"type": "host", "command": DISK_FIX},
