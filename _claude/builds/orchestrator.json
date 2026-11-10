@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:09:08.597Z",
+ "updatedAt": "2026-11-10T18:09:28.574Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77777,7 +77777,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-10T17:45:19.882Z",
+   "updatedAt": "2026-11-10T18:09:26.196Z",
    "builtAt": "",
    "notes": [
     {
@@ -77807,6 +77807,10 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:45:19.882Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (1 Fable).",
+     "at": "2026-11-10T18:09:26.196Z"
     }
    ],
    "approvals": [],
@@ -77826,13 +77830,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Builds on ui-review-notify-session-audio (landed Nov 7): sessions are recorded by AmberX's Audio Output Recorder (output-recorder plugin) and transcribed by the faster-whisper worker, transcripts saved on the hub, readable in the recorder page. Today output-recorder's plugin.json declares no transcript commands, so nothing outside the page can read them. Add full API (plugin-commands@1, so MCP/axHub, REST, CLI, voice come for free): list sessions with transcripts (date, length, linked Claude session, title); read one transcript (whole or a time range, with timestamps); search across all transcripts (words or phrase, date range, fuzzy), returning the matching session, timestamp, a few lines of context, and a deep link that opens the recorder page at that moment (and plays the audio there). Also a 'find the session where we talked about X' command that ranks sessions by match. Reachable from Claude chat/voice sessions through axHub so Claude or Gizmo can answer 'which session did we talk about this'. Read-only; respects the recorder's settings. Tests; report.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the transcript index: a schema for per-session metadata (id, date, length, title, linked Claude session id) and timestamped segments that the hub transcripts map onto, plus a migration that backfills the index from transcripts already saved on the hub. Document the contract that the API commands return (session, segment, match with context and deep link).",
+     "model": "Fable",
+     "why": "Schema + migration design and a cross-port contract that MCP, REST, CLI and voice all share",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/amberx/plugins/output-recorder/transcripts/schema.mjs",
+      "apps/amberx/plugins/output-recorder/transcripts/migrate-index.mjs",
+      "apps/amberx/plugins/output-recorder/transcripts/CONTRACT.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -77840,17 +77848,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwazdfka15md2b"
+     "uid": "st-mwb08fjo01amxb"
     },
     {
      "id": "s2",
-     "text": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
+     "text": "Build a read-only transcript reader over the hub store. It lists sessions that have transcripts (date, length, linked Claude session, title) with paging and date filters, and reads one transcript either whole or for a start/end time range, with a timestamp on every segment.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/transcripts/reader.mjs",
+      "apps/amberx/plugins/output-recorder/transcripts/index.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -77858,11 +77869,183 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwazdfka168r0a"
+     "uid": "st-mwb08fjo02lcrk"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/session-transcripts-api-search-what-was-said-fin.md, THREADS row, commit, push, PR",
+     "text": "Build search across all transcripts. It supports words, exact phrase, date range and fuzzy matching (typo-tolerant), and returns the matching session, timestamp, a few lines of context and a deep link. Add the find-session ranking, which scores each session by its matches (count, phrase proximity, recency) for 'the session where we talked about X'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/transcripts/search.mjs",
+      "apps/amberx/plugins/output-recorder/transcripts/rank.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo033dep"
+    },
+    {
+     "id": "s4",
+     "text": "Enforce the recorder's settings in the reader and search: recording or transcription off, retention window, sessions excluded or marked private, and the hub read scope. Every path stays read-only with no writes or deletes, and blocked results are returned as clear errors.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/transcripts/policy.mjs",
+      "apps/amberx/plugins/output-recorder/settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo040sik"
+    },
+    {
+     "id": "s5",
+     "text": "Declare the transcript commands in output-recorder plugin.json under plugin-commands@1: transcripts.list, transcripts.read, transcripts.search, transcripts.find_session and recorder.page_state. Each gets a parameter schema and is wired to its handler, so axHub MCP, console REST, CLI and voice pick them up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/plugin.json",
+      "apps/amberx/plugins/output-recorder/commands.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo058v37"
+    },
+    {
+     "id": "s6",
+     "text": "Recorder page deep link (UI change, with its API part in this same step). The page opens at ?session=<id>&t=<sec>&play=1, scrolls the transcript to that moment, seeks the audio and plays it. Register it as a console_show/console_open target. The page state (open session, position, playing) is readable through recorder.page_state, and the open, seek and play actions are callable without the UI over REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/ui/recorder-page.mjs",
+      "apps/amberx/plugins/output-recorder/ui/deeplink.mjs",
+      "apps/amberx/plugins/output-recorder/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo06g9g1"
+    },
+    {
+     "id": "s7",
+     "text": "Make sure the commands are exposed the same way on REST (console API routes) and the CLI (transcripts list/read/search/find-session with --from/--to/--fuzzy/--json). Help text and output include the deep link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/server/routes/plugin-commands.mjs",
+      "apps/console-web/cli/",
+      "apps/amberx/plugins/output-recorder/cli.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo07w3d2"
+    },
+    {
+     "id": "s8",
+     "text": "Expose the commands through axHub MCP for Claude chat and voice sessions and Gizmo. Add voice intents for 'which session did we talk about X', 'read what was said at …' and 'open that session'. The spoken answer gives the session title, date and timestamp, and offers to open the deep link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/hub/axhub-mcp/",
+      "apps/amberx/voice/intents/transcripts.mjs",
+      "apps/amberx/plugins/output-recorder/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo086wc0"
+    },
+    {
+     "id": "s9",
+     "text": "Unit tests: reader time ranges and timestamps, phrase, word and fuzzy search, date filter, context lines, find_session ranking order, policy enforcement (disabled, retention, private, read-only), and the index backfill migration.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/test/transcripts-reader.test.mjs",
+      "apps/amberx/plugins/output-recorder/test/transcripts-search.test.mjs",
+      "apps/amberx/plugins/output-recorder/test/transcripts-policy.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo09r9ql"
+    },
+    {
+     "id": "s10",
+     "text": "Parity and integration tests: the same query through REST, MCP, CLI and voice gives the same result. The deep link opens the recorder page at the timestamp and plays the audio, and recorder.page_state reflects it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx/plugins/output-recorder/test/transcripts-api-parity.test.mjs",
+      "apps/amberx/plugins/output-recorder/test/deeplink.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb08fjo0aamsx"
+    },
+    {
+     "id": "s11",
+     "text": "Run the full test suite and fix any failures. Write the report, add the THREADS row and open the PR. The PR describes how each feature is reached: deep link, state read, actions and settings via REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -77879,7 +78062,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwazdfka17z7k7"
+     "uid": "st-mwb08fjo0b6tpw"
     }
    ]
   },
