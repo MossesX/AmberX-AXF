@@ -336,6 +336,18 @@
    "from": "",
    "addenda": []
   },
+  "amberx-llama-axhub-service-hooks-so-amberx-and-e": {
+   "said": "axHub hooks in AmberX.",
+   "at": "2026-11-10T17:51:34.577Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-notes": {
    "said": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
    "at": "2026-10-27",
