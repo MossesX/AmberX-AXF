@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2870,
- "updatedAt": "2026-11-10T21:23:27.081Z",
+ "rev": 2871,
+ "updatedAt": "2026-11-10T21:24:12.059Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153838,7 +153838,7 @@
    "title": "Resolve conflicts and land #460, #456, #457, #459, #342",
    "category": "",
    "detail": "Merges failed. #460 (splitter fix), #457 (merge batching), #459 (failed-batch split), #342 (build optimizer) have merge conflicts with main; #456 (enforce merge queue) is still a draft. In order: #460 first (it fixes every build's steps), then #456 (mark ready), #457, #459, #342. For each: merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, merge. Then redeploy the console. Notify on AmberX only when all are landed.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153846,8 +153846,8 @@
    "pr": "#473",
    "priority": "P0",
    "createdAt": "2026-11-10T20:40:20.356Z",
-   "updatedAt": "2026-11-10T21:21:21.655Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T21:24:10.424Z",
+   "builtAt": "2026-11-10T21:24:10.425Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153978,12 +153978,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T21:24:10.424Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T20:41:31.157Z",
-     "updatedAt": "2026-11-10T20:41:31.157Z"
+     "updatedAt": "2026-11-10T21:24:10.655Z"
     }
    ],
    "profiles": [
@@ -153994,7 +153994,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
