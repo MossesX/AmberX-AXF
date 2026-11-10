@@ -17,6 +17,8 @@
  *   … selfcheck [--request] [--reason r] [--json]   check every account one by one, release stale claims / slots / builds,
  *                                  rebuild the account snapshot, alert AmberX on a fix or an unusable account. Off the host
  *                                  (the console container) or with --request it asks the next tick to run it.
+ *   … prune-worktrees [--apply] [--min-age-h 24] [--json]   remove worktrees of finished builds that hold nothing uncommitted
+ *                                  (dry run without --apply); launches and the self-check do it by themselves when disk is low.
  * The console's container has no ~/.claude-accounts: there the accounts come from accounts-host.json, the snapshot every
  * host tick writes (status.accountsFrom says which, and how old).
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
@@ -42,10 +44,11 @@
  * Environment for tests: AXF_PIPELINE_LAUNCHER (instead of deploy/claude-headless.sh), AXF_PIPELINE_SPLITTER (a command that
  * reads the prompt on stdin and prints Claude's answer), AXF_PIPELINE_WORKTREES (root of build worktrees, default
  * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
- * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
+ * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json), AXF_CLAUDE_BIN (the claude binary for the one-shot split and probe
+ * calls). Exit 0 ok, 2 usage / refused.
  */
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, statfsSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -238,7 +241,8 @@ export function askSplitter(prompt, settings, env = process.env) {
     try { snap = snapshotLogin({ dir, session: 'split', account }); } catch { snap = null; }
     const e = snap ? childEnv(snap, env) : { ...env };
     e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', '', prompt], { encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    // the prompt goes on stdin: in argv it would be swallowed by the variadic --tools flag (see P.oneShotArgs)
+    const r = spawnSync(env.AXF_CLAUDE_BIN || 'claude', P.oneShotArgs(MODEL_IDS.opus), { input: prompt, encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
     if (r.error) return { text: '', provider: 'claude', error: `claude not available: ${r.error.message}` };
     if (r.status !== 0) return { text: '', provider: 'claude', error: `claude exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
     let text = r.stdout; try { const j = JSON.parse(r.stdout); text = typeof j?.result === 'string' ? j.result : r.stdout; } catch { /* plain text */ }
@@ -310,15 +314,67 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
 const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
 function git(cwd, ...a) { return spawnSync('git', a, { cwd, encoding: 'utf8', timeout: 180e3 }); }
 
+/** Below this many GB free under the worktrees root a launch first prunes finished worktrees (AXF_PIPELINE_MIN_FREE_GB, default 30). */
+const minFreeGb = (env = process.env) => { const n = Number(env.AXF_PIPELINE_MIN_FREE_GB); return env.AXF_PIPELINE_MIN_FREE_GB !== undefined && env.AXF_PIPELINE_MIN_FREE_GB !== '' && Number.isFinite(n) && n >= 0 ? n : 30; };
+/** Below this a new worktree is refused with a plain "disk full" error instead of a wall of git write errors. */
+const HARD_FREE_GB = 3;
+export function freeGb(path) { try { const s = statfsSync(path); return Math.round(((s.bavail * s.bsize) / 1024 ** 3) * 10) / 10; } catch { return Infinity; } }
+
+/**
+ * Remove the worktrees of finished builds that hold nothing uncommitted (P.pruneVerdict). The branch and its commits stay in
+ * the repo; the session's brief and logs move to <root>/_session-logs/<id>/. Dry run unless apply. Every build worktree used
+ * to stay forever (236 of them, 121 GB) until the disk filled and launches failed with "unable to write file".
+ */
+export function pruneWorktrees({ apply = false, env = process.env, minAgeH = 24, now = Date.now() } = {}) {
+  const root = worktreesRoot(env); const store = loadStore();
+  const out = { root, apply, freeGbBefore: freeGb(root), freeGbAfter: null, removed: [], kept: [], failed: [] };
+  let names = []; try { names = readdirSync(root).sort(); } catch { return out; }
+  const archiveRoot = join(root, '_session-logs');
+  for (const name of names) {
+    const dir = join(root, name);
+    if (name.startsWith('_') || !existsSync(join(dir, '.git'))) continue;
+    const found = storeCore.findBuild(store, name); const build = found && found.id === name ? found : null;
+    const st = git(dir, 'status', '--porcelain');
+    if (st.status !== 0) { out.kept.push({ id: name, why: 'git status failed' }); continue; }
+    const contains = git(dir, 'branch', '-a', '--contains', 'HEAD', '--format=%(refname)');
+    const v = P.pruneVerdict({ build, status: st.stdout.split('\n'), onBranch: contains.status === 0 && contains.stdout.trim() !== '', now, minAgeH });
+    if (!v.remove) { out.kept.push({ id: name, why: v.why }); continue; }
+    if (!apply) { out.removed.push({ id: name, dryRun: true }); continue; }
+    try {
+      const keep = readdirSync(dir).filter((f) => P.SESSION_FILE.test(f) && statSync(join(dir, f)).isFile());
+      if (keep.length) { const to = join(archiveRoot, name); mkdirSync(to, { recursive: true }); for (const f of keep) renameSync(join(dir, f), join(to, f)); }
+      const common = git(dir, 'rev-parse', '--path-format=absolute', '--git-common-dir').stdout.trim();
+      const r = spawnSync('git', ['--git-dir', common, 'worktree', 'remove', '--force', dir], { encoding: 'utf8', timeout: 180e3 });
+      if (r.status !== 0) throw new Error((r.stderr || r.stdout).trim().slice(0, 200));
+      out.removed.push({ id: name, logs: keep.length });
+    } catch (e) { out.failed.push({ id: name, error: str(e.message, 200) }); }
+  }
+  out.freeGbAfter = freeGb(root);
+  if (apply) logLine({ event: 'worktrees-pruned', removed: out.removed.length, failed: out.failed.length, freeGbBefore: out.freeGbBefore, freeGbAfter: out.freeGbAfter });
+  return out;
+}
+
+/** Room for a new worktree: prune finished ones when free space is under the floor; refuse plainly when the disk is full. */
+export function ensureRoom(env = process.env) {
+  const root = worktreesRoot(env); const free = freeGb(root);
+  if (free >= minFreeGb(env)) return { free, pruned: 0 };
+  const r = pruneWorktrees({ apply: true, env });
+  if (r.freeGbAfter < HARD_FREE_GB) throw new Error(`disk full: ${r.freeGbAfter} GB free under ${root} after pruning ${r.removed.length} finished worktree(s); free space on the VPS`);
+  return { free: r.freeGbAfter, pruned: r.removed.length };
+}
+
 /** The build's worktree (made when missing): its own branch claude/<id> from origin/main, node_modules linked from the main checkout. */
 export function ensureWorktree(id, env = process.env) {
   const dir = join(worktreesRoot(env), id);
   if (existsSync(dir)) return { dir, made: false };
   if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') { mkdirSync(dir, { recursive: true }); return { dir, made: true }; }
   mkdirSync(worktreesRoot(env), { recursive: true });
+  ensureRoom(env);
   git(REPO_ROOT, 'fetch', '-q', 'origin', 'main');
   const base = git(REPO_ROOT, 'rev-parse', '--verify', '-q', 'origin/main').status === 0 ? 'origin/main' : 'HEAD';
-  let r = git(REPO_ROOT, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
+  // a branch that already exists (its worktree was pruned, the build runs again) is checked out as it is, never reset to main
+  const has = git(REPO_ROOT, 'rev-parse', '--verify', '-q', `refs/heads/claude/${id}`).status === 0;
+  let r = has ? git(REPO_ROOT, 'worktree', 'add', dir, `claude/${id}`) : git(REPO_ROOT, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
   if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(REPO_ROOT, 'worktree', 'add', '--detach', dir, base);
   if (r.status !== 0) throw new Error(`worktree for ${id}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
   // installed packages come from the main checkout: no install per build
@@ -465,6 +521,10 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
     for (const n of r.limits) fixes.push(`cleared ${n}'s expired limit`);
   } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
   for (const b of reapBuilds()) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
+  if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') !== 'mkdir' && freeGb(worktreesRoot(env)) < minFreeGb(env)) {
+    try { const r = pruneWorktrees({ apply: true, env }); if (r.removed.length) fixes.push(`disk low: removed ${r.removed.length} finished build worktree(s), ${r.freeGbBefore} → ${r.freeGbAfter} GB free`); }
+    catch (e) { logLine({ event: 'self-check-prune-failed', error: str(e.message, 300) }); }
+  }
   const store = loadStore(); const settings = loadSettings();
   const read = accountsRead(store, settings, env);
   if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
@@ -561,8 +621,18 @@ export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn
  * to Shipped features through the builds store (framework/cli/shipped.mjs). A few per tick; AXF_SHIPPED=off = none.
  */
 afterTick(({ env }) => {
-  const r = shipLanded({ env });
-  for (const s of r.shipped ?? []) logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+  // a build that failed to ship is skipped until its record changes (a PR, a merge, any edit): three builds with no landed
+  // commit used to take all three slots every minute (4,084 failures in two days) and nothing else shipped
+  const st = loadState(); const failed = st.shipFailed && typeof st.shipFailed === 'object' ? { ...st.shipFailed } : {};
+  const r = shipLanded({ env, skip: (b) => failed[b.id] !== undefined && failed[b.id] === P.shipKey(b) });
+  let changed = false;
+  const store = (r.shipped ?? []).some((s) => s.error) ? loadStore() : null;
+  for (const s of r.shipped ?? []) {
+    logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+    const b = store ? storeCore.findBuild(store, s.id) : null;
+    if (s.error && b) { failed[s.id] = P.shipKey(b); changed = true; } else if (!s.error && failed[s.id] !== undefined) { delete failed[s.id]; changed = true; }
+  }
+  if (changed) saveState({ ...loadState(), shipFailed: failed });
 });
 
 // ------------------------------------------------------------------ the one way in: request a build, route it
@@ -606,7 +676,7 @@ export function probe(name, env = process.env) {
   try {
     snap = snapshotLogin({ dir, session: 'probe', account: name });
     const e = childEnv(snap, env); e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', '', 'Reply with the single word ok.'], { encoding: 'utf8', timeout: 120e3, env: e, cwd: REPO_ROOT });
+    const r = spawnSync(env.AXF_CLAUDE_BIN || 'claude', P.oneShotArgs(MODEL_IDS.fable), { input: 'Reply with the single word ok.', encoding: 'utf8', timeout: 120e3, env: e, cwd: REPO_ROOT });
     const out = `${r.stdout || ''}${r.stderr || ''}`;
     const ok = !r.error && r.status === 0 && !/not available|no access|permission|does not exist|invalid model|not found/i.test(out);
     rec = { fable: ok, at: nowIso(), error: ok ? '' : str((r.error?.message || out).trim().split('\n').pop(), 200) };
@@ -658,6 +728,11 @@ async function main(argv) {
     const r = tick();
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : '', r.selfCheck ? `self-check: ${r.selfCheck.line}` : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'prune-worktrees') {
+    const r = pruneWorktrees({ apply: has('apply'), minAgeH: Number(flag('min-age-h', '24')) || 24 });
+    return out({ ok: true, ...r }, [`${r.apply ? 'removed' : 'would remove'} ${r.removed.length} finished worktree(s) under ${r.root} (${r.freeGbBefore} → ${r.freeGbAfter} GB free)`,
+      ...r.removed.map((x) => `  - ${x.id}`), ...r.failed.map((x) => `  ! ${x.id}: ${x.error}`), `kept ${r.kept.length}${r.apply ? '' : ' (dry run: add --apply)'}`].join('\n'));
   }
   if (cmd === 'selfcheck') {
     const reason = flag('reason', 'on demand');

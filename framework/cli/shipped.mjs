@@ -292,11 +292,12 @@ export function backfill({ from, dry = false, by = 'backfill', env = process.env
   return { since: since(from), dry, found: found.length, shipped: done };
 }
 /** The orchestrator tick's step: ship builds that landed in the last `days` days and have no manifest (a few per tick). */
-export function shipLanded({ days = 3, max = 3, env = process.env } = {}) {
+export function shipLanded({ days = 3, max = 3, env = process.env, skip = () => false } = {}) {
   if (env.AXF_SHIPPED === 'off') return { off: true, shipped: [] };
   const from = new Date(Date.now() - days * 86400e3).toISOString();
   const store = loadStore();
-  const due = store.builds.filter((b) => !b.deleted && SM.isLanded(b) && (b.mergedAt || b.updatedAt) >= from && !b.shipped && !readManifest(b.id, env)).slice(0, max);
+  // skip(b): the caller's memory of builds that cannot ship as they stand; they never hold the slots of the ones behind them
+  const due = store.builds.filter((b) => !b.deleted && SM.isLanded(b) && (b.mergedAt || b.updatedAt) >= from && !b.shipped && !skip(b) && !readManifest(b.id, env)).slice(0, max);
   const shipped = [];
   for (const b of due) { try { const r = ship(b.id, { source: 'orchestrator', by: 'orchestrator', env }); shipped.push({ id: b.id, manifest: r.manifest.id, rev: r.manifest.rev }); } catch (e) { shipped.push({ id: b.id, error: e.message }); } }
   return { shipped };

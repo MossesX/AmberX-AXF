@@ -34,7 +34,7 @@
  * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -308,11 +308,15 @@ export function pullFrom(files) {
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { /* new month */ }
     journals[m] = merge.mergeJournalText(t, mine);
   }
-  if (files[ORIGINS_REL]) { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ } const t = mergeOriginsText(files[ORIGINS_REL], mine); if (t !== mine) writeFileSync(originsFile(), t); }
+  if (files[ORIGINS_REL]) { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ } const t = mergeOriginsText(files[ORIGINS_REL], mine); if (t !== mine) writeAtomic(originsFile(), t); }
   if (!taken.length && !Object.keys(journals).length && storeText(local) === storeText(next)) return { ok: true, taken: [] };
   adoptStore(next, { journals });
   return { ok: true, taken };
 }
+
+/** Write by rename: the dispatcher reads these files every minute, and an in-place write of the 4 MB store was read half-done
+ *  ("Unterminated string in JSON" / "Unexpected end of JSON input" in the pipeline log). */
+function writeAtomic(f, text) { const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, text); renameSync(tmp, f); }
 
 /** The console's checkout (mounted live into the console): its store and exports follow main now. */
 function toConsole(files) {
@@ -323,7 +327,7 @@ function toConsole(files) {
     const main = core.normalizeStore(JSON.parse(files[STORE_REL]));
     const theirs = core.normalizeStore(JSON.parse(readFileSync(join(root, STORE_REL), 'utf8')));
     const { store, taken } = merge.mergeStores(theirs, main);
-    for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${SHIPPED_DIR_REL}/`) && t) { mkdirSync(join(root, SHIPPED_DIR_REL), { recursive: true }); writeFileSync(join(root, rel), t); }
+    for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${SHIPPED_DIR_REL}/`) && t) { mkdirSync(join(root, SHIPPED_DIR_REL), { recursive: true }); writeAtomic(join(root, rel), t); }
     if (!taken.length) return;
     const consoleOnly = merge.mergeStores(main, theirs).taken.length;
     const next = consoleOnly ? store : main;
@@ -331,11 +335,11 @@ function toConsole(files) {
     // (its Shipped features sync delivers them), or the ledger never hears of ticks, PRs and manifests made in a worktree
     const hooks = join(root, '.axf-console', 'build-hooks');
     if (existsSync(hooks)) emitChangesTo(hooks, adoptedChanges(theirs, next), { at: new Date().toISOString(), by: 'builds-live' });
-    writeFileSync(join(root, STORE_REL), consoleOnly ? storeText(store) : files[STORE_REL]);
-    for (const x of orchestratorExports(consoleOnly ? store : main)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
+    writeAtomic(join(root, STORE_REL), consoleOnly ? storeText(store) : files[STORE_REL]);
+    for (const x of orchestratorExports(consoleOnly ? store : main)) if (existsSync(join(root, x.rel)) || x.builds) writeAtomic(join(root, x.rel), x.text);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
       let mine = ''; try { mine = readFileSync(join(root, rel), 'utf8'); } catch { /* new */ }
-      writeFileSync(join(root, rel), merge.mergeJournalText(t, mine));
+      writeAtomic(join(root, rel), merge.mergeJournalText(t, mine));
     }
   } catch { /* the console's own update brings main in within 5 minutes */ }
 }

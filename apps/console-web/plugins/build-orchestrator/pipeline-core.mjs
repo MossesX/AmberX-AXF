@@ -242,6 +242,43 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
 // ------------------------------------------------------------------ split
 
 /** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */
+/** What a ship retry waits for: the build record changing (updatedAt, PR, merge, branch). Same key = skip it. */
+export function shipKey(b) { return [b?.updatedAt, b?.pr, b?.mergedAt, b?.branch].map((v) => str(v, 80)).join('|'); }
+
+/** Untracked files a build session leaves at the worktree root (its brief and logs): archived, never a reason to keep a worktree. */
+export const SESSION_FILE = /^(\.axf-[\w.-]+|[\w.-]+\.(log|jsonl))$/;
+/** Tracked paths every session touches that are not its work: the builds store (builds-live publishes it to main at once) and root logs. */
+export const STORE_CHURN = /^(_claude\/builds\/|[\w.-]+\.(log|jsonl)$)/;
+
+/**
+ * Can a build worktree be removed? Only when nothing would be lost: the build is finished (built / complete / archived) for at
+ * least minAgeH, no tracked file is changed, the only untracked files are session files, and HEAD is on a branch
+ * (removing a worktree keeps its branch and commits). status: the `git status --porcelain` lines; onBranch: HEAD is
+ * contained in some branch.
+ */
+export function pruneVerdict({ build = null, status = [], onBranch = false, now = Date.now(), minAgeH = 24 } = {}) {
+  if (!build) return { remove: false, why: 'no build of that name' };
+  if (!['built', 'complete', 'archived'].includes(build.status)) return { remove: false, why: `build is ${build.status}` };
+  const at = Date.parse(build.builtAt || build.updatedAt || 0);
+  if (!(now - at >= minAgeH * 3600e3)) return { remove: false, why: `finished under ${minAgeH} h ago` };
+  const lines = status.filter(Boolean);
+  const tracked = lines.filter((l) => !l.startsWith('??') && !STORE_CHURN.test(l.slice(3).trim()));
+  if (tracked.length) return { remove: false, why: `${tracked.length} uncommitted change(s)` };
+  const stray = lines.map((l) => l.slice(3).trim()).filter((p) => !SESSION_FILE.test(p) && !STORE_CHURN.test(p));
+  if (stray.length) return { remove: false, why: `untracked ${str(stray[0], 80)}${stray.length > 1 ? ` +${stray.length - 1}` : ''}` };
+  if (!onBranch) return { remove: false, why: 'HEAD is on no branch' };
+  return { remove: true, why: 'finished, clean, committed' };
+}
+
+/**
+ * argv for a one-shot, tool-less `claude --print` call. The prompt is NOT in argv: it goes on stdin. `--tools <tools...>`
+ * is variadic, so a prompt placed after it is taken as a tool name and claude exits 1 with "Input must be provided either
+ * through stdin or as a prompt argument when using --print" (every split fell back to rules because of this).
+ */
+export function oneShotArgs(model) {
+  return ['-p', '--model', str(model, 80), '--output-format', 'json', '--max-turns', '1', '--tools', ''];
+}
+
 export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
   const max = rules.maxStepMinutes || 30;
   const said = str(b.origin?.said, 6000).trim();

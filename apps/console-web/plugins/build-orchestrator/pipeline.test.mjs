@@ -20,6 +20,23 @@ const step = (id, model, done = false) => ({ id, uid: `u-${id}`, text: `${id} wo
 const build = (id, status, steps, extra = {}) => ({ id, title: id, status, steps, createdAt: now, updatedAt: now, notes: [], approvals: [], upgradeRequests: [], deleted: false, hidden: false, ...extra });
 
 // ---------------- build-pipeline@1 record
+t('oneShotArgs: the prompt never rides in argv behind the variadic --tools', () => {
+  const a = P.oneShotArgs('claude-opus-x');
+  assert.equal(a[0], '-p'); assert.equal(a[a.indexOf('--model') + 1], 'claude-opus-x');
+  assert.equal(a.indexOf('--tools'), a.length - 2, '--tools "" is last: nothing after it'); assert.equal(a.at(-1), '');
+});
+t('pruneVerdict: only finished, old, clean, committed worktrees go; store churn and session logs are not work', () => {
+  const old = '2026-11-01T00:00:00.000Z'; const at = Date.parse('2026-11-08T00:00:00.000Z');
+  const built = { status: 'built', builtAt: old };
+  assert.equal(P.pruneVerdict({ build: built, status: [], onBranch: true, now: at }).remove, true);
+  assert.equal(P.pruneVerdict({ build: built, status: [' M _claude/builds/store.json', ' M _claude/builds/journal/2026-11.jsonl', ' D assets.log', '?? .axf-brief.md', '?? x-build.jsonl'], onBranch: true, now: at }).remove, true);
+  assert.match(P.pruneVerdict({ build: built, status: [' M framework/core/a.mjs'], onBranch: true, now: at }).why, /uncommitted/);
+  assert.match(P.pruneVerdict({ build: built, status: ['?? framework/core/new.mjs'], onBranch: true, now: at }).why, /untracked framework\/core\/new\.mjs/);
+  assert.match(P.pruneVerdict({ build: built, status: [], onBranch: false, now: at }).why, /no branch/);
+  assert.match(P.pruneVerdict({ build: { status: 'pending' }, now: at }).why, /pending/);
+  assert.match(P.pruneVerdict({ build: { status: 'built', builtAt: '2026-11-07T23:00:00.000Z' }, onBranch: true, now: at }).why, /under 24 h/);
+  assert.match(P.pruneVerdict({ build: null }).why, /no build/);
+});
 t('normPipeline: empty → null, fields in shape', () => {
   assert.equal(BP.normPipeline(null), null); assert.equal(BP.normPipeline({}), null);
   const p = BP.normPipeline({ queuedAt: now, queuedBy: 'brett', account: 'Bad Name', runs: 2.5, lastRun: { exit: 1, outcome: 'nope', stepsLeft: 3 }, split: { provider: 'claude', steps: 8 } });
@@ -431,6 +448,57 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(r.fixes.some((f) => /requeued ghost/.test(f)), r.fixes.join('; '));
     assert.equal(find('ghost').status, 'queued'); assert.equal(find('ghost').pipeline.account || '', '');
     json(pipe('unqueue', 'ghost', '--json'));
+  });
+  t('e2e the real claude splitter path sends the prompt on stdin (not swallowed by the variadic --tools)', () => {
+    // a fake claude that parses argv like the real CLI: --tools takes every following non-flag word; with no prompt left
+    // and nothing on stdin it fails with the exact error every split hit before the fix
+    const fake = join(tmp, 'fake-claude.sh');
+    writeFileSync(fake, `#!/usr/bin/env bash
+printf '%s\\n' "$@" > "${tmp}/claude-argv.txt"
+prompt=""
+while [[ $# -gt 0 ]]; do case "$1" in
+  --tools) shift; while [[ $# -gt 0 && "$1" != -* ]]; do shift; done;;
+  -p|--print) shift;;
+  --model|--output-format|--max-turns) shift 2;;
+  *) prompt="$1"; shift;;
+esac; done
+if [[ -z "$prompt" && ! -t 0 ]]; then prompt="$(cat)"; fi
+if [[ -z "$prompt" ]]; then echo 'Error: Input must be provided either through stdin or as a prompt argument when using --print' >&2; exit 1; fi
+printf '%s' "$prompt" > "${tmp}/claude-prompt.txt"
+echo '{"type":"result","result":"{\\"steps\\":[{\\"text\\":\\"Write the epsilon contract\\",\\"model\\":\\"Opus\\",\\"estimate\\":\\"20 min\\"},{\\"text\\":\\"Test epsilon\\",\\"model\\":\\"Opus\\",\\"estimate\\":\\"15 min\\"}]}"}'
+`); chmodSync(fake, 0o755);
+    orch('act', JSON.stringify({ action: 'add', id: 'epsilon', title: 'Epsilon', detail: 'Make epsilon.' }));
+    const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'split', 'epsilon', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_SPLITTER: '', AXF_CLAUDE_BIN: fake }, encoding: 'utf8', timeout: 120000 });
+    const j = JSON.parse(r.stdout.trim().split('\n').pop());
+    assert.equal(j.provider, 'claude', `split fell back to rules: ${j.error || j.note}`); assert.equal(j.steps, 2);
+    assert.match(readFileSync(join(tmp, 'claude-prompt.txt'), 'utf8'), /epsilon/i, 'the prompt reached claude');
+    assert.ok(!readFileSync(join(tmp, 'claude-argv.txt'), 'utf8').includes('Make epsilon'), 'the prompt is not in argv');
+    assert.equal(find('epsilon').pipeline.split.provider, 'claude');
+  });
+  t('e2e prune-worktrees: a finished clean git worktree goes (branch and logs kept), a dirty one stays', () => {
+    const repo = join(tmp, 'repo'); const wt = join(tmp, 'wt-git'); mkdirSync(repo, { recursive: true }); mkdirSync(wt, { recursive: true });
+    const g = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); assert.equal(r.status, 0, `git ${a.join(' ')}: ${r.stderr}`); return r.stdout; };
+    g(repo, 'init', '-q', '-b', 'main'); writeFileSync(join(repo, 'a.txt'), 'a'); g(repo, 'add', '.'); g(repo, '-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 'a');
+    g(repo, 'worktree', 'add', '-q', '-b', 'claude/zeta', join(wt, 'zeta')); g(repo, 'worktree', 'add', '-q', '-b', 'claude/eta', join(wt, 'eta'));
+    writeFileSync(join(wt, 'zeta', 'zeta.log'), 'session log'); writeFileSync(join(wt, 'eta', 'a.txt'), 'unsaved work');
+    for (const id of ['zeta', 'eta']) orch('act', JSON.stringify({ action: 'add', id, title: id, steps: [{ text: 'x', model: 'Opus', estimate: '5 min' }] }));
+    const st = store(); for (const b of st.builds) if (['zeta', 'eta'].includes(b.id)) { b.status = 'built'; b.builtAt = '2026-01-01T00:00:00.000Z'; } writeFileSync(storeFile, JSON.stringify(st));
+    const run2 = (...a) => JSON.parse(spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'prune-worktrees', ...a, '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_WORKTREES: wt }, encoding: 'utf8', timeout: 120000 }).stdout.trim().split('\n').pop());
+    const dry = run2(); assert.deepEqual(dry.removed.map((x) => x.id), ['zeta']); assert.ok(existsSync(join(wt, 'zeta')), 'a dry run removes nothing');
+    const r = run2('--apply'); assert.deepEqual(r.removed.map((x) => x.id), ['zeta']); assert.deepEqual(r.failed, []);
+    assert.ok(!existsSync(join(wt, 'zeta'))); assert.ok(existsSync(join(wt, 'eta', 'a.txt')), 'uncommitted work is never removed');
+    assert.equal(readFileSync(join(wt, '_session-logs', 'zeta', 'zeta.log'), 'utf8'), 'session log');
+    assert.match(g(repo, 'branch', '--list', 'claude/zeta'), /claude\/zeta/, 'the branch stays');
+  });
+  t('e2e a landed build that cannot ship fails once, then waits for its record to change (no per-tick retry)', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'theta', title: 'Theta', steps: [{ text: 'x', model: 'Opus', estimate: '5 min' }] }));
+    const st = store(); const th = st.builds.find((b) => b.id === 'theta'); th.status = 'complete'; th.branch = ''; th.pr = ''; th.mergedAt = ''; th.updatedAt = new Date().toISOString(); writeFileSync(storeFile, JSON.stringify(st));
+    const shipEnv = { ...env, AXF_SHIPPED: 'on', AXF_SHIPPED_DIR: join(tmp, 'shipped'), AXF_SHIPPED_UI_REVIEW: 'off' };
+    const tick = () => spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: shipEnv, encoding: 'utf8', timeout: 120000 });
+    const fails = () => readFileSync(join(pipeDir, 'log.jsonl'), 'utf8').split('\n').filter((l) => l.includes('"ship-failed"') && l.includes('"theta"')).length;
+    tick(); assert.equal(fails(), 1, 'the first tick tries it'); tick(); assert.equal(fails(), 1, 'the second tick skips it');
+    assert.equal(P.shipKey(find('theta')), JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8')).shipFailed.theta);
+    orch('act', JSON.stringify({ action: 'note', id: 'theta', text: 'touched' })); tick(); assert.equal(fails(), 2, 'a changed record is tried again');
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');
