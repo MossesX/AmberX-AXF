@@ -184,6 +184,18 @@
    "from": "detail",
    "addenda": []
   },
+  "ai-assistant-gizmo-moved-to-the-console-remove-t": {
+   "said": "Let's figure out the assistant first. I need to get rid of the assistant since we have Gizmo. I want to move the Gizmo plugin that is the chat in AmberX to the console and be a console plugin named AI assistant.",
+   "at": "2026-11-10T21:54:10.024Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ai-keys-console-store": {
    "said": "AI keys: store every key in the console, not per user\n\nBrett saved 4 Claude subscription accounts and 1 API key (5 keys) in AI keys while logged into the console as himself. The VPS side (apps/console-web/plugins/ai-keys/switch.mjs, deploy/claude-headless.sh, the /api/plugins/ai-keys routes called with AXF_TOKEN from /opt/axf/.axf-console/env) authenticates as a different console identity, and GET /keys returns NO keys. So Amber and the VPS can't see or switch accounts without Brett pressing a button.",
    "at": "2026-11-05T23:51:02.650Z",

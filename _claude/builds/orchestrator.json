@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:53:17.110Z",
+ "updatedAt": "2026-11-10T21:54:11.322Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96455,6 +96455,37 @@
      "uid": "st-mwb87x3t03wjka"
     }
    ]
+  },
+  {
+   "id": "ai-assistant-gizmo-moved-to-the-console-remove-t",
+   "title": "AI assistant = Gizmo moved to the console: remove the old console assistant, move the AmberX Gizmo chat plugin into a console plugin named 'AI assistant'",
+   "category": "",
+   "detail": "1) Remove the existing console AI assistant screen/plugin (ai-assistant). 2) Move the Gizmo chat plugin from AmberX into the console as a console plugin named 'AI assistant' (screen id ai-assistant, opens by link/voice). 3) Fold in the earlier asks: full Claude-style chat (Gizmo rebuild), per-chat model switch Claude or local Ollama, mic/voice chat mode, console control API tools (jump to screens, settings, file builds, answer console questions), agent picker in the chat window with agents trainable in the Agent section. AmberX keeps access to the same chat via the console plugin/web link.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T21:54:10.024Z",
+   "updatedAt": "2026-11-10T21:54:10.024Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Let's figure out the assistant first. I need to get rid of the assistant since we have Gizmo. I want to move the Gizmo plugin that is the chat in AmberX to the console and be a console plugin named AI assistant.",
+    "at": "2026-11-10T21:54:10.024Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
