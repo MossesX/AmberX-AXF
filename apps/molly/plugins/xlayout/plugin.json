@@ -7,21 +7,128 @@
   "apiLevel": 1,
   "author": "Brett",
   "description": "Molly as one app: one banner, application menu, navigation and context menu across AmberX, axHub and the Dev Console (they hide theirs and send them as data); IDE mode with draggable, resizable, dockable panes, ten preset layouts and a pane limit; up to three plugin toolbars.",
-  "targets": ["molly"],
-  "provides": ["view:xlayout", "dialog:xlayout.layout", "settings-tab:xlayout"],
+  "targets": [
+    "molly"
+  ],
+  "provides": [
+    "view:xlayout",
+    "dialog:xlayout.layout",
+    "settings-tab:xlayout"
+  ],
   "scopes": [],
   "enabledByDefault": true,
-  "optional": ["axf.toolbar-designer@1"],
+  "optional": [
+    "axf.toolbar-designer@1"
+  ],
   "banner": false,
   "tabable": false,
-  "uiEditor": ["layout"],
+  "uiEditor": [
+    "layout"
+  ],
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/xlayout",
     "env": [],
-    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "apps/molly/README.md"
+    ]
   },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/xlayout-opus" },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03",
+    "branch": "claude/xlayout-opus"
+  },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "ide",
+        "title": "IDE mode on / off",
+        "action": "xlayout.ide"
+      },
+      {
+        "id": "layout",
+        "title": "Pick a pane layout",
+        "description": "Opens the layout picker (preview before it applies).",
+        "action": "xlayout.layout"
+      },
+      {
+        "id": "open",
+        "title": "Open an app in the main area, a pane or a floating window",
+        "action": "xlayout.open",
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "enum": [
+                "main",
+                "pane",
+                "floating"
+              ]
+            },
+            "app": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        }
+      },
+      {
+        "id": "drop",
+        "title": "Open a menu item in a pane",
+        "description": "What dropping a menu item on pane n does: an app's screen opens there (a new tab in a tab group), anything else runs. xlayout.drop:<pane>:<ref>.",
+        "action": "xlayout.drop",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pane": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "ref": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "pane",
+            "ref"
+          ]
+        }
+      },
+      {
+        "id": "tab-group",
+        "title": "Pane as a tab group on / off",
+        "description": "xlayout.container.tabs[:on|off]:<pane>.",
+        "action": "xlayout.container.tabs",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pane": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "on": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "pane"
+          ]
+        }
+      },
+      {
+        "id": "settings",
+        "title": "Open xLayout settings",
+        "action": "settings.open:xlayout"
+      }
+    ],
+    "noReads": "no data folder: the layout is per-device settings (xlayout.*)"
+  }
 }

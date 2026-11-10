@@ -32,6 +32,7 @@ export const PLUGIN_HOMES = [
   { app: 'console-web', dir: 'apps/console-web/plugins' },
   { app: 'amberx-droid', dir: 'apps/amberx-droid/src/plugins' },
   { app: 'axhub-web', dir: 'apps/axhub-web/src/plugins' },
+  { app: 'molly', dir: 'apps/molly/plugins' },
 ];
 /* ------------------------------------------------------------------ reading plugins */
 

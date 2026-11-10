@@ -18,7 +18,7 @@ function useContents() {
   return { views: { ...c.views, ...views }, dialogs: { ...c.dialogs, ...dialogs }, tabs: c.tabs, slots: c.slots };
 }
 
-export const { SURFACE_CONTRACT, APP, routes, mountSurface, searchEntries, screens, run, subscribe } = createNativeSurface({
+export const { SURFACE_CONTRACT, APP, routes, mountSurface, searchEntries, screens, run, subscribe, connect } = createNativeSurface({
   app: { id: 'axhub', label: 'axHub', icon: 'shield', description: 'The connector hub: approvals, go pass, services.' },
   routes: [],
   createRuntime: () => createHubWebRuntime({ look: false }),

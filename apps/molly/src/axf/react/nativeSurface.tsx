@@ -14,6 +14,11 @@
  *   run(kind, id, parent?)   open a dialog / settings tab / setting / screen, or run an action, in the app
  *   subscribe(f)        told when the above change (a plugin loaded, a view added, the app navigated)
  *   routes              the relative paths it calls on its own server (the shell sends them there)
+ *   connect(ctx)        hand the shell's context over before anything mounts (the host bridge below works at once)
+ *
+ * The host bridge (molly-one-shell s12): the app's runtime gets the action `host:<the shell's action spec>`, run by
+ * the shell (`ctx.dispatch`). Whatever reaches the app's actions (its remote commands: REST, MCP, the CLI, voice) so
+ * reaches every screen, setting and action of the shell around it: `host:shell.open:console:screen:plan`.
  *
  * Screens whose id starts with `axf-` are reserved parts for the shell's own chrome, not screens: `axf-banners` is the
  * app's banners for the shell's one banner region. They are mounted like screens but never listed or searched.
@@ -53,7 +58,13 @@ export interface NativeSurfaceSpec {
   /** the app's own providers around everything (a store) */
   wrap?: (children: ReactNode) => ReactNode;
 }
-export interface SurfaceContext { host: string; onNavigate?: (view: string) => void }
+export interface SurfaceContext {
+  host: string;
+  /** the app's own code navigated somewhere (a card's link): the shell shows that screen */
+  onNavigate?: (view: string) => void;
+  /** run one of the shell's actions (`host:<spec>` in the app) */
+  dispatch?: (spec: string) => boolean;
+}
 export interface MountedSurface { show(view: string): void; unmount(): void }
 export interface SurfaceScreen { id: string; title: string; icon?: string }
 export interface NativeSurface {
@@ -65,6 +76,7 @@ export interface NativeSurface {
   screens(): SurfaceScreen[];
   run(kind: string, id: string, parent?: string): boolean;
   subscribe(f: () => void): () => void;
+  connect(ctx: SurfaceContext): void;
 }
 
 interface Mount { key: number; el: HTMLElement; view: string }
@@ -86,6 +98,11 @@ export function createNativeSurface(spec: NativeSurfaceSpec): NativeSurface {
     if (rt) return rt;
     const r = spec.createRuntime();
     rt = r;
+    r.actions.register('host', (args) => {
+      const spec = args.join(':');
+      if (!ctx?.dispatch) { r.toast('This app is not inside a shell right now.', 'info', 'Shell'); return false; }
+      return ctx.dispatch(spec);
+    }, { label: 'Run in the shell around this app (Molly)', params: true });
     let lastView = r.getState().view;
     r.subscribe(() => {
       const v = r.getState().view;
@@ -171,5 +188,6 @@ export function createNativeSurface(spec: NativeSurfaceSpec): NativeSurface {
       }
     },
     subscribe(f) { listeners.add(f); runtime(); return () => { listeners.delete(f); }; },
+    connect(context) { ctx = context; runtime(); },
   };
 }

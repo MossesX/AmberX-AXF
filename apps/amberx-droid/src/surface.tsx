@@ -19,7 +19,7 @@ function useContents() {
   return { views: { ...c.views, ...views }, dialogs: { ...c.dialogs, ...dialogs }, tabs: c.tabs, slots: c.slots };
 }
 
-export const { SURFACE_CONTRACT, APP, routes, mountSurface, searchEntries, screens, run, subscribe } = createNativeSurface({
+export const { SURFACE_CONTRACT, APP, routes, mountSurface, searchEntries, screens, run, subscribe, connect } = createNativeSurface({
   app: { id: 'amberx', label: 'AmberX', icon: 'sparkles', description: 'The AmberX app: plugins, voice, walkthroughs.' },
   routes: ['/api/ai/', '/api/walkthrough', '/api/console/plugins/'],
   createRuntime: () => createAmberXRuntime({ look: false }),

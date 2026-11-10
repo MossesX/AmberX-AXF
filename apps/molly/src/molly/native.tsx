@@ -27,8 +27,17 @@ export interface SurfaceModule {
   screens(): { id: string; title: string; icon?: string }[];
   run(kind: string, id: string, parent?: string): boolean;
   subscribe(f: () => void): () => void;
+  /** hand Molly's context over at load (the `host:<spec>` bridge: the app's remote commands reach Molly's actions) */
+  connect?(ctx: { host: string; onNavigate?: (view: string) => void; dispatch?: (spec: string) => boolean }): void;
   routes?: readonly string[];
 }
+
+/** What Molly hands each app: its host id, where its own navigation goes, and Molly's actions (`host:<spec>`). */
+const contextFor = (rt: AxfRuntime, app: string) => ({
+  host: 'molly',
+  onNavigate: (v: string) => rt.navigate(v === 'home' ? app : `${app}/${v}`),
+  dispatch: (spec: string) => rt.dispatch(spec),
+});
 
 type LoadState = { state: 'loading' } | { state: 'ready'; mod: SurfaceModule } | { state: 'failed'; error: string };
 
@@ -123,6 +132,7 @@ export function loadNative(rt: AxfRuntime, app: MollyApp): void {
       if (typeof m.mountSurface !== 'function' || typeof m.searchEntries !== 'function') throw new Error('not a shell-surface@1 module (no mountSurface)');
       const mod = m as SurfaceModule;
       addRoutes(mod.routes ?? [], new URL(url).origin);
+      mod.connect?.(contextFor(rt, app.id));
       loads.set(app.id, { state: 'ready', mod });
       registerWithShell(rt, app, mod, url);
       changed();
@@ -199,7 +209,7 @@ export function NativeView({ app, view = 'home', quiet = false }: { app: string;
   useEffect(() => { if (a) loadNative(rt, a); }, [rt, a]);
   useEffect(() => {
     if (s?.state !== 'ready' || !ref.current) return;
-    const h = s.mod.mountSurface(ref.current, view, { host: 'molly', onNavigate: (v) => rt.navigate(v === 'home' ? app : `${app}/${v}`) });
+    const h = s.mod.mountSurface(ref.current, view, contextFor(rt, app));
     handle.current = h;
     bump((n) => n + 1);
     return () => { h.unmount(); handle.current = null; };

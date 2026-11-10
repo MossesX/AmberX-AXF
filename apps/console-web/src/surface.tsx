@@ -39,7 +39,7 @@ function useContents() {
   };
 }
 
-export const { SURFACE_CONTRACT, APP, routes, mountSurface, searchEntries, screens, run, subscribe } = createNativeSurface({
+export const { SURFACE_CONTRACT, APP, routes, mountSurface, searchEntries, screens, run, subscribe, connect } = createNativeSurface({
   app: { id: 'console', label: 'Console', icon: 'terminal', description: 'The AXF Dev Console: builds, plugins, UI Review.' },
   routes: ['/api/', '/data/'],
   createRuntime: createConsoleRuntime,
