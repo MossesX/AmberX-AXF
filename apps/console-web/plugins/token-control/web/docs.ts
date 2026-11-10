@@ -131,6 +131,7 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 | open a plugin's settings | \`console_settings {tab: "plugins/token-control"}\` | \`POST /api/console/settings {"tab": …}\` | \`axf console settings plugins/token-control\` |
 | open a dialog | \`console_dialog {dialog: "asset-json"}\` | \`POST /api/console/dialog {"id": …}\` | \`axf console dialog asset-json\` |
 | run an action | \`console_action {action: "terminal.open"}\` | \`POST /api/console/action {"id": …}\` | \`axf console action terminal.open\` |
+| pick a skin (Settings → Appearance) | \`console_action {action: "skin.use:hub-default"}\` (\`skin.next\`, \`skin.prev\`, \`skin.random\`, \`skin.off\`, \`skin.restore\`) | \`POST /api/console/action {"id": "skin.use:hub-default"}\` | \`axf console action skin.use:hub-default\`; on the hub, \`node framework/cli/skins.mjs use <app> <skin>\` and \`skins.mjs at <app> --json\` (which skin is in force) |
 | back / home / close | \`console_back {move: "back"}\` | \`POST /api/console/back\` | \`axf console back\` |
 | reload the page | \`console_refresh {hard?}\` | \`POST /api/console/refresh\` | \`axf console refresh [--hard]\` |
 | where is it | \`console_where\` | \`GET /api/console/where\` | \`axf console where\` |
