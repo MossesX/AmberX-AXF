@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:56:43.818Z",
+ "updatedAt": "2026-11-10T17:56:56.855Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87854,7 +87854,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T16:29:21.276Z",
+   "updatedAt": "2026-11-10T17:56:44.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -87864,6 +87864,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:29:21.276Z"
+    },
+    {
+     "text": "Split by Claude into 10 steps (2 Fable).",
+     "at": "2026-11-10T17:56:44.230Z"
     }
    ],
    "approvals": [],
@@ -87883,13 +87887,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the assignment contract shared by orchestrator, group chat and employee agents: message types for ask (build/step id, required skills/tools/capabilities), claim (first claimer opens the dialog), candidate list with match %, veto window (90 s, deadline timestamp), pick (Brett or default), and brief return (employee brief set to orchestrator). Write it as a versioned contract doc plus JSON schema; reuse the Brownie/Molly handoff envelope instead of a new one.",
+     "model": "Fable",
+     "why": "Cross-port contract used by orchestrator, group chat and every employee agent",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "_claude/builds/contracts/assignment@1.md",
+      "_claude/builds/contracts/assignment@1.schema.json",
+      "apps/console-web/plugins/group-chat/handoff.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -87897,17 +87905,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawnq4d01tqa1"
+     "uid": "st-mwazs3ly3zu1zm"
     },
     {
      "id": "s2",
-     "text": "When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.",
-     "model": "Opus",
-     "why": "",
+     "text": "Schema and migration for assignment state: per build/step record with candidates[] {employee, match %, reasons}, claimedBy, vetoDeadline, pickedBy (brett|default), assignedEmployee, and returned brief refs. Extend the orchestrator table's assigned-employee column data instead of adding a parallel store; migrate existing orchestrator.json entries (assignedEmployee stays, new fields empty).",
+     "model": "Fable",
+     "why": "Schema + migration design for orchestrator state",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "_claude/builds/orchestrator.json",
+      "apps/console-web/plugins/orchestrator/schema.mjs",
+      "apps/console-web/plugins/orchestrator/migrations/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -87915,17 +87927,171 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawnq4d02hm5s"
+     "uid": "st-mwazs3ly40ouuu"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/orchestrator-assigns-builds-steps-to-employee-ag.md, THREADS row, commit, push, PR",
+     "text": "Match scoring: compute each employee's percentage of being the best choice from their skills, tools and capabilities (employee profiles) against the build/step requirements; normalize to sum 100, ties broken by current load. Pure module with unit-testable inputs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/match.mjs",
+      "apps/console-web/plugins/employees/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly4166yp"
+    },
+    {
+     "id": "s4",
+     "text": "Orchestrator posts the ask in the group chat when it assigns a build or step (reuse the Brownie/Molly group chat handoff path), records the open assignment, and accepts the first claim; later claims are acknowledged as already taken.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/assign.mjs",
+      "apps/console-web/plugins/group-chat/handoff.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly42m9iq"
+    },
+    {
+     "id": "s5",
+     "text": "Veto timer: on first claim start the 90 s window (deadline stored, survives restart); Brett's pick ends it early; at expiry the orchestrator assigns the highest-percentage candidate and posts the result in the group chat.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/orchestrator/assign.mjs",
+      "apps/console-web/plugins/orchestrator/veto.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly43i1yh"
+    },
+    {
+     "id": "s6",
+     "text": "Match dialog UI opened by the claimer: lists all matching agents with percentages and reasons, a live 90 s countdown, pick buttons and a 'keep default' action; show the assigned employee in the orchestrator table column.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/ui/assign-dialog.mjs",
+      "apps/console-web/plugins/orchestrator/ui/table.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly44yj7y"
+    },
+    {
+     "id": "s7",
+     "text": "API for the dialog and assignment: deep link (console_show / console_open target orchestrator/assign/<build|step id>), state read (candidates, %, deadline, claimedBy, assigned), actions (ask, claim, pick, accept default, cancel) and settings (veto seconds, auto-assign on/off) via console REST routes, MCP console actions/plugin commands, CLI subcommands and AmberX voice intents, all four the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/routes.mjs",
+      "apps/console-web/plugins/orchestrator/mcp.mjs",
+      "apps/console-web/plugins/orchestrator/cli.mjs",
+      "apps/console-web/plugins/amberx/voice/orchestrator-assign.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly45mlpo"
+    },
+    {
+     "id": "s8",
+     "text": "Employee brief set: the assigned employee writes the step brief from its own brief templates and its employee data (training data, skills, tools), and sends the brief back to the orchestrator, which attaches it to the build/step and runs the step from it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/employees/briefs/",
+      "apps/console-web/plugins/orchestrator/assign.mjs",
+      "_claude/builds/BRIEF-TEMPLATE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly46c3kk"
+    },
+    {
+     "id": "s9",
+     "text": "API for employee briefs: state read of each employee's brief set and returned briefs, actions to regenerate/resend a brief, through REST, MCP, CLI and voice, with a deep link to the brief in the employee view.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/employees/routes.mjs",
+      "apps/console-web/plugins/employees/mcp.mjs",
+      "apps/console-web/plugins/employees/cli.mjs",
+      "apps/console-web/plugins/amberx/voice/employee-briefs.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazs3ly47n9rt"
+    },
+    {
+     "id": "s10",
+     "text": "Tests (match scoring, first-claim wins, 90 s default pick, Brett pick, restart mid-window, brief return, API parity REST/MCP/CLI/voice), report at _claude/builds/reports/orchestrator-assigns-builds-steps-to-employee-ag.md, THREADS row, and PR stating how each UI piece is reached by deep link, REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/test/",
+      "apps/console-web/plugins/employees/test/",
       "_claude/builds/reports/orchestrator-assigns-builds-steps-to-employee-ag.md",
       "_claude/THREADS.md"
      ],
@@ -87936,7 +88102,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawnq4d039fo4"
+     "uid": "st-mwazs3ly48xi0n"
     }
    ]
   },
