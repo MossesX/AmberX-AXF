@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:41:08.616Z",
+ "updatedAt": "2026-11-10T00:41:26.309Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81059,7 +81059,7 @@
    "pr": "#422",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-10T00:41:05.700Z",
+   "updatedAt": "2026-11-10T00:41:24.742Z",
    "builtAt": "2026-11-10T00:41:05.700Z",
    "notes": [
     {
@@ -81077,6 +81077,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-activity-monitor-plugin-live-plain-english-log-o--sully, own login copy)",
      "at": "2026-11-09T23:51:13.618Z"
+    },
+    {
+     "text": "Headless run axf-activity-monitor-plugin-live-plain-english-log-o--sully: brief only · start 11.8K tokens ($0.03) · cost $9.42 · 175 turns · 6 tools, MCP none",
+     "at": "2026-11-10T00:41:24.742Z"
     }
    ],
    "approvals": [],
