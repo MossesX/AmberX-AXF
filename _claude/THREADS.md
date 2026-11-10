@@ -770,9 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:16 UTC · `test-button-on-every-claude-account-subscription` added (0 steps) (all) · console
-- 2026-11-09 20:16 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · console
-- 2026-11-09 20:17 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
 - 2026-11-09 20:17 UTC · `test-button-on-every-claude-account-subscription` → running, note (all) · pipeline
 - 2026-11-09 20:17 UTC · `test-button-on-every-claude-account-subscription` branch claude/test-button-on-every-claude-account-subscription (all) · pipeline
 - 2026-11-09 20:18 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · pipeline
@@ -1170,6 +1167,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:26 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
 - 2026-11-10 03:27 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` s3 done, → built (all) · orchestrator
 - 2026-11-10 03:27 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
+- 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` → running, note (all) · pipeline
+- 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
+- 2026-11-10 03:28 UTC · `one-amberx-build-notification-veto-approval-befo` branch claude/one-amberx-build-notification-veto-approval-befo (all) · pipeline
 
 ## Token passes (log)
 

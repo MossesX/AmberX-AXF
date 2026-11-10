@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:28:14.870Z",
+ "updatedAt": "2026-11-10T03:28:34.926Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82954,15 +82954,15 @@
    "title": "One AmberX build notification: veto approval before every start, pop-up on every finish",
    "category": "",
    "detail": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/one-amberx-build-notification-veto-approval-befo",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:28:11.851Z",
+   "updatedAt": "2026-11-10T03:28:19.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -82972,6 +82972,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T02:26:28.473Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-amberx-build-notification-veto-approval-befo--sully.",
+     "at": "2026-11-10T03:28:17.523Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-amberx-build-notification-veto-approval-befo--sully, own login copy)",
+     "at": "2026-11-10T03:28:19.516Z"
     }
    ],
    "approvals": [],
