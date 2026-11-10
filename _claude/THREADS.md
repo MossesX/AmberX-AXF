@@ -769,15 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:23 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
-- 2026-11-09 19:23 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` added (0 steps) (all) · console
-- 2026-11-09 19:23 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · console
-- 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · builds-live
-- 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
-- 2026-11-09 19:24 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → failed, note (all) · pipeline
-- 2026-11-09 19:24 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · pipeline
-- 2026-11-09 19:24 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
-- 2026-11-09 19:24 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
 - 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` branch claude/let-voice-api-route-a-build-to-an-api-account-wi (all) · pipeline
 - 2026-11-09 19:25 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → failed, note (all) · pipeline
@@ -1169,6 +1160,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:04 UTC · `orchestrator-table-columns-model-queue-assigned` s1 done, → running (all) · orchestrator
 - 2026-11-10 03:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → queued, note (all) · console
 - 2026-11-10 03:09 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · brett
+- 2026-11-10 03:09 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · brett
+- 2026-11-10 03:09 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · brett
+- 2026-11-10 03:09 UTC · `skins-theme-rule` note (all) · brett
+- 2026-11-10 03:09 UTC · `skins-restyle-finish` note (all) · brett
+- 2026-11-10 03:09 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · brett
+- 2026-11-10 03:09 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · brett
+- 2026-11-10 03:09 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · brett
+- 2026-11-10 03:09 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · brett
+- 2026-11-10 03:09 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · brett
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2240,
- "updatedAt": "2026-11-10T03:09:20.903Z",
+ "rev": 2241,
+ "updatedAt": "2026-11-10T03:09:41.043Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128089,7 +128089,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-10T01:41:57.125Z",
+   "updatedAt": "2026-11-10T03:09:36.214Z",
    "builtAt": "",
    "notes": [
     {
@@ -128155,6 +128155,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:41:57.125Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:36.214Z"
     }
    ],
    "approvals": [],
@@ -128197,7 +128201,7 @@
     },
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
-    "route": "",
+    "route": "api",
     "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
    "steps": [
@@ -128279,7 +128283,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129499,7 +129503,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T02:47:32.033Z",
+   "updatedAt": "2026-11-10T03:09:28.083Z",
    "builtAt": "",
    "notes": [
     {
@@ -129553,6 +129557,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T02:46:41.463Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:28.083Z"
     }
    ],
    "approvals": [],
@@ -129595,7 +129603,7 @@
     },
     "splitRequested": "",
     "note": "",
-    "route": "",
+    "route": "api",
     "dispatchedAt": "2026-11-10T02:17:13.935Z"
    },
    "steps": [
@@ -129853,7 +129861,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130111,7 +130119,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-10T01:41:59.289Z",
+   "updatedAt": "2026-11-10T03:09:38.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -130177,6 +130185,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:41:59.289Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:38.299Z"
     }
    ],
    "approvals": [],
@@ -130219,7 +130231,7 @@
     },
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
-    "route": "",
+    "route": "api",
     "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
    "steps": [
@@ -130301,7 +130313,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130769,7 +130781,7 @@
    "pr": "#431",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-10T02:47:08.295Z",
+   "updatedAt": "2026-11-10T03:09:30.001Z",
    "builtAt": "2026-11-10T02:47:08.295Z",
    "notes": [
     {
@@ -130855,6 +130867,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-10T02:47:08.295Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:30.001Z"
     }
    ],
    "approvals": [],
@@ -130897,7 +130913,7 @@
     },
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
-    "route": "",
+    "route": "api",
     "dispatchedAt": "2026-11-10T02:17:28.580Z"
    },
    "steps": [
@@ -130979,7 +130995,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131003,7 +131019,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-10T01:42:01.814Z",
+   "updatedAt": "2026-11-10T03:09:33.915Z",
    "builtAt": "",
    "notes": [
     {
@@ -131069,6 +131085,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:42:01.814Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:33.915Z"
     }
    ],
    "approvals": [],
@@ -131111,7 +131131,7 @@
     },
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
-    "route": "",
+    "route": "api",
     "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
    "steps": [
@@ -131193,7 +131213,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -132948,7 +132968,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T03:08:45.557Z",
+   "updatedAt": "2026-11-10T03:09:20.018Z",
    "builtAt": "",
    "notes": [
     {
@@ -132982,6 +133002,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-10T03:08:45.557Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:20.018Z"
     }
    ],
    "approvals": [],
@@ -133032,7 +133056,7 @@
     },
     "splitRequested": "",
     "note": "",
-    "route": "",
+    "route": "api",
     "dispatchedAt": ""
    },
    "steps": [
@@ -133114,7 +133138,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -133809,7 +133833,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T01:42:05.320Z",
+   "updatedAt": "2026-11-10T03:09:23.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -133823,6 +133847,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:42:05.320Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:23.230Z"
     }
    ],
    "approvals": [],
@@ -133858,7 +133886,7 @@
     },
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
-    "route": "",
+    "route": "api",
     "dispatchedAt": ""
    },
    "steps": [
@@ -133940,7 +133968,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -134110,7 +134138,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:40.704Z",
-   "updatedAt": "2026-11-10T01:53:49.874Z",
+   "updatedAt": "2026-11-10T03:09:25.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -134124,6 +134152,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:42:07.360Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:25.078Z"
     }
    ],
    "approvals": [],
@@ -134141,7 +134173,7 @@
     "split": null,
     "splitRequested": "",
     "note": "",
-    "route": "",
+    "route": "api",
     "dispatchedAt": ""
    },
    "steps": [
@@ -134220,7 +134252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -134243,7 +134275,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:42.579Z",
-   "updatedAt": "2026-11-10T01:42:08.271Z",
+   "updatedAt": "2026-11-10T03:09:26.648Z",
    "builtAt": "",
    "notes": [
     {
@@ -134253,6 +134285,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:42:08.271Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:26.648Z"
     }
    ],
    "approvals": [],
@@ -134270,7 +134306,7 @@
     "split": null,
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
-    "route": "",
+    "route": "api",
     "dispatchedAt": ""
    },
    "steps": [
@@ -134349,7 +134385,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
