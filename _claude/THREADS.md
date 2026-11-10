@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:41 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · amber
 - 2026-11-10 01:41 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · amber
 - 2026-11-10 01:41 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · amber
 - 2026-11-10 01:41 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · amber
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:41 UTC · `project-manager-add-on-new-project-prompt-asks-i` added (0 steps) (all) · builds-live
 - 2026-11-10 15:41 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 - 2026-11-10 15:41 UTC · `project-manager-every-project-its-own-console-in` note (all) · builds-live
+- 2026-11-10 15:42 UTC · `project-manager-add-on-new-project-prompt-asks-i` note (all) · orchestrator
 
 ## Token passes (log)
 
