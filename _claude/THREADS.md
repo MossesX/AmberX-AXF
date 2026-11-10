@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:09 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · brett
 - 2026-11-10 03:09 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · brett
 - 2026-11-10 03:09 UTC · `skins-theme-rule` note (all) · brett
 - 2026-11-10 03:09 UTC · `skins-restyle-finish` note (all) · brett
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:47 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
 - 2026-11-10 16:47 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · builds-live
 - 2026-11-10 16:48 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · orchestrator
+- 2026-11-10 16:48 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · builds-live
 
 ## Token passes (log)
 
