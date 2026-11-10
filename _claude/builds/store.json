@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2262,
- "updatedAt": "2026-11-10T03:29:33.637Z",
+ "rev": 2263,
+ "updatedAt": "2026-11-10T03:29:53.209Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134592,7 +134592,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:29:31.599Z",
+   "updatedAt": "2026-11-10T03:29:51.704Z",
    "builtAt": "",
    "notes": [
     {
@@ -134626,6 +134626,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-self-healing-build-folders-auto-clear-stale-git--paulie, own login copy)",
      "at": "2026-11-10T03:22:46.563Z"
+    },
+    {
+     "text": "Headless run axf-self-healing-build-folders-auto-clear-stale-git--joey: brief only · start 11.0K tokens ($0.03) · cost $1.67 · 38 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:29:51.704Z"
     }
    ],
    "approvals": [],
@@ -134750,7 +134754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

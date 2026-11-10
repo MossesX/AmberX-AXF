@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:29:33.637Z",
+ "updatedAt": "2026-11-10T03:29:53.209Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82843,7 +82843,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:29:31.599Z",
+   "updatedAt": "2026-11-10T03:29:51.704Z",
    "builtAt": "",
    "notes": [
     {
@@ -82877,6 +82877,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-self-healing-build-folders-auto-clear-stale-git--paulie, own login copy)",
      "at": "2026-11-10T03:22:46.563Z"
+    },
+    {
+     "text": "Headless run axf-self-healing-build-folders-auto-clear-stale-git--joey: brief only · start 11.0K tokens ($0.03) · cost $1.67 · 38 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:29:51.704Z"
     }
    ],
    "approvals": [],
