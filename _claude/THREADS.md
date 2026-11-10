@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:44 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · orchestrator
 - 2026-11-10 15:49 UTC · `claude-accounts-manager-plugin-one-ordered-list` s1 done, → running (all) · orchestrator
 - 2026-11-10 15:51 UTC · `claude-accounts-manager-plugin-one-ordered-list` s2 done (all) · orchestrator
 - 2026-11-10 15:53 UTC · `claude-accounts-manager-plugin-one-ordered-list` PR #448 (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:55 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s9 done (all) · orchestrator
 - 2026-11-10 18:55 UTC · `audit-pending-fable-builds-against-main-close-wh` → queued, note (all) · console
 - 2026-11-10 18:55 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, note (all) · voice
+- 2026-11-10 18:56 UTC · `audit-pending-fable-builds-against-main-close-wh` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
