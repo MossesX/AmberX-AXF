@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2147,
- "updatedAt": "2026-11-10T01:04:18.093Z",
+ "rev": 2148,
+ "updatedAt": "2026-11-10T01:04:28.432Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128732,7 +128732,7 @@
    "pr": "#425",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T01:03:51.953Z",
+   "updatedAt": "2026-11-10T01:04:26.291Z",
    "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {
@@ -128822,6 +128822,10 @@
     {
      "text": "Headless run axf-account-failover-chain-subscription-next-subscri--paulie: brief only · start 11.3K tokens ($0.03) · cost $1.47 · 43 turns · 6 tools, MCP none",
      "at": "2026-11-10T01:03:50.813Z"
+    },
+    {
+     "text": "Headless run axf-account-failover-chain-subscription-next-subscri--joey: brief only · start 11.2K tokens ($0.03) · cost $2.67 · 61 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:04:26.291Z"
     }
    ],
    "approvals": [],
@@ -128946,7 +128950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129749,7 +129753,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129757,7 +129761,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T01:04:06.011Z",
+   "updatedAt": "2026-11-10T01:04:12.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -129819,6 +129823,14 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:08.905Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-skins-own-everything-colour-theme-swaps-independ--sully.",
+     "at": "2026-11-10T01:04:08.837Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-own-everything-colour-theme-swaps-independ--sully, own login copy)",
+     "at": "2026-11-10T01:04:12.656Z"
     }
    ],
    "approvals": [],
@@ -129838,12 +129850,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T17:52:46.957Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-skins-own-everything-colour-theme-swaps-independ--sully",
     "slot": "",
     "model": "Fable",
-    "launchedAt": "2026-11-09T18:02:10.280Z",
-    "runs": 0,
+    "launchedAt": "2026-11-10T01:04:08.430Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-09T18:04:04.646Z",
      "exit": 1,
@@ -129860,9 +129872,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z"
+    "dispatchedAt": "2026-11-10T01:04:08.430Z"
    },
    "steps": [
     {
@@ -129943,7 +129955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
