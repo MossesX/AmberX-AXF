@@ -3505,6 +3505,18 @@
    "from": "",
    "addenda": []
   },
+  "plugin-appearance-save-button-for-custom-looks-n": {
+   "said": "In every plugin's appearance settings, as soon as you make a change off inherit from axHub there's a save button lit up. Save prompts a dialog with a default name with the date and type of change. Saved, the button goes grey. Every change makes a new save. A button to revert pops up a dialog listing all the saves for that plugin in a side-by-side viewer of what it will look like restored compared to now.",
+   "at": "2026-11-10T17:38:24.452Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "plugin-cleanup": {
    "said": "First a merge map so no feature is lost, then: Build Breaker + Changes & features grid + Codebase changes banner -> one; Plugin switches + Plugin Update + Plugins menu -> Plugin Manager; Main build status -> Activity banner; retire Design packs after UI Review (#184); console Todo manager on the shared AmberX notes store; Voice notes vs Dictation; AmberX Voice control vs Voice command center. Uninstall scripts for removed plugins. Also retire the Basic filter plugin once grid-sort-filter moves filtering into the framework (migrate its saved filters).",
    "at": "2026-10-30",

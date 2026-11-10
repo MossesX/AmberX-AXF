@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2566,
- "updatedAt": "2026-11-10T17:37:06.315Z",
+ "rev": 2567,
+ "updatedAt": "2026-11-10T17:38:25.487Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145336,6 +145336,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T17:36:24.532Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "plugin-appearance-save-button-for-custom-looks-n",
+   "title": "Plugin Appearance: Save button for custom looks, named saves as per-plugin assets, restore dialog with side-by-side preview",
+   "category": "",
+   "detail": "In every plugin's Appearance settings: 1) When inherit-from-axHub is off and there are unsaved changes, a Save button lights up; no changes = no Save button. Saved = Save turns grey and disabled until the next edit. 2) Save opens a dialog prefilled with a default name (date + type of change), editable. Each save stores a new per-plugin appearance asset (layout, style, behavior, colour etc. for that plugin only); every later change makes a new save. 3) Switching back to inherit from axHub keeps the custom state saved so it can be restored. 4) A Revert/Restore button opens a dialog listing all saves for that plugin with a side-by-side preview: what it will look like restored vs now. Full API/CLI control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T17:38:24.452Z",
+   "updatedAt": "2026-11-10T17:38:24.452Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "In every plugin's appearance settings, as soon as you make a change off inherit from axHub there's a save button lit up. Save prompts a dialog with a default name with the date and type of change. Saved, the button goes grey. Every change makes a new save. A button to revert pops up a dialog listing all the saves for that plugin in a side-by-side viewer of what it will look like restored compared to now.",
+    "at": "2026-11-10T17:38:24.452Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 570
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
