@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:51:53.625Z",
+ "updatedAt": "2026-11-10T18:52:08.113Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78747,8 +78747,8 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T18:51:52.264Z",
-   "builtAt": "2026-11-10T18:51:52.264Z",
+   "updatedAt": "2026-11-10T18:51:54.719Z",
+   "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
      "text": "SCOPE CHANGE (Brett, Nov 9): SKINS ONLY. Remove design packs, colour themes, style themes, layout themes and behaviour themes as separate concepts. A skin covers everything: colours, styling, layouts, behaviour. Convert every existing pack/theme into skin sections (nothing lost), remove their pickers, screens, settings and asset types (redirect references and migrate saved settings), Appearance shows only the Skin picker. Keep the skin's internal sections (colours, style, layout, behaviour) cleanly separated so the later Skin Designer can edit each section. Overrides step 3's 'Skin + Colour theme'. Default look identical.",
@@ -78883,6 +78883,10 @@
      "at": "2026-11-10T17:09:05.834Z"
     },
     {
+     "text": "s5 regression BLOCKS landing (report: framework/spec/fixtures/look-regression/skins-only-s5-report.md). Needs a Fable step: (1) defaults.skin is never applied at boot, so Molly lost Hub Default (accent amber to indigo, light, spacing 3.4 to 5.6px); (2) the console default look changed from Sage Paper/Geometric/Signature Dock to Hub Default: Brett to pick which is right; (3) console skin Apply with the hub off changes nothing (useSkin without an app-look doc). Also: no control@1 target holds the skin pick yet (contract, Fable). Re-record the baseline at the same data snapshot to drop live-data noise.",
+     "at": "2026-11-10T18:51:54.719Z"
+    },
+    {
      "text": "Reconciler: PR #430 names s5 done",
      "at": "2026-11-10T18:50:38.760Z"
     }
@@ -78997,8 +79001,8 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-10T18:50:38.760Z",
-     "note": "PR #430 (claude/appearance-skins-colour-themes-only-remove-design-packs)",
+     "doneAt": "2026-11-10T18:51:53.510Z",
+     "note": "",
      "uid": "st-mw9isnnq019fb5"
     }
    ]
