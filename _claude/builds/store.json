@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2332,
- "updatedAt": "2026-11-10T04:29:06.560Z",
+ "rev": 2333,
+ "updatedAt": "2026-11-10T04:29:23.051Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136137,15 +136137,15 @@
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
    "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/audit-pending-fable-builds-against-main-close-wh",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T04:28:49.885Z",
+   "updatedAt": "2026-11-10T04:28:57.137Z",
    "builtAt": "",
    "notes": [
     {
@@ -136155,6 +136155,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T04:27:21.668Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-audit-pending-fable-builds-against-main-close-wh--gina.",
+     "at": "2026-11-10T04:28:53.985Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-audit-pending-fable-builds-against-main-close-wh--gina, own login copy)",
+     "at": "2026-11-10T04:28:57.137Z"
     }
    ],
    "approvals": [],
@@ -136174,12 +136182,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T04:25:11.547Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-audit-pending-fable-builds-against-main-close-wh--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T04:28:53.382Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T04:27:21.668Z",
@@ -136189,9 +136197,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-10T04:28:53.382Z"
    },
    "steps": [
     {
@@ -136272,7 +136280,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
