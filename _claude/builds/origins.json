@@ -1559,6 +1559,18 @@
    "from": "detail",
    "addenda": []
   },
+  "conversation-rag-amendment-store-only-short-key": {
+   "said": "I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.",
+   "at": "2026-11-10T16:51:08.892Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "conversation-rag-index-every-voice-chat-session": {
    "said": "You better make some type of RAG database for this conversation.",
    "at": "2026-11-10T16:50:14.626Z",
