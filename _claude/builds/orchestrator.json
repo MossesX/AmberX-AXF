@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:47:01.238Z",
+ "updatedAt": "2026-11-10T17:47:15.393Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81303,7 +81303,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-10T08:35:06.158Z",
+   "updatedAt": "2026-11-10T17:47:13.860Z",
    "builtAt": "",
    "notes": [
     {
@@ -81381,6 +81381,10 @@
     {
      "text": "Session on account-5 stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-10T08:35:06.158Z"
+    },
+    {
+     "text": "Split by Claude into 4 steps (0 Fable).",
+     "at": "2026-11-10T17:47:13.860Z"
     }
    ],
    "approvals": [],
@@ -81400,13 +81404,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
+     "text": "Find every link to the old build queue screen (grep apps/console-web for the old queue route, view id and console_show/console_open targets, e.g. 'build-queue', 'queue', '#/builds/queue') and list them. Then point the Home page Build queue card and its link at the Build orchestrator screen (Pending / Queued / Building). Keep the card's counts reading from the orchestrator state (_claude/builds/orchestrator.json via its existing route), not the old queue store.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/home/",
+      "apps/console-web/public/",
+      "_claude/builds/orchestrator.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -81414,17 +81422,23 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9ne8wk01b3tq"
+     "uid": "st-mwazfvic1jeikr"
     },
     {
      "id": "s2",
-     "text": "Build queue doesn't open the orchestrator. It opens the old build queue.",
+     "text": "API part for the changed card. Make the deep link console_show / console_open target 'orchestrator' (with optional tab=pending|queued|building) the canonical target. Alias the old build-queue targets to it so old links and old callers land on the orchestrator. Expose the Home card's state (counts per lane plus its target) through the console REST route, the MCP console actions, the CLI and the AmberX voice intent ('open build queue' / 'open orchestrator'), all four the same.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/server/routes/",
+      "apps/console-web/plugins/home/",
+      "apps/console-web/mcp/",
+      "apps/console-web/cli/",
+      "apps/console-web/voice/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -81432,17 +81446,41 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9ne8wk026ylw"
+     "uid": "st-mwazfvic1kjslu"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/home-page-build-queue-card-opens-the-orchestrato.md, THREADS row, commit, push, PR",
+     "text": "Retire the rest of the old queue links found in step 1. Repoint nav, launcher tiles, command palette entries, notification and badge click targets, and doc and help links to the orchestrator. Make the old queue screen route redirect to the orchestrator instead of rendering, and remove dead references to it.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
+     "estimate": "25 min",
      "files": [
+      "apps/console-web/plugins/",
+      "apps/console-web/public/",
+      "apps/console-web/server/routes/",
+      "docs/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazfvic1lizcw"
+    },
+    {
+     "id": "s4",
+     "text": "Tests, report and PR. Add or adjust tests: the Home card href and target resolve to the orchestrator; the old build-queue targets and route redirect to it; REST, MCP, CLI and voice return the same card state and open the same target. Run the suites. Write _claude/builds/reports/home-page-build-queue-card-opens-the-orchestrato.md, add the THREADS row in _claude/THREADS.md, and open the PR, saying how the card is reached by deep link, REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/test/",
       "_claude/builds/reports/home-page-build-queue-card-opens-the-orchestrato.md",
       "_claude/THREADS.md"
      ],
@@ -81453,7 +81491,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9ne8wk03d2th"
+     "uid": "st-mwazfvic1mfwz2"
     }
    ]
   },
