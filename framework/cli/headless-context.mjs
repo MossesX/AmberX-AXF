@@ -70,7 +70,7 @@ export function rulesFor(brief, { model = '', agent = '', name = '', env = proce
   const readRel = (p) => { try { return readFileSync(join(ROOT, p), 'utf8'); } catch { return null; } };
   let rulesBrief = '';
   try {
-    const doc = loadRulesBriefs();
+    const doc = loadRulesBriefs(brief);
     if (doc.lean) rulesBrief = composeRulesBrief(doc, launchContext({ task: brief, surface: env.AXF_SURFACE || 'headless', model, agent, job: env.AXF_AGENT_JOB || '', build: env.AXF_BUILD_ID || name, profile: env.AXF_BUILD_PROFILE || '' }), readRel).text;
   } catch { rulesBrief = ''; }
   return composeRules({ brief, rulesBrief, ruleTexts: RULE_FILES.map((f) => readRel(f) ?? '') });

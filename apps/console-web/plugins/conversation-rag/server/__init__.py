@@ -1,25 +1,30 @@
 """Conversation RAG, server part. Mounted at /api/plugins/conversation-rag/ (every route is a plugin command too:
 REST, MCP, CLI and voice the same, plugin-commands@1 auto).
 
-  GET  status                  what is indexed (sessions, chunks, by source, ledger size, last run, settings)
+  GET  status                  what is indexed (sessions, entries, by source, last run, settings)
   POST reindex                 read what is new now ({full: true} = start again from nothing)
-  GET  search                  q, limit, source, since, until, build, session → ranked chunks with snippets
-  GET  find-session            q → sessions ranked by match ("which session did we talk about X")
-  GET  context                 q → a ready-to-paste context pack for an agent (top chunks + matching ledger lines)
-  GET  sessions / session/{id} the sessions and one session's chunks
-  GET  ledger                  kind, q, hidden → the rules ledger
-  POST ledger/add              {text, kind} a rule Brett states directly (pinned)
-  POST ledger/{id}             {pinned, hidden, kind, text}
+  GET  search                  q, limit, … → matching entries (passages too only with the `passages` setting on)
+  GET  find-session            q → sessions ranked by their matching entries ("which session did we talk about X")
+  GET  context                 q → the matching `entry: value` lines for an agent (never passages)
+  GET  sessions / session/{id} the sessions (title, dates, link) and one session's entries
+  GET  ledger                  kind, q, hidden → the two-field entries
+  POST ledger/add              {entry, value, kind} (or {text}, distilled by the plain rules); pinned
+  POST ledger/{id}             {entry, value, kind, pinned, hidden}
   POST import                  a claude.ai export (conversations.json) as the body
-  GET/POST settings            ai, includeHeadless, briefLedger, briefMaxChars, minScore, everyMinutes
+  GET/POST settings            ai, passages, includeHeadless, briefLedger, briefMaxEntries, briefMaxChars, minScore, everyMinutes
 
-The ledger is published after every run to the shared ledger file (conversation-ledger@1) that framework/cli/rules-brief.mjs
-reads, so every rules brief (the orchestrator's dispatches, every headless run) carries the standing rules.
+Brett (Nov 10 2026): "I don't need the whole entire session quoted and plugged in, that costs me a shitload of money.
+Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it."
+So the store keeps two-field entries (entry = the rule, mistake or decision in a few words; value = one line: what not
+to do and what to do instead). Whole-session passages are not stored unless `passages` is on (off by default) and are
+never put into a brief or context pack. The entries are published to the shared ledger file (conversation-ledger@1);
+framework/cli/rules-brief.mjs puts only the entries that match the task (plus pinned ones) into each brief.
 """
 from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
 from pathlib import Path
@@ -36,7 +41,9 @@ from . import sources as S
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 SERVICE = "axf.conversation-search@1"
-DEFAULTS: dict[str, Any] = {"ai": False, "includeHeadless": False, "briefLedger": True, "briefMaxChars": 1800, "minScore": 3.0, "everyMinutes": 10}
+DEFAULTS: dict[str, Any] = {"ai": False, "passages": False, "includeHeadless": False, "briefLedger": True, "briefMaxEntries": 12, "briefMaxChars": 1200,
+                            "minScore": 3.0, "everyMinutes": 10}
+AI_BATCH = 20  # entries the model may tidy per run (one short sentence each), only with the `ai` switch on
 _idx: R.Index | None = None
 _lock = threading.Lock()
 _last: dict[str, Any] = {}
@@ -59,7 +66,7 @@ def index() -> R.Index:
     global _idx
     with _lock:
         if _idx is None:
-            _idx = R.Index(data_dir() / "conversations.db")
+            _idx = R.Index(data_dir() / "conversations.db", passages=settings()["passages"])
         return _idx
 
 
@@ -91,18 +98,22 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
             raise HTTPException(400, f"{k} must be {want.__name__}")
         cur[k] = v
     cur["briefMaxChars"] = max(0, min(int(cur["briefMaxChars"]), 6000))
+    cur["briefMaxEntries"] = max(0, min(int(cur["briefMaxEntries"]), 60))
     cur["everyMinutes"] = max(1, min(int(cur["everyMinutes"]), 1440))
     data_dir().mkdir(parents=True, exist_ok=True)
     (data_dir() / "settings.json").write_text(json.dumps(cur, indent=1))
+    index().passages = bool(cur["passages"])
+    if not cur["passages"]:
+        index().purge_passages()
     publish()
     return cur
 
 
 def brief_entries(idx: R.Index, st: dict[str, Any]) -> list[dict[str, Any]]:
-    """What goes into every brief: pinned/manual first, then rules and decisions over the score floor, newest first."""
-    rules = idx.ledger(kind="rule", min_score=st["minScore"], limit=60)
-    decisions = idx.ledger(kind="decision", min_score=st["minScore"], limit=30)
-    newest = sorted(rules + decisions, key=lambda e: str(e["at"] or ""), reverse=True)
+    """The entries a brief may pick from: pinned/manual first, then mistakes, rules and decisions over the score floor,
+    newest first. Which of them a brief carries is decided per task (matching), in rules-brief.mjs."""
+    picked = [e for k, n in (("mistake", 80), ("rule", 120), ("decision", 60)) for e in idx.ledger(kind=k, min_score=st["minScore"], limit=n)]
+    newest = sorted(picked, key=lambda e: str(e["at"] or ""), reverse=True)
     return sorted(newest, key=lambda e: not e["pinned"])  # stable: pinned first, each part newest first
 
 
@@ -111,9 +122,12 @@ def publish() -> dict[str, Any]:
     st = settings()
     idx = index()
     entries = brief_entries(idx, st)
-    text = R.brief_text(entries, st["briefMaxChars"]) if st["briefLedger"] else ""
+    pinned = [e for e in entries if e["pinned"]]
+    # briefText: the pinned entries only (what a launch with no task text gets). entries: two fields each (+ pinned).
+    text = R.brief_text(pinned[:st["briefMaxEntries"]], st["briefMaxChars"]) if st["briefLedger"] else ""
     doc = {"$axf": R.LEDGER_FORMAT, "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "enabled": bool(st["briefLedger"]), "briefText": text,
-           "entries": [{k: e[k] for k in ("id", "kind", "text", "at", "session", "source", "builds", "pinned")} for e in entries[:80]]}
+           "maxEntries": st["briefMaxEntries"], "maxChars": st["briefMaxChars"],
+           "entries": [{"entry": e["entry"], "value": e["value"], **({"pinned": True} if e["pinned"] else {})} for e in entries[:300]]}
     f = ledger_file()
     try:
         f.parent.mkdir(parents=True, exist_ok=True)
@@ -130,6 +144,9 @@ def run(full: bool = False) -> dict[str, Any]:
     started = time.time()
     idx = index()
     st = settings()
+    idx.passages = bool(st["passages"])
+    if not idx.passages:
+        idx.purge_passages()
     if full:
         with idx.lock:
             idx.db.executescript("DELETE FROM chunks; DELETE FROM sessions; DELETE FROM cursors; INSERT INTO fts(fts) VALUES('rebuild');"
@@ -139,9 +156,40 @@ def run(full: bool = False) -> dict[str, Any]:
     rep = {"claudeCode": S.sync_claude_code(idx, S.claude_dirs(), known, include_headless=st["includeHeadless"]),
            "claudeAi": S.sync_imports(idx, data_dir() / "imports", known),
            "recordings": S.sync_transcripts(idx, plugin_services.get("axf.session-transcripts@1"), known)}
+    rep["distilled"] = distill(idx, st)
     rep["published"] = publish()
     _last = {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "seconds": round(time.time() - started, 2), **rep}
     return _last
+
+
+def distill(idx: R.Index, st: dict[str, Any]) -> dict[str, Any]:
+    """With the `ai` switch on and a model service installed: tidy up to AI_BATCH auto entries into a better
+    entry/value pair. The model sees one sentence per entry, never a session. Off = plain rules only, zero tokens."""
+    llm = plugin_services.get("axf.llm@1") if st["ai"] else None
+    if llm is None:
+        return {"ai": False, "entries": 0}
+    rows = idx.db.execute("SELECT id, kind, text FROM ledger WHERE manual=0 AND hidden=0 AND edited='' AND kind IN ('mistake','rule','decision') "
+                          "AND score >= ? ORDER BY at DESC LIMIT ?", (st["minScore"], AI_BATCH)).fetchall()
+    if not rows:
+        return {"ai": True, "entries": 0}
+    ask = "\n".join(f"{i + 1}. [{r['kind']}] {r['text']}" for i, r in enumerate(rows))
+    try:
+        r = llm.complete([{"role": "user", "content": ask}], system=(
+            "Each numbered line is something Brett said to Claude. Return only a JSON array, one object per line, in order: "
+            f'{{"entry": "<the rule, mistake or decision in at most {R.ENTRY_CHARS} chars>", "value": "<one line, at most {R.VALUE_CHARS} chars: what Claude must not do and what to do instead>"}}.'))
+        got = json.loads(re.search(r"\[.*\]", str(r.get("text") or ""), re.S).group(0))  # type: ignore[union-attr]
+    except Exception as e:  # noqa: BLE001 — the plain-rules entries stand
+        return {"ai": True, "entries": 0, "error": str(e)[:200]}
+    n = 0
+    stamp = "ai:" + time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with idx.lock:
+        for row, g in zip(rows, got if isinstance(got, list) else []):
+            e, v = str((g or {}).get("entry") or "").strip(), str((g or {}).get("value") or "").strip()
+            if len(e) >= 2 and len(v) >= 4:
+                idx.db.execute("UPDATE ledger SET entry=?, value=?, edited=? WHERE id=?", (R._cut(R.redact(e), R.ENTRY_CHARS), R._cut(R.redact(v), R.VALUE_CHARS), stamp, row["id"]))
+                n += 1
+        idx.db.commit()
+    return {"ai": True, "entries": n}
 
 
 def _loop() -> None:
@@ -170,34 +218,50 @@ def reindex(body: dict[str, Any] | None = None) -> dict[str, Any]:
 
 @router.get("/search")
 def search(q: str, limit: int = 20, source: str = "", since: str = "", until: str = "", build: str = "", session: str = "") -> dict[str, Any]:
-    hits = index().search(q, limit=max(1, min(limit, 100)), source=source, since=since, until=until, build=build, session=session)
-    return {"ok": True, "q": q, "hits": hits, "count": len(hits)}
+    idx = index()
+    entries = [e for e in idx.ledger(query=q, limit=max(1, min(limit, 100))) if _keep(e, source, since, until, build, session)]
+    hits = idx.search(q, limit=max(1, min(limit, 100)), source=source, since=since, until=until, build=build, session=session) if idx.passages else []
+    return {"ok": True, "q": q, "entries": entries, "hits": hits, "count": len(entries) + len(hits), "passages": idx.passages}
+
+
+def _keep(e: dict[str, Any], source: str = "", since: str = "", until: str = "", build: str = "", session: str = "") -> bool:
+    at = str(e.get("at") or "")[:10]
+    return ((not source or e.get("source") == source) and (not since or at >= since[:10]) and (not until or at <= until[:10])
+            and (not build or build in (e.get("builds") or [])) and (not session or e.get("session") == session))
 
 
 @router.get("/find-session")
 def find_session(q: str, limit: int = 10, source: str = "", since: str = "", until: str = "") -> dict[str, Any]:
-    return {"ok": True, "q": q, "sessions": index().find_session(q, limit=max(1, min(limit, 50)), source=source, since=since, until=until)}
+    idx = index()
+    if idx.passages:
+        return {"ok": True, "q": q, "sessions": idx.find_session(q, limit=max(1, min(limit, 50)), source=source, since=since, until=until)}
+    best: dict[str, dict[str, Any]] = {}
+    for e in idx.ledger(query=q, limit=500):
+        if e.get("session") and _keep(e, source, since, until):
+            b = best.setdefault(e["session"], {"session": e["session"], "score": 0.0, "hits": 0, "top": e})
+            b["score"] += e["match"]; b["hits"] += 1
+    out = sorted(best.values(), key=lambda b: -b["score"])[:max(1, min(limit, 50))]
+    for b in out:
+        s = idx.db.execute("SELECT title, source, first_at, last_at, link FROM sessions WHERE id=?", (b["session"],)).fetchone()
+        b.update(dict(s) if s else {})
+    return {"ok": True, "q": q, "sessions": out}
 
 
 @router.get("/context")
-def context(q: str, limit: int = 6, build: str = "") -> dict[str, Any]:
-    """A context pack an agent pastes into its prompt: the best chunks and the ledger lines that match. With the `ai`
-    setting on and a model service installed, also a short answer drawn only from those chunks."""
-    idx = index()
-    hits = idx.search(q, limit=max(1, min(limit, 20)), build=build)
-    rules = idx.ledger(query=q, min_score=settings()["minScore"], limit=8)
-    parts = [f"[{h['at'][:16]} {h['source']} {h['session']}]\n{h['text']}" for h in hits]
-    text = "## Past conversation\n" + "\n\n".join(parts) if parts else ""
-    if rules:
-        text += ("\n\n" if text else "") + "## Standing rules that match\n" + "\n".join(f"- {r['text']} ({r['kind']}, {r['at'][:10]})" for r in rules)
-    out: dict[str, Any] = {"ok": True, "q": q, "text": text, "hits": hits, "rules": rules, "answer": None}
-    llm = plugin_services.get("axf.llm@1") if settings()["ai"] else None
+def context(q: str, limit: int = 8, build: str = "") -> dict[str, Any]:
+    """What an agent pastes into its prompt: only the `entry: value` lines that match q (never passages). With the `ai`
+    setting on and a model service installed, also a short answer drawn only from those lines."""
+    st = settings()
+    entries = [e for e in index().ledger(query=q, min_score=st["minScore"], limit=max(1, min(limit, 30))) if _keep(e, build=build)]
+    text = R.brief_text(entries, st["briefMaxChars"] or 1200)
+    out: dict[str, Any] = {"ok": True, "q": q, "text": text, "entries": [{"entry": e["entry"], "value": e["value"]} for e in entries], "answer": None}
+    llm = plugin_services.get("axf.llm@1") if st["ai"] else None
     if llm is not None and text:
         try:
-            r = llm.complete([{"role": "user", "content": f"{text}\n\nQuestion: {q}\nAnswer in two or three plain sentences from the conversation above only."}],
-                             system="You answer from Brett's past conversations only. Say when they don't cover it.")
-            out["answer"] = str(r.get("text") or "")[:2000]
-        except Exception as e:  # noqa: BLE001 — the plain context pack still stands
+            r = llm.complete([{"role": "user", "content": f"{text}\n\nQuestion: {q}\nAnswer in one or two plain sentences from the lines above only."}],
+                             system="You answer from Brett's standing notes only. Say when they don't cover it.")
+            out["answer"] = str(r.get("text") or "")[:600]
+        except Exception as e:  # noqa: BLE001 — the plain lines still stand
             out["answerError"] = str(e)[:200]
     return out
 
@@ -209,23 +273,26 @@ def sessions(source: str = "", limit: int = 100, offset: int = 0) -> dict[str, A
 
 @router.get("/session/{sid}")
 def session(sid: str) -> dict[str, Any]:
-    s = index().session(sid)
+    idx = index()
+    s = idx.session(sid)
     if not s:
         raise HTTPException(404, "no such session")
-    return {"ok": True, "session": s}
+    entries = [e for e in idx.ledger(limit=1000) if e.get("session") == sid]
+    return {"ok": True, "session": {**s, "entries": [{"id": e["id"], "kind": e["kind"], "entry": e["entry"], "value": e["value"], "at": e["at"]} for e in entries]}}
 
 
 @router.get("/ledger")
 def ledger(kind: str = "", q: str = "", hidden: bool = False, limit: int = 200) -> dict[str, Any]:
     st = settings()
     return {"ok": True, "entries": index().ledger(kind=kind, query=q, include_hidden=hidden, limit=max(1, min(limit, 1000))),
-            "briefText": R.brief_text(brief_entries(index(), st), st["briefMaxChars"]) if st["briefLedger"] else ""}
+            "briefText": R.brief_text([e for e in brief_entries(index(), st) if e["pinned"]][:st["briefMaxEntries"]], st["briefMaxChars"]) if st["briefLedger"] else ""}
 
 
 @router.post("/ledger/add")
 def ledger_add(body: dict[str, Any]) -> dict[str, Any]:
     try:
-        e = index().ledger_add(str(body.get("text") or ""), str(body.get("kind") or "rule"), builds=[str(b) for b in body.get("builds") or []])
+        e = index().ledger_add(entry=str(body.get("entry") or ""), value=str(body.get("value") or ""), kind=str(body.get("kind") or "rule"),
+                               builds=[str(b) for b in body.get("builds") or []], text=str(body.get("text") or ""))
     except ValueError as err:
         raise HTTPException(400, str(err)) from err
     publish()
@@ -235,7 +302,7 @@ def ledger_add(body: dict[str, Any]) -> dict[str, Any]:
 @router.post("/ledger/{lid}")
 def ledger_set(lid: str, body: dict[str, Any]) -> dict[str, Any]:
     try:
-        e = index().ledger_set(lid, **{k: body.get(k) for k in ("kind", "text", "pinned", "hidden")})
+        e = index().ledger_set(lid, **{k: body.get(k) for k in ("kind", "entry", "value", "pinned", "hidden")})
     except ValueError as err:
         raise HTTPException(400, str(err)) from err
     if e is None:
@@ -270,10 +337,11 @@ class SearchService:
     version = 1
 
     def search(self, q: str, limit: int = 20, **kw: Any) -> list[dict[str, Any]]:
-        return index().search(q, limit=limit, **kw)
+        r = search(q, limit=limit, **kw)
+        return r["entries"] + r["hits"]
 
     def find_session(self, q: str, limit: int = 10) -> list[dict[str, Any]]:
-        return index().find_session(q, limit=limit)
+        return find_session(q, limit=limit)["sessions"]
 
     def ledger(self, kind: str = "", q: str = "") -> list[dict[str, Any]]:
         return index().ledger(kind=kind, query=q)

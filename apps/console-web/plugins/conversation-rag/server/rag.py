@@ -9,7 +9,11 @@ into chunks of a few turns, tagged (date, topics, build ids) and stored in one S
     fts       FTS5 (porter) over the chunk text: the candidates and their BM25 score
     sessions  one row per session: source, title, first/last time, chunk count
     cursors   incremental ingest state per source item (size/mtime/offset), so a re-run reads only what is new
-    ledger    standing rules, decisions and requests pulled out of Brett's own words (pin / hide / edit by API)
+    ledger    two-field entries pulled out of Brett's own words: `entry` (the rule, mistake or decision, a few words)
+              and `value` (one line: what not to do and what to do instead). Pin / hide / edit by API.
+
+Brett (Nov 10 2026): "A two field RAG format, an entry and a value, that's it." Passages (whole sessions) are NOT
+stored unless the `passages` setting is on (off by default); briefs and context packs only ever carry entries.
 
 Embeddings are local and free: signed feature hashing of word stems, word pairs and character trigrams into 256 floats
 (L2-normalised). Search = FTS5 candidates reranked by cosine + BM25 + a small recency term; a query with no FTS hit
@@ -46,8 +50,11 @@ CREATE INDEX IF NOT EXISTS chunks_day ON chunks(day);
 CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts5(text, content='chunks', content_rowid='id', tokenize='porter unicode61');
 CREATE TABLE IF NOT EXISTS cursors (key TEXT PRIMARY KEY, size INTEGER, mtime REAL, pos INTEGER, extra TEXT DEFAULT '{}');
 CREATE TABLE IF NOT EXISTS ledger (id TEXT PRIMARY KEY, kind TEXT, text TEXT, quote TEXT, at TEXT, session TEXT, source TEXT, builds TEXT,
-  score REAL, pinned INTEGER DEFAULT 0, hidden INTEGER DEFAULT 0, manual INTEGER DEFAULT 0, edited TEXT DEFAULT '');
+  score REAL, pinned INTEGER DEFAULT 0, hidden INTEGER DEFAULT 0, manual INTEGER DEFAULT 0, edited TEXT DEFAULT '', entry TEXT DEFAULT '', value TEXT DEFAULT '');
 """
+KINDS = ("rule", "mistake", "decision", "request")
+ENTRY_CHARS = 60
+VALUE_CHARS = 160
 
 
 def redact(text: str) -> str:
@@ -153,12 +160,68 @@ def _chunk(turns: list[dict[str, Any]]) -> dict[str, Any]:
 
 # ------------------------------------------------------------------------------------------------- the rules ledger
 RULE_PATTERNS = [
-    ("rule", 3.0, re.compile(r"\b(always|never|from now on|going forward|no more|stop (?:doing|using)|don't ever|do not ever)\b", re.I)),
+    ("mistake", 3.5, re.compile(r"\byou (?:didn't|did not|forgot(?: to)?|failed to|never|keep|kept|still|were supposed to|should have|missed)\b|\bwhy (?:didn't|did) you\b", re.I)),
+    ("rule", 3.0, re.compile(r"\b(always|never|from now on|going forward|no more|stop (?:doing|using)|don't ever|do not ever|i don't (?:need|want)|don't (?:need|want) (?:you|the|a|any))\b", re.I)),
     ("rule", 2.0, re.compile(r"\b(must|has to|have to|needs? to|should always|make sure|rule|every time|each time)\b", re.I)),
     ("decision", 2.5, re.compile(r"\b(we(?:'ll| will) go with|let's go with|decided|decision|i choose|use (?:the )?\w+ instead|switch(?:ed)? to|set it to)\b", re.I)),
     ("request", 1.5, re.compile(r"\b(i want|i need|build|add|make (?:a|an|some|it)|can you|please|you better)\b", re.I)),
 ]
 NOISE = re.compile(r"^(?:ok|okay|yes|no|thanks|thank you|cool|great|yep|sure)\b[.!]?$", re.I)
+# Two-field distillation (plain rules, no model): lead-ins and intensifiers go, the rest is cut to a key and one line.
+LEAD = re.compile(r"^(?:(?:and|but|so|also|okay|ok|look|listen|again|like i said|i said|from now on|going forward|in the future|please|"
+                  r"you better|you need to|you have to|you should|i want you to|i need you to|make sure(?: that)?(?: you)?)[,:\s]+)+", re.I)
+FILLER = re.compile(r"\b(?:the whole entire|whole entire|entire|fucking|fuckin|freaking|a shitload of|shitload of|a ton of|literally|basically|actually|really|honestly)\b\s*", re.I)
+NEG = re.compile(r"\b(?:never|don't ever|do not ever|don't|do not|stop|no more|i don't (?:need|want)|don't (?:need|want))\s+(?:you\s+to\s+|to\s+)?(.+)", re.I)
+POS = re.compile(r"\b(?:always|must|has to|have to|needs? to|should always|make sure(?: that)?(?: you)?|every time|each time)\s+(.+)", re.I)
+MISS = re.compile(r"\b(?:you (?:didn't|did not|forgot(?: to)?|failed to|never|were supposed to|should have|missed)|why didn't you)\s+(.+)", re.I)
+KEEP = re.compile(r"\byou (?:keep|kept|still)\s+(.+)", re.I)
+INSTEAD = re.compile(r"^(?:just|only|instead|rather)\b[,\s]*(.+)", re.I)
+
+
+def _clean(text: str) -> str:
+    t = FILLER.sub("", LEAD.sub("", (text or "").strip()))
+    return re.sub(r"\s+", " ", t).strip(" ,;:-").rstrip(".!?")
+
+
+def _cut(text: str, n: int) -> str:
+    text = text.strip()
+    if len(text) <= n:
+        return text
+    cut = text[:n - 1].rsplit(" ", 1)[0]
+    return cut.rstrip(" ,;:-") + "…"
+
+
+def _key(text: str, words_max: int = 7) -> str:
+    """The entry: the first clause in a few words."""
+    clause = re.split(r"[,;:(]|\s[-–—]\s|\b(?:because|that costs|which|so that)\b", _clean(text), maxsplit=1)[0]
+    return _cut(" ".join(clause.split()[:words_max]), ENTRY_CHARS)
+
+
+def two_field(sentence: str, kind: str, instead: str = "") -> tuple[str, str]:
+    """A sentence in Brett's words (+ an optional follow-up "Just …" / "Instead …") → (entry, value)."""
+    s = _clean(sentence)
+    alt = _clean(instead)
+    m = MISS.search(s) if kind == "mistake" else None
+    if m:
+        x = _clean(m.group(1))
+        return _cut("Missed: " + _key(x), ENTRY_CHARS), _cut(f"Claude didn't {x}. Do it every time." + (f" {alt}." if alt else ""), VALUE_CHARS)
+    m = KEEP.search(s) if kind == "mistake" else None
+    if m:
+        x = _clean(m.group(1))
+        return _cut("Keeps: " + _key(x), ENTRY_CHARS), _cut(f"Stop: {x}." + (f" Do instead: {alt}." if alt else ""), VALUE_CHARS)
+    m = (NEG.search(s) or POS.search(s)) if kind == "rule" else None
+    if m and terms(s[:m.start()]) - {"you", "need", "want"}:  # a subject before the modal: keep the whole sentence
+        return _key(s), _cut(f"Rule: {s}." + (f" Do instead: {alt}." if alt else ""), VALUE_CHARS)
+    m = NEG.search(s) if kind == "rule" else None
+    if m:
+        x = _clean(m.group(1))
+        return _key(x), _cut(f"Don't: {x}." + (f" Do instead: {alt}." if alt else ""), VALUE_CHARS)
+    m = POS.search(s) if kind == "rule" else None
+    if m:
+        x = _clean(m.group(1))
+        return _key(x), _cut(f"Always: {x}.", VALUE_CHARS)
+    label = {"decision": "Decided", "request": "Asked", "mistake": "Missed"}.get(kind, "Rule")
+    return _key(s), _cut(f"{label}: {s}." + (f" {alt}." if alt else ""), VALUE_CHARS)
 
 
 def sentences(text: str) -> list[str]:
@@ -166,19 +229,41 @@ def sentences(text: str) -> list[str]:
 
 
 def extract(text: str) -> list[dict[str, Any]]:
-    """Brett's words → candidate ledger entries {kind, text, score}. One per sentence, the strongest pattern wins."""
-    out = []
-    for s in sentences(redact(text)):
-        if NOISE.match(s) or s.endswith("?") and not re.search(r"\b(can you|could you)\b", s, re.I):
+    """Brett's words → candidate ledger entries {kind, entry, value, text, score}. One per sentence, the strongest
+    pattern wins; a following "Just …" / "Instead …" / "Only …" sentence becomes the do-instead half of the value."""
+    out: list[dict[str, Any]] = []
+    sents = sentences(redact(text))
+    for i, s in enumerate(sents):
+        if NOISE.match(s) or s.endswith("?") and not re.search(r"\b(can you|could you|why didn't you)\b", s, re.I):
             continue
         best = None
         for kind, w, rx in RULE_PATTERNS:
             if rx.search(s) and (best is None or w > best[1]):
                 best = (kind, w)
         if best:
+            nxt = sents[i + 1] if i + 1 < len(sents) else ""
+            m = INSTEAD.match(nxt)
+            entry, value = two_field(s, best[0], m.group(1) if m else "")
             score = best[1] + min(len(s), 200) / 400.0
-            out.append({"kind": best[0], "text": s, "score": round(score, 2)})
+            out.append({"kind": best[0], "entry": entry, "value": value, "text": s, "score": round(score, 2)})
     return out
+
+
+MATCH_STOP = STOP | frozenset("claude brett don't dont do does always never stop rule missed keeps asked decided instead every time".split())
+
+
+def terms(text: str) -> set[str]:
+    return {stem(w) for w in words(text) if w not in MATCH_STOP and len(w) > 2}
+
+
+def match_score(entry: dict[str, Any], query_terms: set[str]) -> float:
+    """How well a two-field entry matches a task or query: shared stems, weighted to the entry key. 0 = no match.
+    Same rule as framework/cli/rules-brief.mjs matchEntry()."""
+    k, v = terms(str(entry.get("entry") or "")), terms(str(entry.get("value") or ""))
+    hit_k, hit_v = len(k & query_terms), len((v - k) & query_terms)
+    if not hit_k and hit_v < 2:
+        return 0.0
+    return round(hit_k * 2 + hit_v + (hit_k / len(k) if k else 0), 3)
 
 
 def ledger_id(text: str) -> str:
@@ -187,7 +272,8 @@ def ledger_id(text: str) -> str:
 
 # ------------------------------------------------------------------------------------------------- the store
 class Index:
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, passages: bool = False):
+        self.passages = passages  # store passage text (whole sessions)? Off by default: only two-field entries are kept
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.lock = threading.RLock()
@@ -195,6 +281,28 @@ class Index:
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.executescript(SCHEMA)
+        self._migrate()
+
+    def _migrate(self) -> None:
+        """Ledgers from before the two-field format get their entry/value derived from the stored sentence."""
+        cols = {r[1] for r in self.db.execute("PRAGMA table_info(ledger)")}
+        for c in ("entry", "value"):
+            if c not in cols:
+                self.db.execute(f"ALTER TABLE ledger ADD COLUMN {c} TEXT DEFAULT ''")
+        for r in self.db.execute("SELECT id, kind, text FROM ledger WHERE entry='' OR entry IS NULL").fetchall():
+            e, v = two_field(r["text"] or "", r["kind"] or "rule")
+            self.db.execute("UPDATE ledger SET entry=?, value=? WHERE id=?", (e, v, r["id"]))
+        self.db.commit()
+
+    def purge_passages(self) -> int:
+        """Drop every stored passage (whole-session text). Sessions keep their title/date/link row; entries stay."""
+        with self.lock:
+            n = self.db.execute("SELECT COUNT(*) FROM chunks").fetchone()[0]
+            if n:
+                self.db.executescript("DELETE FROM chunks; INSERT INTO fts(fts) VALUES('rebuild'); UPDATE sessions SET chunks=0;")
+                self.db.commit()
+                self.db.execute("VACUUM")
+        return int(n)
 
     def close(self) -> None:
         self.db.close()
@@ -219,10 +327,14 @@ class Index:
             self.db.commit()
 
     def add(self, session: dict[str, Any], turns: list[dict[str, Any]], known_builds: Iterable[str] = (), brett_roles: tuple[str, ...] = ("brett",)) -> int:
-        """Append turns to a session (new chunks get the next seq numbers). Brett's turns feed the ledger. → chunks added."""
+        """Append turns to a session. Brett's turns feed the two-field ledger. Passage text (new chunks, next seq numbers)
+        is stored only when `self.passages` is on. → chunks added."""
         sid = str(session["id"])
         known = list(known_builds)
-        chunks = chunk_turns(turns)
+        chunks = chunk_turns(turns) if self.passages else []
+        if not self.passages:  # dates only, no text
+            ats = sorted(str(t.get("at") or "") for t in turns if t.get("at"))
+            first_last = (ats[0], ats[-1]) if ats else ("", "")
         with self.lock:
             row = self.db.execute("SELECT chunks, first_at FROM sessions WHERE id=?", (sid,)).fetchone()
             seq = int(row["chunks"]) if row else 0
@@ -237,6 +349,9 @@ class Index:
                 seq += 1
                 first = min(first, at) if first and at else (first or at)
                 last = max(last, at)
+            if not self.passages:
+                first = min(first, first_last[0]) if first and first_last[0] else (first or first_last[0] or str(session.get("at") or ""))
+                last = first_last[1]
             meta = json.dumps(session.get("meta") or {})
             self.db.execute("INSERT INTO sessions (id, source, title, first_at, last_at, chunks, link, meta) VALUES (?,?,?,?,?,?,?,?) "
                             "ON CONFLICT(id) DO UPDATE SET title=excluded.title, first_at=excluded.first_at, last_at=MAX(sessions.last_at, excluded.last_at), chunks=excluded.chunks, link=excluded.link, meta=excluded.meta",
@@ -251,15 +366,16 @@ class Index:
         for e in extract(str(turn.get("text") or "")):
             lid = ledger_id(e["text"])
             builds = ",".join(find_builds(str(turn.get("text") or ""), known))
-            self.db.execute("INSERT INTO ledger (id, kind, text, quote, at, session, source, builds, score) VALUES (?,?,?,?,?,?,?,?,?) "
+            self.db.execute("INSERT INTO ledger (id, kind, text, quote, at, session, source, builds, score, entry, value) VALUES (?,?,?,?,?,?,?,?,?,?,?) "
                             "ON CONFLICT(id) DO UPDATE SET at=MAX(ledger.at, excluded.at), score=MAX(ledger.score, excluded.score)",
-                            (lid, e["kind"], e["text"], e["text"], str(turn.get("at") or session.get("at") or ""), str(session["id"]), session.get("source", ""), builds, e["score"]))
+                            (lid, e["kind"], e["text"], e["text"], str(turn.get("at") or session.get("at") or ""), str(session["id"]), session.get("source", ""), builds, e["score"],
+                             e["entry"], e["value"]))
 
     # reading
     def stats(self) -> dict[str, Any]:
         q = lambda sql: self.db.execute(sql).fetchone()[0]  # noqa: E731
         by = {r[0]: r[1] for r in self.db.execute("SELECT source, COUNT(*) FROM sessions GROUP BY source")}
-        return {"sessions": q("SELECT COUNT(*) FROM sessions"), "chunks": q("SELECT COUNT(*) FROM chunks"), "bySource": by,
+        return {"sessions": q("SELECT COUNT(*) FROM sessions"), "chunks": q("SELECT COUNT(*) FROM chunks"), "passages": self.passages, "bySource": by,
                 "ledger": q("SELECT COUNT(*) FROM ledger WHERE hidden=0"), "newest": q("SELECT MAX(last_at) FROM sessions") or "", "bytes": self.path.stat().st_size if self.path.exists() else 0}
 
     def sessions(self, source: str = "", limit: int = 100, offset: int = 0) -> list[dict[str, Any]]:
@@ -343,13 +459,21 @@ class Index:
         if min_score:
             filt.append("(score >= ? OR pinned = 1 OR manual = 1)"); args.append(min_score)
         sql = "SELECT * FROM ledger" + (" WHERE " + " AND ".join(filt) if filt else "") + " ORDER BY pinned DESC, at DESC LIMIT ?"
-        rows = [dict(r) for r in self.db.execute(sql, (*args, limit * (5 if query else 1)))]
+        rows = [self._entry_out(r) for r in self.db.execute(sql, (*args, 100000 if query else limit))]
         if query:
-            qv = embed(query)
-            rows = sorted(rows, key=lambda r: -cosine(qv, embed(r["text"])))[:limit]
-        for r in rows:
-            r["builds"] = [b for b in (r["builds"] or "").split(",") if b]; r["pinned"] = bool(r["pinned"]); r["hidden"] = bool(r["hidden"]); r["manual"] = bool(r["manual"])
+            qt = terms(query)
+            for r in rows:
+                r["match"] = match_score(r, qt)
+            rows = sorted((r for r in rows if r["match"] > 0), key=lambda r: -r["match"])[:limit]
         return rows
+
+    @staticmethod
+    def _entry_out(r: sqlite3.Row) -> dict[str, Any]:
+        d = dict(r)
+        d["builds"] = [b for b in (d["builds"] or "").split(",") if b]
+        for k in ("pinned", "hidden", "manual"):
+            d[k] = bool(d[k])
+        return d
 
     def ledger_set(self, lid: str, **patch: Any) -> dict[str, Any] | None:
         with self.lock:
@@ -357,12 +481,15 @@ class Index:
             if not r:
                 return None
             sets, args = [], []
-            for k in ("kind", "text", "pinned", "hidden"):
+            for k in ("kind", "entry", "value", "text", "pinned", "hidden"):
                 if k in patch and patch[k] is not None:
                     v = patch[k]
-                    if k == "kind" and v not in ("rule", "decision", "request"):
-                        raise ValueError("kind is rule, decision or request")
-                    sets.append(f"{k}=?"); args.append(int(bool(v)) if k in ("pinned", "hidden") else str(v)[:400])
+                    if k == "kind" and v not in KINDS:
+                        raise ValueError("kind is " + ", ".join(KINDS))
+                    if k in ("entry", "value") and len(redact(str(v)).strip()) < 2:
+                        raise ValueError(f"{k} can't be empty")
+                    cap = {"entry": ENTRY_CHARS, "value": VALUE_CHARS}.get(k, 400)
+                    sets.append(f"{k}=?"); args.append(int(bool(v)) if k in ("pinned", "hidden") else _cut(redact(str(v)).strip(), cap))
             if sets:
                 sets.append("edited=?"); args.append(time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
                 self.db.execute(f"UPDATE ledger SET {', '.join(sets)} WHERE id=?", (*args, lid)); self.db.commit()
@@ -370,24 +497,23 @@ class Index:
 
     def ledger_get(self, lid: str) -> dict[str, Any] | None:
         r = self.db.execute("SELECT * FROM ledger WHERE id=?", (lid,)).fetchone()
-        if not r:
-            return None
-        d = dict(r)
-        d["builds"] = [b for b in (d["builds"] or "").split(",") if b]
-        for k in ("pinned", "hidden", "manual"):
-            d[k] = bool(d[k])
-        return d
+        return self._entry_out(r) if r else None
 
-    def ledger_add(self, text: str, kind: str = "rule", at: str = "", builds: Iterable[str] = ()) -> dict[str, Any]:
-        if kind not in ("rule", "decision", "request"):
-            raise ValueError("kind is rule, decision or request")
-        text = redact(text).strip()[:400]
-        if len(text) < 4:
-            raise ValueError("say the rule in a few words")
-        lid = ledger_id(text)
+    def ledger_add(self, entry: str = "", value: str = "", kind: str = "rule", at: str = "", builds: Iterable[str] = (), text: str = "") -> dict[str, Any]:
+        """A manual two-field entry (pinned). `text` alone (a sentence) is distilled into entry/value by the plain rules."""
+        if kind not in KINDS:
+            raise ValueError("kind is " + ", ".join(KINDS))
+        entry, value, text = redact(entry).strip(), redact(value).strip(), redact(text).strip()
+        if text and not (entry and value):
+            e, v = two_field(text, kind)
+            entry, value = entry or e, value or v
+        if len(entry) < 2 or len(value) < 4:
+            raise ValueError("send an entry (a few words) and a value (one line)")
+        entry, value = _cut(entry, ENTRY_CHARS), _cut(value, VALUE_CHARS)
+        lid = ledger_id(entry)
         with self.lock:
-            self.db.execute("INSERT OR REPLACE INTO ledger (id, kind, text, quote, at, session, source, builds, score, pinned, hidden, manual) VALUES (?,?,?,?,?,?,?,?,?,1,0,1)",
-                            (lid, kind, text, text, at or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "", "manual", ",".join(builds), 9.0))
+            self.db.execute("INSERT OR REPLACE INTO ledger (id, kind, text, quote, at, session, source, builds, score, pinned, hidden, manual, entry, value) VALUES (?,?,?,?,?,?,?,?,?,1,0,1,?,?)",
+                            (lid, kind, value, text, at or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "", "manual", ",".join(builds), 9.0, entry, value))
             self.db.commit()
         return self.ledger_get(lid) or {}
 
@@ -412,13 +538,20 @@ def line_offset(text: str, offsets: str, terms: list[str], default: float) -> fl
 
 
 def brief_text(entries: list[dict[str, Any]], max_chars: int = 1800) -> str:
-    """The ledger block every rules brief carries: pinned first, then the newest rules and decisions, one line each."""
+    """The ledger block: one `- entry: value` line per entry, in the order given, up to max_chars."""
     lines, used = [], 0
     for e in entries:
-        line = f"- {e['text'].rstrip('.')} ({e['kind']}, {str(e.get('at') or '')[:10] or 'undated'})"
+        line = entry_line(e)
         if used + len(line) + 1 > max_chars:
             break
         lines.append(line); used += len(line) + 1
     if not lines:
         return ""
-    return "### From Brett's conversations (rules ledger)\n" + "\n".join(lines)
+    return BRIEF_HEAD + "\n" + "\n".join(lines)
+
+
+BRIEF_HEAD = "### From Brett's conversations (entry: value)"
+
+
+def entry_line(e: dict[str, Any]) -> str:
+    return f"- {e.get('entry') or _key(str(e.get('text') or ''))}: {e.get('value') or _cut(str(e.get('text') or ''), VALUE_CHARS)}"
