@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:04:39.548Z",
+ "updatedAt": "2026-11-10T04:04:58.643Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81763,7 +81763,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81771,7 +81771,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T03:09:20.018Z",
+   "updatedAt": "2026-11-10T04:04:40.734Z",
    "builtAt": "",
    "notes": [
     {
@@ -81809,6 +81809,10 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:20.018Z"
+    },
+    {
+     "text": "Demo Designer phase 2 (PR #438) adds cloud narrators: narratorOptions / loadNarrators / narrate in web/model.ts, sayCloud in web/stage.ts, GET narrators + POST narrate in server. When you rebase the page split (pitch.tsx), use narratorOptions(voice, voices, m.narrators) for the Voice picker instead of the inline list.",
+     "at": "2026-11-10T04:04:40.734Z"
     }
    ],
    "approvals": [],
@@ -83360,7 +83364,7 @@
    "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
    "category": "",
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -83368,8 +83372,8 @@
    "pr": "#438",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T04:04:14.470Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:04:36.913Z",
+   "builtAt": "2026-11-10T04:04:36.913Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83450,8 +83454,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:04:34.782Z",
      "note": "",
      "uid": "st-mwa46jfx021cai"
     },
@@ -83471,8 +83475,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:04:36.913Z",
      "note": "",
      "uid": "st-mwa46jfx03b5jn"
     }
