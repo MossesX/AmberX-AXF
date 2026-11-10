@@ -3,11 +3,12 @@ import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
-import { Avatar, CrewTab, PROFILE_EVENT } from './cards';
+import { Avatar, CrewTab, PROFILE_EVENT, ROLES_EVENT } from './cards';
 import { CardsTab } from './idcards';
 import { ChatTab } from './chat';
 import { ChatSettingsTab } from './chat-settings';
 import { JobTypesTab, useJobs } from './jobs';
+import { WhoDoesWhatTab } from './roles';
 import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Pay, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
 import './swarm.css';
 
@@ -20,7 +21,7 @@ export { FOLDER };
  * cost meter per agent, build and job. All rules are in swarm-core.mjs; the server reads through swarm.mjs.
  */
 
-const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'cards', label: 'ID cards', icon: 'star' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'job-types', label: 'Jobs', icon: 'clock' }, { id: 'jobs', label: 'Build plan', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }, { id: 'chat-settings', label: 'Chat settings', icon: 'sliders' }] as const;
+const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'roles', label: 'Who does what', icon: 'user' }, { id: 'cards', label: 'ID cards', icon: 'star' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'job-types', label: 'Jobs', icon: 'clock' }, { id: 'jobs', label: 'Build plan', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }, { id: 'chat-settings', label: 'Chat settings', icon: 'sliders' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
 export function SwarmPage() {
@@ -36,6 +37,7 @@ export function SwarmPage() {
   const doAct: Act = async (c) => { const l = await act(c); for (const x of l ?? []) rt.terminal.log('swarm', x, 'ok'); return l; };
   useEffect(() => { consoleApi.writeLocal('swarm-tab', tab); }, [tab]);
   useEffect(() => { const on = () => setTab('crew'); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
+  useEffect(() => { const on = () => setTab('roles'); window.addEventListener(ROLES_EVENT, on); return () => window.removeEventListener(ROLES_EVENT, on); }, []);
   if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
   return (
     <div className="fx-stack fx-stack--lg">
@@ -51,6 +53,7 @@ export function SwarmPage() {
       {state.problems.length > 0 && <div className="pl-note is-warn"><Icon name="alert" size={14} />{state.problems.join(' · ')}</div>}
       <TabGroup id="agent-swarm.tabs" label="Agent swarm" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
       {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} allSkills={allSkills} onFeed={() => setTab('cost')} />}
+      {tab === 'roles' && <WhoDoesWhatTab state={state} onAgent={(id) => { openAgent(id); window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: id })); }} />}
       {tab === 'job-types' && <JobTypesTab jobs={jobs.jobs} error={jobs.error} reload={async () => { await Promise.all([jobs.load(), load()]); }} onAgent={openAgent} />}
       {tab === 'cards' && <CardsTab state={state} stats={stats} act={doAct} photo={(a) => <Avatar a={a} size={120} />} />}
       {tab === 'agents' && <AgentsTab state={state} act={doAct} />}

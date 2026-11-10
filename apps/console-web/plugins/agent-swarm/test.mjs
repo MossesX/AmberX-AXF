@@ -13,8 +13,8 @@ const skills = Object.fromEntries(readdirSync(here('./agents/skills/')).filter((
 
 // s1 roster + skills
 t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, skills), []));
-t('the eight build skills, the nine job-crew skills and the companion skill exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'ci-fix', 'companion', 'docs', 'feature-build', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'ops-fix', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
-t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly); assert.deepEqual(crew.map((a) => a.id).sort(), ['earl', 'gina', 'joey', 'lenny', 'paulie', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
+t('the eight build skills, the nine job-crew skills and the companion skill exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'ci-fix', 'companion', 'crew-roles', 'docs', 'feature-build', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'ops-fix', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
+t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly && a.skill !== 'crew-roles'); assert.deepEqual(crew.map((a) => a.id).sort(), ['earl', 'gina', 'joey', 'lenny', 'paulie', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
 t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
 t('models sort cheapest first, blocked ones coerced up (model policy: never Sonnet or Haiku)', () => { assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['opus']); assert.deepEqual(c.normAgent({ id: 'y', models: ['fable', 'sonnet'] }).models, ['opus', 'fable']); assert.deepEqual(c.normAgent({ id: 'z' }).models, ['opus']); });
@@ -436,7 +436,7 @@ t('book: a Claude session on an agent card grows, then closes once (agent-pick)'
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1', 'service:axf.crew-roles@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo
@@ -479,7 +479,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const types = jc.jobTypes(readdirSync(typesDir).map((f) => JSON.parse(readFileSync(join(typesDir, f), 'utf8'))));
   const at = '2026-11-04T12:00:00.000Z'; const table = c.prices(JSON.parse(readFileSync(here('../../../../framework/schemas/model-pricing.json'), 'utf8')));
   const site = types.find((x) => x.id === 'site-check');
-  const crew = roster.agents.filter((a) => a.jobsOnly);
+  const crew = roster.agents.filter((a) => a.jobsOnly && a.skill !== 'crew-roles'); // role holders (Who does what) take no job types
   const allOff = (st0, except = []) => crew.filter((a) => !except.includes(a.id)).reduce((st, a) => c.applyChange(st, { action: 'status', agent: a.id, status: 'off-duty', note: 'nap' }, roster, at).state, st0);
   t('job types: nine, all valid, every crew member can take each, the home agent listed first', () => {
     assert.equal(types.length, 9); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
@@ -644,6 +644,75 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const g = JSON.parse(readFileSync(join(hub, 'group.json'), 'utf8')); assert.equal(g.messages.at(-1).text, 'hi crew');
     const m = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'mentions', '--negative', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d }, encoding: 'utf8' });
     assert.equal(JSON.parse(m.stdout).count, 1);
+  });
+}
+
+// Who does what (crew-roles@1): every role has an employee, entries resolve to them, Brett reassigns
+{
+  const R = await import('./web/roles-core.mjs');
+  const cat = R.normRoles(JSON.parse(readFileSync(here('./agents/roles.json'), 'utf8')));
+  const none = R.normAssignments({});
+  t('roles: every role has a holder on the roster, the orchestrator and dispatcher are named employees', () => {
+    assert.deepEqual(R.rolesErrors(cat, roster), []);
+    const h = R.holders(cat, none, roster);
+    assert.equal(h.orchestrator, 'ozzie'); assert.equal(h.dispatcher, 'dot');
+    for (const g of R.GROUPS) assert.ok(cat.roles.some((r) => r.group === g), g);
+    for (const id of ['app.console', 'app.amberx', 'app.molly', 'app.axhub', 'builds', 'approvals', 'fixes', 'deploys', 'accounts', 'notifications', 'git']) assert.ok(h[id], id);
+    assert.ok(!cat.roles.some((r) => /patches/i.test(r.id)), 'Patches is retired');
+  });
+  t('roles: role holders never get build steps or job types', () => {
+    const holders = roster.agents.filter((a) => a.skill === 'crew-roles');
+    assert.equal(holders.length, 10);
+    for (const a of holders) { assert.ok(a.jobsOnly, a.id); assert.ok(!a.skills.includes('*'), a.id); }
+  });
+  const held = R.holders(cat, none, roster);
+  const who = (it) => R.actorOf(it, cat, held, roster)?.agent;
+  t('roles: entries resolve by id, source, kind, then a whole word; fallback is the orchestrator', () => {
+    assert.equal(who({ id: 'gh:123', source: 'github', kind: 'ci', title: 'CI on main' }), 'gina');
+    assert.equal(who({ id: 'r1', source: 'assistant', kind: 'ai', title: 'Answering' }), 'gizmo');
+    assert.equal(who({ id: 'r2', source: 'update', title: 'Console update' }), 'connie');
+    assert.equal(who({ id: 'r3', source: 'x', kind: 'merge', title: 'Merging #12' }), 'max');
+    assert.equal(who({ id: 'r4', source: 'x', title: 'Deploy to the VPS' }), 'dex');
+    assert.equal(who({ id: 'r4b', source: 'x', title: 'Deploy axHub web' }), 'hubert', 'apps come before actions');
+    assert.equal(who({ id: 'r5', source: 'x', title: 'Decision about prefix' }), 'ozzie', 'no part-word matches ("ci" in "decision", "fix" in "prefix")');
+    assert.equal(who({ id: 'hold:abc', source: 'holds', title: 'Waiting' }), 'abby');
+  });
+  t('roles: an entry that names a crew member is theirs', () => {
+    const a = R.actorOf({ id: 'x', source: 'reports', title: 'Editing', by: 'Rio React' }, cat, held, roster);
+    assert.equal(a.agent, 'rio'); assert.equal(a.why, 'named');
+    assert.equal(who({ id: 'y', title: 'Build step', detail: 'Agent: Ping Paulie.' }), 'paulie');
+  });
+  t('roles: reassign, history, back to default, unknown role or agent refused', () => {
+    const at = '2026-11-09T12:00:00.000Z';
+    const r1 = R.assign(cat, none, roster, 'deploys', 'kat', at, 'Brett', 'try it');
+    assert.equal(r1.changed, true); assert.equal(R.holders(cat, r1.state, roster).deploys, 'kat'); assert.equal(r1.state.history.at(-1).from, 'dex');
+    assert.equal(R.actorOf({ id: 'deploy:1' }, cat, R.holders(cat, r1.state, roster), roster).agent, 'kat');
+    const r2 = R.assign(cat, r1.state, roster, 'deploys', 'Deploy Dex', at);
+    assert.deepEqual(r2.state.holders, {}); assert.equal(r2.state.history.length, 2);
+    assert.throws(() => R.assign(cat, none, roster, 'nope', 'kat', at), /no role/);
+    assert.throws(() => R.assign(cat, none, roster, 'deploys', 'nobody', at), /no agent/);
+    const gone = R.holders(cat, { holders: { deploys: 'fired-guy' }, history: [] }, roster);
+    assert.equal(gone.deploys, 'dex', 'a holder no longer on the roster falls back to the default');
+  });
+  t('roles: board lists each agent\'s jobs; history log keeps one line per entry state', () => {
+    const b = R.board(cat, none, roster);
+    assert.deepEqual(b.jobs.acey.sort(), ['accounts', 'app.expenses']);
+    const a = R.actorOf({ id: 'gh:1', source: 'github' }, cat, held, roster);
+    const l1 = R.logLine({ id: 'gh:1', state: 'running', title: 'CI' }, a, 't1'); const l2 = R.logLine({ id: 'gh:1', state: 'done', title: 'CI' }, a, 't2');
+    assert.notEqual(R.logKey(l1), R.logKey(l2));
+    assert.deepEqual(R.historyOf([l1, l2], 'gina').map((x) => x.state), ['done', 'running']);
+    assert.equal(R.logLine({ id: 'z' }, null, 't'), null);
+  });
+  t('roles CLI: assign, who --record, history, in a scratch data folder', () => {
+    const d = mkdtempSync(join(tmpdir(), 'axf-roles-'));
+    const cli = (...a) => { const r = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, ...a, '--json'], { env: { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: 'off' }, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr || r.stdout); return JSON.parse(r.stdout.trim().split('\n').pop()); };
+    assert.equal(cli('roles').board.roles.find((r) => r.id === 'orchestrator').holderName, 'Ozzie Orchestrator');
+    assert.equal(cli('assign', 'notifications', 'gizmo').agent, 'gizmo');
+    const w = cli('who', JSON.stringify([{ id: 'n1', source: 'notify', title: 'Pushed to the phone', state: 'done' }]), '--record');
+    assert.equal(w.actors[0].actor.agent, 'gizmo');
+    cli('who', JSON.stringify([{ id: 'n1', source: 'notify', title: 'Pushed to the phone', state: 'done' }]), '--record');
+    const h = cli('history', 'gizmo');
+    assert.ok(h.jobs.some((j) => j.id === 'notifications')); assert.equal(h.activity.length, 1, 'the same entry state is logged once');
   });
 }
 

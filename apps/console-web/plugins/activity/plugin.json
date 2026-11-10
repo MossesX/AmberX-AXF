@@ -17,6 +17,7 @@
   ],
   "optional": [
     "service:axf.changes@1",
+    "service:axf.crew-roles@1",
     "service:axf.live-sessions@1",
     "service:axf.syscheck@1"
   ],

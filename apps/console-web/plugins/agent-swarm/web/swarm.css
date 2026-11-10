@@ -94,3 +94,11 @@
 .sw-job .sw-card__stats dd { text-align: right; overflow-wrap: anywhere }
 /* Who's free: the job crew at a glance above the cards */
 .sw-roster { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface) }
+
+/* Who does what (roles.tsx): one row per role, the holder's face (taps to their profile), the job, the reassign picker. Layout only. */
+.sw-roles { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.sw-roles__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
+button.sw-roles__who { all: unset; cursor: pointer; flex: 0 0 auto; min-width: calc(var(--fx-space) * 12); border-radius: var(--fx-radius-sm) }
+.sw-roles__who:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.sw-roles__job { flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
+.sw-roles__pick { flex: 0 1 calc(var(--fx-space) * 18); min-width: 0 }

@@ -24,6 +24,10 @@
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
  *   … fix <buildId> <stepId> [--dry-run] hand a merge conflict to the merge fixer
+ *   … roles                              Who does what: every role (orchestrator, dispatcher, apps, actions) and its employee
+ *   … assign <role> <agent> [note]       give a role to another employee (Brett's reassignment; history kept)
+ *   … who '<item json or list>' [--record]  the employee behind Activity Monitor entries (--record = log them to their history)
+ *   … history <agent> [n]                one employee's jobs and activity history, newest first
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, statSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -32,6 +36,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
 import { orchestratorPath, persistRoot } from '../../../../framework/cli/persist.mjs';
 import * as watch from './web/chat-watch.mjs';
+import * as roles from './web/roles-core.mjs';
 import { spawnSync } from 'node:child_process';
 import { ownLogin, runJob, worktreeFor } from './runner.mjs';
 import { tmpdir } from 'node:os';
@@ -368,6 +373,53 @@ function planText(p) {
   return [...out, ...p.warnings.map((w) => `! ${w}`)].join('\n') || 'Nothing to plan.';
 }
 
+/* ---------- Who does what (crew-roles@1, web/roles-core.mjs) ---------- */
+export const rolesFile = () => join(dataDir(), 'roles.json');
+export const activityLogFile = () => join(dataDir(), 'activity.jsonl');
+export const loadCatalogue = () => roles.normRoles(readJson(join(HERE, 'agents/roles.json'), {}));
+export const loadAssignments = () => roles.normAssignments(readJson(rolesFile(), {}));
+/** The board: every role, its holder, each agent's jobs, recent reassignments, problems. */
+export function rolesBoard() {
+  const cat = loadCatalogue(); const r = loadRoster();
+  return { ...roles.board(cat, loadAssignments(), r), problems: roles.rolesErrors(cat, r) };
+}
+export function assignRole(roleId, agentId, note = '', by = 'Brett') {
+  const cat = loadCatalogue(); const r = loadRoster();
+  const res = roles.assign(cat, loadAssignments(), r, roleId, agentId, new Date().toISOString(), by, note);
+  writeJson(rolesFile(), { $axf: roles.TAG, ...res.state });
+  if (res.changed) {
+    const from = r.agents.find((a) => a.id === res.from);
+    try { say([{ from: res.agent.id, kind: 'assign', text: `I've got ${res.role.label} now${from ? `, took it over from ${from.name}` : ''}.${note ? ` (${note})` : ''}` }]); } catch { /* the chat is optional */ }
+  }
+  return { role: res.role.id, agent: res.agent.id, from: res.from, changed: res.changed, board: rolesBoard() };
+}
+function readLog() {
+  try { return readFileSync(activityLogFile(), 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; }
+}
+/** Resolve entries to their employee; with record, each new entry state goes into the employee's history. */
+export function who(items, { record = false } = {}) {
+  const cat = loadCatalogue(); const r = loadRoster(); const held = roles.holders(cat, loadAssignments(), r);
+  const at = new Date().toISOString();
+  const out = items.map((it) => ({ id: String(it?.id ?? ''), actor: roles.actorOf(it, cat, held, r) }));
+  if (record) {
+    const log = readLog(); const seen = new Set(log.map(roles.logKey));
+    const add = items.map((it, i) => roles.logLine(it, out[i].actor, at)).filter((l) => l && l.id && !seen.has(roles.logKey(l)));
+    if (add.length) {
+      const all = roles.trimLog([...log, ...add]);
+      mkdirSync(dataDir(), { recursive: true });
+      const tmp = `${activityLogFile()}.tmp-${process.pid}`; writeFileSync(tmp, `${all.map((l) => JSON.stringify(l)).join('\n')}\n`); renameSync(tmp, activityLogFile());
+    }
+  }
+  return out;
+}
+/** One employee: who they are, the roles they hold, their activity history and their runs. */
+export function history(agentId, limit = 100) {
+  const r = loadRoster(); const a = r.agents.find((x) => x.id === agentId || x.name.toLowerCase() === String(agentId).toLowerCase());
+  if (!a) throw new Error(`no agent "${agentId}" on the roster`);
+  const b = rolesBoard();
+  return { agent: { id: a.id, name: a.name, role: a.role, avatar: a.avatar, specialty: a.specialty }, jobs: b.roles.filter((x) => x.holder === a.id), activity: roles.historyOf(readLog(), a.id, limit), runs: loadRuns().filter((x) => x.agent === a.id).slice(-20).reverse(), reassignments: b.history.filter((h) => h.from === a.id || h.to === a.id) };
+}
+
 export async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
@@ -376,6 +428,10 @@ export async function main(argv) {
     const r = loadRoster(); const sk = loadSkills(); const problems = core.checkRoster(r, sk);
     return out({ ok: true, roster: r, skills: sk, problems }, [...r.agents.map((a) => `${a.id.padEnd(6)} ${a.name.padEnd(12)} ${a.skill.padEnd(17)} ${a.models.join('/')}`), ...problems.map((p) => `! ${p}`)].join('\n'));
   }
+  if (cmd === 'roles') { const b = rolesBoard(); return out({ ok: true, board: b }, [...roles.GROUPS.flatMap((g) => [`— ${g}`, ...b.roles.filter((x) => x.group === g).map((x) => `${x.id.padEnd(18)} ${x.label.padEnd(22)} ${x.holderName}${x.isDefault ? '' : ' (reassigned)'}`)]), ...b.problems.map((p) => `! ${p}`)].join('\n')); }
+  if (cmd === 'assign') { const [role, agent, ...note] = rest; if (!role || !agent) throw new Error('assign needs a role and an agent'); const r = assignRole(role, agent, note.join(' ')); return out({ ok: true, ...r }, r.changed ? `${r.role} → ${r.agent} (was ${r.from})` : `${r.agent} already holds ${r.role}`); }
+  if (cmd === 'who') { const raw = JSON.parse(rest.find((a) => !a.startsWith('--')) ?? '[]'); const list = who(Array.isArray(raw) ? raw : [raw], { record: args.includes('--record') }); return out({ ok: true, actors: list }, list.map((x) => `${x.id || '(entry)'} → ${x.actor ? `${x.actor.name} (${x.actor.roleLabel || x.actor.title})` : 'nobody'}`).join('\n')); }
+  if (cmd === 'history') { const h = history(rest[0] ?? '', Number(rest[1]) || 100); return out({ ok: true, ...h }, [`${h.agent.name} · ${h.agent.role}`, `Jobs: ${h.jobs.map((j) => j.label).join(', ') || 'none'}`, ...h.activity.map((l) => `${l.at.slice(0, 16).replace('T', ' ')} ${l.state.padEnd(9)} ${l.title}`)].join('\n')); }
   if (cmd === 'state') return out({ ok: true, state: state() }, JSON.stringify(state(), null, 1));
   if (cmd === 'crew') { const c = crew(); return out({ ok: true, crew: c }, c.map((a) => `${a.id.padEnd(8)} ${a.name.padEnd(16)} ${a.statusLabel.padEnd(12)} today ${core.fmtUsd(a.spend.today)} · ${a.stats.done} done`).join('\n')); }
   if (cmd === 'book') { const r = book(JSON.parse(rest[0] ?? '{}')); return out({ ok: true, run: r }, `${r.jobId} on ${r.agent}: ${r.status}${r.reportedCost != null ? ` · ${core.fmtUsd(r.reportedCost)}` : ''}`); }

@@ -4,6 +4,7 @@ import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { AgentChat } from './chat';
 import { CardSection } from './idcards';
+import { ProfileJobs } from './roles';
 import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState } from './ui-types';
 
 /*
@@ -37,6 +38,8 @@ export function Avatar({ a, size = 56 }: { a: Agent; size?: number }) {
 
 /** Window event the agent-swarm.profile action sends with an agent id: the Crew tab opens that profile. */
 export const PROFILE_EVENT = 'axf-swarm:profile';
+/** Switch the Breakroom to Who does what (from a profile or the agent-swarm.roles action). */
+export const ROLES_EVENT = 'axf-swarm:roles';
 
 type JobRef = { id: string; name: string; home?: boolean };
 /** What an agent is on now: its running runs, named by build (headless builds) or job type. */
@@ -195,6 +198,7 @@ function Profile({ a, state, st, act, jobs, allSkills, onBack, onFeed }: { a: Ag
         {jobs.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">Can take</span> {jobs.map((j) => j.name).join(' · ')}</p>}
         <p className="fx-muted">Models {a.models.map((m) => core.MODEL_LABEL[m] ?? m).join(' · ')} · up to {a.maxTurns} turns · tools {a.tools.join(', ')}</p>
       </div>
+      <ProfileJobs a={a} onRoles={() => window.dispatchEvent(new CustomEvent(ROLES_EVENT))} />
       <section className="fx-stack">
         <h3 className="sw-wave">Home skill: {skill?.title ?? a.skill}</h3>
         <pre className="sw-skill">{skill?.body ?? 'No skill file.'}</pre>

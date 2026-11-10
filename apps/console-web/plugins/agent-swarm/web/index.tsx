@@ -5,7 +5,7 @@ import { FOLDER, SwarmCostChip, SwarmPage } from './ui';
 import { COLOR_BY_VIBE_ACTION, KEYS } from './chat-settings';
 import { VIBE_COLORS } from './swarm-core.mjs';
 import { appMenu } from './menu';
-import { PROFILE_EVENT } from './cards';
+import { PROFILE_EVENT, ROLES_EVENT } from './cards';
 import { writeLocal } from '@console/api';
 
 function Desks() {
@@ -25,11 +25,17 @@ export const plugin: AxfWebLibrary = {
       rt.navigate('agent-swarm');
       setTimeout(() => window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: id })), 0);
     }, { label: 'Open an agent\'s employee card', params: true, searchable: false });
+    // Who does what (every role and the employee holding it): agent-swarm.roles
+    rt.actions.register('agent-swarm.roles', () => {
+      writeLocal('swarm-tab', 'roles');
+      rt.navigate('agent-swarm');
+      setTimeout(() => window.dispatchEvent(new CustomEvent(ROLES_EVENT)), 0);
+    }, { label: 'Who does what: every job and the employee who holds it' });
     // the Breakroom (group chat, Jobs) from other plugins: agent-swarm.open
     rt.actions.register('agent-swarm.open', () => rt.navigate('agent-swarm'), { label: 'Open the Breakroom', searchable: false });
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
-  views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },
+  views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'employees', 'who does what', 'roles', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },
   appMenu,
   nav: { label: 'Builds', items: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', view: 'agent-swarm' }] },
   // the orchestrator's (and every Builds page's) toolbar shows what the swarm has spent

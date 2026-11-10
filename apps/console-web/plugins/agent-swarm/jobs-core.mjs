@@ -25,6 +25,8 @@ export function jobTypes(assets) {
 
 /** Can this agent take this job type (holds every skill it needs)? */
 export const canTake = (jt, agent) => hasSkills(agent, jt.data.skills?.length ? jt.data.skills : [jt.data.specialty]);
+/** The home skill of role holders (Who does what, agents/roles.json): they hold a standing role, never take job-type runs. */
+export const ROLE_SKILL = 'crew-roles';
 /** Agents whose home job this is (a preference only, never exclusive). */
 export const homeOf = (jt, roster) => roster.agents.filter((a) => a.home === jt.id || (!a.home && a.skill === jt.data.specialty));
 /** Runs an agent has going now (any kind): the router's "least busy". */
@@ -72,7 +74,7 @@ export function route(jt, roster, state, runs, table, at, opts = {}) {
     return { ok: true, unassigned: false, forced: false, agent: a, model, cap: runCap(jt, model, table), why: '', tried: [], notify: false };
   }
   const own = owners(jt, roster, state);
-  const crew = roster.agents.filter((a) => a.jobsOnly && !own.includes(a) && state?.agents?.[a.id]?.status !== 'fired');
+  const crew = roster.agents.filter((a) => a.jobsOnly && a.skill !== ROLE_SKILL && !own.includes(a) && state?.agents?.[a.id]?.status !== 'fired');
   if (!own.length && !crew.length) return { ok: false, unassigned: true, why: `nobody can take ${jt.name} (skills ${jt.data.skills.join(', ') || jt.data.specialty}): hire one`, tried: [] };
   const home = new Set(homeOf(jt, roster).map((a) => a.id));
   const tried = []; const free = [];

@@ -605,4 +605,18 @@ if node.returncode == 0:
 else:
     print("  (node not found: skipped)")
 
+# who did it (axf.crew-roles@1, Nov 9 2026): items carry the acting employee; no service or a failing one changes nothing
+class _Roles:
+    def annotate(self, items):
+        for it in items:
+            it["actor"] = {"agent": "gina", "name": "Greenlight Gina", "title": "CI fixer", "roleId": "fixes", "roleLabel": "Fixes & CI", "why": "role"}
+        return items
+class _Broken:
+    def annotate(self, items):
+        raise RuntimeError("swarm down")
+snap = {"items": [{"id": "gh:1", "source": "github", "state": "running"}]}
+check(mod.with_actors(json.loads(json.dumps(snap)), _Roles())["items"][0]["actor"]["agent"] == "gina", "crew-roles: every item gets its actor")
+check(mod.with_actors(json.loads(json.dumps(snap)), None) == snap, "crew-roles: without the service the feed is unchanged")
+check(mod.with_actors(json.loads(json.dumps(snap)), _Broken()) == snap, "crew-roles: a failing service never breaks the banner")
+
 print(f"\n{ok} checks passed")

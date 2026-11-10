@@ -17,7 +17,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Container, Icon, Section, SelectField, Slot, Switch, TextField, BannerIcon, BANNER_PREFS_KEY } from '@console/axf/react';
+import { AgentAvatar, Button, Chip, Container, Icon, Section, SelectField, Slot, Switch, TextField, BannerIcon, BANNER_PREFS_KEY } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -36,7 +36,13 @@ type State = 'queued' | 'running' | 'waiting' | 'held' | 'done' | 'failed' | 'ca
 interface ItemAction { label: string; action: string; icon?: string }
 interface Step { name: string; state: State }
 /** `change` = the session's Codebase changes entry, folded into its row by the feed (one row per session). */
-interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean; actions?: ItemAction[]; pending?: string; change?: { id: string; title: string; state: State } }
+interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean; actions?: ItemAction[]; pending?: string; change?: { id: string; title: string; state: State }; actor?: Actor }
+/**
+ * The employee who did it (capability axf.crew-roles@1, set by the server; Brett, Nov 9 2026: "If it's something they
+ * did, it will have their avatar next to it, like in a text message"). `why` = 'named' when the entry names them,
+ * 'role' when it is their job (Breakroom → Who does what).
+ */
+interface Actor { agent: string; name: string; title: string; avatar?: { face: string; hair: number; gear: string; hue: number } | null; roleId: string; roleLabel: string; why: 'named' | 'role' }
 /** What the browser does when something finishes (stored with the feed's settings, same on every device). */
 interface OnDone { sound: 'off' | 'all' | 'failed'; toast: boolean; expandOnDone: boolean; openResult: boolean; onClose: 'changes' | 'delete' }
 interface Feed { items: Item[]; active: number; held?: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }>; complete?: OnDone }
@@ -304,6 +310,25 @@ function ItemActions({ it }: { it: Item }) {
   );
 }
 
+/** Opens the employee's profile (role, jobs, current work, full history) through the action bus. */
+export const PROFILE_ACTION = 'agent-swarm.profile';
+function openActor(a: Actor) {
+  const rt = runtime;
+  if (!rt) return;
+  if (rt.actions.get(PROFILE_ACTION)) void rt.actions.dispatch(`${PROFILE_ACTION}:${a.agent}`, { runtime: rt });
+  else rt.toast(`${a.name} · ${a.title}. The Agent swarm (employee profiles) isn't installed.`, 'info', 'Activity');
+}
+
+/** The acting employee's face, like the sender of a text message. Tap: their profile. */
+function Who({ a }: { a: Actor }) {
+  const job = a.why === 'named' ? a.title : a.roleLabel || a.title;
+  return (
+    <button type="button" data-fx-row className="axp-activity__who" title={`${a.name} · ${job}: open their profile`} aria-label={`${a.name}, ${job}: open their profile`} onClick={() => openActor(a)}>
+      <AgentAvatar info={{ id: a.agent, name: a.name, role: a.title, avatar: a.avatar ?? null }} size="small" />
+    </button>
+  );
+}
+
 function Row({ it, now }: { it: Item; now: number }) {
   const [open, setOpen] = useState(false);
   const icon = KIND_ICON[it.kind] ?? SOURCE_ICON[it.source] ?? 'zap';
@@ -317,10 +342,12 @@ function Row({ it, now }: { it: Item; now: number }) {
   return (
     <li className={`axp-activity__item axp-activity__item--${it.state}`}>
       <div className="axp-activity__headrow">
+      {it.actor && <Who a={it.actor} />}
       <button type="button" data-fx-row className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
         <StateIcon state={it.state} />
         <span title={kind ?? it.kind}><Icon name={icon} size={14} /></span>
         <span className="axp-activity__title">
+          {it.actor && <span className="axp-activity__sender">{it.actor.name}<span className="axp-activity__job"> · {it.actor.why === 'named' ? it.actor.title : it.actor.roleLabel || it.actor.title}</span></span>}
           <span>{kind && ACTIVE.has(it.state) && !it.title.startsWith(kind) ? <span className="axp-activity__kind">{kind} · </span> : null}{it.title}</span>
           {!open && (last || it.detail) && <span className="axp-activity__sub">{last ?? it.detail.split('\n')[0]}</span>}
         </span>

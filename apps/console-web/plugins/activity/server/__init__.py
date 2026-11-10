@@ -134,10 +134,25 @@ def _who(request: Request) -> str:
     return f"console:{name}" if name else "console"
 
 
+ROLES = "axf.crew-roles@1"
+
+
+def with_actors(snap: dict[str, Any], svc: Any) -> dict[str, Any]:
+    """Who did each entry (Brett, Nov 9 2026: "If it's something they did, it will have their avatar next to it"):
+    the crew-roles capability sets `actor` on every item. Without it, or if it fails, the feed is unchanged."""
+    if svc is None or not hasattr(svc, "annotate"):
+        return snap
+    try:
+        svc.annotate(snap.get("items") or [])
+    except Exception:  # noqa: BLE001 — avatars are a nicety; the banner never breaks over them
+        pass
+    return snap
+
+
 @router.get("/items")
 def items() -> dict[str, Any]:
     health.ensure(FEED, data_dir(), changes=lambda: plugin_services.get(complete.CHANGES))  # once the systems check is up
-    return FEED.snapshot()
+    return with_actors(FEED.snapshot(), plugin_services.get(ROLES))
 
 
 @router.get("/detail")

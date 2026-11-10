@@ -178,3 +178,97 @@ class RosterService:
 from plugin_services import provide as _provide  # noqa: E402
 
 _provide("axf.swarm-roster@1", RosterService(), "agent-swarm")
+
+
+# ---------- Who does what (crew-roles@1): every role's employee, the actor behind each activity entry ----------
+
+ROLE_ID = re.compile(r"^[a-z][a-z0-9.-]{0,59}$")
+
+
+@router.get("/roles")
+def roles() -> dict[str, Any]:
+    """The Who does what board: every role (orchestrator, dispatcher, apps, actions) and the employee holding it."""
+    return _run("roles")
+
+
+async def _json_body(request: Request) -> dict[str, Any]:
+    body = await request.body()
+    if len(body) > MAX_BODY:
+        raise HTTPException(413, "too large")
+    try:
+        data = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    if not isinstance(data, dict):
+        raise HTTPException(400, "send a JSON object")
+    return data
+
+
+@router.post("/roles/assign")
+async def roles_assign(request: Request) -> dict[str, Any]:
+    """Give a role to another employee: {role, agent, note?}. Kept with its history; posted in the group chat."""
+    data = await _json_body(request)
+    role, agent, note = data.get("role"), data.get("agent"), data.get("note") or ""
+    if not isinstance(role, str) or not ROLE_ID.match(role) or not isinstance(agent, str) or not agent.strip() or len(agent) > 60:
+        raise HTTPException(400, "a role and an agent are needed")
+    if not isinstance(note, str) or len(note) > 200:
+        raise HTTPException(400, "note must be a short text")
+    r = _run("assign", role, agent.strip(), *([note] if note.strip() else []))
+    ROLES._at = 0.0  # the next annotation reads the new holder
+    return r
+
+
+@router.get("/roles/who")
+def roles_who(source: str = "", kind: str = "", title: str = "", id: str = "", by: str = "") -> dict[str, Any]:
+    """The employee behind one activity entry (any of id, source, kind, title, by). Read-only."""
+    item = {k: v[:300] for k, v in {"id": id, "source": source, "kind": kind, "title": title, "by": by}.items() if v}
+    return _run("who", json.dumps(item))
+
+
+@router.get("/agents/{agent}/history")
+def agent_history(agent: str, limit: int = 100) -> dict[str, Any]:
+    """One employee: the roles they hold, their Activity Monitor history (newest first), their runs and reassignments."""
+    if not ID.match(agent):
+        raise HTTPException(400, "bad agent id")
+    return _run("history", agent, str(max(1, min(limit, 1000))))
+
+
+class RolesService:
+    """Capability `axf.crew-roles@1`: who did what. `annotate(items)` sets `actor` on Activity Monitor entries
+    ({agent, name, title, avatar, roleId, roleLabel, why}) and logs each new entry state to that employee's history.
+    One `swarm.mjs who` call only when entries the service hasn't seen (id + state) appear; answers are kept per id."""
+    version = 1
+    MAX_CACHE = 2000
+
+    def __init__(self) -> None:
+        self._at = 0.0
+        self._cache: dict[str, dict[str, Any] | None] = {}
+
+    def board(self) -> dict[str, Any]:
+        r = _run("roles")
+        return r.get("board") or {}
+
+    def annotate(self, items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        import time
+        if self._at == 0.0:
+            self._cache.clear()
+        key = lambda it: f"{it.get('id', '')}\u0000{it.get('state', '')}"  # noqa: E731
+        fresh = [it for it in items if key(it) not in self._cache]
+        if fresh:
+            fresh = fresh[:200]
+            slim = [{k: str(it.get(k))[:400] for k in ("id", "source", "kind", "title", "detail", "state", "url", "by", "agent") if it.get(k) is not None} for it in fresh]
+            actors = _run("who", json.dumps(slim), "--record").get("actors") or []
+            for i, it in enumerate(fresh):  # a failed read is remembered too: no node call per poll
+                self._cache[key(it)] = (actors[i] or {}).get("actor") if i < len(actors) else None
+            if len(self._cache) > self.MAX_CACHE:
+                self._cache = dict(list(self._cache.items())[-self.MAX_CACHE // 2:])
+            self._at = time.time()
+        for it in items:
+            a = self._cache.get(key(it))
+            if a:
+                it["actor"] = a
+        return items
+
+
+ROLES = RolesService()
+_provide("axf.crew-roles@1", ROLES, "agent-swarm")

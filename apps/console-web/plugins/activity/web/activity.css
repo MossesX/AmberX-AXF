@@ -71,3 +71,12 @@ button.axp-activity__head { flex-wrap: nowrap; white-space: nowrap }
 .axp-activity__head > .axp-activity__title { flex-shrink: 1 }
 .axp-activity__top > * { flex-shrink: 0 }
 .axp-activity__top > strong { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+/* Who did it (Brett, Nov 9 2026): the acting employee's face on the left of the entry like the sender of a text
+   message, their name first on its one line; tap the face for their profile. Layout only: the face is AgentAvatar. */
+button.axp-activity__who { all: unset; flex: none; display: inline-flex; align-items: center; cursor: pointer; padding: var(--fx-dens-gap-xs) 0 var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm) }
+.axp-activity__who:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-activity__title > .axp-activity__sender { flex: 0 0 auto; color: var(--fx-accent); font-weight: 600 }
+.axp-activity__title > .axp-activity__sender + span { flex: 0 1 auto; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-activity__job { color: var(--fx-muted); font-weight: 400 }
+:where([data-fx-tiny], [data-fx-small]) .axp-activity__job { display: none }

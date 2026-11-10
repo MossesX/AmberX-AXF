@@ -15,7 +15,8 @@
     "settings-tab:agent-swarm",
     "service:agent-jobs@1",
     "service:axf.crew@1",
-    "service:axf.swarm-roster@1"
+    "service:axf.swarm-roster@1",
+    "service:axf.crew-roles@1"
   ],
   "optional": [],
   "scopes": [
@@ -44,7 +45,16 @@
       "install_steps.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /roles", "id": "roles", "title": "Who does what", "description": "Every role (the orchestrator, the dispatcher, each app, each kind of action) and the employee who holds it, each employee's jobs, recent reassignments.", "readOnly": true },
+      { "route": "POST /roles/assign", "id": "assign-role", "title": "Give a role to an employee", "description": "Reassign one role (Who does what) to another crew member; the history keeps who had it.", "input": { "type": "object", "properties": { "role": { "type": "string", "description": "role id: orchestrator, dispatcher, app.console, app.amberx, app.molly, app.axhub, app.voicevault, app.walkthrough, app.expenses, builds, approvals, fixes, deploys, accounts, notifications, git, landing, thinking, tests, screenshots, site-checks, banners, looks, docs" }, "agent": { "type": "string", "description": "agent id or full name (e.g. dex or Deploy Dex)" }, "note": { "type": "string", "description": "why (optional, posted in the group chat)" } }, "required": ["role", "agent"], "additionalProperties": false } },
+      { "route": "GET /roles/who", "id": "who-did", "title": "Who did it", "description": "The employee behind an Activity Monitor entry, from any of its id, source, kind, title or by.", "readOnly": true },
+      { "route": "GET /agents/{agent}/history", "id": "agent-history", "title": "An employee's jobs and history", "description": "One employee: the roles they hold, everything they did in the Activity Monitor (newest first), their runs and reassignments.", "readOnly": true }
+    ]
+  },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-31"
