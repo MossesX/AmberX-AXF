@@ -17,6 +17,7 @@ import { isNative, native, reportWebMonitor, type MonitorStatus } from '../../..
 import { K as VOICE } from '../../voice/web';
 import { phraseList } from '../../voice/web/core';
 import { autoApproves, watchConfig } from './core';
+import { linkAction } from '../../../deeplink';
 
 /** The approval id of a hub approval page link (a tapped approval notification), else null. */
 export function approvalIdOf(url: string): string | null {
@@ -170,6 +171,7 @@ export const library: AxfWebLibrary = {
     // An approval page (…/auth/admin/approvals/<id>) opens the assistant's approvals popover when an app plugin offers
     // one (action approvals.popover); anything else, or no popover, opens in the hub view as before.
     void native.addListener('open', ({ url }) => {
+      if (linkAction(url)) return; // an AmberX deep link (e.g. /gizmo): the shell's deep links open it (deeplink.ts)
       const id = approvalIdOf(url);
       if (id && rt.actions.get('approvals.popover')) { rt.dispatch(`approvals.popover:${id}`); return; }
       void native.hubOpen({ url }).catch(() => undefined);

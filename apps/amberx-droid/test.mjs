@@ -1815,6 +1815,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/if \(OpenUrlRules\.inApp\(url\)\)[\s\S]*?MainActivity\.class/.test(src('./android/app/src/main/java/ai/amberx/droid/AxppLink.java')), "android: amberx.open_url opens AmberX's own links in the app, not the browser");
   ok(/notifyListeners\("link"/.test(src('./android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java')), 'android: a deep link reaches the page as a link event');
   ok(/installDeepLinks\(rt/.test(src('./src/App.tsx')), 'the shell installs the deep links');
+  ok(/native\.addListener\('open', \(\{ url \}\) => fn\(url\)\)/.test(src('./src/App.tsx')) && /if \(linkAction\(url\)\) return;/.test(src('./src/plugins/monitor/web/index.tsx')), 'a tapped console alert with an AmberX link opens it in AmberX, not the hub view');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

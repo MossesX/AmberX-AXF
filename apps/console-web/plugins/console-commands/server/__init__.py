@@ -765,6 +765,19 @@ def _gizmo_wake(url: str, browser: str) -> dict[str, Any]:
 GIZMO_WAKER: Callable[[str, str], dict[str, Any]] = _gizmo_wake  # tests swap in a fake phone
 
 
+GIZMO_ALERT_KEY = "console:gizmo-open"
+
+
+def _gizmo_alert(url: str, why: str) -> None:
+    """The phone can't be asked right now: a console alert AmberX's watch shows, whose tap opens Gizmo in AmberX."""
+    try:
+        import console_context as cx
+        cx.raise_alert({"source": "console", "severity": "info", "key": GIZMO_ALERT_KEY, "title": "Tap to open Gizmo", "body": f"Gizmo couldn't be opened on the phone directly. {why}"[:300],
+                        "link": url, "meta": {"label": "Gizmo"}})
+    except Exception:  # noqa: BLE001 — the answer says what happened either way
+        pass
+
+
 def gizmo_links() -> dict[str, str]:
     return {m: AMBERX_URL + p for m, p in GIZMO_MODES.items()}
 
@@ -777,6 +790,8 @@ def gizmo_phone(mode: str = "chat", allowed: bool = True) -> dict[str, Any]:
         return {"ok": False, "code": "forbidden", "message": "opening Gizmo on the phone needs a hub admin or the console token"}
     url = gizmo_links()[mode]
     r = GIZMO_WAKER(url, "chrome")
+    if not r.get("ok"):
+        _gizmo_alert(url, str(r.get("message") or ""))
     msg = str(r.get("message") or "").replace("the console", "Gizmo").replace("started the browser", "opened Gizmo").replace("held the browser back", "held AmberX back")
     return {"ok": bool(r.get("ok")), "url": url, "mode": mode, "phone": {"opened": r.get("opened") is True, "notified": r.get("notified") is True, "message": msg}}
 

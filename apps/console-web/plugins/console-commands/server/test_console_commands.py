@@ -368,6 +368,18 @@ gb = client.post("/api/console/gizmo", json={"mode": "dance"})
 eq((gb.status_code, gb.json()["code"]), (400, "invalid"), "gizmo: an unknown mode is refused")
 eq(cc.gizmo_phone("chat", allowed=False)["code"], "forbidden", "gizmo: a caller without the console's grants can't wake the phone")
 eq(len(GIZMO), 1, "gizmo: refused calls never reach the phone")
+ALERTS: list = []
+_cx = types.ModuleType("console_context")
+_cx.raise_alert = lambda a: ALERTS.append(a)  # type: ignore[attr-defined]
+_saved_cx = sys.modules.get("console_context")
+sys.modules["console_context"] = _cx
+cc.GIZMO_WAKER = lambda url, browser: {"ok": False, "opened": False, "notified": False, "message": "couldn't reach axHub: down"}
+gf = cc.gizmo_phone("chat")
+eq((gf["ok"], ALERTS[-1]["link"] if ALERTS else None, ALERTS[-1]["title"] if ALERTS else None), (False, "https://amberx.amberxai.com/gizmo", "Tap to open Gizmo"), "gizmo: phone unreachable → a console alert whose tap opens Gizmo")
+if _saved_cx is None:
+    del sys.modules["console_context"]
+else:
+    sys.modules["console_context"] = _saved_cx
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open
