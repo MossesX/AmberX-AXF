@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:57:29.953Z",
+ "updatedAt": "2026-11-10T18:57:39.724Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94156,6 +94156,37 @@
      "uid": "st-mwb0y74v0522g1"
     }
    ]
+  },
+  {
+   "id": "orchestrator-checks-each-build-against-main-righ",
+   "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
+   "category": "",
+   "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T18:57:34.689Z",
+   "updatedAt": "2026-11-10T18:57:34.689Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.",
+    "at": "2026-11-10T18:57:34.689Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

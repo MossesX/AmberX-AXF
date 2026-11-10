@@ -3214,6 +3214,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-checks-each-build-against-main-righ": {
+   "said": "Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.",
+   "at": "2026-11-10T18:57:34.689Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-checks-shipped-features-before-spli": {
    "said": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
    "at": "",
