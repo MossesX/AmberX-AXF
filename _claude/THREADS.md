@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:49 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
 - 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` PR #416 (all) · builds-live
 - 2026-11-09 20:51 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 - 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` s4 done, → built (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:26 UTC · `landing-tool-takes-long-build-names-and-auto-fix` added (0 steps) (all) · console
 - 2026-11-10 04:26 UTC · `split-builds-pages-build-manager-pending-complet-3` s10 done (all) · orchestrator
 - 2026-11-10 04:26 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · orchestrator
+- 2026-11-10 04:27 UTC · `split-builds-pages-build-manager-pending-complet-3` PR #440 (all) · builds-live
 
 ## Token passes (log)
 
