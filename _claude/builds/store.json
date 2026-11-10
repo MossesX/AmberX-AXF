@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2828,
- "updatedAt": "2026-11-10T20:56:05.744Z",
+ "rev": 2829,
+ "updatedAt": "2026-11-10T20:56:55.749Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154592,6 +154592,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T20:47:42.129Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "amberx-build-notifications-for-every-stage-start",
+   "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
+   "category": "",
+   "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T20:56:54.475Z",
+   "updatedAt": "2026-11-10T20:56:54.475Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I'll get a notification every time a build starts, completes, ready for merge, and goes live, right?",
+    "at": "2026-11-10T20:56:54.475Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 586
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
