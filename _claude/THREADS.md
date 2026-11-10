@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` branch claude/search-bar-plugin-snappable-search-asset-globe-e (all) · pipeline
 - 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 - 2026-11-10 16:20 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 - 2026-11-10 16:21 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:12 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
 - 2026-11-10 19:21 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s10 done (all) · orchestrator
 - 2026-11-10 19:22 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` s1 done, → running (all) · orchestrator
+- 2026-11-10 19:22 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
