@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:58 UTC · `skins-as-packages-of-slices-every-section-its-ow` → pending, note (all) · reconciler
 - 2026-11-10 16:58 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · pipeline
 - 2026-11-10 16:58 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
 - 2026-11-10 16:58 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:45 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 - 2026-11-10 20:45 UTC · `inline-element-editing-plugin-right-click-any-el` s7 done (all) · orchestrator
 - 2026-11-10 20:46 UTC · `open-any-website-by-voice-on-the-phone-optionall` added (0 steps) (all) · console
+- 2026-11-10 20:46 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
 
 ## Token passes (log)
 
