@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3024,
- "updatedAt": "2026-11-10T23:28:14.645Z",
+ "rev": 3025,
+ "updatedAt": "2026-11-10T23:28:20.434Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154042,7 +154042,7 @@
    "title": "Gizmo opens by voice/link (AmberX web app + Android app) and the new look sticks after reload",
    "category": "",
    "detail": "1) Give Gizmo chat a real https deep link on amberxai.com that opens Gizmo in the AmberX Android app (app links) or in the AmberX web app if the app isn't there; make amberx.open_url able to open it; add a Gizmo entry to console.screens. 2) Bug: the new home cards/frame/menus look showed, then a reload brought back the old banner and old look. Persist the chosen skin as the default so reloads keep it.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154050,8 +154050,8 @@
    "pr": "#483",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:28:07.251Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T23:28:12.668Z",
+   "builtAt": "2026-11-10T23:28:08.303Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -154096,6 +154096,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully, own login copy)",
      "at": "2026-11-10T23:26:15.698Z"
+    },
+    {
+     "text": "PR #483 in the merge queue. UI Review shots of the console Gizmo screen weren't taken: Playwright isn't installed on the runner. App-link verification needs APP_CERT_SHA256 (systems check amberx-app-links has the steps).",
+     "at": "2026-11-10T23:28:12.668Z"
     }
    ],
    "approvals": [],
@@ -154207,12 +154211,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:28:08.303Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T21:38:21.280Z",
-     "updatedAt": "2026-11-10T21:38:21.280Z"
+     "updatedAt": "2026-11-10T23:28:08.484Z"
     }
    ],
    "profiles": [
@@ -154223,7 +154227,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
