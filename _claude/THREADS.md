@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 08:35 UTC · `home-page-build-queue-card-opens-the-orchestrato` → pending, note (all) · pipeline
 - 2026-11-10 14:51 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` → running, note (all) · pipeline
 - 2026-11-10 14:51 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` branch claude/resolve-the-conflict-and-land-the-orchestrator-l (all) · pipeline
 - 2026-11-10 14:51 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:02 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:02 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · builds-live
 - 2026-11-10 18:03 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
+- 2026-11-10 18:03 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · builds-live
 
 ## Token passes (log)
 
